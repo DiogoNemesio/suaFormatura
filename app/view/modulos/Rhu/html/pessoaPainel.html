@@ -1,0 +1,80 @@
+<div>
+
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>%NOME%  <a id='a01ID' class='btn btn-xs btn-primary' title="Adicionar" href="javascript:zgLoadUrl('%URLADD%');"><i class="fa fa-plus bigger-140"></i></a></h1>
+	</div><!-- /.page-header -->
+
+	<div class="row">
+		<div class="col-xs-12">
+
+			<div class="zgBreadcumb">
+				<a href="javascript:zgLoadUrl('%URL_VOLTAR%');"><span class="badge badge-primary">1</span> Funcionários</a>
+				<a class="current"><span class="badge badge-primary">2</span> Painel do Funcionário</a>
+			</div>
+			<br>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			%BOTAO%
+		</div>
+		
+		<div class="col-xs-4">
+			<br>
+			<div class="profile-user-info profile-user-info-striped">
+				<div class="profile-info-row">
+					<div class="profile-info-name">Nome</div>
+					<div class="profile-info-value">
+						<span>%NOME_PESSOA%</span>
+					</div>
+				</div>
+		
+				<div class="profile-info-row">
+					<div class="profile-info-name">CPF</div>
+					<div class="profile-info-value">
+						<span>%CPF_PESSOA%</span>
+					</div>
+				</div>
+				
+				<div class="profile-info-row">
+					<div class="profile-info-name">RG</div>
+					<div class="profile-info-value">
+						<span>%RG_PESSOA% %ORGAO_RG_PESSOA%-%UF_RG_PESSOA%</span>
+					</div>
+				</div>
+		
+				<div class="profile-info-row">
+					<div class="profile-info-name">Nascimento</div>
+		
+					<div class="profile-info-value">
+						<span class="editable" id="age">%NASCIMENTO_PESSOA%</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="col-xs-4 center">
+												<div class="easy-pie-chart percentage" data-percent="20" data-color="#D15B47">
+													<span class="percent">20</span>%
+												</div>
+
+												<hr />
+												<div class="easy-pie-chart percentage" data-percent="55" data-color="#87CEEB">
+													<span class="percent">55</span>%
+												</div>
+
+												<hr />
+												<div class="easy-pie-chart percentage" data-percent="90" data-color="#87B87F">
+													<span class="percent">90</span>%
+												</div>
+											</div><!-- /.col -->
+		
+		
+	</div>
+
+	<br>
+	<div class="box-content">
+		%GRID%
+	</div><!--/span-->
+</div>

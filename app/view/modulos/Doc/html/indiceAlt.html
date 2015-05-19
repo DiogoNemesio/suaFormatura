@@ -1,0 +1,201 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Índice 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="docTipo" value="%DOC_TIPO%">
+				<input type="hidden" name="codIndice" value="%COD_INDICE%" id="codIndiceID">
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+						    	<label class="col-sm-4 control-label" for="nomeID">Nome</label>
+				    			<div class="input-group col-sm-6">
+				   					<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="40" value="%NOME%" required autocomplete="off">	
+				    			</div>
+				    		</div>
+							<div class="form-group">
+						    	<label class="col-sm-4 control-label" for="descricaoID">Descrição</label>
+				    			<div class="input-group col-sm-6">
+					    			<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+					    			<input class="form-control" id="descricaoID" type="text" name="descricao" maxlength="100" value="%DESCRICAO%" autocomplete="off">
+						    	</div>
+						    </div>
+				    	</div>
+				    	<div class="col-sm-6">
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="obrigatorioID">Obrigatório</label>
+								<div class="input-group col-sm-6">
+									<label><input id="obrigatorioID" name="obrigatorio" type="checkbox" class="ace" %OBRIGATORIO% /><span class="lbl">&nbsp;</span></label>
+								</div>
+						   </div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="visivelID">Visível</label>
+								<div class="input-group col-sm-6">
+									<label><input id="visivelID" name="visivel" type="checkbox" class="ace" %VISIVEL% /><span class="lbl">&nbsp;</span></label>
+								</div>
+						   </div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="ativoID">Ativo</label>
+								<div class="input-group col-sm-6">
+									<label><input id="ativoID" name="ativo" type="checkbox" class="ace" %ATIVO% /><span class="lbl">&nbsp;</span></label>
+								</div>
+						   </div>
+						</div>
+				    </div>
+					<h4 class="header blue bolder smaller">Tipo</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+				    	<div class="col-sm-6">
+							<div class="form-group">
+				    			<label class="col-sm-4 control-label" for="tipoID">Tipo</label>
+				    			<div class="input-group col-sm-6">
+									<select class="select2" onchange="zgMostraDivs();" style="width:100%;" id="tipoID" name="tipo" data-rel="select2">
+									%INDICE_TIPO%
+									</select>
+								</div>
+				    		</div>
+				    	</div>
+				    	<div class="col-sm-6" id="divTamanhoID">
+							<div class="form-group">
+				    			<label class="col-sm-4 control-label" for="tamanhoID">Tamanho</label>
+				    			<div class="input-group col-sm-6">
+				   					<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+				   						<input class="form-control" id="tamanhoID" type="number" name="tamanho" max="4000" placeholder="Tamanho máximo: 4000" value="%TAMANHO%" autocomplete="off">
+				    			</div>
+				    		</div>
+						</div>
+				    </div>
+				    <div class="row" >
+				    	<div class="col-sm-6" id="divMascaraID">
+							<div class="form-group">
+				    			<label class="col-sm-4 control-label" for="mascaraID">Máscara</label>
+				    			<div class="input-group col-sm-6">
+				   					<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+				   					<input class="form-control" id="mascaraID" type="text" name="mascara" max="200" value="%MASCARA%" autocomplete="off">
+				   					<span class="input-group-addon"><a href="javascript:ajudaMascara();"><i class="fa fa-question-circle"></i></a></span>
+				    			</div>
+				    		</div>
+						</div>
+				    	<div class="col-sm-6" id="divValoresID">
+							<div class="form-group">
+				    			<label class="col-sm-4 control-label" for="valoresID">Valores</label>
+				    			<div class="input-group col-sm-6">
+				    				<textarea tabindex="7" id="valoresID" class="autosize limited form-control" name="valores" maxlength="1000" autocomplete="off">%VALORES%</textarea>
+				    			</div>
+				    		</div>
+						</div>
+						<div class="col-sm-6" id="divValPadraoID">
+							<div class="form-group">
+				    			<label class="col-sm-4 control-label" for="valorPadraoID">Valor Padrão</label>
+				    			<div class="input-group col-sm-6">
+				   					<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+				   					<input tabindex="8" class="form-control" id="valorPadraoID" type="text" name="valorPadrao" maxlength="4000" value="%VALOR_PADRAO%" autocomplete="off">	
+				    			</div>
+				    		</div>
+						</div>
+						
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label" >&nbsp;</label>
+    					<button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-check bigger-110"></i> Salvar</button>
+						<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$( document ).ready(function() {
+	zgMostraDivs();
+});
+
+
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codIndiceID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar",'Novo Índice','%URLNOVO%');
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+$("input,textarea").jqBootstrapValidation({
+	preventSubmit: true
+});
+
+
+function zgMostraDivs() {
+	var vMostraVal		= ['LIS'];
+	var vMostraTam		= ['T','N'];
+	var vMostraMask		= ['T'];
+
+	var vTipo			= $('#tipoID').val(); 
+	
+	if (vMostraVal.indexOf(vTipo) < 0) {
+		$('#divValoresID').addClass("hidden");
+	}else{
+		$('#divValoresID').removeClass("hidden");
+	}
+	
+	if (vMostraTam.indexOf(vTipo) < 0) {
+		$('#divTamanhoID').addClass("hidden");
+	}else{
+		$('#divTamanhoID').removeClass("hidden");
+	}
+	
+	if (vMostraMask.indexOf(vTipo) < 0) {
+		$('#divMascaraID').addClass("hidden");
+	}else{
+		$('#divMascaraID').removeClass("hidden");
+	}
+	
+}
+
+$(".select2").select2();
+
+var tag_input = $('#valoresID');
+
+if(! ( /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase())) ) {
+	tag_input.tag({
+		placeholder:tag_input.attr('placeholder')
+	});
+} else {
+	tag_input.after('<textarea id="'+tag_input.attr('id')+'" name="'+tag_input.attr('name')+'" rows="3">'+tag_input.val()+'</textarea>').remove();
+}
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: 'Restando: %n character%s ...',
+	limitText: 'Max: %n.'
+});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+function ajudaMascara() {
+	alert("Abrir Modal de ajuda de mascara !!");
+}
+
+</script>
+

@@ -1,0 +1,239 @@
+<form id="zgFormFiltroID" class="form-horizontal">
+	<input type="hidden" name="codTipoFiltro"	id="codTipoFiltroID" 	value="%COD_TIPO_FILTRO%">
+	<input type="hidden" name="dataTipo"		id="dataTipoID"			value="%DATA_TIPO%">
+	<input type="hidden" name="dataFiltro"		id="dataFiltroID"		value="%DATA_FILTRO%">
+	<input type="hidden" name="mesFiltro"		id="mesFiltroID"		value="%MES_FILTRO%">
+	<input type="hidden" name="dataIniFiltro"	id="dataIniFiltroID"	value="%DATA_INI_FILTRO%">
+	<input type="hidden" name="dataFimFiltro"	id="dataFimFiltroID"	value="%DATA_FIM_FILTRO%">
+	<input type="hidden" name="dataAvancar"		id="dataAvancarID"	>
+	<input type="hidden" name="dataVoltar"		id="dataVoltarID"	>
+</form>
+<div class="row">
+	<div class="col-sm-12 widget-container-span">
+		<div class="widget-body">
+			<div class="box-content">
+				%GRID%
+			</div><!--/span-->
+		</div>
+	</div>
+</div>
+
+<script>
+
+var $aCodigos	= '%JSON_CODIGOS%';
+var oTable		= $('#GTransferenciaID').dataTable();
+
+$('#zgFormFiltroID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	$("#zgSpinnerID").removeClass("hidden");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%FILTER_URL%",
+		data:	$('#zgFormFiltroID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#%DIVCENTRAL%ID").html( data );
+		$("#zgSpinnerID").addClass("hidden");
+	});
+
+
+	/** Recolocar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+		
+	return false; 
+});
+
+
+$( document ).ready(function() {
+	$('#zgGridCustomHeaderID').load('%FILTER_DATE_URL%');
+	
+	var $tipoData		= $('#dataTipoID').val();
+	var $dataFiltro		= $('#dataFiltroID').val();
+	var $mesFiltro		= $('#mesFiltroID').val();
+	var $dataIniFiltro	= $('#dataIniFiltroID').val();
+	var $dataFimFiltro	= $('#dataFimFiltroID').val();
+		
+	$("thead th").each( function ( i ) {
+		if ($tipoData == "E" && $(this).text() == "EMISSÃO") {
+			$(this).addClass("info");
+		}else if ($tipoData == "V" && $(this).text() == "TRANSFERÊNCIA") {
+			$(this).addClass("info");
+		}
+		
+    });
+	
+	oTable.on( 'change', 'input[name="%CHECK_NAME%[]"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+
+		if ($count > 50) {
+			zgDesabilitaAcoesTRLis();
+			$.gritter.add({
+				title: 'Aviso',
+				text: 'Máximo de "50" contas podem ser selecionadas !!!',
+				class_name: 'gritter-info gritter-error',
+				time: '5000',
+			});
+		}else if ($count <= 1) {
+			zgDesabilitaAcoesTRLis();
+		}else{
+			zgHabilitaAcoesTRLis();
+		}
+	} );
+	
+	oTable.on( 'change', 'input[name="%CHECK_NAME%_all"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+		var $api 		= oTable.api();
+		var $info 		= $api.page.info();
+		
+		if ($count > 50) {
+			zgDesabilitaAcoesTRLis();
+			$.gritter.add({
+				title: 'Aviso',
+				text: 'Máximo de "50" contas podem ser selecionadas !!!',
+				class_name: 'gritter-info gritter-error',
+				time: '5000',
+			});
+		}else if ($count <= 1) {
+			zgDesabilitaAcoesTRLis();
+		}else{
+			zgHabilitaAcoesTRLis();
+			
+			if ($info.pages > 1) {
+				$.gritter.add({
+					title: 'Aviso',
+					text: 'As contas de todas as páginas, foram selecionadas !!!!',
+					class_name: 'gritter-info',
+					time: '5000',
+				});
+			}
+			
+		}
+	} );
+});
+
+zgDesabilitaAcoesTRLis();
+
+function zgHabilitaAcoesTRLis() {
+	var $jCodigos = jQuery.parseJSON($aCodigos);
+	var $aStatus	= [];
+	var	$aFornec	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		var $codigo	= $(this).val();
+		if ($jCodigos[$codigo] != undefined) {
+
+			/** Monta o array de Status únicos **/
+			if ( $aStatus.indexOf($jCodigos[$codigo]["STATUS"]) == -1 ) {
+				$aStatus[$aStatus.length]	= $jCodigos[$codigo]["STATUS"];
+			}
+
+			/** Monta o array de Fornecedores únicos **/
+			if ( $aFornec.indexOf($jCodigos[$codigo]["FORNEC"]) == -1 ) {
+				$aFornec[$aFornec.length]	= $jCodigos[$codigo]["FORNEC"];
+			}
+
+		}
+	});
+	
+	
+	/** Calcular as ações em lotes disponíveis, a partir do status das contas **/
+	if ($aStatus.length !== 1) {
+		$('#zgDivAcoesExcID').html('&nbsp;');
+		$('#zgDivAcoesCanID').html('&nbsp;');
+		$('#zgDivAcoesConID').html('&nbsp;');
+	}else if ($aStatus[0] == "P")	{
+		$('#zgDivAcoesExcID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoExcSelecionadosTRLis();" data-toggle="tooltip" data-placement="top" title="Excluir selecionados"><i class="ace-icon fa fa-trash red bigger-130"></i></div>');
+		$('#zgDivAcoesCanID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoCanSelecionadosTRLis();" data-toggle="tooltip" data-placement="top" title="Cancelar selecionados"><i class="ace-icon fa fa-ban red bigger-130"></i></div>');
+		$('#zgDivAcoesConID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoConSelecionadosTRLis();" data-toggle="tooltip" data-placement="top" title="Confirmar selecionados"><i class="ace-icon fa fa-check green bigger-130"></i></div>');
+	}else if ($aStatus[0] == "PA")	{
+		$('#zgDivAcoesExcID').html('&nbsp;');
+		$('#zgDivAcoesCanID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoCanSelecionadosTRLis();" data-toggle="tooltip" data-placement="top" title="Cancelar selecionados"><i class="ace-icon fa fa-ban red bigger-130"></i></div>');
+		$('#zgDivAcoesConID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoConSelecionadosTRLis();" data-toggle="tooltip" data-placement="top" title="Confirmar selecionados"><i class="ace-icon fa fa-check green bigger-130"></i></div>');
+	}else{
+		$('#zgDivAcoesExcID').html('&nbsp;');
+		$('#zgDivAcoesCanID').html('&nbsp;');
+		$('#zgDivAcoesConID').html('&nbsp;');
+	}
+	
+	/** Botão de impressão sempre ativo **/
+	$('#zgDivAcoesImpID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoImpSelecionadosTRLis();" data-toggle="tooltip" data-placement="top" title="Imprimir selecionados"><i class="ace-icon fa fa-print grey bigger-130"></i></div>');
+	
+	$('#TRLisFiltroBtnAcaoLoteID').attr("disabled",false);
+	$('#TRLisFiltroBtnAcaoLoteID').removeClass("disabled");
+	$("#TRLisFiltroIco1AcaoLoteID").removeClass("grey");
+	$("#TRLisFiltroIco1AcaoLoteID").addClass("blue");
+	$("#TRLisFiltroIco2AcaoLoteID").addClass("hidden");
+}
+
+function zgDesabilitaAcoesTRLis() {
+	$('#TRLisFiltroBtnAcaoLoteID').attr("disabled","disabled");
+	$('#TRLisFiltroBtnAcaoLoteID').addClass("disabled");
+	$("#TRLisFiltroIco1AcaoLoteID").removeClass("blue");
+	$("#TRLisFiltroIco1AcaoLoteID").addClass("grey");
+	$("#TRLisFiltroIco2AcaoLoteID").removeClass("hidden");
+}
+
+function toogleFiltroTRLis() {
+	zgAbreModal("%URL_FILTRO%");
+}
+
+function zgAcaoExcSelecionadosTRLis() {
+	var $aSelTransfs	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelTransfs[$aSelTransfs.length]	= $(this).val();
+	});
+	zgAbreModal('%EXC_URL%&cid='+zgEncodeUrl('aSelTransfs='+$aSelTransfs));
+}
+
+function zgAcaoCanSelecionadosTRLis() {
+	var $aSelTransfs	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelTransfs[$aSelTransfs.length]	= $(this).val();
+	});
+	zgAbreModal('%CAN_URL%&cid='+zgEncodeUrl('aSelTransfs='+$aSelTransfs));
+}
+
+function zgAcaoConSelecionadosTRLis() {
+	var $aSelTransfs	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelTransfs[$aSelTransfs.length]	= $(this).val();
+	});
+	zgAbreModal('%CON_URL%&cid='+zgEncodeUrl('aSelTransfs='+$aSelTransfs));
+}
+
+function zgAcaoImpSelecionadosTRLis() {
+	var $aSelTransfs	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelTransfs[$aSelTransfs.length]	= $(this).val();
+	});
+	zgAbreModal('%IMP_URL%&cid='+zgEncodeUrl('aSelTransfs='+$aSelTransfs));
+}
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+$('[data-rel=tooltip]').tooltip({html:true});
+$('[data-rel=popover]').popover({html:true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$(document).one('ajaxloadstart.page', function(e) {
+	$('[class*=select2]').remove();
+	$('.rating').raty('destroy');
+	$('.multiselect').multiselect('destroy');
+});
+
+</script>

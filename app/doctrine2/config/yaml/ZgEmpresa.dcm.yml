@@ -1,0 +1,107 @@
+ZgEmpresa:
+    type: entity
+    table: ZG_EMPRESA
+    indexes:
+        fk_ZG_EMPRESA_1_idx:
+            columns:
+                - COD_CIDADE
+        fk_ZG_EMPRESA_2_idx:
+            columns:
+                - COD_STATUS
+    uniqueConstraints:
+        CNPJ:
+            columns:
+                - CNPJ
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 100
+            fixed: false
+            comment: ''
+            column: NOME
+        fantasia:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: FANTASIA
+        cnpj:
+            type: string
+            nullable: false
+            length: 14
+            fixed: false
+            comment: ''
+            column: CNPJ
+        email:
+            type: string
+            nullable: true
+            length: 200
+            fixed: false
+            comment: ''
+            column: EMAIL
+        endereco:
+            type: string
+            nullable: false
+            length: 100
+            fixed: false
+            comment: ''
+            column: ENDERECO
+        bairro:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: BAIRRO
+        codMatriz:
+            type: integer
+            nullable: true
+            unsigned: false
+            comment: ''
+            column: COD_MATRIZ
+        logomarca:
+            type: string
+            nullable: true
+            length: 200
+            fixed: false
+            comment: ''
+            column: LOGOMARCA
+        icone:
+            type: string
+            nullable: true
+            length: 60
+            fixed: false
+            comment: ''
+            column: ICONE
+    manyToOne:
+        codCidade:
+            targetEntity: ZgCidade
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_CIDADE:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codStatus:
+            targetEntity: ZgEmpresaStatusTipo
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_STATUS:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,81 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Local de Arquivo 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="codLocal" value="%COD_LOCAL%" id="codLocalID">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+						    	<label class="col-sm-4 control-label " for="nomeID">Nome</label>
+				    			<div class="input-group col-sm-6">
+				   					<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" required autocomplete="off">	
+				    			</div>
+				    		</div>
+							<div class="form-group">
+						    	<label class="col-sm-4 control-label" for="descricaoID">Descrição</label>
+				    			<div class="input-group col-sm-6">
+					    			<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+					    			<input class="form-control" id="descricaoID" type="text" name="descricao" maxlength="100" value="%DESCRICAO%" autocomplete="off">
+						    	</div>
+						    </div>
+						    <div class="form-group">
+								<label class="col-sm-4 control-label" for="departamentoID">Departamento</label>
+						    	<div class="input-group col-sm-6">
+						    		<select class="select2" style="width:100%;" id="departamentoID" name="departamento" data-rel="select2">
+										%DEPARTAMENTO%
+									</select>
+								</div>
+							</div>
+				    	</div>
+				    	<div class="col-sm-6">
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="ativoID">Ativo</label>
+								<div class="input-group col-sm-6">
+									<label><input id="ativoID" name="ativo" type="checkbox" class="ace" %ATIVO% /><span class="lbl">&nbsp;</span></label>
+								</div>
+						   </div>
+						</div>
+				    </div>
+
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label" >&nbsp;</label>
+    					<button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-check bigger-110"></i> Salvar</button>
+						<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codLocalID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar",'Novo Local', '%URLNOVO%');
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+$(".select2").select2();
+
+</script>
+

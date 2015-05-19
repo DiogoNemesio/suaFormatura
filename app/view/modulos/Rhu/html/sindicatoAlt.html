@@ -1,0 +1,555 @@
+<div id="content">
+	<div class="page-header">
+		<h1>Cadastro de Sindicato
+			<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+			<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+		</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codSindicatoID" name="codSindicato" value="%COD_SINDICATO%">
+				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
+				<input type='hidden' id='valID'>
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16" id="tabID">
+						<li class="active">
+							<a data-toggle="tab" href="#usuario-basico">
+								<i class="green fa fa-edit bigger-125"></i>
+								Informações básicas
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#sindicato-contato">
+								<i class="green fa fa-edit bigger-125"></i>
+								Telefone
+							</a>
+						</li>
+					</ul>
+	
+					<div class="tab-content profile-edit-tab-content">
+						<div id="usuario-basico" class="tab-pane in active">
+							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCnpjID">
+								    	<label for="cnpjID" class="col-xs-12 col-sm-3 control-label">CNPJ</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="CNPJ do sindicato"></i></span>
+							    			<input class="form-control" id="cnpjID" type="text" name="cnpj" maxlength="18" value="%CNPJ%" placeholder="CNPJ" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cnpj" zg-data-mask-retira="1" onblur="checkCnpj();">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCnpjID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divNomeID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="nomeID">Nome</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome sindicato"></i></span>
+							    			<input class="form-control" id="nomeID" type="text" name="nome" maxlength="100" placeholder="Sindicato" value="%NOME%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divFantasiaID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="fantasiaID">Fantasia</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome Fantasia do sindicato"></i></span>
+							    			<input class="form-control" id="fantasiaID" type="text" name="fantasia" maxlength="60" placeholder="Nome fantasia" value="%FANTASIA%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpFantasiaID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+						    		<div class="form-group col-sm-12" id="divApelidoID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="apelidoID">Apelido</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Apelido"></i></span>
+							    			<input class="form-control" id="apelidoID" type="text" name="apelido" maxlength="45" placeholder="Apelido" value="%APELIDO%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
+								    </div>			    	
+									<div class="form-group col-sm-12" id="divEmailID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="emailID">Email</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Email do sindicato"></i></span>
+							    			<input class="form-control" id="emailID" type="text" name="email" maxlength="200" placeholder="Email" value="%EMAIL%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
+								    </div>
+						    	</div>
+						    </div>
+							<h4 class="header blue bolder smaller">Endereço</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">CEP</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
+											<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+									</div>																	
+									<div class="form-group col-sm-12" id="divDescLogradouroID">
+										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
+											<input type="text" id="descLogradouroID" %READONLY% name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
+									</div>	
+									<div class="form-group col-sm-12">
+										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
+											<input type="text" %READONLY% id="bairroID" name="bairro" class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
+										</div>
+									</div>
+									<div class="form-group col-sm-12">
+										<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
+											<input type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" class="width-100" placeholder="Cidade" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
+											<input type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" class="width-100" placeholder="Estado" />
+										</div>
+									</div>									
+									<div class="form-group col-sm-12" id="divNumeroID">
+										<label for="NumeroID" class="col-sm-3 control-label">Número</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
+											<input type="text" id="numeroID" name="numero" value="%NUMERO%" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
+										</div>
+									</div>							
+									<div class="form-group col-sm-12" id="divComplementoID">
+										<label for="ComplementoID" class="col-sm-3 control-label">Complemento</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
+											<input type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
+										</div>
+									</div>																			
+								</div>
+								<div class="hidden" id="divEndCorretoID">
+									<div class="col-sm-12">
+										<div class="form-group col-sm-12">
+											<div class="alert alert-info">	
+												Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+												<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" checked type="checkbox"/>
+												<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+											</div>		
+										</div>	
+									</div>
+						    	</div>
+							</div>
+						</div>	
+						<div id="sindicato-contato" class="tab-pane">
+							<h4 class="header blue bolder smaller">Lista de contatos</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<table id="sindicatoAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
+									<thead>
+										<tr class="warning">
+											<th class="col-sm-1 center"></th>
+											<th class="col-sm-2 center">Tipo</th>
+											<th class="col-sm-4 center">Telefone</th>
+											<th class="col-sm-1 center"><span onclick="addRowTelefoneSindicatoAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									%TAB_TELEFONE%
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label" >&nbsp;</label>
+    					<button type="button" class="btn btn-primary" id="btnSubmitID">
+							<i class="fa fa-check bigger-110"></i> Salvar
+						</button>
+						<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+						</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/******************************************************
+POPOVER - Inserir popover (mensagens de ajuda)
+/******************************************************/
+$('[data-rel=popover]').popover({html:true});
+
+/******************************************************
+MASCARA - Inserir as mascaras no campo
+/******************************************************/
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+if ($('#codSindicatoID').val()){
+	$('#cnpjID').attr("readonly", true);
+}
+
+/******************************************************
+SUBMIT FORMULÁRIO
+/******************************************************/
+// Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaSindicatoAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+// Submeter o formulário
+$('#zgFormID').submit(function(e) {
+	
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codSindicatoID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Sindicato', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});
+
+/******************************************************
+VALIDA FORMULÁRIO  
+/******************************************************/
+//Valida CNPJ
+function checkCnpj() {
+	var vCnpj	= $('#cnpjID').val();
+	$('#valID').val(0);
+	
+	if (vCnpj.length == 0) {
+		$('#divCnpjID').addClass('has-error');
+		$('#divHelpCnpjID').html(zgCriaSpanErro('CNPJ deve ser preenchido !!'));
+		return false;
+	}else{
+		if (validarCNPJ(vCnpj) == false){
+			$('#divCnpjID').addClass('has-error');
+			$('#divHelpCnpjID').html(zgCriaSpanErro('CNPJ inválido !! Verifique se a informação está correta !!'));
+		}else{
+
+			// Verificar se o nome está disponível no banco
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/Rhu/sindicatoVerificaCnpj.dp.php",
+		   		data: {  codSindicato: $('#codSindicatoID').val() , cnpj: vCnpj},
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(1);
+		   	    	}else{
+		   	    		$('#valID').val(0);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+			
+			if ($('#valID').val() == 0) {
+				$('#divCnpjID').addClass('has-error');
+				$('#divHelpCnpjID').html(zgCriaSpanErro('Já existe um sindicato com este CNPJ !!'));
+				return false;
+			}else{
+				$('#divCnpjID').removeClass('has-error');
+				$('#divHelpCnpjID').html('&nbsp;');
+				return true;
+			}
+
+		}
+	}
+}
+
+//Valida formulário
+function validaSindicatoAlt() {
+	var vNome		 = $('#nomeID').val();
+	var vFantasia	 = $('#fantasiaID').val();
+	var vLogradouro  = $('#descLogradouroID').val();
+	var vApelido	 = $('#apelidoID').val();
+	var vBairro		 = $('#bairroID').val();
+	var vNumero		 = $('#numeroID').val();	
+	var vComplemento = $('#complementoID').val();
+	var vCep		 = $('#cepID').val();
+	
+	var vTab		 = 0;
+	var vOK			 = true;
+	var vIdent;
+	
+	/** Valida os Telefones **/
+	var $codTelefone 	= $("input[name='codTelefone\\[\\]']");
+	var $telefone 		= $("input[name='telefone\\[\\]']");
+	var $telefoneCount	= $("input[name='telefone\\[\\]']");
+	var $vCount			= 0;
+	for (i = 0; i < $codTelefone.length; i++) {
+		var $td		= $telefone.eq(i).parent();
+		var $tr		= $td.parent();
+		
+		for (j = 0; j < $codTelefone.length; j++) {
+			if($telefone.eq(i).val() == $telefoneCount.eq(j).val()){
+				$vCount++;
+			}
+		}
+		
+		if($vCount > 1){
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone repetido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab 	= 1;
+		}else if (!$telefone.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone deve ser preenchido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab 	= 1;
+		}else if ($telefone.eq(i).val().length < 14) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone inválido "));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab 	= 1;
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}
+		
+		$vCount = 0;
+	}
+	
+	// CNPJ
+	if(checkCnpj() == false){
+		vOK = false;
+	}
+	
+	// Sindicato(NOME)
+	if (vNome.length == 0 || vNome.length > 60) {
+		$('#divNomeID').addClass('has-error');
+		if (vNome.length == 0){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!'));
+		}else if (vNome.length > 100){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 100 caracteres !!'));
+		}
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');		
+	}
+	
+	//FANTASIA
+	if (vFantasia.length == 0 || vFantasia.length > 100 ) {
+		$('#divFantasiaID').addClass('has-error');
+		if (vFantasia.length == 0){
+			$('#divHelpFantasiaID').html(zgCriaSpanErro('Fantasia deve ser preenchido !!'));
+		}else if (vFantasia.length > 100){
+			$('#divHelpFantasiaID').html(zgCriaSpanErro('Fantasia deve ter no máximo 100 caracteres !!'));
+		}
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divFantasiaID').removeClass('has-error');
+		$('#divHelpFantasiaID').html('&nbsp;');		
+	}
+	
+	//APELIDO
+	if (vApelido.length == 0 || vApelido.length > 45 ) {
+		$('#divApelidoID').addClass('has-error');
+		if (vApelido.length == 0){
+			$('#divHelpApelidoID').html(zgCriaSpanErro('Apelido deve ser preenchido !!'));
+		}else if (vApelido.length > 100){
+			$('#divHelpApelidoID').html(zgCriaSpanErro('Apelido deve ter no máximo 45 caracteres !!'));
+		}
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divApelidoID').removeClass('has-error');
+		$('#divHelpApelidoID').html('&nbsp;');		
+	}
+	
+	//COMPLEMENTO E NUMERO
+	if(vComplemento || vNumero){
+		if(!vCep){
+			$('#divCepID').addClass('has-error');
+			$('#divHelpCepID').html(zgCriaSpanErro('Preencha o CEP !!'));
+			vOK		= false;
+			vTab 	= 0;
+		}
+		
+	}else{
+		$('#divCepID').removeClass('has-error');
+		$('#divHelpCepID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Abrir aba que tiver campos inválidos
+		$('#tabID li:eq('+ vTab +') a').tab('show');
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+}
+
+/******************************************************
+BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
+/******************************************************/
+//Busca ENDEREÇO
+function buscaRua() {
+	var vCep			= $('#cepID').cleanVal();
+
+	if (validaCep() !== true) {
+		return false;
+	}else{
+		/** Buscar o cep no banco **/
+		jQuery.ajax({
+    		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
+    		data: { cep: vCep},
+    		success: function(ret) {
+    			var vData	= JSON.parse(ret);
+    	    	if (vData.codLogradouro) {
+    	    		$('#codLogradouroID').val(vData.codLogradouro);
+    	    		$('#descLogradouroID').val(vData.descLogradouro);
+    	    		$('#codCidadeID').val(vData.codCidade);
+    	    		$('#descCidadeID').val(vData.descCidade);
+    	    		$('#descEstadoID').val(vData.descUf);
+    	    		$('#codBairroID').val(vData.codBairro);
+    	    		$('#bairroID').val(vData.descBairro);
+
+    	    		$('#divHelpCepID').html('');
+    	    		$('#divCepID').removeClass('has-error');
+
+    	    		
+    	    		$('#divLogradouroID').removeClass('has-error');
+    	    		$('#divNumeroID').removeClass('has-error');
+    	    		$('#divHelpLogradouroID').html('');
+    	    		$('#divHelpNumeroID').html('');
+
+    	    		$('#divEndID').removeClass('hidden');
+    	    		
+    	    		$('#descLogradouroID').attr("readonly", true);
+    	    		$('#bairroID').attr("readonly", true);
+    	    		
+    	    		zgMostraDivs();
+    	    		$('#numeroID').focus();
+
+    	    	}else{
+    	    		$('#divHelpCepID').html(zgCriaSpanErro('Cep não encontrado !!!'));
+    	    		$('#divCepID').addClass('has-error');
+    	    		$('#divEndID').addClass('hidden');
+    	    	}
+    		},
+    		method: 'get',
+    		cache: false,
+    		async:false
+  		});
+		
+	}
+}
+
+//Valida CEP
+function validaCep() {
+	var vCep	= $('#cepID').cleanVal();
+	if (vCep.length != 8) {
+		$('#divCepID').addClass('has-error');
+		$('#divEndCorretoID').addClass("hidden");//Caso de erro, esconder a mensagem de edição de endereço
+		$('#divHelpCepID').html(zgCriaSpanErro('Cep Inválido !!!'));
+		
+		return false;
+	}
+	return true;
+}
+
+/******************************************************
+MOSTRAR DIV - Mostrar div para editar logradouro
+/******************************************************/
+function zgMostraDivs() {
+	$('#divEndCorretoID').removeClass("hidden");
+}
+
+/******************************************************
+COLOCAR O CAMPO LOGRADOURO E BAIRRO PARA EDIÇÃO
+/******************************************************/
+function mudaEndereco() {
+	var vEndCorreto		= $('#endCorretoID').is(':checked');
+	
+	if (vEndCorreto == false) {
+		$('#descLogradouroID').removeAttr("readonly");
+		$('#bairroID').removeAttr("readonly");
+
+	}else{
+		buscaRua();
+		$('#descLogradouroID').attr("readonly", true);
+		$('#bairroID').attr("readonly", true);
+	}
+}
+
+/******************************************************
+ADD E REMOVER TELEFONE
+/******************************************************/
+function addRowTelefoneSindicatoAlt() {
+	$('#sindicatoAltTableTelefoneID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">%TIPO_TEL%</select></td><td><input type="text" name="telefone[]" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefoneSindicatoAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]"></td></tr>');
+	$('#sindicatoAltTableTelefoneID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+		$( this ).focus();
+	});
+	$('#sindicatoAltTableTelefoneID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+}
+
+function delRowTelefoneSindicatoAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
+}
+</script>
+

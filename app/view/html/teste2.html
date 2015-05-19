@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR" >
+<head>
+	<!-- Carregado dinamicamente através do dinamicHtmlLoad -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.css">
+<link rel="stylesheet" type="text/css" href="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_skyblue.css">
+<script src="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
+<script src="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
+<script src="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
+<script src="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/ext/dhtmlxgrid_filter.js"></script>
+<script src="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/ext/dhtmlxgrid_export.js"></script>
+<script src="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/ext/dhtmlxgrid_splt.js"></script>
+<script src="http://dbcom/packages//dhtmlx/dhtmlxGrid/codebase/ext/dhtmlxgrid_group.js"></script>
+<link href="http://dbcom/packages//ace/assets/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="http://dbcom/packages//ace/assets/css/bootstrap-editable.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="http://dbcom/packages//ace/assets/css/bootstrap-timepicker.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="http://dbcom/packages//ace/assets/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" >
+<!--[if IE 7]><link rel="stylesheet" href="http://dbcom/packages//ace/assets/css/font-awesome-ie7.min.css" /><![endif]-->
+<link href="http://dbcom/packages//ace/assets/css/ace-fonts.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="http://dbcom/packages//ace/assets/css/ace.min.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="http://dbcom/packages//ace/assets/css/ace-rtl.min.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="http://dbcom/packages//ace/assets/css/ace-skins.min.css" media="screen" rel="stylesheet" type="text/css" >
+<!--[if lte IE 8]><link rel="stylesheet" href="http://dbcom/packages//ace/assets/css/ace-ie.min.css" /><![endif]-->
+<!--[if lt IE 9]><script src="http://dbcom/packages//ace/assets/js/html5shiv.js"></script><script src="http://dbcom/packages//ace/assets/js/respond.min.js"></script><![endif]-->
+<style type="text/css" media="all">@import "http://dbcom/css//zgWeb.css";</style>
+<style type="text/css" media="all">@import "http://dbcom/css//menu.css";</style>
+<script src="http://dbcom/js//zgWeb.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/ace-extra.min.js"></script>
+<!--[if !IE]> --><script type="text/javascript">window.jQuery || document.write("<script src='http://dbcom/packages//ace/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");</script><!-- <![endif]-->
+<!--[if IE]><script type="text/javascript">window.jQuery || document.write("<script src='http://dbcom/packages//ace/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");</script><![endif]-->
+<script type="text/javascript">if("ontouchend" in document) document.write("<script src='http://dbcom/packages//ace/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");</script>
+<script src="http://dbcom/packages//ace/assets/js/typeahead-bs2.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/bootstrap.min.js"></script>
+<!--[if lte IE 8]><script src="http://dbcom/packages//ace/assets/js/excanvas.min.js"></script><![endif]-->
+<script src="http://dbcom/packages//ace/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/jquery.ui.touch-punch.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/jquery.slimscroll.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/jquery.easy-pie-chart.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/jquery.sparkline.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/flot/jquery.flot.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/flot/jquery.flot.pie.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/flot/jquery.flot.resize.min.js"></script>
+<script src="http://dbcom/packages//ace/assets/js/ace-elements.min.js"></script>
+<script src="http://dbcom/packages//bootstrap/js/jquery.base64.min.js" charset="UTF-8"></script>
+<script src="http://dbcom/packages//ace/assets/js/ace.min.js"></script>
+<!-- Fim do carregamento dinâmico (dinamicHtmlLoad) -->
+
+		
+	<style type="text/css" media="all">
+	    html, body {
+        	width: 100%;
+        	height: 100%;
+	        margin: 0px;
+        	padding: 0px;
+        	overflow: hidden;
+    	}
+		.DIFrame {
+			margin: 0px;
+			border: thick  groove  rgb(255,0,255);
+	        margin: 0px;
+        	padding: 0px;
+			width: 100%;
+			height: 658px;
+		}
+	</style>	
+		
+</head>
+
+<body>
+<nav class="navbar navbar-default" role="navigation" id="navbar">
+	<script type="text/javascript">try{ace.settings.check('navbar' , 'fixed')}catch(e){}</script>
+	<div class="collapse navbar-collapse pull-left" id="bs-example-navbar-collapse-1">
+		<ul class="nav navbar-nav">
+			<li><a class="navbar-brand" target="_blank" href="#"><img src="http://dbcom/imgs//zage_100x24.png" /></a></li>
+					<li class="dropdown">
+						<a id="pasta_a_1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-desktop"></i>Cadastros<b class="caret"></b></a><ul class="dropdown-menu" role="menu">
+					<li id="link_li_2">
+						<a id="link_a_2"  href="http://dbcom/bin//cadUsuarios.php?id=X2NvZE1lbnVfPTI=" target="IFCentral" >Usuários</a>
+					</li>
+					</ul>
+				</li>
+					<li class="dropdown">
+						<a id="pasta_a_3" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-bar-chart"></i>Relatórios<b class="caret"></b></a><ul class="dropdown-menu" role="menu">
+					<li class="dropdown-submenu">
+						<a id="pasta_a_4" href="#">Gerenciais</a><ul class="dropdown-menu" role="menu">
+					</ul>
+				</li>
+					<li class="dropdown-submenu">
+						<a id="pasta_a_5" href="#">Operacionais</a><ul class="dropdown-menu" role="menu">
+					<li id="link_li_6">
+						<a id="link_a_6"  href="http://dbcom/bin//listaClientes.php?id=X2NvZE1lbnVfPTY=" target="IFCentral" >Lista de Clientes</a>
+					</li>
+					</ul>
+				</li>
+					</ul>
+				</li>
+		</ul>
+	</div>
+	<div class="navbar-header pull-right" role="navigation">
+		<ul class="nav ace-nav">
+			<li class="grey">
+				<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-building"></i><span class="badge badge-grey">2</span></a>
+				<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+					<li class="dropdown-header"><i class="icon-ok"></i>Selecione a Empresa</li>
+					<li><a href="http://dbcom//index.php?zid=Y29kRW1wcmVzYT0y"><div class="clearfix"><span class="pull-left"><i class="btn btn-xs no-hover btn-blue icon-building"></i>2 - Testes</span></div></a></li>
+					<li><a href="http://dbcom//index.php?zid=Y29kRW1wcmVzYT0x"><div class="clearfix"><span class="pull-left"><i class="btn btn-xs no-hover btn-blue icon-building"></i><b>1 - Zage</b></span><span class="pull-right"><i class="btn-blue icon-check"></i></span></div></a></li>
+				</ul>
+			</li>
+			<li class="red">
+				<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-bell-alt icon-animated-bell"></i><span class="badge badge-important">0</span></a>
+			</li>
+			<li class="green">
+				<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-envelope icon-animated-vertical"></i><span class="badge badge-success">0</span></a>
+			</li>
+			<li class="light-blue">
+				<a data-toggle="dropdown" href="#" class="dropdown-toggle"><img class="nav-user-photo" src="http://dbcom/packages//ace/assets/avatars/user.jpg" alt="Administrador" /><span class="user-info"><small>Bem Vindo,</small>Administrador</span><i class="icon-caret-down"></i></a>
+				<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+					<li><a href="http://dbcom/bin//configuracoes.php" target="IFCentral"><i class="icon-cog"></i>Configurações</a></li>
+					<li><a href="http://dbcom/bin//perfil.php" target="IFCentral"><i class="icon-user"></i>Perfil</a></li>
+					<li class="divider"></li>
+					<li><a href="http://dbcom/bin//logoff.php" ><i class="icon-off"></i>Sair</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</nav><!-- /#ace-settings-container -->
+<div class="main-container" id="main-container">
+	<script type="text/javascript">
+		try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+	</script>
+	<div class="main-container-inner">
+		<a class="menu-toggler" id="menu-toggler" href="#">
+			<span class="menu-text"></span>
+		</a>
+		<div class="sidebar menu-min" id="sidebar">
+			<script type="text/javascript">
+				try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+			</script>
+			<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+				<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+					<button class="btn btn-success"><i class="icon-signal"></i></button>
+					<button class="btn btn-info"><i class="icon-pencil"></i></button>
+					<button class="btn btn-warning"><i class="icon-group"></i></button>
+					<button class="btn btn-danger"><i class="icon-cogs"></i></button>
+				</div>
+				<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+					<span class="btn btn-success"></span>
+					<span class="btn btn-info"></span>
+					<span class="btn btn-warning"></span>
+					<span class="btn btn-danger"></span>
+				</div>
+			</div><!-- #sidebar-shortcuts -->
+	<script type="text/javascript">
+		try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+	</script>
+		</div>
+		<div class="main-content">
+			<div class="breadcrumbs" id="breadcrumbs">
+				<script type="text/javascript">
+					try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+				</script>
+				<ul class="breadcrumb">
+					<li>
+						<i class="icon-home home-icon"></i><a href="#">Home</a>
+					</li>
+					<li>
+						<a href="#">Tables</a>
+					</li>
+					<li class="active">jqGrid plugin</li>
+				</ul><!-- .breadcrumb -->
+			</div>
+			<div class="page-content">
+				<iframe scrolling="auto" marginheight="0" marginwidth="0" class="DIFrame" src="http://dbcom/bin//home.php" style="position: relative; top:0px; left:0px;" name="IFCentral"></iframe>
+			</div>
+		</div>
+<div class="ace-settings-container" id="ace-settings-container">
+	<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
+		<i class="icon-cog bigger-150"></i>
+	</div>
+	<div class="ace-settings-box" id="ace-settings-box">
+		<div>
+			<div class="pull-left">
+				<select id="skin-colorpicker" class="hide">
+					<option data-skin="default" value="#438EB9">#438EB9</option>
+					<option data-skin="skin-1" value="#222A2D">#222A2D</option>
+					<option data-skin="skin-2" value="#C6487E">#C6487E</option>
+					<option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
+				</select>
+			</div>
+			<span>&nbsp; Selecione o Estilo</span>
+		</div>
+		<div>
+			<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-navbar" />
+			<label class="lbl" for="ace-settings-navbar"> Fixar Barra de Nav.</label>
+		</div>
+		<div>
+			<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-sidebar" />
+			<label class="lbl" for="ace-settings-sidebar"> Fixar Barra Lateral </label>
+		</div>
+		<div>
+			<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-breadcrumbs" />
+			<label class="lbl" for="ace-settings-breadcrumbs">Fixar Mapa </label>
+		</div>
+		<div>
+			<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-rtl" />
+			<label class="lbl" for="ace-settings-rtl"> Inverter posição (rtl)</label>
+		</div>
+		<div>
+			<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-add-container" />
+			<label class="lbl" for="ace-settings-add-container">Colocar <b>.container</b></label>
+		</div>
+	</div>
+</div>
+	</div>
+</div>
+
+</body>
+</html>

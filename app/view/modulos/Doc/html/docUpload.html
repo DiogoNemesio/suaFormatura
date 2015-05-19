@@ -1,0 +1,108 @@
+<div class="row">
+	<div class="col-sm-4 widget-container-span">
+		<div class="widget-box transparent">
+			<div class="widget-header">
+				<div class="pull-left btn-group">
+					<div id="filtroID">%FILTRO%</div>
+				</div><!-- /btn-group -->
+
+				<div class="nav-search minimized pull-right" id="nav-search">
+					<form class="form-search" id="formBuscaID" onsubmit="return buscaArvore();">
+						<span class="input-icon">
+							<input name="busca" type="text" placeholder="Buscar" class="input-xs nav-search-input" id="nav-search-input" autocomplete="off" />
+							<i class="ace-icon fa fa-search nav-search-icon"></i>
+						</span>
+					</form>
+				</div><!-- #nav-search -->
+			</div>
+			<div class="widget-body">
+				<div class="widget-main padding-6 no-padding-left no-padding-right">
+					<div id="pastasTree"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-8">
+		
+		<div class="widget-box transparent">
+			
+			<div class="box-content" id="docUploadID">
+				
+			</div><!--/span-->
+			
+			<div class="widget-body">
+				<div class="widget-main padding-6 no-padding-left no-padding-right">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<form>
+	<input type="hidden" name="codPastaSel" id="codPastaSelID" />
+	<input type="hidden" name="codItemSel" id="codItemSelID" />
+</form>
+<script type="text/javascript">
+	
+	$(function () {
+		$(window).resize(function () {
+			var h = Math.max($(window).height() - 0, 420);
+			$('#container, #data, #tree, #data .content').height(h).filter('.default').css('lineHeight', h + 'px');
+		}).resize();
+	
+		$('#pastasTree').jstree({
+			'core' : {
+				'data' : %TREE_DATA%,
+				'themes' : {
+					'responsive' : false,
+					'variant' : 'default',
+					'stripes' : false
+				}
+			},
+			'types' : {
+				'default' : { 'icon' : 'folder' },
+				'file' : { 'valid_children' : [], 'icon' : 'file' }
+			},
+			'plugins' : ['state','dnd','types','unique'],
+		})
+	});
+	
+	$('#pastasTree').on('select_node.jstree', function (e, data) {
+		if (data.instance.get_node(data.selected).original.zgTipo == "folder") {
+			selecionaPasta(data.instance.get_node(data.selected).original.zgCodigo);
+		}else{
+			selecionaItem(data.instance.get_node(data.selected).original.zgCodigo,data.instance.get_node(data.selected).original.zgParent);
+		}
+		
+	});
+	
+	$('[data-rel=tooltip]').tooltip();
+	$('[data-rel=popover]').popover({html:true});
+	
+	function selecionaPasta(pCodigo) {
+		/** Seleciona a pasta que foi clicada **/
+		$('#codPastaSelID').val(pCodigo);
+		
+	}
+
+	function selecionaItem(pCodItem,pCodPasta) {
+		/** Seleciona a pasta pai do Item **/
+		$('#codPastaSelID').val(pCodPasta);
+		
+		/** Seleciona o Item **/
+		$('#codItemSelID').val(pCodItem);
+
+		/** Carrega o Div do Tipo de Documento **/
+		$('#docUploadID').load('%ROOT_URL%/Doc/docUploadFile.php?id=%ID%&codTipoDoc='+pCodItem+'&codPasta='+pCodPasta);
+		
+	}
+
+	$('#formBuscaID').submit(function() {
+		return false;
+	});
+
+	function buscaArvore() {
+		zgLoadUrl('%URL%&busca='+$('#nav-search-input').val());
+		return false;
+	}
+
+	</script>

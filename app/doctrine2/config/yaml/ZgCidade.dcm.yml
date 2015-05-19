@@ -1,0 +1,37 @@
+ZgCidade:
+    type: entity
+    table: ZG_CIDADE
+    indexes:
+        CIDADES_FK01_idx:
+            columns:
+                - COD_UF
+    id:
+        codigo:
+            type: string
+            nullable: false
+            length: 8
+            fixed: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 100
+            fixed: false
+            comment: ''
+            column: NOME
+    manyToOne:
+        codUf:
+            targetEntity: ZgEstado
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_UF:
+                    referencedColumnName: COD_UF
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

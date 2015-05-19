@@ -1,0 +1,504 @@
+<form id="zgFormDashFinID">
+	<input type="hidden" name="mesFiltro"		id="mesFiltroID"		value="%MES_FILTRO%">
+	<input type="hidden" name="dataAvancar"		id="dataAvancarID"	>
+	<input type="hidden" name="dataVoltar"		id="dataVoltarID"	>
+
+<div class="row">
+	<div class="center" style="display:inline-block; width:100%;">
+		<div class="btn-group btn-corner">
+			<button type="button" class="btn btn-white btn-sm" title="Voltar" id="btnDSFintFiltroVoltarID" onclick="voltarDataDSFinFiltro();">
+				<i class="fa fa-angle-double-left "></i>
+			</button>
+			<span id="DSFinFiltroPopoverID" style="width: 250px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >%TEXTO_FILTRO%</span>
+			<button type="button" class="btn btn-white btn-sm" title="Avançar" id="btnDSFintFiltroAvancarID" onclick="avancarDataDSFinFiltro();">
+				<i class="fa fa-angle-double-right"></i>
+			</button>
+		</div>			
+	</div>
+</div>
+
+<div id="divPopoverDSFinFiltroContentID" class="hide">
+	<div class="col-sm-12 hide" id="divDSFinFiltroContentMensalID">
+		<div class="col-xs-12 col-sm-12">
+    		<input class='form-control datepicker col-md-12' id='tempMesFiltroID' onchange="copiaValoresFormDSFinFiltro();" value='%MES_FILTRO%' type='text' maxlength='7' autocomplete='off'>
+		</div>
+	</div>
+	<div class="form-group col-sm-12 center">
+	&nbsp;
+	</div>
+	<label class="col-sm-3 control-label">&nbsp;</label>
+	<div class="btn-group btn-corner col-sm-9 center">
+		<button type='button' class='btn btn-success btn-sm' onclick="DSFinFilter();">Filtrar</button>
+		<button type='button' class='btn btn-danger btn-sm' onclick='fecharPopoverDSFinFiltro();'>Fechar</button>
+	</div>
+</div>
+
+<div id="divPopoverDSFinFiltroDataTitleID" class="hide">
+	<div class='btn-group btn-corner center' style="width: 200px;">Selecione o mês</div>
+</div>
+
+
+</form>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-bar-chart blue"></i>
+					Resultado do Mês (Projeção)
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraResultadoDSFin();"><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinResSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinResID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+	<div class="col-sm-6">
+		<div class="widget-box transparent" id="widgetSalID">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-pie-chart"></i>
+					Saldo das contas
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraSaldoDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinSalSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinSalID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+</div>
+
+<div class="row">
+	<div class="col-sm-6">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-money red"></i>
+					Contas a Pagar
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraContaPagDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinCPSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinCPID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+	<div class="col-sm-6">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-money green"></i>
+					Contas a Receber
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraContaRecDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinCRSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinCRID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+</div>
+
+<div class="row">
+	<div class="col-sm-3">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-pie-chart red"></i>
+					Despesas por Categoria
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraDespCatDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinDespCatSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinDespCatID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+	<div class="col-sm-3">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-pie-chart green"></i>
+					Receitas por Categoria
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraRecCatDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinRecCatSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinRecCatID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+	<div class="col-sm-3">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-pie-chart red"></i>
+					Despesas por Centro de Custo
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraDespCentroDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinDespCentroSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinDespCentroID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+	<div class="col-sm-3">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-pie-chart green"></i>
+					Receitas por Centro de Custo
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraRecCentroDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinRecCentroSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinRecCentroID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+</div>
+
+
+<div class="row">
+	<div class="col-sm-9">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-exchange blue"></i>
+					Transferências
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraTransfDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinTransfSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinTransfID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+</div>
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-small">
+				<h6 class="widget-title lighter">
+					<i class="ace-icon fa fa-line-chart"></i>
+					Fluxo de Caixa
+				</h6>
+				<div class="widget-toolbar">
+					<a href="javascript:mostraFluxoCaixaDSFin();" ><i class="ace-icon fa fa-refresh green"></i></a>
+					<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+					<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+					<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="hidden center" id="divDSFinFluSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+				<div class="widget-main padding-4" id="divDSFinFluID">
+				</div><!-- /.widget-main -->
+			</div><!-- /.widget-body -->
+		</div><!-- /.widget-box -->
+	</div><!-- /.col -->
+</div>
+
+<script>
+$( document ).ready(function() {
+	var tmp = $.fn.popover.Constructor.prototype.show;
+	$.fn.popover.Constructor.prototype.show = function () {
+	tmp.call(this);
+		if (this.options.callback) {
+			this.options.callback();
+		}
+	}
+	
+	$('[data-rel=popover]').popover({ 
+		html:true,
+		content: function() {
+			return $('#divPopoverDSFinFiltroContentID').html();
+		},
+		title: function() {
+			return $('#divPopoverDSFinFiltroDataTitleID').html();
+		},
+		callback: function() {
+			$('#tempMesFiltroID').datepicker({autoclose: true,format: "mm/yyyy",viewMode: "months", minViewMode: "months"});
+		}
+	}).on("show.bs.popover", function () {
+		var $tip	= $(this).data("bs.popover").tip();
+		$tip.css("max-width", "600px");
+	});
+	
+	mostraMensalDSFinFiltro();
+	mostraResultadoDSFin();
+	mostraSaldoDSFin();
+	mostraContaPagDSFin();
+	mostraContaRecDSFin();
+	mostraTransfDSFin();
+	mostraDespCatDSFin();
+	mostraRecCatDSFin();
+	mostraDespCentroDSFin();
+	mostraRecCentroDSFin();
+	mostraFluxoCaixaDSFin();
+});
+
+$('#zgFormDashFinID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	$("#zgSpinnerID").removeClass("hidden");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%FILTER_URL%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#%DIVCENTRAL%ID").html( data );
+		$("#zgSpinnerID").addClass("hidden");
+	});
+
+
+	/** Recolocar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+		
+	return false; 
+});
+
+
+function mostraMensalDSFinFiltro() {
+	$('#divDSFinFiltroContentMensalID').removeClass("hide");
+}
+
+
+function copiaValoresFormDSFinFiltro() {
+	var $mes;
+	
+	$mes		= $('#tempMesFiltroID').val();
+	
+	if (!$mes)		$mes		= "all";
+	
+	/** Copiar valores para o outro form **/
+	$('#mesFiltroID').val( $mes );
+
+}
+
+function avancarDataDSFinFiltro() {
+	$('#dataAvancarID').val(1);
+	$('#dataVoltarID').val(0);
+	DSFinFilter();
+}
+
+function voltarDataDSFinFiltro() {
+	$('#dataAvancarID').val(0);
+	$('#dataVoltarID').val(1);
+	DSFinFilter();
+}
+
+function fecharPopoverDSFinFiltro() {
+	$("#DSFinFiltroPopoverID").popover("hide");
+}
+
+function DSFinFilter() {
+	copiaValoresFormDSFinFiltro();
+	$('#zgFormDashFinID').submit();
+}
+
+function mostraResultadoDSFin() {
+	$("#divDSFinResID").html("");
+	$("#divDSFinResSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_RESULTADO%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinResID").html( data );
+		$("#divDSFinResSpinID").addClass("hidden");
+	});
+}
+
+function mostraSaldoDSFin() {
+	$("#divDSFinSalID").html("");
+	$("#divDSFinSalSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_SALDO%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinSalID").html( data );
+		$("#divDSFinSalSpinID").addClass("hidden");
+	});
+}
+
+function mostraContaPagDSFin() {
+	$("#divDSFinCPID").html("");
+	$("#divDSFinCPSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_CONTA_PAG%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinCPID").html( data );
+		$("#divDSFinCPSpinID").addClass("hidden");
+	});
+}
+
+function mostraContaRecDSFin() {
+	$("#divDSFinCRID").html("");
+	$("#divDSFinCRSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_CONTA_REC%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinCRID").html( data );
+		$("#divDSFinCRSpinID").addClass("hidden");
+	});
+}
+
+
+function mostraTransfDSFin() {
+	$("#divDSFinTransfID").html("");
+	$("#divDSFinTransfSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_TRANSFERENCIA%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinTransfID").html( data );
+		$("#divDSFinTransfSpinID").addClass("hidden");
+	});
+}
+
+function mostraDespCatDSFin() {
+	$("#divDSFinDespCatID").html("");
+	$("#divDSFinDespCatSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_DESP_CAT%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinDespCatID").html( data );
+		$("#divDSFinDespCatSpinID").addClass("hidden");
+	});
+}
+
+function mostraRecCatDSFin() {
+	$("#divDSFinRecCatID").html("");
+	$("#divDSFinRecCatSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_REC_CAT%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinRecCatID").html( data );
+		$("#divDSFinRecCatSpinID").addClass("hidden");
+	});
+}
+
+function mostraDespCentroDSFin() {
+	$("#divDSFinDespCentroID").html("");
+	$("#divDSFinDespCentroSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_DESP_CENTRO%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinDespCentroID").html( data );
+		$("#divDSFinDespCentroSpinID").addClass("hidden");
+	});
+}
+
+function mostraRecCentroDSFin() {
+	$("#divDSFinRecCentroID").html("");
+	$("#divDSFinRecCentroSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_REC_CENTRO%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinRecCentroID").html( data );
+		$("#divDSFinRecCentroSpinID").addClass("hidden");
+	});
+}
+
+function mostraFluxoCaixaDSFin() {
+	$("#divDSFinFluID").html("");
+	$("#divDSFinFluSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_FLUXO_CAIXA%",
+		data:	$('#zgFormDashFinID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divDSFinFluID").html( data );
+		$("#divDSFinFluSpinID").addClass("hidden");
+	});
+}
+
+</script>

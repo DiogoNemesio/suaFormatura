@@ -1,0 +1,74 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Alteração de Dicionário 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-180"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codDicionarioID" name="codDicionario" value="%DICIONARIO%">
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+						    	<label class="col-sm-4 control-label " for="nomeID">Nome</label>
+				    			<div class="input-group col-sm-6">
+				   					<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" readonly required autocomplete="off">	
+				    			</div>
+				    		</div>
+							<div class="form-group">
+						    	<label class="col-sm-4 control-label" for="descricaoID">Descrição</label>
+				    			<div class="input-group col-sm-6">
+					    			<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+					    			<input class="form-control" id="descricaoID" type="text" name="descricao" maxlength="100" value="%DESCRICAO%" autocomplete="off">
+						    	</div>
+						    </div>
+				    	</div>
+				    	<div class="col-sm-6">
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="ativoID">Auditar</label>
+								<div class="input-group col-sm-6">
+									<label><input id="auditID" name="audit" type="checkbox" class="ace" %AUDIT% /><span class="lbl">&nbsp;</span></label>
+								</div>
+						   </div>
+						</div>
+				    </div>
+
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label" >&nbsp;</label>
+    					<button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-check bigger-110"></i> Salvar</button>
+						<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codDicionarioID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar");
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+
+
+
+</script>
+

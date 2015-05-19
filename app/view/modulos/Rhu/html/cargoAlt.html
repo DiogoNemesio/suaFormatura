@@ -1,0 +1,405 @@
+<div id="content">
+	<div class="page-header">
+		<h1>Cadastro de Cargos
+			<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+			<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+		</h1>
+	</div>
+	<!-- /.page-header -->
+	<form id="zgFormID" class="form-horizontal">
+	
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<input type="hidden" id="codCargoID" name="codCargo" value="%COD_CARGO%">
+			<input type='hidden' id='valID'>
+			<div class="tabbable">
+				<ul id="tabID" class="nav nav-tabs padding-16">
+					<li class="active"><a data-toggle="tab" href="#Cargo-geral">
+							<i class="green fa fa-briefcase bigger-125"></i> Cargo
+					</a></li>
+					<li><a data-toggle="tab" href="#Funcao-geral">
+							<i class="blue fa fa-edit bigger-125"></i> Função
+					</a></li>
+				</ul>
+				<div class="tab-content profile-edit-tab-content">
+					<div id="Cargo-geral" class="tab-pane in active">
+						<div class="row">
+							<h4 class="header blue bolder smaller">Cargo</h4>
+							<div class="col-sm-7">
+								<div class="form-group col-sm-12" id="divCargoID">
+									<label for="cargoID" class="col-sm-3 control-label">Cargo</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome do cargo"></i></span>
+										<input type="text" id="cargoID" name="cargo" value="%CARGO%" maxlength="100" class="width-100" placeholder="Nome do Cargo" autocomplete="off" onblur="checkCargoAlt();" />
+									</div>
+								<div class="help-block col-sm-1 inline" id="divHelpCargoID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divCodCboID">
+									<label for="codCboID" class="col-sm-3 control-label">CBO</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="A Classificação Brasileira de Ocupações - CBO, instituída por portaria ministerial nº. 397, de 9 de outubro de 2002, tem por finalidade a identificação das ocupações no mercado de trabalho, para fins classificatórios junto aos registros administrativos e domiciliares."></i></span>
+										<input type="hidden" id="codCboID" name="codCbo" value="%COD_CBO%" class="width-100" data-rel="select2Cbo" />
+									</div>
+								<div class="help-block col-sm-1 inline" id="divHelpCodCboID"></div>
+								</div>
+							</div>
+							<div class="col-sm-5">
+								<div class="form-group col-sm-12" id="divIntAtivoID">
+							    	<label class="col-xs-12 col-sm-5 control-label" for="intAtivo">Status</label>
+							    	<label>
+							    		<input name="intAtivo" id="intAtivoID" class="ace ace-switch ace-switch-6" type="checkbox" %INT_ATIVO% />
+										<span class="lbl"></span>
+									</label>
+							    </div>
+							</div>						
+						</div>
+					</div>
+					
+					<div id="Funcao-geral" class="tab-pane">
+						<h4 class="header blue bolder smaller">Lista de funções</h4>
+						<div class="vspace-xs"></div>
+						<div class="row">
+							<table id="cargoAltTableFuncaoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
+								<thead>
+									<tr class="warning">
+										<th class="col-sm-1 center"></th>
+										<th class="col-sm-5 center">Função <i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe uma função para o cargo. Ex: Analista junior, analista pleno..."></i></th>
+										<th class="col-sm-2 center">Salário Min <i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor mínimo do salário recebido pela função."></i></th>
+										<th class="col-sm-2 center">Salário Max <i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor máximo do salário recebido pela função."></i></th>
+										<th class="col-sm-5 center">Status <i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Indicador de ativo ou inativo da função."></i></th>
+										<th class="col-sm-6 center"><span onclick="addRowFuncaoCargoAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+									</tr>
+								</thead>
+								<tbody>
+								%TAB_FUNCAO%
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div id="Cargo-regra" class="tab-pane">
+			
+					</div>
+				</div>
+			</div>
+			<div class="clearfix form-actions">
+				<label class="col-sm-4 control-label">&nbsp;</label>
+				<button type="button" class="btn btn-primary" id="btnSubmitID">
+					<i class="fa fa-check bigger-110"></i> Salvar
+				</button>
+				<button type="button" class="btn btn-warning" id="cancel"
+					onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+					<i class="fa fa-undo bigger-110"></i> Voltar
+				</button>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[data-rel=popover]').popover({html:true});
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+if ($("input[name='codFuncao\\[\\]']").length == 0) {
+	addRowFuncaoCargoAlt();
+}
+
+/*********************************************************
+* Busca Select2 typehead CBO
+*********************************************************/
+$('[data-rel="select2Cbo"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar CBO',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Rhu/getCbo.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%//Rhu/getCbo.dp.php", {
+                data: {codCbo: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+/************************************<label><input name="indAtivoF" id="indAtivoFID" class="ace ace-switch ace-switch-6" type="checkbox" /><span class="lbl"></span></label>	*********************
+* Submit Formulário
+*********************************************************/
+//Verifica retorno da validação do formulário
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaCargoAlt();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codCargoID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Cargo', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+function checkCargoAlt() {
+	var vCargo	= $('#cargoID').val();
+	$('#valID').val(0);
+	
+	if (vCargo.length == 0 || vCargo.length > 30 ) {
+		$('#divCargoID').addClass('has-error');
+		if (vCargo.length == 0){
+			$('#divHelpCargoID').html(zgCriaSpanErro('Cargo deve ser preenchido !!!'));
+		}else if (vCargo.length > 30){
+			$('#divHelpCargoID').html(zgCriaSpanErro('Cargo deve ter no máximo 30 caracteres !!!'));
+		}
+		return false;
+	}else{
+		
+		/** Verificar se o Cargo está disponível no banco **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Rhu/verificaCargo.dp.php",
+	   		data: {  codCargo: $('#codCargoID').val() , cargo: $('#cargoID').val()},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divCargoID').addClass('has-error');
+		$('#divHelpCargoID').html(zgCriaSpanErro('Cargo já existe, escolha outro'));
+		return false;
+	}else{
+		$('#divCargoID').removeClass('has-error');
+		$('#divHelpCargoID').html('&nbsp;');
+		return true;
+	}
+}
+/*
+function checkFuncaoAlt() {
+	
+	var vFuncao	= $('#funcaoID').val();
+	
+	/** Verificar se Funcao está disponível no banco **
+	jQuery.ajax({
+   		url: "%ROOT_URL%/Rhu/verificaFuncao.dp.php",
+   		data: {  codFuncao: $('#codFuncaoID').val() , funcao: $('#funcaoID').val()},
+   		success: function(ret) {
+   			var vData	= JSON.parse(ret);
+   	    	if (vData.existe == 0) {
+   	    		$('#valID').val(1);
+   	    	}else{
+   	    		$('#valID').val(0);
+   	    	}
+   		},
+   		method: 'get',
+   		cache: false,
+   		async:false
+   });
+	
+	if ($('#valID').val() == 0) {
+		$('#divFuncaoID').addClass('has-error');
+		$('#divHelpFuncaoID').html(zgCriaSpanErro('Funcao já existe, escolha outro'));
+		return false;
+	}else{
+		$('#divFuncaoID').removeClass('has-error');
+		$('#divHelpFuncaoID').html('&nbsp;');
+		return true;
+	}
+}*/
+
+/*********************** Verificar o formulário ***********************/
+function validaCargoAlt() {
+	var vCodCboID	= $('#codCboID').val();
+	
+	var vTab 		= 0;
+	var vOK			= true;
+	var vIdent;
+	
+	/** Valida as Funcoes **/
+	var $codFuncao	 	= $("input[name='codFuncao\\[\\]']");
+	var $funcao 		= $("input[name='funcao\\[\\]']");
+	var $funcaoCount	= $("input[name='funcao\\[\\]']");
+	var $vCount			= 0;
+	$('#valID').val(0);
+	
+	for (i = 0; i < $codFuncao.length; i++) {
+		var $td		= $funcao.eq(i).parent();
+		var $tr		= $td.parent();
+		
+		for (j = 0; j < $codFuncao.length; j++) {
+			if($funcao.eq(i).val() == $funcaoCount.eq(j).val()){
+				$vCount++;
+			}
+		}
+		
+		if($vCount > 1){
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Função repetido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab = 1;
+		}else if (!$funcao.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Função deve ser preenchido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab = 1;
+		}else if (!$funcao.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Função deve ser preenchido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab = 1;
+		}else if ($codFuncao.length < 1) {
+			addRowFuncaoCargoAlt();
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Função é obrigátorio "));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab = 1;
+		}else{
+			/** Verificar se Funcao está disponível no banco **/
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/Rhu/verificaFuncao.dp.php",
+		   		data: {  codFuncao: $codFuncao.eq(i).val() , funcao: $funcao.eq(i).val()},
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(1);
+		   	    	}else{
+		   	    		$('#valID').val(0);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+			
+		    if ($('#valID').val() == 0) {
+				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Função já existe"));
+				$tr.addClass("alert-danger");
+				vOK		= false;
+				vTab = 1;
+			}else{
+				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+				$tr.removeClass("alert-danger");
+			}
+		}
+		
+		$vCount = 0;
+	}
+	
+	// CodCboID
+	if (!vCodCboID) {
+		$('#divCodCboID').addClass('has-error');
+		$('#divHelpCodCboID').html(zgCriaSpanErro('CBO deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divCodCboID').removeClass('has-error');
+		$('#divHelpCodCboID').html('&nbsp;');		
+	}
+	
+	if (checkCargoAlt() == false){
+		vOK = false;
+		vTab = 0;
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Abrir aba que tiver campos inválidos
+		$('#tabID li:eq('+ vTab +') a').tab('show');
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+}
+/******************************************************
+ADD E REMOVER Funcao
+/******************************************************/
+function addRowFuncaoCargoAlt() {
+	$('#cargoAltTableFuncaoID > tbody:last').append('<tr><td class="center" style="width: 30px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="funcao[]" maxlength="60" autocomplete="off"></td><td><input type="text" class="width-100" name="salarioInicial[]" maxlength="25" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td><input type="text" class="width-100" name="salarioFinal[]" maxlength="25" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" ></td><td align="center"><label><input name="indAtivoF" id="indAtivoFID" class="ace ace-switch ace-switch-6" type="checkbox" checked /><span class="lbl"></span></label></td><td class="center"><span class="center" zgdelete onclick="delRowFuncaoCargoAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codFuncao[]"></td></tr>');
+	$('#cargoAltTableFuncaoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+}
+
+function delRowFuncaoCargoAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
+}
+</script>
+

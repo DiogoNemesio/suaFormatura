@@ -1,0 +1,272 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Conta 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codContaID" name="codConta" value="%COD_CONTA%">
+				<input type='hidden' id='valID'>
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divTipoID">
+								<label class="col-sm-3 control-label" for="tipoID">Tipo</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o tipo desta conta."></i></span>
+									<select class="select2 %READONLY%" style="width:100%;" onchange="zgMostraDivs20140909();" id="tipoID" name="tipo" %DISABLED% data-rel="select2">
+									%CONTAS%
+									</select>
+								</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpTipoID"></div>
+							</div>
+							<div class="form-group col-sm-12" id="divNomeID">
+						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a conta."></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="60" placeholder="Identificação da conta" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+				    		</div>
+				    	</div>
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divSaldoInicialID">
+						    	<label class="col-sm-3 control-label" for="saldoInicialID">Saldo Inicial</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+					    			<input class="form-control" type="text" name="saldoInicial" id="saldoInicialID" value="%SALDO_INICIAL%" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpSaldoInicialID"></div>
+						    </div>
+							<div class="form-group col-sm-12" id="divDataInicialID">
+						    	<label class="col-sm-3 control-label" for="dataInicialID">Data Início</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+					    			<input class="form-control datepicker" id="dataInicialID" type="text" name="dataInicial" maxlength="10" value="%DATA_INICIAL%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataInicialID"></div>
+						    </div>
+				    	</div>
+				    </div>
+				    <div class="row" id="divContaAgenciaID">
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divCodAgenciaID">
+								<label class="col-sm-3 control-label" for="codAgenciaID">Agência</label>
+									<div class="input-group col-sm-8 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a agência desta conta."></i></span>
+									<select class="select2" style="width:100%;" id="codAgenciaID" name="codAgencia" placeholder="Selecione a agência" data-rel="select2">
+									%AGENCIAS%
+									</select>
+								</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpCodAgenciaID"></div>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divCcorrenteID">
+						    	<label class="col-sm-3 control-label" for="ccorrenteID">Conta Corrente</label>
+									<div class="input-group col-sm-8 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+					    			<input class="form-control" type="text" name="ccorrente" id="ccorrenteID" value="%CCORRENTE%" maxlength="20" autocomplete="off"/>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpCcorrenteID"></div>
+						    </div>
+				    	</div>
+				    </div>
+				    <div class="row">
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divAtivaID">
+						    	<label class="col-sm-4 control-label" for="ativaID">Ativa</label>
+						    	<label>
+						    		<input name="ativa" id="ativaID" class="ace ace-switch ace-switch-6" type="checkbox" %ATIVA% />
+									<span class="lbl"></span>
+								</label>
+						    </div>
+				    	</div>
+				    </div>
+
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#tipoID').css('width','100%').select2({allowClear:true});
+$('#codAgenciaID').css('width','100%').select2({allowClear:true});
+
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+
+zgMostraDivs20140909();
+
+function zgMostraDivs20140909() {
+	var vTipo			= $('#tipoID').val();
+	
+	if (vTipo == "CC") {
+		$('#divContaAgenciaID').removeClass("hidden");
+	}else{
+		$('#divContaAgenciaID').addClass("hidden");
+	}
+}
+
+/************************* Submit Formulário *************************/
+
+// Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaContaAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codContaID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Conta', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+function checkNomeAlt() {
+	var vNome	= $('#nomeID').val();
+	$('#valID').val(0);
+	
+	if (vNome.length == 0 || vNome.length > 60 ) {
+		$('#divNomeID').addClass('has-error');
+		if (vNome.length == 0){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
+		}else if (vNome.length > 30){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 60 caracteres !!!'));
+		}
+		return false;
+	}else{	
+		/** Verificar se o Descricao está disponível no banco **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Fin/contaVerifica.dp.php",
+	   		data: {  codConta: $('#codContaID').val() , nome: $('#nomeID').val()},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome já existe, escolha outro'));
+		return false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+		return true;
+	}
+}
+
+function validaContaAlt() {
+	var vNome			= $('#nomeID').val();
+	var vAgencia		= $('#codAgenciaID').val();
+	var vDataInicial	= $('#dataInicialID').val();
+	var vTipo			= $('#tipoID').val();
+
+	
+	var vOK				= true;
+	var vIdent;
+	
+	// Nome
+	if (!vNome) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+
+	// Agencia
+	if (vTipo == 'CC' && vAgencia.length == 0 || vAgencia.length > 8 ) {
+		$('#divCodAgenciaID').addClass('has-error');
+		if (vAgencia.length == 0){
+			$('#divHelpCodAgenciaID').html(zgCriaSpanErro('Agência deve ser preenchido !!!'));
+		}else if (vAgencia.length > 8){
+			$('#divHelpCodAgenciaID').html(zgCriaSpanErro('Agência deve ter no máximo 8 caracteres !!!'));
+		}
+		return false;
+	}
+	
+	// DataInicial
+	if (!vDataInicial) {
+		$('#divDataInicialID').addClass('has-error');
+		$('#divHelpDataInicialID').html(zgCriaSpanErro('Data Inicial deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divDataInicialID').removeClass('has-error');
+		$('#divHelpDataInicialID').html('&nbsp;');
+	}
+	
+	vNomeCheck	= checkNomeAlt();
+	
+	if (vOK == true) {
+		return vNomeCheck ;
+	}else{
+		return vOK;
+	}	
+}
+
+</script>
+

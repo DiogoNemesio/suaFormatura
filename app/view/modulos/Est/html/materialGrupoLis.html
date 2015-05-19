@@ -1,0 +1,212 @@
+<div class="row">
+	<div class="col-sm-4 widget-container-span">
+		<div class="widget-box transparent">
+			<div class="widget-header">
+				<div class="pull-left btn-group">
+					<div id="filtroID">%FILTRO%</div>
+				</div><!-- /btn-group -->
+				
+				<div class="nav-search minimized pull-right" id="nav-search">
+					<form class="form-search" id="formBuscaID" onsubmit="return buscaArvore20141008();">
+						<span class="input-icon">
+							<input name="busca" type="text" placeholder="Buscar" class="input-xs nav-search-input" id="nav-search-input" autocomplete="off" />
+							<i class="ace-icon fa fa-search nav-search-icon"></i>
+						</span>
+					</form>
+				</div><!-- #nav-search -->
+			</div>
+			<div class="widget-body">
+				<div class="widget-main padding-6 no-padding-left no-padding-right">
+					<div id="gruposTree"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-8">
+		
+		<div class="widget-box transparent">
+			
+			<div class="box-content" id="tipoDocInfoID">
+				
+			</div><!--/span-->
+			
+			<div class="widget-body">
+				<div class="widget-main padding-6 no-padding-left no-padding-right">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<form>
+	<input type="hidden" name="codGrupoSel" id="codGrupoSelID" />
+	<input type="hidden" name="codSubgrupoSel" id="codSubgrupoSelID" />
+</form>
+<script type="text/javascript">
+	
+	function zgContextMenu20141008(pNode) {
+		if (pNode.original.zgTipo == "folder") {
+			if (pNode.original.id == "%COD_PASTA_RAIZ%") {
+				var items = {
+						criarGrupo: { 
+							label: "Criar Grupo",
+							action: function (node) { criaGrupo(pNode.original.id); }
+						},
+					};
+			}else{
+				var items = {
+						criarGrupo: { 
+							label: "Criar Grupo",
+							action: function (node) { criaGrupo(pNode.original.id); }
+						},
+						alteraGrupo: { 
+							label: "Alterar Grupo",
+							action: function (node) { alteraGrupo(pNode.original.id); }
+						},
+						excluiGrupo: { 
+							label: "Excluir Grupo",
+							action: function (node) { excluiGrupo(pNode.original.id); },
+							"separator_after": true
+						},
+						criarSubgrupo: { 
+							label: "Criar Sub Grupo",
+							action: function (node) { criaSubgrupo(pNode.original.id); }
+						},
+					};
+	
+			}
+		}else{
+			var items = {
+					alteraSubgrupo: { 
+						label: "Alterar",
+						action: function (node) { alteraSubgrupo(pNode.original.id); }
+					},
+					excluiSubgrupo: { 
+						label: "Excluir",
+						action: function (node) { excluiSubgrupo(pNode.original.id); },
+					},
+				};
+	
+		}
+	
+		return items;
+	}
+
+$(function () {
+		$(window).resize(function () {
+			var h = Math.max($(window).height() - 0, 420);
+			$('#container, #data, #tree, #data .content').height(h).filter('.default').css('lineHeight', h + 'px');
+		}).resize();
+
+		$('#gruposTree').jstree({
+			'core' : {
+				'data' : %TREE_DATA%,
+				'themes' : {
+					'responsive' : false,
+					'variant' : 'default',
+					'stripes' : false
+				}
+			},
+			'types' : {
+				'default' : { 'icon' : 'folder' },
+				'file' : { 'valid_children' : [], 'icon' : 'file' }
+			},
+			'plugins' : ['state','dnd','types','unique','contextmenu'],
+			'contextmenu' : {
+		        'items' : zgContextMenu20141008,
+		        'select_node': false
+		    }
+		})
+	});
+	
+	$('#gruposTree').on('select_node.jstree', function (e, data) {
+		if (data.instance.get_node(data.selected).original.zgTipo == "folder") {
+			selecionaGrupo(data.instance.get_node(data.selected).original.zgCodigo);
+		}else{
+			selecionaSubgrupo(data.instance.get_node(data.selected).original.zgCodigo,data.instance.get_node(data.selected).original.zgParent);
+		}
+		
+	});
+	
+	$('#gruposTree').on('hover_node.jstree', function (e, data) {
+		var vNome = data.node.original.zgNome + '&nbsp;&nbsp;&nbsp;<a class="fa fa-caret-down" onmouseover="mostraMenuContexto(\\''+data.node.id+'\\');"></a>';
+		//mostraMenuContexto(data.node.id);
+		$('#gruposTree').jstree('set_text',data.node.id , vNome);
+	});
+	
+	function mostraMenuContexto(id) {
+		$('#gruposTree').jstree('show_contextmenu',id);
+	}
+	
+
+	$('#gruposTree').on('dehover_node.jstree', function (e, data) {
+		//alert(JSON.stringify(data));
+		$('#gruposTree').jstree('set_text',data.node.id , data.node.original.zgNome);
+	});
+	
+
+	$('[data-rel=tooltip]').tooltip();
+	$('[data-rel=popover]').popover({html:true});
+	
+	function selecionaGrupo(pCodigo) {
+		/** Seleciona a pasta que foi clicada **/
+		$('#codGrupoSelID').val(pCodigo);
+	}
+
+	function selecionaSubgrupo(pCodItem,pCodPasta) {
+		/** Seleciona a pasta pai do Item **/
+		$('#codGrupoSelID').val(pCodPasta);
+		
+		/** Seleciona o Item **/
+		$('#codSubgrupoSelID').val(pCodItem);
+
+		/** Carrega o Div do Tipo de Documento **/
+		$('#tipoDocInfoID').load('%ROOT_URL%/Est/produtoLis.php?id=%ID%&codSubgrupo='+pCodItem+'&codGrupo='+pCodPasta);
+		
+	}
+	
+	function criaGrupo(pIdPasta) {
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdPasta);
+		zgAbreModal('%ROOT_URL%/Est/materialGrupoAlt.php?id=%ID%&codGrupoPai='+$('#codGrupoSelID').val());
+	}
+
+	function alteraGrupo(pIdPasta) {
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdPasta);
+		zgAbreModal('%ROOT_URL%/Est/materialGrupoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
+	}
+	
+	function excluiGrupo(pIdPasta) {
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdPasta);
+		zgAbreModal('%ROOT_URL%/Est/materialGrupoExc.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
+	}
+	
+	function criaSubgrupo(pIdPasta) {
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdPasta);
+		zgAbreModal('%ROOT_URL%/Est/materialSubgrupoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
+	}
+
+	function alteraSubgrupo(pIdTipo) {
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdTipo);
+		zgAbreModal('%ROOT_URL%/Est/materialSubgrupoAlt.php?id=%ID%&codSubgrupo='+$('#codSubgrupoSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
+	}
+	
+	function excluiSubgrupo(pIdTipo) {
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdTipo);
+		zgAbreModal('%ROOT_URL%/Est/materialSubgrupoExc.php?id=%ID%&codSubgrupo='+$('#codSubgrupoSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
+	}
+
+	$('#formBuscaID').submit(function() {
+		return false;
+	});
+
+	function buscaArvore20141008() {
+		zgLoadUrl('%URL%&busca='+$('#nav-search-input').val());
+		return false;
+	}
+
+	</script>

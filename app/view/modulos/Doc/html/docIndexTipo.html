@@ -1,0 +1,154 @@
+<div>
+	<div class="center">
+		<h4 class="blue" style="float:left; position: relative;"><small>Tipo de Documento:</small> %NOME_TIPO%</h4>
+		<ul class="pagination">
+			<li id='liVoltarID' class="disabled">
+				<a id='aVoltarID' href="javascript:zgDocAnterior();">
+					<i class="ace-icon fa fa-angle-double-left"></i>
+				</a>
+			</li>
+			%LIS_DOCS%
+			<li id='liAvancarID'>
+				<a id='aAvancarID' href="javascript:zgProximoDoc();">
+					<i class="ace-icon fa fa-angle-double-right"></i>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div class="ui-slider-dark" id='slider'></div>
+	<br>
+
+	<div style="width:100%; height: %DIV_HEIGHT%px;">
+		<div id='divEsqID' style="width: 39%; height: 100%;  position:relative; float: left;"></div>
+		<div id='divDirID' style="width: 59%; height: 100%;  position:relative; float: right;">
+			<iframe id="zgWindowDocViewID" width="100%" height="100%" src="about:blank" frameborder="0"></iframe>
+		</div>
+	</div>
+	
+</div>
+
+<script>
+$( "#slider" ).slider({
+	value:40,
+	range: "min",
+	min: 0,
+	max: 100,
+	slide: function( event, ui ) {
+		var val 	= parseInt(ui.value);
+		var vOffSet	= 2;
+		var vWEsq	= val - vOffSet;
+		var vWDir	= 100 - (val + vOffSet);
+		$('#divEsqID').width(vWEsq+"%");
+		$('#divDirID').width(vWDir+"%");
+	}
+});
+
+var vNumDocs	= %NUM_DOCS%;
+var vOrdemAtual	= 0;
+
+
+$( document ).ready(function() {
+	zgAbreDoc('%PRIMEIRO_DOC%');
+});
+
+
+function zgPrimeiroDoc() {
+	
+	/** Calcula a ordem do primeiro documento **/
+	var vOrd	= 1;
+	
+	/** Seleciona na lista o próximo documento **/
+	var vDoc = $('[zg-data-ordem="'+vOrd+'"]').attr('zg-data-codigo');
+	
+	if (vDoc !== undefined) {
+		zgAbreDoc(vDoc);
+	}else{
+		alert('Erro: Documento não encontrado !!!');
+	}
+	
+}
+
+function zgProximoDoc() {
+	
+	/** Verifica se já está no último documento **/
+	if (vOrdemAtual == vNumDocs) {
+		zgPrimeiroDoc();
+		return;
+	}
+	
+	/** Calcula a ordem do próximo documento a ser aberto **/
+	var vProxOrd	= parseInt(vOrdemAtual) + 1;
+	
+	/** Seleciona na lista o próximo documento **/
+	var vDoc = $('[zg-data-ordem='+vProxOrd+']').attr('zg-data-codigo');
+	
+	if (vDoc !== 'undefined') {
+		zgAbreDoc(vDoc);
+	}else{
+		alert('Erro: Documento não encontrado !!!');
+	}
+	
+}
+
+function zgDocAnterior() {
+	/** Verifica se já está no primeiro documento **/
+	if (vOrdemAtual == 1) {
+		return;
+	}
+
+	/** Calcula a ordem do documento Anterior a ser aberto **/
+	var vOrdAnt	= parseInt(vOrdemAtual) - 1;
+	
+	/** Seleciona na lista o documento a ser aberto **/
+	var vDoc = $('[zg-data-ordem='+vOrdAnt+']').attr('zg-data-codigo');
+	
+	if (vDoc !== 'undefined') {
+		zgAbreDoc(vDoc);
+	}else{
+		alert('Erro: Documento não encontrado !!!');
+	}
+
+}
+
+function zgAbreDoc(codDoc) {
+
+	$li	= $('#zgLi_'+codDoc);
+	
+	/** Retira a classe ativa **/
+	$('li.active').removeClass("active");
+	
+	/** Coloca como ativa a li que foi selecionada **/
+	$li.addClass("active");
+	
+	/** Atualiza a variável de ordem atual **/
+	vOrdemAtual		= $li.attr('zg-data-ordem');
+	
+	/** Verifica a ordem para desabilitar as listas de avancar e retroceder **/
+	if (vOrdemAtual == 1 && vOrdemAtual == vNumDocs) {
+		$('#liVoltarID').addClass("disabled");
+		$('#aVoltarID').bind('click', false);	
+		$('#liAvancarID').addClass("disabled");
+		$('#aAvancarID').bind('click', false);	
+	}else if (vOrdemAtual == 1) {
+		$('#liVoltarID').addClass("disabled");
+		$('#aVoltarID').bind('click', false);	
+		$('#liAvancarID').removeClass("disabled");
+		$('#aAvancarID').unbind('click', false);	
+	}else if (vOrdemAtual == vNumDocs) {
+		$('#liAvancarID').addClass("disabled");
+		$('#aAvancarID').bind('click', false);	
+		$('#liVoltarID').removeClass("disabled");
+		$('#aVoltarID').unbind('click', false);	
+	}else{
+		$('#liVoltarID').removeClass("disabled");
+		$('#aVoltarID').unbind('click', false);	
+		$('#liAvancarID').removeClass("disabled");
+		$('#aAvancarID').unbind('click', false);	
+	}
+	
+	/** Abrir o div para edição dos índices e a visualização do Documento **/
+	$('#divEsqID').load('%URL_INDICE%&codDocumento='+codDoc+'&height=%DIV_HEIGHT%&width='+$('#divEsqID').width());
+	//$('#divDirID').load('%URL_DOCUMENTO%&codDocumento='+codDoc);
+
+}
+</script>

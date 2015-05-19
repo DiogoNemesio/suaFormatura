@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR" >
+<head>
+	<title>Teste</title>
+	<link rel="shortcut icon" href="http://dbapp/imgs/Icones//favicon.ico" />
+	<!-- Carregado dinamicamente através do dinamicHtmlLoad -->
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<link href="http://dbapp/packages//bootstrap/css/bootstrap.css" rel="stylesheet" />
+	<link href="http://getbootstrap.com/2.3.2/assets/js/google-code-prettify/prettify.css" rel="stylesheet" />
+	<link href="http://dbapp/packages//bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+	<link href="http://dbapp/packages//bootstrap/css/bootstrap-modal-bs3patch.css" media="screen" rel="stylesheet" type="text/css" >
+	<link href="http://dbapp/packages//bootstrap/css/bootstrap-modal.css" media="screen" rel="stylesheet" type="text/css" >
+	<script src="http://dbapp/packages//bootstrap/js/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="http://getbootstrap.com/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
+	<script src="http://dbapp/packages//bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/bootstrap-modalmanager.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/bootstrap-modal.js"></script>
+	<!-- Fim do carregamento dinâmico (dinamicHtmlLoad) -->
+	<style>
+	.modal {
+		display: block;
+	}
+	.modal-body:before,
+	.modal-body:after {
+		display: table;
+		content: " ";
+	}
+	.modal-header:before,
+	.modal-header:after {
+		display: table;
+		content: " ";
+	}
+	</style>
+</head>
+<body>
+
+<div id="responsive" class="modal fade" tabindex="-1" data-width="760">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Responsive</h3>
+  </div>
+  <div class="modal-body">
+    <div class="row-fluid">
+      <div class="span6">
+        <h4>Some Input</h4>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+      </div>
+      <div class="span6">
+        <h4>Some More Input</h4>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+        <p><input type="text" class="span12" /></p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn">Close</button>
+    <button type="button" class="btn btn-primary">Save changes</button>
+  </div>
+</div>
+<div class="text-center">
+	<button class="demo btn btn-primary btn-large" data-toggle="modal" href="#responsive">View Demo</button>
+</div>
+<script type="text/javascript">
+
+  $(function(){
+
+    $.fn.modalmanager.defaults.resize = true;
+
+    $('[data-source]').each(function(){
+      var $this = $(this),
+        $source = $($this.data('source'));
+
+      var text = [];
+      $source.each(function(){
+        var $s = $(this);
+        if ($s.attr('type') == 'text/javascript'){
+          text.push($s.html().replace(/(\n)*/, ''));
+        } else {
+          text.push($s.clone().wrap('<div>').parent().html());
+        }
+      });
+      
+      $this.text(text.join('\n\n').replace(/\t/g, '    '));
+    });
+
+    prettyPrint();
+  });
+  
+  
+</script>
+</body>
+</html>

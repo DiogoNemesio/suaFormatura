@@ -1,0 +1,23 @@
+ZgSexoTipo:
+    type: entity
+    table: ZG_SEXO_TIPO
+    id:
+        codigo:
+            type: string
+            nullable: false
+            length: 1
+            fixed: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        descricao:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: DESCRICAO
+    lifecycleCallbacks: {  }

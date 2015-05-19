@@ -1,0 +1,232 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Cadastro de Produto
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" id="codProdutoID" name="codProduto" value="%COD_PRODUTO%">
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#produto-informacoes">
+								<i class="green fa fa-edit bigger-125"></i>
+								Principal
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#produto-atributos">
+								<i class="purple fa fa-building-o bigger-125"></i>
+								Atributos
+							</a>
+						</li>
+					</ul>
+	
+					<div class="tab-content profile-edit-tab-content">
+						<div id="produto-informacoes" class="tab-pane in active">
+							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+								    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+						    			<div class="input-group col-sm-8">
+							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
+							    			<input class="form-control" id="descricaoID" type="text" name="descricao" maxlength="100" value="%DESCRICAO%" autocomplete="off" required	>
+							    			<span class="input-group-addon"><a tabindex="99001" href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="Descrição do Produto"><i class="fa fa-question-circle"></i></a></span>
+								    	</div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group">
+								    	<label class="col-sm-3 control-label" for="ativoID">Ativo</label>
+								    	<label>
+								    		<input name="ativo" id="ativoID" class="ace ace-switch ace-switch-6" type="checkbox" %ATIVO% />
+											<span class="lbl"></span>
+										</label>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-9">
+									<div class="form-group">
+								    	<label class="col-sm-2 control-label" for="descricaoComID">Descrição Completa</label>
+						    			<div class="input-group col-sm-10">
+							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
+							    			<textarea id="descricaoComID" class="autosize-transition limited form-control" name="descricaoCom" maxlength="400" required>%DESCRICAO_COMPLETA%</textarea>
+							    			<span class="input-group-addon"><a tabindex="99002" href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="Descrição detalhada do produto (pode colocar as características)"><i class="fa fa-question-circle"></i></a></span>
+								    	</div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group">
+								    	<label class="col-sm-3 control-label" for="referenciaID">Referência</label>
+						    			<div class="input-group col-sm-8">
+							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
+							    			<input class="form-control" id="referenciaID" type="text" name="referencia" maxlength="60" value="%REFERENCIA%" autocomplete="off">
+							    			<span class="input-group-addon"><a tabindex="99003" href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="Referência do produto (normalmente presente na embalagem)"><i class="fa fa-question-circle"></i></a></span>
+								    	</div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group">
+								    	<label class="col-sm-3 control-label" for="ncmID">Cód. NCM</label>
+						    			<div class="input-group col-sm-8">
+							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
+							    			<input class="form-control" id="ncmID" type="text" name="ncm" maxlength="60" value="%NCM%" autocomplete="off">
+							    			<span class="input-group-addon"><a tabindex="99004" href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="Código NCM do produto (Nomenclatura Comum do Mercosul)"><i class="fa fa-question-circle"></i></a></span>
+								    	</div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="codUniMedID">Un. de Medida</label>
+					    				<div class="input-group col-sm-6">
+											<select class="select2" style="width:100%;" id="codUniMedID" name="codUniMed" data-rel="select2">
+												%UNIDADES%
+											</select>
+										</div>
+									</div>
+						    	</div>
+						    </div>				    
+							<h4 class="header blue bolder smaller">Classificação</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+								    	<label class="col-sm-3 control-label" for="codSubGrupoID">Sub-Grupo</label>
+						    			<div class="input-group col-sm-8">
+							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
+							    			<input class="form-control" data-provide="typeahead" id="codSubGrupoID" type="text" name="codSubGrupo" maxlength="60" value="%SUBGRUPO%" autocomplete="off">
+							    			<span class="input-group-addon"><a tabindex="99004" href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="Subgrupo do Produto (classificação)"><i class="fa fa-question-circle"></i></a></span>
+								    	</div>
+								    </div>
+						    	</div>
+							</div>
+						</div>
+						<div id="produto-atributos" class="tab-pane">
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+								    	<label class="col-sm-3 control-label" for="numeroID">Número</label>
+						    			<div class="input-group col-sm-8">
+							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
+							    			<input class="form-control" id="numeroID" type="text" name="numero" maxlength="20" value="%NUMERO%" READONLY autocomplete="off">
+							    			<span class="input-group-addon"><a tabindex="99001" href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="Identificação da Conta a Pagar"><i class="fa fa-question-circle"></i></a></span>
+								    	</div>
+								    </div>
+						    	</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label" >&nbsp;</label>
+   					<button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-check bigger-110"></i> Salvar</button>
+					<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codProdutoID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar",'Novo Produto', '%URLNOVO%');
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+var timer;
+$("#codSubGrupoID").typeahead({
+	minLength: 	%APP_BS_TA_MINLENGTH%,
+	itens:		%APP_BS_TA_ITENS%,
+	updater: function (item) {
+		 var item = JSON.parse(item);
+		 $('#codSubGrupoID').val(item.id);
+		 return item.name;
+	},
+    source : function(query,process) {
+    	var $datas = new Array;
+    	$datas = [""];
+    	clearTimeout(timer);
+    	timer=setTimeout(function() {
+	    	$.ajax({
+	            type: "GET",
+	    	    url: "%ROOT_URL%/Est/subgrupoLis.dp.php",
+	        	dataType: "json",
+				data: { q: query },
+	        	async: false,
+	        	success: function(data) {
+	        		
+	        		$.map(data, function(data){
+	        			 var group;
+	        			 group = {
+	        			 	id: data.id,
+	        			 	name: data.name,
+	        			 	toString: function () {
+	        			 		return JSON.stringify(this);
+	        			 	},
+	        			 
+	        			 	toLowerCase: function () {
+	        			 		return this.name.toLowerCase();
+	        			 	},
+	        			 	indexOf: function (string) {
+	        			 		return String.prototype.indexOf.apply(this.name, arguments);
+	        			 	},
+	        			 	replace: function (string) {
+	        			 		var value = '';
+	        			 		value += this.name;
+	        			 		
+	        			 		if(typeof(this.name) != 'undefined') {
+	        			 			value += ' <span class="pull-right muted">';
+	        			 			value += '</span>';
+	        			 		}
+	        			 		return String.prototype.replace.apply('<div style="padding: 10px; font-size: 1em;">' + value + '</div>', arguments);
+	        			 	}
+	        			 };
+	        			 $datas.push(group);
+	        		});
+	        		
+	        		//alert(JSON.stringify(data));
+	        		return(process($datas));
+	            }
+	    	})
+    	}, %APP_BS_TA_TIMEOUT%);
+    }
+});
+
+$("input,textarea").jqBootstrapValidation({
+	preventSubmit: true
+});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: 'Restando: %n character%s ...',
+	limitText: 'Max: %n.'
+});
+
+$(".select2").select2();
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.datepicker').datepicker();
+
+</script>

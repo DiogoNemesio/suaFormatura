@@ -1,0 +1,77 @@
+<form id="zgFormID" class="form-horizontal">
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h4 class=""><i class="fa fa-folder blue"></i>%TITULO%</h4>
+		</div>
+		<div class="modal-body" style="overflow-y: scroll; height: 320px;">
+			<input type="hidden" name="codGrupoPai" value="%COD_GRUPO_PAI%">
+			<input type="hidden" name="codGrupo" id="codGrupoID" value="%COD_GRUPO%">
+			<div>
+			   <div class="row">
+			    	<div class="col-sm-11">
+						<div class="form-group">
+					    	<label class="col-sm-4 control-label" for="descricaoID">Descrição</label>
+			    			<div class="col-sm-8">
+				    			<textarea tabindex="2" id="descricaoID" class="autosize-transition limited form-control" name="descricao" maxlength="60" autocomplete="off">%DESCRICAO%</textarea>
+					    	</div>
+					    </div>
+			    	</div>
+		    	</div>
+		    	<div class="row" id="divGrupoMsgID">
+				</div>
+		    </div>
+		</div>
+		<div class="modal-footer">
+			<button type="submit" class="btn btn-primary" id="submit">Salvar</button>
+			<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+		</div>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codGrupoID').val(zgGetCodRetorno(data,1));
+			zgMostraMsg('divGrupoMsgID',zgGetMsgRetorno(data));
+			
+		}else{
+			zgMostraErro('divGrupoMsgID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('divGrupoMsgID',errorThrown);
+	});
+	return false; 
+});
+
+$("input,textarea").jqBootstrapValidation({
+	preventSubmit: true
+});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: 'Restando: %n character%s ...',
+	limitText: 'Max: %n.'
+});
+
+
+//$("input:text:visible:first").focus();
+//$("#nomeID").trigger('focus');
+
+</script>

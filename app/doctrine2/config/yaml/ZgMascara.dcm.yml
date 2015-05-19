@@ -1,0 +1,69 @@
+ZgMascara:
+    type: entity
+    table: ZG_MASCARA
+    indexes:
+        MASCARAS_FK1:
+            columns:
+                - COD_TIPO
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 40
+            fixed: false
+            comment: ''
+            column: NOME
+        mascara:
+            type: string
+            nullable: false
+            length: 100
+            fixed: false
+            comment: ''
+            column: MASCARA
+        valorPadrao:
+            type: string
+            nullable: true
+            length: 100
+            fixed: false
+            comment: ''
+            column: VALOR_PADRAO
+        indReversa:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            column: IND_REVERSA
+        funcao:
+            type: string
+            nullable: true
+            length: 100
+            fixed: false
+            comment: ''
+            column: FUNCAO
+        indMesmoTamanho:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            column: IND_MESMO_TAMANHO
+    manyToOne:
+        codTipo:
+            targetEntity: ZgMascaraTipo
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_TIPO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,132 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Dispositivo 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codDispID" name="codDisp" value="%COD_DISP%">
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#disp-gerais">
+								<i class="green fa fa-edit bigger-125"></i>
+								Informações Gerais
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#disp-localizacao">
+								<i class="blue fa fa-key bigger-125"></i>
+								Localização
+							</a>
+						</li>
+					</ul>
+	
+					<div class="tab-content profile-edit-tab-content">
+						<div id="disp-gerais" class="tab-pane in active">
+							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+								    	<label class="col-sm-4 control-label " for="identificacaoID">Identificação</label>
+						    			<div class="input-group col-sm-6">
+						   					<span class="input-group-addon"><i class="fa fa-dropbox "></i></span>
+						   					<input class="form-control" id="identificacaoID" type="number" name="identificacao" maxlength="6" value="%IDENTIFICACAO%" readonly autocomplete="off">	
+						    			</div>
+						    		</div>
+								    <div class="form-group">
+										<label class="col-sm-4 control-label" for="codTipoID">Tipo</label>
+								    	<div class="input-group col-sm-6">
+								    		<select class="select2" style="width:100%;" id="codTipoID" name="codTipo" data-rel="select2">
+												%TIPO%
+											</select>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+								    <div class="form-group">
+										<label class="col-sm-4 control-label" for="codStatusID">Status</label>
+								    	<div class="input-group col-sm-6">
+								    		<select class="select2" style="width:100%;" id="codStatusID" name="codStatus" data-rel="select2">
+												%STATUS%
+											</select>
+										</div>
+								    </div>
+								</div>
+						    </div>
+						</div>
+						<div id="disp-localizacao" class="tab-pane in">
+							<h4 class="header blue bolder smaller">Localização</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+								    <div class="form-group">
+										<label class="col-sm-4 control-label" for="codLocalID">Local</label>
+								    	<div class="input-group col-sm-6">
+								    		<select class="select2" style="width:100%;" id="codLocalID" name="codLocal" data-rel="select2">
+												%LOCAL%
+											</select>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+								    <div class="form-group">
+										<label class="col-sm-4 control-label" for="codEnderecoID">Endereço</label>
+								    	<div class="input-group col-sm-6">
+								    		<select class="select2" style="width:100%;" id="codEnderecoID" name="codEndereco" data-rel="select2">
+												%ENDERECO%
+											</select>
+										</div>
+								    </div>
+								</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label" >&nbsp;</label>
+    					<button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-check bigger-110"></i> Salvar</button>
+						<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+						<button type="button" class="btn btn-success" %DISABLED% id="btGerarID" onclick="gerarCodigosDisp();"><i class="fa fa-cog bigger-110"></i> Gerar </button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codTipoID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar");
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+$("input,textarea").jqBootstrapValidation({
+	preventSubmit: true
+});
+
+$(".select2").select2();
+
+
+function gerarCodigosDisp() {
+	zgAbreModal('%URLGERAR%&codTipo='+$('#codTipoID').val());
+}
+
+</script>
+

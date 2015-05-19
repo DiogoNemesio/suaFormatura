@@ -1,0 +1,30 @@
+ZgMascaraTipo:
+    type: entity
+    table: ZG_MASCARA_TIPO
+    id:
+        codigo:
+            type: string
+            nullable: false
+            length: 1
+            fixed: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        descricao:
+            type: string
+            nullable: false
+            length: 40
+            fixed: false
+            comment: ''
+            column: DESCRICAO
+        datatype:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: DATATYPE
+    lifecycleCallbacks: {  }

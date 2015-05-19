@@ -1,0 +1,55 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-trash red"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 280px;">
+	<input type="hidden" name="codConta" value="%COD_CONTA%">
+	<input type="hidden" name="id" value="%ID%">
+	<div class="row">
+		<div class="col-sm-12">
+	    	<label class="col-sm-12 center">%TEXTO%</label>
+    	</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+		%GRID%
+		</div>
+	</div>		    
+	
+    <div id="divMsgCPExcID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="submit" %PODE_EXC% class="btn btn-danger" id="submit">Desejo realmente <strong>REMOVER</strong></button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#zgFormModalID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgCPExcID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divMsgCPExcID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+</script>

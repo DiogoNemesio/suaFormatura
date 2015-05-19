@@ -1,0 +1,409 @@
+<div id="content">
+	<div class="page-header">
+		<h1>Admitir Pessoa
+			<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+			<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+		</h1>
+	</div>
+	<!-- /.page-header -->
+	<form id="zgFormID" class="form-horizontal">
+	
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<input type="hidden" id="codFuncionarioID" name="codFuncionario" value="%COD_FUNCIONARIO%">
+			<input type="hidden" id="codPessoaID" name="codPessoa" value="%COD_PESSOA%">
+			<input type='hidden' id='valID'>
+			<div class="tabbable">
+				<ul id="tabID" class="nav nav-tabs padding-16">
+					<li class="active"><a data-toggle="tab" href="#Admitir-geral">
+							<i class="green fa fa-briefcase bigger-125"></i> Admitir
+					</a></li>
+				</ul>
+				<div class="tab-content profile-edit-tab-content">
+					<div id="Admitir-geral" class="tab-pane in active">
+						<div class="row">
+							<h4 class="header blue bolder smaller">Admitir</h4>
+							<div class="col-sm-6">
+								<div class="form-group col-sm-12" id="divChapaID">
+									<label for="chapaID" class="col-sm-3 control-label">Chapa</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a chapa"></i></span>
+										<input type="text" id="chapaID" name="chapa" value="%CHAPA%" maxlength="16" class="width-100" placeholder="Chapa" autocomplete="off"/>
+									</div>
+								<div class="help-block col-sm-1 inline" id="divHelpChapaID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divJornadaID">
+									<label for="jornadaID" class="col-sm-3 control-label">Jornada</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a jornada"></i></span>
+										<input type="text" id="jornadaID" name="jornada" value="%JORNADA%" class="width-100" placeholder="Jornada" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"/>
+									</div>
+								<div class="help-block col-sm-1 inline" id="divHelpJornadaID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divDataAdmissaoID">
+							    	<label class="col-xs-12 col-sm-3 control-label" for="dataAdmissaoID">Admissão</label>
+					    			<div class="input-group col-sm-8 pull-lef">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de admissão do funcionário"></i></span>
+						    			<input class="form-control datepicker" id="dataAdmissaoID" type="text" name="dataAdmissao" placeholder="Data admissão" maxlength="10" value="%DATA_ADMISSAO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+							    	</div>
+							    	<div class="col-sm-1 pull-left" id="divHelpDataAdmissaoID"></div>
+							    </div>
+							    <div class="form-group col-sm-12" id="divDataDemissaoID">
+							    	<label class="col-xs-12 col-sm-3 control-label" for="dataDemissaoID">Demissão</label>
+					    			<div class="input-group col-sm-8 pull-lef">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de demissão do funcionário"></i></span>
+						    			<input class="form-control datepicker" id="dataDemissaoID" type="text" name="dataDemissao" placeholder="Data demissão" maxlength="10" value="%DATA_DEMISSAO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+							    	</div>
+							    	<div class="col-sm-1 pull-left" id="divHelpDataDemissaoID"></div>
+							    </div>
+								<div class="form-group col-sm-12" id="divCodTipoID">
+									<label for="codTipoID" class="col-xs-12 col-sm-3 control-label">Tipo</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o Tipo."></i></span>
+										<select id="codTipoID" name="codTipo" class="select2" data-placeholder="Selecione o tipo">
+											%COD_TIPO%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpCodTipoID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divCodTipoAdmissaoID">
+									<label for="codTipoAdmissaoID" class="col-xs-12 col-sm-3 control-label">Tipo Admissão</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o Tipo Admissao."></i></span>
+										<select id="codTipoAdmissaoID" name="codTipoAdmissao" class="select2" data-placeholder="Selecione o tipo admissão">
+											%COD_TIPO_ADMISSAO%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpCodTipoAdmissaoID"></div>
+								</div>
+							</div>	
+							<div class="col-sm-6">
+								<div class="form-group col-sm-12" id="divCodMotivoAdmissaoID">
+									<label for="codMotivoAdmissaoID" class="col-xs-12 col-sm-3 control-label">Motivo</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o Motivo Admissao."></i></span>
+										<select id="codMotivoAdmissaoID" name="codMotivoAdmissao" class="select2" data-placeholder="Selecione o Motivo admissão">
+											%COD_MOTIVO_ADMISSAO%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpCodFuncaoID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divCodFuncaoID">
+									<label for="codFuncaoID" class="col-xs-12 col-sm-3 control-label">Função</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a função."></i></span>
+										<select id="codFuncaoID" name="codFuncao" class="select2" data-placeholder="Selecione a função" onchange="checkFuncao();">
+											%COD_FUNCAO%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpCodFuncaoID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divCodSituacaoID">
+									<label for="codSituacaoID" class="col-xs-12 col-sm-3 control-label">Situação</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a situação."></i></span>
+										<select id="codSituacaoID" name="codSituacao" class="select2" data-placeholder="Selecione a situação">
+											%COD_SITUACAO%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpCodSituacaoID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divDataPrazoContrID">
+							    	<label class="col-xs-12 col-sm-3 control-label" for="dataPrazoContrID">Contrato</label>
+					    			<div class="input-group col-sm-8 pull-lef">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data prazo do contrato"></i></span>
+						    			<input class="form-control datepicker" id="dataPrazoContrID" type="text" name="dataPrazoContr" placeholder="Data prazo contrato" maxlength="10" value="%DATA_PRAZO_CONTRATO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+							    	</div>
+							    	<div class="col-sm-1 pull-left" id="divHelpDataPrazoContrID"></div>
+							    </div>
+							    <div class="form-group col-sm-12" id="divPrazoExpID">
+							    	<label class="col-xs-12 col-sm-3 control-label" for="prazoExpID">Experiência</label>
+					    			<div class="input-group col-sm-8 pull-lef">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data prazo da experiência"></i></span>
+						    			<input class="form-control datepicker" id="prazoExpID" type="text" name="prazoExp" placeholder="Data prazo experiência" maxlength="10" value="%PRAZO_EXPERIENCIA%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+							    	</div>
+							    	<div class="col-sm-1 pull-left" id="divHelpPrazoExpID"></div>
+							    </div>
+						    	<div class="form-group col-sm-12" id="divSalarioID">
+									<label for="salarioID" class="col-sm-3 control-label">Salario</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o salario"></i></span>
+										<input type="text" id="salarioID" name="salario" value="%SALARIO%" class="width-100" placeholder="Salario" onchange="checkSalario();" autocomplete="off" zg-data-toggle="mask" zg-data-mask-retira="1" zg-data-mask="dinheiro" />
+									</div>
+								<div class="help-block col-sm-1 inline" id="divHelpSalarioID"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="Admitir-regra" class="tab-pane">
+					</div>
+				</div>
+			</div>
+			<div class="clearfix form-actions">
+				<label class="col-sm-4 control-label">&nbsp;</label>
+				<button type="button" class="btn btn-primary" id="btnSubmitID">
+					<i class="fa fa-check bigger-110"></i> Salvar
+				</button>
+				<button type="button" class="btn btn-warning" id="cancel"
+					onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+					<i class="fa fa-undo bigger-110"></i> Voltar
+				</button>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[data-rel=popover]').popover({html:true});
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Select 2
+$('#codFuncaoID').css('width','100%').select2({allowClear:true});
+$('#codSituacaoID').css('width','100%').select2({allowClear:true});
+$('#codTipoAdmissaoID').css('width','100%').select2({allowClear:true});
+$('#codMotivoAdmissaoID').css('width','100%').select2({allowClear:true});
+$('#codTipoID').css('width','100%').select2({allowClear:true});
+
+/***************** Submit Formulário*********************************************************/
+//Verifica retorno da validação do formulário
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaPessoaAdmitir();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codFuncionarioID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Cargo', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+checkFuncao();
+
+function checkFuncao(){
+	if ($("#codFuncaoID option:selected").text()) {
+		$('#divSalarioID').removeClass("hidden");
+	} else {
+		$('#divSalarioID').addClass("hidden");
+	}
+}
+
+//Valida Salario
+function checkSalario() {
+	var vSalario	= $('#salarioID').val();
+	$('#valID').val(0);
+	
+	if (vSalario.length == 0) {
+		$('#divSalarioID').addClass('has-error');
+		$('#divHelpSalarioID').html(zgCriaSpanErro('Salario deve ser preenchido !!'));
+		return false;
+	}else{
+		// Verificar se o nome está disponível no banco
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Rhu/validaSalario.dp.php",
+	   		data: {  codFuncao: $('#codFuncaoID').val() , salario: vSalario},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.faixa == 1) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+		
+		if ($('#valID').val() == 0) {
+			$('#divSalarioID').addClass('has-error');
+			$('#divHelpSalarioID').html(zgCriaSpanErro('Salário fora da faixa !!'));
+			return false;
+		}else{
+			$('#divSalarioID').removeClass('has-error');
+			$('#divHelpSalarioID').html('&nbsp;');
+			return true;
+		}
+	}
+}
+
+/*********************** Verificar o formulário ***********************/
+function validaPessoaAdmitir() {
+	var vFuncao	 	    = $('#codFuncaoID').val();
+	var vSituacao    	= $('#codSituacaoID').val();
+	var vTipo	  	    = $('#codTipoID').val();
+	var vChapa		    = $('#chapaID').val();
+	var vJornada	    = $('#jornadaID').val();
+	var vDataAdmissao   = $('#dataAdmissaoID').val();
+	var vTipoAdmissao   = $('#codTipoAdmissaoID').val();
+	var vMotivoAdmissao = $('#codMotivoAdmissaoID').val();
+	var vPrazoExp		= $('#prazoExpID').val();
+
+	var vTab 		    = 0;
+	var vOK			    = true;
+	var vIdent;
+	
+	// CNPJ
+	vOK = checkSalario();
+	
+	// Funcao
+	if (!vFuncao) {
+		$('#divCodFuncaoID').addClass('has-error');
+		$('#divHelpCodFuncaoID').html(zgCriaSpanErro('Funcao deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divCodFuncaoID').removeClass('has-error');
+		$('#divHelpCodFuncaoID').html('&nbsp;');		
+	}
+	
+	//Situacao
+	if (!vSituacao) {
+		$('#divCodSituacaoID').addClass('has-error');
+		$('#divHelpCodSituacaoID').html(zgCriaSpanErro('Situacao deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divCodSituacaoID').removeClass('has-error');
+		$('#divHelpCodSituacaoID').html('&nbsp;');		
+	}
+	
+	//Tipo
+	if (!vTipo) {
+		$('#divCodTipoID').addClass('has-error');
+		$('#divHelpCodTipoID').html(zgCriaSpanErro('Tipo deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divCodTipoID').removeClass('has-error');
+		$('#divHelpCodTipoID').html('&nbsp;');		
+	}
+	
+	//Chapa
+	if (!vChapa) {
+		$('#divChapaID').addClass('has-error');
+		$('#divHelpChapaID').html(zgCriaSpanErro('Chapa deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divChapaID').removeClass('has-error');
+		$('#divHelpChapaID').html('&nbsp;');		
+	}
+	
+	//Jornada
+	if (!vJornada) {
+		$('#divJornadaID').addClass('has-error');
+		$('#divHelpJornadaID').html(zgCriaSpanErro('Jornada deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divJornadaID').removeClass('has-error');
+		$('#divHelpJornadaID').html('&nbsp;');		
+	}
+
+	//Data Admissao
+	if (!vDataAdmissao) {
+		$('#divDataAdmissaoID').addClass('has-error');
+		$('#divHelpDataAdmissaoID').html(zgCriaSpanErro('Admissao deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divDataAdmissaoID').removeClass('has-error');
+		$('#divHelpDataAdmissaoID').html('&nbsp;');		
+	}
+	
+	//Tipo Admissao
+	if (!vTipoAdmissao) {
+		$('#divTipoAdmissaoID').addClass('has-error');
+		$('#divHelpTipoAdmissaoID').html(zgCriaSpanErro('Tipo admissao deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divTipoAdmissaoID').removeClass('has-error');
+		$('#divHelpTipoAdmissaoID').html('&nbsp;');		
+	}
+	
+	//Motivo Admissao
+	if (!vMotivoAdmissao) {
+		$('#divCodMotivoAdmissaoID').addClass('has-error');
+		$('#divHelpCodMotivoAdmissaoID').html(zgCriaSpanErro('Motivo admissao deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divCodMotivoAdmissaoID').removeClass('has-error');
+		$('#divHelpCodMotivoAdmissaoID').html('&nbsp;');		
+	}
+	
+	//Prazo Experiencia
+	if (!vPrazoExp) {
+		$('#divPrazoExpID').addClass('has-error');
+		$('#divHelpPrazoExpID').html(zgCriaSpanErro('Prazo experiencia deve ser preenchido !!!'));
+		vOK		= false;
+		vTab = 0;
+	}else{
+		$('#divPrazoExpID').removeClass('has-error');
+		$('#divHelpPrazoExpID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Abrir aba que tiver campos inválidos
+		$('#tabID li:eq('+ vTab +') a').tab('show');
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+}
+</script>
+

@@ -1,0 +1,75 @@
+<form id="zgFormID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-folder blue"></i>%TITULO%</h4>
+</div>
+<div class="modal-body">
+	<input type="hidden" name="codCategoriaPai" value="%COD_CATEGORIA_PAI%">
+	<input type="hidden" name="codCategoria" value="%COD_CATEGORIA%">
+	<input type="hidden" name="codTipo" value="%COD_TIPO%">
+	<div>
+	   <div class="row">
+	    	<div class="col-sm-11">
+				<div class="form-group">
+			    	<label class="col-sm-4 control-label" for="descricaoID">Descrição</label>
+			    	<div class="input-group col-sm-8">
+	   					<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+	   					<input tabindex="1" class="form-control" id="descricaoID" type="text" name="descricao" maxlength="60" value="%DESCRICAO%" required autocomplete="off">	
+	    			</div>
+			    </div>
+	    	</div>
+    	</div>
+		<div class="row">
+			<div class="col-sm-11">
+				<div class="form-group">
+			    	<label class="col-sm-4 control-label" for="ativaID">Ativa</label>
+			    	<label>
+				   		<input name="ativa" id="ativaID" class="ace ace-switch ace-switch-6" type="checkbox" %ATIVA% />
+						<span class="lbl"></span>
+					</label>
+				</div>
+	    	</div>
+		</div>		   
+    	<div class="row" id="divCatMsgID">
+		</div>
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" id="submit">Salvar</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divCatMsgID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divCatMsgID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('divCatMsgID',errorThrown);
+	});
+	return false; 
+});
+
+
+
+//$("input:text:visible:first").focus();
+//$("#nomeID").trigger('focus');
+
+</script>

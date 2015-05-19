@@ -1,0 +1,23 @@
+ZgEmpresaStatusTipo:
+    type: entity
+    table: ZG_EMPRESA_STATUS_TIPO
+    id:
+        codigo:
+            type: string
+            nullable: false
+            length: 1
+            fixed: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 40
+            fixed: false
+            comment: ''
+            column: NOME
+    lifecycleCallbacks: {  }

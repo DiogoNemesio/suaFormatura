@@ -1,0 +1,106 @@
+ZgUsuario:
+    type: entity
+    table: ZG_USUARIO
+    indexes:
+        ZG_USUARIO_FK02_idx:
+            columns:
+                - COD_STATUS
+        fk_ZG_USUARIO_1_idx:
+            columns:
+                - SEXO
+    uniqueConstraints:
+        ZG_USUARIO_UK01:
+            columns:
+                - USUARIO
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        usuario:
+            type: string
+            nullable: false
+            length: 14
+            fixed: false
+            comment: ''
+            column: USUARIO
+        nome:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: NOME
+        senha:
+            type: string
+            nullable: true
+            length: 60
+            fixed: false
+            comment: ''
+            column: SENHA
+        email:
+            type: string
+            nullable: true
+            length: 200
+            fixed: false
+            comment: ''
+            column: EMAIL
+        telefone:
+            type: string
+            nullable: true
+            length: 14
+            fixed: false
+            comment: ''
+            column: TELEFONE
+        celular:
+            type: string
+            nullable: true
+            length: 14
+            fixed: false
+            comment: ''
+            column: CELULAR
+        ultEmpresaAcesso:
+            type: integer
+            nullable: true
+            unsigned: false
+            comment: ''
+            column: ULT_EMPRESA_ACESSO
+        dataUltAcesso:
+            type: datetime
+            nullable: true
+            comment: ''
+            column: DATA_ULT_ACESSO
+    manyToOne:
+        sexo:
+            targetEntity: ZgSexoTipo
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                SEXO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codStatus:
+            targetEntity: ZgUsuarioStatusTipo
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_STATUS:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    manyToMany:
+        codMenu:
+            targetEntity: ZgMenu
+            cascade: {  }
+            mappedBy: codUsuario
+            inversedBy: null
+            joinTable: null
+            orderBy: null
+    lifecycleCallbacks: {  }

@@ -1,0 +1,70 @@
+ZgMenuPerfil:
+    type: entity
+    table: ZG_MENU_PERFIL
+    indexes:
+        fk_ZG_MENU_PERFIL_1_idx:
+            columns:
+                - COD_MENU
+        fk_ZG_MENU_PERFIL_2_idx:
+            columns:
+                - COD_PERFIL
+    uniqueConstraints:
+        index4:
+            columns:
+                - COD_MENU
+                - ORDEM
+                - COD_PERFIL
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        ordem:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            column: ORDEM
+    manyToOne:
+        codMenu:
+            targetEntity: ZgMenu
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_MENU:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codPerfil:
+            targetEntity: ZgPerfil
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_PERFIL:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    manyToMany:
+        codPermissao:
+            targetEntity: ZgPermissao
+            cascade: {  }
+            mappedBy: null
+            inversedBy: codMenuPerfil
+            joinTable:
+                name: zg_menu_perfil_permissao
+                joinColumns:
+                    -
+                        name: COD_MENU_PERFIL
+                        referencedColumnName: CODIGO
+                inverseJoinColumns:
+                    -
+                        name: COD_PERMISSAO
+                        referencedColumnName: CODIGO
+            orderBy: null
+    lifecycleCallbacks: {  }

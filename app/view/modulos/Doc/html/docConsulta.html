@@ -1,0 +1,139 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Consulta de Documentos</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="codTipoDoc" value="%COD_TIPO_DOC%">
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#pesquisa-basica">
+								<i class="green fa fa-search bigger-125"></i>
+								Consulta básica
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#pesquisa-avancada">
+								<i class="red fa fa-search-plus bigger-125"></i>
+								Consulta avançada
+							</a>
+						</li>
+					</ul>
+	
+					<div class="tab-content profile-edit-tab-content">
+						<div id="pesquisa-basica" class="tab-pane in active">
+							<h4 class="header blue bolder smaller">Tipo de Documento</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group">
+										<label class="col-sm-4 control-label" for="codTipoDocID">Tipo</label>
+						    			<div class="input-group col-sm-6">
+						    				<select onchange="zgMudaTipoDoc()" class="select2" style="width:100%;" id="codTipoDocID" name="codTipoDoc" data-rel="select2">
+											%DOC_TIPO%
+											</select>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group">
+										<label class="col-sm-5 control-label" >&nbsp;</label>
+				    					<div class="input-group">
+											<button type="button" onclick='buscaDocumentos()' class="btn btn-primary" id="submit"><i class="fa fa-search bigger-120"></i> Buscar</button>
+										</div>
+									</div>
+						    	</div>
+						    </div>
+							<h4 class="header blue bolder smaller">Índices</h4>
+							<div class="vspace-xs"></div>
+							%INDICES%
+						</div>
+	
+						<div id="pesquisa-avancada" class="tab-pane in">
+							<h4 class="header blue bolder smaller">Segurança</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group">
+								    	<label class="col-sm-3 control-label" for="senhaID">Senha</label>
+						    			<div class="input-group col-sm-3">
+							    			<span class="input-group-addon"><i class="icon-key"></i></span>
+							    			<input class="input-large" id="senhaID" type="password" name="senha" maxlength="16" autocomplete="off">
+								    	</div>
+								    </div>
+								    <div class="form-group">
+								    	<label class="col-sm-3 control-label" for="confSenhaID">Confirmação</label>
+						    			<div class="input-group col-sm-3">
+							    			<span class="input-group-addon"><i class="icon-key"></i></span>
+							    			<input class="input-large" id="confSenhaID" type="password" name="confSenha" maxlength="16" autocomplete="off">
+								    	</div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group">
+										<label class="col-sm-6 control-label"><input name="indTrocarSenha" type="checkbox" class="ace" %IND_TROCAR_SENHA% /><span class="lbl">&nbsp;Alterar senha no próximo acesso</span></label>
+								    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#zgFormID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_FORM%",
+		data:	$('#zgFormID').serialize(),
+		success: function(response) { // on success..
+            $('#%DIVCENTRAL%ID').html(response); // update the DIV
+        }
+	}).done(function( data, textStatus, jqXHR) {
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		});
+	});
+	return false;
+});
+
+function buscaDocumentos() {
+	$('#zgFormID').submit();	
+}
+
+$(".select2").select2();
+
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+/*$('.datepicker').datepicker({autoclose:true,language: 'pt-BR'}).next().on(ace.click_event, function(){
+	$(this).prev().focus();
+});
+*/
+
+
+$('.datepicker').datepicker({
+    language: 'pt-BR'
+});
+
+function zgMudaTipoDoc() {
+	zgLoadUrl('%RELOAD_URL%&codTipoDoc='+$('#codTipoDocID').val());
+}
+
+</script>
+

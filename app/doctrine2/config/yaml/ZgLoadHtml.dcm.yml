@@ -1,0 +1,33 @@
+ZgLoadHtml:
+    type: entity
+    table: ZG_LOAD_HTML
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        url:
+            type: string
+            nullable: false
+            length: 512
+            fixed: false
+            comment: ''
+            column: URL
+        ativo:
+            type: boolean
+            nullable: false
+            comment: ''
+            column: ATIVO
+        ordem:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            column: ORDEM
+    lifecycleCallbacks: {  }

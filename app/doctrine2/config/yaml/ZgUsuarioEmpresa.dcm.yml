@@ -1,0 +1,43 @@
+ZgUsuarioEmpresa:
+    type: entity
+    table: ZG_USUARIO_EMPRESA
+    indexes:
+        USUARIO_EMPRESA_IX01:
+            columns:
+                - COD_USUARIO
+        USUARIO_EMPRESA_IX02:
+            columns:
+                - COD_EMPRESA
+        fk_ZG_USUARIO_EMPRESA_1_idx:
+            columns:
+                - COD_PERFIL
+    id: {  }
+    oneToOne:
+        codPerfil:
+            targetEntity: ZgPerfil
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_PERFIL:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codUsuario:
+            targetEntity: ZgUsuario
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_USUARIO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codEmpresa:
+            targetEntity: ZgEmpresa
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_EMPRESA:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

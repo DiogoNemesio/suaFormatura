@@ -1,0 +1,102 @@
+<div class="widget-container-span">
+	<div class="widget-box transparent">
+		<div class="widget-header">
+			<select onchange="recarregaPaginaPerfil();" class="select2" style="width:100%;" id="codPerfilID" name="codPerfil" data-rel="select2" data-placeholder="Perfil">
+			%PERFIS%
+			</select>
+		</div><!--/span-->
+		<div class="widget-body">
+			<div class="widget-main padding-6 no-padding-left no-padding-right">
+				<div >
+					<div class="breadcrumbs">
+						<ul class="breadcrumb">
+							%BREADCRUMB%
+						</ul>
+					</div>
+				
+					<div style="width: 100%; position:relative; float: left;">
+						<div class="widget-box transparent">
+							<div class="widget-header"> 
+								<h6 class="widget-title"><i class="ace-icon fa fa-check"></i>Selecionados</h6>
+							</div>
+							<div class="widget-body">
+								<div class="widget-main">
+									<ul id="zgSortableSelID" class="connectedSortable zgSortable">
+										%LISTA_ASS%
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div>&nbsp;<br>&nbsp;</div>
+					<div style="width: 100%; position:relative; float: left;">
+						<div class="widget-box transparent">
+							<div class="widget-header"> 
+								<h6 class="widget-title"><i class="ace-icon fa fa-minus-square"></i>Disponíveis</h6>
+							</div>
+							<div class="widget-body">
+								<div class="widget-main">
+									<ul id="zgSortableDisID" class="connectedSortable zgSortable">
+										%LISTA_DIS%
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	$("#zgSortableDisID" ).sortable({
+		connectWith: ".connectedSortable",
+		placeholder: "ui-state-highlight",
+		cursor: "move",
+		revert: true,
+	}).disableSelection();
+
+	$("#zgSortableSelID" ).sortable({
+		connectWith: ".connectedSortable",
+		placeholder: "ui-state-highlight",
+		cursor: "move",
+		revert: true,
+        update: function (event, ui) {
+            var itens 		= new Array();
+            $("#zgSortableSelID li").each(function(i, el){
+                itens[$(el).index()]	= $(el).attr("zg-data-id");
+            });
+            
+        	$.ajax({
+        		type:	"POST", 
+        		url:	"%DP%",
+				data: 	{
+					itens: itens,
+				}
+        	}).done(function( data, textStatus, jqXHR) {
+        		if (checaRetornoOK(data) == false) {
+        			zgMostraAviso("Fechar");
+        		}
+        	}).fail(function( jqXHR, textStatus, errorThrown) {
+        		zgMostraAviso(null);
+        	});
+        }
+		
+	}).disableSelection();
+
+	
+	$('#formBuscaID').submit(function() {
+		return false;
+	});
+
+	function recarregaPaginaPerfil() {
+		zgLoadMenuPerfil('%URL%&codMenu=%COD_MENU%&codPerfil='+$('#codPerfilID').val());
+		return false;
+	}
+	
+
+	$("#codPerfilID").select2();
+	$("#codTipoCondID").select2();
+	
+</script>

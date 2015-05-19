@@ -1,0 +1,5 @@
+{
+    "require": {
+	"Symfony/PropertyAccess": "2.5"
+    }
+}

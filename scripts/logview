@@ -1,0 +1,3 @@
+#!/bin/bash
+
+tail -f /var/log/apache2/* /srv/www/htdocs/DBApp/app/log/system.log

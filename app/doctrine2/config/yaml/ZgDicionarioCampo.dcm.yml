@@ -1,0 +1,42 @@
+ZgDicionarioCampo:
+    type: entity
+    table: ZG_DICIONARIO_CAMPO
+    indexes:
+        fk_CAMPOS_DICIONARIO_1_idx:
+            columns:
+                - COD_DICIONARIO
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: true
+            length: 60
+            fixed: false
+            comment: ''
+            column: NOME
+        ordem:
+            type: integer
+            nullable: true
+            unsigned: false
+            comment: ''
+            column: ORDEM
+    manyToOne:
+        codDicionario:
+            targetEntity: ZgDicionario
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_DICIONARIO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

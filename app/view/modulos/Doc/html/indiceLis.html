@@ -1,0 +1,26 @@
+<div class="row">
+	<div class="col-sm-12 widget-container-span">
+		<div class="widget-box transparent">
+			<div class="widget-header">
+				<h4 class="left"><small>Tipo de Documento:</small> %NOME_TIPO%</h4>					
+			</div>
+		</div>
+		<div class="widget-body">
+			<div class="page-header">
+				<h1>%NOME%  <a id='a01ID' class='btn btn-xs btn-primary' title="Adicionar" href="javascript:zgLoadUrl('%URLADD%');"><i class="fa fa-plus bigger-140"></i></a></h1>
+			</div><!-- /.page-header -->
+				
+			<div class="box-content">
+				%GRID%
+			</div><!--/span-->
+			
+		</div>
+	</div>
+</div>
+<script>
+	var vUrl = '%URLADD%';
+	
+	if (vUrl == '') {
+		$('#a01ID').hide();
+	} 
+</script>

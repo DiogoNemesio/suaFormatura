@@ -1,0 +1,91 @@
+<form id="zgFormDoc_%COD_DOCUMENTO%ID" onsubmit="return zgValidaForm%COD_DOCUMENTO%();" class="form-horizontal">
+<input type="hidden" name="codDocumento" value="%COD_DOCUMENTO%">
+
+<div class="col-sm-12">
+	<div class="form-group">
+		<label class="col-sm-5 control-label" for="arquivoID">Selecione o arquivo</label>
+  		<div class="input-group col-sm-7">
+			<select class="select2" style="width:100%;" id="arquivoID" name="arquivo" data-rel="select2">
+			%ARQUIVOS%
+			</select>
+		</div>
+	</div>
+</div>
+<div class="col-sm-12">
+	<div class="form-group">
+		<label class="col-sm-5 control-label">Data de Criação</label>
+		<div class="input-group col-sm-7">
+			<input class="form-control" type="text" readonly value="%DATA_CADASTRO%">
+		</div>
+	</div>
+</div>
+
+%INDICES%
+
+<div class="clearfix center" style="width: 100%;">
+	<button type="submit" class="btn btn-primary" id="btnSalvarID"><i class="fa fa-check bigger-110"></i> Salvar</button>
+	<button type="button" class="btn btn-warning" onclick="zgLoadUrl('%URL_VOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+</div>
+</form>
+
+<script>
+
+function zgValidaForm%COD_DOCUMENTO% () {
+}
+
+$('#zgFormDoc_%COD_DOCUMENTO%ID').submit(function() {
+	
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormDoc_%COD_DOCUMENTO%ID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		});
+		
+		if (checaRetornoOK(data) == false) {
+			zgMostraAviso("Fechar");
+		}else{
+			
+			if (vOrdemAtual == vNumDocs) {
+				alert('Todos os documento foram salvos !!!');
+			}
+
+			/** Abrir o Próximo documento **/
+			zgProximoDoc();
+		}
+		
+/*		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});*/
+
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('divPastaMsgID',errorThrown);
+	});
+	return false; 
+});
+
+
+$(".select2").select2();
+
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.datepicker').datepicker();
+
+
+
+$('#zgWindowDocViewID').attr('src','%URL_VIEW%');
+//$('#divDirID').load('%URL_DOCUMENTO%');
+</script>

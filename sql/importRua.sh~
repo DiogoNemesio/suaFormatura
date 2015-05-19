@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+read -p "Digite a senha do usuário dbAppUser: " senha
+
+mysql -u megaUser --password="$senha" DBApp < 1_Localidade.sql
+mysql -u megaUser --password="$senha" DBApp < 2_Bairros.sql
+mysql -u megaUser --password="$senha" DBApp < 3.1_Logradouros_Maceio.sql

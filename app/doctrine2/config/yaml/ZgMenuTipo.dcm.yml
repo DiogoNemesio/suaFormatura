@@ -1,0 +1,23 @@
+ZgMenuTipo:
+    type: entity
+    table: ZG_MENU_TIPO
+    id:
+        codigo:
+            type: string
+            nullable: false
+            length: 1
+            fixed: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 20
+            fixed: false
+            comment: ''
+            column: NOME
+    lifecycleCallbacks: {  }

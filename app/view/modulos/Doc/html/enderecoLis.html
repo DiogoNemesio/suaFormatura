@@ -1,0 +1,45 @@
+<div class="row">
+	<div class="col-sm-12 widget-container-span">
+		<div class="col-sm-6 widget-container-span">
+			<div class="widget-body">
+				<div class="page-header">
+				<h1><i class="%IC%">&nbsp;</i>%NOME%  <a id='a01ID' class='btn btn-xs btn-primary' title="Adicionar" href="javascript:zgLoadUrl('%URLADD%');"><i class="fa fa-plus bigger-140"></i></a></h1>
+				</div><!-- /.page-header -->
+			</div>
+		</div>
+		<div class="col-sm-6 widget-container-span">
+			<div class="widget-body">
+				<div class="page-header">
+					<label class="col-sm-4 control-label" for="localID"></label>
+					<div class="input-group col-sm-6">
+						<select class="select2" onchange="mudaLocal();" style="width:100%;" id="localID" name="local" data-rel="select2">
+							%LOCAL%
+						</select>
+					</div>
+				</div><!-- /.page-header -->
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-12 widget-container-span">
+		<div class="widget-body">
+			<div class="box-content">
+				%GRID%
+			</div><!--/span-->
+		</div>
+	</div>
+</div>
+<script>
+	var vUrl = '%URLADD%';
+	
+	if (vUrl == '') {
+		$('#a01ID').hide();
+	} 
+	
+	$(".select2").select2();
+	
+	function mudaLocal() {
+		zgLoadUrl('%URL%&codLocal='+$('#localID').val());
+		return false;
+	}
+
+</script>

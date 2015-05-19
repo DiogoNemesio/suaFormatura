@@ -1,0 +1,283 @@
+<form id="zgFormGerID" class="form-horizontal">
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h4 class=""><i class="fa fa-folder blue"></i>%TITULO%</h4>
+		</div>
+		<div class="modal-body" style="overflow-y: scroll; height: 320px;">
+			<input type="hidden" id='codTipoID' name="codTipo" value="%COD_TIPO%">
+			<input type="hidden" id='codLocalID' name="codLocal" value="%COD_LOCAL%">
+			<div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+					    	<label class="col-sm-8 control-label " for="gerRuaID">Rua</label>
+			    			<div class="col-sm-4">
+			   					<input tabindex="1" onchange="calcNumGerEndereco();" class="col-sm-12" id="gerRuaID" type="text" name="gerRua" maxlength="10" value="%RUA%" required autocomplete="off">	
+			    			</div>
+			    		</div>
+			    	</div>
+			    	<div class="col-sm-6">
+			    		<label>N&#186; de Endereços: </label>
+			    		<label id='lblNumEndID'></label>
+			    	</div>
+				</div>		   
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+					    	<label class="col-sm-8 control-label " for="gerEstanteID">Estante</label>
+			    			<div class="col-sm-4">
+			   					<input tabindex="1" onchange="calcNumGerEndereco();" class="col-sm-12" id="gerEstanteID" type="text" name="gerEstante" maxlength="10" value="%ESTANTE%" required autocomplete="off">	
+			    			</div>
+			    		</div>
+			    	</div>
+				</div>		   
+				<div class="row" id='divGergerPrateleiraID'>
+					<div class="col-sm-6">
+						<div class="form-group">
+					    	<label class="col-sm-8 control-label " for="gerPrateleiraID">Prateleira</label>
+			    			<div class="col-sm-4">
+			   					<input tabindex="1" onchange="calcNumGerEndereco();" class="col-sm-12" id="gerPrateleiraID" type="text" name="gerPrateleira" maxlength="10" value="%PRATELEIRA%" required autocomplete="off">	
+			    			</div>
+			    		</div>
+			    	</div>
+				</div>		   
+				<div class="row" id='divGergerColunaID'>
+					<div class="col-sm-6">
+						<div class="form-group">
+					    	<label class="col-sm-8 control-label " for="gerColunaID">Coluna</label>
+			    			<div class="col-sm-4">
+			   					<input tabindex="1" onchange="calcNumGerEndereco();" class="col-sm-12" id="gerColunaID" type="text" name="gerColuna" maxlength="10" value="%COLUNA%" required autocomplete="off">	
+			    			</div>
+			    		</div>
+			    	</div>
+				</div>		   
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="col-sm-6">
+							<div class="input-group col-sm-12">
+								<label><input onchange="calcNumGerEndereco();" id="gerParID" name="gerPar" type="checkbox" checked  class="ace" /><span class="lbl">Pares&nbsp;</span></label>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="input-group col-sm-12">
+								<label><input onchange="calcNumGerEndereco();" id="gerImparID" name="gerImpar" type="checkbox" checked class="ace" /><span class="lbl">Ímpares&nbsp;</span></label>
+							</div>
+			    		</div>
+			    	</div>
+				</div>		   
+		    	<div class="row" id="divGerMsgID">
+				</div>
+		    </div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" onclick="return gerCheckForm();" class="btn btn-primary" id="btnGeracaoID" disabled>Gerar</button>
+			<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+		</div>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+function gerCheckForm() {
+	calcNumGerEndereco();
+	$('#zgFormGerID').submit();
+	
+}
+
+$('#zgFormGerID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormGerID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divGerMsgID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divGerMsgID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('divPastaMsgID',errorThrown);
+	});
+	return false; 
+});
+
+$("input,textarea").jqBootstrapValidation({
+	preventSubmit: true
+});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: 'Restando: %n character%s ...',
+	limitText: 'Max: %n.'
+});
+
+$( document ).ready(function() {
+	zgMostraDivsGerEndereco();
+	calcNumGerEndereco();
+});
+
+function zgMostraDivsGerEndereco() {
+	var vMostraPra		= ['E'];
+	var vMostraCol		= ['E'];
+
+	var vTipo			= $('#codTipoID').val(); 
+	
+	
+	if (vMostraPra.indexOf(vTipo) < 0) {
+		$('#divGergerPrateleiraID').addClass("hidden");
+	}else{
+		$('#divGergerPrateleiraID').removeClass("hidden");
+	}
+	
+	if (vMostraCol.indexOf(vTipo) < 0) {
+		$('#divGergerColunaID').addClass("hidden");
+	}else{
+		$('#divGergerColunaID').removeClass("hidden");
+	}
+
+}
+
+function calcNumGerEndereco() {
+	var vNumRua,vNumEst,vNumPra,vNumCol,vTipo,vRua,vEst,vPra,vCol,vPar,vImpar;
+	
+	vTipo	= $('#codTipoID').val();
+	vRua	= $('#gerRuaID').val();
+	vEst	= $('#gerEstanteID').val();
+	vPar	= $('#gerParID').prop('checked');
+	vImpar	= $('#gerImparID').prop('checked');
+	
+	
+	if ((vRua == '') || (vEst == '')) {
+		$('#lblNumEndID').html('');
+		$("#btnGeracaoID").attr("disabled", "disabled");
+		return false;
+	} 
+	
+	if (vTipo == "E") {
+		vPra	= $('#gerPrateleiraID').val();
+		vCol	= $('#gerColunaID').val();
+		
+		if ((vPra == '') || (vCol == '')) {
+			$('#lblNumEndID').html('');
+			$("#btnGeracaoID").attr("disabled", "disabled");
+			return false;
+		} 
+	}
+	
+	vNumRua  = calcNumGerBloco(vRua,true,true);
+	if (vNumRua < 0) {
+		$('#gerRuaID').val('');
+		alert('Rua inválida');
+		$('#lblNumEndID').html('');
+		$("#btnGeracaoID").attr("disabled", "disabled");
+		return false;
+	}
+	
+	vNumEst  = calcNumGerBloco(vEst,vPar,vImpar);
+	if (vNumEst < 0) {
+		$('#gerEstanteID').val('');
+		alert('Estante inválida');
+		$('#lblNumEndID').html('');
+		$("#btnGeracaoID").attr("disabled", "disabled");
+		return false;
+	}
+	
+	if (vTipo == "E") {
+		
+		vNumPra  = calcNumGerBloco(vPra,true,true);
+		if (vNumPra < 0) {
+			$('#gerPrateleiraID').val('');
+			alert('Parateleira inválida');
+			$('#lblNumEndID').html('');
+			$("#btnGeracaoID").attr("disabled", "disabled");
+			return false;
+		}
+		
+		vNumCol  = calcNumGerBloco(vCol,true,true);
+		if (vNumCol < 0) {
+			$('#gerColunaID').val('');
+			alert('Coluna inválida');
+			$('#lblNumEndID').html('');
+			$("#btnGeracaoID").attr("disabled", "disabled");
+			return false;
+		}
+	}else{
+		vNumPra = 1;
+		vNumCol	= 1;
+	}
+	
+	//alert('NumRua: '+vNumRua+' NumEst: '+vNumEst+' NumPra: '+vNumPra+' NumCol: '+vNumCol+' Par: '+vPar+' Impar: '+vImpar);
+	
+	$("#btnGeracaoID").removeAttr("disabled");
+	var vRet = 	vNumRua * vNumEst * vNumPra * vNumCol;
+	$('#lblNumEndID').html(vRet);
+
+}
+
+function calcNumGerBloco(pStr,pPar,pImpar) {
+
+	if (pStr.indexOf("-") < 0) {
+		if (isNumeric(pStr) == false) {
+			return -1;
+		}else{
+			return 1;
+		}
+		
+	}else{
+		var aTemp = pStr.split("-");
+		
+		if (aTemp.length != 2) {
+			return -1;
+		}else{
+			var vIni = parseInt(aTemp[0]);
+			var vFim = parseInt(aTemp[1]);
+			
+			if (vIni > vFim) {
+				return -1;
+			}else{
+				if (isNumeric(vIni) == false || vIni < 0) {
+					return -1;
+				}
+				if (isNumeric(vFim) == false || vFim < 0) {
+					return -1;
+				}
+				
+				var vNum = ((vFim - vIni) + 1);
+				
+				if (pPar != pImpar) {
+					if (vNum % 2 == 0) {
+						return (vNum / 2);
+					}else{
+						if ((pPar == true) && (vIni % 2 == 0)) {
+							return (((vNum -1) / 2) + 1);
+						}else if ((pPar == true) && (vIni % 2 != 0)) {
+							return ((vNum -1) / 2);
+						}else if ((pImpar == true) && (vIni % 2 != 0)) {
+							return (((vNum -1) / 2) + 1);
+						}else if ((pImpar == true) && (vIni % 2 == 0)) {
+							return ((vNum -1) / 2);
+						}
+					}
+				}else{
+					return vNum;
+				}
+			}
+		}
+	}
+	
+}
+
+//$("input:text:visible:first").focus();
+//$("#nomeID").trigger('focus');
+
+</script>

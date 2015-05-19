@@ -1,0 +1,17 @@
+<div class="">
+	<div class="page-header">
+	<h1><i class="{{ IC }}">&nbsp;</i>{{ nome }}  <a id='a01ID' class='btn btn-xs btn-info' href="javascript:zgLoadUrl('{{ URLADD }}');"><i class="fa fa-plus bigger-120"></i></a></h1>
+	</div><!-- /.page-header -->
+	
+	<div class="box-content">
+		{{ grid | raw}}
+	</div><!--/span-->
+</div>
+
+<script>
+	var vUrl = '{{ URLADD }}';
+	
+	if (vUrl == '') {
+		$('#a01ID').hide();
+	} 
+</script>

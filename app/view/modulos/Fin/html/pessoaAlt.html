@@ -1,0 +1,996 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Cadastro de %NOME_TIPO_PESSOA%
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" id="codPessoaID" name="codPessoa" value="%COD_PESSOA%">
+				<input type="hidden" id="tipoCadPessoaID" name="tipoCadPessoa" value="%TIPO_CAD_PESSOA%">
+				<input type="hidden" id="aSegsID" name="aSegs">
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#pessoa-principal">
+								<i class="green fa fa-edit bigger-125"></i>
+								Principal
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab"  href="#pessoa-contato">
+								<i class="blue fa fa-phone bigger-125"></i>
+								Contato
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#pessoa-endereco">
+								<i class="grey fa fa-road bigger-125"></i>
+								Endereço
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#pessoa-segmento">
+								<i class="purple fa fa-building-o bigger-125"></i>
+								Seg. Mercado
+							</a>
+						</li>
+						<li id="liFonteID">
+							<a id="aFonteID" data-toggle="tab" href="#pessoa-fonte">
+								<i class="green fa fa-usd bigger-125"></i>
+								Info. Bancárias
+							</a>
+						</li>
+					</ul>
+	
+					<div class="tab-content profile-edit-tab-content">
+						<div id="pessoa-principal" class="tab-pane in active">
+							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCnpjID">
+										<label class="col-xs-12 col-sm-3 control-label" for="tipoID">Tipo</label>
+						    			<div class="input-group col-sm-8 pull-left">
+											<select class="select2 %READONLY%" style="width:100%;" onchange="zgMostraDivs();" id="tipoID" name="tipo" %DISABLED% data-rel="select2">
+											%TIPO%
+											</select>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-3">
+									<div class="form-group col-sm-12" id="divAtivoID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="ativoID">Ativo</label>
+								    	<label>
+								    		<input name="ativo" id="ativoID" class="ace ace-switch ace-switch-6" type="checkbox" %ATIVO% />
+											<span class="lbl"></span>
+										</label>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-3">
+									<div class="form-group col-sm-12" id="divIndEstrangeiroID">
+								    	<label class="col-xs-12 col-sm-6 control-label" for="indEstrangeiroID">Estrangeiro</label>
+								    	<label>
+								    		<input name="indEstrangeiro" id="indEstrangeiroID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_ESTRANGEIRO% />
+											<span class="lbl"></span>
+										</label>
+								    </div>
+						    	</div>
+						    </div>
+						    <div class="row" id="divPessoaJur">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCnpjID">
+								    	<label for="cnpjID" class="col-xs-12 col-sm-3 control-label">CNPJ</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="CNPJ da pessoa jurídica."></i></span>
+							    			<input class="form-control" id="cnpjID" type="text" name="cnpj" maxlength="18" value="%CNPJ%" placeholder="CNPJ" %READONLY% autocomplete="off" zg-data-toggle="mask" zg-data-mask="cnpj" zg-data-mask-retira="1">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCnpfID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divInscrEstID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="inscrEstID">Insc. Estadual</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="inscrEstID" type="text" name="inscrEst" maxlength="18" placeholder="Insc. Estadual" value="%INSCR_EST%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpInscrEstID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divRazaoID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="razaoID">Razão</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="razaoID" type="text" name="razao" maxlength="100" placeholder="Razão" value="%RAZAO%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpRazaoID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divInscrMunID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="inscrMunID">Insc. Municipal</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="inscrMunID" type="text" name="inscrMun" maxlength="18" placeholder="Insc. Municipal" value="%INSCR_MUN%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpInscrMunID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divFantasiaID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="fantasiaID">Fantasia</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="fantasiaID" type="text" name="fantasia" maxlength="60" placeholder="Nome fantasia" value="%FANTASIA%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpFantasiaID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divDataInicioID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="dataInicioID">Início Atividade</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control datepicker" id="dataInicioID" type="text" name="dataInicio" maxlength="10" value="%DATA_INICIO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpDataInicioID"></div>
+								    </div>
+						    	</div>
+						    </div>
+						    <div class="row" id="divPessoaFis">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCpfID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="cpfID" type="text" name="cpf" maxlength="14" value="%CPF%" placeholder="CPF" %READONLY% autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divRgID">
+								    	<label class="col-sm-3 control-label" for="rgID">RG</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="rgID" type="text" name="rg" placeholder="RG" maxlength="14" value="%RG%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpRgID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divNomeID">
+								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome" maxlength="100" value="%NOME%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divDataNasID">
+								    	<label class="col-sm-3 control-label" for="dataNasID">Data Nasc.</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control datepicker" id="dataNasID" type="text" name="dataNas" maxlength="10" value="%DATA_NAS%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+							    			<span class="input-group-addon"><a href="#" data-container="body" placeholder="Data Nasc." data-toggle="popover" data-placement="top" data-content="Data de Nascimento da Pessoa"><i class="fa fa-question-circle"></i></a></span>
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpDataNasID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divSexoID">
+										<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+											<select class="select2" style="width:100%;" id="sexoID" name="sexo" data-rel="select2">
+											%SEXO%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpSexoID"></div>
+									</div>
+						    	</div>						    	
+						    </div>
+							<h4 class="header blue bolder smaller">Contato</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divLinkID">
+						    			<label class="col-sm-3 control-label" for="linkID">Link</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+						   					<input class="form-control" id="linkID" type="text" name="link" placeholder="Link" maxlength="200" value="%LINK%" autocomplete="off">
+						    			</div>
+						    			<div class="col-sm-1 pull-left" id="divHelpSexoID"></div>
+						    		</div>
+						    	</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divEmailID">
+						    			<label class="col-sm-3 control-label" for="emailID">Email</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+						   					<input class="form-control" id="emailID" type="email" name="email" placeholder="Email" maxlength="200" value="%EMAIL%" autocomplete="off">
+						    			</div>
+						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
+						    		</div>
+						    	</div>
+							</div>
+						</div>
+						<div id="pessoa-contato" class="tab-pane">
+							<h4 class="header blue bolder smaller">Lista de contatos</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<table id="pessoaAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
+									<thead>
+										<tr class="warning">
+											<th class="col-sm-1 center"></th>
+											<th class="col-sm-2 center">Tipo</th>
+											<th class="col-sm-4 center">Telefone</th>
+											<th class="col-sm-1 center"><span onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									%TAB_TELEFONE%
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div id="pessoa-endereco" class="tab-pane">
+							<input type="hidden" name="enderecoIndex" id="enderecoIndexID">
+							<h4 class="header blue bolder smaller">Lista de Endereços</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<table id="pessoaAltTableEnderecoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+									<thead>
+										<tr class="warning">
+											<th class="center"></th>
+											<th class="col-sm-1 center">Tipo</th>
+											<th class="col-sm-1 center">Cep</th>
+											<th class="col-sm-1 center">Bairro</th>
+											<th class="col-sm-2 center">Endereço</th>
+											<th class="col-sm-1 center">Número</th>
+											<th class="col-sm-2 center">Complemento</th>
+											<th class="col-sm-2 center">Cidade</th>
+											<th class="col-sm-1 center"><span onclick="addRowEnderecoPessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									%TAB_ENDERECO%
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div id="pessoa-segmento" class="tab-pane">
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="widget-box transparent">
+										<div class="widget-header"> 
+											<h6 class="widget-title"><i class="ace-icon fa fa-check-square"></i>Selecionados</h6>
+										</div>
+										<div class="widget-body">
+											<div class="widget-main">
+												<ul id="zgSortableSelID" class="connectedSortable zgSortable">
+													%LISTA_ASS%
+												</ul>
+											</div>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="widget-box transparent">
+										<div class="widget-header"> 
+											<h6 class="widget-title"><i class="ace-icon fa fa-minus-square"></i>Disponíveis</h6>
+										</div>
+										<div class="widget-body">
+											<div class="widget-main">
+												<ul id="zgSortableDisID" class="connectedSortable zgSortable">
+													%LISTA_DIS%
+												</ul>
+											</div>
+										</div>
+									</div>
+						    	</div>
+							</div>
+						</div>
+						<div id="pessoa-fonte" class="tab-pane">
+							<input type="hidden" id="codBancoID" name="codBanco" value="%COD_BANCO%">
+							<h4 class="header blue bolder smaller">Fonte de Recurso</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<table id="pessoaAltTableContaID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+									<thead>
+										<tr class="warning">
+											<th class="col-sm-1 center"></th>
+											<th class="col-sm-3 center">Banco</th>
+											<th class="col-sm-3 center">Agencia</th>
+											<th class="col-sm-3 center">Conta</th>
+											<th class="col-sm-1 center"><span onclick="addRowContaPessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									%TAB_CONTA%
+									</tbody>
+								</table>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+zgMostraDivs();
+
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+
+if ($('#tipoCadPessoaID').val() == 'C' ) {
+	$('#liFonteID').addClass("disabled");
+	$('#aFonteID').addClass("disabled");
+}
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+function zgMostraDivs() {
+	var vTipo			= $('#tipoID').val();
+	
+	if (vTipo == "J") {
+		$('#divPessoaFis').addClass("hidden");
+		$('#divPessoaJur').removeClass("hidden");
+	}else{
+		$('#divPessoaJur').addClass("hidden");
+		$('#divPessoaFis').removeClass("hidden");
+	}
+}
+
+function addRowTelefonePessoaAlt() {
+	$('#pessoaAltTableTelefoneID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">%TIPO_TEL%</select></td><td><input type="text" name="telefone[]" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]"></td></tr>');
+	$('#pessoaAltTableTelefoneID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	$('#pessoaAltTableTelefoneID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+}
+
+function delRowTelefonePessoaAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
+}
+
+function pessoaAltCarregaEndereco(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	var $cep	= pObj.cleanVal();
+
+	if (validaCep($cep) !== true) {
+		alert('Cep inválido !!!');
+		return false;
+	}
+	
+	jQuery.ajax({
+		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
+		data: { cep: $cep},
+		success: function(ret) {
+			var vData	= JSON.parse(ret);
+	    	if (vData.codLogradouro) {
+
+	    		$tr.removeClass('alert-danger');
+	    		
+	    		$tr.find('input[name="bairro[]"]').removeAttr("readonly");
+	    		$tr.find('input[name="endereco[]"]').removeAttr("readonly");
+	    		$tr.find('input[name="numero[]"]').removeAttr("readonly");
+	    		$tr.find('input[name="complemento[]"]').removeAttr("readonly");
+	    		$tr.find('input[name="codCidade[]"]').prop("disabled", false);
+	    		
+	    		$tr.find('input[name="bairro[]"]').val(vData.descBairro);
+	    		$tr.find('input[name="endereco[]"]').val(vData.descLogradouro);
+	    		$tr.find('input[name="codLogradouro[]"]').val(vData.codLogradouro);
+
+	    		$tr.find('input[name="codCidade[]"]').select2("val", vData.codCidade);
+	    		
+	    		$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+
+	    	}else{
+	    		$tr.find('input[name="bairro[]"]').attr('readonly', 'readonly');
+	    		$tr.find('input[name="endereco[]"]').attr('readonly', 'readonly');
+	    		$tr.find('input[name="numero[]"]').attr('readonly', 'readonly');
+	    		$tr.find('input[name="complemento[]"]').attr('readonly', 'readonly');
+	    		$tr.find('input[name="codCidade[]"]').prop("disabled", true);
+	    		
+	    		$tr.find('input[name="bairro[]"]').val(null);
+	    		$tr.find('input[name="endereco[]"]').val(null);
+	    		$tr.find('input[name="codCidade[]"]').select2("val", null);
+
+	    		
+	    		$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro('Cep não encontrado !!!'));
+	    		
+	    		$tr.addClass('alert-danger');
+
+	    	}
+		},
+		method: 'get',
+		cache: false,
+		async:false
+	});
+
+}
+
+function addRowEnderecoPessoaAlt() {
+	$('#pessoaAltTableEnderecoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width: 120px;" name="codTipoEnd[]" data-rel="select2">%TIPO_END%</select></td><td><input type="text" name="cep[]" style="width: 90px;" onchange="pessoaAltCarregaEndereco($(this));" maxlength="9" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"></td><td><input type="text" readonly name="bairro[]" style="width: 120px;" maxlength="60" autocomplete="off"></td><td><input type="text" readonly name="endereco[]" maxlength="100" autocomplete="off"></td><td><input type="text" readonly name="numero[]" style="width: 80px;" maxlength="20" autocomplete="off"></td><td><input type="text" readonly name="complemento[]" maxlength="120" autocomplete="off"></td><td><input type="hidden" name="codCidade[]" style="width:180px;" disabled="disabled" class="select2Cidade" data-rel="select2Cidade"></td><td class="center"><span class="center" zgdelete onclick="delRowEnderecoPessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codEndereco[]"><input type="hidden" name="codLogradouro[]"></td></tr>');
+	$('#pessoaAltTableEnderecoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	$('#pessoaAltTableEnderecoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+	$('#pessoaAltTableEnderecoID > tbody > tr:last .select2Cidade').select2({
+	    minimumInputLength: 2,
+	    allowClear: true,
+	    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+	        url: "%ROOT_URL%/Fin/getCidadeLis.dp.php",
+	        dataType: 'json',
+	        quietMillis: 250,
+	        data: function (term, page) {
+	            return {
+	                q: term, // search term
+	            };
+	        },
+	        results: function (data) {
+				return {results: data};
+			},
+	        cache: true
+	    },
+		initSelection : function (element, callback) {
+			var id = $(element).val();
+            if (id !== "") {
+                $.ajax("%ROOT_URL%/Fin/getCidadeLis.dp.php", {
+                    data: {codCidade: id},
+        			method: "GET",
+                    dataType: "json"
+				}).done(function(data) {
+					callback(data[0]);
+				});
+			}
+	    },
+	});
+}
+
+function delRowEnderecoPessoaAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
+}
+
+function addRowContaPessoaAlt() {
+	$('#pessoaAltTableContaID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="hidden" name="codBanco[]" style="width:400px;" class="select2" data-rel="select2Banco"></td><td><input class="form-control" type="text" name="agencia[]" placeholder="Agência"  maxlength="8" autocomplete="off"></td><td><input class="form-control" type="text" name="ccorrente[]" placeholder="Conta Corrente" maxlength="20" autocomplete="off"/></td><td class="center"><span class="center" zgdelete onclick="delRowContaPessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codConta[]"></td></tr>');
+	$('#pessoaAltTableContaID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	$('#pessoaAltTableContaID > tbody > tr:last .select2').select2({
+	    minimumInputLength: 2,
+	    allowClear: true,
+	    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+	        url: "%ROOT_URL%/Fin/getBancoLis.dp.php",
+	        dataType: 'json',
+	        quietMillis: 250,
+	        data: function (term, page) {
+	            return {
+	                q: term, // search term
+	            };
+	        },
+	        results: function (data) {
+				return {results: data};
+			},
+	        cache: true
+	    },
+		initSelection : function (element, callback) {
+			var id = $(element).val();
+            if (id !== "") {
+                $.ajax("%ROOT_URL%/Fin/getBancoLis.dp.php", {
+                    data: {codBanco: id},
+        			method: "GET",
+                    dataType: "json"
+				}).done(function(data) {
+					callback(data[0]);
+				});
+			}
+	    },
+	});
+	
+}
+
+function delRowContaPessoaAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
+}
+
+$('[data-rel="select2Banco"]').select2({
+    minimumInputLength: 2,
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fin/getBancoLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fin/getBancoLis.dp.php", {
+                data: {codBanco: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+$('[data-rel="select2Cidade"]').select2({
+    minimumInputLength: 2,
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fin/getCidadeLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fin/getCidadeLis.dp.php", {
+                data: {codCidade: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaPessoaAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function() {
+	
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	/** Resgatar a lista de segmentos associados **/
+	var itens 		= new Array();
+	$("#zgSortableSelID li").each(function(i, el){
+		itens[$(el).index()]	= $(el).attr("zg-data-id");
+	});
+	
+	$("#aSegsID").val(itens);
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codPessoaID').val(zgGetCodRetorno(data));
+		}
+
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+		zgMostraAviso("Fechar");
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(jqXHR);
+	});
+	
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", true );
+		}
+	});
+
+	return false; 
+});
+
+/*********************** Verificar o formulário ***********************/
+function validaPessoaAlt() {
+	var vTipo			= $('#tipoID').val();
+	var vRazao			= $('#razaoID').val();
+	var vFantasia		= $('#fantasiaID').val();
+	var vNome			= $('#nomeID').val();
+	var vRg		    	= $('#rgID').val();
+	var vIndEstrangeiro = $('#indEstrangeiroID').val();
+	var vBanco			= $('#bancoID').val();
+	var vAgencia		= $('#agenciaID').val();
+	var vCpf			= $('#cpfID').val();
+	var vCnpj			= $('#cnpjID').val();
+	var vCcorrente		= $('#ccorrenteID').val();
+	
+	var vOK				= true;
+	var vIdent;
+	
+	// Verificar campos de tipo fisica ou juridica
+	if ((vTipo == 'J')) {
+		if(!vRazao){
+			$('#divRazaoID').addClass('has-error');
+			$('#divHelpRazaoID').html(zgCriaSpanErro('Campo razão é obrigatório !!!'));
+			vOK		= false;
+		}else if(vRazao.length > 100){
+			$('#divRazaoID').addClass('has-error');
+			$('#divHelpRazaoID').html(zgCriaSpanErro('Campo razão não deve conter mais de 100 caracteres !!!'));
+			vOK		= false;
+		}else{
+			$('#divRazaoID').removeClass('has-error');
+			$('#divHelpRazaoID').html('&nbsp;');
+		}
+		if(!vFantasia){
+			$('#divFantasiaID').addClass('has-error');
+			$('#divHelpFantasiaID').html(zgCriaSpanErro('Campo fantasia é obrigatório !!!'));
+			vOK		= false;
+		}else if(vFantasia.length > 60){
+			$('#divFantasiaID').addClass('has-error');
+			$('#divHelpFantasiaID').html(zgCriaSpanErro('Campo fantasia não deve conter mais de 60 caracteres !!!'));
+			vOK		= false;
+		}else{
+			$('#divFantasiaID').removeClass('has-error');
+			$('#divHelpFantasiaID').html('&nbsp;');
+		}
+	}else if ((vTipo == 'F')) {
+		if(!vNome){
+			$('#divNomeID').addClass('has-error');
+			$('#divHelpNomeID').html(zgCriaSpanErro('Campo nome é obrigatório !!!'));
+			vOK		= false;
+		}else if(vNome.length > 100){
+			$('#divNomeID').addClass('has-error');
+			$('#divHelpNomeID').html(zgCriaSpanErro('Campo razão não nome conter mais de 100 caracteres !!!'));
+			vOK		= false;
+		}else{
+			$('#divNomeID').removeClass('has-error');
+			$('#divHelpNomeID').html('&nbsp;');
+		}
+		if(vRg.length > 60){
+			$('#divRgID').addClass('has-error');
+			$('#divHelpRgID').html(zgCriaSpanErro('Campo rg não deve conter mais de 60 caracteres !!!'));
+			vOK		= false;
+		}else{
+			$('#divRgID').removeClass('has-error');
+			$('#divHelpRgID').html('&nbsp;');
+		}
+	}else{
+		$('#divTipoID').removeClass('has-error');
+		$('#divHelpTipoID').html('&nbsp;');		
+	}
+	
+	// Verificar CPF / CGC (obrigatórios para pessoas não estrangeiras)
+	if (vIndEstrangeiro == '0') {
+		if ((vTipo == 'F')) {
+			if (!vCpf) {
+				$('#divCpfID').addClass('has-error');
+				$('#divHelpCpfID').html(zgCriaSpanErro('Campo CPF é obrigatório !!!'));
+				vOK		= false;
+			}else{
+				$('#divCpfD').removeClass('has-error');
+				$('#divHelpCpfID').html('&nbsp;');
+			}
+		}else if ((vTipo == 'J')) {
+			if (!vCnpj) {
+				$('#divCnpjID').addClass('has-error');
+				$('#divHelpCnpjID').html(zgCriaSpanErro('Campo CNPJ é obrigatório !!!'));
+				vOK		= false;
+			}else{
+				$('#divCnpjD').removeClass('has-error');
+				$('#divHelpCnpjID').html('&nbsp;');
+			}
+		}
+	}
+	
+	// Verificar campos de conta
+	if (vBanco || vAgencia || vCcorrente) {
+		if (!vBanco) {
+			$('#divBancoID').addClass('has-error');
+			$('#divHelpBancoID').html(zgCriaSpanErro('Campo banco é obrigatório !!!'));
+			vOK		= false;
+		}else{
+			$('#divBancoID').removeClass('has-error');
+			$('#divHelpBancoID').html('&nbsp;');
+		}
+		if (!vAgencia) {
+			$('#divAgenciaID').addClass('has-error');
+			$('#divHelpAgenciaID').html(zgCriaSpanErro('Campo agencia é obrigatório !!!'));
+			vOK		= false;
+		}else{
+			$('#divAgenciaID').removeClass('has-error');
+			$('#divHelpAgenciaID').html('&nbsp;');
+		}
+		if (!vCcorrente) {
+			$('#divCcorrenteID').addClass('has-error');
+			$('#divHelpCcorrenteID').html(zgCriaSpanErro('Campo Conta Corrente é obrigatório !!!'));
+			vOK		= false;
+		}else{
+			$('#divCcorrenteID').removeClass('has-error');
+			$('#divHelpCcorrenteID').html('&nbsp;');
+		}
+	}	
+	
+	
+	/** Valida os Telefones **/
+	var $codTelefone 	= $("input[name='codTelefone\\[\\]']");
+	var $telefone 		= $("input[name='telefone\\[\\]']");
+	var $telefoneCount	= $("input[name='telefone\\[\\]']");
+	var $vCount			= 0;
+	for (i = 0; i < $codTelefone.length; i++) {
+		var $td		= $telefone.eq(i).parent();
+		var $tr		= $td.parent();
+		
+		for (j = 0; j < $codTelefone.length; j++) {
+			if($telefone.eq(i).val() == $telefoneCount.eq(j).val()){
+				$vCount++;
+			}
+		}
+		
+		if($vCount > 1){
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone repetido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if (!$telefone.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone deve ser preenchido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if ($telefone.eq(i).val().length < 14) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone inválido "));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}
+		
+		$vCount = 0;
+	}
+	
+	/** Valida os Endereços **/
+	var $codEndereco 	= $("input[name='codEndereco\\[\\]']");
+	var $cep 			= $("input[name='cep\\[\\]']");
+	var $bairro			= $("input[name='bairro\\[\\]']");
+	var $endereco		= $("input[name='endereco\\[\\]']");
+	var $cidade			= $("input[name='codCidade\\[\\]']");
+	for (i = 0; i < $codEndereco.length; i++) {
+		var $td		= $cep.eq(i).parent();
+		var $tr		= $td.parent();
+		
+		if (!$cep.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Cep deve ser preenchido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if ($cep.eq(i).val().length != 9) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Cep inválido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if (!$bairro.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Bairro deve ser preenchido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if (!$endereco.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Endereço deve ser preenchido"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if (!$cidade.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Cidade deve ser selecionada"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}
+	}
+
+	/** Valida as informaçoes bancárias **/
+	var $codConta 	= $("input[name='codConta\\[\\]']");
+	var $codBanco	= $("input[name='codBanco\\[\\]']");
+	var $agencia	= $("input[name='agencia\\[\\]']");
+	var $ccorrente	= $("input[name='ccorrente\\[\\]']");
+	
+	for (i = 0; i < $codConta.length; i++) {
+		var $td		= $codBanco.eq(i).parent();
+		var $tr		= $td.parent();
+		if (!$codBanco.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Banco deve ser selecionado"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if (!$agencia.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Agência deve ser preenchida"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if ($agencia.eq(i).val().length < 3) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Agência inválida"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if (!$ccorrente.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Conta Corrente deve ser preenchida"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else if ($ccorrente.eq(i).val().length < 3) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Conta Corrente inválida"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}
+	}
+
+	
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+var timer;
+
+$("#cnpjID").typeahead({
+	minLength: 	18,
+	itens:		%APP_BS_TA_ITENS%,
+    source : function(query,process) {
+    	clearTimeout(timer);
+    	timer=setTimeout(function() {
+	    	$.ajax({
+	            type: "GET",
+	    	    url: "%ROOT_URL%/Fin/pessoaLisCgc.dp.php",
+	        	dataType: "json",
+				data: { q: query },
+	        	async: false,
+	        	success: function(data) {
+	        		if (data == $("#cnpjID").cleanVal() ) {
+	        			var cid = zgEncodeUrl('_codMenu_=%COD_MENU%&_icone_=%IC%&codPessoa=&tipoCadPessoa=%TIPO_CAD_PESSOA%&loadCgc='+$("#cnpjID").cleanVal()+'&url=');
+	        			zgLoadUrl('%ROOT_URL%/Fin/pessoaAlt.php?id='+cid);
+	        			return;
+	        		}else{
+	        			return(process(data));
+	        		}
+	        		
+	        		
+	            }
+	    	})
+    	}, %APP_BS_TA_TIMEOUT%);
+    }
+});
+
+$("#cpfID").typeahead({
+	minLength: 	14,
+	itens:		%APP_BS_TA_ITENS%,
+    source : function(query,process) {
+    	clearTimeout(timer);
+    	timer=setTimeout(function() {
+	    	$.ajax({
+	            type: "GET",
+	    	    url: "%ROOT_URL%/Fin/pessoaLisCgc.dp.php",
+	        	dataType: "json",
+				data: { q: query },
+	        	async: false,
+	        	success: function(data) {
+	        		if (data == $("#cpfID").cleanVal() ) {
+	        			var cid = zgEncodeUrl('_codMenu_=%COD_MENU%&_icone_=%IC%&codPessoa=&tipoCadPessoa=%TIPO_CAD_PESSOA%&loadCgc='+$("#cpfID").cleanVal()+'&url=');
+	        			zgLoadUrl('%ROOT_URL%/Fin/pessoaAlt.php?id='+cid);
+	        			return;
+	        		}else{
+	        			return(process(data));
+	        		}
+	        		
+	        		
+	            }
+	    	})
+    	}, %APP_BS_TA_TIMEOUT%);
+    }
+});
+
+$(".select2").select2();
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.datepicker').datepicker();
+
+$("#zgSortableDisID" ).sortable({
+	connectWith: ".connectedSortable",
+	placeholder: "ui-state-highlight",
+	cursor: "move",
+	revert: true,
+}).disableSelection();
+
+$("#zgSortableSelID" ).sortable({
+	connectWith: ".connectedSortable",
+	placeholder: "ui-state-highlight",
+	cursor: "move",
+	revert: true,
+}).disableSelection();
+
+
+</script>

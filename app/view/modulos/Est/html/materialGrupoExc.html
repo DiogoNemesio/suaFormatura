@@ -1,0 +1,63 @@
+<form id="zgFormID" class="form-horizontal">
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h4 class=""><i class="fa fa-folder blue"></i>%TITULO%</h4>
+		</div>
+		<div class="modal-body" style="overflow-y: scroll; height: 200px;">
+			<input type="hidden" name="codGrupo" value="%COD_GRUPO%">
+			<div>
+				<div class="row">
+					<div class="col-sm-12">
+						<h5 class="%CLASSE% center">%MENSAGEM%</h5>
+			    	</div>
+				</div>		   
+		    	<div class="row" id="divPastaMsgID">
+				</div>
+		    </div>
+		</div>
+		<div class="modal-footer">
+			<button type="submit" class="btn btn-danger" id="submit" %PODE_REMOVER%>Excluir</button>
+			<button type="button" data-dismiss="modal" class="btn ">Fechar</button>
+		</div>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divPastaMsgID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divPastaMsgID',zgGetMsgRetorno(data));
+		}
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('divPastaMsgID',errorThrown);
+	});
+	return false; 
+});
+
+$("input,textarea").jqBootstrapValidation({
+	preventSubmit: true
+});
+
+$(".chosen-select").chosen();
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: 'Restando: %n character%s ...',
+	limitText: 'Max: %n.'
+});
+
+</script>

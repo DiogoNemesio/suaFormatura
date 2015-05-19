@@ -1,0 +1,180 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Endereço 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codEnderecoID" name="codEndereco" value="%COD_ENDERECO%">
+				<input type="hidden" name="codLocal" value="%COD_LOCAL%">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+				    		<div class="form-group">
+						    	<label class="col-sm-4 control-label" for="codTipoID">Tipo</label>
+				    			<div class="input-group col-sm-6">
+									<select onchange="zgMostraDivsEndereco();" class="select2 %READONLY%" style="width:100%;" id="codTipoID" name="codTipo" %DISABLED% data-rel="select2">
+									%TIPOS%
+									</select>
+								</div>
+						    </div>
+							<div class="form-group" id="divNomeID">
+						    	<label class="col-sm-4 control-label " for="nomeID">Nome</label>
+				    			<div class="input-group col-sm-6">
+				   					<span class="input-group-addon"><i class="fa fa-archive "></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" %READONLY% autocomplete="off">	
+				    			</div>
+				    		</div>
+				    	</div>
+				    	<div class="col-sm-6">
+				    		<div class="form-group">
+								<label class="col-sm-4 control-label" for="ativoID">Ativo</label>
+								<div class="input-group col-sm-6">
+								<label><input id="ativoID" name="ativo" type="checkbox" class="ace" %ATIVO% /><span class="lbl">&nbsp;</span></label>
+								</div>
+						   	</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="bloqueadoID">Bloqueado</label>
+								<div class="input-group col-sm-6">
+									<label><input id="bloqueadoID" name="bloqueado" type="checkbox" class="ace" %BLOQUEADO% /><span class="lbl">&nbsp;</span></label>
+								</div>
+						   	</div>
+						</div>
+				    </div>
+					<h4 class="header blue bolder smaller">Endereço</h4>
+					<div class="vspace-xs"></div>
+					<div class="row" id="divEstanteID">
+						<div class="form-group">
+							<label class="col-sm-4 control-label " for="ruaID">Rua</label>
+			    			<div class="input-group col-sm-6">
+			   					<span class="input-group-addon"><i class="fa fa-road"></i></span>
+			   					<input class="col-sm-2" id="ruaID" type="text" name="rua" maxlength="4" value="%RUA%"  %READONLY% autocomplete="off">	
+			    			</div>
+			    		</div>
+			    		<div class="form-group">
+			    			<label class="col-sm-4 control-label " for="estanteID">Estante</label>
+			    			<div class="input-group col-sm-6">
+			   					<span class="input-group-addon"><i class="fa fa-sliders"></i></span>
+			   					<input class="col-sm-2" id="estanteID" type="text" name="estante" maxlength="4" value="%ESTANTE%"  %READONLY% autocomplete="off">	
+			    			</div>
+						</div>		
+			    		<div class="form-group" id='divPrateleiraID'>
+			    			<label class="col-sm-4 control-label " for="prateleiraID">Prateleira</label>
+			    			<div class="input-group col-sm-6">
+			   					<span class="input-group-addon"><i class="fa fa-reorder"></i></span>
+			   					<input class="col-sm-2" id="prateleiraID" type="text" name="prateleira" maxlength="4" value="%PRATELEIRA%"  %READONLY% autocomplete="off">	
+			    			</div>
+						</div>		
+			    		<div class="form-group" id='divColunaID'>
+			    			<label class="col-sm-4 control-label " for="colunaID">Coluna</label>
+			    			<div class="input-group col-sm-6">
+			   					<span class="input-group-addon"><i class="fa fa-archive "></i></span>
+			   					<input class="col-sm-2" id="colunaID" type="text" name="coluna" maxlength="4" value="%COLUNA%"  %READONLY% autocomplete="off">	
+			    			</div>
+						</div>
+					</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label" >&nbsp;</label>
+    					<button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-check bigger-110"></i> Salvar</button>
+						<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+						<button type="button" class="btn btn-success" %DISABLED% id="btGerarID" onclick="gerarCodigos();"><i class="fa fa-cog bigger-110"></i> Gerar </button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$( document ).ready(function() {
+	zgMostraDivsEndereco();
+});
+
+$('#zgFormID').submit(function() {
+	
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+			//$(this).removeAttr('disabled');
+		}
+	});
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codEnderecoID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar");
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", true );
+		}
+	});
+	return false; 
+});
+
+function gerarCodigos() {
+	zgAbreModal('%URLGERAR%&codTipo='+$('#codTipoID').val()+'&rua='+$('#ruaID').val()+'&estante='+$('#estanteID').val()+'&prateleira='+$('#prateleiraID').val()+'&coluna='+$('#colunaID').val());
+	
+}
+
+$(".select2").select2();
+
+$("input,textarea").jqBootstrapValidation({
+	preventSubmit: true
+});
+
+
+function zgMostraDivsEndereco() {
+	var vMostraNome		= ['L'];
+	var vMostraEst		= ['E','B'];
+	var vMostraPra		= ['E'];
+	var vMostraCol		= ['E'];
+	var vMostraBT		= ['E','B'];
+
+	var vTipo			= $('#codTipoID').val(); 
+	
+	if (vMostraNome.indexOf(vTipo) < 0) {
+		$('#divNomeID').addClass("hidden");
+	}else{
+		$('#divNomeID').removeClass("hidden");
+	}
+	
+	if (vMostraEst.indexOf(vTipo) < 0) {
+		$('#divEstanteID').addClass("hidden");
+	}else{
+		$('#divEstanteID').removeClass("hidden");
+	}
+	
+	if (vMostraPra.indexOf(vTipo) < 0) {
+		$('#divPrateleiraID').addClass("hidden");
+	}else{
+		$('#divPrateleiraID').removeClass("hidden");
+	}
+	
+	if (vMostraCol.indexOf(vTipo) < 0) {
+		$('#divColunaID').addClass("hidden");
+	}else{
+		$('#divColunaID').removeClass("hidden");
+	}
+
+	if (vMostraBT.indexOf(vTipo) < 0) {
+		$('#btGerarID').addClass("hidden");
+	}else{
+		$('#btGerarID').removeClass("hidden");
+	}
+}
+
+</script>

@@ -1,0 +1,23 @@
+ZgRegiao:
+    type: entity
+    table: ZG_REGIAO
+    id:
+        codigo:
+            type: string
+            nullable: false
+            length: 2
+            fixed: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: true
+            length: 40
+            fixed: false
+            comment: ''
+            column: NOME
+    lifecycleCallbacks: {  }

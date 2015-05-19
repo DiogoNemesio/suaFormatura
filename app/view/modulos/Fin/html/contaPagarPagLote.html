@@ -1,0 +1,163 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-check red"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 420px;">
+	<input type="hidden" name="codContaLote" value="%COD_CONTA%">
+	<input type="hidden" name="id" value="%ID%">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="form-group">
+		    	<label class="col-sm-12 control-label center">%MENSAGEM%</label>
+    		</div>
+    	</div>
+		<div class="col-sm-12 form-group">
+			<label class="col-sm-3 control-label" for="codFormaPagLoteID">Forma de Pag.</label>
+   			<div class="input-group col-sm-5 pull-left">
+   				<span tabindex="99001" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Forma de Pagamento da Conta"><i class="fa fa-question-circle"></i></span>
+				<select class="select2" style="width:100%;" id="codFormaPagLoteID" name="codFormaPagLote" data-rel="select2">
+				%FORMAS_PAG%
+				</select>
+			</div>
+			<div class="col-sm-4 pull-left">
+    			<label class="control-label">
+    				<input id="usaOrigFormaLoteID" onchange="liberaFormaPagCPPagLote();" name="usaOrigFormaLote" type="checkbox" checked="checked" class="ace" /><span class="lbl">Usar original da conta</span>
+    			</label>
+    		</div>
+    	</div>
+    </div>
+	<div class="row">
+    	<div class="form-group col-sm-12">
+			<label class="col-sm-3 control-label" for="codContaDebLoteID">Conta de Débito</label>
+   			<div class="input-group col-sm-5 pull-left">
+   				<span tabindex="99002" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Conta de débito (Origem do recurso)"><i class="fa fa-question-circle"></i></span>
+				<select class="select2" style="width:100%;" id="codContaDebLoteID" name="codContaDebLote" data-rel="select2">
+				%CONTAS_DEB%
+				</select>
+			</div>
+			<div class="col-sm-4 pull-left">
+    			<label class="control-label">
+    				<input id="usaOrigContaLoteID" onchange="liberaContaDebCPPagLote();" name="usaOrigContaLote" type="checkbox" class="ace" checked="checked" /><span class="lbl">Usar original da conta</span>
+    			</label>
+    		</div>
+    	</div>
+    </div>
+	<div class="row">
+		<div class="form-group col-sm-12">
+			<label class="col-sm-3 control-label" for="dataPagLoteID">Data do Pag.</label>
+			<div class="input-group col-sm-5 pull-left">
+    			<span tabindex="99003" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Data de efetivação do pagamento"><i class="fa fa-question-circle"></i></span>
+   				<input class="form-control datepicker" id="dataPagLoteID" type="text" name="dataPagLote" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+			</div>
+			<div class="col-sm-4 pull-left">
+    			<label class="control-label">
+    				<input id="usaOrigVencLoteID" onchange="liberaDataPagCPPagLote();" name="usaOrigVencLote" type="checkbox" class="ace" checked="checked" /><span class="lbl">Usar original da conta</span>
+    			</label>
+    		</div>
+		</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-12 form-group">
+	    	<label class="col-sm-3 control-label" for="documentoID">Documento</label>
+   			<div class="input-group col-sm-5">
+    			<span tabindex="99008" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Documento (Você pode especificar algum documento relativo ao pagamento)"><i class="fa fa-question-circle"></i></span>
+    			<input class="form-control" id="documentoLoteID" type="text" name="documentoLote" maxlength="20" autocomplete="off" >
+	    	</div>
+    	</div>
+    </div>
+	<div class="row">
+		<div class="col-sm-12">
+		%GRID%
+		</div>
+	</div>		    
+    <div id="divMsgCPPagID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="submit" %PODE_PAG% class="btn btn-primary" id="submit">Efetivar o Pagamento</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#zgFormModalID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	$(this).select2({allowClear: true});
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}
+});
+
+liberaFormaPagCPPagLote();
+liberaContaDebCPPagLote();
+liberaDataPagCPPagLote();
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+function liberaFormaPagCPPagLote() {
+	var $usaOrig	= $('#usaOrigFormaLoteID').is(":checked");
+	if ($usaOrig == false) {
+		$('#codFormaPagLoteID').select2('readonly',false);
+	}else{
+		$('#codFormaPagLoteID').select2('readonly',true);
+	}
+}
+
+function liberaContaDebCPPagLote() {
+	var $usaOrig	= $('#usaOrigContaLoteID').is(":checked");
+	if ($usaOrig == false) {
+		$('#codContaDebLoteID').select2('readonly',false);
+	}else{
+		$('#codContaDebLoteID').select2('readonly',true);
+	}
+}
+
+function liberaDataPagCPPagLote() {
+	var $usaOrig	= $('#usaOrigVencLoteID').is(":checked");
+	if ($usaOrig == false) {
+		var $data	= $('#dataPagLoteID').val();
+		if (!$data)	{
+			$data	= "%DATA_PAG%";
+			$('#dataPagLoteID').val($data);
+		}
+		$('#dataPagLoteID').prop("disabled",false);
+	}else{
+		$('#dataPagLoteID').prop("disabled","disabled");
+	}
+}
+
+
+</script>

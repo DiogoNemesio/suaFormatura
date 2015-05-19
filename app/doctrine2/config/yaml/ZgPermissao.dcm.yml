@@ -1,0 +1,38 @@
+ZgPermissao:
+    type: entity
+    table: ZG_PERMISSAO
+    id:
+        codigo:
+            type: string
+            nullable: false
+            length: 2
+            fixed: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        descricao:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: DESCRICAO
+    manyToMany:
+        codMenuPerfil:
+            targetEntity: ZgMenuPerfil
+            cascade: {  }
+            mappedBy: codPermissao
+            inversedBy: null
+            joinTable: null
+            orderBy: null
+        codMenu:
+            targetEntity: ZgMenu
+            cascade: {  }
+            mappedBy: codPermissao
+            inversedBy: null
+            joinTable: null
+            orderBy: null
+    lifecycleCallbacks: {  }

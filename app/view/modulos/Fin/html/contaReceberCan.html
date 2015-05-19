@@ -1,0 +1,65 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-ban red"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 320px;">
+	<input type="hidden" name="codConta" value="%COD_CONTA%">
+	<input type="hidden" name="id" value="%ID%">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="form-group">
+		    	<label class="col-sm-12 control-label center">%MENSAGEM%</label>
+    		</div>
+    	</div>
+		<div class="col-sm-12">
+			<div class="form-group">
+		    	<label class="col-sm-3 control-label" for="motivoID">Informe o motivo</label>
+					<div class="input-group col-sm-8">
+						<span tabindex="99009" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Descreva o motivo do cancelamento"><i class="fa fa-question-circle"></i></span>
+						<input class="form-control" id="motivoID" type="text" %PODE_CAN% name="motivo" maxlength="200" required autocomplete="off">
+					</div>
+    		</div>
+    	</div>
+	</div>		    
+	<div class="row">
+		<div class="col-sm-12">
+		%GRID%
+		</div>
+	</div>		    
+    <div id="divMsgCPCanID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="submit" %PODE_CAN% class="btn btn-primary" id="submit">Desejo realmente CANCELAR</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#zgFormModalID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgCPCanID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divMsgCPCanID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+</script>

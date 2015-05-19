@@ -1,0 +1,293 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Agência 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codAgenciaID" name="codAgencia" value="%COD_AGENCIA%">
+				<input type="hidden" id="codBancoID" name="codBanco" value="%COD_BANCO%">
+				<input type='hidden' id='valID'>
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divNomeID">
+						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a agência."></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome da agência" maxlength="60" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />	
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+				    		</div>
+							<div class="form-group col-sm-12" id="divAgenciaID">
+						    	<label class="col-sm-3 control-label" for="agenciaID">Cód. Agência</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número da agẽncia."></i></span>
+				   					<input class="form-control" id="agenciaID" type="text" name="agencia" placeholder="Número da agência" maxlength="8" value="%AGENCIA%" required autocomplete="off">	
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpAgenciaID"></div>
+				    		</div>
+				    	</div>
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divBancoID">
+						    	<label class="col-sm-3 control-label" for="bancoID">Banco</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Digite o codígo ou o nome do banco para iniciar a pesquisa."></i></span>
+					    			<input class="form-control" type="text" name="banco" id="bancoID" placeholder="Consulta do Banco" value="%BANCO%" data-provide="typeahead" maxlength="100" autocomplete="off" onblur="checkBancoAlt();" />
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpBancoID"></div>
+						    </div>
+				    	</div>						  
+				    </div>
+
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+
+var timer;
+$("#bancoID").typeahead({
+	minLength: 	%APP_BS_TA_MINLENGTH%,
+	itens:		%APP_BS_TA_ITENS%,
+	updater: function (item) {
+		 var item = JSON.parse(item);
+		 $('#codBancoID').val(item.id);
+		 return item.name;
+	},
+    source : function(query,process) {
+    	var $datas = new Array;
+    	$datas = [""];
+    	clearTimeout(timer);
+    	timer=setTimeout(function() {
+	    	$.ajax({
+	            type: "GET",
+	    	    url: "%ROOT_URL%/Fin/bancoLis.dp.php",
+	        	dataType: "json",
+				data: { q: query },
+	        	async: false,
+	        	success: function(data) {
+	        		
+	        		$.map(data, function(data){
+	        			 var group;
+	        			 group = {
+	        			 	id: data.id,
+	        			 	name: data.name,
+	        			 	toString: function () {
+	        			 		return JSON.stringify(this);
+	        			 	},
+	        			 
+	        			 	toLowerCase: function () {
+	        			 		return this.name.toLowerCase();
+	        			 	},
+	        			 	indexOf: function (string) {
+	        			 		return String.prototype.indexOf.apply(this.name, arguments);
+	        			 	},
+	        			 	replace: function (string) {
+	        			 		var value = '';
+	        			 		value += this.name;
+	        			 		
+	        			 		if(typeof(this.name) != 'undefined') {
+	        			 			value += ' <span class="pull-right muted">';
+	        			 			value += '</span>';
+	        			 		}
+	        			 		return String.prototype.replace.apply('<div style="padding: 10px; font-size: 1em;">' + value + '</div>', arguments);
+	        			 	}
+	        			 };
+	        			 $datas.push(group);
+	        		});
+	        		
+	        		//alert(JSON.stringify(data));
+	        		return(process($datas));
+	            }
+	    	})
+    	}, %APP_BS_TA_TIMEOUT%);
+    }
+});
+
+/************************* Submit Formulário *************************/
+ 
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaAgenciaAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codAgenciaID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Agencia', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+
+function checkNomeAlt() {
+	var vNome	= $('#nomeID').val();
+	$('#valID').val(0);
+	
+	if (vNome.length == 0 || vNome.length > 60 ) {
+		$('#divNomeID').addClass('has-error');
+		if (vNome.length == 0){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
+		}else if (vNome.length > 30){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 60 caracteres !!!'));
+		}
+		return false;
+	}else{	
+		/** Verificar se o Descricao está disponível no banco **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Fin/agenciaValidaNome.dp.php",
+	   		data: {  codAgencia: $('#codAgenciaID').val() , nome: $('#nomeID').val()},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome já existe, escolha outro'));
+		return false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+		return true;
+	}
+}
+
+function checkBancoAlt() {
+	var vCodBanco	= $('#codBancoID').val();
+	$('#valID').val(0);
+	
+	if (vBanco.length == 0) {
+		$('#divBancoID').addClass('has-error');
+		$('#divHelpBancoID').html(zgCriaSpanErro('Banco deve ser preenchido !!!'));
+		return false;
+	}else{	
+		/** Verificar se o Banco está disponível no banco **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Fin/agenciaValidaBanco.dp.php",
+	   		data: {  codBanco: vCodBanco},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	if ($('#valID').val() == 0) {
+		$('#divBancoID').addClass('has-error');
+		$('#divHelpBancoID').html(zgCriaSpanErro('Banco inválido, selecione um banco válido'));
+		return false;
+	}else{
+		$('#divBancoID').removeClass('has-error');
+		$('#divHelpBancoID').html('&nbsp;');
+		return true;
+	}
+}
+
+function validaAgenciaAlt() {
+	var vNome			= $('#nomeID').val();
+	var vAgencia		= $('#agenciaID').val();
+	var vBanco			= $('#bancoID').val();
+	var vOK				= true;
+	var vIdent;
+	
+	// Nome
+	if (!vNome) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+	
+	// Agencia
+	if (vAgencia.length == 0 || vAgencia.length > 8 ) {
+		$('#divAgenciaID').addClass('has-error');
+		if (vAgencia.length == 0){
+			$('#divHelpAgenciaID').html(zgCriaSpanErro('Agência deve ser preenchido !!!'));
+		}else if (vAgencia.length > 8){
+			$('#divHelpAgenciaID').html(zgCriaSpanErro('Agência deve ter no máximo 8 caracteres !!!'));
+		}
+		vOK		= false;
+	}else{
+		$('#divAgenciaID').removeClass('has-error');
+		$('#divHelpAgenciaID').html('&nbsp;');
+	}
+	
+	vNomeCheck	= checkNomeAlt();
+	
+	if (vOK == true) {
+		return vNomeCheck ;
+	}else{
+		return vOK;
+	}	
+}
+
+</script>
+

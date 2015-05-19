@@ -1,0 +1,79 @@
+ZgLog:
+    type: entity
+    table: ZG_LOG
+    indexes:
+        fk_LOG_EVENTOS_1_idx:
+            columns:
+                - COD_USUARIO
+        fk_LOG_EVENTOS_2_idx:
+            columns:
+                - COD_TIPO_EVENTO
+        fk_LOG_EVENTOS_3_idx:
+            columns:
+                - COD_DICIONARIO
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        data:
+            type: datetime
+            nullable: false
+            comment: ''
+            column: DATA
+        valorAnterior:
+            type: string
+            nullable: true
+            length: 4000
+            fixed: false
+            comment: ''
+            column: VALOR_ANTERIOR
+        valorPosterior:
+            type: string
+            nullable: true
+            length: 4000
+            fixed: false
+            comment: ''
+            column: VALOR_POSTERIOR
+        historico:
+            type: string
+            nullable: true
+            length: 100
+            fixed: false
+            comment: ''
+            column: HISTORICO
+    manyToOne:
+        codUsuario:
+            targetEntity: ZgUsuario
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_USUARIO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codTipoEvento:
+            targetEntity: ZgLogTipo
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_TIPO_EVENTO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codDicionario:
+            targetEntity: ZgDicionario
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_DICIONARIO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

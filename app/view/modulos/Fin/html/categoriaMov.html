@@ -1,0 +1,78 @@
+<form id="zgFormID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-folder blue"></i>%TITULO%</h4>
+</div>
+<div class="modal-body">
+	<input type="hidden" name="codCategoria" value="%COD_CATEGORIA%">
+	<div>
+		<div class="row">
+			<div class="col-sm-11">
+				<div class="form-group">
+			    	<label class="col-sm-4 control-label" for="ativaID">Categoria: %DESCRICAO%</label>
+				</div>
+	    	</div>
+		</div>		   
+		<div class="row">
+	   		<div class="col-sm-11">
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="codCategoriaID">Categoria Destino:</label>
+	    			<div class="input-group col-sm-8">
+	    				<span class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a categoria de destino"><i class="fa fa-question-circle"></i></span>
+						<select class="select2 %SELECT_VIEW%" style="width:100%;" id="codCategoriaDestID" name="codCategoriaDest" data-rel="select2">
+						%CATEGORIAS%
+						</select>
+					</div>
+				</div>
+	    	</div>
+    	</div>
+    	<div class="row" id="divCatMsgID">
+		</div>
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" id="submit">Mover</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divCatMsgID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divCatMsgID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('divCatMsgID',errorThrown);
+	});
+	return false; 
+});
+
+$('[data-rel="select2"]').select2();
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+
+</script>

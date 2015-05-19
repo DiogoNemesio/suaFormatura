@@ -1,0 +1,36 @@
+ZgModulo:
+    type: entity
+    table: ZG_MODULO
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: NOME
+        descricao:
+            type: string
+            nullable: true
+            length: 300
+            fixed: false
+            comment: ''
+            column: DESCRICAO
+        apelido:
+            type: string
+            nullable: false
+            length: 3
+            fixed: false
+            comment: ''
+            column: APELIDO
+    lifecycleCallbacks: {  }

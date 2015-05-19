@@ -1,0 +1,395 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Usuário 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Usuário" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="codUsuario" id="codUsuarioID" value="%COD_USUARIO%">
+				<input type='hidden' id='valID'>
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#usuario-basico">
+								<i class="green fa fa-edit bigger-125"></i>
+								Informações básicas
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#usuario-seguranca">
+								<i class="blue fa fa-key bigger-125"></i>
+								Segurança
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#usuario-perfil">
+								<i class="purple fa fa-cog bigger-125"></i>
+								Perfil
+							</a>
+						</li>
+					</ul>
+	
+					<div class="tab-content profile-edit-tab-content">
+						<div id="usuario-basico" class="tab-pane in active">
+							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divUsuarioID">
+								    	<label class="col-sm-3 control-label" for="usuarioID">Usuário</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Usuário de acesso único de acesso ao sistema"></i></span>
+						   					<input class="width-100" id="usuarioID" type="text" maxlength="25" name="usuario" value="%USUARIO%" placeholder="Usuário" onblur="checkUsuario();" %PODEALTERAR% autocomplete="off">
+						    			</div>
+						    			<div class="col-sm-1 pull-left" id="divHelpUsuarioID"></div>
+						    		</div>
+									<div class="form-group col-sm-12" id="divNomeID">
+								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+						    			<div class="input-group col-sm-8 pull-left">
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome completo do usuário"></i></span>
+							    			<input class="width-100" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" placeholder="Nome completo" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divSexoID">
+										<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
+						    			<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do usuário"></i></span>
+											<select class="select2" style="width:100%;" id="sexoID" name="sexo" data-rel="select2">
+												%SEXO%
+											</select>
+										</div>
+									</div>
+									<div class="form-group col-sm-12" id="divStatusID">
+										<label class="col-sm-3 control-label" for="codStatusID">Status</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o status atual do usuário"></i></span>
+											<select class="select2" style="width:100%;" id="codStatusID" name="codStatus" data-rel="select2">
+												%COD_STATUS%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpStatusID"></div>
+									</div>
+						    	</div>
+						    </div>
+							<h4 class="header blue bolder smaller">Contato</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divEmailID">	
+						    			<label class="col-sm-3 control-label" for="emailID">Email</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Endereço de E-mail"></i></span>
+						   					<input class="width-100" id="emailID" type="email" name="email" maxlength="120" placeholder="E-mail" value="%EMAIL%" autocomplete="off">
+						    			</div>
+						    		</div>
+									<div class="form-group col-sm-12" id="divTelefoneID">
+						    			<label class="col-sm-3 control-label" for="telefoneID">Telefone</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do telefone"></i></span>
+						   					<input class="width-100" id="telefoneID" type="text" name="telefone" maxlength="14" value="%TELEFONE%" placeholder="Telefone" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
+						    			</div>
+						    		</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCelularID">
+						    			<label class="col-sm-3 control-label" for="celularID">Celular</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do telefone celular"></i></span>
+						   					<input class="width-100" id="celularID" type="text" name="celular" maxlength="14" value="%CELULAR%" placeholder="Celular" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
+						    			</div>
+						    		</div>
+								</div>
+							</div>
+						</div>
+	
+						<div id="usuario-seguranca" class="tab-pane in">
+							<h4 class="header blue bolder smaller">Segurança</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divSenhaID">
+								    	<label class="col-sm-3 control-label" for="senhaID">Senha</label>
+						    			<div class="input-group col-sm-8 pull-left">
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Senha de acesso ao sistema"></i></span>
+							    			<input class="width-100" id="senhaID" type="password" name="senhaCad" maxlength="16" placeholder="Senha" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpSenhaID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divConfSenhaID">
+								    	<label class="col-sm-3 control-label" for="confSenhaID">Confirmação</label>
+						    			<div class="input-group col-sm-8 pull-left">
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Confirmação da senha"></i></span>
+							    			<input class="width-100" id="confSenhaID" type="password" name="confSenhaCad" maxlength="16" placeholder="Confirmação da senha" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpConfSenhaID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group">
+										<label class="col-sm-6 control-label"><input name="indTrocarSenha" type="checkbox" class="ace" %IND_TROCAR_SENHA% /><span class="lbl">&nbsp;Alterar senha no próximo acesso</span></label>
+								    </div>
+								</div>
+							</div>
+						</div>
+						<div id="usuario-perfil" class="tab-pane">
+							<input id="avatarID" type="hidden" name="avatar" value="%COD_AVATAR%">
+							<div class="space-4"></div>
+							<span class="profile-picture">
+								<img id="avatarAtualID" class="editable img-responsive" src="%AVATAR_LINK%" />
+							</span>
+							<div class="space-10"></div>
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="row-fluid">
+										<ul class="ace-thumbnails">
+										%AVATARS%
+										</ul>
+									</div><!-- PAGE CONTENT ENDS -->
+								</div><!-- /.col -->
+							</div><!-- /.row -->
+						</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label" >&nbsp;</label>
+    					<button type="button" class="btn btn-primary" id="btnSubmitID">
+							<i class="fa fa-check bigger-110"></i> Salvar
+						</button>
+						<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#perfilID').css('width','100%').select2({allowClear:true});
+$('#sexoID').css('width','100%').select2({allowClear:true});
+$('#codStatusID').css('width','100%').select2({allowClear:true});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=popover]').popover({html:true});
+
+/******************************************************
+SUBMIT FORMULÁRIO
+/******************************************************/
+// Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaUsuarioAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+// Submeter o formulário
+$('#zgFormID').submit(function(e) {
+	
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codUsuarioID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Usuário', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});
+
+/******************************************************
+VALIDA FORMULÁRIO  
+/******************************************************/
+//Valida usuário
+function checkUsuario() {
+	var vUsuario	= $('#usuarioID').val();
+	$('#valID').val(0);
+	
+	if (vUsuario.length < 2) {
+		$('#divUsuarioID').addClass('has-error');
+		if (vUsuario.length == 0){
+			$('#divHelpUsuarioID').html(zgCriaSpanErro('Usuário deve ser preenchido !!'));
+			return false;
+		}else{
+			$('#divHelpUsuarioID').html(zgCriaSpanErro('Usuário muito pequeno, informe o usuário com mais caracteres !!'));
+			return false;
+		}
+		
+	}else{
+		//Verificar se o nome está disponível no banco
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Seg/usuarioVerifca.dp.php",
+	   		data: {  codUsuario: $('#codUsuarioID').val() , usuario: vUsuario},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+		
+		if ($('#valID').val() == 0) {
+			$('#divUsuarioID').addClass('has-error');
+			$('#divHelpUsuarioID').html(zgCriaSpanErro('Já existe uma empresa com este CNPJ !!'));
+			return false;
+		}else{
+			$('#divUsuarioID').removeClass('has-error');
+			$('#divHelpUsuarioID').html('&nbsp;');
+			return true;
+		}
+	}	
+}
+
+//Valida formulário
+function validaUsuarioAlt() {
+	var vNome		 = $('#nomeID').val();
+	var vSenha		 = $('#senhaID').val();
+	var vConfSenha	 = $('#confSenhaID').val();
+	var vStatus		 = $('#codStatusID').val();
+		
+	var vOK				= true;
+	var vIdent;
+	
+	//USUARIO
+	vOK = checkUsuario();
+	
+	//NOME
+	if (vNome) {
+		if (vNome.length < 4){			
+			$('#divNomeID').addClass('has-error');
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome muito pequeno, informe o nome completo !!'));
+			vOK		= false;
+		}else if (vNome.length > 60){
+			$('#divNomeID').addClass('has-error');
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 60 caracteres !!'));
+			vOK		= false;
+		}else{
+			$('#divNomeID').removeClass('has-error');
+			$('#divHelpNomeID').html('&nbsp;');		
+		}
+	}else{
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!'));
+		vOK		= false;
+	}
+	
+	//SENHA
+	if (vSenha) {
+		if (vSenha.length < 4){			
+			$('#divSenhaID').addClass('has-error');
+			$('#divHelpSenhaID').html(zgCriaSpanErro('Insira uma senha com mais caracteres !!'));
+			vOK		= false;
+		}else{
+			$('#divSenhaID').removeClass('has-error');
+			$('#divHelpSenhaID').html('&nbsp;');		
+		}
+	}
+	
+	//CONF SENHA
+	if (vSenha != vConfSenha) {
+		$('#divConfSenhaID').addClass('has-error');
+		$('#divHelpConfSenhaID').html(zgCriaSpanErro('A senha está diferente da confirmação !!'));
+		vOK		= false;
+	}else{
+		$('#divConfSenhaID').removeClass('has-error');
+		$('#divHelpConfSenhaID').html('&nbsp;');		
+	}
+	
+	//STATUS
+	if (!vStatus) {
+		$('#divStatusID').addClass('has-error');
+		$('#divHelpStatusID').html(zgCriaSpanErro('Campo status é obrigatório !!'));
+		vOK		= false;
+	}else{
+		$('#divStatusID').removeClass('has-error');
+		$('#divHelpStatusID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+
+function zgAlteraAvatar(pCodigo,pUrl) {
+	$('#avatarID').val(pCodigo);
+	$("#avatarAtualID").attr("src",pUrl);
+}
+
+var colorbox_params = {
+	reposition:true,
+	scalePhotos:true,
+	scrolling:false,
+	previous:'<i class="fa fa-arrow-left"></i>',
+	next:'<i class="fa fa-arrow-right"></i>',
+	close:'&times;',
+	current:'{current} of {total}',
+	maxWidth:'100%',
+	maxHeight:'100%',
+	onOpen:function(){
+		document.body.style.overflow = 'hidden';
+	},
+	onClosed:function(){
+		document.body.style.overflow = 'auto';
+	},
+	onComplete:function(){
+		$.colorbox.resize();
+	}
+};
+
+$('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
+$("#cboxLoadingGraphic").append("<i class='fa fa-spinner orange'></i>");//let's add a custom loading icon
+
+
+</script>
+

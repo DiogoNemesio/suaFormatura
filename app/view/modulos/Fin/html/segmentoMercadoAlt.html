@@ -1,0 +1,140 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro Segmento de Mercado 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codSegmentoID" name="codSegmento" value="%COD_CENTRO%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divDescricaoID">
+						    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Agrupamento de atuação de seus fornecedores no mercado."></i></span>
+				   					<input class="form-control" id="descricaoID" type="text" name="descricao" placeholder="Descrição do segmento" maxlength="60" value="%DESCRICAO%" required autocomplete="off" onblur="checkDescricaoAlt();" />
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
+				    		</div>
+				    	</div>
+				    </div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$(".select2").select2();
+$('[data-toggle="popover"]').popover();
+$('[data-rel=popover]').popover({html:true});
+
+$('.datepicker').datepicker();
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= checkDescricaoAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codSegmentoID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Segmento de Mercado', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+function checkDescricaoAlt() {
+	var vDescricao	= $('#descricaoID').val();
+	$('#valID').val(0);
+	
+	if (vDescricao.length == 0 || vDescricao.length > 60 ) {
+		$('#divDescricaoID').addClass('has-error');
+		if (vDescricao.length == 0){
+			$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve ser preenchido !!!'));
+		}else if (vDescricao.length > 30){
+			$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve ter no máximo 60 caracteres !!!'));
+		}
+		return false;
+	}else{	
+		/** Verificar se o Descricao está disponível no banco **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Fin/segmentoMercadoVerifica.dp.php",
+	   		data: {  codSegmento: $('#codSegmentoID').val() , descricao: $('#descricaoID').val()},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divDescricaoID').addClass('has-error');
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição já existe, escolha outro'));
+		return false;
+	}else{
+		$('#divDescricaoID').removeClass('has-error');
+		$('#divHelpDescricaoID').html('&nbsp;');
+		return true;
+	}
+}
+
+</script>
+

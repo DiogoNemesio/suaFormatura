@@ -1,0 +1,29 @@
+ZgDicionario:
+    type: entity
+    table: ZG_DICIONARIO
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: true
+            length: 60
+            fixed: false
+            comment: ''
+            column: NOME
+        descricao:
+            type: string
+            nullable: true
+            length: 60
+            fixed: false
+            comment: ''
+            column: DESCRICAO
+    lifecycleCallbacks: {  }

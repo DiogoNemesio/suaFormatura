@@ -1,0 +1,39 @@
+<div class="box-content center">
+    <form class="form-horizontal" id="zgFormID" method="post">
+	<input type="hidden" name="%VAR%" value="%VAR_VALUE%">
+	<input type="hidden" name="%VAR2%" value="%VAR_VALUE2%">
+	<input type="hidden" name="%VAR3%" value="%VAR_VALUE3%">
+	<input type="hidden" name="id" value="%ID%">
+    <fieldset>
+        <div class="page-header">
+    		<h4>%TEXTO%</h4>
+    	</div>
+		<div class="control-group ">
+			<div class="container-fluid">
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="controls">
+							<button type="submit" class="btn btn-primary" id="bSubmitID" %PODE_REMOVER% >Remover</button>
+							<button type="button" class="btn btn-warning" id="bCancelID" onclick="zgLoadUrl('%URLVOLTAR%');">Voltar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	    </fieldset>
+    </form>
+</div>
+<script>
+$('#zgFormID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),             
+	}).done(function( data, textStatus, jqXHR) {
+		zgMostraAviso("Fechar");
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+</script>

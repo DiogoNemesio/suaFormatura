@@ -1,0 +1,350 @@
+<div class="row">
+	<div class="col-sm-6 widget-container-span">
+		<div class="widget-box transparent">
+			<div class="widget-header">
+				<div class="pull-left"><label>Débitos</label></div>
+				<div class="pull-left btn-group">
+					<div id="filtroID">%FILTRO_DEB%</div>
+				</div><!-- /btn-group -->
+				
+				<div class="nav-search minimized pull-right" id="nav-search">
+					<form class="form-search" id="formBuscaDebID" onsubmit="return buscaArvoreDeb();">
+						<span class="input-icon">
+							<input name="busca" type="text" placeholder="Buscar" class="input-xs nav-search-input" id="nav-search-input-deb" autocomplete="off" />
+							<i class="ace-icon fa fa-search nav-search-icon"></i>
+						</span>
+					</form>
+				</div><!-- #nav-search -->
+			</div>
+			<div class="widget-body">
+				<div class="widget-main padding-6 no-padding-left no-padding-right">
+					<div id="catDebID"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6 widget-container-span">
+		<div class="widget-box transparent">
+			<div class="widget-header">
+				<div class="pull-left"><label>Créditos</label></div>
+				<div class="pull-left btn-group">
+					<div id="filtroID">%FILTRO_CRE%</div>
+				</div><!-- /btn-group -->
+				<div class="nav-search minimized pull-right" id="nav-search">
+					<form class="form-search" id="formBuscaCreID" onsubmit="return buscaArvoreCre();">
+						<span class="input-icon">
+							<input name="busca" type="text" placeholder="Buscar" class="input-xs nav-search-input" id="nav-search-input-cre" autocomplete="off" />
+							<i class="ace-icon fa fa-search nav-search-icon"></i>
+						</span>
+					</form>
+				</div><!-- #nav-search -->
+			</div>
+			<div class="widget-body">
+				<div class="widget-main padding-6 no-padding-left no-padding-right">
+					<div id="catCreID"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<form>
+	<input type="hidden" name="codCategoriaPaiSel" id="codCategoriaPaiSelID" />
+	<input type="hidden" name="codCategoriaSel" id="codCategoriaSelID" />
+</form>
+<script type="text/javascript">
+	
+	function zgContextMenuDeb(pNode) {
+		if (pNode.original.zgTipo == "folder") {
+			if (pNode.original.id == "%COD_PASTA_RAIZ%") {
+				var items = {
+						criaCat: { 
+							label: "Criar Categoria",
+							action: function (node) { criaCat(pNode.original.id,"D"); }
+						},
+					};
+			}else{
+				var items = {
+						criaCat: { 
+							label: "Criar Sub-Categoria",
+							action: function (node) { criaCat(pNode.original.id,"D"); },
+							"separator_after": true
+						},
+						alteraCat: { 
+							label: "Alterar",
+							action: function (node) { alteraCat(pNode.original.id,"D"); }
+						},
+						excluiCat: { 
+							label: "Excluir",
+							action: function (node) { excluiCat(pNode.original.id,"D"); },
+						},
+					};
+			}
+		}else{
+			var items = {
+					alteraCat: { 
+						label: "Alterar",
+						action: function (node) { alteraSubCat(pNode.original.id,"D"); }
+					},
+					moveCat: { 
+						label: "Mover",
+						action: function (node) { moveSubCat(pNode.original.id,"D"); }
+					},
+					excluiCat: { 
+						label: "Excluir",
+						action: function (node) { excluiSubCat(pNode.original.id,"D"); }
+					},
+				};
+	
+		}
+	
+		return items;
+	}
+
+	function zgContextMenuCre(pNode) {
+		if (pNode.original.zgTipo == "folder") {
+			if (pNode.original.id == "%COD_PASTA_RAIZ%") {
+				var items = {
+						criaCat: { 
+							label: "Criar Categoria",
+							action: function (node) { criaCat(pNode.original.id,"C"); }
+						},
+					};
+			}else{
+				var items = {
+						criaCat: { 
+							label: "Criar Sub-Categoria",
+							action: function (node) { criaCat(pNode.original.id,"C"); },
+							"separator_after": true
+						},
+						alteraCat: { 
+							label: "Alterar",
+							action: function (node) { alteraCat(pNode.original.id,"C"); }
+						},
+						excluiCat: { 
+							label: "Excluir",
+							action: function (node) { excluiCat(pNode.original.id,"C"); },
+						},
+					};
+			}
+		}else{
+			var items = {
+					alteraCat: { 
+						label: "Alterar",
+						action: function (node) { alteraSubCat(pNode.original.id,"C"); }
+					},
+					moveCat: { 
+						label: "Mover",
+						action: function (node) { moveSubCat(pNode.original.id,"C"); }
+					},
+					excluiCat: { 
+						label: "Excluir",
+						action: function (node) { excluiSubCat(pNode.original.id,"C"); }
+					},
+				};
+	
+		}
+	
+		return items;
+	}
+
+$(function () {
+		$(window).resize(function () {
+			var h = Math.max($(window).height() - 0, 420);
+			$('#container, #data, #tree, #data .content').height(h).filter('.default').css('lineHeight', h + 'px');
+		}).resize();
+
+		$('#catDebID').jstree({
+			'core' : {
+				'data' : %TREE_DATA_DEB%,
+				'themes' : {
+					'responsive' : false,
+					'variant' : 'default',
+					'stripes' : false
+				}
+			},
+			'types' : {
+				'default' : { 'icon' : 'folder' },
+				'file' : { 'valid_children' : [], 'icon' : 'file' }
+			},
+			'plugins' : ['state','dnd','types','unique','contextmenu'],
+			'contextmenu' : {
+		        'items' : zgContextMenuDeb,
+		        'select_node': false
+		    }
+		});
+		
+		$('#catCreID').jstree({
+			'core' : {
+				'data' : %TREE_DATA_CRE%,
+				'themes' : {
+					'responsive' : false,
+					'variant' : 'default',
+					'stripes' : false
+				}
+			},
+			'types' : {
+				'default' : { 'icon' : 'folder' },
+				'file' : { 'valid_children' : [], 'icon' : 'file' }
+			},
+			'plugins' : ['state','dnd','types','unique','contextmenu'],
+			'contextmenu' : {
+		        'items' : zgContextMenuCre,
+		        'select_node': false
+		    }
+		})
+
+	});
+	
+	$('#catDebID').on('select_node.jstree', function (e, data) {
+		if (data.instance.get_node(data.selected).original.zgTipo == "folder") {
+			selecionaCat(data.instance.get_node(data.selected).original.zgCodigo);
+		}else{
+			selecionaSubCat(data.instance.get_node(data.selected).original.zgCodigo,data.instance.get_node(data.selected).original.zgParent);
+		}
+	});
+	
+	$('#catCreID').on('select_node.jstree', function (e, data) {
+		if (data.instance.get_node(data.selected).original.zgTipo == "folder") {
+			selecionaCat(data.instance.get_node(data.selected).original.zgCodigo);
+		}else{
+			selecionaSubCat(data.instance.get_node(data.selected).original.zgCodigo,data.instance.get_node(data.selected).original.zgParent);
+		}
+	});
+
+	
+	$('#catDebID').on('hover_node.jstree', function (e, data) {
+		var vNome = data.node.original.zgNome + '&nbsp;&nbsp;&nbsp;<a class="fa fa-caret-down" onmouseover="mostraMenuContextoDeb(\\''+data.node.id+'\\');"></a>';
+		$('#catDebID').jstree('set_text',data.node.id , vNome);
+	});
+	
+	$('#catCreID').on('hover_node.jstree', function (e, data) {
+		var vNome = data.node.original.zgNome + '&nbsp;&nbsp;&nbsp;<a class="fa fa-caret-down" onmouseover="mostraMenuContextoCre(\\''+data.node.id+'\\');"></a>';
+		$('#catCreID').jstree('set_text',data.node.id , vNome);
+	});
+
+	
+	function mostraMenuContextoDeb(id) {
+		$('#catDebID').jstree('show_contextmenu',id);
+	}
+	
+	function mostraMenuContextoCre(id) {
+		$('#catCreID').jstree('show_contextmenu',id);
+	}
+
+	$('#catDebID').on('dehover_node.jstree', function (e, data) {
+		$('#catDebID').jstree('set_text',data.node.id , data.node.original.zgNome);
+	});
+	
+	$('#catCreID').on('dehover_node.jstree', function (e, data) {
+		$('#catCreID').jstree('set_text',data.node.id , data.node.original.zgNome);
+	});
+
+	$('[data-rel=tooltip]').tooltip();
+	$('[data-rel=popover]').popover({html:true});
+	
+	function selecionaCat(pCodigo) {
+		/** Seleciona a categoria que foi clicada **/
+		$('#codCategoriaPaiSelID').val(pCodigo);
+		
+	}
+
+	function selecionaSubCat(pCodItem,pCodPai) {
+		/** Seleciona a categoria pai do Item **/
+		$('#codCategoriaPaiSelID').val(pCodPai);
+		
+		/** Seleciona a Categoria **/
+		$('#codCategoriaSelID').val(pCodItem);
+
+	}
+	
+	function criaCat(pIdCat,pTipo) {
+		if (pTipo == "D") {
+			$obj	= $('#catDebID'); 
+		}else{
+			$obj	= $('#catCreID');
+		}
+		
+		$obj.jstree('deselect_all',true);
+		$obj.jstree('select_node',pIdCat);
+		zgAbreModal('%ROOT_URL%/Fin/categoriaAlt.php?id=%ID%&codTipo='+pTipo+'&codCategoriaPai='+$('#codCategoriaPaiSelID').val());
+	}
+	
+	function alteraCat(pIdCat,pTipo) {
+		if (pTipo == "D") {
+			$obj	= $('#catDebID'); 
+		}else{
+			$obj	= $('#catCreID');
+		}
+
+		$obj.jstree('deselect_all',true);
+		$obj.jstree('select_node',pIdCat);
+		zgAbreModal('%ROOT_URL%/Fin/categoriaAlt.php?id=%ID%&codTipo='+pTipo+'&codCategoria='+$('#codCategoriaPaiSelID').val());
+	}
+	
+	function alteraSubCat(pIdCat,pTipo) {
+		if (pTipo == "D") {
+			$obj	= $('#catDebID'); 
+		}else{
+			$obj	= $('#catCreID');
+		}
+
+		$obj.jstree('deselect_all',true);
+		$obj.jstree('select_node',pIdCat);
+		zgAbreModal('%ROOT_URL%/Fin/categoriaAlt.php?id=%ID%&codTipo='+pTipo+'&codCategoriaPai='+$('#codCategoriaPaiSelID').val()+'&codCategoria='+$('#codCategoriaSelID').val());
+	}
+
+	function excluiCat(pIdCat,pTipo) {
+		if (pTipo == "D") {
+			$obj	= $('#catDebID'); 
+		}else{
+			$obj	= $('#catCreID');
+		}
+		
+		$obj.jstree('deselect_all',true);
+		$obj.jstree('select_node',pIdCat);
+		zgAbreModal('%ROOT_URL%/Fin/categoriaExc.php?id=%ID%&codTipo='+pTipo+'&codCategoria='+$('#codCategoriaPaiSelID').val());
+	}
+
+	function excluiSubCat(pIdCat,pTipo) {
+		if (pTipo == "D") {
+			$obj	= $('#catDebID'); 
+		}else{
+			$obj	= $('#catCreID');
+		}
+		
+		$obj.jstree('deselect_all',true);
+		$obj.jstree('select_node',pIdCat);
+		zgAbreModal('%ROOT_URL%/Fin/categoriaExc.php?id=%ID%&codTipo='+pTipo+'&codCategoria='+$('#codCategoriaSelID').val());
+	}
+
+	function moveSubCat(pIdCat,pTipo) {
+		if (pTipo == "D") {
+			$obj	= $('#catDebID'); 
+		}else{
+			$obj	= $('#catCreID');
+		}
+		
+		$obj.jstree('deselect_all',true);
+		$obj.jstree('select_node',pIdCat);
+		zgAbreModal('%ROOT_URL%/Fin/categoriaMov.php?id=%ID%&codTipo='+pTipo+'&codCategoria='+$('#codCategoriaSelID').val());
+	}
+	
+	$('#formBuscaCreID').submit(function() {
+		return false;
+	});
+
+	$('#formBuscaDebID').submit(function() {
+		return false;
+	});
+
+	function buscaArvoreDeb() {
+		zgLoadUrl('%URL%&busDeb='+$('#nav-search-input-deb').val());
+		return false;
+	}
+
+	function buscaArvoreCre() {
+		zgLoadUrl('%URL%&busCre='+$('#nav-search-input-cre').val());
+		return false;
+	}
+
+	</script>

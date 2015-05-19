@@ -1,0 +1,134 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-check red"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 420px;">
+	<input type="hidden" name="codTransf" value="%COD_TRANSF%">
+	<input type="hidden" name="id" value="%ID%">
+	<div class="row">
+    	<div class="col-sm-12">
+			<div class="form-group">
+				<label class="col-sm-3 control-label" for="codFormaPagID">Forma de Pag.</label>
+    			<div class="input-group col-sm-8">
+    				<span tabindex="99001" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Forma de Pagamento da Conta"><i class="fa fa-question-circle"></i></span>
+					<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
+					%FORMAS_PAG%
+					</select>
+				</div>
+			</div>
+    	</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-12">
+			<div class="form-group">
+				<label class="col-sm-3 control-label" for="codContaOrigID">Conta de Origem</label>
+    			<div class="input-group col-sm-8">
+    				<span tabindex="99002" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Conta de débito (Origem do recurso)"><i class="fa fa-question-circle"></i></span>
+					<select class="select2 readonly" style="width:100%;" id="codContaOrigID" name="codContaOrig" data-rel="select2">
+					%CONTAS_ORIG%
+					</select>
+				</div>
+			</div>
+    	</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-12">
+			<div class="form-group">
+				<label class="col-sm-3 control-label" for="codContaDestID">Conta de Destino</label>
+    			<div class="input-group col-sm-8">
+    				<span tabindex="99002" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Conta de Crédito (Destino do recurso)"><i class="fa fa-question-circle"></i></span>
+					<select class="select2 readonly" style="width:100%;" id="codContaDestID" name="codContaDest" data-rel="select2">
+					%CONTAS_DEST%
+					</select>
+				</div>
+			</div>
+    	</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-12">
+			<div class="form-group">
+		    	<label class="col-sm-3 control-label" for="dataRecID">Data da Transferência</label>
+    			<div class="input-group col-sm-8">
+	    			<span tabindex="99003" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Data de realização da transferência"><i class="fa fa-question-circle"></i></span>
+	    			<input class="form-control datepicker" id="dataTransfID" type="text" name="dataTransf" maxlength="10" value="%DATA_TRANSF%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+		    	</div>
+		    </div>
+    	</div>
+    </div>
+    <div class="row">
+		<div class="col-sm-12">
+			<div class="form-group">
+		    	<label class="col-sm-3 control-label" for="valorID">Valor</label>
+    			<div class="input-group col-sm-8">
+	    			<span tabindex="99004" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Recebimento"><i class="fa fa-question-circle"></i></span>
+	    			<input class="form-control" id="valorID" type="text" name="valor" maxlength="20" value="%VALOR%" autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+		    	</div>
+		    </div>
+    	</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-12">
+			<div class="form-group">
+		    	<label class="col-sm-3 control-label" for="documentoID">Documento</label>
+    			<div class="input-group col-sm-8">
+	    			<span tabindex="99008" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Documento (Você pode especificar algum documento relativo ao recebimento)"><i class="fa fa-question-circle"></i></span>
+	    			<input class="form-control" id="documentoID" type="text" name="documento" maxlength="20" value="%DOCUMENTO%" autocomplete="off" >
+		    	</div>
+		    </div>
+    	</div>
+    </div>
+    <div id="divMsgTRConID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" id="submit">Realizar a transferência</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#zgFormModalID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgTRConID',zgGetMsgRetorno(data));
+			$('#zgDivModalID').on('hidden.bs.modal', function () {
+				zgLoadUrl('%URL_VOLTAR%');
+				$('#zgDivModalID').off('hidden.bs.modal');
+			});
+		}else{
+			zgMostraErro('divMsgTRConID',zgGetMsgRetorno(data));
+		}
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({"autoclose": true});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+</script>

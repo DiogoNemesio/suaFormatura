@@ -1,0 +1,30 @@
+ZgUsuarioStatusTipo:
+    type: entity
+    table: ZG_USUARIO_STATUS_TIPO
+    id:
+        codigo:
+            type: string
+            nullable: false
+            length: 1
+            fixed: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 40
+            fixed: false
+            comment: ''
+            column: NOME
+        indPermiteAcesso:
+            type: string
+            nullable: false
+            length: 1
+            fixed: false
+            comment: ''
+            column: IND_PERMITE_ACESSO
+    lifecycleCallbacks: {  }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>PDF Panel</title>
+    
+    <link rel="stylesheet" href="%PKG_URL%/ext_ux_pdf_panel/lib/extjs-4.1.1/resources/css/ext-all.css">
+	<link rel="stylesheet" href="%PKG_URL%/ext_ux_pdf_panel/ux/util/PDF/TextLayerBuilder.css">
+    
+	<script src="%PKG_URL%/ext_ux_pdf_panel/lib/extjs-4.1.1/ext-all.js"></script>
+	<script src="%PKG_URL%/ext_ux_pdf_panel/lib/pdf.js/compatibility.js"></script>
+	<script src="%PKG_URL%/ext_ux_pdf_panel/lib/pdf.js/pdf.js"></script>
+	<script src="%PKG_URL%/ext_ux_pdf_panel/ux/panel/PDF.js"></script>
+	<script src="%PKG_URL%/ext_ux_pdf_panel/ux/util/PDF/TextLayerBuilder.js"></script>
+    
+    <script>
+        Ext.onReady(function(){
+            Ext.tip.QuickTipManager.init();
+            
+            Ext.create('Ext.ux.panel.PDF', {
+                title    : 'PDF Panel',
+                width    : 100%,
+                height   : 100%,
+                pageScale: 1,        // Initial scaling of the PDF. 1 = 100%
+                src      : '%DOC_URL%', // URL to the PDF - Same Domain or Server with CORS Support
+                renderTo : Ext.getBody()
+            });
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>

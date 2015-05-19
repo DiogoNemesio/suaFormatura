@@ -1,0 +1,120 @@
+ZgMenu:
+    type: entity
+    table: ZG_MENU
+    indexes:
+        fk_ZG_MENU_2_idx:
+            columns:
+                - COD_MENU_PAI
+        fk_ZG_MENU_3_idx:
+            columns:
+                - COD_MODULO
+        fk_ZG_MENU_1_idx:
+            columns:
+                - COD_TIPO
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 25
+            fixed: false
+            comment: ''
+            column: NOME
+        descricao:
+            type: string
+            nullable: false
+            length: 40
+            fixed: false
+            comment: ''
+            column: DESCRICAO
+        link:
+            type: string
+            nullable: true
+            length: 100
+            fixed: false
+            comment: ''
+            column: LINK
+        nivel:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            column: NIVEL
+        icone:
+            type: string
+            nullable: true
+            length: 100
+            fixed: false
+            comment: ''
+            column: ICONE
+    manyToOne:
+        codTipo:
+            targetEntity: ZgMenuTipo
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_TIPO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codMenuPai:
+            targetEntity: ZgMenu
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_MENU_PAI:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+        codModulo:
+            targetEntity: ZgModulo
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_MODULO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    manyToMany:
+        codUsuario:
+            targetEntity: ZgUsuario
+            cascade: {  }
+            mappedBy: null
+            inversedBy: codMenu
+            joinTable:
+                name: zg_menu_hist_acesso
+                joinColumns:
+                    -
+                        name: COD_MENU
+                        referencedColumnName: CODIGO
+                inverseJoinColumns:
+                    -
+                        name: COD_USUARIO
+                        referencedColumnName: CODIGO
+            orderBy: null
+        codPermissao:
+            targetEntity: ZgPermissao
+            cascade: {  }
+            mappedBy: null
+            inversedBy: codMenu
+            joinTable:
+                name: zg_menu_permissao
+                joinColumns:
+                    -
+                        name: COD_MENU
+                        referencedColumnName: CODIGO
+                inverseJoinColumns:
+                    -
+                        name: COD_PERMISSAO
+                        referencedColumnName: CODIGO
+            orderBy: null
+    lifecycleCallbacks: {  }

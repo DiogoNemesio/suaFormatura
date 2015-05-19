@@ -1,0 +1,229 @@
+<form id="zgFormFiltroCPLisID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-search blue"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 400px;">
+	<div class="row">
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="descricaoID">Descrição</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99001" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Descrição da conta"><i class="fa fa-question-circle"></i></span>
+					<input class="form-control" placeholder="Descrição" type="text" name="descricao" maxlength="60" value="%DESCRICAO%" autocomplete="off">
+				</div>
+			</div>
+    	</div>
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="codFormaPagID">Forma de Pag.</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99002" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Forma de Pagamento da Conta"><i class="fa fa-question-circle"></i></span>
+    				<select class="multiselect" multiple="multiple" name="codFormaPag[]" id="codFormaPagID">
+					%FORMAS_PAG%
+					</select>
+				</div>
+			</div>
+    	</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="valorIniID">Valor Mínimo</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99003" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor Mínimo"><i class="fa fa-question-circle"></i></span>
+					<input class="form-control" type="text" placeholder="Valor Mínimo" name="valorIni" maxlength="20" value="%VALOR_INI%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+				</div>
+			</div>
+    	</div>
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="codCategoriaID">Categorias</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99004" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Categoria"><i class="fa fa-question-circle"></i></span>
+					<select class="multiselect" multiple="multiple" name="codCategoria[]" id="codCategoriaID">
+					%CATEGORIAS%
+					</select>
+				</div>
+			</div>
+    	</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="valorFimID">Valor Máximo</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99005" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor Máximo"><i class="fa fa-question-circle"></i></span>
+					<input class="form-control" type="text" placeholder="Valor Máximo" name="valorFim" maxlength="20" value="%VALOR_FIM%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+				</div>
+			</div>
+    	</div>
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="codCentroCustoID">Centro de Custo</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99006" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione o Centro de Custo"><i class="fa fa-question-circle"></i></span>
+					<select class="multiselect" multiple="multiple" name="codCentroCusto[]" id="codCentroCustoID">
+					%CENTRO_CUSTO%
+					</select>
+				</div>
+			</div>
+		</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="fornecedorID">Fornecedor</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99007" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Fornecedor"><i class="fa fa-question-circle"></i></span>
+					<input class="form-control" type="text" placeholder="Fornecedor" name="fornecedor" maxlength="60" value="%FORNECEDOR%" autocomplete="off">
+				</div>
+			</div>
+    	</div>
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="codContaID">Conta</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99008" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a conta"><i class="fa fa-question-circle"></i></span>
+					<select class="multiselect" multiple="multiple" name="codConta[]" id="codContaID">
+					%CONTAS%
+					</select>
+				</div>
+			</div>
+    	</div>
+    </div>
+	<div class="row">
+    	<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-sm-6 control-label" for="codStatusID">Status</label>
+    			<div class="input-group col-sm-6">
+    				<span tabindex="99009" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione o Status"><i class="fa fa-question-circle"></i></span>
+					<select class="multiselect" multiple="multiple" name="codStatus[]" id="codStatusID">
+					%STATUS%
+					</select>
+				</div>
+			</div>
+    	</div>
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" id="submit">Pesquisar</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#zgFormFiltroCPLisID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	$("#zgSpinnerID").removeClass("hidden");
+	$('#zgDivModalID').modal('hide');
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%FILTER_URL%",
+		data:	$('#zgFormFiltroCPLisID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#%DIVCENTRAL%ID").html( data );
+		$("#zgSpinnerID").addClass("hidden");
+		
+	});
+
+
+	/** Recolocar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+		
+	return false; 
+});
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+$('#codStatusID').multiselect({
+	enableFiltering: false,
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Status',
+	allSelectedText: 'Todos Status',
+	nSelectedText: 'selecionados',
+	selectAllText: 'Marcar todos',
+	numberDisplayed: 2,
+});
+
+$('#codFormaPagID').multiselect({
+	enableFiltering: false,
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Forma de Pag.',
+	allSelectedText: 'Todas as Formas',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+$('#codCategoriaID').multiselect({
+	enableFiltering: false,
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Categoria',
+	allSelectedText: 'Todas as Categorias',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+$('#codCentroCustoID').multiselect({
+	enableFiltering: false,
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Centro de Custo',
+	allSelectedText: 'Todos os Centros',
+	nSelectedText: 'selecionados',
+	selectAllText: 'Marcar todos',
+	numberDisplayed: 2,
+});
+
+$('#codContaID').multiselect({
+	enableFiltering: false,
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Conta',
+	allSelectedText: 'Todas as Contas',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+
+$('[data-rel=tooltip]').tooltip({html:true});
+$('[data-rel=popover]').popover({html:true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$(document).one('ajaxloadstart.page', function(e) {
+	$('[class*=select2]').remove();
+	$('.rating').raty('destroy');
+	$('.multiselect').multiselect('destroy');
+});
+
+
+</script>

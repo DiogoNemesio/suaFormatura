@@ -1,0 +1,226 @@
+<form id="zgFormTempTRLisFiltroID">
+<div class="btn-group btn-corner center">
+	<button type="button" class="btn btn-white btn-sm" title="Voltar" id="btnTRListFiltroVoltarID" onclick="voltarDataTRLisFiltro();">
+		<i class="fa fa-angle-double-left "></i>
+	</button>
+	<span id="TRLisFiltroPopoverID" style="width: 250px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >%TEXTO_FILTRO%</span>
+	<button type="button" class="btn btn-white btn-sm tooltip-info" onclick="toogleFiltroTRLis();" data-rel='tooltip' data-placement='top' title="Filtrar">
+		<i class="fa fa-filter"></i>
+	</button>
+	<div class="inline dropdown dropup btn btn-white btn-sm" id="TRLisFiltroDivAcaoLoteID">
+		<a href="#" data-toggle="dropdown" class="disabled" id="TRLisFiltroBtnAcaoLoteID">
+			<span class="fa">
+  				<i class="fa fa-cogs bigger-120 grey" id='TRLisFiltroIco1AcaoLoteID'></i>
+  				<i class="fa fa-ban fa-stack-1x bigger-150 red" id='TRLisFiltroIco2AcaoLoteID'></i>
+			</span>
+		</a>
+		<ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
+			<li class="active"><a href="#"><div class="center small bolder blue">Ações em Lote</div></a></li>
+			<li><a href="#">
+				<div class="inline" id='zgDivAcoesExcID' style="width: 30px;"></div>
+				<div class="inline" id='zgDivAcoesCanID' style="width: 30px;"></div>
+				<div class="inline" id='zgDivAcoesConID' style="width: 30px;"></div>
+				<div class="inline" id='zgDivAcoesImpID' style="width: 30px;"></div>
+			</a></li>
+		</ul>
+	</div>
+	
+	<button type="button" class="btn btn-white btn-sm" title="Avançar" id="btnTRListFiltroAvancarID" onclick="avancarDataTRLisFiltro();">
+		<i class="fa fa-angle-double-right"></i>
+	</button>
+</div>
+
+<div id="divPopoverTRLisFiltroContentID" class="hide">
+	<div class="col-sm-12 hide" id="divTRLisFiltroContentDiarioID">
+		<label class="col-sm-3 control-label">Dia:</label>
+		<div class="col-xs-12 col-sm-9">
+    		<input class='form-control' id='tempDataFiltroID' type='text' maxlength='10' onchange="copiaValoresFormTRLisFiltro();" value='%DATA_FILTRO%' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'>
+		</div>
+	</div>
+	<div class="col-sm-12 hide" id="divTRLisFiltroContentMensalID">
+		<label class="col-sm-3 control-label">Mês:</label>
+		<div class="col-xs-12 col-sm-9">
+    		<input class='form-control datepicker col-md-12' id='tempMesFiltroID' onchange="copiaValoresFormTRLisFiltro();" value='%MES_FILTRO%' type='text' maxlength='7' autocomplete='off'>
+		</div>
+	</div>
+	<div class="form-group col-sm-12 hide" id="divTRLisFiltroContentPeriodoID">
+		<label class="col-sm-3 control-label">Período:</label>
+		<div class="col-xs-12 col-sm-9 input-daterange input-group">
+			<input type="text" class="input-sm form-control" id="tempDataIniFiltroID" onchange="copiaValoresFormTRLisFiltro();" maxlength='10' value='%DATA_INI_FILTRO%' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+			<span class="input-group-addon"><i class="fa fa-exchange"></i></span>
+			<input type="text" class="input-sm form-control"  id="tempDataFimFiltroID" onchange="copiaValoresFormTRLisFiltro();" maxlength='10' value='%DATA_FIM_FILTRO%' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+		</div>
+	</div>
+	<div class="form-group col-sm-12 center">
+	&nbsp;
+	</div>
+	
+	<div class="form-group col-sm-12 center">
+		<label class="col-sm-3 control-label">Filtrar Por:</label>
+		<div class="btn-group btn-corner col-sm-9 center">
+			<span id="TRLisFiltroDataTipoEmiID" style="width: 100px;" class="btn btn-sm" onclick="selecionaEmissaoTRLisFiltro();">Emissão</span>
+			<span id="TRLisFiltroDataTipoVenID" style="width: 100px;" class="btn btn-sm" onclick="selecionaVencimentoTRLisFiltro();">Transferência</span>
+		</div>
+	</div>
+
+	<div class="form-group col-sm-12 center">
+	&nbsp;
+	</div>
+	<label class="col-sm-3 control-label">&nbsp;</label>
+	<div class="btn-group btn-corner col-sm-9 center">
+		<button type='button' class='btn btn-success btn-sm' onclick="TRLisFilter();">Filtrar</button>
+		<button type='button' class='btn btn-danger btn-sm' onclick='fecharPopoverTRLisFiltro();'>Fechar</button>
+	</div>
+</div>
+<div id="divPopoverTRLisFiltroDataTitleID" class="hide">
+	<div class='btn-group btn-corner' style="width: 370px;">
+		<button type='button' class='btn btn-white btn-sm' style='width:120px;' onclick='mostraDiarioTRLisFiltro();'>Diário</button>
+		<button type='button' class='btn btn-white btn-sm' style='width:120px;' onclick='mostraMensalTRLisFiltro();'>Mensal</button>
+		<button type='button' class='btn btn-white btn-sm' style='width:120px;' onclick='mostraPeriodoTRLisFiltro();'>Período</button>
+	</div>
+</div>
+</form>
+<script>
+
+$('[data-rel=tooltip]').tooltip();
+
+function TRLisFilter() {
+	copiaValoresFormTRLisFiltro();
+	$('#zgFormFiltroID').submit();
+}
+
+function copiaValoresFormTRLisFiltro() {
+	var $data,$mes,$dataIni,$dataFim;
+	
+	$data		= $('#tempDataFiltroID').val();
+	$mes		= $('#tempMesFiltroID').val();
+	$dataIni	= $('#tempDataIniFiltroID').val();
+	$dataFim	= $('#tempDataFimFiltroID').val();
+	
+	if (!$data)		$data		= "all";
+	if (!$mes)		$mes		= "all";
+	if (!$dataIni)	$dataIni	= "all";
+	if (!$dataFim)	$dataFim	= "all";
+	
+	
+	/** Copiar valores para o outro form **/
+	$('#dataFiltroID').val( $data );
+	$('#mesFiltroID').val( $mes );
+	$('#dataIniFiltroID').val( $dataIni );
+	$('#dataFimFiltroID').val( $dataFim );
+
+}
+
+
+function selecionaEmissaoTRLisFiltro() {
+	$('#TRLisFiltroDataTipoEmiID').addClass("btn-primary");
+	$('#TRLisFiltroDataTipoEmiID').removeClass("btn-light");
+	$('#TRLisFiltroDataTipoVenID').addClass("btn-light");
+	$('#TRLisFiltroDataTipoVenID').removeClass("btn-primary");
+	$('#dataTipoID').val("E");
+}
+
+function selecionaVencimentoTRLisFiltro() {
+	$('#TRLisFiltroDataTipoVenID').addClass("btn-primary");
+	$('#TRLisFiltroDataTipoVenID').removeClass("btn-light");
+	$('#TRLisFiltroDataTipoEmiID').addClass("btn-light");
+	$('#TRLisFiltroDataTipoEmiID').removeClass("btn-primary");
+	$('#dataTipoID').val("V");
+}
+
+
+function avancarDataTRLisFiltro() {
+	$('#dataAvancarID').val(1);
+	$('#dataVoltarID').val(0);
+	TRLisFilter();
+}
+
+function voltarDataTRLisFiltro() {
+	$('#dataAvancarID').val(0);
+	$('#dataVoltarID').val(1);
+	TRLisFilter();
+}
+
+function fecharPopoverTRLisFiltro() {
+	$("#TRLisFiltroPopoverID").popover("hide");
+}
+function mostraDiarioTRLisFiltro() {
+	$('#btnTRListFiltroVoltarID').removeAttr('disabled');
+	$('#btnTRListFiltroAvancarID').removeAttr('disabled');
+	$('#codTipoFiltroID').val("D");
+	$('#divTRLisFiltroContentMensalID').addClass("hide");
+	$('#divTRLisFiltroContentPeriodoID').addClass("hide");
+	$('#divTRLisFiltroContentDiarioID').removeClass("hide");
+}
+
+function mostraMensalTRLisFiltro() {
+	$('#btnTRListFiltroVoltarID').removeAttr('disabled');
+	$('#btnTRListFiltroAvancarID').removeAttr('disabled');
+	$('#codTipoFiltroID').val("M");
+	$('#divTRLisFiltroContentDiarioID').addClass("hide");
+	$('#divTRLisFiltroContentPeriodoID').addClass("hide");
+	$('#divTRLisFiltroContentMensalID').removeClass("hide");
+}
+
+
+function mostraPeriodoTRLisFiltro() {
+	$('#btnTRListFiltroVoltarID').attr('disabled','disabled');
+	$('#btnTRListFiltroAvancarID').attr('disabled','disabled');
+	$('#codTipoFiltroID').val("P");
+	$('#divTRLisFiltroContentDiarioID').addClass("hide");
+	$('#divTRLisFiltroContentMensalID').addClass("hide");
+	$('#divTRLisFiltroContentPeriodoID').removeClass("hide");
+}
+
+
+
+$( document ).ready(function() {
+	
+	
+	var tmp = $.fn.popover.Constructor.prototype.show;
+	$.fn.popover.Constructor.prototype.show = function () {
+	tmp.call(this);
+		if (this.options.callback) {
+			this.options.callback();
+		}
+	}
+	
+	$('[data-rel=popover]').popover({ 
+		html:true,
+		content: function() {
+			return $('#divPopoverTRLisFiltroContentID').html();
+		},
+		title: function() {
+			return $('#divPopoverTRLisFiltroDataTitleID').html();
+		},
+		callback: function() {
+			$('#tempDataFiltroID').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+			$('#tempMesFiltroID').datepicker({autoclose: true,format: "mm/yyyy",viewMode: "months", minViewMode: "months"});
+			$('.input-daterange').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+		} 
+	}).on("show.bs.popover", function () {
+		var $tip	= $(this).data("bs.popover").tip();
+		$tip.css("max-width", "600px");
+	});
+	
+	var $tipoFiltro	= $('#codTipoFiltroID').val(); 
+	var $tipoData	= $('#dataTipoID').val();
+	
+	if ( $tipoFiltro == 'P') {
+		mostraPeriodoTRLisFiltro();
+	}else if ($tipoFiltro == 'M') {
+		mostraMensalTRLisFiltro();
+	}else{
+		mostraDiarioTRLisFiltro();
+	}
+
+	if ( $tipoData == 'E') {
+		selecionaEmissaoTRLisFiltro();
+	}else{
+		selecionaVencimentoTRLisFiltro();
+	}
+	
+});
+
+
+</script>

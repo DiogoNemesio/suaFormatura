@@ -1,0 +1,37 @@
+ZgEstado:
+    type: entity
+    table: ZG_ESTADO
+    indexes:
+        fk_ESTADOS_1_idx:
+            columns:
+                - COD_REGIAO
+    id:
+        codUf:
+            type: string
+            nullable: false
+            length: 2
+            fixed: false
+            comment: ''
+            id: true
+            column: COD_UF
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: NOME
+    manyToOne:
+        codRegiao:
+            targetEntity: ZgRegiao
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                COD_REGIAO:
+                    referencedColumnName: CODIGO
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,317 @@
+<div id="content">
+	<div class="page-header">
+	<h1>%TITULO%</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormRelID" class="form-horizontal" method="POST" target="_blank" action="%URL_REL%">
+				<input type="hidden" name="id" value="%ID%">
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#filtros">
+								<i class="green fa fa-search bigger-125"></i>
+								Filtros
+							</a>
+						</li>
+					</ul>
+	
+					<div class="tab-content profile-edit-tab-content">
+						<div id="filtros" class="tab-pane in active">
+							<h4 class="header blue bolder smaller">Filtros</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="vencimentoID">Vencimento</label>
+										<div class="col-sm-8 input-daterange input-group pul-left" data-rel="daterange">
+											
+											<input type="text" class="input-sm form-control" id="dataVencIniID" name="dataVencIni" maxlength='10' value='%DATA_INI_FILTRO%' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+											<span class="input-group-addon"><i class="fa fa-exchange"></i></span>
+											<input type="text" class="input-sm form-control" id="dataVencFimID" name="dataVencFim" maxlength='10' value='%DATA_FIM_FILTRO%' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpVencimentoID"></div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="emissaoID">Emissão</label>
+										<div class="col-sm-8 input-group input-daterange pul-left">
+											
+											<input type="text" class="input-sm form-control" id="dataEmisIniID" name="dataEmisIni" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+											<span class="input-group-addon"><i class="fa fa-exchange"></i></span>
+											<input type="text" class="input-sm form-control" id="dataEmidFimID" name="dataEmisFim" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpVencimentoID"></div>
+									</div>
+						    	</div>
+						    </div>
+
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+						    			<div class="input-group col-sm-8 pul-left">
+						    				<span tabindex="99003" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Descrição da conta"><i class="fa fa-question-circle"></i></span>
+											<input class="form-control" placeholder="Descrição" type="text" name="descricao" maxlength="60" autocomplete="off">
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="codFormaPagID">Forma de Pag.</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span tabindex="99004" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Forma de Pagamento da Conta"><i class="fa fa-question-circle"></i></span>
+						    				<select class="multiselect" multiple="multiple" name="codFormaPag[]" id="codFormaPagID">
+											%FORMAS_PAG%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpFormaPagID"></div>
+									</div>
+						    	</div>
+						    </div>
+								
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="valorIniID">Valor Mínimo</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span tabindex="99005" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Valor Mínimo"><i class="fa fa-question-circle"></i></span>
+											<input class="form-control" type="text" placeholder="Valor Mínimo" name="valorIni" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpValorIniID"></div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="codCategoriaID">Categorias</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span tabindex="99006" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Categoria"><i class="fa fa-question-circle"></i></span>
+											<select class="multiselect" multiple="multiple" name="codCategoria[]" id="codCategoriaID">
+											%CATEGORIAS%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCategoriaID"></div>
+									</div>
+						    	</div>
+						    </div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="valorFimID">Valor Máximo</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span tabindex="99007" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Valor Máximo"><i class="fa fa-question-circle"></i></span>
+											<input class="form-control" type="text" placeholder="Valor Máximo" name="valorFim" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpValorFimID"></div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="codCentroCustoID">Centro de Custo</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span tabindex="99008" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Selecione o Centro de Custo"><i class="fa fa-question-circle"></i></span>
+											<select class="multiselect" multiple="multiple" name="codCentroCusto[]" id="codCentroCustoID">
+											%CENTRO_CUSTO%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCentroCustoID"></div>
+									</div>
+								</div>
+						    </div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="fornecedorID">Fornecedor</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span tabindex="99009" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Fornecedor"><i class="fa fa-question-circle"></i></span>
+											<input class="form-control" type="text" placeholder="Fornecedor" name="fornecedor" maxlength="60" autocomplete="off">
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpFornecedorID"></div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="codContaID">Conta</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span tabindex="990010" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Selecione a conta"><i class="fa fa-question-circle"></i></span>
+											<select class="multiselect" multiple="multiple" name="codConta[]" id="codContaID">
+											%CONTAS%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpContaID"></div>
+									</div>
+						    	</div>
+						    </div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-sm-3 control-label" for="codStatusID">Status</label>
+						    			<div class="input-group col-sm-8 pull-left">
+						    				<span tabindex="990011" class="input-group-addon" data-rel="popover" data-trigger="hover" data-placement="top" data-content="Selecione o Status"><i class="fa fa-question-circle"></i></span>
+											<select class="multiselect" multiple="multiple" name="codStatus[]" id="codStatusID">
+											%STATUS%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpStatusID"></div>
+									</div>
+						    	</div>
+						    </div>
+						</div>
+						
+						<div class="clearfix form-actions">
+							<label class="col-sm-5 control-label" >&nbsp;</label>
+   							<button type=submit class="btn btn-primary" id="btnSubmitID"><i class="fa fa-cog bigger-110"></i>Executar</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#zgFormRelID1').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	//$("#zgSpinnerID").removeClass("hidden");
+	//$('#zgDivModalID').modal('hide');
+	
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_REL%",
+		data:	$('#zgFormRelID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#%DIVCENTRAL%ID").html( data );
+		//$("#zgSpinnerID").addClass("hidden");
+		
+	});
+
+
+	/** Recolocar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+		
+	return false; 
+});
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({"autoclose": true});
+$('.input-daterange').datepicker({"autoclose": true});
+//$('[data-rel="daterange"]').datepicker({"autoclose":true});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+
+$('#codStatusID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Status',
+	allSelectedText: 'Todos Status',
+	nSelectedText: 'selecionados',
+	selectAllText: 'Marcar todos',
+	numberDisplayed: 2,
+});
+
+$('#codFormaPagID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Forma de Pag.',
+	allSelectedText: 'Todas as Formas',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+$('#codCategoriaID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Categoria',
+	allSelectedText: 'Todas as Categorias',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+$('#codCentroCustoID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Centro de Custo',
+	allSelectedText: 'Todos os Centros',
+	nSelectedText: 'selecionados',
+	selectAllText: 'Marcar todos',
+	numberDisplayed: 2,
+});
+
+$('#codContaID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Conta',
+	allSelectedText: 'Todas as Contas',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+$(document).one('ajaxloadstart.page', function(e) {
+	$('[class*=select2]').remove();
+	$('.rating').raty('destroy');
+	$('.multiselect').multiselect('destroy');
+});
+
+
+</script>

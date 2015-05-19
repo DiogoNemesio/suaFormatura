@@ -1,0 +1,29 @@
+ZgPerfil:
+    type: entity
+    table: ZG_PERFIL
+    id:
+        codigo:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: CODIGO
+            generator:
+                strategy: IDENTITY
+    fields:
+        nome:
+            type: string
+            nullable: false
+            length: 60
+            fixed: false
+            comment: ''
+            column: NOME
+        indAtivo:
+            type: string
+            nullable: false
+            length: 1
+            fixed: false
+            comment: ''
+            column: IND_ATIVO
+    lifecycleCallbacks: {  }
