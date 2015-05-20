@@ -26,31 +26,31 @@ class Usuario extends \Entidades\ZgsegUsuario {
 	}
 	
     /**
-     * Lista os perfis / empresas que o usuário tem acesso
+     * Lista as empresas que o usuário tem acesso
      */
-    public static function listaPerfilAcesso ($codUsuario) {
+    public static function listaOrganizacaoAcesso ($codUsuario) {
     	global $em;
-    
-    	$qb 	= $em->createQueryBuilder();
     	 
-    	$qb->select('ue')
-    	->from('\Entidades\ZgadmEmpresa','e')
-    	->leftJoin('\Entidades\ZgsegUsuarioEmpresa', 'ue', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.codigo = ue.codEmpresa')
-    	->leftJoin('\Entidades\ZgsegPerfil', 'p', \Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo = ue.codPerfil')
+    	$qb 	= $em->createQueryBuilder();
+    	
+    	$qb->select('o')
+    	->from('\Entidades\ZgfmtOrganizacao','o')
+    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',	'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
+    	->leftJoin('\Entidades\ZgsegPerfil', 				'p', 	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo 		= uo.codPerfil')
+    	->leftJoin('\Entidades\ZgfmtOrganizacaoStatusTipo', 'st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codStatus 	= st.codigo')
     	->where($qb->expr()->andX(
-    			$qb->expr()->eq('ue.codUsuario'	, ':codUsuario'),
-    			$qb->expr()->eq('p.indAtivo'	, '1'),
-    			$qb->expr()->eq('e.codStatus'	, ':status')
+    		$qb->expr()->eq('uo.codUsuario'			, ':codUsuario'),
+    		$qb->expr()->eq('p.indAtivo'			, '1'),
+    		$qb->expr()->eq('st.indPermiteAcesso'	, '1')
     	))
-    	->orderBy('e.fantasia', 'ASC')
-    	->setParameter('status', 'A')
+    	->orderBy('o.identificacao', 'ASC')
     	->setParameter('codUsuario', $codUsuario);
-    
+    	 
     	$query 		= $qb->getQuery();
     	return($query->getResult());
-    	 
+    	
     }
-    
+	
     /**
      * Lista os menus do usuário em uma determinada empresa
      */

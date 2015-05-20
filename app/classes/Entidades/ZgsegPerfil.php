@@ -28,6 +28,13 @@ class ZgsegPerfil
      */
     private $nome;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=false)
+     */
+    private $indAtivo;
+
 
     /**
      * Get codigo
@@ -60,5 +67,28 @@ class ZgsegPerfil
     public function getNome()
     {
         return $this->nome;
+    }
+
+    /**
+     * Set indAtivo
+     *
+     * @param integer $indAtivo
+     * @return ZgsegPerfil
+     */
+    public function setIndAtivo($indAtivo)
+    {
+        $this->indAtivo = $indAtivo;
+
+        return $this;
+    }
+
+    /**
+     * Get indAtivo
+     *
+     * @return integer 
+     */
+    public function getIndAtivo()
+    {
+        return $this->indAtivo;
     }
 }

@@ -22,18 +22,6 @@ class ZgsegUsuarioOrganizacao
     private $codOrganizacao;
 
     /**
-     * @var \Entidades\ZgsegUsuario
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\OneToOne(targetEntity="Entidades\ZgsegUsuario")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codUsuario;
-
-    /**
      * @var \Entidades\ZgsegPerfil
      *
      * @ORM\Id
@@ -44,6 +32,18 @@ class ZgsegUsuarioOrganizacao
      * })
      */
     private $codPerfil;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\OneToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codUsuario;
 
 
     /**
@@ -70,29 +70,6 @@ class ZgsegUsuarioOrganizacao
     }
 
     /**
-     * Set codUsuario
-     *
-     * @param \Entidades\ZgsegUsuario $codUsuario
-     * @return ZgsegUsuarioOrganizacao
-     */
-    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario)
-    {
-        $this->codUsuario = $codUsuario;
-
-        return $this;
-    }
-
-    /**
-     * Get codUsuario
-     *
-     * @return \Entidades\ZgsegUsuario 
-     */
-    public function getCodUsuario()
-    {
-        return $this->codUsuario;
-    }
-
-    /**
      * Set codPerfil
      *
      * @param \Entidades\ZgsegPerfil $codPerfil
@@ -113,5 +90,28 @@ class ZgsegUsuarioOrganizacao
     public function getCodPerfil()
     {
         return $this->codPerfil;
+    }
+
+    /**
+     * Set codUsuario
+     *
+     * @param \Entidades\ZgsegUsuario $codUsuario
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario)
+    {
+        $this->codUsuario = $codUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get codUsuario
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getCodUsuario()
+    {
+        return $this->codUsuario;
     }
 }

@@ -131,13 +131,62 @@ abstract class Tipo {
 	 * Monta as notificações
 	 */
 	protected function finalizaMenuPadrao() {
-		global $system,$_user,$_emp,$tr;
+		global $system,$_user,$_emp,$tr,$_org;
 	
 		$this->html .= \Zage\App\ZWS::TAB.'<div class="navbar-buttons navbar-header pull-right" role="navigation">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'<ul class="nav ace-nav">'.\Zage\App\ZWS::NL;
 		
+		/** Montar o combo de Organização **/
+		if (is_object($_org)) {
+			$codOrg				= $_org->getCodigo();
+			$ident				= $_org->getIdentificacao();
+		}else{
+			$codOrg				= "!";
+			$ident				= "Nenhuma organização";
+		}
+		
+		$numMaxOrg			= (int) \Zage\Adm\Parametro::getValor('APP_NUM_MAX_EMPRESA_SEL');
+		if (!$numMaxOrg)	$numMaxOrg = 10;
+		
+		$organizacoes	= \Zage\Seg\Usuario::listaOrganizacaoAcesso($system->getCodUsuario());
+		$numOrg			= sizeof($organizacoes);
+				
+		
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<li class="grey">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="ace-icon fa fa-building-o"></i>&nbsp;'.$ident.'</a>'.\Zage\App\ZWS::NL;
+		if ($numOrg > 0) {
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-building-o"></i>Selecione o Condomínio</li>'.\Zage\App\ZWS::NL;
+				
+			if ($numOrg > $numMaxOrg) {
+				$t	= $numMaxOrg;
+			}else{
+				$t	= $numOrg;
+			}
+			for ($i = 0; $i < $t; $i++) {
+				if ($organizacoes[$i]->getCodigo() == $system->getCodOrganizacao()) {
+					$icone		= "ace-icon fa fa-circle";
+					$sel 		= '<span class="pull-right"><i class="ace-icon fa fa-check"></i></span>';
+					$nome		= "<b>".$organizacoes[$i]->getCodigo() . ' - '.$organizacoes[$i]->getIdentificacao()."</b>";
+				}else{
+					$icone		= "ace-icon fa fa-circle-o";
+					$sel 		= null;
+					$nome		= $organizacoes[$i]->getCodigo(). ' - '.$organizacoes[$i]->getIdentificacao();
+				}
+		
+				$url 	= ROOT_URL. "/index.php?zid=".\Zage\App\Util::encodeUrl('_codOrganizacao='.$organizacoes[$i]->getCodigo());
+		
+		
+				$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li><a href="'.$url.'"><div class="clearfix"><span class="pull-left"><i class="ace-icon '.$icone.'"></i>&nbsp;'.$nome.'</span>'.$sel.'</div></a></li>'.\Zage\App\ZWS::NL;
+			}
+				
+			if ($t < $numOrg) {
+				$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-footer"><a href="javascript:zgAbreModal(\''.ROOT_URL.'/Fmt/mudaOrganizacao.php\');">Mostrar todos<i class="ace-icon fa fa-arrow-right"></i></a></li>'.\Zage\App\ZWS::NL;
+			}
+				
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,4).'</ul>'.\Zage\App\ZWS::NL;
+		}
+		
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'</li>'.\Zage\App\ZWS::NL;
 	
 		/** Resgata o parâmetro de tempo de Atualização da notificação **/

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrganizacao
  *
- * @ORM\Table(name="ZGFMT_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGFOR_ORGANIZACAO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFOR_ORGANIZACAO_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFOR_ORGANIZACAO_4_idx", columns={"COD_SERVICO"}), @ORM\Index(name="fk_ZGFOR_ORGANIZACAO_5_idx", columns={"COD_LOGRADOURO"})})
+ * @ORM\Table(name="ZGFMT_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGFMT_ORGANIZACAO_1", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_2", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_3", columns={"COD_SERVICO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_4", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_5_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
 class ZgfmtOrganizacao
@@ -97,13 +97,6 @@ class ZgfmtOrganizacao
      * @ORM\Column(name="COD_SEXO", type="string", length=1, nullable=true)
      */
     private $codSexo;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=false)
-     */
-    private $indAtivo;
 
     /**
      * @var \DateTime
@@ -214,6 +207,16 @@ class ZgfmtOrganizacao
      * })
      */
     private $codLogradouro;
+
+    /**
+     * @var \Entidades\ZgfmtOrganizacaoStatusTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrganizacaoStatusTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codStatus;
 
 
     /**
@@ -477,29 +480,6 @@ class ZgfmtOrganizacao
     public function getCodSexo()
     {
         return $this->codSexo;
-    }
-
-    /**
-     * Set indAtivo
-     *
-     * @param integer $indAtivo
-     * @return ZgfmtOrganizacao
-     */
-    public function setIndAtivo($indAtivo)
-    {
-        $this->indAtivo = $indAtivo;
-
-        return $this;
-    }
-
-    /**
-     * Get indAtivo
-     *
-     * @return integer 
-     */
-    public function getIndAtivo()
-    {
-        return $this->indAtivo;
     }
 
     /**
@@ -822,5 +802,28 @@ class ZgfmtOrganizacao
     public function getCodLogradouro()
     {
         return $this->codLogradouro;
+    }
+
+    /**
+     * Set codStatus
+     *
+     * @param \Entidades\ZgfmtOrganizacaoStatusTipo $codStatus
+     * @return ZgfmtOrganizacao
+     */
+    public function setCodStatus(\Entidades\ZgfmtOrganizacaoStatusTipo $codStatus = null)
+    {
+        $this->codStatus = $codStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get codStatus
+     *
+     * @return \Entidades\ZgfmtOrganizacaoStatusTipo 
+     */
+    public function getCodStatus()
+    {
+        return $this->codStatus;
     }
 }
