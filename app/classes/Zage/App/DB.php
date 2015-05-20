@@ -256,6 +256,7 @@ class DB {
 	 * Definir variáveis globais no banco (session variables)
 	 */
 	public function setOrganizacao($codOrganizacao) {
+		if (!$codOrganizacao) return null;
 		switch ($this->getDriver()) {
 			case "mysqli":
 			case "pdo_mysql":

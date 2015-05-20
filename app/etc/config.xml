@@ -31,8 +31,8 @@
 	<!-- Configurações de Banco de dados -->
 	<database>
 		<driver>pdo_mysql</driver>
-		<usuario>DBAppUser</usuario>
-		<senha>c763dadb2a4abd9a1843a2c93b760c32e255551da8db11b4a9f54fdacec20b6aIIbjYBHIU9cEarDQdBuwdIflUf84/jnmKz7p6H/BdW25lIKk/eiOgcI7ZUScoxoz</senha>
+		<usuario>suaFormaturaUser</usuario>
+		<senha>d9d1deb2b06d82c7c5dbe56eabb6c69c8827b9a70795be2310b2bfda9f4ddaf9bHVz3+Th9uKsKrPr8nAI+66SQcE8J9hIaqf6WwGKe9EuQN3Rpl8KYYJoK0khh9MH</senha>
 		<banco>suaFormatura</banco>
 		<ip>localhost</ip>
 		<charset>UTF8</charset>

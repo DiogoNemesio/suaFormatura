@@ -110,19 +110,6 @@ abstract class Tipo {
 	protected function iniciaMenuPadrao() {
 		global $system,$_emp;
 	
-		/**
-		 * Resgata a logomarca da Empresa
-		 */
-		if ($system->getCodEmpresa()) {
-			if (is_object($_emp) && $_emp->getLogomarca() != null) {
-				$logo	= '<img src="'.IMG_URL.'/'.$_emp->getLogomarca().'" />';
-			}else{
-				$logo	= null;
-			}
-		}else{
-			$logo	= null;
-		}
-	
 		$this->html	.= '<div class="navbar navbar-default" role="navigation" id="navbar">'.\Zage\App\ZWS::NL;
 		$this->html	.= \Zage\App\ZWS::TAB.'<script type="text/javascript">try{ace.settings.check(\'navbar\' , \'fixed\')}catch(e){}</script>'.\Zage\App\ZWS::NL;
 		$this->html	.= \Zage\App\ZWS::TAB.'<div class="navbar-container" id="navbar-container">'.\Zage\App\ZWS::NL;
@@ -135,7 +122,7 @@ abstract class Tipo {
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,1).'</button>'.\Zage\App\ZWS::NL;
 		
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,1).'<div class="navbar-header pull-left" >'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<a class="navbar-brand" target="_blank" href="#">'.$logo.'</a>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<a class="navbar-brand" target="_blank" href="#"></a>'.\Zage\App\ZWS::NL;
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,1).'</div>'.\Zage\App\ZWS::NL;
 	
 	}
@@ -149,40 +136,8 @@ abstract class Tipo {
 		$this->html .= \Zage\App\ZWS::TAB.'<div class="navbar-buttons navbar-header pull-right" role="navigation">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'<ul class="nav ace-nav">'.\Zage\App\ZWS::NL;
 		
-		/** Montar o combo de empresas **/
-		if (is_object($_emp)) {
-			$codEmpresa		= $_emp->getCodigo();
-			$ident			= $_emp->getFantasia();
-		}else{
-			$codEmpresa		= "!";
-			$ident			= $tr->trans("Nenhuma empresa");
-		}
-		
-		$empresas	= \Zage\Seg\Usuario::listaEmpresasAcesso($system->getCodUsuario());
-		$numEmp		= sizeof($empresas);
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<li class="grey">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="ace-icon fa fa-building-o"></i>&nbsp;'.$ident.'</a>'.\Zage\App\ZWS::NL;
-		if ($numEmp > 0) {
-			$this->html .= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
-			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-building-o"></i>Selecione a Empresa</li>'.\Zage\App\ZWS::NL;
-			foreach ($empresas as $e) {
-				if ($e->getCodigo() == $system->getCodEmpresa()) {
-					$icone = "ace-icon fa fa-circle";
-					$sel 		= '<span class="pull-right"><i class="ace-icon fa fa-check"></i></span>';
-					$nome		= "<b>".$e->getCodigo() . ' - '.$e->getFantasia()."</b>";
-				}else{
-					$icone = "ace-icon fa fa-circle-o";
-					$sel 		= null;
-					$nome		= $e->getCodigo(). ' - '.$e->getFantasia();
-				}
-				
-				$url 	= ROOT_URL. "/index.php?zid=".\Zage\App\Util::encodeUrl('codEmpresa='.$e->getCodigo());
-				
-
-				$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li><a href="'.$url.'"><div class="clearfix"><span class="pull-left"><i class="ace-icon '.$icone.'"></i>&nbsp;'.$nome.'</span>'.$sel.'</div></a></li>'.\Zage\App\ZWS::NL;
-			}
-			$this->html .= str_repeat(\Zage\App\ZWS::TAB,4).'</ul>'.\Zage\App\ZWS::NL;
-		}
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'</li>'.\Zage\App\ZWS::NL;
 	
 		/** Resgata o parâmetro de tempo de Atualização da notificação **/
@@ -306,7 +261,7 @@ abstract class Tipo {
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<script type="text/javascript">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,5)."try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}".\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'</script>'.\Zage\App\ZWS::NL;
-		$this->html .= \Zage\App\DBApp::geraLocalizacao(null);
+		$this->html .= \Zage\App\suaFormatura::geraLocalizacao(null);
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'</div>'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<div id="zgSpinnerID" class="hidden" style="width: 100%; height: 100%; position: fixed; display: block; opacity: 0.7; background-color: #fff; z-index: 99; text-align: center;">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<i class="fa fa-spinner fa-spin fa-3x"></i>'.\Zage\App\ZWS::NL;

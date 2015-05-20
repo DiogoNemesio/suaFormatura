@@ -52,9 +52,9 @@ class ZgappMascara
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_MESMO_TAMANHO", type="integer", nullable=false)
+     * @ORM\Column(name="IND_TAMANHO_FIXO", type="integer", nullable=false)
      */
-    private $indMesmoTamanho;
+    private $indTamanhoFixo;
 
     /**
      * @var integer
@@ -177,26 +177,26 @@ class ZgappMascara
     }
 
     /**
-     * Set indMesmoTamanho
+     * Set indTamanhoFixo
      *
-     * @param integer $indMesmoTamanho
+     * @param integer $indTamanhoFixo
      * @return ZgappMascara
      */
-    public function setIndMesmoTamanho($indMesmoTamanho)
+    public function setIndTamanhoFixo($indTamanhoFixo)
     {
-        $this->indMesmoTamanho = $indMesmoTamanho;
+        $this->indTamanhoFixo = $indTamanhoFixo;
 
         return $this;
     }
 
     /**
-     * Get indMesmoTamanho
+     * Get indTamanhoFixo
      *
      * @return integer 
      */
-    public function getIndMesmoTamanho()
+    public function getIndTamanhoFixo()
     {
-        return $this->indMesmoTamanho;
+        return $this->indTamanhoFixo;
     }
 
     /**

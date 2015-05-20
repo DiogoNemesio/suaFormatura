@@ -26,32 +26,6 @@ class Usuario extends \Entidades\ZgsegUsuario {
 	}
 	
     /**
-     * Lista as empresas que o usuário tem acesso
-     */
-    public static function listaEmpresasAcesso ($codUsuario) {
-    	global $em;
-    	 
-    	$qb 	= $em->createQueryBuilder();
-    	
-    	$qb->select('e')
-    	->from('\Entidades\ZgadmEmpresa','e')
-    	->leftJoin('\Entidades\ZgsegUsuarioEmpresa', 'ue', \Doctrine\ORM\Query\Expr\Join::WITH, 'e.codigo = ue.codEmpresa')
-    	->leftJoin('\Entidades\ZgsegPerfil', 'p', \Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo = ue.codPerfil')
-    	->where($qb->expr()->andX(
-    		$qb->expr()->eq('ue.codUsuario'	, ':codUsuario'),
-    		$qb->expr()->eq('p.indAtivo'	, '1'),
-    		$qb->expr()->eq('e.codStatus'	, ':status')
-    	))
-    	->orderBy('e.fantasia', 'ASC')
-    	->setParameter('status', 'A')
-    	->setParameter('codUsuario', $codUsuario);
-    	 
-    	$query 		= $qb->getQuery();
-    	return($query->getResult());
-    	
-    }
-    
-    /**
      * Lista os perfis / empresas que o usuário tem acesso
      */
     public static function listaPerfilAcesso ($codUsuario) {
@@ -80,8 +54,8 @@ class Usuario extends \Entidades\ZgsegUsuario {
     /**
      * Lista os menus do usuário em uma determinada empresa
      */
-    public static function listaMenusAcesso ($codUsuario,$codEmpresa,$codModulo = null) {
-    	global $em,$log;
+    public static function listaMenusAcesso ($codUsuario) {
+    	global $em,$log,$system;
     	
     	$qb 	= $em->createQueryBuilder();
     	
@@ -89,23 +63,20 @@ class Usuario extends \Entidades\ZgsegUsuario {
 	    	$qb->select('m')
 	    	->from('\Entidades\ZgappMenu','m')
 	    	->leftJoin('\Entidades\ZgappMenuPerfil'			,'mp'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'm.codigo 		= mp.codMenu')
-	    	->leftJoin('\Entidades\ZgsegUsuarioEmpresa'		,'ue'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'ue.codPerfil 	= mp.codPerfil')
-	    	->leftJoin('\Entidades\ZgsegUsuario'			,'u'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= ue.codUsuario')
+	    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao'	,'uo'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil 	= mp.codPerfil')
+	    	->leftJoin('\Entidades\ZgsegUsuario'			,'u'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
+	    	->leftJoin('\Entidades\ZgfmtOrganizacao'		,'o'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
 	    	->where($qb->expr()->andX(
-	   			$qb->expr()->eq('m.indFixo'		, '0'),
-	   			$qb->expr()->eq('u.codigo'		, ':codUsuario'),
-	   			$qb->expr()->eq('ue.codEmpresa'	, ':codEmpresa')
+	   			$qb->expr()->eq('m.indFixo'				, '0'),
+	   			$qb->expr()->eq('u.codigo'				, ':codUsuario'),
+	   			$qb->expr()->eq('o.codigo'				, ':codOrganizacao'),
+	    		$qb->expr()->eq('mp.codTipoOrganizacao'	, 'o.codTipo')
 	    	))
 	    	->addOrderBy('m.nivel', 'ASC')
 	    	->addOrderBy('m.codMenuPai', 'ASC')
 	    	->addOrderBy('mp.ordem', 'ASC')
 	    	->setParameter('codUsuario', $codUsuario)
-	    	->setParameter('codEmpresa', $codEmpresa);
-	    	
-	    	if ($codModulo !== null) {
-	    		$qb->andWhere($qb->expr()->eq('m.codModulo'		, ':codModulo'))
-	    		->setParameter('codModulo', $codModulo);
-	    	}
+	    	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 	    	
 	    	$query = $qb->getQuery();
 	    	//$log->debug("SQL: ". $query->getSQL());

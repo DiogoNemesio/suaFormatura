@@ -69,9 +69,9 @@ class Auth implements \Zend\Authentication\Adapter\AdapterInterface {
 			}
 			
 			/** Verifica se o usuário está ativo **/
-			if ($user->getCodStatus()->getIndPermiteAcesso() == '0') {
+			if ($user->getCodStatus()->getIndPermiteAcesso() == 0) {
 				$result		= \Zend\Authentication\Result::FAILURE_CREDENTIAL_INVALID;
-				$messages[] = "Usuário desativado !!!";
+				$messages[] = "Usuário bloqueado/desativado !!!";
 				return new \Zend\Authentication\Result($result,$this->username,$messages);
 			}
 			

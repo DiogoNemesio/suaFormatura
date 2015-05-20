@@ -71,7 +71,7 @@ class Parametro {
     public static function getValor ($parametro) {
 		global $system,$em;
 		
-		$info	= $em->getRepository('Entidades\ZgadmParametro')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'parametro' => $parametro));
+		$info	= $em->getRepository('Entidades\ZgadmParametro')->findOneBy(array('parametro' => $parametro));
 		
 		if (!$info) return null;
 		

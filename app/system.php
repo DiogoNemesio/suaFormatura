@@ -4,7 +4,7 @@ if ( (!isset($system)) || (!is_object($system)) || $system->estaIniciado() !== t
 	/** 
 	 * Instancia o sistema 
 	 **/
-	$system = \Zage\App\DBApp::getInstance ();
+	$system = \Zage\App\suaFormatura::getInstance ();
 	
 	/** 
 	 * Inicializa o sistema 

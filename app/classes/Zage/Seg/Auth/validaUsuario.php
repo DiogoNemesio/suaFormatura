@@ -46,8 +46,8 @@ class validaUsuario extends \Zend\Validator\AbstractValidator {
 	
 		/** Verificar se a string é alpha numérica e tem entre 2 e 25 caracteres **/
 		$validatorChain = new \Zend\Validator\ValidatorChain();
-		$validatorChain->attach(new \Zend\Validator\StringLength(array('min' => 2,'max' => 25)));
-		$validatorChain->attach(new \Zend\Validator\Regex(array('pattern' => '/^[a-zA-Z0-9.\s]+$/')));
+		$validatorChain->attach(new \Zend\Validator\StringLength(array('min' => 2,'max' => 100)));
+		$validatorChain->attach(new \Zend\Validator\Regex(array('pattern' => '/^[a-zA-Z0-9.@\s]+$/')));
 	
 		if ($validatorChain->isValid($value)) {
 			return true;

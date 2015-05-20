@@ -1,6 +1,6 @@
 <?php
 
-include_once('../app/includeNoAuth.php');
+include_once('../app/includeNoSystem.php');
 
 if ($_SERVER['DOCUMENT_ROOT']) {
 	die('Script não pode ser excutado através de um Browser !!!');

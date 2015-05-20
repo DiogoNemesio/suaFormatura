@@ -9,7 +9,7 @@ namespace Zage\App;
  * @version: 1.0.1
  * 
  */
-class DBApp extends \Zage\App\ZWS {
+class suaFormatura extends \Zage\App\ZWS {
 	
 	/**
 	 * Objeto que irá guardar a Instância para implementar SINGLETON (http://www.php.net/manual/pt_BR/language.oop5.patterns.php)
@@ -109,9 +109,6 @@ class DBApp extends \Zage\App\ZWS {
 		/** Definindo atributos globais a Instância de e-mail (Podem ser alterados no momento do envio do e-mail) **/
 		$this->mail->setSubject('.:: Erro no sistema ::.');
 		
-		/** Definindo o conteúdo do html dinâmico **/
-		$this->setDynHtmlLoad(\Zage\Adm\Parametro::getDinamicHtmlLoad());
-		
     }
 
     /**
@@ -171,10 +168,10 @@ class DBApp extends \Zage\App\ZWS {
     	$aLocal         = \Zage\App\Menu\Tipo::getArrayArvoreUrl($codMenu);
     	$info			= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenu));
 
-    	$html			= str_repeat(\Zage\App\DBApp::TAB,4).'<ul class="breadcrumb">'.\Zage\App\DBApp::NL;
-    	$html			.= str_repeat(\Zage\App\DBApp::TAB,5).'<li>'.\Zage\App\DBApp::NL;
-    	$html			.= str_repeat(\Zage\App\DBApp::TAB,6).'<i class="ace-icon fa fa-home home-icon"></i><a href="'.$system->getHomeUrl().'" target="_top">Início</a>'.\Zage\App\DBApp::NL;
-    	$html			.= str_repeat(\Zage\App\DBApp::TAB,5).'</li>'.\Zage\App\DBApp::NL;
+    	$html			= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="breadcrumb">'.\Zage\App\ZWS::NL;
+    	$html			.= str_repeat(\Zage\App\ZWS::TAB,5).'<li>'.\Zage\App\ZWS::NL;
+    	$html			.= str_repeat(\Zage\App\ZWS::TAB,6).'<i class="ace-icon fa fa-home home-icon"></i><a href="'.$system->getHomeUrl().'" target="_top">Início</a>'.\Zage\App\ZWS::NL;
+    	$html			.= str_repeat(\Zage\App\ZWS::TAB,5).'</li>'.\Zage\App\ZWS::NL;
     	$total			= sizeof($aLocal);
     	
     	foreach ($aLocal as $menu) {
@@ -192,26 +189,21 @@ class DBApp extends \Zage\App\ZWS {
     		
     		$id 	= \Zage\App\Menu\Tipo::geraId($menu->getLink(), $menu->getCodigo());
     		
-    		$html	.= str_repeat(\Zage\App\DBApp::TAB,5).'<li class="'.$class.'"><a href="javascript:zgLoadUrl(\''.$url.'\',\''.$id.'\');">'.$menu->getNome().'</a></li>'.\Zage\App\DBApp::NL;
+    		$html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="'.$class.'"><a href="javascript:zgLoadUrl(\''.$url.'\',\''.$id.'\');">'.$menu->getNome().'</a></li>'.\Zage\App\ZWS::NL;
     	
     	}
 
-    	$html	.= str_repeat(\Zage\App\DBApp::TAB,4)."</ul>".\Zage\App\DBApp::NL;
-	    $html	.= str_repeat(\Zage\App\DBApp::TAB,4).'<div style="margin-right:-8px;" class="pull-right">'.\Zage\App\DBApp::NL;
+    	$html	.= str_repeat(\Zage\App\ZWS::TAB,4)."</ul>".\Zage\App\ZWS::NL;
+	    $html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<div style="margin-right:-8px;" class="pull-right">'.\Zage\App\ZWS::NL;
 	     
     	if (($info) && !$info->getCodModulo()) {
-	    	$html	.= str_repeat(\Zage\App\DBApp::TAB,5).'<div class="pull-right"><h5 class="lighter">[&nbsp;'.$info->getCodModulo()->getApelido(). "&nbsp;]".'&nbsp;<a href="#"><img width="16" height="16" src="'.ICON_URL. '/'. $info->getCodModulo()->getIcone().'" /></a></h5></div>'.\Zage\App\DBApp::NL;
-    	}elseif ($_user->getUltModuloAcesso()) {
-    		$html	.= str_repeat(\Zage\App\DBApp::TAB,5).'<div class="pull-right"><h5 class="lighter">[&nbsp;'.$_user->getUltModuloAcesso()->getApelido(). "&nbsp;]".'&nbsp;<a href="#"><img width="16" height="16" src="'.ICON_URL. '/'. $_user->getUltModuloAcesso()->getIcone().'" /></a></h5></div>'.\Zage\App\DBApp::NL;
+	    	$html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<div class="pull-right"><h5 class="lighter">[&nbsp;'.$info->getCodModulo()->getApelido(). "&nbsp;]".'&nbsp;<a href="#"><img width="16" height="16" src="'.ICON_URL. '/'. $info->getCodModulo()->getIcone().'" /></a></h5></div>'.\Zage\App\ZWS::NL;
+    	//}elseif ($_user->getUltModuloAcesso()) {
+    	//	$html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<div class="pull-right"><h5 class="lighter">[&nbsp;'.$_user->getUltModuloAcesso()->getApelido(). "&nbsp;]".'&nbsp;<a href="#"><img width="16" height="16" src="'.ICON_URL. '/'. $_user->getUltModuloAcesso()->getIcone().'" /></a></h5></div>'.\Zage\App\ZWS::NL;
     	}
-	    $html	.= str_repeat(\Zage\App\DBApp::TAB,6).'<div style="position: relative;margin-right:-18px;" class="nav-search minimized pull-right" data-rel="tooltip" title="Mudar de Módulo"><form action="'.ROOT_URL.'?id=" method="POST" class="form-search"><span class="input-icon"><input type="text" autocomplete="off" class="input-xs nav-search-input" placeholder="Módulo" name="modApelido" maxlength="3" /><i class="ace-icon fa fa-th nav-search-icon" style="cursor: pointer;" onclick="javascript:zgLoadUrl(\''.ROOT_URL.'/App/modulo.php?id=\');"></i></span></form></div>'.\Zage\App\DBApp::NL;
-    	$html	.= str_repeat(\Zage\App\DBApp::TAB,5).'</div> '.\Zage\App\DBApp::NL;
+	    $html	.= str_repeat(\Zage\App\ZWS::TAB,6).'<div style="position: relative;margin-right:-18px;" class="nav-search minimized pull-right" data-rel="tooltip" title="Mudar de Módulo"><form action="'.ROOT_URL.'?id=" method="POST" class="form-search"><span class="input-icon"><input type="text" autocomplete="off" class="input-xs nav-search-input" placeholder="Módulo" name="modApelido" maxlength="3" /><i class="ace-icon fa fa-th nav-search-icon" style="cursor: pointer;" onclick="javascript:zgLoadUrl(\''.ROOT_URL.'/App/modulo.php?id=\');"></i></span></form></div>'.\Zage\App\ZWS::NL;
+    	$html	.= str_repeat(\Zage\App\ZWS::TAB,5).'</div> '.\Zage\App\ZWS::NL;
     	 
-    	/*
-    	$html	.= str_repeat(\Zage\App\DBApp::TAB,4)."<div class='navbar-header pull-right' role='navigation'>".\Zage\App\DBApp::NL;
-    	$html	.= str_repeat(\Zage\App\DBApp::TAB,5)."<h6 class='lighter'><i class='fa fa-check'></i>&nbsp;".$_emp->getCodigo(). ' - '.$_emp->getNome()."&nbsp;<i class='fa fa-building-o'></i></h5>".\Zage\App\DBApp::NL;
-    	$html	.= str_repeat(\Zage\App\DBApp::TAB,4)."</div>".\Zage\App\DBApp::NL;
-    	 */
     	return ($html);
     }
     
@@ -226,10 +218,10 @@ class DBApp extends \Zage\App\ZWS {
     	$aLocal         = \Zage\App\Menu\Tipo::getArrayArvoreUrl($codMenu);
     	$info			= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenu));
     
-    	$html			= str_repeat(\Zage\App\DBApp::TAB,4).'<ul class="breadcrumb">'.\Zage\App\DBApp::NL;
-    	$html			.= str_repeat(\Zage\App\DBApp::TAB,5).'<li>'.\Zage\App\DBApp::NL;
-    	$html			.= str_repeat(\Zage\App\DBApp::TAB,6).'<i class="ace-icon fa fa-home home-icon"></i><a href="#" target="_top">'.$tr->trans("Início").'</a>'.\Zage\App\DBApp::NL;
-    	$html			.= str_repeat(\Zage\App\DBApp::TAB,5).'</li>'.\Zage\App\DBApp::NL;
+    	$html			= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="breadcrumb">'.\Zage\App\ZWS::NL;
+    	$html			.= str_repeat(\Zage\App\ZWS::TAB,5).'<li>'.\Zage\App\ZWS::NL;
+    	$html			.= str_repeat(\Zage\App\ZWS::TAB,6).'<i class="ace-icon fa fa-home home-icon"></i><a href="#" target="_top">'.$tr->trans("Início").'</a>'.\Zage\App\ZWS::NL;
+    	$html			.= str_repeat(\Zage\App\ZWS::TAB,5).'</li>'.\Zage\App\ZWS::NL;
     	$total			= sizeof($aLocal);
     	 
     	foreach ($aLocal as $menu) {
@@ -243,11 +235,11 @@ class DBApp extends \Zage\App\ZWS {
     
     		$id 	= \Zage\App\Menu\Tipo::geraId($menu->getLink(), $menu->getCodigo());
     
-    		$html	.= str_repeat(\Zage\App\DBApp::TAB,5).'<li class="'.$class.'"><a href="#">'.$menu->getNome().'</a></li>'.\Zage\App\DBApp::NL;
+    		$html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="'.$class.'"><a href="#">'.$menu->getNome().'</a></li>'.\Zage\App\ZWS::NL;
     		 
     	}
     
-    	$html	.= str_repeat(\Zage\App\DBApp::TAB,4)."</ul>".\Zage\App\DBApp::NL;
+    	$html	.= str_repeat(\Zage\App\ZWS::TAB,4)."</ul>".\Zage\App\ZWS::NL;
     	return ($html);
     }
     

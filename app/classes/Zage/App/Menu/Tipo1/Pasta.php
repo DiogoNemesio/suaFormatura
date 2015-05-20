@@ -62,12 +62,12 @@ class Pasta {
 			$menuIcone	= '';
 		}
 
-		$html  = str_repeat(\Zage\App\DBApp::TAB,5).'<a id="pasta_a_'.$this->getCodigo().'" href="#" class="dropdown-toggle">'.\Zage\App\DBApp::NL;
-		$html .= str_repeat(\Zage\App\DBApp::TAB,6).$menuIcone.'<span class="menu-text">'.$tr->trans(trim($this->getNome())).'</span>'.\Zage\App\DBApp::NL;
-		$html .= str_repeat(\Zage\App\DBApp::TAB,6).'<b class="arrow fa fa-angle-down"></b>'.\Zage\App\DBApp::NL;
-		$html .= str_repeat(\Zage\App\DBApp::TAB,5).'</a>'.\Zage\App\DBApp::NL;
-		$html .= str_repeat(\Zage\App\DBApp::TAB,5).'<b class="arrow"></b>'.\Zage\App\DBApp::NL;
-		$html .= str_repeat(\Zage\App\DBApp::TAB,5).'<ul class="submenu">'.\Zage\App\DBApp::NL;
+		$html  = str_repeat(\Zage\App\ZWS::TAB,5).'<a id="pasta_a_'.$this->getCodigo().'" href="#" class="dropdown-toggle">'.\Zage\App\ZWS::NL;
+		$html .= str_repeat(\Zage\App\ZWS::TAB,6).$menuIcone.'<span class="menu-text">'.$tr->trans(trim($this->getNome())).'</span>'.\Zage\App\ZWS::NL;
+		$html .= str_repeat(\Zage\App\ZWS::TAB,6).'<b class="arrow fa fa-angle-down"></b>'.\Zage\App\ZWS::NL;
+		$html .= str_repeat(\Zage\App\ZWS::TAB,5).'</a>'.\Zage\App\ZWS::NL;
+		$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<b class="arrow"></b>'.\Zage\App\ZWS::NL;
+		$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<ul class="submenu">'.\Zage\App\ZWS::NL;
 
 		return $html;
 	}
@@ -78,7 +78,7 @@ class Pasta {
 	 * @return string
 	 */
 	public function abrirTag() {
-		return str_repeat(\Zage\App\DBApp::TAB,4).'<li>'.\Zage\App\DBApp::NL;
+		return str_repeat(\Zage\App\ZWS::TAB,4).'<li>'.\Zage\App\ZWS::NL;
 	}
 	
 	/**
@@ -87,8 +87,8 @@ class Pasta {
 	 * @return string
 	 */
 	public function fecharTag() {
-		$html = str_repeat(\Zage\App\DBApp::TAB,5).'</ul>'.\Zage\App\DBApp::NL;
-		$html .= str_repeat(\Zage\App\DBApp::TAB,4).'</li>'.\Zage\App\DBApp::NL;
+		$html = str_repeat(\Zage\App\ZWS::TAB,5).'</ul>'.\Zage\App\ZWS::NL;
+		$html .= str_repeat(\Zage\App\ZWS::TAB,4).'</li>'.\Zage\App\ZWS::NL;
 		return $html;
 
 	}

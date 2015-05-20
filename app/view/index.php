@@ -14,7 +14,7 @@ if (!isset($_org) && (!isset($_SESSION['_codOrg']))) {
 	
 	$system->setCodLang(1);
 	
-	if (isset($_org) && ($_org instanceof \Entidades\ZgforOrganizacao) ) {
+	if (isset($_org) && ($_org instanceof \Entidades\ZgfmtOrganizacao) ) {
 		$system->setCodOrganizacao($_org->getCodigo());
 	}else{
 		$system->setCodOrganizacao($_SESSION['_codOrg']);
@@ -52,7 +52,7 @@ if (isset($_GET['id'])) {
 #################################################################################
 ## Descobre o módulo que será iniciado
 #################################################################################
-if (isset($_codModulo_)) {
+/*if (isset($_codModulo_)) {
 	$system->selecionaModulo($_codModulo_);
 	$codModulo	= $_codModulo_;
 }elseif ($_user->getUltModuloAcesso()) {
@@ -61,12 +61,12 @@ if (isset($_codModulo_)) {
 }else{
 	$codModulo	= null;
 	$urlInicial	= ROOT_URL . "/App/modulo.php?id=";
-}
+}*/
 
 #################################################################################
 ## Verifica se o módulo tem o Dashboard
 #################################################################################
-if (isset($_mod) && is_object($_mod)) {
+/*if (isset($_mod) && is_object($_mod)) {
 	if (file_exists(MOD_PATH . "/".$_mod->getApelido().'/php/dashboard.php')) {
 		$urlInicial	= ROOT_URL . "/" . $_mod->getApelido()."/dashboard.php?id=".$id;
 	}else{
@@ -74,7 +74,7 @@ if (isset($_mod) && is_object($_mod)) {
 	}
 }else{
 	$urlInicial	= "#";
-}
+}*/
 
 
 #################################################################################
@@ -110,7 +110,7 @@ $menu->setTarget($system->getDivCentral());
 #################################################################################
 ## Carrega os menus fixos
 #################################################################################
-$menus 	= $em->getRepository('Entidades\ZgappMenu')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'indFixo' => '1'));
+$menus 	= $em->getRepository('Entidades\ZgappMenu')->findBy(array('indFixo' => '1'));
 
 #################################################################################
 ## Adiciona os menus fixos
@@ -123,11 +123,7 @@ foreach ($menus as $dados) {
 #################################################################################
 ## Carrega os menus do módulo
 #################################################################################
-if ($codModulo) {
-	$menus 	= \Zage\Seg\Usuario::listaMenusAcesso($_user->getCodigo(),$_emp->getCodigo(),$codModulo);
-}else{
-	$menus	= null;
-}
+$menus 	= \Zage\Seg\Usuario::listaMenusAcesso($_user->getCodigo());
 
 #################################################################################
 ## Adiciona os menus no objeto
@@ -145,16 +141,6 @@ if ($menus) {
 			die('Tipo de Menu desconhecido');
 		}
 	}
-}
-
-if (is_object($_emp)) {
-	if (isset($_mod) && is_object($_mod)) {
-		$titulo		= '['.$_mod->getApelido(). '] '.$_emp->getNome();
-	}else{
-		$titulo		= '['.$_emp->getCodigo(). '] '.$_emp->getNome();
-	}
-}else{
-	$titulo		= "Sem acesso a nenhuma empresa !!!";
 }
 
 #################################################################################
@@ -178,6 +164,7 @@ for ($i = 0; $i < sizeof($mascaras); $i++) {
 	$htmlMask	.= "'".strtolower($mascaras[$i]->getNome())."': { mascara: '".$mascaras[$i]->getMascara()."' $reverse $maxLen},";
 }
 $htmlMask = substr($htmlMask, 0 , -1);
+
 
 #################################################################################
 ## Carregando o template html

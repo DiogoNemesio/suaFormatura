@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegUsuario
  *
- * @ORM\Table(name="ZGSEG_USUARIO", uniqueConstraints={@ORM\UniqueConstraint(name="EMAIL_UNIQUE", columns={"EMAIL"}), @ORM\UniqueConstraint(name="CPF_UNIQUE", columns={"CPF"})}, indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_1_idx", columns={"AVATAR"}), @ORM\Index(name="fk_ZGSEG_USUARIO_5_idx", columns={"SEXO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_2_idx", columns={"COD_LOGRADOURO"})})
+ * @ORM\Table(name="ZGSEG_USUARIO", uniqueConstraints={@ORM\UniqueConstraint(name="EMAIL_UNIQUE", columns={"USUARIO"}), @ORM\UniqueConstraint(name="CPF_UNIQUE", columns={"CPF"})}, indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_1_idx", columns={"AVATAR"}), @ORM\Index(name="fk_ZGSEG_USUARIO_4_idx", columns={"SEXO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_2_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_3_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
 class ZgsegUsuario
@@ -24,9 +24,9 @@ class ZgsegUsuario
     /**
      * @var string
      *
-     * @ORM\Column(name="EMAIL", type="string", length=200, nullable=true)
+     * @ORM\Column(name="USUARIO", type="string", length=200, nullable=true)
      */
-    private $email;
+    private $usuario;
 
     /**
      * @var string
@@ -99,6 +99,13 @@ class ZgsegUsuario
     private $complemento;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_TROCAR_SENHA", type="integer", nullable=true)
+     */
+    private $indTrocarSenha;
+
+    /**
      * @var \Entidades\ZgsegAvatar
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegAvatar")
@@ -128,6 +135,16 @@ class ZgsegUsuario
      */
     private $codLogradouro;
 
+    /**
+     * @var \Entidades\ZgsegUsuarioStatusTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuarioStatusTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codStatus;
+
 
     /**
      * Get codigo
@@ -140,26 +157,26 @@ class ZgsegUsuario
     }
 
     /**
-     * Set email
+     * Set usuario
      *
-     * @param string $email
+     * @param string $usuario
      * @return ZgsegUsuario
      */
-    public function setEmail($email)
+    public function setUsuario($usuario)
     {
-        $this->email = $email;
+        $this->usuario = $usuario;
 
         return $this;
     }
 
     /**
-     * Get email
+     * Get usuario
      *
      * @return string 
      */
-    public function getEmail()
+    public function getUsuario()
     {
-        return $this->email;
+        return $this->usuario;
     }
 
     /**
@@ -393,6 +410,29 @@ class ZgsegUsuario
     }
 
     /**
+     * Set indTrocarSenha
+     *
+     * @param integer $indTrocarSenha
+     * @return ZgsegUsuario
+     */
+    public function setIndTrocarSenha($indTrocarSenha)
+    {
+        $this->indTrocarSenha = $indTrocarSenha;
+
+        return $this;
+    }
+
+    /**
+     * Get indTrocarSenha
+     *
+     * @return integer 
+     */
+    public function getIndTrocarSenha()
+    {
+        return $this->indTrocarSenha;
+    }
+
+    /**
      * Set avatar
      *
      * @param \Entidades\ZgsegAvatar $avatar
@@ -459,5 +499,28 @@ class ZgsegUsuario
     public function getCodLogradouro()
     {
         return $this->codLogradouro;
+    }
+
+    /**
+     * Set codStatus
+     *
+     * @param \Entidades\ZgsegUsuarioStatusTipo $codStatus
+     * @return ZgsegUsuario
+     */
+    public function setCodStatus(\Entidades\ZgsegUsuarioStatusTipo $codStatus = null)
+    {
+        $this->codStatus = $codStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get codStatus
+     *
+     * @return \Entidades\ZgsegUsuarioStatusTipo 
+     */
+    public function getCodStatus()
+    {
+        return $this->codStatus;
     }
 }

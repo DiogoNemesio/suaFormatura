@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmParametro
  *
- * @ORM\Table(name="ZGADM_PARAMETRO", indexes={@ORM\Index(name="fk_ZGADM_PARAMETRO_1_idx", columns={"COD_MODULO"}), @ORM\Index(name="fk_ZGADM_PARAMETRO_2_idx", columns={"COD_TURMA"})})
+ * @ORM\Table(name="ZGADM_PARAMETRO", indexes={@ORM\Index(name="fk_ZGADM_PARAMETRO_1_idx", columns={"COD_MODULO"})})
  * @ORM\Entity
  */
 class ZgadmParametro
@@ -44,16 +44,6 @@ class ZgadmParametro
      * })
      */
     private $codModulo;
-
-    /**
-     * @var \Entidades\ZgfmtOrganizacao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrganizacao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TURMA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codTurma;
 
 
     /**
@@ -133,28 +123,5 @@ class ZgadmParametro
     public function getCodModulo()
     {
         return $this->codModulo;
-    }
-
-    /**
-     * Set codTurma
-     *
-     * @param \Entidades\ZgfmtOrganizacao $codTurma
-     * @return ZgadmParametro
-     */
-    public function setCodTurma(\Entidades\ZgfmtOrganizacao $codTurma = null)
-    {
-        $this->codTurma = $codTurma;
-
-        return $this;
-    }
-
-    /**
-     * Get codTurma
-     *
-     * @return \Entidades\ZgfmtOrganizacao 
-     */
-    public function getCodTurma()
-    {
-        return $this->codTurma;
     }
 }
