@@ -31,7 +31,7 @@ class ZgappMenu
     /**
      * @var string
      *
-     * @ORM\Column(name="DESCRICAO", type="string", length=40, nullable=false)
+     * @ORM\Column(name="DESCRICAO", type="string", length=60, nullable=false)
      */
     private $descricao;
 
