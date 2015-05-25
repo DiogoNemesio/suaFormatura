@@ -22,18 +22,6 @@ class ZgsegUsuarioOrganizacao
     private $codOrganizacao;
 
     /**
-     * @var \Entidades\ZgsegPerfil
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\OneToOne(targetEntity="Entidades\ZgsegPerfil")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PERFIL", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPerfil;
-
-    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\Id
@@ -44,6 +32,18 @@ class ZgsegUsuarioOrganizacao
      * })
      */
     private $codUsuario;
+
+    /**
+     * @var \Entidades\ZgsegPerfil
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\OneToOne(targetEntity="Entidades\ZgsegPerfil")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PERFIL", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPerfil;
 
 
     /**
@@ -70,29 +70,6 @@ class ZgsegUsuarioOrganizacao
     }
 
     /**
-     * Set codPerfil
-     *
-     * @param \Entidades\ZgsegPerfil $codPerfil
-     * @return ZgsegUsuarioOrganizacao
-     */
-    public function setCodPerfil(\Entidades\ZgsegPerfil $codPerfil)
-    {
-        $this->codPerfil = $codPerfil;
-
-        return $this;
-    }
-
-    /**
-     * Get codPerfil
-     *
-     * @return \Entidades\ZgsegPerfil 
-     */
-    public function getCodPerfil()
-    {
-        return $this->codPerfil;
-    }
-
-    /**
      * Set codUsuario
      *
      * @param \Entidades\ZgsegUsuario $codUsuario
@@ -113,5 +90,28 @@ class ZgsegUsuarioOrganizacao
     public function getCodUsuario()
     {
         return $this->codUsuario;
+    }
+
+    /**
+     * Set codPerfil
+     *
+     * @param \Entidades\ZgsegPerfil $codPerfil
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setCodPerfil(\Entidades\ZgsegPerfil $codPerfil)
+    {
+        $this->codPerfil = $codPerfil;
+
+        return $this;
+    }
+
+    /**
+     * Get codPerfil
+     *
+     * @return \Entidades\ZgsegPerfil 
+     */
+    public function getCodPerfil()
+    {
+        return $this->codPerfil;
     }
 }
