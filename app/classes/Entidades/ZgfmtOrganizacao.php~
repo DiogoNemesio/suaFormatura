@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrganizacao
  *
- * @ORM\Table(name="ZGFMT_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGFMT_ORGANIZACAO_5_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_1", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_2", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_3", columns={"COD_SERVICO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_4", columns={"COD_LOGRADOURO"})})
+ * @ORM\Table(name="ZGFMT_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGFMT_ORGANIZACAO_1", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_2", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_3", columns={"COD_SERVICO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_4", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_5_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
 class ZgfmtOrganizacao
