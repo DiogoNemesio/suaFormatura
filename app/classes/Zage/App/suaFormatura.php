@@ -395,8 +395,8 @@ class suaFormatura extends \Zage\App\ZWS {
     	$qb->select($qb->expr()->count('m.codigo'))
     	->from('\Entidades\ZgappMenu','m')
     	->leftJoin('\Entidades\ZgappMenuPerfil'			,'mp'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'm.codigo 		= mp.codMenu')
-    	->leftJoin('\Entidades\ZgsegUsuarioEmpresa'		,'ue'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'ue.codPerfil 	= mp.codPerfil')
-    	->leftJoin('\Entidades\ZgsegUsuario'			,'u'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= ue.codUsuario')
+    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao'	,'uo'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil 	= mp.codPerfil')
+    	->leftJoin('\Entidades\ZgsegUsuario'			,'u'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
     	->where($qb->expr()->andX(
     		$qb->expr()->eq('u.codigo'	, ':codUsuario'),
     		$qb->expr()->eq('m.codigo'	, ':codMenu')
