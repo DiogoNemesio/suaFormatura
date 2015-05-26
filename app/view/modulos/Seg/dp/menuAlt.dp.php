@@ -69,17 +69,9 @@ try {
 		$menu			= new \Entidades\ZgappMenu();
 	}
 	
-	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-	
-	if (!$oOrg) {
-		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Organização não encontrada')));
-		exit;
-	}
-	
 	$indFixo		= 0;
 	$indSistema		= 1;
 	
-	$menu->setCodOrganizacao($oOrg);
 	$menu->setNome($nome);
 	$menu->setDescricao($descricao);
 	$menu->setCodTipo($tipo);

@@ -7,7 +7,9 @@ if (defined('DOC_ROOT')) {
 }else{
  	include_once('../include.php');
 }
- 
+
+global $em,$system,$tr;
+
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
@@ -34,7 +36,7 @@ if ((!empty($nome)) && (strlen($nome) > 60)) {
 	$err	= 1;
 }
 
-$oNome	= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'nome' => $nome));
+$oNome	= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('nome' => $nome));
 
 if (($oNome != null) && ($oNome->getCodigo() != $codPerfil)){
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Nome já utilizado"));
@@ -47,13 +49,6 @@ if (isset($ativo) && (!empty($ativo))) {
 	$ativo	= 1;
 }else{
 	$ativo	= 0;
-}
-
-$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-
-if (!$oOrg) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Organização '%s' não encontrada",array('%s' => $system->getCodOrganizacao())));
-	$err 	= 1;
 }
 
 if ($err != null) {
@@ -73,7 +68,6 @@ try {
  		$oPerfil	= new \Entidades\ZgsegPerfil();
  	}
  	
- 	$oPerfil->setCodOrganizacao($oOrg);
  	$oPerfil->setNome($nome);
  	$oPerfil->setIndAtivo($ativo);
  	

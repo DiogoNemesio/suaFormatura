@@ -1,9 +1,17 @@
 <div class="widget-container-span">
 	<div class="widget-box transparent">
 		<div class="widget-header">
-			<select onchange="recarregaPaginaPerfil();" class="select2" style="width:100%;" id="codPerfilID" name="codPerfil" data-rel="select2" data-placeholder="Perfil">
-			%PERFIS%
-			</select>
+			<div class="pull-left col-sm-6">
+				<select onchange="recarregaPaginaPerfil();" class="select2" style="width:100%;" id="codPerfilID" name="codPerfil" data-rel="select2" data-placeholder="Perfil">
+				%PERFIS%
+				</select>
+			</div>
+			<div class="pull-left col-sm-6">
+				<select onchange="recarregaPaginaPerfil();" class="select2" style="width:100%;" id="codTipoOrgID" name="codTipoOrg" data-rel="select2" data-placeholder="Tipo da Organização">
+				%TIPOS_ORG%
+				</select>
+			</div>
+			
 		</div><!--/span-->
 		<div class="widget-body">
 			<div class="widget-main padding-6 no-padding-left no-padding-right">
@@ -91,12 +99,12 @@
 	});
 
 	function recarregaPaginaPerfil() {
-		zgLoadMenuPerfil('%URL%&codMenu=%COD_MENU%&codPerfil='+$('#codPerfilID').val());
+		zgLoadMenuPerfil('%URL%&codMenu=%COD_MENU%&codPerfil='+$('#codPerfilID').val()+'&codTipoOrg='+$('#codTipoOrgID').val());
 		return false;
 	}
 	
 
 	$("#codPerfilID").select2();
-	$("#codTipoCondID").select2();
+	$("#codTipoOrgID").select2();
 	
 </script>

@@ -34,8 +34,9 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codPerfil'])) 		$codPerfil	= \Zage\App\Util::antiInjection($_GET['codPerfil']);
-if (isset($_GET['codMenu'])) 		$codMenu	= \Zage\App\Util::antiInjection($_GET['codMenu']);
+if (isset($_GET['codPerfil'])) 		$codPerfil		= \Zage\App\Util::antiInjection($_GET['codPerfil']);
+if (isset($_GET['codTipoOrg'])) 	$codTipoOrg		= \Zage\App\Util::antiInjection($_GET['codTipoOrg']);
+if (isset($_GET['codMenu'])) 		$codMenu		= \Zage\App\Util::antiInjection($_GET['codMenu']);
 
 #################################################################################
 ## Resgata os parâmetros passados
@@ -53,7 +54,8 @@ if (!isset($codMenu)) {
 #################################################################################
 try {
 
-	$perfis	= $em->getRepository('Entidades\ZgsegPerfil')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$perfis	= $em->getRepository('Entidades\ZgsegPerfil')->findAll(array('nome' => 'ASC'));
+	$tipos	= $em->getRepository('Entidades\ZgfmtOrganizacaoTipo')->findAll(array('descricao' => 'ASC'));
 
 	if (isset($codPerfil)) {
 		$_SESSION['Seg']['codPerfil']	= $codPerfil;
@@ -65,20 +67,30 @@ try {
 		$codPerfil 	= null;
 	}
 	
+
+	if (isset($codTipoOrg)) {
+		$_SESSION['Seg']['codTipoOrg']	= $codTipoOrg;
+	}elseif (isset($_SESSION['Seg']['codTipoOrg'])) {
+		$codTipoOrg						= $_SESSION['Seg']['codTipoOrg'];
+	}elseif (!isset($codTipoOrg) && !empty($tipos)) {
+		$codTipoOrg	= $tipos[0]->getCodigo();
+	}else{
+		$codTipoOrg 	= null;
+	}
+	
 	
 	//\Doctrine\Common\Util\Debug::dump($associados);
 	//exit;
 	
-	if ( (\Zage\Seg\Menu::estaAssociado($codMenu,$codPerfil) == true) || (!$codMenu) ) {
+	if ( (\Zage\Seg\Menu::estaAssociado($codMenu,$codPerfil,$codTipoOrg) == true) || (!$codMenu) ) {
 		
-		$associados		= \Zage\Seg\Menu::listaAssociados($codModulo,$codPerfil,$codMenu);
-		$disponiveis	= \Zage\Seg\Menu::listaDisponiveis($codModulo,$codPerfil,$codMenu);
+		$associados		= \Zage\Seg\Menu::listaAssociados($codModulo,$codPerfil,$codMenu,$codTipoOrg);
+		$disponiveis	= \Zage\Seg\Menu::listaDisponiveis($codModulo,$codPerfil,$codMenu,$codTipoOrg);
 		
 		$liAss			= "";
 		$liDis			= "";
 		
 		for ($i = 0; $i < sizeof($associados); $i++) {
-			$log->debug("Menu Assoc: ".$associados[$i]->getCodigo());
 			if ($associados[$i]->getCodTipo()->getCodigo() == "M") {
 				$classe		= "fa fa-list";
 			}else{
@@ -109,11 +121,12 @@ try {
 }
 
 #################################################################################
-## Select dos Perfis
+## Select2 
 #################################################################################
 try {
 	$oPerfis	= $system->geraHtmlCombo($perfis,	'CODIGO', 'NOME', $codPerfil, null);
-
+	$oTipos		= $system->geraHtmlCombo($tipos,	'CODIGO', 'DESCRICAO', $codTipoOrg, null);
+	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -122,7 +135,7 @@ try {
 ## Resgata a url desse script
 #################################################################################
 $url			= ROOT_URL."/Seg/".basename(__FILE__)."?id=".$id;
-$uid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPerfil='.$codPerfil.'&codMenu='.$codMenu.'&codModulo='.$codModulo);
+$uid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPerfil='.$codPerfil.'&codTipoOrg='.$codTipoOrg.'&codMenu='.$codMenu.'&codModulo='.$codModulo);
 $dpUrl			= \Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO)."?id=".$uid;
 
 #################################################################################
@@ -142,6 +155,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('ID'					,$id);
 $tpl->set('URL'					,$url);
 $tpl->set('PERFIS'				,$oPerfis);
+$tpl->set('TIPOS_ORG'			,$oTipos);
 $tpl->set('COD_PERFIL'			,$codPerfil);
 $tpl->set('COD_MENU'			,$codMenu);
 $tpl->set('LISTA_ASS'			,$liAss);

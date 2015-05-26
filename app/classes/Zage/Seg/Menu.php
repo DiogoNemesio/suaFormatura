@@ -41,7 +41,7 @@ class Menu {
     /**
      * Lista os menus já associados ao perfil
      */
-    public static function listaAssociados ($codModulo,$codPerfil,$codMenuPai) {
+    public static function listaAssociados ($codModulo,$codPerfil,$codMenuPai,$codTipoOrg) {
     	global $em,$system;
     
     	$qb 	= $em->createQueryBuilder();
@@ -54,19 +54,19 @@ class Menu {
     	->from('\Entidades\ZgappMenu','m')
     	->leftJoin('\Entidades\ZgappMenuPerfil', 'mp', \Doctrine\ORM\Query\Expr\Join::WITH, 'm.codigo = mp.codMenu')
     	->where($qb->expr()->andX(
-    		$qb->expr()->eq('m.codOrganizacao'	, ':codOrg'),
-    		$qb->expr()->eq('m.codModulo'		, ':codModulo'),
-    		$qb->expr()->eq('mp.codPerfil'		, ':codPerfil'),
-    		$qb->expr()->eq('m.indFixo'			, '0')
+   			$qb->expr()->eq('m.codModulo'				, ':codModulo'),
+   			$qb->expr()->eq('mp.codPerfil'				, ':codPerfil'),
+   			$qb->expr()->eq('mp.codTipoOrganizacao'		, ':codTipoOrg'),
+   			$qb->expr()->eq('m.indFixo'					, '0')
     	))
     	
     	->addOrderBy('m.nivel', 'ASC')
     	->addOrderBy('m.codMenuPai', 'ASC')
     	->addOrderBy('mp.ordem', 'ASC')
     	
-    	->setParameter('codOrg', $system->getCodOrganizacao())
-    	->setParameter('codPerfil', $codPerfil)
-    	->setParameter('codModulo', $codModulo);
+    	->setParameter('codPerfil'	, $codPerfil)
+    	->setParameter('codTipoOrg', $codTipoOrg)
+    	->setParameter('codModulo'	, $codModulo);
     	
     	
     	
@@ -86,7 +86,7 @@ class Menu {
     /**
      * Lista os menus disponíveis (não associados ao perfil)
      */
-    public static function listaDisponiveis ($codModulo,$codPerfil,$codMenuPai) {
+    public static function listaDisponiveis ($codModulo,$codPerfil,$codMenuPai,$codTipoOrg) {
     	global $em,$system,$log;
     
     	$qb 	= $em->createQueryBuilder();
@@ -102,19 +102,19 @@ class Menu {
     	->from('\Entidades\ZgappMenuPerfil','mp')
     	->leftJoin('\Entidades\ZgappMenu', 'm2', \Doctrine\ORM\Query\Expr\Join::WITH, 'mp.codMenu = m2.codigo')
     	->where($qb2->expr()->eq('mp.codPerfil',':codPerfil'));
+    	$qb2->andWhere($qb2->expr()->eq('mp.codTipoOrganizacao',':codTipoOrg'));
     	
     	$qb->select('m')
     	->from('\Entidades\ZgappMenu','m')
     	->where($qb->expr()->andX(
-    			$qb->expr()->eq('m.codOrganizacao'	, ':codOrg'),
-    			$qb->expr()->eq('m.codModulo'		, ':codModulo'),
-    			$qb->expr()->eq('m.indFixo'			, '0'),
-    			$qb->expr()->notIn('m.codigo', $qb2->getDQL())
+   			$qb->expr()->eq('m.codModulo'		, ':codModulo'),
+   			$qb->expr()->eq('m.indFixo'			, '0'),
+   			$qb->expr()->notIn('m.codigo', $qb2->getDQL())
     	))
     	->orderBy('m.nome', 'ASC')
-    	->setParameter('codOrg', $system->getCodOrganizacao())
-    	->setParameter('codPerfil', $codPerfil)
-    	->setParameter('codModulo', $codModulo);
+    	->setParameter('codPerfil'	, $codPerfil)
+    	->setParameter('codTipoOrg', $codTipoOrg)
+    	->setParameter('codModulo'	, $codModulo);
     	 
     	 
     	if (!$codMenuPai) {
@@ -137,7 +137,7 @@ class Menu {
      * @param integer $codPerfil
      * @return boolean
      */
-    public function estaAssociado($codMenu,$codPerfil) {
+    public function estaAssociado($codMenu,$codPerfil,$codTipoOrg) {
     	global $em,$system;
     	 
     	$qb 	= $em->createQueryBuilder();
@@ -146,11 +146,13 @@ class Menu {
     	->from('\Entidades\ZgappMenu','m')
     	->leftJoin('\Entidades\ZgappMenuPerfil'			,'mp'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'm.codigo 		= mp.codMenu')
     	->where($qb->expr()->andX(
-    			$qb->expr()->eq('mp.codPerfil'	, ':codPerfil'),
-    			$qb->expr()->eq('mp.codMenu'	, ':codMenu')
+   			$qb->expr()->eq('mp.codPerfil'			, ':codPerfil'),
+   			$qb->expr()->eq('mp.codTipoOrganizacao'	, ':codTipoOrg'),
+   			$qb->expr()->eq('mp.codMenu'			, ':codMenu')
     	))
-    	->setParameter('codPerfil'	, $codPerfil)
-    	->setParameter('codMenu'	, $codMenu);
+    	->setParameter('codPerfil'		, $codPerfil)
+    	->setParameter('codTipoOrg'		, $codTipoOrg)
+    	->setParameter('codMenu'		, $codMenu);
     
     	$query 	= $qb->getQuery();
     	$return = $query->getSingleScalarResult();
@@ -166,12 +168,12 @@ class Menu {
      * @param integer $codPerfil
      * @return boolean
      */
-    public function desassociaFilhos($codMenu,$codPerfil) {
+    public function desassociaFilhos($codMenu,$codPerfil,$codTipoOrg) {
     	global $em,$system;
     	
     	
     	/** Verifica se o menu está associado **/
-    	$oMenu	= $em->getRepository('Entidades\ZgappMenuPerfil')->findOneBy(array('codMenu' => $codMenu, 'codPerfil' => $codPerfil));
+    	$oMenu	= $em->getRepository('Entidades\ZgappMenuPerfil')->findOneBy(array('codMenu' => $codMenu, 'codPerfil' => $codPerfil,'codTipoOrganizacao' => $codTipoOrg));
 
     	if ($oMenu) {
     		try {
@@ -181,10 +183,10 @@ class Menu {
     			return "Não foi possível desassociar o menu: ".$menus[$i]->getNome()." Erro: ".$e->getMessage();
     		}
     		
-    		$filhos		= $em->getRepository('Entidades\ZgappMenu')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codMenuPai' => $codMenu));
+    		$filhos		= $em->getRepository('Entidades\ZgappMenu')->findBy(array('codMenuPai' => $codMenu));
 
     		for ($i = 0; $i < sizeof($filhos); $i++) {
-    			$erro = self::desassociaFilhos($filhos[$i]->getCodigo(), $codPerfil);
+    			$erro = self::desassociaFilhos($filhos[$i]->getCodigo(), $codPerfil,$codTipoOrg);
     			if ($erro) return $erro;
     		}
     	}else{
