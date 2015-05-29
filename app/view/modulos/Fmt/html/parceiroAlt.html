@@ -1,0 +1,907 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Cadastro de Parceiros
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" id="codParceiroID" name="codParceiro" value="%COD_PARCEIRO%">
+				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
+				<input type='hidden' id='valID'>
+				<div class="tabbable" id="tabID">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#parceiro-principal">
+								<i class="green fa fa-edit bigger-125"></i>
+								Principal
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#parceiro-endereço">
+								<i class="black fa fa-road bigger-125"></i>
+								Endereço
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab"  href="#parceiro-telefone">
+								<i class="blue fa fa-phone bigger-125"></i>
+								Telefones
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#parceiro-segmento">
+								<i class="purple fa fa-building-o bigger-125"></i>
+								Seg. Mercado
+							</a>
+						</li>
+					</ul>
+					<div class="tab-content profile-edit-tab-content">
+						<div id="parceiro-principal" class="tab-pane in active">
+							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label class="col-xs-12 col-sm-3 control-label" for="tipoID"><b>Tipo</b></label>
+						    			<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="CNPJ da pessoa jurídica."></i></span>
+											<select class="select2 %READONLY%" style="width:100%;" onchange="zgMostraDivs();" id="tipoID" name="tipo" %DISABLED% data-rel="select2">
+											%TIPO%
+											</select>
+										</div>
+									</div>
+						    	</div>
+						    </div>
+						    <div class="row" id="divPessoaJur">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCnpjID">
+								    	<label for="cnpjID" class="col-xs-12 col-sm-3 control-label">CNPJ</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="CNPJ da pessoa jurídica."></i></span>
+							    			<input class="form-control" id="cnpjID" type="text" name="cnpj" maxlength="18" value="%CNPJ%" placeholder="CNPJ" %READONLY% autocomplete="off" onblur="validaCnpj();" zg-data-toggle="mask" zg-data-mask="cnpj" zg-data-mask-retira="1">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCnpjID"></div>
+								    </div>
+									<div class="form-group col-sm-12" id="divRazaoID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="razaoID">Razão</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="razaoID" type="text" name="razao" maxlength="100" placeholder="Razão" value="%RAZAO%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpRazaoID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divFantasiaID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="fantasiaID">Fantasia</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="fantasiaID" type="text" name="fantasia" maxlength="60" placeholder="Nome fantasia" value="%FANTASIA%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpFantasiaID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divInscrMunID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="inscrMunID">In. Municipal</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="inscrMunID" type="text" name="inscrMun" maxlength="18" placeholder="Inscrição Municipal" value="%INSCR_MUN%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpInscrMunID"></div>
+								    </div>
+						    		<div class="form-group col-sm-12" id="divInscrEstID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="inscrEstID">In. Estadual</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="inscrEstID" type="text" name="inscrEst" maxlength="18" placeholder="Inscrição Estadual" value="%INSCR_EST%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpInscrEstID"></div>
+								    </div>
+									<div class="form-group col-sm-12" id="divDataInicioID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="dataInicioID">Data Inicio</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control datepicker" id="dataInicioID" type="text" name="dataInicio" placeholder="Data de abertura" maxlength="10" value="%DATA_INICIO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpDataInicioID"></div>
+								    </div>
+						    	</div>
+						    </div>
+						    <div class="row" id="divPessoaFis">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCpfID">
+								    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="cpfID" type="text" name="cpf" maxlength="14" value="%CPF%" placeholder="CPF" %READONLY% autocomplete="off" onblur="validaCpf();" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
+								    </div>
+									<div class="form-group col-sm-12" id="divNomeID">
+								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome completo" maxlength="100" value="%NOME%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divRgID">
+								    	<label class="col-sm-3 control-label" for="rgID">RG</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" id="rgID" type="text" name="rg" placeholder="RG" maxlength="14" value="%RG%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpRgID"></div>
+								    </div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divDataNasID">
+								    	<label class="col-sm-3 control-label" for="dataNasID">Data Nasc.</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control datepicker" id="dataNasID" type="text" name="dataNas" maxlength="10" placeholder="Data de nascimento" value="%DATA_NAS%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpDataNasID"></div>
+								    </div>
+									<div class="form-group col-sm-12" id="divSexoID">
+										<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+											<select class="select2" style="width:100%;" id="sexoID" name="sexo" data-rel="select2">
+											%SEXO%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpSexoID"></div>
+									</div>
+						    	</div>						    	
+						    </div>
+							<h4 class="header blue bolder smaller">Identificação</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divIdentID">
+								    	<label for="identID" class="col-xs-12 col-sm-3 control-label">Idenficação</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação para acesso ao sistema"></i></span>
+							    			<input class="form-control" id="identID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="www.suaformatura.com/" %READONLY% onblur="validaIdent();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="identificacao">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
+								    </div>
+						    	</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divEmailID">
+						    			<label class="col-sm-3 control-label" for="emailID">Email</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+						   					<input class="form-control" id="emailID" type="email" name="email" placeholder="Email" maxlength="200" value="%EMAIL%" autocomplete="off">
+						    			</div>
+						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
+						    		</div>
+						    	</div>
+							</div>
+						</div>
+						
+						<div id="parceiro-endereço" class="tab-pane">
+							<h4 class="header blue bolder smaller">Endereço</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">CEP</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
+											<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+									</div>																	
+									<div class="form-group col-sm-12" id="divDescLogradouroID">
+										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
+											<input type="text" id="descLogradouroID" %READONLY_END% name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
+									</div>	
+									<div class="form-group col-sm-12" id="divBairroID">
+										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
+											<input type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
+									</div>
+									<div class="form-group col-sm-12">
+										<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
+											<input type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" class="width-100" placeholder="Cidade" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
+											<input type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" class="width-100" placeholder="Estado" />
+										</div>
+									</div>									
+									<div class="form-group col-sm-12" id="divNumeroID">
+										<label for=numeroID" class="col-sm-3 control-label">Número</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
+											<input type="text" id="numeroID" name="numero" value="%NUMERO%" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
+										</div>
+									</div>							
+									<div class="form-group col-sm-12" id="divComplementoID">
+										<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
+											<input type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
+										</div>
+									</div>																			
+								</div>
+								<div class="hidden" id="divEndCorretoID">
+									<div class="col-sm-12">
+										<div class="form-group col-sm-12">
+											<div class="alert alert-info">	
+												Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+												<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
+												<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+											</div>		
+										</div>	
+									</div>
+						    	</div>
+							</div>
+						</div>
+						
+						<div id="parceiro-telefone" class="tab-pane">
+							<h4 class="header blue bolder smaller">Lista de telefones</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-8" align="center">
+									<table id="pessoaAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
+										<thead>
+											<tr class="warning">
+												<th class="col-sm-1 center"></th>
+												<th class="col-sm-3 center">Tipo</th>
+												<th class="col-sm-3 center">Telefone</th>
+												<th class="col-sm-1 center"><span onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										%TAB_TELEFONE%
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div id="parceiro-segmento" class="tab-pane">
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="widget-box transparent">
+										<div class="widget-header"> 
+											<h6 class="widget-title"><i class="ace-icon fa fa-thumbs-o-down"></i>Não Selecionados</h6>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="widget-box transparent">
+										<div class="widget-header"> 
+											<h6 class="widget-title"><i class="ace-icon fa fa-thumbs-o-up"></i>Selecionados</h6>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="form-group">
+						    		<div class="col-sm-12">
+										<div class="col-sm-12">
+											<select multiple="multiple" size="10" name="segMer[]" id="duallist">
+												%DUAL_LIST%
+											</select>
+											<div class="hr hr-16 hr-dotted"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>						
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-5 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+/*********************************************************
+* Inicializações 
+*********************************************************/
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Select 2
+$(".select2").select2();
+//Popover
+$('[data-rel=popover]').popover({html:true});
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Mostrar div de acordo com o tipo de pessoa
+zgMostraDivs();
+function zgMostraDivs() {
+	var vTipo			= $('#tipoID').val();
+	
+	if (vTipo == "J") {
+		$('#divPessoaFis').addClass("hidden");
+		$('#divPessoaJur').removeClass("hidden");
+	}else{
+		$('#divPessoaJur').addClass("hidden");
+		$('#divPessoaFis').removeClass("hidden");
+	}
+}
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaParceiroAlt();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codParceiroID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Desabilitar os SELECTS **/
+		$( "select" ).each(function( index ) {
+			if ($(this).hasClass('readonly')) {
+				$(this).prop( "disabled", true );
+			}
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+/*********************************************************
+* VALIDA IDENTIFICAÇÃO
+*********************************************************/
+
+function validaIdent(){
+	
+	var vIdent	= $('#identID').val();
+	$('#valID').val(0);
+	
+	if (!vIdent) {
+		$('#divIdentID').addClass('has-error');
+		$('#divHelpIdentID').html(zgCriaSpanErro('A identificação deve ser preenchida!'));
+		return false;
+	}else{
+		
+		if (vIdent.length > 60){
+			$('#divIdentID').addClass('has-error');
+			$('#divHelpIdentID').html(zgCriaSpanErro('A identificação não deve conter mais de 60 caracteres!'));
+			return false;
+		}else{
+				
+			/** Verificar se a identificação está disponível no banco **/
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/Fmt/orgIdentVerifica.dp.php",
+		   		data: {  codOrganizacao: $('#codParceiroID').val() , ident: vIdent},
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(1);
+		   	    	}else{
+		   	    		$('#valID').val(0);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+		}
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divIdentID').addClass('has-error');
+		$('#divHelpIdentID').html(zgCriaSpanErro('Identificação já existe! Favor, escolher outra.'));
+		return false;
+	}else{
+		$('#divIdentID').removeClass('has-error');
+		$('#divHelpIdentID').html('&nbsp;');
+		return true;
+	}
+}
+
+/*********************************************************
+* VALIDA CPF
+*********************************************************/
+function validaCpf(){
+	var vCpf	= $('#cpfID').val();
+	$('#valID').val(0);
+	
+	if (vCpf.length == 0) {
+		$('#divCpfID').addClass('has-error');
+		$('#divHelpCpfID').html(zgCriaSpanErro('O CPF deve ser preenchido !!'));
+		return false;
+	}else{
+		
+		if (validarCPF(vCpf) == false){
+			$('#divCpfID').addClass('has-error');
+			$('#divHelpCpfID').html(zgCriaSpanErro('CPF inválido !!'));
+			return false;
+		}else{
+				
+			/** Verificar se o Cargo está disponível no banco **/
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/Fmt/parceiroVerificaCpf.dp.php",
+		   		data: {  codParceiro: $('#codParceiroID').val() , cpf: vCpf },
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(1);
+		   	    	}else{
+		   	    		$('#valID').val(0);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+		}
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divCpfID').addClass('has-error');
+		$('#divHelpCpfID').html(zgCriaSpanErro('Este CPF já existe em nosso sistema, favor consultar!'));
+		return false;
+	}else{
+		$('#divCpfID').removeClass('has-error');
+		$('#divHelpCpfID').html('&nbsp;');
+		return true;
+	}
+}
+
+/*********************************************************
+* VALIDA CNPJ
+*********************************************************/
+function validaCnpj(){
+	var vCnpj	= $('#cnpjID').val();
+	$('#valID').val(0);
+	
+	if (vCnpj.length == 0) {
+		$('#divCnpjID').addClass('has-error');
+		$('#divHelpCnpjID').html(zgCriaSpanErro('O CNPJ deve ser preenchido !!'));
+		return false;
+	}else{
+		
+		if (validarCNPJ(vCnpj) == false){
+			$('#divCnpjID').addClass('has-error');
+			$('#divHelpCnpjID').html(zgCriaSpanErro('CNPJ inválido !!'));
+			return false;
+		}else{
+				
+			/** Verificar se o Cargo está disponível no banco **/
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/Fmt/parceiroVerificaCnpj.dp.php",
+		   		data: {  codParceiro: $('#codParceiroID').val() , cnpj: vCnpj },
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(1);
+		   	    	}else{
+		   	    		$('#valID').val(0);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+		}
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divCnpjID').addClass('has-error');
+		$('#divHelpCnpjID').html(zgCriaSpanErro('Este CNPJ já existe em nosso sistema, favor consultar!'));
+		return false;
+	}else{
+		$('#divCnpjID').removeClass('has-error');
+		$('#divHelpCnpjID').html('&nbsp;');
+		return true;
+	}
+}
+/******************************************************
+VALIDA FORMULÁRIO
+/******************************************************/
+function validaParceiroAlt() {
+	var vIdent			= $('#identID').val();
+	var vTipo			= $('#tipoID').val();
+	var vRazao			= $('#razaoID').val();
+	var vFantasia		= $('#fantasiaID').val();
+	var vNome			= $('#nomeID').val();
+	var vRg		    	= $('#rgID').val();
+	var vCpf			= $('#cpfID').val();
+	var vCnpj			= $('#cnpjID').val();
+	
+	var vCep			= $('#cepID').val();
+	
+	var vOK				= true;
+	var vIdent;
+	var vTab			= 0;
+	
+	//---- ABA SEGMENTO MERCADO ----//
+
+	//---- ABA TELEFONE ----//
+	/** Valida os Telefones **/
+	var $codTelefone 	= $("input[name='codTelefone\\[\\]']");
+	var $telefone 		= $("input[name='telefone\\[\\]']");
+	var $telefoneCount	= $("input[name='telefone\\[\\]']");
+	var $vCount			= 0;
+	for (i = 0; i < $codTelefone.length; i++) {
+		var $td		= $telefone.eq(i).parent();
+		var $tr		= $td.parent();
+		
+		for (j = 0; j < $codTelefone.length; j++) {
+			if($telefone.eq(i).val() == $telefoneCount.eq(j).val()){
+				$vCount++;
+			}
+		}
+		
+		if($vCount > 1){
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone repetido!"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab 	= 2;
+		}else if (!$telefone.eq(i).val()) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone deve ser preenchido!"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab 	= 2;
+		}else if ($telefone.eq(i).val().length < 14) {
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Telefone inválido!"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+			vTab 	= 2;
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}
+		
+		$vCount = 0;
+	}
+	
+	//---- ABA ENDEREÇO ----//
+	var vCodLogradouro	= $('#codLogradouroID').val();
+	var vCep			= $('#cepID').val();
+	var vDescLogradouro	= $('#descLogradouroID').val();
+	var vBairro			= $('#bairroID').val();
+	
+	if (vCodLogradouro){
+		if (!vCep) {
+			$('#divCepID').addClass('has-error');
+			$('#divHelpCepID').html(zgCriaSpanErro('O CEP deve ser preenchido!'));
+			vOK		= false;
+			vTab 	= 1;
+		}else{
+			$('#divCepID').removeClass('has-error');
+			$('#divHelpCepID').html('&nbsp;');
+		}
+		
+		if (!vDescLogradouro) {
+			$('#divDescLogradouroID').addClass('has-error');
+			$('#divHelpDescLogradouroID').html(zgCriaSpanErro('O Logradouro deve ser preenchido!'));
+			vOK		= false;
+			vTab 	= 1;
+		}else{
+			$('#divDescLogradouroID').removeClass('has-error');
+			$('#divHelpDescLogradouroID').html('&nbsp;');
+		}
+		
+		if (!vBairro) {
+			$('#divBairroID').addClass('has-error');
+			$('#divHelpBairroID').html(zgCriaSpanErro('O Bairro deve ser preenchido!'));
+			vOK		= false;
+			vTab 	= 1;
+		}else{
+			$('#divBairroID').removeClass('has-error');
+			$('#divHelpBairroID').html('&nbsp;');
+		}
+	}
+	
+	
+	//---- ABA INFORMAÇÃO GERAL ----//
+	/** Identificação **/
+	if (validaIdent() == false) {
+		vOK = false;
+	}
+	
+	/** Verifica os campos de acordo com o tipo PJ/PF **/
+	if ((vTipo == 'J')) {
+		if (validaCnpj() == false) {
+			vOK		= false;
+			vTab 	= 0;
+		}
+		if(!vRazao){
+			$('#divRazaoID').addClass('has-error');
+			$('#divHelpRazaoID').html(zgCriaSpanErro('A Razão Social deve ser preenchida!'));
+			vOK		= false;
+			vTab 	= 0;
+		}else if(vRazao.length > 100){
+			$('#divRazaoID').addClass('has-error');
+			$('#divHelpRazaoID').html(zgCriaSpanErro('A Razão Social não deve conter mais de 100 caracteres!'));
+			vOK		= false;
+			vTab 	= 0;
+		}else{
+			$('#divRazaoID').removeClass('has-error');
+			$('#divHelpRazaoID').html('&nbsp;');
+		}
+		if(!vFantasia){
+			$('#divFantasiaID').addClass('has-error');
+			$('#divHelpFantasiaID').html(zgCriaSpanErro('O nome Fantasia deve ser preenchido!'));
+			vOK		= false;
+			vTab 	= 0;
+		}else if(vFantasia.length > 60){
+			$('#divFantasiaID').addClass('has-error');
+			$('#divHelpFantasiaID').html(zgCriaSpanErro('Campo fantasia não deve conter mais de 60 caracteres !!!'));
+			vOK		= false;
+			vTab 	= 0;
+		}else{
+			$('#divFantasiaID').removeClass('has-error');
+			$('#divHelpFantasiaID').html('&nbsp;');
+		}
+	}else if ((vTipo == 'F')) {
+		if (validaCpf == false) {
+			vOK = false;
+			vTab 	= 0;
+		}
+		if(!vNome){
+			$('#divNomeID').addClass('has-error');
+			$('#divHelpNomeID').html(zgCriaSpanErro('O Nome deve ser preenchido!'));
+			vOK		= false;
+			vTab 	= 0;
+		}else if(vNome.length > 100){
+			$('#divNomeID').addClass('has-error');
+			$('#divHelpNomeID').html(zgCriaSpanErro('O Nome não deve conter mais de 100 caracteres!'));
+			vOK		= false;
+			vTab 	= 0;
+		}else{
+			$('#divNomeID').removeClass('has-error');
+			$('#divHelpNomeID').html('&nbsp;');
+		}
+		if(vRg.length > 60){
+			$('#divRgID').addClass('has-error');
+			$('#divHelpRgID').html(zgCriaSpanErro('O RG não deve conter mais de 60 caracteres!'));
+			vOK		= false;
+			vTab 	= 0;
+		}else{
+			$('#divRgID').removeClass('has-error');
+			$('#divHelpRgID').html('&nbsp;');
+		}
+	}else{
+		$('#divTipoID').removeClass('has-error');
+		$('#divHelpTipoID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Abrir aba que tiver campos inválidos
+		$('#tabID li:eq('+ vTab +') a').tab('show');
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+}
+
+
+
+/*********************************************************
+* TELEFONE
+*********************************************************/
+function addRowTelefonePessoaAlt() {
+	$('#pessoaAltTableTelefoneID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">%TIPO_TEL%</select></td><td><input type="text" name="telefone[]" maxlength="15" style="width: 100%;" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]"></td></tr>');
+	$('#pessoaAltTableTelefoneID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+		$( this ).focus();
+	});
+	$('#pessoaAltTableTelefoneID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+}
+
+function delRowTelefonePessoaAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
+}
+
+/******************************************************
+BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
+/******************************************************/
+//Busca ENDEREÇO
+function buscaRua() {
+	var vCep			= $('#cepID').cleanVal();
+	
+	if (vCep){
+		if (vCep.length != 8){
+			$('#divCepID').addClass('has-error');
+			$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+			$('#divHelpCepID').html(zgCriaSpanErro('CEP inválido !!!'));
+			limpaInfoLogradouro();
+			return false;
+		}else{
+			/** Buscar o cep no banco **/
+			jQuery.ajax({
+	    		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
+	    		data: { cep: vCep},
+	    		success: function(ret) {
+	    			var vData	= JSON.parse(ret);
+	    	    	if (vData.codLogradouro) {
+	    	    		$('#codLogradouroID').val(vData.codLogradouro);
+	    	    		$('#descLogradouroID').val(vData.descLogradouro);
+	    	    		$('#codCidadeID').val(vData.codCidade);
+	    	    		$('#descCidadeID').val(vData.descCidade);
+	    	    		$('#descEstadoID').val(vData.descUf);
+	    	    		$('#bairroID').val(vData.descBairro);
+	
+	    	    		$('#divHelpCepID').html('');
+	    	    		$('#divCepID').removeClass('has-error');
+	    	    		
+	    	    		$('#divLogradouroID').removeClass('has-error');
+	    	    		$('#divNumeroID').removeClass('has-error');
+	    	    		$('#divHelpLogradouroID').html('');
+	    	    		$('#divHelpNumeroID').html('');
+
+	    	    		$('#divEndID').removeClass('hidden');
+	    	    		
+	    	    		$('#descLogradouroID').attr("readonly", true);
+	    	    		$('#bairroID').attr("readonly", true);
+	    	    		
+	    	    		$("#endCorretoID").prop("checked", true);
+	    	    		//$('#endCorretoID').attr("checked", true);
+		    	    		
+	    	    		zgMostraDivsEndereco();
+	    	    		$('#numeroID').focus();
+	
+	    	    	}else{
+	    	    		$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+	    	    		$('#divHelpCepID').html(zgCriaSpanErro('CEP não encontrado !!!'));
+	    	    		$('#divCepID').addClass('has-error');
+	    	    		$('#divEndID').addClass('hidden');
+	    	    		//Apagar o valor dos campos, caso estejam preenchidos
+	    	    		limpaInfoLogradouro();
+	    	    	}
+	    		},
+	    		method: 'get',
+	    		cache: false,
+	    		async:false
+	  		});
+			
+		}
+	}else{
+		$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+		$('#divCepID').removeClass('has-error');
+		$('#divHelpCepID').html('&nbsp;');
+		//Apagar o valor dos campos, caso estejam preenchidos
+		limpaInfoLogradouro();
+	}
+}
+
+//Valida CEP
+function limpaInfoLogradouro() {
+	
+	$('#codLogradouroID').val('');
+	$('#descLogradouroID').val('');
+	$('#codCidadeID').val('');
+	$('#descCidadeID').val('');
+	$('#descEstadoID').val('');
+	$('#bairroID').val('');
+			
+}
+//Div de endereço correto, mostrar em caso que esteja editando.
+zgMostraDivsEnderecoEdicao();
+function zgMostraDivsEnderecoEdicao() {
+	var vCodParceiro	= $('#codParceiroID').val();
+	var vCep			= $('#cepID').val();
+	
+	if(vCodParceiro && vCep){
+		zgMostraDivsEndereco();
+	}
+	
+}
+
+//Div de endereço correto (SIM/NAO)
+function zgMostraDivsEndereco() {
+	$('#divEndCorretoID').removeClass("hidden");
+}
+//Alterar endereço padrão
+function mudaEndereco() {
+	var vEndCorreto		= $('#endCorretoID').is(':checked');
+	
+	if (vEndCorreto == false) {
+		$('#descLogradouroID').removeAttr("readonly");
+		$('#bairroID').removeAttr("readonly");
+
+	}else{
+		buscaRua();
+		$('#descLogradouroID').attr("readonly", true);
+		$('#bairroID').attr("readonly", true);
+	}
+}
+
+$('select[name="segMer[]"]').bootstrapDualListbox({
+	
+	infoTextFiltered: '<span class="label label-green label-lg">Filtrado</span>',
+	filterTextClear: 'Mostrar todos',
+	filterPlaceHolder: 'Buscar',
+	infoTextEmpty: 'Lista vazia',
+	infoText: '',
+	selectorMinimalHeight: '100'
+});
+	
+</script>

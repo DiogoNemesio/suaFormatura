@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappMenuPerfil
  *
- * @ORM\Table(name="ZGAPP_MENU_PERFIL", uniqueConstraints={@ORM\UniqueConstraint(name="index4", columns={"COD_MENU", "COD_PERFIL"})}, indexes={@ORM\Index(name="fk_ZG_MENU_PERFIL_1_idx", columns={"COD_MENU"}), @ORM\Index(name="fk_ZG_MENU_PERFIL_2_idx", columns={"COD_PERFIL"}), @ORM\Index(name="fk_ZGAPP_MENU_PERFIL_1_idx", columns={"COD_TIPO_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGAPP_MENU_PERFIL", uniqueConstraints={@ORM\UniqueConstraint(name="ZGAPP_MENU_PERFIL_UK01", columns={"COD_MENU", "COD_PERFIL", "COD_TIPO_ORGANIZACAO"})}, indexes={@ORM\Index(name="fk_ZG_MENU_PERFIL_1_idx", columns={"COD_MENU"}), @ORM\Index(name="fk_ZG_MENU_PERFIL_2_idx", columns={"COD_PERFIL"}), @ORM\Index(name="fk_ZGAPP_MENU_PERFIL_1_idx", columns={"COD_TIPO_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgappMenuPerfil
