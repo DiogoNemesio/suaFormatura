@@ -53,6 +53,7 @@ $grid->adicionaTexto($tr->trans('NOME/FANTASIA'),	 	15, $grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('IDENTIFICAÇÃO'),		15, $grid::CENTER	,'identificacao');
 $grid->adicionaTexto($tr->trans('STATUS')	,			15, $grid::CENTER	,'codStatus:descricao');
 $grid->adicionaTexto($tr->trans('TIPO'),	 			15, $grid::CENTER	,'codTipoPessoa:descricao');
+$grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($parceiro);
@@ -65,7 +66,8 @@ for ($i = 0; $i < sizeof($parceiro); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParceiro='.$parceiro[$i]->getCodigo().'&url='.$url);
 	
 	$grid->setUrlCelula($i,4,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
 }
 
 #################################################################################
