@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrganizacaoSegmento
  *
- * @ORM\Table(name="ZGFMT_ORGANIZACAO_SEGMENTO", indexes={@ORM\Index(name="fk_ZGFOR_FORNEC_SERVICO_2_idx", columns={"COD_SERVICO"}), @ORM\Index(name="fk_ZGFOR_ORGANIZACAO_SERVICO_1_idx", columns={"COD_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGFMT_ORGANIZACAO_SEGMENTO", indexes={@ORM\Index(name="fk_ZGFOR_FORNEC_SERVICO_2_idx", columns={"COD_SEGMENTO"}), @ORM\Index(name="fk_ZGFOR_ORGANIZACAO_SERVICO_1_idx", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfmtOrganizacaoSegmento
@@ -26,10 +26,10 @@ class ZgfmtOrganizacaoSegmento
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtSegmentoMercado")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_SERVICO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_SEGMENTO", referencedColumnName="CODIGO")
      * })
      */
-    private $codServico;
+    private $codSegmento;
 
     /**
      * @var \Entidades\ZgfmtOrganizacao
@@ -53,26 +53,26 @@ class ZgfmtOrganizacaoSegmento
     }
 
     /**
-     * Set codServico
+     * Set codSegmento
      *
-     * @param \Entidades\ZgfmtSegmentoMercado $codServico
+     * @param \Entidades\ZgfmtSegmentoMercado $codSegmento
      * @return ZgfmtOrganizacaoSegmento
      */
-    public function setCodServico(\Entidades\ZgfmtSegmentoMercado $codServico = null)
+    public function setCodSegmento(\Entidades\ZgfmtSegmentoMercado $codSegmento = null)
     {
-        $this->codServico = $codServico;
+        $this->codSegmento = $codSegmento;
 
         return $this;
     }
 
     /**
-     * Get codServico
+     * Get codSegmento
      *
      * @return \Entidades\ZgfmtSegmentoMercado 
      */
-    public function getCodServico()
+    public function getCodSegmento()
     {
-        return $this->codServico;
+        return $this->codSegmento;
     }
 
     /**

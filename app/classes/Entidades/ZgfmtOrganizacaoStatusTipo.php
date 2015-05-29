@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 class ZgfmtOrganizacaoStatusTipo
 {
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="CODIGO", type="string", length=2, nullable=false)
+     * @ORM\Column(name="CODIGO", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -39,7 +39,7 @@ class ZgfmtOrganizacaoStatusTipo
     /**
      * Get codigo
      *
-     * @return string 
+     * @return integer 
      */
     public function getCodigo()
     {

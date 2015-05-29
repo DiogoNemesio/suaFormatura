@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrganizacao
  *
- * @ORM\Table(name="ZGFMT_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGFMT_ORGANIZACAO_1", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_2", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_3", columns={"COD_SERVICO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_4", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_5_idx", columns={"COD_STATUS"})})
+ * @ORM\Table(name="ZGFMT_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGFMT_ORGANIZACAO_1", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_2", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_4", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_5_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_3_idx", columns={"COD_SEXO"})})
  * @ORM\Entity
  */
 class ZgfmtOrganizacao
@@ -31,16 +31,16 @@ class ZgfmtOrganizacao
     /**
      * @var string
      *
-     * @ORM\Column(name="NOME", type="string", length=60, nullable=false)
+     * @ORM\Column(name="NOME", type="string", length=100, nullable=false)
      */
     private $nome;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="FANTASIA", type="string", length=60, nullable=true)
+     * @ORM\Column(name="RAZAO", type="string", length=60, nullable=true)
      */
-    private $fantasia;
+    private $razao;
 
     /**
      * @var string
@@ -52,7 +52,7 @@ class ZgfmtOrganizacao
     /**
      * @var string
      *
-     * @ORM\Column(name="RG", type="string", length=18, nullable=true)
+     * @ORM\Column(name="RG", type="string", length=14, nullable=true)
      */
     private $rg;
 
@@ -80,7 +80,7 @@ class ZgfmtOrganizacao
     /**
      * @var string
      *
-     * @ORM\Column(name="EMAIL", type="string", length=120, nullable=true)
+     * @ORM\Column(name="EMAIL", type="string", length=200, nullable=true)
      */
     private $email;
 
@@ -90,13 +90,6 @@ class ZgfmtOrganizacao
      * @ORM\Column(name="DATA_NASCIMENTO", type="date", nullable=true)
      */
     private $dataNascimento;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="COD_SEXO", type="string", length=1, nullable=true)
-     */
-    private $codSexo;
 
     /**
      * @var \DateTime
@@ -118,6 +111,13 @@ class ZgfmtOrganizacao
      * @ORM\Column(name="ANO_CONCLUSAO", type="string", length=4, nullable=true)
      */
     private $anoConclusao;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_END_CORRETO", type="integer", nullable=true)
+     */
+    private $indEndCorreto;
 
     /**
      * @var string
@@ -143,16 +143,16 @@ class ZgfmtOrganizacao
     /**
      * @var string
      *
-     * @ORM\Column(name="COMPLEMENTO", type="string", length=100, nullable=true)
+     * @ORM\Column(name="NUMERO", type="string", length=10, nullable=true)
      */
-    private $complemento;
+    private $numero;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="NUMERO", type="string", length=10, nullable=true)
+     * @ORM\Column(name="COMPLEMENTO", type="string", length=100, nullable=true)
      */
-    private $numero;
+    private $complemento;
 
     /**
      * @var string
@@ -189,16 +189,6 @@ class ZgfmtOrganizacao
     private $codTipo;
 
     /**
-     * @var \Entidades\ZgfmtOrganizacaoServico
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrganizacaoServico")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_SERVICO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codServico;
-
-    /**
      * @var \Entidades\ZgadmLogradouro
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmLogradouro")
@@ -217,6 +207,16 @@ class ZgfmtOrganizacao
      * })
      */
     private $codStatus;
+
+    /**
+     * @var \Entidades\ZgsegSexoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegSexoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_SEXO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codSexo;
 
 
     /**
@@ -276,26 +276,26 @@ class ZgfmtOrganizacao
     }
 
     /**
-     * Set fantasia
+     * Set razao
      *
-     * @param string $fantasia
+     * @param string $razao
      * @return ZgfmtOrganizacao
      */
-    public function setFantasia($fantasia)
+    public function setRazao($razao)
     {
-        $this->fantasia = $fantasia;
+        $this->razao = $razao;
 
         return $this;
     }
 
     /**
-     * Get fantasia
+     * Get razao
      *
      * @return string 
      */
-    public function getFantasia()
+    public function getRazao()
     {
-        return $this->fantasia;
+        return $this->razao;
     }
 
     /**
@@ -460,29 +460,6 @@ class ZgfmtOrganizacao
     }
 
     /**
-     * Set codSexo
-     *
-     * @param string $codSexo
-     * @return ZgfmtOrganizacao
-     */
-    public function setCodSexo($codSexo)
-    {
-        $this->codSexo = $codSexo;
-
-        return $this;
-    }
-
-    /**
-     * Get codSexo
-     *
-     * @return string 
-     */
-    public function getCodSexo()
-    {
-        return $this->codSexo;
-    }
-
-    /**
      * Set dataCadastro
      *
      * @param \DateTime $dataCadastro
@@ -549,6 +526,29 @@ class ZgfmtOrganizacao
     public function getAnoConclusao()
     {
         return $this->anoConclusao;
+    }
+
+    /**
+     * Set indEndCorreto
+     *
+     * @param integer $indEndCorreto
+     * @return ZgfmtOrganizacao
+     */
+    public function setIndEndCorreto($indEndCorreto)
+    {
+        $this->indEndCorreto = $indEndCorreto;
+
+        return $this;
+    }
+
+    /**
+     * Get indEndCorreto
+     *
+     * @return integer 
+     */
+    public function getIndEndCorreto()
+    {
+        return $this->indEndCorreto;
     }
 
     /**
@@ -621,29 +621,6 @@ class ZgfmtOrganizacao
     }
 
     /**
-     * Set complemento
-     *
-     * @param string $complemento
-     * @return ZgfmtOrganizacao
-     */
-    public function setComplemento($complemento)
-    {
-        $this->complemento = $complemento;
-
-        return $this;
-    }
-
-    /**
-     * Get complemento
-     *
-     * @return string 
-     */
-    public function getComplemento()
-    {
-        return $this->complemento;
-    }
-
-    /**
      * Set numero
      *
      * @param string $numero
@@ -664,6 +641,29 @@ class ZgfmtOrganizacao
     public function getNumero()
     {
         return $this->numero;
+    }
+
+    /**
+     * Set complemento
+     *
+     * @param string $complemento
+     * @return ZgfmtOrganizacao
+     */
+    public function setComplemento($complemento)
+    {
+        $this->complemento = $complemento;
+
+        return $this;
+    }
+
+    /**
+     * Get complemento
+     *
+     * @return string 
+     */
+    public function getComplemento()
+    {
+        return $this->complemento;
     }
 
     /**
@@ -759,29 +759,6 @@ class ZgfmtOrganizacao
     }
 
     /**
-     * Set codServico
-     *
-     * @param \Entidades\ZgfmtOrganizacaoServico $codServico
-     * @return ZgfmtOrganizacao
-     */
-    public function setCodServico(\Entidades\ZgfmtOrganizacaoServico $codServico = null)
-    {
-        $this->codServico = $codServico;
-
-        return $this;
-    }
-
-    /**
-     * Get codServico
-     *
-     * @return \Entidades\ZgfmtOrganizacaoServico 
-     */
-    public function getCodServico()
-    {
-        return $this->codServico;
-    }
-
-    /**
      * Set codLogradouro
      *
      * @param \Entidades\ZgadmLogradouro $codLogradouro
@@ -825,5 +802,28 @@ class ZgfmtOrganizacao
     public function getCodStatus()
     {
         return $this->codStatus;
+    }
+
+    /**
+     * Set codSexo
+     *
+     * @param \Entidades\ZgsegSexoTipo $codSexo
+     * @return ZgfmtOrganizacao
+     */
+    public function setCodSexo(\Entidades\ZgsegSexoTipo $codSexo = null)
+    {
+        $this->codSexo = $codSexo;
+
+        return $this;
+    }
+
+    /**
+     * Get codSexo
+     *
+     * @return \Entidades\ZgsegSexoTipo 
+     */
+    public function getCodSexo()
+    {
+        return $this->codSexo;
     }
 }

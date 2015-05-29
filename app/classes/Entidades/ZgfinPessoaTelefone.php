@@ -39,9 +39,9 @@ class ZgfinPessoaTelefone
     private $codPessoa;
 
     /**
-     * @var \Entidades\ZgappTipoTelefone
+     * @var \Entidades\ZgappTelefoneTipo
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgappTipoTelefone")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappTelefoneTipo")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_TIPO_TELEFONE", referencedColumnName="CODIGO")
      * })
@@ -108,10 +108,10 @@ class ZgfinPessoaTelefone
     /**
      * Set codTipoTelefone
      *
-     * @param \Entidades\ZgappTipoTelefone $codTipoTelefone
+     * @param \Entidades\ZgappTelefoneTipo $codTipoTelefone
      * @return ZgfinPessoaTelefone
      */
-    public function setCodTipoTelefone(\Entidades\ZgappTipoTelefone $codTipoTelefone = null)
+    public function setCodTipoTelefone(\Entidades\ZgappTelefoneTipo $codTipoTelefone = null)
     {
         $this->codTipoTelefone = $codTipoTelefone;
 
@@ -121,7 +121,7 @@ class ZgfinPessoaTelefone
     /**
      * Get codTipoTelefone
      *
-     * @return \Entidades\ZgappTipoTelefone 
+     * @return \Entidades\ZgappTelefoneTipo 
      */
     public function getCodTipoTelefone()
     {
