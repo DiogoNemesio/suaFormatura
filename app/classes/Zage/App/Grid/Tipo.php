@@ -23,6 +23,7 @@ abstract class Tipo {
 	const TP_MOEDA 		= "edn";
 	const TP_STATUS		= "status";
 	const TP_DATA		= "data";
+	const TP_DATAHORA	= "dataHora";
 	const TP_SIMOUNAO	= "simounao";
 	const TP_CHECKBOX	= "checkbox";
 		
@@ -302,6 +303,9 @@ abstract class Tipo {
 			case self::TP_DATA :
 				$this->colunas [$i] = new \Zage\App\Grid\Coluna\Data ();
 				break;
+			case self::TP_DATAHORA :
+				$this->colunas [$i] = new \Zage\App\Grid\Coluna\DataHora();
+				break;
 			case self::TP_SIMOUNAO :
 				$this->colunas [$i] = new \Zage\App\Grid\Coluna\SimOuNao ();
 				break;
@@ -468,6 +472,26 @@ abstract class Tipo {
 		 * Adiciona a coluna
 		 */
 		$i = $this->adicionaColuna ( $nome, $tamanho, $alinhamento, self::TP_DATA );
+	
+		/**
+		 * Define as informações do Texto
+		*/
+		$this->colunas [$i]->setNomeCampo ( $nomeCampo );
+	}
+	
+	/**
+	 * Adicionar uma Coluna do tipo Data
+	 * @param unknown $nome
+	 * @param unknown $tamanho
+	 * @param unknown $alinhamento
+	 * @param unknown $nomeCampo
+	 */
+	public function adicionaDataHora($nome, $tamanho, $alinhamento, $nomeCampo) {
+	
+		/**
+		 * Adiciona a coluna
+		 */
+		$i = $this->adicionaColuna ( $nome, $tamanho, $alinhamento, self::TP_DATAHORA );
 	
 		/**
 		 * Define as informações do Texto
@@ -685,7 +709,11 @@ abstract class Tipo {
 						
 						if (is_object($valor)) {
 							if ($valor instanceof \DateTime) {
-								$valor	= $valor->format($system->config["data"]["datetimeFormat"]);
+								if ($this->colunas [$j]->getTipo() == self::TP_DATAHORA) {
+									$valor	= $valor->format($system->config["data"]["datetimeFormat"]);
+								}else{
+									$valor	= $valor->format($system->config["data"]["dateFormat"]);
+								}
 							}else{
 								die ('Grid: Objeto informado quando esperado uma string. Campo: '.$campo);
 							}
