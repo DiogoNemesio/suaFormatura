@@ -51,7 +51,7 @@ if (isset($_POST['codTipoTel']))		$codTipoTel			= $_POST['codTipoTel'];
 if (isset($_POST['codTelefone']))		$codTelefone		= $_POST['codTelefone'];
 if (isset($_POST['telefone']))			$telefone			= $_POST['telefone'];
 
-if (isset($_POST['segMer']))			$segMer			= $_POST['segMer'];
+if (isset($_POST['segmento']))			$codSegmento			= $_POST['segmento'];
 
 if (!isset($codTipoTel))				$codTipoTel			= array();
 if (!isset($codTelefone))				$codTelefone		= array();
@@ -83,6 +83,13 @@ if($oParceiro != null && ($oParceiro->getCodigo() != $codParceiro)){
 	$err	= 1;
 }
 
+/******* SEGMENTO *********/
+if (!isset($codSegmento) || (empty($codSegmento))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Segmento de Mercado deve ser preenchida!"));
+	$err	= 1;
+}
+
+/******* VALIDAÇÕES DE PJ E PF *********/
 if ($tipo == 'J'){
 	/******* CNPJ *********/
 	$valCgc			= new \Zage\App\Validador\Cnpj();
@@ -220,7 +227,7 @@ try {
  	
  	$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
  	$oTipoPessoa		= $em->getRepository('Entidades\ZgadmOrganizacaoPessoaTipo')->findOneBy(array('codigo' => $tipo));
- 	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => 1));
+ 	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => $codSegmento));
  	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
  	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => 1));
  	
@@ -302,58 +309,6 @@ try {
  			}
  		}
  	}
- 	
- 	#################################################################################
- 	## Segmentos
- 	#################################################################################
- 	/***** Lista de segmentos já associados *****/	
- 	$segAss		= $em->getRepository('Entidades\ZgadmOrganizacaoSegmento')->findBy(array('codOrganizacao' => $oParceiro->getCodigo()));
- 	$aSegAss	= array();
-	
- 	/***** Exclusão *****/
-	for ($i = 0; $i < sizeof($segAss); $i++) {
- 		
-		$aSegAss[$i]	= $segAss[$i]->getCodSegmento()->getCodigo();
-		
-		if (!in_array($segAss[$i]->getCodSegmento()->getCodigo(), $segMer)) {
-			
-			try {
-				$em->remove($segAss[$i]);
-				$em->flush();
-			} catch (\Exception $e) {
-				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o segmento: ".$segAss[$i]->getCodSegmento()->getDescricao()." Erro: ".$e->getMessage());
-				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
-				exit;
-			}
- 		}
-	}
- 	
-	/***** Inclusão *****/
-	for ($i = 0; $i < sizeof($segMer); $i++) {
-		if (!in_array($segMer[$i], $aSegAss)) {
-			try {
-				$oSeg			= $em->getRepository('Entidades\ZgfmtSegmentoMercado')->findOneBy(array('codigo' => $segMer[$i]));
- 	
-				if (!$oSeg){
-					$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível encontrar o segmento: ".$segMer[$i]);
-					echo '1'.\Zage\App\Util::encodeUrl('||');
-					exit;
-				}
- 	
-				$oPesSegMer		= new \Entidades\ZgadmOrganizacaoSegmento();
-				$oPesSegMer->setCodOrganizacao($oParceiro);
-				$oPesSegMer->setCodSegmento($oSeg);
- 	
-				$em->persist($oPesSegMer);
-				$em->flush();
-				$em->detach($oPesSegMer);
-			} catch (\Exception $e) {
-				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o segmento: ".$segAss[$i]->getCodSegmento()->getDescricao()." Erro: ".$e->getMessage());
-				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
-				exit;
-			}
-		}
-	}
 	
 } catch (\Exception $e) {
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());

@@ -20,9 +20,9 @@
 							</a>
 						</li>
 						<li>
-							<a data-toggle="tab" href="#usuario-seguranca">
-								<i class="blue fa fa-key bigger-125"></i>
-								Segurança
+							<a data-toggle="tab" href="#usuario-endereco">
+								<i class="blue fa fa-road bigger-125"></i>
+								Endereço
 							</a>
 						</li>
 						<li>
@@ -35,17 +35,17 @@
 	
 					<div class="tab-content profile-edit-tab-content">
 						<div id="usuario-basico" class="tab-pane in active">
-							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<h4 class="header blue bolder smaller">Informações Básicas</h4>
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divUsuarioID">
-								    	<label class="col-sm-3 control-label" for="usuarioID">Usuário</label>
+									<div class="form-group col-sm-12" id="divEmailID">
+								    	<label class="col-sm-3 control-label" for="emailID">Email</label>
 						    			<div class="input-group col-sm-8 pull-left">
-						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Usuário de acesso único de acesso ao sistema"></i></span>
-						   					<input class="width-100" id="usuarioID" type="text" maxlength="25" name="usuario" value="%USUARIO%" placeholder="Usuário" onblur="checkUsuario();" %PODEALTERAR% autocomplete="off">
+						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="O e-mail será utilizado como usuário para acesso ao sistema."></i></span>
+						   					<input class="width-100" id="emailID" type="text" maxlength="200" name="email" value="%USUARIO%" placeholder="Email" onblur="checkEmailUsuarioAlt();" %PODEALTERAR% autocomplete="off">
 						    			</div>
-						    			<div class="col-sm-1 pull-left" id="divHelpUsuarioID"></div>
+						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
 						    		</div>
 									<div class="form-group col-sm-12" id="divNomeID">
 								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
@@ -55,8 +55,24 @@
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 								    </div>
+								    <div class="form-group col-sm-12" id="divApelidoID">
+								    	<label class="col-sm-3 control-label" for="apelidoID">Apelido</label>
+						    			<div class="input-group col-sm-8 pull-left">
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome completo do usuário"></i></span>
+							    			<input class="width-100" id="apelidoID" type="text" name="apelido" maxlength="60" value="%NOME%" placeholder="Nome completo" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
+								    </div>
 						    	</div>
 						    	<div class="col-sm-6">
+							    	<div class="form-group col-sm-12" id="divCpfID">
+									    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
+							    			<div class="input-group col-sm-8 pull-left">
+						    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+								    			<input class="form-control" id="cpfID" type="text" name="cpf" maxlength="14" value="%CPF%" placeholder="CPF" %READONLY% autocomplete="off" onblur="validaCpf();" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+									    	</div>
+									    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
+									</div>
 									<div class="form-group col-sm-12" id="divSexoID">
 										<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
 						    			<div class="input-group col-sm-8 pull-left">
@@ -66,51 +82,9 @@
 											</select>
 										</div>
 									</div>
-									<div class="form-group col-sm-12" id="divStatusID">
-										<label class="col-sm-3 control-label" for="codStatusID">Status</label>
-						    			<div class="input-group col-sm-8 pull-left">
-						    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o status atual do usuário"></i></span>
-											<select class="select2" style="width:100%;" id="codStatusID" name="codStatus" data-rel="select2">
-												%COD_STATUS%
-											</select>
-										</div>
-										<div class="col-sm-1 pull-left" id="divHelpStatusID"></div>
-									</div>
-						    	</div>
+							    </div>
 						    </div>
-							<h4 class="header blue bolder smaller">Contato</h4>
-							<div class="vspace-xs"></div>
-							<div class="row">
-						    	<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divEmailID">	
-						    			<label class="col-sm-3 control-label" for="emailID">Email</label>
-						    			<div class="input-group col-sm-8 pull-left">
-						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Endereço de E-mail"></i></span>
-						   					<input class="width-100" id="emailID" type="email" name="email" maxlength="120" placeholder="E-mail" value="%EMAIL%" autocomplete="off">
-						    			</div>
-						    		</div>
-									<div class="form-group col-sm-12" id="divTelefoneID">
-						    			<label class="col-sm-3 control-label" for="telefoneID">Telefone</label>
-						    			<div class="input-group col-sm-8 pull-left">
-						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do telefone"></i></span>
-						   					<input class="width-100" id="telefoneID" type="text" name="telefone" maxlength="14" value="%TELEFONE%" placeholder="Telefone" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
-						    			</div>
-						    		</div>
-						    	</div>
-						    	<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divCelularID">
-						    			<label class="col-sm-3 control-label" for="celularID">Celular</label>
-						    			<div class="input-group col-sm-8 pull-left">
-						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do telefone celular"></i></span>
-						   					<input class="width-100" id="celularID" type="text" name="celular" maxlength="14" value="%CELULAR%" placeholder="Celular" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
-						    			</div>
-						    		</div>
-								</div>
-							</div>
-						</div>
-	
-						<div id="usuario-seguranca" class="tab-pane in">
-							<h4 class="header blue bolder smaller">Segurança</h4>
+							<h4 class="header blue bolder smaller">Senha</h4>
 							<div class="vspace-xs"></div>
 							<div class="row">
 						    	<div class="col-sm-6">
@@ -136,6 +110,80 @@
 										<label class="col-sm-6 control-label"><input name="indTrocarSenha" type="checkbox" class="ace" %IND_TROCAR_SENHA% /><span class="lbl">&nbsp;Alterar senha no próximo acesso</span></label>
 								    </div>
 								</div>
+							</div>
+						</div>
+	
+						<div id="usuario-endereco" class="tab-pane in">
+							<h4 class="header blue bolder smaller">Endereço</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">CEP</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
+											<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+									</div>																	
+									<div class="form-group col-sm-12" id="divDescLogradouroID">
+										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
+											<input type="text" id="descLogradouroID" %READONLY_END% name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
+									</div>	
+									<div class="form-group col-sm-12" id="divBairroID">
+										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
+											<input type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
+									</div>
+									<div class="form-group col-sm-12">
+										<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
+											<input type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" class="width-100" placeholder="Cidade" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
+											<input type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" class="width-100" placeholder="Estado" />
+										</div>
+									</div>									
+									<div class="form-group col-sm-12" id="divNumeroID">
+										<label for=numeroID" class="col-sm-3 control-label">Número</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
+											<input type="text" id="numeroID" name="numero" value="%NUMERO%" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
+										</div>
+									</div>							
+									<div class="form-group col-sm-12" id="divComplementoID">
+										<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
+											<input type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
+										</div>
+									</div>																			
+								</div>
+								<div class="hidden" id="divEndCorretoID">
+									<div class="col-sm-12">
+										<div class="form-group col-sm-12">
+											<div class="alert alert-info">	
+												Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+												<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
+												<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+											</div>		
+										</div>	
+									</div>
+						    	</div>
 							</div>
 						</div>
 						<div id="usuario-perfil" class="tab-pane">
@@ -244,25 +292,19 @@ $('#zgFormID').submit(function(e) {
 VALIDA FORMULÁRIO  
 /******************************************************/
 //Valida usuário
-function checkUsuario() {
-	var vUsuario	= $('#usuarioID').val();
+function checkEmailUsuarioAlt() {
+	var vEmail	= $('#emailID').val();
 	$('#valID').val(0);
 	
-	if (vUsuario.length < 2) {
-		$('#divUsuarioID').addClass('has-error');
-		if (vUsuario.length == 0){
-			$('#divHelpUsuarioID').html(zgCriaSpanErro('Usuário deve ser preenchido !!'));
-			return false;
-		}else{
-			$('#divHelpUsuarioID').html(zgCriaSpanErro('Usuário muito pequeno, informe o usuário com mais caracteres !!'));
-			return false;
-		}
-		
+	if (validarEmail(vEmail) == false) {
+		$('#divEmailID').addClass('has-error');
+		$('#divHelpEmailID').html(zgCriaSpanErro('Email inválido! Verifique se o e-mail foi digitado corretamente.'));
 	}else{
+		
 		//Verificar se o nome está disponível no banco
 		jQuery.ajax({
-	   		url: "%ROOT_URL%/Seg/usuarioVerifca.dp.php",
-	   		data: {  codUsuario: $('#codUsuarioID').val() , usuario: vUsuario},
+	   		url: "%ROOT_URL%/Seg/usuarioVerificaEmail.dp.php",
+	   		data: {  codUsuario: $('#codUsuarioID').val() , email: vEmail},
 	   		success: function(ret) {
 	   			var vData	= JSON.parse(ret);
 	   	    	if (vData.existe == 0) {
@@ -277,12 +319,12 @@ function checkUsuario() {
 	   });
 		
 		if ($('#valID').val() == 0) {
-			$('#divUsuarioID').addClass('has-error');
-			$('#divHelpUsuarioID').html(zgCriaSpanErro('Já existe uma empresa com este CNPJ !!'));
+			$('#divEmailID').addClass('has-error');
+			$('#divHelpEmailID').html(zgCriaSpanErro('Já existe um usuário cadastrado com esse e-mail! Certique-se que este e-mail nunca foi utilizado para cadastrar um usuário no sistema.'));
 			return false;
 		}else{
-			$('#divUsuarioID').removeClass('has-error');
-			$('#divHelpUsuarioID').html('&nbsp;');
+			$('#divEmailID').removeClass('has-error');
+			$('#divHelpEmailID').html('&nbsp;');
 			return true;
 		}
 	}	
@@ -390,6 +432,119 @@ var colorbox_params = {
 $('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
 $("#cboxLoadingGraphic").append("<i class='fa fa-spinner orange'></i>");//let's add a custom loading icon
 
+/******************************************************
+BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
+/******************************************************/
+//Busca ENDEREÇO
+function buscaRua() {
+	var vCep			= $('#cepID').cleanVal();
+	
+	if (vCep){
+		if (vCep.length != 8){
+			$('#divCepID').addClass('has-error');
+			$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+			$('#divHelpCepID').html(zgCriaSpanErro('CEP inválido !!!'));
+			limpaInfoLogradouro();
+			return false;
+		}else{
+			/** Buscar o cep no banco **/
+			jQuery.ajax({
+	    		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
+	    		data: { cep: vCep},
+	    		success: function(ret) {
+	    			var vData	= JSON.parse(ret);
+	    	    	if (vData.codLogradouro) {
+	    	    		$('#codLogradouroID').val(vData.codLogradouro);
+	    	    		$('#descLogradouroID').val(vData.descLogradouro);
+	    	    		$('#codCidadeID').val(vData.codCidade);
+	    	    		$('#descCidadeID').val(vData.descCidade);
+	    	    		$('#descEstadoID').val(vData.descUf);
+	    	    		$('#bairroID').val(vData.descBairro);
+	
+	    	    		$('#divHelpCepID').html('');
+	    	    		$('#divCepID').removeClass('has-error');
+	    	    		
+	    	    		$('#divLogradouroID').removeClass('has-error');
+	    	    		$('#divNumeroID').removeClass('has-error');
+	    	    		$('#divHelpLogradouroID').html('');
+	    	    		$('#divHelpNumeroID').html('');
+
+	    	    		$('#divEndID').removeClass('hidden');
+	    	    		
+	    	    		$('#descLogradouroID').attr("readonly", true);
+	    	    		$('#bairroID').attr("readonly", true);
+	    	    		
+	    	    		$("#endCorretoID").prop("checked", true);
+	    	    		//$('#endCorretoID').attr("checked", true);
+		    	    		
+	    	    		zgMostraDivsEndereco();
+	    	    		$('#numeroID').focus();
+	
+	    	    	}else{
+	    	    		$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+	    	    		$('#divHelpCepID').html(zgCriaSpanErro('CEP não encontrado !!!'));
+	    	    		$('#divCepID').addClass('has-error');
+	    	    		$('#divEndID').addClass('hidden');
+	    	    		//Apagar o valor dos campos, caso estejam preenchidos
+	    	    		limpaInfoLogradouro();
+	    	    	}
+	    		},
+	    		method: 'get',
+	    		cache: false,
+	    		async:false
+	  		});
+			
+		}
+	}else{
+		$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+		$('#divCepID').removeClass('has-error');
+		$('#divHelpCepID').html('&nbsp;');
+		//Apagar o valor dos campos, caso estejam preenchidos
+		limpaInfoLogradouro();
+	}
+}
+
+//Valida CEP
+function limpaInfoLogradouro() {
+	
+	$('#codLogradouroID').val('');
+	$('#descLogradouroID').val('');
+	$('#codCidadeID').val('');
+	$('#descCidadeID').val('');
+	$('#descEstadoID').val('');
+	$('#bairroID').val('');
+			
+}
+//Div de endereço correto, mostrar em caso que esteja editando.
+zgMostraDivsEnderecoEdicao();
+function zgMostraDivsEnderecoEdicao() {
+	var vCodParceiro	= $('#codParceiroID').val();
+	var vCep			= $('#cepID').val();
+	
+	if(vCodParceiro && vCep){
+		zgMostraDivsEndereco();
+	}
+	
+}
+
+//Div de endereço correto (SIM/NAO)
+function zgMostraDivsEndereco() {
+	$('#divEndCorretoID').removeClass("hidden");
+}
+//Alterar endereço padrão
+function mudaEndereco() {
+	var vEndCorreto		= $('#endCorretoID').is(':checked');
+	
+	if (vEndCorreto == false) {
+		$('#descLogradouroID').removeAttr("readonly");
+		$('#bairroID').removeAttr("readonly");
+
+	}else{
+		buscaRua();
+		$('#descLogradouroID').attr("readonly", true);
+		$('#bairroID').attr("readonly", true);
+	}
+}
 
 </script>
 

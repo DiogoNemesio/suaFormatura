@@ -39,8 +39,8 @@ $url		= ROOT_URL . '/Rhu/'. basename(__FILE__);
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
-try {
-	$parceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findBy(array ('codTipo' => 1), array('nome' => 'ASC'));
+try {	
+	$parceiro	= \Zage\Adm\Organizacao::listaOrganizacaoParceiro();
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -51,8 +51,9 @@ try {
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
 $grid->adicionaTexto($tr->trans('NOME/FANTASIA'),	 	15, $grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('IDENTIFICAÇÃO'),		15, $grid::CENTER	,'identificacao');
+$grid->adicionaTexto($tr->trans('SEGMENTO')	,			15, $grid::CENTER	,'codTipo:descricao');
+$grid->adicionaTexto($tr->trans('PESSOA'),	 			15, $grid::CENTER	,'codTipoPessoa:descricao');
 $grid->adicionaTexto($tr->trans('STATUS')	,			15, $grid::CENTER	,'codStatus:descricao');
-$grid->adicionaTexto($tr->trans('TIPO'),	 			15, $grid::CENTER	,'codTipoPessoa:descricao');
 $grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -65,9 +66,9 @@ $grid->importaDadosDoctrine($parceiro);
 for ($i = 0; $i < sizeof($parceiro); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParceiro='.$parceiro[$i]->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Fmt/parceiroUsuarioLis.php?id='.$uid);
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/parceiroUsuarioLis.php?id='.$uid);
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
 }
 
 #################################################################################

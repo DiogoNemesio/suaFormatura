@@ -139,6 +139,7 @@ if ((isset($codParceiro) && ($codParceiro))) {
 	$email			= '';
 	$link			= '';
 	$disabled		= '';
+	$segmento		= '';
 	$readOnly		= '';
 	
 	$codLogradouro  = '';
@@ -186,6 +187,17 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
+#################################################################################
+## Select de Segmento (tipo de organização)
+#################################################################################
+try {
+	$aSegmento	= \Zage\Adm\Organizacao::listaTipoOrganizacaoParceiro();
+	
+	$oSegmento	= $system->geraHtmlCombo($aSegmento,	'CODIGO', 'DESCRICAO',	$segmento, 		null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
 
 #################################################################################
 ## Select de Tipo de Telefone
@@ -213,6 +225,7 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
 }
 
+/**
 #################################################################################
 ## Lista de segmentos de mercado
 #################################################################################
@@ -236,7 +249,7 @@ for ($i = 0; $i < sizeof($segMer); $i++) {
 		
 	$htmlSeg .= '<option value="'.$segMer[$i]->getCodigo().'" '.$selected.'>'.$segMer[$i]->getNome().'</option>';
 }
-
+**/
 #################################################################################
 ## Carregando o template html
 #################################################################################
@@ -272,7 +285,7 @@ $tpl->set('DATA_NAS'				,$dataNascimento);
 $tpl->set('EMAIL'					,$email);
 $tpl->set('LINK'					,$link);
 $tpl->set('TIPO_TEL'				,$oTipoTel);
-$tpl->set('DUAL_LIST'				,$htmlSeg);
+$tpl->set('SEGMENTO'				,$oSegmento);
 $tpl->set('TAB_TELEFONE'			,$tabTel);
 
 $tpl->set ( 'COD_LOGRADOURO' , $codLogradouro);

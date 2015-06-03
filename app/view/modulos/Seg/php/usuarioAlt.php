@@ -47,16 +47,13 @@ if (isset($codUsuario)) {
 #################################################################################
 if ($codUsuario) {
 	try {
-		$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codigo' => $codUsuario));
+		$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
 	$usuario		= $info->getUsuario();
 	$nome			= $info->getNome();
-	$codStatus		= $info->getCodStatus()->getCodigo();
-	$email			= $info->getEmail();
-	$telefone		= $info->getTelefone();
-	$celular		= $info->getCelular();
+	$codStatus		= $info->getCodStatus()->getCodigo();	
 	$sexo			= $info->getSexo()->getCodigo();
 	$codPerfil		= $info->getCodStatus()->getCodigo();
 	if ($info->getIndTrocarSenha() == 1) {
@@ -65,8 +62,50 @@ if ($codUsuario) {
 		$indTrocarSenha		= '';
 	}
 	
-	$avatar			= ($info->getAvatar()) ? $info->getAvatar()->getCodigo() 	: null;
-	$avatarLink		= ($info->getAvatar()) ? $info->getAvatar()->getLink()		: null;
+	
+	/** Endereco **/
+	$codLogradouro   = ($info->getCodLogradouro()) ? $info->getCodLogradouro()->getCodigo() : null;
+	$cep 		     = ($info->getCep()) ? $info->getCep() : null;
+	$complemento     = ($info->getComplemento()) ? $info->getComplemento() : null;
+	$numero		     = ($info->getNumero()) ? $info->getNumero() : null;
+	$endCorreto		 = ($info->getIndEndCorreto() == 1) ? "checked" : null;
+	
+	if($codLogradouro != null){
+	
+		$infoLogradouro = $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+	
+		if($info->getIndEndCorreto() == 0){
+			if($infoLogradouro->getDescricao() == $info->getEndereco()){
+				$logradouro	  = $infoLogradouro->getDescricao();
+				$readOnlyEnd 	  = 'readonly';
+			}else{
+				$logradouro	  = $info->getEndereco();
+				$readOnlyEnd 	  = '';
+			}
+				
+			if($infoLogradouro->getCodBairro()->getDescricao() == $info->getBairro()){
+				$bairro = $infoLogradouro->getCodBairro()->getDescricao();
+				$readOnlyBairro 	  = 'readonly';
+			}else{
+				$bairro = $info->getBairro();
+				$readOnlyBairro 	  = '';
+			}
+	
+		}else{
+			$logradouro 	= $infoLogradouro->getDescricao();
+			$bairro 		= $infoLogradouro->getCodBairro()->getDescricao();
+			$readOnlyBairro = 'readonly';
+			$readOnlyEnd 	= 'readonly';
+		}
+	
+		$cidade	  		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome();
+		$estado    		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUF()->getNome();
+	}else{
+		$readOnlyBairro = 'readonly';
+		$readOnlyEnd 	= 'readonly';
+	}
+	
+
 }else{
 	$usuario		= '';
 	$nome			= '';
@@ -79,6 +118,17 @@ if ($codUsuario) {
 	$avatar			= '';
 	$avatarLink		= '';
 	$codPerfil		= '';
+	
+	$codLogradouro  = '';
+	$logradouro		= '';
+	$bairro			= '';
+	$cidade			= '';
+	$estado			= '';
+	$complemento   	= '';
+	$numero		    = '';
+	$readOnlyBairro	= 'readonly';
+	$readOnlyEnd	= 'readonly';
+	$endCorreto  = '';
 }
 
 if (empty($avatarLink)) $avatarLink		= IMG_URL.'/avatars/usuarioGenerico.png';
@@ -91,16 +141,25 @@ $urlVoltar			= ROOT_URL . "/Seg/usuarioLis.php?id=".$uid;
 $urlNovo			= ROOT_URL . "/Seg/usuarioAlt.php?id=".$uid;
 
 #################################################################################
-## Select de Status / Sexo
+## Select de Sexo
 #################################################################################
 try {
-	$aStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findAll(); 
 	$aSexo		= $em->getRepository('Entidades\ZgsegSexoTipo')->findAll();
-	$oStatus	= $system->geraHtmlCombo($aStatus,	'CODIGO', 'NOME', 		$codStatus, null);
-	$oSexo		= $system->geraHtmlCombo($aSexo,	'CODIGO', 'DESCRICAO',	$sexo, 		null);
+	$oSexo		= $system->geraHtmlCombo($aSexo,	'CODIGO', 'DESCRICAO',	$sexo, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
+
+#################################################################################
+## Select de Status
+#################################################################################
+try {
+	$aStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findAll();
+	$oStatus	= $system->geraHtmlCombo($aSexo,	'CODIGO', 'DESCRICAO',	$aStatus, null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
 
 #################################################################################
 ## Select de Perfil
@@ -111,18 +170,6 @@ try {
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
-
-#################################################################################
-## Acesso para as empresas
-#################################################################################
-$aEmpresas		= $em->getRepository('Entidades\ZgadmEmpresa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-$empresaHTML	= "";
-if ($aEmpresas) {
-	foreach ($aEmpresas as $av) {
-		$empresaHTML	.= '<label class="col-sm-7 control-label"><input name="'.$av->getCodigo().'" type="checkbox" class="ace" /><span class="lbl"> '.$av->getFantasia().'</span></label>';
-	}
-}
-
 
 #################################################################################
 ## Avatars
@@ -170,6 +217,19 @@ $tpl->set('PERFIL'				,$oPerfil);
 $tpl->set('AVATAR_LINK'			,$avatarLink);
 $tpl->set('AVATARS'				,$hAvatar);
 $tpl->set('EMPRESA_HTML'		,$empresaHTML);
+
+$tpl->set ( 'COD_LOGRADOURO' , $codLogradouro);
+$tpl->set ( 'CEP' 			 , $cep);
+$tpl->set ( 'LOGRADOURO'	 , $logradouro);
+$tpl->set ( 'BAIRRO'		 , $bairro);
+$tpl->set ( 'CIDADE'		 , $cidade);
+$tpl->set ( 'ESTADO'		 , $estado);
+$tpl->set ( 'COMPLEMENTO' 	 , $complemento);
+$tpl->set ( 'NUMERO' 		 , $numero);
+$tpl->set ( 'READONLY_BAIRRO', $readOnlyBairro);
+$tpl->set ( 'READONLY_END' 	 , $readOnlyEnd);
+$tpl->set ( 'IND_END_CORRETO', $endCorreto);
+
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 

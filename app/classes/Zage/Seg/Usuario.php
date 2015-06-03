@@ -50,6 +50,29 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	return($query->getResult());
     	
     }
+    
+    /**
+     * Lista todos os usuarios de uma organizacao
+     */
+    public static function listaUsuarioOrganizacao ($codOrganizacao) {
+    	global $em;
+    
+    	$qb 	= $em->createQueryBuilder();
+    	 
+    	$qb->select('u')
+    	->from('\Entidades\ZgsegUsuario','u')
+    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',	'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
+    	->where($qb->expr()->andX(
+    			$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao')
+ 
+    	))
+    	->orderBy('u.nome', 'ASC')
+    	->setParameter('codOrganizacao', $codOrganizacao);
+    
+    	$query 		= $qb->getQuery();
+    	return($query->getResult());
+    	 
+    }
 	
     /**
      * Lista os menus do usuário em uma determinada empresa

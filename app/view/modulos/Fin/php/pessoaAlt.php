@@ -158,7 +158,7 @@ $urlNovo			= ROOT_URL."/Fin/pessoaAlt.php?id=".$uid;
 ## Resgata as informações do banco
 #################################################################################
 try {
-	$aTipo	= $em->getRepository('Entidades\ZgfinPessoaTipo')->findAll();
+	$aTipo	= $em->getRepository('Entidades\ZgfmtOrganizacaoPessoaTipo')->findAll();
 	$oTipo	= $system->geraHtmlCombo($aTipo,'CODIGO', 'DESCRICAO', $tipo, null);
 
 } catch (\Exception $e) {

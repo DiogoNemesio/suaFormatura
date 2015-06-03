@@ -33,12 +33,6 @@
 								Telefones
 							</a>
 						</li>
-						<li>
-							<a data-toggle="tab" href="#parceiro-segmento">
-								<i class="purple fa fa-building-o bigger-125"></i>
-								Seg. Mercado
-							</a>
-						</li>
 					</ul>
 					<div class="tab-content profile-edit-tab-content">
 						<div id="parceiro-principal" class="tab-pane in active">
@@ -171,9 +165,7 @@
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
 								    </div>
-						    	</div>
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divEmailID">
+								    <div class="form-group col-sm-12" id="divEmailID">
 						    			<label class="col-sm-3 control-label" for="emailID">Email</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
@@ -181,6 +173,18 @@
 						    			</div>
 						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
 						    		</div>
+						    	</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divSegmentoID">
+										<label class="col-sm-3 control-label" for="segmentoID">Segmento</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o segmento de mercado no qual a empresa atua."></i></span>
+											<select class="select2" style="width:100%;" id="segmentoID" name="segmento" data-rel="select2">
+											%SEGMENTO%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpSexoID"></div>
+									</div>
 						    	</div>
 							</div>
 						</div>
@@ -280,6 +284,7 @@
 								</div>
 							</div>
 						</div>
+						<!--
 						<div id="parceiro-segmento" class="tab-pane">
 							<div class="row">
 								<div class="col-sm-6">
@@ -307,7 +312,7 @@
 									</div>
 								</div>
 							</div>
-						</div>						
+						</div>		</div>-->				
 					</div>
 				</div>
 				<div class="clearfix form-actions">
@@ -321,7 +326,7 @@
 					</button>
 				</div>
 			</form>
-		</div>
+		
 	</div>
 </div>
 

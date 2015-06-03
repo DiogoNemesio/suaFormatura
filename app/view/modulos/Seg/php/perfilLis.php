@@ -40,7 +40,7 @@ $url		= ROOT_URL . "/Seg/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$perfis	= $em->getRepository('Entidades\ZgsegPerfil')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$perfis	= $em->getRepository('Entidades\ZgsegPerfil')->findBy(array());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
