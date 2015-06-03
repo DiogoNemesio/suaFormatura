@@ -43,6 +43,7 @@ if ((isset($codParceiro) && ($codParceiro))) {
 	}
 	
 	$tipo			= $info->getCodTipoPessoa()->getCodigo();
+	$segmento		= $info->getCodTipo()->getCodigo();
 	$email			= $info->getEmail();
 	$ident			= $info->getIdentificacao();
 	$disabled		= 'disabled';
