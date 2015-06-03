@@ -34,10 +34,10 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	$qb 	= $em->createQueryBuilder();
     	
     	$qb->select('o')
-    	->from('\Entidades\ZgfmtOrganizacao','o')
+    	->from('\Entidades\ZgadmOrganizacao','o')
     	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',	'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
     	->leftJoin('\Entidades\ZgsegPerfil', 				'p', 	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo 		= uo.codPerfil')
-    	->leftJoin('\Entidades\ZgfmtOrganizacaoStatusTipo', 'st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codStatus 	= st.codigo')
+    	->leftJoin('\Entidades\ZgadmOrganizacaoStatusTipo', 'st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codStatus 	= st.codigo')
     	->where($qb->expr()->andX(
     		$qb->expr()->eq('uo.codUsuario'			, ':codUsuario'),
     		$qb->expr()->eq('p.indAtivo'			, '1'),
@@ -65,7 +65,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 	    	->leftJoin('\Entidades\ZgappMenuPerfil'			,'mp'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'm.codigo 		= mp.codMenu')
 	    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao'	,'uo'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil 	= mp.codPerfil')
 	    	->leftJoin('\Entidades\ZgsegUsuario'			,'u'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
-	    	->leftJoin('\Entidades\ZgfmtOrganizacao'		,'o'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
+	    	->leftJoin('\Entidades\ZgadmOrganizacao'		,'o'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
 	    	->where($qb->expr()->andX(
 	   			$qb->expr()->eq('m.indFixo'				, '0'),
 	   			$qb->expr()->eq('u.codigo'				, ':codUsuario'),

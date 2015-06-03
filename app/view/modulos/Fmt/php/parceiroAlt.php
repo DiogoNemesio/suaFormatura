@@ -36,7 +36,7 @@ if ((isset($codParceiro) && ($codParceiro))) {
 
 	try {
 		
-		$info 		= $em->getRepository('Entidades\ZgfmtOrganizacao')->findOneBy(array('codigo' => $codParceiro));
+		$info 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codParceiro));
 		
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
@@ -169,7 +169,7 @@ $urlNovo			= ROOT_URL."/Fmt/parceiroAlt.php?id=".$uid;
 ## Resgata as informaões do tipo PF/PJ
 #################################################################################
 try {
-	$aTipo	= $em->getRepository('Entidades\ZgfmtOrganizacaoPessoaTipo')->findAll();
+	$aTipo	= $em->getRepository('Entidades\ZgadmOrganizacaoPessoaTipo')->findAll();
 	$oTipo	= $system->geraHtmlCombo($aTipo,'CODIGO', 'DESCRICAO', $tipo, null);
 
 } catch (\Exception $e) {
@@ -200,7 +200,7 @@ try {
 #################################################################################
 ## Resgatar os dados de contato
 #################################################################################
-$aTelefones		= $em->getRepository('Entidades\ZgfmtOrganizacaoTelefone')->findBy(array('codOrganizacao' => $codParceiro));
+$aTelefones		= $em->getRepository('Entidades\ZgadmOrganizacaoTelefone')->findBy(array('codOrganizacao' => $codParceiro));
 $tabTel			= "";
 for ($i = 0; $i < sizeof($aTelefones); $i++) {
 
@@ -217,7 +217,7 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 ## Lista de segmentos de mercado
 #################################################################################
 $segMer			= $em->getRepository('Entidades\ZgfmtSegmentoMercado')->findBy(array(),array('nome' => ASC));
-$segAss			= $em->getRepository('Entidades\ZgfmtOrganizacaoSegmento')->findBy(array('codOrganizacao' => $codParceiro));
+$segAss			= $em->getRepository('Entidades\ZgadmOrganizacaoSegmento')->findBy(array('codOrganizacao' => $codParceiro));
 $arraySegAss 	= array(); 
 
 for ($i = 0; $i < sizeof($segAss); $i++) {

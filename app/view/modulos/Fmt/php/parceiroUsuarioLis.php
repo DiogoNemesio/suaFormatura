@@ -40,7 +40,7 @@ $url		= ROOT_URL . '/Rhu/'. basename(__FILE__);
 ## Resgata informações de organização
 #################################################################################
 try {
-	$org	= $em->getRepository('Entidades\ZgfmtOrganizacao')->findOneBy(array('codigo' => $codParceiro));
+	$org	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codParceiro));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

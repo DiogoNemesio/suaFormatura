@@ -27,7 +27,7 @@ if (!$ident) {
 	exit;
 }
 
-$oOrg	= $em->getRepository('Entidades\ZgfmtOrganizacao')->findOneBy(array('identificacao' => $ident));
+$oOrg	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('identificacao' => $ident));
 
 if ($oOrg != null && $oOrg->getCodigo() != $codOrganizacao){
 	$array["existe"]	= 1;

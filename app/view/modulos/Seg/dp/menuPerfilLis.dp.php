@@ -89,7 +89,7 @@ if (!$oPerfil)	{
 	exit;
 }
 
-$oTipo			= $em->getRepository('Entidades\ZgfmtOrganizacaoTipo')->findOneBy(array('codigo' => $codTipoOrg));
+$oTipo			= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => $codTipoOrg));
 if (!$oTipo)	{
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Tipo de organização não encontrado").': '.$codTipoOrg);
 	echo '1'.\Zage\App\Util::encodeUrl('||');

@@ -14,7 +14,7 @@ if (!isset($_org) && (!isset($_SESSION['_codOrg']))) {
 	
 	$system->setCodLang(1);
 	
-	if (isset($_org) && ($_org instanceof \Entidades\ZgfmtOrganizacao) ) {
+	if (isset($_org) && ($_org instanceof \Entidades\ZgadmOrganizacao) ) {
 		$system->setCodOrganizacao($_org->getCodigo());
 	}else{
 		$system->setCodOrganizacao($_SESSION['_codOrg']);

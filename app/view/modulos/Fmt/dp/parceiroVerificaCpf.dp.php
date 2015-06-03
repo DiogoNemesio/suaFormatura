@@ -30,7 +30,7 @@ if (!$cpf) {
 }
 
 try {
-	$oCpf	= $em->getRepository('Entidades\ZgfmtOrganizacao')->findOneBy(array('cgc' => $cpf));
+	$oCpf	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('cgc' => $cpf));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

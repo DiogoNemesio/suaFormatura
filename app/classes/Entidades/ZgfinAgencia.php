@@ -36,9 +36,9 @@ class ZgfinAgencia
     private $nome;
 
     /**
-     * @var \Entidades\ZgfmtOrganizacao
+     * @var \Entidades\ZgadmOrganizacao
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrganizacao")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
      * })
@@ -115,10 +115,10 @@ class ZgfinAgencia
     /**
      * Set codOrganizacao
      *
-     * @param \Entidades\ZgfmtOrganizacao $codOrganizacao
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
      * @return ZgfinAgencia
      */
-    public function setCodOrganizacao(\Entidades\ZgfmtOrganizacao $codOrganizacao = null)
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
     {
         $this->codOrganizacao = $codOrganizacao;
 
@@ -128,7 +128,7 @@ class ZgfinAgencia
     /**
      * Get codOrganizacao
      *
-     * @return \Entidades\ZgfmtOrganizacao 
+     * @return \Entidades\ZgadmOrganizacao 
      */
     public function getCodOrganizacao()
     {

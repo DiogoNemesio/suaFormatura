@@ -95,9 +95,9 @@ class ZgfmtEvento
     private $codTipoEvento;
 
     /**
-     * @var \Entidades\ZgfmtOrganizacao
+     * @var \Entidades\ZgadmOrganizacao
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrganizacao")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_FORMATURA", referencedColumnName="CODIGO")
      * })
@@ -358,10 +358,10 @@ class ZgfmtEvento
     /**
      * Set codFormatura
      *
-     * @param \Entidades\ZgfmtOrganizacao $codFormatura
+     * @param \Entidades\ZgadmOrganizacao $codFormatura
      * @return ZgfmtEvento
      */
-    public function setCodFormatura(\Entidades\ZgfmtOrganizacao $codFormatura = null)
+    public function setCodFormatura(\Entidades\ZgadmOrganizacao $codFormatura = null)
     {
         $this->codFormatura = $codFormatura;
 
@@ -371,7 +371,7 @@ class ZgfmtEvento
     /**
      * Get codFormatura
      *
-     * @return \Entidades\ZgfmtOrganizacao 
+     * @return \Entidades\ZgadmOrganizacao 
      */
     public function getCodFormatura()
     {

@@ -55,7 +55,7 @@ if (!isset($codMenu)) {
 try {
 
 	$perfis	= $em->getRepository('Entidades\ZgsegPerfil')->findAll(array('nome' => 'ASC'));
-	$tipos	= $em->getRepository('Entidades\ZgfmtOrganizacaoTipo')->findAll(array('descricao' => 'ASC'));
+	$tipos	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findAll(array('descricao' => 'ASC'));
 
 	if (isset($codPerfil)) {
 		$_SESSION['Seg']['codPerfil']	= $codPerfil;

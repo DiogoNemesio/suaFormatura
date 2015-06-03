@@ -30,7 +30,7 @@ if (!$cnpj) {
 }
 
 try {
-	$oCnpj	= $em->getRepository('Entidades\ZgfmtOrganizacao')->findOneBy(array('cgc' => $cnpj));
+	$oCnpj	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('cgc' => $cnpj));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

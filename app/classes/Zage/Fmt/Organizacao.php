@@ -36,7 +36,7 @@ class Organizacao {
 			
 		try {
 			$qb->select('o')
-			->from('\Entidades\ZgfmtOrganizacao','o')
+			->from('\Entidades\ZgadmOrganizacao','o')
 			->where($qb->expr()->andX(
 				$qb->expr()->eq($qb->expr()->upper('o.identificacao')	, ':ident')
 			))

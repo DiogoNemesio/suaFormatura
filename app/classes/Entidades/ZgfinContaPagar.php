@@ -183,9 +183,9 @@ class ZgfinContaPagar
     private $indPagarAuto;
 
     /**
-     * @var \Entidades\ZgfmtOrganizacao
+     * @var \Entidades\ZgadmOrganizacao
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrganizacao")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
      * })
@@ -805,10 +805,10 @@ class ZgfinContaPagar
     /**
      * Set codOrganizacao
      *
-     * @param \Entidades\ZgfmtOrganizacao $codOrganizacao
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
      * @return ZgfinContaPagar
      */
-    public function setCodOrganizacao(\Entidades\ZgfmtOrganizacao $codOrganizacao = null)
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
     {
         $this->codOrganizacao = $codOrganizacao;
 
@@ -818,7 +818,7 @@ class ZgfinContaPagar
     /**
      * Get codOrganizacao
      *
-     * @return \Entidades\ZgfmtOrganizacao 
+     * @return \Entidades\ZgadmOrganizacao 
      */
     public function getCodOrganizacao()
     {

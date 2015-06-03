@@ -17,7 +17,7 @@ if ((isset($_POST['zgUsuario'])) && (isset($_POST['zgSenha']))) {
 	$_usuario		= \Zage\App\Util::antiInjection($_POST['zgUsuario']);
 	$_senha			= \Zage\App\Util::antiInjection($_POST['zgSenha']);
 	
-	if (isset($_org) && ($_org instanceof \Entidades\ZgfmtOrganizacao)) {
+	if (isset($_org) && ($_org instanceof \Entidades\ZgadmOrganizacao)) {
 		$_senhaCrip		= \Zage\App\Crypt::crypt($_usuario, $_senha);
 	}else{
 		die("Organização não definida !!!");
@@ -35,7 +35,7 @@ if (isset($_GET['zid'])) {
 	$codEmpresa	= null;
 }
 
-if ((isset($_org) && (isset($_SESSION['_codOrg'])) && ($_org instanceof \Entidades\ZgfmtOrganizacao) && ($_org->getCodigo() != $_SESSION['_codOrg']) ) ) {
+if ((isset($_org) && (isset($_SESSION['_codOrg'])) && ($_org instanceof \Entidades\ZgadmOrganizacao) && ($_org->getCodigo() != $_SESSION['_codOrg']) ) ) {
 	$system->desautentica();
 }
 

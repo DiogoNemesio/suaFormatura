@@ -76,7 +76,7 @@ if ((!empty($ident)) && (strlen($ident) > 100)) {
 	$err	= 1;
 }
 
-$oParceiro	= $em->getRepository('Entidades\ZgfmtOrganizacao')->findOneBy(array('identificacao' => $ident));
+$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('identificacao' => $ident));
 
 if($oParceiro != null && ($oParceiro->getCodigo() != $codParceiro)){
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Está identificação já existe!"));
@@ -208,21 +208,21 @@ if ($err != null) {
 #################################################################################
 try {
 	if (isset($codParceiro) && (!empty($codParceiro))){
- 		$oParceiro	= $em->getRepository('Entidades\ZgfmtOrganizacao')->findOneBy(array('codigo' => $codParceiro));
+ 		$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codParceiro));
  		if (!$oParceiro) {
- 			$oParceiro	= new \Entidades\ZgfmtOrganizacao();
+ 			$oParceiro	= new \Entidades\ZgadmOrganizacao();
  			$oParceiro->setDataCadastro(new \DateTime("now"));
  		}
  	}else{
- 		$oParceiro	= new \Entidades\ZgfmtOrganizacao();
+ 		$oParceiro	= new \Entidades\ZgadmOrganizacao();
  		$oParceiro->setDataCadastro(new \DateTime("now"));
  	}
  	
  	$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
- 	$oTipoPessoa		= $em->getRepository('Entidades\ZgfmtOrganizacaoPessoaTipo')->findOneBy(array('codigo' => $tipo));
- 	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgfmtOrganizacaoTipo')->findOneBy(array('codigo' => 1));
+ 	$oTipoPessoa		= $em->getRepository('Entidades\ZgadmOrganizacaoPessoaTipo')->findOneBy(array('codigo' => $tipo));
+ 	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => 1));
  	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
- 	$oCodStatus			= $em->getRepository('Entidades\ZgfmtOrganizacaoStatusTipo')->findOneBy(array('codigo' => 1));
+ 	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => 1));
  	
  	if (!empty($dataNascimento)) {
  		$dtNasc		= DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataNascimento);
@@ -259,7 +259,7 @@ try {
  	#################################################################################
  	## Telefones
  	#################################################################################
- 	$telefones		= $em->getRepository('Entidades\ZgfmtOrganizacaoTelefone')->findBy(array('codOrganizacao' => $codParceiro));
+ 	$telefones		= $em->getRepository('Entidades\ZgadmOrganizacaoTelefone')->findBy(array('codOrganizacao' => $codParceiro));
  	
  	/***** Exclusão *****/
  	for ($i = 0; $i < sizeof($telefones); $i++) {
@@ -277,10 +277,10 @@ try {
  	
  	/***** Criação / Alteração *****/
  	for ($i = 0; $i < sizeof($codTelefone); $i++) {
- 		$infoTel		= $em->getRepository('Entidades\ZgfmtOrganizacaoTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codOrganizacao' => $oParceiro->getCodigo()));
+ 		$infoTel		= $em->getRepository('Entidades\ZgadmOrganizacaoTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codOrganizacao' => $oParceiro->getCodigo()));
  	
  		if (!$infoTel) {
- 			$infoTel		= new \Entidades\ZgfmtOrganizacaoTelefone();
+ 			$infoTel		= new \Entidades\ZgadmOrganizacaoTelefone();
  		}
  		
  		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
@@ -307,7 +307,7 @@ try {
  	## Segmentos
  	#################################################################################
  	/***** Lista de segmentos já associados *****/	
- 	$segAss		= $em->getRepository('Entidades\ZgfmtOrganizacaoSegmento')->findBy(array('codOrganizacao' => $oParceiro->getCodigo()));
+ 	$segAss		= $em->getRepository('Entidades\ZgadmOrganizacaoSegmento')->findBy(array('codOrganizacao' => $oParceiro->getCodigo()));
  	$aSegAss	= array();
 	
  	/***** Exclusão *****/
@@ -340,7 +340,7 @@ try {
 					exit;
 				}
  	
-				$oPesSegMer		= new \Entidades\ZgfmtOrganizacaoSegmento();
+				$oPesSegMer		= new \Entidades\ZgadmOrganizacaoSegmento();
 				$oPesSegMer->setCodOrganizacao($oParceiro);
 				$oPesSegMer->setCodSegmento($oSeg);
  	

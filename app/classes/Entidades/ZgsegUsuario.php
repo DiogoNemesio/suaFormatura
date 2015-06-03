@@ -24,7 +24,7 @@ class ZgsegUsuario
     /**
      * @var string
      *
-     * @ORM\Column(name="USUARIO", type="string", length=200, nullable=true)
+     * @ORM\Column(name="USUARIO", type="string", length=200, nullable=false)
      */
     private $usuario;
 
@@ -41,6 +41,13 @@ class ZgsegUsuario
      * @ORM\Column(name="NOME", type="string", length=60, nullable=false)
      */
     private $nome;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="APELIDO", type="string", length=60, nullable=false)
+     */
+    private $apelido;
 
     /**
      * @var string
@@ -62,6 +69,20 @@ class ZgsegUsuario
      * @ORM\Column(name="DATA_ULT_ACESSO", type="datetime", nullable=true)
      */
     private $dataUltAcesso;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_TROCAR_SENHA", type="integer", nullable=true)
+     */
+    private $indTrocarSenha;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_END_CORRETO", type="integer", nullable=true)
+     */
+    private $indEndCorreto;
 
     /**
      * @var string
@@ -94,16 +115,9 @@ class ZgsegUsuario
     /**
      * @var string
      *
-     * @ORM\Column(name="COMPLEMENTO", type="string", length=60, nullable=true)
+     * @ORM\Column(name="COMPLEMENTO", type="string", length=100, nullable=true)
      */
     private $complemento;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="IND_TROCAR_SENHA", type="integer", nullable=true)
-     */
-    private $indTrocarSenha;
 
     /**
      * @var \Entidades\ZgsegAvatar
@@ -226,6 +240,29 @@ class ZgsegUsuario
     }
 
     /**
+     * Set apelido
+     *
+     * @param string $apelido
+     * @return ZgsegUsuario
+     */
+    public function setApelido($apelido)
+    {
+        $this->apelido = $apelido;
+
+        return $this;
+    }
+
+    /**
+     * Get apelido
+     *
+     * @return string 
+     */
+    public function getApelido()
+    {
+        return $this->apelido;
+    }
+
+    /**
      * Set senha
      *
      * @param string $senha
@@ -292,6 +329,52 @@ class ZgsegUsuario
     public function getDataUltAcesso()
     {
         return $this->dataUltAcesso;
+    }
+
+    /**
+     * Set indTrocarSenha
+     *
+     * @param integer $indTrocarSenha
+     * @return ZgsegUsuario
+     */
+    public function setIndTrocarSenha($indTrocarSenha)
+    {
+        $this->indTrocarSenha = $indTrocarSenha;
+
+        return $this;
+    }
+
+    /**
+     * Get indTrocarSenha
+     *
+     * @return integer 
+     */
+    public function getIndTrocarSenha()
+    {
+        return $this->indTrocarSenha;
+    }
+
+    /**
+     * Set indEndCorreto
+     *
+     * @param integer $indEndCorreto
+     * @return ZgsegUsuario
+     */
+    public function setIndEndCorreto($indEndCorreto)
+    {
+        $this->indEndCorreto = $indEndCorreto;
+
+        return $this;
+    }
+
+    /**
+     * Get indEndCorreto
+     *
+     * @return integer 
+     */
+    public function getIndEndCorreto()
+    {
+        return $this->indEndCorreto;
     }
 
     /**
@@ -407,29 +490,6 @@ class ZgsegUsuario
     public function getComplemento()
     {
         return $this->complemento;
-    }
-
-    /**
-     * Set indTrocarSenha
-     *
-     * @param integer $indTrocarSenha
-     * @return ZgsegUsuario
-     */
-    public function setIndTrocarSenha($indTrocarSenha)
-    {
-        $this->indTrocarSenha = $indTrocarSenha;
-
-        return $this;
-    }
-
-    /**
-     * Get indTrocarSenha
-     *
-     * @return integer 
-     */
-    public function getIndTrocarSenha()
-    {
-        return $this->indTrocarSenha;
     }
 
     /**

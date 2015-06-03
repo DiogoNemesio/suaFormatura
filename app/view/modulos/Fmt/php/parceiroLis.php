@@ -40,7 +40,7 @@ $url		= ROOT_URL . '/Rhu/'. basename(__FILE__);
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$parceiro	= $em->getRepository('Entidades\ZgfmtOrganizacao')->findBy(array ('codTipo' => 1), array('nome' => 'ASC'));
+	$parceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findBy(array ('codTipo' => 1), array('nome' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

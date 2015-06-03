@@ -22,9 +22,9 @@ class ZgfmtFormaturaCurso
     private $codigo;
 
     /**
-     * @var \Entidades\ZgfmtOrganizacao
+     * @var \Entidades\ZgadmOrganizacao
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrganizacao")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_FORMATURA", referencedColumnName="CODIGO")
      * })
@@ -55,10 +55,10 @@ class ZgfmtFormaturaCurso
     /**
      * Set codFormatura
      *
-     * @param \Entidades\ZgfmtOrganizacao $codFormatura
+     * @param \Entidades\ZgadmOrganizacao $codFormatura
      * @return ZgfmtFormaturaCurso
      */
-    public function setCodFormatura(\Entidades\ZgfmtOrganizacao $codFormatura = null)
+    public function setCodFormatura(\Entidades\ZgadmOrganizacao $codFormatura = null)
     {
         $this->codFormatura = $codFormatura;
 
@@ -68,7 +68,7 @@ class ZgfmtFormaturaCurso
     /**
      * Get codFormatura
      *
-     * @return \Entidades\ZgfmtOrganizacao 
+     * @return \Entidades\ZgadmOrganizacao 
      */
     public function getCodFormatura()
     {
