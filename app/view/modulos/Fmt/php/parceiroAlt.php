@@ -114,6 +114,9 @@ if ((isset($codParceiro) && ($codParceiro))) {
 		
 		$cidade	  		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome();
 		$estado    		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUF()->getNome();
+	}else{
+		$readOnlyBairro = 'readonly';
+		$readOnlyEnd 	= 'readonly';
 	}
 	
 	

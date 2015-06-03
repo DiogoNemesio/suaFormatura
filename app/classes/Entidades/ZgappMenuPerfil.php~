@@ -49,9 +49,9 @@ class ZgappMenuPerfil
     private $codPerfil;
 
     /**
-     * @var \Entidades\ZgfmtOrganizacaoTipo
+     * @var \Entidades\ZgadmOrganizacaoTipo
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrganizacaoTipo")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoTipo")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_TIPO_ORGANIZACAO", referencedColumnName="CODIGO")
      * })
@@ -141,10 +141,10 @@ class ZgappMenuPerfil
     /**
      * Set codTipoOrganizacao
      *
-     * @param \Entidades\ZgfmtOrganizacaoTipo $codTipoOrganizacao
+     * @param \Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao
      * @return ZgappMenuPerfil
      */
-    public function setCodTipoOrganizacao(\Entidades\ZgfmtOrganizacaoTipo $codTipoOrganizacao = null)
+    public function setCodTipoOrganizacao(\Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao = null)
     {
         $this->codTipoOrganizacao = $codTipoOrganizacao;
 
@@ -154,7 +154,7 @@ class ZgappMenuPerfil
     /**
      * Get codTipoOrganizacao
      *
-     * @return \Entidades\ZgfmtOrganizacaoTipo 
+     * @return \Entidades\ZgadmOrganizacaoTipo 
      */
     public function getCodTipoOrganizacao()
     {
