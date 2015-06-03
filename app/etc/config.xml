@@ -41,12 +41,33 @@
 
 	<!-- Configurações de E-Mail -->
 	<mail>
+		<!-- Servidor Smtp -->
+		<servidorSmtp>smtp.gmail.com</servidorSmtp>
+
+		<!-- Porta do Servidor Smtp -->
+		<portaSmtp>465</portaSmtp>
+
+		<!-- Tipo de Autenticação do Servidor Smtp -->
+		<tipoAutSmtp>login</tipoAutSmtp>
+
+		<!-- Método de criptografia do servidor SMTP -->
+		<tipoCriptSmtp>ssl</tipoCriptSmtp>
+
+		<!-- Usuário do servidor SMTP -->
+		<usuarioSmtp>suporte@zage.com.br</usuarioSmtp>
+
+		<!-- Senha do servidor SMTP -->
+		<senhaSmtp>590c4c9c34de8f6c90c58f2ca6bfe05b1c4778e32b367714aa5c50753db1f8eayvNTryO0qAvNgvuzSY9n9E5JJp5DF5vq6FKDaVQXd+YwPt0iB3QE4l9xswJb2cwA</senhaSmtp>
+
+		<!-- Caso o servidor SMTP seja o google, usar o domínio principal -->
+		<dominioSmtp>zage.com.br</dominioSmtp>
+
 		<!-- Nome do Remetente -->
-		<nomeRemetente>Zage</nomeRemetente>
+		<nomeRemetente>Zage Mail</nomeRemetente>
 
 		<!-- Email do Remetente -->
-		<remetente>zage@localhost</remetente>
-
+		<remetente>correio@zagis.com.br</remetente>
+	
 		<!-- Nome do Admin do Sistema -->
 		<nomeAdmin>Daniel Cassela</nomeAdmin>
 
