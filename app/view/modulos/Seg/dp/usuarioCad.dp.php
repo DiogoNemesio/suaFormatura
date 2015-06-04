@@ -86,7 +86,7 @@ try {
 	## Usuário - Organização
 	#################################################################################
 	$log->debug($codOrganizacao);
-	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findBy(array('codigo' => '2'));
+	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findBy(array('codigo' => $codOrganizacao));
 	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findBy(array('codigo' => $codPerfil));
 	$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findBy(array('codigo' => 'P'));
 	

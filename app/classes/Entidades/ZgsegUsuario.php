@@ -45,7 +45,7 @@ class ZgsegUsuario
     /**
      * @var string
      *
-     * @ORM\Column(name="APELIDO", type="string", length=60, nullable=false)
+     * @ORM\Column(name="APELIDO", type="string", length=60, nullable=true)
      */
     private $apelido;
 
