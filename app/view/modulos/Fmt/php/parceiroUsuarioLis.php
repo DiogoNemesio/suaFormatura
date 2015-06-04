@@ -97,7 +97,7 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fmt/parceiroUsuarioCad.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario=');
+$urlAdd			= ROOT_URL.'/Seg/usuarioCad.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codParceiro.'&codUsuario=');
 
 #################################################################################
 ## Gerar a url voltar

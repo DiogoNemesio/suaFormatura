@@ -32,16 +32,34 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata os parâmetros passados pelo formulario
+## Resgata as informações do banco
 #################################################################################
-if (isset($codUsuario)) {
-	if ($codUsuario) 	$podeAlt	= 'readonly';
-	else 				$podeAlt	= '';
-}else{
-	$codUsuario	= null;
-	$podeAlt	= '';
+if ($codOrganizacao) {
+	try {
+		$info			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+	} catch (\Exception $e) {
+		\Zage\App\Erro::halt($e->getMessage());
+	}
 }
 
+#################################################################################
+## Urls
+#################################################################################
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario=');
+$urlVoltar			= ROOT_URL . "/Seg/usuarioLis.php?id=".$uid;
+$urlNovo			= ROOT_URL . "/Seg/usuarioCad.php?id=".$uid;
+
+#################################################################################
+## Select de perfil
+#################################################################################
+
+try {
+	$aPerfil	= \Zage\Seg\Perfil::listaPerfilOrganizacao(3);
+	
+	$oPerfil	= $system->geraHtmlCombo($aPerfil, 'CODIGO', 'NOME', ''	, null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
 
 #################################################################################
 ## Carregando o template html
@@ -55,7 +73,13 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('URLNOVO'				,$urlNovo);
-
+$tpl->set('ID'					,$id);
+$tpl->set('COD_USUARIO'			,$codUsuario);
+$tpl->set('COD_ORGANIZACAO'		,$codOrganizacao);
+$tpl->set('USUARIO'				,$usuario);
+$tpl->set('NOME'				,$nome);
+$tpl->set('EMAIL'				,$email);
+$tpl->set('PERFIL'				,$oPerfil);
 
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 

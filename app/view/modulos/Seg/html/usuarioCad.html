@@ -1,0 +1,232 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Usuário 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Usuário" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+	<div class="col-sm-12">
+		<form id="zgFormID" class="form-horizontal">
+			<input type="hidden" name="codUsuario" id="codUsuarioID" value="%COD_USUARIO%">
+			<input type="hidden" name="codOrganizacao" id="codOrganizacaoID" value="%COD_ORGANIZACAO%">
+			<input type='hidden' id='valID'>
+			<div class="tab-content profile-edit-tab-content">
+				<div class="row">
+					<div class="col-sm-12">
+						<h5 class="header blue bolder smaller">Enviar convite <i class="ace-icon blue fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle green'></i> Ajuda" data-content="Ao enviar o convite, o novo usuário receberá em seu e-mail instruções para finalizar o cadastro."></i></h5>
+						<div class="form-group col-sm-12" id="divEmailID">
+							<label class="col-sm-3 control-label" for="emailID">Email</label>
+						    <div class="input-group col-sm-4 pull-left">
+						   		<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="O e-mail será utilizado como usuário para acesso ao sistema."></i></span>
+						   		<input class="width-100" id="emailID" type="text" maxlength="200" name="email" value="%USUARIO%" placeholder="Email" onblur="checkEmailUsuarioAlt();" %PODEALTERAR% autocomplete="off">
+						    </div>
+							<div class="help-block col-sm-4 inline" id="divHelpEmailID"></div>
+						</div>
+						<div class="form-group col-sm-12" id="divNomeID">
+							<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+						    <div class="input-group col-sm-4 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome completo do usuário"></i></span>
+								<input class="width-100" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" onblur="checkNomeUsuarioAlt();" placeholder="Nome completo" autocomplete="off">
+							</div>
+							<div class="help-block col-sm-4 inline" id="divHelpNomeID"></div>
+						</div>	
+						<div class="form-group col-sm-12" id="divCodPerfilID">
+							<label for="codPerfilID" class="col-sm-3 control-label">Perfil</label>
+							<div class="input-group col-sm-4 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o perfil do usuário"></i></span>
+								<select id="codPerfilID" name="codPerfil" class="select2" data-placeholder="Selecione o perfil">
+									%PERFIL%
+								</select>						
+							</div>
+							<div class="help-block col-sm-4 inline" id="divHelpCodTipoID"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-5 control-label" >&nbsp;</label>
+    					<button type="button" class="btn btn-primary" id="btnSubmitID">
+							<i class="fa fa-envelope-o"></i><b> Enviar </b> 
+						</button>
+				</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#codPerfilID').css('width','100%').select2({allowClear:true});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=popover]').popover({html:true});
+
+/******************************************************
+SUBMIT FORMULÁRIO
+/******************************************************/
+// Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaUsuarioAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+// Submeter o formulário
+$('#zgFormID').submit(function(e) {
+	
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codUsuarioID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Usuário', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});
+
+/******************************************************
+VALIDA FORMULÁRIO  
+/******************************************************/
+//Valida usuário
+function checkEmailUsuarioAlt() {
+	var vEmail	= $('#emailID').val();
+	$('#valID').val(0);
+
+	if (!vEmail){
+		$('#divEmailID').addClass('has-error');
+		$('#divHelpEmailID').html('O Email deve ser preenchido!');
+		return false;
+	}else if (validarEmail(vEmail) == false) {
+		$('#divEmailID').addClass('has-error');
+		$('#divHelpEmailID').html('Email inválido!');
+		return false;
+	}else{
+		
+		//Verificar se o nome está disponível no banco
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Seg/usuarioVerificaEmail.dp.php",
+	   		data: {  codUsuario: $('#codUsuarioID').val() , email: vEmail},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+		
+		if ($('#valID').val() == 0) {
+			$('#divEmailID').addClass('has-error');
+			$('#divHelpEmailID').html('Já existe um usuário cadastrado com esse e-mail! Certique-se que este e-mail nunca foi utilizado para cadastrar um usuário no sistema.');
+			return false;
+		}else{
+			$('#divEmailID').removeClass('has-error');
+			$('#divHelpEmailID').html('&nbsp;');
+			return true;
+		}
+	}	
+}
+
+/******************************************************
+VALIDA NOME 
+/******************************************************/
+//Valida Nome
+function checkNomeUsuarioAlt() {
+	var vNome	= $('#nomeID').val();
+
+	if (!vNome){
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html('O Nome deve ser preenchido!');
+		return false;
+	}else if (vNome.length < 5) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html('Preencha o nome completo!');
+		return false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomelID').html('&nbsp;');
+		return true;
+	}		
+}
+
+//Valida formulário
+function validaUsuarioAlt() {
+	var vNome		 = $('#nomeID').val();
+	var vSenha		 = $('#senhaID').val();
+	var vTipo	 	 = $('#codPerfilID').val();
+		
+	var vOK				= true;
+	var vIdent;
+	
+	//USUARIO
+	if (checkEmailUsuarioAlt() == false){
+		//vOK		= false;
+	}
+	
+	//NOME
+	if (checkNomeUsuarioAlt() == false){
+		//vOK		= false;
+	}
+	
+	//COD TIPO 
+	if (!vTipo) {
+		$('#divCodPerfilID').addClass('has-error');
+		$('#divHelpCodTipoID').html(zgCriaSpanErro('Campo status é obrigatório !!'));
+		vOK		= false;
+	}else{
+		$('#divCodPerfilID').removeClass('has-error');
+		$('#divHelpCodTipoID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+</script>
+
