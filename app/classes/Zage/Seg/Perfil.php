@@ -35,9 +35,10 @@ class Perfil extends \Entidades\ZgsegPerfil {
     	
     	$qb->select('p')
     	->from('\Entidades\ZgsegPerfil','p')
-    	->leftJoin('\Entidades\ZgsegPerfilOrganizacaoTipo',	'ot',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo 		= ot.codPerfil')
+    	->leftJoin('\Entidades\ZgsegPerfilOrganizacaoTipo'	,'ot',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo 		= ot.codPerfil')
+    	->leftJoin('\Entidades\ZgadmOrganizacao'			,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codTipo 	= ot.codTipoOrganizacao')
     	->where($qb->expr()->andX(
-    		$qb->expr()->eq('ot.codOrganizacaoTipo'		, ':codOrganizacao'),
+    		$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
     		$qb->expr()->eq('p.indAtivo'				, '1')
     	))
     	->orderBy('p.nome', 'ASC')

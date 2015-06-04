@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegPerfilOrganizacaoTipo
  *
- * @ORM\Table(name="ZGSEG_PERFIL_ORGANIZACAO_TIPO", indexes={@ORM\Index(name="fk_ZGSEG_PERFIL_TIPO_ORGANIZACAO_1_idx", columns={"COD_ORGANIZACAO_TIPO"}), @ORM\Index(name="fk_ZGSEG_PERFIL_TIPO_ORGANIZACAO_2_idx", columns={"COD_PERFIL"})})
+ * @ORM\Table(name="ZGSEG_PERFIL_ORGANIZACAO_TIPO", indexes={@ORM\Index(name="fk_ZGSEG_PERFIL_TIPO_ORGANIZACAO_1_idx", columns={"COD_TIPO_ORGANIZACAO"}), @ORM\Index(name="fk_ZGSEG_PERFIL_TIPO_ORGANIZACAO_2_idx", columns={"COD_PERFIL"})})
  * @ORM\Entity
  */
 class ZgsegPerfilOrganizacaoTipo
@@ -26,10 +26,10 @@ class ZgsegPerfilOrganizacaoTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoTipo")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_ORGANIZACAO_TIPO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_TIPO_ORGANIZACAO", referencedColumnName="CODIGO")
      * })
      */
-    private $codOrganizacaoTipo;
+    private $codTipoOrganizacao;
 
     /**
      * @var \Entidades\ZgsegPerfil
@@ -53,26 +53,26 @@ class ZgsegPerfilOrganizacaoTipo
     }
 
     /**
-     * Set codOrganizacaoTipo
+     * Set codTipoOrganizacao
      *
-     * @param \Entidades\ZgadmOrganizacaoTipo $codOrganizacaoTipo
+     * @param \Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao
      * @return ZgsegPerfilOrganizacaoTipo
      */
-    public function setCodOrganizacaoTipo(\Entidades\ZgadmOrganizacaoTipo $codOrganizacaoTipo = null)
+    public function setCodTipoOrganizacao(\Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao = null)
     {
-        $this->codOrganizacaoTipo = $codOrganizacaoTipo;
+        $this->codTipoOrganizacao = $codTipoOrganizacao;
 
         return $this;
     }
 
     /**
-     * Get codOrganizacaoTipo
+     * Get codTipoOrganizacao
      *
      * @return \Entidades\ZgadmOrganizacaoTipo 
      */
-    public function getCodOrganizacaoTipo()
+    public function getCodTipoOrganizacao()
     {
-        return $this->codOrganizacaoTipo;
+        return $this->codTipoOrganizacao;
     }
 
     /**

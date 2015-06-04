@@ -32,15 +32,9 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata as informações do banco
+## Verificar parâmetros obrigatórios
 #################################################################################
-if ($codOrganizacao) {
-	try {
-		$info			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
-	} catch (\Exception $e) {
-		\Zage\App\Erro::halt($e->getMessage());
-	}
-}
+if (!isset($codOrganizacao)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 
 #################################################################################
 ## Urls
@@ -54,8 +48,7 @@ $urlNovo			= ROOT_URL . "/Seg/usuarioCad.php?id=".$uid;
 #################################################################################
 
 try {
-	$aPerfil	= \Zage\Seg\Perfil::listaPerfilOrganizacao(3);
-	
+	$aPerfil	= \Zage\Seg\Perfil::listaPerfilOrganizacao($codOrganizacao);
 	$oPerfil	= $system->geraHtmlCombo($aPerfil, 'CODIGO', 'NOME', ''	, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

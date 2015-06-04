@@ -8,6 +8,12 @@ if (defined('DOC_ROOT')) {
  	include_once('../include.php');
 }
 
+use \Zend\Mail;
+use \Zend\Mail\Message;
+use \Zend\Mime\Message as MimeMessage;
+use \Zend\Mime\Part as MimePart;
+Use \Zend\Mime;
+
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
@@ -46,18 +52,27 @@ if (isset($usuario) || !empty($usuario)) {
 	if (strlen($usuario) == 0){
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Email deve ser preenchido!"));
 		$err	= 1;
-	}elseif(!ereg('^([a-zA-Z0-9.-])*([@])([a-z0-9]).([a-z]{2,3})',$usuario)){
-		//verifica se e-mail esta no formato correto de escrita
+	}elseif(\Zage\App\Util::validarEMail($usuario) == false){
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email inválido"));
 		$err	= 1;
-	}else{
-		$dominio=explode('@',$usuario);
-		if(!checkdnsrr($dominio[1],'A')){
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Domínio do e-mail inválido"));
-			$err	= 1;
-		}
 	}
+}else{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Email deve ser preenchido!"));
+	$err	= 1;
 }
+
+/** Perfil **/
+if (!isset($codPerfil) || empty($codPerfil)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Perfil deve ser informado!"));
+	$err	= 1;
+}
+
+/** Organização **/
+if (!isset($codOrganizacao) || empty($codOrganizacao)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Organização deve ser informada!"));
+	$err	= 1;
+}
+
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
@@ -69,26 +84,47 @@ if ($err != null) {
 #################################################################################
 try {
 
-
-	$oUsuario	= new \Entidades\ZgsegUsuario();
+	#################################################################################
+	## Verificar se o usuário já existe
+	#################################################################################
+	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
 	
-	$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'P'));
 	
-	$oUsuario->setUsuario($usuario);
-	$oUsuario->setNome($nome);
-	$oUsuario->setCodStatus($oStatus);
+	if (!$oUsuario) {
+		$novoUsuario	= true;
+		
+		#################################################################################
+		## Criar o usuário com o status pendente
+		#################################################################################
+		$oUsuario	= new \Entidades\ZgsegUsuario();
+		$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'P'));
+		$oUsuario->setUsuario($usuario);
+		$oUsuario->setNome($nome);
+		$oUsuario->setCodStatus($oStatus);
+		
+		$em->persist($oUsuario);
+		
+	}else{
+		$novoUsuario	= false;
+		#################################################################################
+		## Verificar se o usuário já está associado a organização
+		#################################################################################
+		$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
+		
+		if ($oUsuOrg) {
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email já associado a organização"));
+			die ('1'.\Zage\App\Util::encodeUrl('||'));
+		}
+	}
 	
-	$em->persist($oUsuario);
-	$em->flush();
-	//$em->detach($oUsuario);
 	
 	#################################################################################
 	## Usuário - Organização
 	#################################################################################
-	$log->debug($codOrganizacao);
-	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findBy(array('codigo' => $codOrganizacao));
-	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findBy(array('codigo' => $codPerfil));
-	$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findBy(array('codigo' => 'P'));
+	$log->debug("CodOrganizacao: ".$codOrganizacao);
+	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
+	$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
 	
 	$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 	
@@ -99,7 +135,59 @@ try {
 	
 	$em->persist($oUsuarioOrg);
 	$em->flush();
-	$em->detach($oUsuarioOrg);
+	$em->clear();
+	
+	
+	
+	
+	#################################################################################
+	## Carregando o template html do email
+	#################################################################################
+	$tpl	= new \Zage\App\Template();
+	if ($novoUsuario) {
+		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
+		$assunto			= "Cadatro de usuário";
+	}else{
+		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
+		$assunto			= "Associação a empresa";
+	}
+	
+	#################################################################################
+	## Define os valores das variáveis
+	#################################################################################
+	$tpl->set('ID'					,$id);
+	
+	#################################################################################
+	## Criar os objeto do email ,transporte e validador
+	#################################################################################
+	$mail 			= \Zage\App\Mail::getMail();
+	$transport 		= \Zage\App\Mail::getTransport();
+	$validator 		= new \Zend\Validator\EmailAddress();
+	$htmlMail 		= new MimePart($tpl->getHtml());
+	$htmlMail->type = "text/html";
+	$body 			= new MimeMessage();
+	
+	#################################################################################
+	## Definir o conteúdo do e-mail
+	#################################################################################
+	$body->setParts(array($htmlMail));
+	$mail->setBody($body);
+	$mail->setSubject("<ZageMail> ".$assunto);
+	
+	#################################################################################
+	## Definir os destinatários
+	#################################################################################
+	$mail->addTo($usuario);
+	
+	#################################################################################
+	## Enviar o e-mail
+	#################################################################################
+	try {
+		$transport->send($mail);
+	} catch (Exception $e) {
+		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
+		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
+	}
 	
 
 } catch (\Exception $e) {

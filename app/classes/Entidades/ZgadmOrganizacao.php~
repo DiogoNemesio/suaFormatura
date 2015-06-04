@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmOrganizacao
  *
- * @ORM\Table(name="ZGADM_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGFMT_ORGANIZACAO_1", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_2", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_4", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_5_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_3_idx", columns={"COD_SEXO"})})
+ * @ORM\Table(name="ZGADM_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_4_idx", columns={"COD_SEXO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_5_idx", columns={"COD_LOGRADOURO"})})
  * @ORM\Entity
  */
 class ZgadmOrganizacao
@@ -189,16 +189,6 @@ class ZgadmOrganizacao
     private $codTipo;
 
     /**
-     * @var \Entidades\ZgadmLogradouro
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmLogradouro")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_LOGRADOURO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codLogradouro;
-
-    /**
      * @var \Entidades\ZgadmOrganizacaoStatusTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoStatusTipo")
@@ -217,6 +207,16 @@ class ZgadmOrganizacao
      * })
      */
     private $codSexo;
+
+    /**
+     * @var \Entidades\ZgadmLogradouro
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmLogradouro")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_LOGRADOURO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codLogradouro;
 
 
     /**
@@ -759,29 +759,6 @@ class ZgadmOrganizacao
     }
 
     /**
-     * Set codLogradouro
-     *
-     * @param \Entidades\ZgadmLogradouro $codLogradouro
-     * @return ZgadmOrganizacao
-     */
-    public function setCodLogradouro(\Entidades\ZgadmLogradouro $codLogradouro = null)
-    {
-        $this->codLogradouro = $codLogradouro;
-
-        return $this;
-    }
-
-    /**
-     * Get codLogradouro
-     *
-     * @return \Entidades\ZgadmLogradouro 
-     */
-    public function getCodLogradouro()
-    {
-        return $this->codLogradouro;
-    }
-
-    /**
      * Set codStatus
      *
      * @param \Entidades\ZgadmOrganizacaoStatusTipo $codStatus
@@ -825,5 +802,28 @@ class ZgadmOrganizacao
     public function getCodSexo()
     {
         return $this->codSexo;
+    }
+
+    /**
+     * Set codLogradouro
+     *
+     * @param \Entidades\ZgadmLogradouro $codLogradouro
+     * @return ZgadmOrganizacao
+     */
+    public function setCodLogradouro(\Entidades\ZgadmLogradouro $codLogradouro = null)
+    {
+        $this->codLogradouro = $codLogradouro;
+
+        return $this;
+    }
+
+    /**
+     * Get codLogradouro
+     *
+     * @return \Entidades\ZgadmLogradouro 
+     */
+    public function getCodLogradouro()
+    {
+        return $this->codLogradouro;
     }
 }

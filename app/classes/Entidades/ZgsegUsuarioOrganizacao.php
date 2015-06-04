@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegUsuarioOrganizacao
  *
- * @ORM\Table(name="ZGSEG_USUARIO_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGSEG_USUARIO_ORGANIZACAO_1_UNI", columns={"COD_USUARIO", "COD_ORGANIZACAO", "COD_PERFIL"})}, indexes={@ORM\Index(name="USUARIO_EMPRESA_IX01", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZG_USUARIO_ORG_1_idx", columns={"COD_PERFIL"}), @ORM\Index(name="fk_ZGSEG_USUARIO_ORGANIZACAO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_ORGANIZACAO_2_idx", columns={"COD_STATUS"})})
+ * @ORM\Table(name="ZGSEG_USUARIO_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGSEG_USUARIO_ORGANIZACAO_1_UNI", columns={"COD_USUARIO", "COD_ORGANIZACAO"})}, indexes={@ORM\Index(name="USUARIO_EMPRESA_IX01", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZG_USUARIO_ORG_1_idx", columns={"COD_PERFIL"}), @ORM\Index(name="fk_ZGSEG_USUARIO_ORGANIZACAO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_ORGANIZACAO_2_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
 class ZgsegUsuarioOrganizacao
