@@ -65,6 +65,8 @@ class Util {
 	 * @return string
 	 */
 	public static function antiInjection($string) {
+		
+		if (is_array($string)) return $string;
 	
 		/** remove palavras que contenham sintaxe sql **/
 		$string = preg_replace("/(from|select|insert|delete|where|drop table|show tables|#|\*|--|\\\\)/i","",$string);
@@ -437,6 +439,23 @@ class Util {
 	}
 
 	/**
+	 * Enviar os header para o browser fazer download do arquivo
+	 *
+	 * @param varchar Nome do Arquivo
+	 * @param varchar Tipo do Arquivo
+	
+	 */
+	public static function sendHeaderPDF($nomeArquivo) {
+		header("Pragma: public");
+		header("Expires: 0");
+		header("Pragma: no-cache");
+		header('Content-disposition: inline; filename="'.$nomeArquivo.'"');
+		header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+		header('Content-Type: application/pdf');
+	}
+	
+	
+	/**
 	 * Comparação entre 2 números float
 	 * @param unknown $f1
 	 * @param unknown $f2
@@ -583,6 +602,8 @@ class Util {
 	public static function toPHPNumber($valor) {
 		global $log;
 		
+		return self::to_float($valor);
+		
 		$temp		= $valor;
 		$return		= number_format(floatval($temp), 2, ',', '');
 		return($return);
@@ -594,6 +615,11 @@ class Util {
 	 */
 	public static function toMysqlNumber($valor) {
 		//if (empty($valor)) return 0;
+		
+		
+		$temp		= self::to_float($valor);
+		return(self::fnumber_format($temp, 2, '.', ''));
+		
 		
 		$v	= str_replace('.','',$valor);
 		$v	= str_replace(',','.',$v);
