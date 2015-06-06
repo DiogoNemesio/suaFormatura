@@ -121,7 +121,6 @@ try {
 	#################################################################################
 	## Usuário - Organização
 	#################################################################################
-	$log->debug("CodOrganizacao: ".$codOrganizacao);
 	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
 	$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
@@ -134,28 +133,50 @@ try {
 	$oUsuarioOrg->setCodStatus($oUsuarioOrgStatus);
 	
 	$em->persist($oUsuarioOrg);
-	$em->flush();
-	$em->clear();
 	
 	
+	#################################################################################
+	## Cria o convite
+	#################################################################################
+	$convite		= new \Zage\Seg\Convite();
+	$convite->setCodOrganizacaoOrigem($oOrg);
+	$convite->setCodUsuarioDestino($oUsuario);
+	$convite->salvar();
+
+	
+	#################################################################################
+	## Salvar as informações
+	#################################################################################
+	try {
+		$em->flush();
+		$em->clear();
+	} catch (Exception $e) {
+		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
+	}
 	
 	
 	#################################################################################
 	## Carregando o template html do email
 	#################################################################################
-	$tpl	= new \Zage\App\Template();
+	$tpl		= new \Zage\App\Template();
+	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuarioOrg->getCodigo().'&_cdu02='.$oUsuario->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->getCodigo().'&_cdsenha='.$convite->getSenha());
 	if ($novoUsuario) {
 		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
 		$assunto			= "Cadatro de usuário";
+		$confirmUrl			= ROOT_URL . "/u01.php?cid=".$cid;
 	}else{
 		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
 		$assunto			= "Associação a empresa";
+		$confirmUrl			= ROOT_URL . "/u02.php?cid=".$cid;
 	}
 	
 	#################################################################################
 	## Define os valores das variáveis
 	#################################################################################
 	$tpl->set('ID'					,$id);
+	$tpl->set('CONFIRM_URL'			,$confirmUrl);
+	$tpl->set('ASSUNTO'				,$assunto);
 	
 	#################################################################################
 	## Criar os objeto do email ,transporte e validador
@@ -180,7 +201,7 @@ try {
 	$mail->addTo($usuario);
 	
 	#################################################################################
-	## Enviar o e-mail
+	## Salvar as informações e enviar o e-mail
 	#################################################################################
 	try {
 		$transport->send($mail);
