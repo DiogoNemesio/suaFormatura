@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR" >
 <head>
-	<title>%TITULO%</title>
+	<title>.:: Erro ::.</title>
 	<link rel="shortcut icon" href="%ICON_URL%/favicon.ico" />
 
 	<!-- Carregado dinamicamente através do dinamicHtmlLoad -->
@@ -83,17 +83,192 @@
 	<!-- Vakata JSTree -->
 	<link href="%PKG_URL%/vakata-jstree/dist/themes/zage/style.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="%PKG_URL%/vakata-jstree/dist/themes/zage/zage.css" media="screen" rel="stylesheet" type="text/css" />
+	
+	
+<script>
+	function zgWindowOpen(pUrl) {
+		window.open(pUrl,'_self');
+	}
+	function zgLoadUrl(pUrl) {
+		if (pUrl !== '#' && pUrl !== '') {
+			$("#%DIVCENTRAL%ID").empty();
+			$("#zgSpinnerID").removeClass("hidden");
+			$("#%DIVCENTRAL%ID").load(pUrl,{}, function() {
+				$("#zgSpinnerID").addClass("hidden");
+			});
+		}
+	}
+	function zgLoadMenu(pUrl,pId) {
+		var $indTrocarSenha	= "%IND_TROCAR_SENHA%";
+		if ($indTrocarSenha == 1) {
+			$("#%DIVCENTRAL%ID").empty();
+			$("#zgSpinnerID").removeClass("hidden");
+			$("#%DIVCENTRAL%ID").load("%TROCA_SENHA_URL%?url="+pUrl,{}, function() {
+				$("#zgSpinnerID").addClass("hidden");
+			});
+		}else{
+			if (pUrl !== '#' && pUrl !== '') {
+				$("#%DIVCENTRAL%ID").empty();
+				$("#breadcrumbs").load("%BIN_URL%/breadcrumb.php?id="+pId);
+				$("#zgSpinnerID").removeClass("hidden");
+				$("#%DIVCENTRAL%ID").load("%BIN_URL%/loadMenu.php?id="+pId+"&url="+pUrl,{}, function() {
+					$("#zgSpinnerID").addClass("hidden");
+				});
+			}
+		}
+	}
+	
+	function zgDownloadUrl(pUrl) {
+		if (pUrl !== '#' && pUrl !== '') {
+			$("#zgWindowDownID").attr("src", pUrl);
+		}
+	}
+	
+	function zgMostraAviso(pDescBT1,pDescBT2,pUrlBT2,pDescBT3,pUrlBT3,pDescBT4,pUrlBT4) {
+		/** Definir valor padrão para os parâmetros **/
+		
+		if(typeof(pDescBT1)==='undefined')	pDescBT1	= '';
+		if(typeof(pDescBT2)==='undefined')	pDescBT2	= '';
+		if(typeof(pUrlBT2)==='undefined')	pUrlBT2		= '';
+		if(typeof(pDescBT3)==='undefined')	pDescBT3	= '';
+		if(typeof(pUrlBT3)==='undefined')	pUrlBT3		= '';
+		if(typeof(pDescBT4)==='undefined')	pDescBT4	= '';
+		if(typeof(pUrlBT4)==='undefined')	pUrlBT4		= '';
+		
+		var vUrl = '%ROOT_URL%/App/aviso.php?pDescBT1='+encodeURIComponent(pDescBT1)+'&pDescBT2='+encodeURIComponent(pDescBT2)+'&pDescBT3='+encodeURIComponent(pDescBT3)+'&pDescBT4='+encodeURIComponent(pDescBT4)+'&pUrlBT2='+pUrlBT2+'&pUrlBT3='+pUrlBT3+'&pUrlBT4='+pUrlBT4;
+		
+		$("#zgDivModalContentID").empty();
+		$("#zgDivModalContentID").load(vUrl);
+		$("#zgDivModalID").modal({
+			keyboard: true,
+			replace: true
+		});
+	}
+
+	function zgLimpaModalAviso() {
+		$("#zgDivModalContentID").empty();
+		$("#zgDivModalContentID").html('');
+	}
+	
+	function zgCriaSpanErro(pMsg) {
+		return '<span class="popover-error" title="Mensagem de erro" data-rel="zg-popover" data-placement="top" data-trigger="hover" data-content="'+pMsg+'"><i class="fa fa-exclamation-circle red bigger-150"></i></span><script> $("[data-rel=zg-popover]").popover({html:true,template: \\'<div class="popover" style="width: 240px;" role="tooltip"><div class="arrow"></div><div class="popover-title"></div><div class="popover-content small smaller"></div></div>\\' }).on("show.bs.popover", function () { $(this).data("bs.popover").tip().css("max-width", "600px"); });<\\/script>';
+	}
+	
+	function zgCriaSpanOK() {
+		return '<span><i class="fa fa-check-circle green bigger-150"></i></span>';
+	}
+
+	var zgMasksData = {
+		%MASCARAS%
+	}
+	var zgMaskOptions = {
+		byPassKeys: [9, 16, 17, 18, 36, 37, 38, 39, 40, 91],
+		translation: {
+			'0': {pattern: /\\d/}, 
+			'1': {pattern: /[0-1]/},
+			'2': {pattern: /[0-2]/},
+			'3': {pattern: /[0-3]/},
+			'4': {pattern: /[0-4]/},
+			'5': {pattern: /[0-5]/},
+			'6': {pattern: /[0-6]/},
+			'7': {pattern: /[0-7]/},
+			'8': {pattern: /[0-8]/},
+			'9': {pattern: /[0-9]/, optional: true}, 
+			'#': {pattern: /\\d/, recursive: true}, 
+			'T': {pattern: /[a-zA-Z0-9]/, recursive: true},
+			'~': {pattern: /[+-]/, optional: true},
+			'A': {pattern: /[A-Z]/},
+			'a': {pattern: /[a-z]/},
+			'S': {pattern: /[a-zA-Z]/},
+			'@': {pattern: /[a-zA-Z0-9]/},
+			'*': {pattern: /[0-9a-zA-ZçÇáàãâéèêíìóòôõúùü]/}
+		}
+	};
+	
+	var zgEscolheMascaraFone = function(val, e, field, options) {
+		return val.length > 14 ? zgMasksData["fone11"].mascara : zgMasksData["fone"].mascara;
+	};
+	
+	function zgMask (pElement,pMask) {
+		$el = $(pElement);
+
+		var opt 	= jQuery.extend(true, {}, zgMaskOptions);
+		
+		if (zgMasksData && pMask in zgMasksData) {
+			
+			if (pMask == "fone" || pMask == "fone11") {
+				$el.mask(zgEscolheMascaraFone,{onKeyPress: 
+					function(val, e, field, options) {
+						field.mask(zgEscolheMascaraFone(val, e, field, options), options);
+					}
+				});
+			}else if (pMask == "dinheiro") {
+				//$el.mask(zgMasksData[pMask].mascara,opt);
+				$el.maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+			}else{
+				if (zgMasksData[pMask].reverse != undefined) {
+					opt.reverse = true;
+				}
+				
+				if (zgMasksData[pMask].maxlength != undefined) {
+					opt.maxlength = zgMasksData[pMask].maxlength;
+				}
+				
+				$el.mask(zgMasksData[pMask].mascara,opt);
+			}
+			
+		}else{
+			$el.mask(pMask,zgMaskOptions);
+		}
+		
+	}
+	</script>
 </head>
 <body class="no-skin">
+<div class="error-container">
+	<div class="well">
+		<h1 class="grey lighter smaller">
+			<span class="blue bigger-125">
+				<i class="fa fa-exclamation-triangle"></i>
+			</span>
+			%MSG_1%
+		</h1>
 
+		<hr />
+		<h3 class="lighter smaller">
+			<i class="icon-wrench icon-animated-wrench bigger-125"></i>
+			%MSG_2%
+		</h3>
+		<div class="space"></div>
+		<div>
+			<h4 class="lighter smaller">%MSG_3%</h4>
+			<ul class="list-unstyled spaced inline bigger-110 margin-15">
+				<li>
+					<i class="icon-hand-right blue"></i>
+					%MSG_4%
+				</li>
+				<li>
+					<i class="icon-hand-right blue"></i>
+					%MSG_5%
+				</li>
+			</ul>
+		</div>
+		<hr />
+		<div class="space"></div>
+		<h6 class="lighter smaller red">%MSG_ARQUIVO%</h6>
+		<h6 class="lighter smaller red">%MSG_LINHA%</h6>
+		<h6 class="lighter smaller red">%MSG_ERRO%</h6>
+		<div class="space"></div>
 
-<h2>TELA DE CRIAÇÃO DE USUÁRIO</h2>
+		<div class="center">
+			<a href="%ROOT_URL%" class="btn btn-primary">
+				<i class="icon-home"></i>
+				%MSG_INICIO%
+			</a>
+		</div>
 
-
-
-
-
-
+	</div>
+</div>
 
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/dataTables/jquery.dataTables.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/dataTables/jquery.dataTables.bootstrap.js"></script>

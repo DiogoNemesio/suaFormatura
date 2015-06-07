@@ -11,10 +11,8 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Resgata os convites que existem para o usuário
 #################################################################################
-$convites1		= $em->getRepository('Entidades\ZgsegConvite')->findOneBy(array('codUsuarioDestino' 	=> $_user->getCodigo()	,'indUtilizado' => '0'));
-$convites2		= $em->getRepository('Entidades\ZgsegConvite')->findOneBy(array('codOrganizacaoDestino' => $_org->getCodigo()	,'indUtilizado' => '0'));
-
-
+$convites1		= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' 	=> $_user->getCodigo()	,'indUtilizado' => '0'));
+$convites2		= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codOrganizacaoDestino' => $system->getCodOrganizacao()	,'indUtilizado' => '0'));
 
 #################################################################################
 ## Inicializa o array de mensagens

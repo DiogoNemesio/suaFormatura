@@ -11,6 +11,8 @@ namespace Zage\Seg;
  */
 class Convite extends \Entidades\ZgsegConvite {
 
+	private $_convite;
+	
     /**
      * Construtor
      *
@@ -47,27 +49,24 @@ class Convite extends \Entidades\ZgsegConvite {
 		#################################################################################
 		## Copiar o objeto
 		#################################################################################
-		$convite	= new \Entidades\ZgsegConvite();
-		$convite->setCodOrganizacaoDestino(	$this->getCodOrganizacaoDestino()	);
-		$convite->setCodOrganizacaoOrigem(	$this->getCodOrganizacaoOrigem()	);
-		$convite->setCodUsuarioDestino(		$this->getCodUsuarioDestino()		);
-		$convite->setCodUsuarioOrigem(		$this->getCodUsuarioOrigem()		);
-		$convite->setCodUsuarioSolicitante(	$_user								);
-		$convite->setData(					$this->getData()					);
-		$convite->setIndUtilizado(			$this->getIndUtilizado()			);
-		$convite->setSenha(					$this->getSenha()					);
+		$this->_convite	= new \Entidades\ZgsegConvite();
+		$this->_convite->setCodOrganizacaoDestino(	$this->getCodOrganizacaoDestino()	);
+		$this->_convite->setCodOrganizacaoOrigem(	$this->getCodOrganizacaoOrigem()	);
+		$this->_convite->setCodUsuarioDestino(		$this->getCodUsuarioDestino()		);
+		$this->_convite->setCodUsuarioOrigem(		$this->getCodUsuarioOrigem()		);
+		$this->_convite->setCodUsuarioSolicitante(	$_user								);
+		$this->_convite->setData(					$this->getData()					);
+		$this->_convite->setIndUtilizado(			$this->getIndUtilizado()			);
+		$this->_convite->setSenha(					$this->getSenha()					);
 		
 		try {
 		
-			$em->persist($convite);
+			$em->persist($this->_convite);
 			
 		} catch (\Exception $e) {
 			$log->err($e->getTraceAsString());
 			die($e->getMessage());
 		}
-		
-		
-		
 		
 	}
 	
@@ -76,5 +75,9 @@ class Convite extends \Entidades\ZgsegConvite {
 	 */
 	private function _geraSenha() {
 		return md5(time() . rand());
+	}
+	
+	public function _getCodigo() {
+		return $this->_convite->getCodigo();
 	}
 }

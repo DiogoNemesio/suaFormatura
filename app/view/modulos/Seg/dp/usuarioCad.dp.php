@@ -160,15 +160,15 @@ try {
 	## Carregando o template html do email
 	#################################################################################
 	$tpl		= new \Zage\App\Template();
-	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuarioOrg->getCodigo().'&_cdu02='.$oUsuario->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->getCodigo().'&_cdsenha='.$convite->getSenha());
+	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuarioOrg->getCodigo().'&_cdu02='.$oUsuario->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
 	if ($novoUsuario) {
 		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
 		$assunto			= "Cadatro de usuário";
-		$confirmUrl			= ROOT_URL . "/u01.php?cid=".$cid;
+		$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
 	}else{
 		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
 		$assunto			= "Associação a empresa";
-		$confirmUrl			= ROOT_URL . "/u02.php?cid=".$cid;
+		$confirmUrl			= ROOT_URL . "/Seg//u02.php?cid=".$cid;
 	}
 	
 	#################################################################################

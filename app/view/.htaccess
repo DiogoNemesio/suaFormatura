@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
 RewriteEngine on
 RewriteBase /
-RewriteCond $1 !^(modulos|bin|css|imgs|packages|js|favicon\.ico|robots\.txt|index\.php|index\.html|teste\.html|teste\.php|u01\.php|u02\.php) [NC]
+RewriteCond $1 !^(modulos|bin|css|imgs|packages|js|favicon\.ico|robots\.txt|index\.php|index\.html|teste\.html|teste\.php) [NC]
 RewriteRule ^(.*)$ /bin/urlManager.php?url=$1 [L,QSA] 
 </IfModule>

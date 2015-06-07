@@ -40,11 +40,13 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	->leftJoin('\Entidades\ZgadmOrganizacaoStatusTipo', 'st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codStatus 	= st.codigo')
     	->where($qb->expr()->andX(
     		$qb->expr()->eq('uo.codUsuario'			, ':codUsuario'),
+   			$qb->expr()->eq('uo.codStatus'			, ':status'),
     		$qb->expr()->eq('p.indAtivo'			, '1'),
     		$qb->expr()->eq('st.indPermiteAcesso'	, '1')
     	))
     	->orderBy('o.identificacao', 'ASC')
-    	->setParameter('codUsuario', $codUsuario);
+    	->setParameter('codUsuario', $codUsuario)
+    	->setParameter('status', 	"A");
     	 
     	$query 		= $qb->getQuery();
     	return($query->getResult());
@@ -63,8 +65,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	->from('\Entidades\ZgsegUsuario','u')
     	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',	'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
     	->where($qb->expr()->andX(
-    			$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao')
- 
+   			$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao')
     	))
     	->orderBy('u.nome', 'ASC')
     	->setParameter('codOrganizacao', $codOrganizacao);
@@ -111,39 +112,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
     }
     
 
-    /**
-     * Lista os módulos que o usuário tem acesso
-     */
-    public static function listaModulosAcesso ($codUsuario,$codEmpresa) {
-    	global $em;
-    	 
-    	$qb 	= $em->createQueryBuilder();
-
-		try { 
-	    	$qb->select('distinct m')
-	    	->from('\Entidades\ZgappModulo','m')
-	    	->leftJoin('\Entidades\ZgappMenu'				,'me'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'm.codigo 		= me.codModulo')
-	    	->leftJoin('\Entidades\ZgappMenuPerfil'			,'mp'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'me.codigo 		= mp.codMenu')
-	    	->leftJoin('\Entidades\ZgsegUsuarioEmpresa'		,'ue'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'ue.codPerfil 	= mp.codPerfil')
-	    	->leftJoin('\Entidades\ZgsegUsuario'			,'u'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= ue.codUsuario')
-	    	->where($qb->expr()->andX(
-	    			$qb->expr()->eq('me.indFixo'	, '0'),
-	    			$qb->expr()->eq('u.codigo'		, ':codUsuario'),
-	    			$qb->expr()->eq('ue.codEmpresa'	, ':codEmpresa')
-	    	))
-	    	->orderBy('m.nome', 'ASC')
-	    	->setParameter('codUsuario', $codUsuario)
-	    	->setParameter('codEmpresa', $codEmpresa);
-	    	 
-	    	$query = $qb->getQuery();
-	    	return($query->getResult());
-     	
-		}catch (\Doctrine\ORM\ORMException $e) {
-	    	\Zage\App\Erro::halt($e->getMessage());
-	    }
-	}
-    
-	
+ 	
 	/**
 	 * Busca usuários
 	 */

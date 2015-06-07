@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtInstituicao
  *
- * @ORM\Table(name="ZGFMT_INSTITUICAO", indexes={@ORM\Index(name="fk_ZGFOR_INSTITUICAO_1_idx", columns={"COD_CIDADE"}), @ORM\Index(name="fk_ZGFOR_INSTITUICAO_2_idx", columns={"COD_CAT_ADM"}), @ORM\Index(name="fk_ZGFOR_INSTITUICAO_3_idx", columns={"COD_ORG_ACD"})})
+ * @ORM\Table(name="ZGFMT_INSTITUICAO", indexes={@ORM\Index(name="fk_ZGFOR_INSTITUICAO_1_idx", columns={"COD_CIDADE"}), @ORM\Index(name="fk_ZGFOR_INSTITUICAO_2_idx", columns={"COD_REDE"}), @ORM\Index(name="fk_ZGFOR_INSTITUICAO_3_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFMT_INSTITUICAO_1_idx", columns={"COD_ADM"})})
  * @ORM\Entity
  */
 class ZgfmtInstituicao
@@ -20,6 +20,13 @@ class ZgfmtInstituicao
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $codigo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="COD_IES", type="integer", nullable=false)
+     */
+    private $codIes;
 
     /**
      * @var string
@@ -46,24 +53,34 @@ class ZgfmtInstituicao
     private $codCidade;
 
     /**
-     * @var \Entidades\ZgfmtCatAdm
+     * @var \Entidades\ZgfmtInstituicaoRede
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtCatAdm")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtInstituicaoRede")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CAT_ADM", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_REDE", referencedColumnName="CODIGO")
      * })
      */
-    private $codCatAdm;
+    private $codRede;
 
     /**
-     * @var \Entidades\ZgfmtOrgAcademica
+     * @var \Entidades\ZgfmtInstituicaoTipo
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrgAcademica")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtInstituicaoTipo")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_ORG_ACD", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_TIPO", referencedColumnName="CODIGO")
      * })
      */
-    private $codOrgAcd;
+    private $codTipo;
+
+    /**
+     * @var \Entidades\ZgfmtInstituicaoAdm
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtInstituicaoAdm")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ADM", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codAdm;
 
 
     /**
@@ -74,6 +91,29 @@ class ZgfmtInstituicao
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set codIes
+     *
+     * @param integer $codIes
+     * @return ZgfmtInstituicao
+     */
+    public function setCodIes($codIes)
+    {
+        $this->codIes = $codIes;
+
+        return $this;
+    }
+
+    /**
+     * Get codIes
+     *
+     * @return integer 
+     */
+    public function getCodIes()
+    {
+        return $this->codIes;
     }
 
     /**
@@ -146,48 +186,71 @@ class ZgfmtInstituicao
     }
 
     /**
-     * Set codCatAdm
+     * Set codRede
      *
-     * @param \Entidades\ZgfmtCatAdm $codCatAdm
+     * @param \Entidades\ZgfmtInstituicaoRede $codRede
      * @return ZgfmtInstituicao
      */
-    public function setCodCatAdm(\Entidades\ZgfmtCatAdm $codCatAdm = null)
+    public function setCodRede(\Entidades\ZgfmtInstituicaoRede $codRede = null)
     {
-        $this->codCatAdm = $codCatAdm;
+        $this->codRede = $codRede;
 
         return $this;
     }
 
     /**
-     * Get codCatAdm
+     * Get codRede
      *
-     * @return \Entidades\ZgfmtCatAdm 
+     * @return \Entidades\ZgfmtInstituicaoRede 
      */
-    public function getCodCatAdm()
+    public function getCodRede()
     {
-        return $this->codCatAdm;
+        return $this->codRede;
     }
 
     /**
-     * Set codOrgAcd
+     * Set codTipo
      *
-     * @param \Entidades\ZgfmtOrgAcademica $codOrgAcd
+     * @param \Entidades\ZgfmtInstituicaoTipo $codTipo
      * @return ZgfmtInstituicao
      */
-    public function setCodOrgAcd(\Entidades\ZgfmtOrgAcademica $codOrgAcd = null)
+    public function setCodTipo(\Entidades\ZgfmtInstituicaoTipo $codTipo = null)
     {
-        $this->codOrgAcd = $codOrgAcd;
+        $this->codTipo = $codTipo;
 
         return $this;
     }
 
     /**
-     * Get codOrgAcd
+     * Get codTipo
      *
-     * @return \Entidades\ZgfmtOrgAcademica 
+     * @return \Entidades\ZgfmtInstituicaoTipo 
      */
-    public function getCodOrgAcd()
+    public function getCodTipo()
     {
-        return $this->codOrgAcd;
+        return $this->codTipo;
+    }
+
+    /**
+     * Set codAdm
+     *
+     * @param \Entidades\ZgfmtInstituicaoAdm $codAdm
+     * @return ZgfmtInstituicao
+     */
+    public function setCodAdm(\Entidades\ZgfmtInstituicaoAdm $codAdm = null)
+    {
+        $this->codAdm = $codAdm;
+
+        return $this;
+    }
+
+    /**
+     * Get codAdm
+     *
+     * @return \Entidades\ZgfmtInstituicaoAdm 
+     */
+    public function getCodAdm()
+    {
+        return $this->codAdm;
     }
 }

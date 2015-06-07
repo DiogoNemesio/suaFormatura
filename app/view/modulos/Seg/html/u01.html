@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR" >
+<head>
+	<title>Confirmação de usuário</title>
+	<link rel="shortcut icon" href="%ICON_URL%/favicon.ico" />
+
+	<!-- Carregado dinamicamente através do dinamicHtmlLoad -->
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<style type="text/css" class="init">
+		div.DTTT { margin-bottom: 0.5em; float: right; }
+		div.dataTables_wrapper { clear: both; }
+	</style>
+	
+	<link href="%PKG_URL%/ace/assets/css/bootstrap.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/font-awesome.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/dropzone.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/jquery-ui.custom.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/chosen.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/datepicker.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/bootstrap-timepicker.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/daterangepicker.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/bootstrap-datetimepicker.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/colorpicker.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/jquery.gritter.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/bootstrap-duallistbox.css" media="screen" rel="stylesheet" type="text/css"  />
+	<link href="%PKG_URL%/ace/assets/css/bootstrap-multiselect.css" media="screen" rel="stylesheet" type="text/css"  />
+	<link href="%PKG_URL%/ace/assets/css/select2.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/ace-fonts.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/ace-skins.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/ace-rtl.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/ace/assets/css/colorbox.css" rel="stylesheet" />
+		 
+	<!--[if lte IE 9]>
+		<link rel="stylesheet" href="%PKG_URL%/ace/assets/css/ace-part2.css" class="ace-main-stylesheet" />
+	<![endif]-->
+
+	<!--[if lte IE 9]>
+		<link rel="stylesheet" href="%PKG_URL%/ace/assets/css/ace-ie.css" />
+	<![endif]-->
+
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace-extra.js"></script>
+	<link href="%CSS_URL%/zgWeb.css" media="screen" rel="stylesheet" type="text/css" />
+	
+	<!--[if lt IE 9]>
+		<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/html5shiv.js"></script>
+		<script type='text/javascript' charset='UTF-8' src="%PKG_URL%/ace/assets/js/respond.js"></script>
+	<![endif]-->
+
+	<!--[if !IE]> -->
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='%PKG_URL%/ace/assets/js/jquery.js'>"+"<"+"/script>");
+	</script>
+
+	<!-- <![endif]-->
+
+	<!--[if IE]>
+	<script type="text/javascript">
+			window.jQuery || document.write("<script src='%PKG_URL%/ace/assets/js/jquery1x.js'>"+"<"+"/script>");
+	</script>
+	<![endif]-->
+	<script type="text/javascript">
+		if('ontouchstart' in document.documentElement) document.write("<script src='%PKG_URL%/ace/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
+	</script>
+
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/js/jquery.base64.min.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%JS_URL%/zgWeb.js"></script>
+
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/bootstrap.js"></script>
+	
+	<!--[if lte IE 8]>
+		<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/excanvas.js"></script>
+	<![endif]-->
+	
+
+	<!-- Fim do carregamento dinâmico (dinamicHtmlLoad) -->
+	
+	<!-- DataTables TableTool -->
+	<!-- <link href="%PKG_URL%/TableTools-2.2.3/css/dataTables.tableTools.min.css" media="screen" rel="stylesheet" type="text/css" />  -->
+
+	<!-- Vakata JSTree -->
+	<link href="%PKG_URL%/vakata-jstree/dist/themes/zage/style.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/vakata-jstree/dist/themes/zage/zage.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body class="no-skin">
+
+<form id="zgFormID" class="form-horizontal">
+<div class="page-content">
+	<div id="user-profile-3" class="user-profile row">
+		<div class="page-header"><h1>Confirme suas informações<small><i class="ace-icon fa fa-angle-double-right"></i>.....</small></h1></div>
+		<div class="col-sm-12">
+			<input type="hidden" name="_cdu01" value="%CD01%">
+			<input type="hidden" name="_cdu02" value="%CD02%">
+			<input type="hidden" name="_cdu03" value="%CD03%">
+			<input type="hidden" name="_cdu04" value="%CD04%">
+			<input type="hidden" name="codLogradouro" id='codLogradouroID'>
+			<input type='hidden' id='valID'>
+			<h5 class="header blue bolder smaller">Informações Básicas</h5>
+			<div class="vspace-xs"></div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group col-sm-12" id="divEmailID">
+				    	<label class="col-sm-3 control-label" for="emailID">Email</label>
+		    			<div class="input-group col-sm-8 pull-left">
+		   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="O e-mail será utilizado como usuário para acesso ao sistema."></i></span>
+		   					<input class="width-100" id="usuarioID" type="text" maxlength="200" name="usuario" value="%USUARIO%" readonly placeholder="Email" onblur="checkEmailUsuarioAlt();" %PODEALTERAR% autocomplete="off">
+		    			</div>
+		    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
+		    		</div>
+					<div class="form-group col-sm-12" id="divNomeID">
+				    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+		    			<div class="input-group col-sm-8 pull-left">
+			    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome completo do usuário"></i></span>
+			    			<input class="width-100" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" placeholder="Nome completo" autocomplete="off">
+				    	</div>
+				    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+				    </div>
+				    <div class="form-group col-sm-12" id="divApelidoID">
+				    	<label class="col-sm-3 control-label" for="apelidoID">Apelido</label>
+		    			<div class="input-group col-sm-8 pull-left">
+			    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Apelido"></i></span>
+			    			<input class="width-100" id="apelidoID" type="text" name="apelido" maxlength="60" placeholder="Apelido" autocomplete="off">
+				    	</div>
+				    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
+				    </div>
+		        	<div class="form-group col-sm-12" id="divCpfID">
+					    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
+			    			<div class="input-group col-sm-8 pull-left">
+		    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+				    			<input class="form-control" id="cpfID" type="text" name="cpf" maxlength="14" placeholder="CPF"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
+					</div>
+					<div class="form-group col-sm-12" id="divSexoID">
+						<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
+		    			<div class="input-group col-sm-8 pull-left">
+							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do usuário"></i></span>
+							<select class="select2" style="width:100%;" id="sexoID" name="sexo" data-rel="select2">
+								%SEXO%
+							</select>
+						</div>
+					</div>
+					<h4 class="header blue bolder smaller">Senha</h4>
+					<div class="vspace-xs"></div>
+					<div class="form-group col-sm-12" id="divSenhaID">
+				    	<label class="col-sm-3 control-label" for="senhaID">Senha</label>
+		    			<div class="input-group col-sm-8 pull-left">
+			    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Senha de acesso ao sistema"></i></span>
+			    			<input class="width-100" id="senhaID" type="password" name="senhaCad" maxlength="16" placeholder="Senha" autocomplete="off">
+				    	</div>
+				    	<div class="col-sm-1 pull-left" id="divHelpSenhaID"></div>
+				    </div>
+				    <div class="form-group col-sm-12" id="divConfSenhaID">
+				    	<label class="col-sm-3 control-label" for="confSenhaID">Confirmação</label>
+		    			<div class="input-group col-sm-8 pull-left">
+			    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Confirmação da senha"></i></span>
+			    			<input class="width-100" id="confSenhaID" type="password" name="confSenhaCad" maxlength="16" placeholder="Confirmação da senha" autocomplete="off">
+				    	</div>
+				    	<div class="col-sm-1 pull-left" id="divHelpConfSenhaID"></div>
+				    </div>
+					<h4 class="header blue bolder smaller">Endereço</h4>
+					<div class="vspace-xs"></div>
+					<div class="form-group col-sm-12" id="divCepID">
+						<label for="cepID" class="col-sm-3 control-label">CEP</label>
+						<div class="input-group col-sm-8 pull-left">
+							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
+							<input type="text" id="cepID" name="cep" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+						</div>
+						<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+					</div>																	
+					<div class="form-group col-sm-12" id="divDescLogradouroID">
+						<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
+						<div class="input-group col-sm-8 pull-left">
+							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
+							<input type="text" id="descLogradouroID" name="descLogradouro" class="width-100" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+						</div>
+						<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
+					</div>	
+					<div class="form-group col-sm-12" id="divBairroID">
+						<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
+						<div class="input-group col-sm-8 pull-left">
+							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
+							<input type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" class="width-100" autocomplete="off" placeholder="Bairro" maxlength="60" />
+						</div>
+						<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
+					</div>
+					<div class="form-group col-sm-12">
+						<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+						<div class="input-group col-sm-8 pull-left">
+							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
+							<input type="text" readonly id="descCidadeID" name="descCidade" class="width-100" placeholder="Cidade" />
+						</div>
+					</div>
+					<div class="form-group col-sm-12">
+						<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+						<div class="input-group col-sm-8 pull-left">
+							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
+							<input type="text" readonly id="descEstadoID" name="descEstado" class="width-100" placeholder="Estado" />
+						</div>
+					</div>									
+					<div class="form-group col-sm-12" id="divNumeroID">
+						<label for=numeroID" class="col-sm-3 control-label">Número</label>
+						<div class="input-group col-sm-8 pull-left">
+							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
+							<input type="text" id="numeroID" name="numero" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
+						</div>
+					</div>							
+					<div class="form-group col-sm-12" id="divComplementoID">
+						<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
+						<div class="input-group col-sm-8 pull-left">
+							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
+							<input type="text" id="complementoID" name="complemento" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
+						</div>
+					</div>																			
+					<div class="hidden" id="divEndCorretoID">
+						<div class="col-sm-12">
+							<div class="form-group col-sm-12">
+								<div class="alert alert-info">	
+									Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+									<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
+									<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+								</div>
+							</div>		
+						</div>	
+					</div>
+			    </div>
+			    <div class="col-sm-6">
+			    	<h4>Colocar informações sobre o Sistema</h4>
+			    </div>
+			</div>
+		</div>
+		<div class="clearfix form-actions">
+			<label class="col-sm-3 control-label" >&nbsp;</label>
+  			<button type="button" class="btn btn-primary" id="btnSubmitID">
+				<i class="fa fa-check bigger-110"></i> Salvar
+			</button>
+		</div>
+	</div>
+</div>
+</form>
+
+<script>
+	function zgWindowOpen(pUrl) {
+		window.open(pUrl,'_self');
+	}
+
+	function zgLoadUrl(pUrl) {
+		if (pUrl !== '#' && pUrl !== '') {
+			$("#%DIVCENTRAL%ID").empty();
+			$("#zgSpinnerID").removeClass("hidden");
+			$("#%DIVCENTRAL%ID").load(pUrl,{}, function() {
+				$("#zgSpinnerID").addClass("hidden");
+			});
+		}
+	}
+	function zgLoadMenu(pUrl,pId) {
+		var $indTrocarSenha	= "%IND_TROCAR_SENHA%";
+		if ($indTrocarSenha == 1) {
+			$("#%DIVCENTRAL%ID").empty();
+			$("#zgSpinnerID").removeClass("hidden");
+			$("#%DIVCENTRAL%ID").load("%TROCA_SENHA_URL%?url="+pUrl,{}, function() {
+				$("#zgSpinnerID").addClass("hidden");
+			});
+		}else{
+			if (pUrl !== '#' && pUrl !== '') {
+				$("#%DIVCENTRAL%ID").empty();
+				$("#breadcrumbs").load("%BIN_URL%/breadcrumb.php?id="+pId);
+				$("#zgSpinnerID").removeClass("hidden");
+				$("#%DIVCENTRAL%ID").load("%BIN_URL%/loadMenu.php?id="+pId+"&url="+pUrl,{}, function() {
+					$("#zgSpinnerID").addClass("hidden");
+				});
+			}
+		}
+	}
+	
+	function zgDownloadUrl(pUrl) {
+		if (pUrl !== '#' && pUrl !== '') {
+			$("#zgWindowDownID").attr("src", pUrl);
+		}
+	}
+	
+	function zgMostraAviso(pDescBT1,pDescBT2,pUrlBT2,pDescBT3,pUrlBT3,pDescBT4,pUrlBT4) {
+		/** Definir valor padrão para os parâmetros **/
+		
+		if(typeof(pDescBT1)==='undefined')	pDescBT1	= '';
+		if(typeof(pDescBT2)==='undefined')	pDescBT2	= '';
+		if(typeof(pUrlBT2)==='undefined')	pUrlBT2		= '';
+		if(typeof(pDescBT3)==='undefined')	pDescBT3	= '';
+		if(typeof(pUrlBT3)==='undefined')	pUrlBT3		= '';
+		if(typeof(pDescBT4)==='undefined')	pDescBT4	= '';
+		if(typeof(pUrlBT4)==='undefined')	pUrlBT4		= '';
+		
+		var vUrl = '%ROOT_URL%/App/aviso.php?pDescBT1='+encodeURIComponent(pDescBT1)+'&pDescBT2='+encodeURIComponent(pDescBT2)+'&pDescBT3='+encodeURIComponent(pDescBT3)+'&pDescBT4='+encodeURIComponent(pDescBT4)+'&pUrlBT2='+pUrlBT2+'&pUrlBT3='+pUrlBT3+'&pUrlBT4='+pUrlBT4;
+		
+		$("#zgDivModalContentID").empty();
+		$("#zgDivModalContentID").load(vUrl);
+		$("#zgDivModalID").modal({
+			keyboard: true,
+			replace: true
+		});
+	}
+
+	function zgLimpaModalAviso() {
+		$("#zgDivModalContentID").empty();
+		$("#zgDivModalContentID").html('');
+	}
+	
+	function zgCriaSpanErro(pMsg) {
+		return '<span class="popover-error" title="Mensagem de erro" data-rel="zg-popover" data-placement="top" data-trigger="hover" data-content="'+pMsg+'"><i class="fa fa-exclamation-circle red bigger-150"></i></span><script> $("[data-rel=zg-popover]").popover({html:true,template: \\'<div class="popover" style="width: 240px;" role="tooltip"><div class="arrow"></div><div class="popover-title"></div><div class="popover-content small smaller"></div></div>\\' }).on("show.bs.popover", function () { $(this).data("bs.popover").tip().css("max-width", "600px"); });<\\/script>';
+	}
+	
+	function zgCriaSpanOK() {
+		return '<span><i class="fa fa-check-circle green bigger-150"></i></span>';
+	}
+
+	var zgMasksData = {
+		%MASCARAS%
+	}
+	var zgMaskOptions = {
+		byPassKeys: [9, 16, 17, 18, 36, 37, 38, 39, 40, 91],
+		translation: {
+			'0': {pattern: /\\d/}, 
+			'1': {pattern: /[0-1]/},
+			'2': {pattern: /[0-2]/},
+			'3': {pattern: /[0-3]/},
+			'4': {pattern: /[0-4]/},
+			'5': {pattern: /[0-5]/},
+			'6': {pattern: /[0-6]/},
+			'7': {pattern: /[0-7]/},
+			'8': {pattern: /[0-8]/},
+			'9': {pattern: /[0-9]/, optional: true}, 
+			'#': {pattern: /\\d/, recursive: true}, 
+			'T': {pattern: /[a-zA-Z0-9]/, recursive: true},
+			'~': {pattern: /[+-]/, optional: true},
+			'A': {pattern: /[A-Z]/},
+			'a': {pattern: /[a-z]/},
+			'S': {pattern: /[a-zA-Z]/},
+			'@': {pattern: /[a-zA-Z0-9]/},
+			'*': {pattern: /[0-9a-zA-ZçÇáàãâéèêíìóòôõúùü]/}
+		}
+	};
+	
+	var zgEscolheMascaraFone = function(val, e, field, options) {
+		return val.length > 14 ? zgMasksData["fone11"].mascara : zgMasksData["fone"].mascara;
+	};
+	
+	function zgMask (pElement,pMask) {
+		$el = $(pElement);
+
+		var opt 	= jQuery.extend(true, {}, zgMaskOptions);
+		
+		if (zgMasksData && pMask in zgMasksData) {
+			
+			if (pMask == "fone" || pMask == "fone11") {
+				$el.mask(zgEscolheMascaraFone,{onKeyPress: 
+					function(val, e, field, options) {
+						field.mask(zgEscolheMascaraFone(val, e, field, options), options);
+					}
+				});
+			}else if (pMask == "dinheiro") {
+				//$el.mask(zgMasksData[pMask].mascara,opt);
+				$el.maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+			}else{
+				if (zgMasksData[pMask].reverse != undefined) {
+					opt.reverse = true;
+				}
+				
+				if (zgMasksData[pMask].maxlength != undefined) {
+					opt.maxlength = zgMasksData[pMask].maxlength;
+				}
+				
+				$el.mask(zgMasksData[pMask].mascara,opt);
+			}
+			
+		}else{
+			$el.mask(pMask,zgMaskOptions);
+		}
+		
+	}
+	</script>
+
+
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/dataTables/jquery.dataTables.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/dataTables/jquery.dataTables.bootstrap.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/dataTables/extensions/TableTools/js/dataTables.tableTools.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/dataTables/extensions/ColVis/js/dataTables.colVis.js"></script>
+
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/fuelux/fuelux.wizard.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.validate.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/additional-methods.js"></script>
+	<!-- <script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.maskedinput.js"></script>  -->
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/js/jquery.mask.min.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/js/jquery.maskMoney.min.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/dropzone.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.bootstrap-duallistbox.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.raty.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/bootstrap-multiselect.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/select2.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/bootstrap-datepicker.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/bootstrap-timepicker.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/moment.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/daterangepicker.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/bootstrap-colorpicker.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.knob.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.autosize.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.inputlimiter.1.3.1.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery-ui.custom.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.ui.touch-punch.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/chosen.jquery.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/bootbox.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.easypiechart.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.sparkline.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.gritter.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/flot/jquery.flot.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/flot/jquery.flot.pie.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/flot/jquery.flot.resize.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/spin.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.scroller.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.colorpicker.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.fileinput.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.typeahead.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.wysiwyg.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.spinner.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.treeview.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.wizard.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/elements.aside.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.ajax-content.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.touch-drag.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.sidebar.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.sidebar-scroll-1.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.submenu-hover.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.widget-box.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.settings.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.settings-rtl.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.settings-skin.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.widget-on-reload.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/ace/ace.searchbox-autocomplete.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/jquery.colorbox.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/js/bootstrap3-typeahead.min.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/js/accounting.min.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/js/shortcut.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/lang/datepicker.pt-BR.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/dist/js/bootstrap-tag.min.js"></script>
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/dist/js/jquery.bootstrap-duallistbox.min.js"></script>
+	
+	
+	<!-- Vakata JSTree -->
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/vakata-jstree/dist/jstree.min.js"></script>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#sexoID').css('width','100%').select2({allowClear:true});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=popover]').popover({html:true});
+
+/******************************************************
+SUBMIT FORMULÁRIO
+/******************************************************/
+// Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaUsuarioAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+// Submeter o formulário
+$('#zgFormID').submit(function(e) {
+	
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codUsuarioID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Usuário', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});
+
+/******************************************************
+VALIDA FORMULÁRIO  
+/******************************************************/
+//Valida usuário
+function checkEmailUsuarioAlt() {
+	var vEmail	= $('#emailID').val();
+	$('#valID').val(0);
+	
+	if (validarEmail(vEmail) == false) {
+		$('#divEmailID').addClass('has-error');
+		$('#divHelpEmailID').html(zgCriaSpanErro('Email inválido! Verifique se o e-mail foi digitado corretamente.'));
+	}else{
+		
+		//Verificar se o nome está disponível no banco
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Seg/usuarioVerificaEmail.dp.php",
+	   		data: {  codUsuario: $('#codUsuarioID').val() , email: vEmail},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+		
+		if ($('#valID').val() == 0) {
+			$('#divEmailID').addClass('has-error');
+			$('#divHelpEmailID').html(zgCriaSpanErro('Já existe um usuário cadastrado com esse e-mail! Certique-se que este e-mail nunca foi utilizado para cadastrar um usuário no sistema.'));
+			return false;
+		}else{
+			$('#divEmailID').removeClass('has-error');
+			$('#divHelpEmailID').html('&nbsp;');
+			return true;
+		}
+	}	
+}
+
+//Valida formulário
+function validaUsuarioAlt() {
+	var vNome		 = $('#nomeID').val();
+	var vSenha		 = $('#senhaID').val();
+	var vConfSenha	 = $('#confSenhaID').val();
+	var vStatus		 = $('#codStatusID').val();
+		
+	var vOK				= true;
+	var vIdent;
+	
+	//USUARIO
+	//vOK = checkUsuario();
+	
+	//NOME
+	if (vNome) {
+		if (vNome.length < 4){			
+			$('#divNomeID').addClass('has-error');
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome muito pequeno, informe o nome completo !!'));
+			vOK		= false;
+		}else if (vNome.length > 60){
+			$('#divNomeID').addClass('has-error');
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 60 caracteres !!'));
+			vOK		= false;
+		}else{
+			$('#divNomeID').removeClass('has-error');
+			$('#divHelpNomeID').html('&nbsp;');		
+		}
+	}else{
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!'));
+		vOK		= false;
+	}
+	
+	//SENHA
+	if (vSenha) {
+		if (vSenha.length < 4){			
+			$('#divSenhaID').addClass('has-error');
+			$('#divHelpSenhaID').html(zgCriaSpanErro('Insira uma senha com mais caracteres !!'));
+			vOK		= false;
+		}else{
+			$('#divSenhaID').removeClass('has-error');
+			$('#divHelpSenhaID').html('&nbsp;');		
+		}
+	}
+	
+	//CONF SENHA
+	if (vSenha != vConfSenha) {
+		$('#divConfSenhaID').addClass('has-error');
+		$('#divHelpConfSenhaID').html(zgCriaSpanErro('A senha está diferente da confirmação !!'));
+		vOK		= false;
+	}else{
+		$('#divConfSenhaID').removeClass('has-error');
+		$('#divHelpConfSenhaID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+
+function zgAlteraAvatar(pCodigo,pUrl) {
+	$('#avatarID').val(pCodigo);
+	$("#avatarAtualID").attr("src",pUrl);
+}
+
+var colorbox_params = {
+	reposition:true,
+	scalePhotos:true,
+	scrolling:false,
+	previous:'<i class="fa fa-arrow-left"></i>',
+	next:'<i class="fa fa-arrow-right"></i>',
+	close:'&times;',
+	current:'{current} of {total}',
+	maxWidth:'100%',
+	maxHeight:'100%',
+	onOpen:function(){
+		document.body.style.overflow = 'hidden';
+	},
+	onClosed:function(){
+		document.body.style.overflow = 'auto';
+	},
+	onComplete:function(){
+		$.colorbox.resize();
+	}
+};
+
+$('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
+$("#cboxLoadingGraphic").append("<i class='fa fa-spinner orange'></i>");//let's add a custom loading icon
+
+/******************************************************
+BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
+/******************************************************/
+//Busca ENDEREÇO
+function buscaRua() {
+	var vCep			= $('#cepID').cleanVal();
+	
+	if (vCep){
+		if (vCep.length != 8){
+			$('#divCepID').addClass('has-error');
+			$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+			$('#divHelpCepID').html(zgCriaSpanErro('CEP inválido !!!'));
+			limpaInfoLogradouro();
+			return false;
+		}else{
+			/** Buscar o cep no banco **/
+			jQuery.ajax({
+	    		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
+	    		data: { cep: vCep},
+	    		success: function(ret) {
+	    			var vData	= JSON.parse(ret);
+	    	    	if (vData.codLogradouro) {
+	    	    		$('#codLogradouroID').val(vData.codLogradouro);
+	    	    		$('#descLogradouroID').val(vData.descLogradouro);
+	    	    		$('#codCidadeID').val(vData.codCidade);
+	    	    		$('#descCidadeID').val(vData.descCidade);
+	    	    		$('#descEstadoID').val(vData.descUf);
+	    	    		$('#bairroID').val(vData.descBairro);
+	
+	    	    		$('#divHelpCepID').html('');
+	    	    		$('#divCepID').removeClass('has-error');
+	    	    		
+	    	    		$('#divLogradouroID').removeClass('has-error');
+	    	    		$('#divNumeroID').removeClass('has-error');
+	    	    		$('#divHelpLogradouroID').html('');
+	    	    		$('#divHelpNumeroID').html('');
+
+	    	    		$('#divEndID').removeClass('hidden');
+	    	    		
+	    	    		$('#descLogradouroID').attr("readonly", true);
+	    	    		$('#bairroID').attr("readonly", true);
+	    	    		
+	    	    		$("#endCorretoID").prop("checked", true);
+	    	    		//$('#endCorretoID').attr("checked", true);
+		    	    		
+	    	    		zgMostraDivsEndereco();
+	    	    		$('#numeroID').focus();
+	
+	    	    	}else{
+	    	    		$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+	    	    		$('#divHelpCepID').html(zgCriaSpanErro('CEP não encontrado !!!'));
+	    	    		$('#divCepID').addClass('has-error');
+	    	    		$('#divEndID').addClass('hidden');
+	    	    		//Apagar o valor dos campos, caso estejam preenchidos
+	    	    		limpaInfoLogradouro();
+	    	    	}
+	    		},
+	    		method: 'get',
+	    		cache: false,
+	    		async:false
+	  		});
+			
+		}
+	}else{
+		$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+		$('#divCepID').removeClass('has-error');
+		$('#divHelpCepID').html('&nbsp;');
+		//Apagar o valor dos campos, caso estejam preenchidos
+		limpaInfoLogradouro();
+	}
+}
+
+//Valida CEP
+function limpaInfoLogradouro() {
+	
+	$('#codLogradouroID').val('');
+	$('#descLogradouroID').val('');
+	$('#codCidadeID').val('');
+	$('#descCidadeID').val('');
+	$('#descEstadoID').val('');
+	$('#bairroID').val('');
+			
+}
+//Div de endereço correto, mostrar em caso que esteja editando.
+zgMostraDivsEnderecoEdicao();
+function zgMostraDivsEnderecoEdicao() {
+	var vCodParceiro	= $('#codParceiroID').val();
+	var vCep			= $('#cepID').val();
+	
+	if(vCodParceiro && vCep){
+		zgMostraDivsEndereco();
+	}
+	
+}
+
+//Div de endereço correto (SIM/NAO)
+function zgMostraDivsEndereco() {
+	$('#divEndCorretoID').removeClass("hidden");
+}
+//Alterar endereço padrão
+function mudaEndereco() {
+	var vEndCorreto		= $('#endCorretoID').is(':checked');
+	
+	if (vEndCorreto == false) {
+		$('#descLogradouroID').removeAttr("readonly");
+		$('#bairroID').removeAttr("readonly");
+
+	}else{
+		buscaRua();
+		$('#descLogradouroID').attr("readonly", true);
+		$('#bairroID').attr("readonly", true);
+	}
+}
+
+</script>
+
+
+
+</body>
+</html>
