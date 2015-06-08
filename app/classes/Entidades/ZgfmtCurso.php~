@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtCurso
  *
- * @ORM\Table(name="ZGFMT_CURSO")
+ * @ORM\Table(name="ZGFMT_CURSO", indexes={@ORM\Index(name="fk_ZGFMT_CURSO_1_idx", columns={"COD_TIPO"})})
  * @ORM\Entity
  */
 class ZgfmtCurso
@@ -24,9 +24,19 @@ class ZgfmtCurso
     /**
      * @var string
      *
-     * @ORM\Column(name="NOME", type="string", length=60, nullable=true)
+     * @ORM\Column(name="NOME", type="string", length=100, nullable=false)
      */
     private $nome;
+
+    /**
+     * @var \Entidades\ZgfmtCursoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtCursoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipo;
 
 
     /**
@@ -60,5 +70,28 @@ class ZgfmtCurso
     public function getNome()
     {
         return $this->nome;
+    }
+
+    /**
+     * Set codTipo
+     *
+     * @param \Entidades\ZgfmtCursoTipo $codTipo
+     * @return ZgfmtCurso
+     */
+    public function setCodTipo(\Entidades\ZgfmtCursoTipo $codTipo = null)
+    {
+        $this->codTipo = $codTipo;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipo
+     *
+     * @return \Entidades\ZgfmtCursoTipo 
+     */
+    public function getCodTipo()
+    {
+        return $this->codTipo;
     }
 }

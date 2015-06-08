@@ -1,0 +1,267 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Cadastro de Formatura
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" id="codParceiroID" name="codParceiro" value="%COD_PARCEIRO%">
+				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
+				<input type='hidden' id='valID'>
+				<div class="tabbable" id="tabID">
+					<div class="tab-content profile-edit-tab-content">
+						<h5 class="header blue bolder smaller">Informações da Turma</h5>
+						<div class="vspace-xs"></div>
+					    <div class="row">
+					    	<div class="col-sm-12">
+								<div class="form-group col-sm-12" id="divIdentID">
+							    	<label for="identID" class="col-sm-3 control-label">www.suaformatura.com/</label>
+					    			<div class="input-group col-sm-5 pull-left">
+				    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação para acesso ao sistema"></i></span>
+						    			<input class="form-control" id="identID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="Identificação" %READONLY% onblur="validaIdent();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="identificacao">
+							    	</div>
+							    	<div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
+							    </div>
+								<div class="form-group col-sm-12" id="divNomeID">
+							    	<label for="nomeID" class="col-sm-3 control-label" >Nome</label>
+					    			<div class="input-group col-sm-5 pull-left">
+				    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+						    			<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome completo" maxlength="100" value="%NOME%" autocomplete="off">
+							    	</div>
+							    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+							    </div>
+							    <div class="form-group col-sm-12" id="divInstituicaoID">
+							    	<label class="col-sm-3 control-label" for="instituicaoID">Instituição</label>
+									<div class="input-group col-sm-5 pull-left">
+						    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe do país de nacionalidade."></i></span>
+										<input type="hidden" id="instituicaoID" name="instituicao" value="INSTITUICAO" class="width-100"  data-rel="select2Instituicao">								    	
+									</div>
+							    	<div class="col-sm-1 pull-left" id="divHelpInstituicaoID"></div>
+								</div>
+					    	</div>
+					    </div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-5 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+/*********************************************************
+* Inicializações 
+*********************************************************/
+//Select 2
+$(".select2").select2();
+//Popover
+$('[data-rel=popover]').popover({html:true});
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+/*********************************************************
+* Busca Select2 typehead Instituição
+*********************************************************/
+$('[data-rel="select2Instituicao"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar instituição de ensino',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fmt/getInstituicao.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fmt/getInstituicao.dp.php", {
+                data: {codInstituicao: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaParceiroAlt();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codParceiroID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Desabilitar os SELECTS **/
+		$( "select" ).each(function( index ) {
+			if ($(this).hasClass('readonly')) {
+				$(this).prop( "disabled", true );
+			}
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+/*********************************************************
+* VALIDA IDENTIFICAÇÃO
+*********************************************************/
+
+function validaIdent(){
+	
+	var vIdent	= $('#identID').val();
+	$('#valID').val(0);
+	
+	if (!vIdent) {
+		$('#divIdentID').addClass('has-error');
+		$('#divHelpIdentID').html(zgCriaSpanErro('A identificação deve ser preenchida!'));
+		return false;
+	}else{
+		
+		if (vIdent.length > 60){
+			$('#divIdentID').addClass('has-error');
+			$('#divHelpIdentID').html(zgCriaSpanErro('A identificação não deve conter mais de 60 caracteres!'));
+			return false;
+		}else{
+				
+			/** Verificar se a identificação está disponível no banco **/
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/Fmt/orgIdentVerifica.dp.php",
+		   		data: {  codOrganizacao: $('#codParceiroID').val() , ident: vIdent},
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(1);
+		   	    	}else{
+		   	    		$('#valID').val(0);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+		}
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divIdentID').addClass('has-error');
+		$('#divHelpIdentID').html(zgCriaSpanErro('Identificação já existe! Favor, escolher outra.'));
+		return false;
+	}else{
+		$('#divIdentID').removeClass('has-error');
+		$('#divHelpIdentID').html('&nbsp;');
+		return true;
+	}
+}
+
+/******************************************************
+VALIDA FORMULÁRIO
+/******************************************************/
+function validaParceiroAlt() {
+	var vIdent			= $('#identID').val();
+	var vNome			= $('#nomeID').val();
+	
+	var vOK				= true;
+	var vIdent;
+	var vTab			= 0;
+
+	/** Identificação **/
+	if (validaIdent() == false) {
+		vOK = false;
+	}
+	
+	if(!vNome){
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('O Nome deve ser preenchido!'));
+		vOK		= false;
+	}
+	
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+	
+</script>

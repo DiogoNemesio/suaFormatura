@@ -43,10 +43,15 @@
 					</div>
 				</div>
 			</div>
+			
+
+
+
+			
 				<div class="clearfix form-actions">
 					<label class="col-sm-5 control-label" >&nbsp;</label>
     					<button type="button" class="btn btn-primary" id="btnSubmitID">
-							<i class="fa fa-envelope-o"></i><b> Enviar </b> 
+							<i class="fa fa-envelope-o"></i><b> Enviar</b> 
 						</button>
 				</div>
 		</form>
@@ -82,7 +87,12 @@ $('#btnSubmitID').on("click", function(e) {
 		e.preventDefault();
 		return false;
 	}else{;
+		
+		$('#btnSubmitID').html('Enviando...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+		$('#btnSubmitID').attr("disabled","disabled");
+		
 		$('#zgFormID').submit();
+		
 	}
 });
 
@@ -119,6 +129,9 @@ $('#zgFormID').submit(function(e) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
 	});
+	
+	$('#btnSubmitID').html('<i class="fa fa-envelope-o"></i><b> Enviar</b> ');
+	$('#btnSubmitID').attr("disabled",false);
 	
 	return false; 
 });
@@ -203,12 +216,12 @@ function validaUsuarioAlt() {
 	
 	//USUARIO
 	if (checkEmailUsuarioAlt() == false){
-		//vOK		= false;
+		vOK		= false;
 	}
 	
 	//NOME
 	if (checkNomeUsuarioAlt() == false){
-		//vOK		= false;
+		vOK		= false;
 	}
 	
 	//COD TIPO 

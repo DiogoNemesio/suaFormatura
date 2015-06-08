@@ -26,21 +26,13 @@ if (isset($_GET['id'])) {
 #################################################################################
 \Zage\App\Util::descompactaId($id);
 
+if (!isset($codUsuario) && !isset($codOrganizacao)){
+	\Zage\App\Erro::halt('Falta de paramentros');
+}
 #################################################################################
 ## Verifica se o usuário tem permissão no menu
 #################################################################################
 $system->checaPermissao($_codMenu_);
-
-#################################################################################
-## Resgata os parâmetros passados pelo formulario
-#################################################################################
-if (isset($codUsuario)) {
-	if ($codUsuario) 	$podeAlt	= 'readonly';
-	else 				$podeAlt	= '';
-}else{
-	$codUsuario	= null;
-	$podeAlt	= '';
-}
 
 #################################################################################
 ## Resgata as informações do banco
@@ -48,21 +40,18 @@ if (isset($codUsuario)) {
 if ($codUsuario) {
 	try {
 		$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
+		$oPerfil		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario, 'codOrganizacao'=> $codOrganizacao));
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
 	$usuario		= $info->getUsuario();
 	$nome			= $info->getNome();
+	$apelido		= $info->getApelido();
+	$cpf			= $info->getCpf();
+	$perfil			= $oPerfil->getCodPerfil()->getCodigo();
 	$codStatus		= $info->getCodStatus()->getCodigo();	
 	$sexo			= $info->getSexo()->getCodigo();
-	$codPerfil		= $info->getCodStatus()->getCodigo();
-	if ($info->getIndTrocarSenha() == 1) {
-		$indTrocarSenha		= "checked";
-	}else{
-		$indTrocarSenha		= '';
-	}
-	
-	
+		
 	/** Endereco **/
 	$codLogradouro   = ($info->getCodLogradouro()) ? $info->getCodLogradouro()->getCodigo() : null;
 	$cep 		     = ($info->getCep()) ? $info->getCep() : null;
@@ -104,41 +93,16 @@ if ($codUsuario) {
 		$readOnlyBairro = 'readonly';
 		$readOnlyEnd 	= 'readonly';
 	}
-	
 
-}else{
-	$usuario		= '';
-	$nome			= '';
-	$codStatus		= '';
-	$email			= '';
-	$telefone		= '';
-	$celular		= '';
-	$sexo			= '';
-	$indTrocarSenha	= '';
-	$avatar			= '';
-	$avatarLink		= '';
-	$codPerfil		= '';
-	
-	$codLogradouro  = '';
-	$logradouro		= '';
-	$bairro			= '';
-	$cidade			= '';
-	$estado			= '';
-	$complemento   	= '';
-	$numero		    = '';
-	$readOnlyBairro	= 'readonly';
-	$readOnlyEnd	= 'readonly';
-	$endCorreto  = '';
 }
 
-if (empty($avatarLink)) $avatarLink		= IMG_URL.'/avatars/usuarioGenerico.png';
 
 #################################################################################
 ## Urls
 #################################################################################
-$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario=');
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.'&codOrganizacao='.$codParceiro.$_icone_.'&codUsuario=');
 $urlVoltar			= ROOT_URL . "/Seg/usuarioLis.php?id=".$uid;
-$urlNovo			= ROOT_URL . "/Seg/usuarioAlt.php?id=".$uid;
+$urlNovo			= ROOT_URL . "/Seg/usuarioCad.php?id=".$uid;
 
 #################################################################################
 ## Select de Sexo
@@ -151,43 +115,13 @@ try {
 }
 
 #################################################################################
-## Select de Status
-#################################################################################
-try {
-	$aStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findAll();
-	$oStatus	= $system->geraHtmlCombo($aSexo,	'CODIGO', 'DESCRICAO',	$aStatus, null);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-
-#################################################################################
 ## Select de Perfil
 #################################################################################
 try {
-	$aPerfil	= $em->getRepository('Entidades\ZgsegPerfil')->findBy(array(),array('nome' => 'ASC'));
-	$oPerfil	= $system->geraHtmlCombo($aPerfil,	'CODIGO', 'NOME', $codPerfil, null);
+	$aPerfil	= \Zage\Seg\Perfil::listaPerfilOrganizacao($codOrganizacao);
+	$oPerfil	= $system->geraHtmlCombo($aPerfil,	'CODIGO', 'NOME', $perfil, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-#################################################################################
-## Avatars
-#################################################################################
-$aAvatar		= $em->getRepository('Entidades\ZgsegAvatar')->findBy(array('sexo' => $sexo));
-$hAvatar		= "";
-if ($aAvatar) {
-	foreach ($aAvatar as $av) {
-		$hAvatar	.= '<li>';
-		$hAvatar	.= '<a href="'.$av->getLink().'" title="'.$av->getNome().'" data-rel="colorbox">';
-		$hAvatar	.= '<img height="50" width="50" src="'.$av->getLink().'" />';
-		$hAvatar	.= '<div class="tags"></div>';
-		$hAvatar	.= '</a>';
-		$hAvatar	.= '<div class="tools tools-bottom">';
-		$hAvatar	.= '<a href="javascript:zgAlteraAvatar(\''.$av->getCodigo().'\',\''.$av->getLink().'\');"><i class="fa fa-check"></i></a>';
-		$hAvatar	.= '</div>';
-		$hAvatar	.= '</li>';
-	}
 }
 
 #################################################################################
@@ -206,6 +140,8 @@ $tpl->set('ID'					,$id);
 $tpl->set('COD_USUARIO'			,$codUsuario);
 $tpl->set('USUARIO'				,$usuario);
 $tpl->set('NOME'				,$nome);
+$tpl->set('APELIDO'				,$apelido);
+$tpl->set('CPF'					,$cpf);
 $tpl->set('COD_STATUS'			,$oStatus);
 $tpl->set('TELEFONE'			,$telefone);
 $tpl->set('CELULAR'				,$celular);

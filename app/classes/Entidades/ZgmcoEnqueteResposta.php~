@@ -36,16 +36,6 @@ class ZgmcoEnqueteResposta
     private $dataResposta;
 
     /**
-     * @var \Entidades\ZgmcoEnquetePergunta
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgmcoEnquetePergunta")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PERGUNTA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPergunta;
-
-    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -54,6 +44,16 @@ class ZgmcoEnqueteResposta
      * })
      */
     private $codUsuario;
+
+    /**
+     * @var \Entidades\ZgmcoEnquetePergunta
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgmcoEnquetePergunta")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PERGUNTA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPergunta;
 
 
     /**
@@ -113,29 +113,6 @@ class ZgmcoEnqueteResposta
     }
 
     /**
-     * Set codPergunta
-     *
-     * @param \Entidades\ZgmcoEnquetePergunta $codPergunta
-     * @return ZgmcoEnqueteResposta
-     */
-    public function setCodPergunta(\Entidades\ZgmcoEnquetePergunta $codPergunta = null)
-    {
-        $this->codPergunta = $codPergunta;
-
-        return $this;
-    }
-
-    /**
-     * Get codPergunta
-     *
-     * @return \Entidades\ZgmcoEnquetePergunta 
-     */
-    public function getCodPergunta()
-    {
-        return $this->codPergunta;
-    }
-
-    /**
      * Set codUsuario
      *
      * @param \Entidades\ZgsegUsuario $codUsuario
@@ -156,5 +133,28 @@ class ZgmcoEnqueteResposta
     public function getCodUsuario()
     {
         return $this->codUsuario;
+    }
+
+    /**
+     * Set codPergunta
+     *
+     * @param \Entidades\ZgmcoEnquetePergunta $codPergunta
+     * @return ZgmcoEnqueteResposta
+     */
+    public function setCodPergunta(\Entidades\ZgmcoEnquetePergunta $codPergunta = null)
+    {
+        $this->codPergunta = $codPergunta;
+
+        return $this;
+    }
+
+    /**
+     * Get codPergunta
+     *
+     * @return \Entidades\ZgmcoEnquetePergunta 
+     */
+    public function getCodPergunta()
+    {
+        return $this->codPergunta;
     }
 }

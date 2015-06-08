@@ -43,6 +43,13 @@ class ZgsegConvite
     private $senha;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_UTILIZACAO", type="datetime", nullable=true)
+     */
+    private $dataUtilizacao;
+
+    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -170,6 +177,29 @@ class ZgsegConvite
     public function getSenha()
     {
         return $this->senha;
+    }
+
+    /**
+     * Set dataUtilizacao
+     *
+     * @param \DateTime $dataUtilizacao
+     * @return ZgsegConvite
+     */
+    public function setDataUtilizacao($dataUtilizacao)
+    {
+        $this->dataUtilizacao = $dataUtilizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get dataUtilizacao
+     *
+     * @return \DateTime 
+     */
+    public function getDataUtilizacao()
+    {
+        return $this->dataUtilizacao;
     }
 
     /**

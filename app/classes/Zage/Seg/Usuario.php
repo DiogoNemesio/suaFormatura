@@ -61,15 +61,17 @@ class Usuario extends \Entidades\ZgsegUsuario {
     
     	$qb 	= $em->createQueryBuilder();
     	 
-    	$qb->select('u')
-    	->from('\Entidades\ZgsegUsuario','u')
-    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',	'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
+    	$qb->select('us')
+    	->from('\Entidades\ZgsegUsuario','us')
+    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',	'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 		= uo.codUsuario')
+    	->leftJoin('\Entidades\ZgsegPerfil',				'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil	= p.codigo')
     	->where($qb->expr()->andX(
-   			$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao')
+   			$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao'),
+    		$qb->expr()->eq('p.codTipoUsuario'			, ':codTipoUsuario')
     	))
-    	->orderBy('u.nome', 'ASC')
-    	->setParameter('codOrganizacao', $codOrganizacao);
-    
+    	->orderBy('us.nome', 'ASC')
+    	->setParameter('codOrganizacao', $codOrganizacao)
+    	->setParameter('codTipoUsuario', U);
     	$query 		= $qb->getQuery();
     	return($query->getResult());
     	 
