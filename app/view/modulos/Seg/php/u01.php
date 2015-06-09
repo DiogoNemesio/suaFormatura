@@ -93,7 +93,6 @@ $htmlMask = substr($htmlMask, 0 , -1);
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-//$tpl->load(HTML_PATH . "/u01.html");
 $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 

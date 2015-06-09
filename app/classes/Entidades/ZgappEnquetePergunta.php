@@ -5,12 +5,12 @@ namespace Entidades;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ZgmcoEnquetePergunta
+ * ZgappEnquetePergunta
  *
- * @ORM\Table(name="ZGMCO_ENQUETE_PERGUNTA", indexes={@ORM\Index(name="fk_ZGMCO_ENQUETE_PERGUNTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGMCO_ENQUETE_PERGUNTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGMCO_ENQUETE_PERGUNTA_3_idx", columns={"COD_STATUS"})})
+ * @ORM\Table(name="ZGAPP_ENQUETE_PERGUNTA", indexes={@ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_3_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
-class ZgmcoEnquetePergunta
+class ZgappEnquetePergunta
 {
     /**
      * @var integer
@@ -67,9 +67,9 @@ class ZgmcoEnquetePergunta
     private $codOrganizacao;
 
     /**
-     * @var \Entidades\ZgmcoEnquetePerguntaTipo
+     * @var \Entidades\ZgappEnquetePerguntaTipo
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgmcoEnquetePerguntaTipo")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappEnquetePerguntaTipo")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_TIPO", referencedColumnName="CODIGO")
      * })
@@ -77,9 +77,9 @@ class ZgmcoEnquetePergunta
     private $codTipo;
 
     /**
-     * @var \Entidades\ZgmcoEnqueteStatus
+     * @var \Entidades\ZgappEnqueteStatus
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgmcoEnqueteStatus")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappEnqueteStatus")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
      * })
@@ -101,7 +101,7 @@ class ZgmcoEnquetePergunta
      * Set pergunta
      *
      * @param string $pergunta
-     * @return ZgmcoEnquetePergunta
+     * @return ZgappEnquetePergunta
      */
     public function setPergunta($pergunta)
     {
@@ -124,7 +124,7 @@ class ZgmcoEnquetePergunta
      * Set descricao
      *
      * @param string $descricao
-     * @return ZgmcoEnquetePergunta
+     * @return ZgappEnquetePergunta
      */
     public function setDescricao($descricao)
     {
@@ -147,7 +147,7 @@ class ZgmcoEnquetePergunta
      * Set dataCadastro
      *
      * @param \DateTime $dataCadastro
-     * @return ZgmcoEnquetePergunta
+     * @return ZgappEnquetePergunta
      */
     public function setDataCadastro($dataCadastro)
     {
@@ -170,7 +170,7 @@ class ZgmcoEnquetePergunta
      * Set dataPrazo
      *
      * @param \DateTime $dataPrazo
-     * @return ZgmcoEnquetePergunta
+     * @return ZgappEnquetePergunta
      */
     public function setDataPrazo($dataPrazo)
     {
@@ -193,7 +193,7 @@ class ZgmcoEnquetePergunta
      * Set tamanho
      *
      * @param integer $tamanho
-     * @return ZgmcoEnquetePergunta
+     * @return ZgappEnquetePergunta
      */
     public function setTamanho($tamanho)
     {
@@ -216,7 +216,7 @@ class ZgmcoEnquetePergunta
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
-     * @return ZgmcoEnquetePergunta
+     * @return ZgappEnquetePergunta
      */
     public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
     {
@@ -238,10 +238,10 @@ class ZgmcoEnquetePergunta
     /**
      * Set codTipo
      *
-     * @param \Entidades\ZgmcoEnquetePerguntaTipo $codTipo
-     * @return ZgmcoEnquetePergunta
+     * @param \Entidades\ZgappEnquetePerguntaTipo $codTipo
+     * @return ZgappEnquetePergunta
      */
-    public function setCodTipo(\Entidades\ZgmcoEnquetePerguntaTipo $codTipo = null)
+    public function setCodTipo(\Entidades\ZgappEnquetePerguntaTipo $codTipo = null)
     {
         $this->codTipo = $codTipo;
 
@@ -251,7 +251,7 @@ class ZgmcoEnquetePergunta
     /**
      * Get codTipo
      *
-     * @return \Entidades\ZgmcoEnquetePerguntaTipo 
+     * @return \Entidades\ZgappEnquetePerguntaTipo 
      */
     public function getCodTipo()
     {
@@ -261,10 +261,10 @@ class ZgmcoEnquetePergunta
     /**
      * Set codStatus
      *
-     * @param \Entidades\ZgmcoEnqueteStatus $codStatus
-     * @return ZgmcoEnquetePergunta
+     * @param \Entidades\ZgappEnqueteStatus $codStatus
+     * @return ZgappEnquetePergunta
      */
-    public function setCodStatus(\Entidades\ZgmcoEnqueteStatus $codStatus = null)
+    public function setCodStatus(\Entidades\ZgappEnqueteStatus $codStatus = null)
     {
         $this->codStatus = $codStatus;
 
@@ -274,7 +274,7 @@ class ZgmcoEnquetePergunta
     /**
      * Get codStatus
      *
-     * @return \Entidades\ZgmcoEnqueteStatus 
+     * @return \Entidades\ZgappEnqueteStatus 
      */
     public function getCodStatus()
     {

@@ -5,12 +5,12 @@ namespace Entidades;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ZgmcoEnqueteStatus
+ * ZgappEnquetePerguntaTipo
  *
- * @ORM\Table(name="ZGMCO_ENQUETE_STATUS")
+ * @ORM\Table(name="ZGAPP_ENQUETE_PERGUNTA_TIPO")
  * @ORM\Entity
  */
-class ZgmcoEnqueteStatus
+class ZgappEnquetePerguntaTipo
 {
     /**
      * @var string
@@ -28,6 +28,13 @@ class ZgmcoEnqueteStatus
      */
     private $descricao;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="INT_ATIVO", type="integer", nullable=false)
+     */
+    private $intAtivo;
+
 
     /**
      * Get codigo
@@ -43,7 +50,7 @@ class ZgmcoEnqueteStatus
      * Set descricao
      *
      * @param string $descricao
-     * @return ZgmcoEnqueteStatus
+     * @return ZgappEnquetePerguntaTipo
      */
     public function setDescricao($descricao)
     {
@@ -60,5 +67,28 @@ class ZgmcoEnqueteStatus
     public function getDescricao()
     {
         return $this->descricao;
+    }
+
+    /**
+     * Set intAtivo
+     *
+     * @param integer $intAtivo
+     * @return ZgappEnquetePerguntaTipo
+     */
+    public function setIntAtivo($intAtivo)
+    {
+        $this->intAtivo = $intAtivo;
+
+        return $this;
+    }
+
+    /**
+     * Get intAtivo
+     *
+     * @return integer 
+     */
+    public function getIntAtivo()
+    {
+        return $this->intAtivo;
     }
 }
