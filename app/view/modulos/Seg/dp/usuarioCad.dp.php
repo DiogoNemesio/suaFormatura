@@ -146,6 +146,7 @@ try {
 	
 	if (!$oUsuario) {
 		$novoUsuario	= true;
+		$enviarEmail	= true;
 		
 		#################################################################################
 		## Criar o usuário com o status pendente
@@ -197,6 +198,13 @@ try {
 		
 	}else{
 		$novoUsuario	= false;
+		
+		if ($oUsuario->getCodStatus()->getCodigo() == "A") {
+			$enviarEmail	= false;
+		}else{
+			$enviarEmail	= true;
+		}
+		
 		#################################################################################
 		## Verificar se o usuário já está associado a organização
 		#################################################################################
