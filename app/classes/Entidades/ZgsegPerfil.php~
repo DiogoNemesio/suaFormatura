@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegPerfil
  *
- * @ORM\Table(name="ZGSEG_PERFIL", indexes={@ORM\Index(name="fk_ZGSEG_PERFIL_2_idx", columns={"NOME"})})
+ * @ORM\Table(name="ZGSEG_PERFIL", indexes={@ORM\Index(name="fk_ZGSEG_PERFIL_2_idx", columns={"NOME"}), @ORM\Index(name="fk_ZGSEG_PERFIL_1_idx", columns={"COD_TIPO_USUARIO"})})
  * @ORM\Entity
  */
 class ZgsegPerfil
@@ -34,6 +34,16 @@ class ZgsegPerfil
      * @ORM\Column(name="IND_ATIVO", type="integer", nullable=false)
      */
     private $indAtivo;
+
+    /**
+     * @var \Entidades\ZgsegPerfilUsuarioTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegPerfilUsuarioTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_USUARIO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoUsuario;
 
 
     /**
@@ -90,5 +100,28 @@ class ZgsegPerfil
     public function getIndAtivo()
     {
         return $this->indAtivo;
+    }
+
+    /**
+     * Set codTipoUsuario
+     *
+     * @param \Entidades\ZgsegPerfilUsuarioTipo $codTipoUsuario
+     * @return ZgsegPerfil
+     */
+    public function setCodTipoUsuario(\Entidades\ZgsegPerfilUsuarioTipo $codTipoUsuario = null)
+    {
+        $this->codTipoUsuario = $codTipoUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoUsuario
+     *
+     * @return \Entidades\ZgsegPerfilUsuarioTipo 
+     */
+    public function getCodTipoUsuario()
+    {
+        return $this->codTipoUsuario;
     }
 }

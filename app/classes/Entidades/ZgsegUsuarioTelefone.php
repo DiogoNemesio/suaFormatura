@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegUsuarioTelefone
  *
- * @ORM\Table(name="ZGSEG_USUARIO_TELEFONE", indexes={@ORM\Index(name="fk_ZFSEG_USUARIO_TELEFONE_1_idx", columns={"COD_TIPO_TELEFONE"}), @ORM\Index(name="fk_ZFSEG_USUARIO_TELEFONE_2_idx", columns={"COD_USUARIO"})})
+ * @ORM\Table(name="ZGSEG_USUARIO_TELEFONE", indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_TELEFONE_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_TELEFONE_2_idx", columns={"COD_TIPO_TELEFONE"})})
  * @ORM\Entity
  */
 class ZgsegUsuarioTelefone
@@ -24,19 +24,23 @@ class ZgsegUsuarioTelefone
     /**
      * @var string
      *
-     * @ORM\Column(name="TELEFONE", type="string", length=11, nullable=false)
+     * @ORM\Column(name="TELEFONE", type="string", length=1, nullable=false)
      */
     private $telefone;
 
     /**
-     * @var \Entidades\ZgappTelefoneTipo
+     * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgappTelefoneTipo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TIPO_TELEFONE", referencedColumnName="CODIGO")
-     * })
+     * @ORM\Column(name="IND_TEM_WA", type="integer", nullable=true)
      */
-    private $codTipoTelefone;
+    private $indTemWa;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ULT_VERIFICACAO", type="datetime", nullable=true)
+     */
+    private $dataUltVerificacao;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -47,6 +51,16 @@ class ZgsegUsuarioTelefone
      * })
      */
     private $codUsuario;
+
+    /**
+     * @var \Entidades\ZgappTelefoneTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappTelefoneTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_TELEFONE", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoTelefone;
 
 
     /**
@@ -83,26 +97,49 @@ class ZgsegUsuarioTelefone
     }
 
     /**
-     * Set codTipoTelefone
+     * Set indTemWa
      *
-     * @param \Entidades\ZgappTelefoneTipo $codTipoTelefone
+     * @param integer $indTemWa
      * @return ZgsegUsuarioTelefone
      */
-    public function setCodTipoTelefone(\Entidades\ZgappTelefoneTipo $codTipoTelefone = null)
+    public function setIndTemWa($indTemWa)
     {
-        $this->codTipoTelefone = $codTipoTelefone;
+        $this->indTemWa = $indTemWa;
 
         return $this;
     }
 
     /**
-     * Get codTipoTelefone
+     * Get indTemWa
      *
-     * @return \Entidades\ZgappTelefoneTipo 
+     * @return integer 
      */
-    public function getCodTipoTelefone()
+    public function getIndTemWa()
     {
-        return $this->codTipoTelefone;
+        return $this->indTemWa;
+    }
+
+    /**
+     * Set dataUltVerificacao
+     *
+     * @param \DateTime $dataUltVerificacao
+     * @return ZgsegUsuarioTelefone
+     */
+    public function setDataUltVerificacao($dataUltVerificacao)
+    {
+        $this->dataUltVerificacao = $dataUltVerificacao;
+
+        return $this;
+    }
+
+    /**
+     * Get dataUltVerificacao
+     *
+     * @return \DateTime 
+     */
+    public function getDataUltVerificacao()
+    {
+        return $this->dataUltVerificacao;
     }
 
     /**
@@ -126,5 +163,28 @@ class ZgsegUsuarioTelefone
     public function getCodUsuario()
     {
         return $this->codUsuario;
+    }
+
+    /**
+     * Set codTipoTelefone
+     *
+     * @param \Entidades\ZgappTelefoneTipo $codTipoTelefone
+     * @return ZgsegUsuarioTelefone
+     */
+    public function setCodTipoTelefone(\Entidades\ZgappTelefoneTipo $codTipoTelefone = null)
+    {
+        $this->codTipoTelefone = $codTipoTelefone;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoTelefone
+     *
+     * @return \Entidades\ZgappTelefoneTipo 
+     */
+    public function getCodTipoTelefone()
+    {
+        return $this->codTipoTelefone;
     }
 }

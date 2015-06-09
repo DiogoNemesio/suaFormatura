@@ -49,7 +49,7 @@ try {
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$usuario	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($codParceiro);
+	$usuario	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($codParceiro, 'U');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -72,17 +72,8 @@ $grid->importaDadosDoctrine($usuario);
 for ($i = 0; $i < sizeof($usuario); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codParceiro.'&codUsuario='.$usuario[$i]->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Seg/usuarioAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,3,ROOT_URL.'/Seg/usuarioCad.php?id='.$uid);
 	$grid->setUrlCelula($i,4,ROOT_URL.'/Seg/usuarioExc.php?id='.$uid);
-}
-
-#################################################################################
-## Resgata os dados do grid
-#################################################################################
-try {
-	$usuario	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($codParceiro);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
 }
 
 #################################################################################

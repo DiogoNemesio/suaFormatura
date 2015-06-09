@@ -89,7 +89,7 @@
 <form id="zgFormID" class="form-horizontal">
 <div class="page-content">
 	<div id="user-profile-3" class="user-profile row">
-		<div class="page-header"><h1>Confirme suas informações<small><i class="ace-icon fa fa-angle-double-right"></i>.....</small></h1></div>
+		<div class="page-header"><h1>Confirmação de cadastro<small><i class="ace-icon fa fa-angle-double-right"></i> Preencha todos os campos corretamente</small></h1></div>
 		<div class="col-sm-12">
 			<input type="hidden" name="_cdu01" value="%CD01%">
 			<input type="hidden" name="_cdu02" value="%CD02%">
@@ -97,139 +97,151 @@
 			<input type="hidden" name="_cdu04" value="%CD04%">
 			<input type="hidden" name="codLogradouro" id='codLogradouroID'>
 			<input type='hidden' id='valID'>
-			<h5 class="header blue bolder smaller">Informações Básicas</h5>
-			<div class="vspace-xs"></div>
-			<div class="row">
-				<div class="col-sm-6">
-					<div class="form-group col-sm-12" id="divEmailID">
-				    	<label class="col-sm-3 control-label" for="emailID">Email</label>
-		    			<div class="input-group col-sm-8 pull-left">
-		   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="O e-mail será utilizado como usuário para acesso ao sistema."></i></span>
-		   					<input class="width-100" id="usuarioID" type="text" maxlength="200" name="usuario" value="%USUARIO%" readonly placeholder="Email" onblur="checkEmailUsuarioAlt();" %PODEALTERAR% autocomplete="off">
-		    			</div>
-		    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
-		    		</div>
-					<div class="form-group col-sm-12" id="divNomeID">
-				    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
-		    			<div class="input-group col-sm-8 pull-left">
-			    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome completo do usuário"></i></span>
-			    			<input class="width-100" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" placeholder="Nome completo" autocomplete="off">
-				    	</div>
-				    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
-				    </div>
-				    <div class="form-group col-sm-12" id="divApelidoID">
-				    	<label class="col-sm-3 control-label" for="apelidoID">Apelido</label>
-		    			<div class="input-group col-sm-8 pull-left">
-			    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Apelido"></i></span>
-			    			<input class="width-100" id="apelidoID" type="text" name="apelido" maxlength="60" placeholder="Apelido" autocomplete="off">
-				    	</div>
-				    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
-				    </div>
-		        	<div class="form-group col-sm-12" id="divCpfID">
-					    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
+			<div class="tabbable">
+				<h5 class="header blue bolder smaller">Informações Básicas</h5>
+				<div class="vspace-xs"></div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group col-sm-12" id="divEmailID">
+					    	<label class="col-sm-3 control-label" for="emailID">Email</label>
 			    			<div class="input-group col-sm-8 pull-left">
-		    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
-				    			<input class="form-control" id="cpfID" type="text" name="cpf" maxlength="14" placeholder="CPF"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+			   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="O e-mail será utilizado como usuário para acesso ao sistema."></i></span>
+			   					<input class="width-100" id="usuarioID" type="text" maxlength="200" name="usuario" value="%USUARIO%" readonly placeholder="Email" onblur="checkEmailUsuarioAlt();" %PODEALTERAR% autocomplete="off">
+			    			</div>
+			    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
+			    		</div>
+						<div class="form-group col-sm-12" id="divNomeID">
+					    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+			    			<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome completo do usuário"></i></span>
+				    			<input class="width-100" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" placeholder="Nome completo" autocomplete="off">
 					    	</div>
-					    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
-					</div>
-					<div class="form-group col-sm-12" id="divSexoID">
-						<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
-		    			<div class="input-group col-sm-8 pull-left">
-							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do usuário"></i></span>
-							<select class="select2" style="width:100%;" id="sexoID" name="sexo" data-rel="select2">
-								%SEXO%
-							</select>
+					    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+					    </div>
+					    <div class="form-group col-sm-12" id="divApelidoID">
+					    	<label class="col-sm-3 control-label" for="apelidoID">Apelido</label>
+			    			<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Apelido"></i></span>
+				    			<input class="width-100" id="apelidoID" type="text" name="apelido" maxlength="60" placeholder="Apelido" autocomplete="off">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
+					    </div>
+			        	<div class="form-group col-sm-12" id="divCpfID">
+						    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
+				    			<div class="input-group col-sm-8 pull-left">
+			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+					    			<input class="form-control" id="cpfID" type="text" name="cpf" maxlength="14" placeholder="CPF"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
 						</div>
-					</div>
-					<h4 class="header blue bolder smaller">Senha</h4>
-					<div class="vspace-xs"></div>
-					<div class="form-group col-sm-12" id="divSenhaID">
-				    	<label class="col-sm-3 control-label" for="senhaID">Senha</label>
-		    			<div class="input-group col-sm-8 pull-left">
-			    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Senha de acesso ao sistema"></i></span>
-			    			<input class="width-100" id="senhaID" type="password" name="senhaCad" maxlength="16" placeholder="Senha" autocomplete="off">
-				    	</div>
-				    	<div class="col-sm-1 pull-left" id="divHelpSenhaID"></div>
-				    </div>
-				    <div class="form-group col-sm-12" id="divConfSenhaID">
-				    	<label class="col-sm-3 control-label" for="confSenhaID">Confirmação</label>
-		    			<div class="input-group col-sm-8 pull-left">
-			    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Confirmação da senha"></i></span>
-			    			<input class="width-100" id="confSenhaID" type="password" name="confSenhaCad" maxlength="16" placeholder="Confirmação da senha" autocomplete="off">
-				    	</div>
-				    	<div class="col-sm-1 pull-left" id="divHelpConfSenhaID"></div>
-				    </div>
-					<h4 class="header blue bolder smaller">Endereço</h4>
-					<div class="vspace-xs"></div>
-					<div class="form-group col-sm-12" id="divCepID">
-						<label for="cepID" class="col-sm-3 control-label">CEP</label>
-						<div class="input-group col-sm-8 pull-left">
-							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
-							<input type="text" id="cepID" name="cep" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+						<div class="form-group col-sm-12" id="divSexoID">
+							<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
+			    			<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do usuário"></i></span>
+								<select class="select2" style="width:100%;" id="sexoID" name="sexo" data-rel="select2">
+									%SEXO%
+								</select>
+							</div>
 						</div>
-						<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
-					</div>																	
-					<div class="form-group col-sm-12" id="divDescLogradouroID">
-						<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
-						<div class="input-group col-sm-8 pull-left">
-							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
-							<input type="text" id="descLogradouroID" name="descLogradouro" class="width-100" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+						<div class="form-group col-sm-12" id="divCelularID">
+					    	<label class="col-xs-12 col-sm-3 control-label" for="celularID">Celular</label>
+			    			<div class="input-group col-sm-8 pull-left">
+		    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe seu número de celular preferencialmente com Whats App."></i></span>
+				    			<input class="form-control" id="celularID" type="text" name="celular" maxlength="15" placeholder="Preferência número com Whasts App"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpCelularID"></div>
 						</div>
-						<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
-					</div>	
-					<div class="form-group col-sm-12" id="divBairroID">
-						<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
-						<div class="input-group col-sm-8 pull-left">
-							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
-							<input type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" class="width-100" autocomplete="off" placeholder="Bairro" maxlength="60" />
-						</div>
-						<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
-					</div>
-					<div class="form-group col-sm-12">
-						<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
-						<div class="input-group col-sm-8 pull-left">
-							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
-							<input type="text" readonly id="descCidadeID" name="descCidade" class="width-100" placeholder="Cidade" />
-						</div>
-					</div>
-					<div class="form-group col-sm-12">
-						<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
-						<div class="input-group col-sm-8 pull-left">
-							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
-							<input type="text" readonly id="descEstadoID" name="descEstado" class="width-100" placeholder="Estado" />
-						</div>
-					</div>									
-					<div class="form-group col-sm-12" id="divNumeroID">
-						<label for=numeroID" class="col-sm-3 control-label">Número</label>
-						<div class="input-group col-sm-8 pull-left">
-							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
-							<input type="text" id="numeroID" name="numero" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
-						</div>
-					</div>							
-					<div class="form-group col-sm-12" id="divComplementoID">
-						<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
-						<div class="input-group col-sm-8 pull-left">
-							<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
-							<input type="text" id="complementoID" name="complemento" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
-						</div>
-					</div>																			
-					<div class="hidden" id="divEndCorretoID">
-						<div class="col-sm-12">
-							<div class="form-group col-sm-12">
-								<div class="alert alert-info">	
-									Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
-									<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
-									<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
-								</div>
-							</div>		
+						<h5 class="header blue bolder smaller">Senha</h5>
+						<div class="vspace-xs"></div>
+						<div class="form-group col-sm-12" id="divSenhaID">
+					    	<label class="col-sm-3 control-label" for="senhaID">Senha</label>
+			    			<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Senha de acesso ao sistema"></i></span>
+				    			<input class="width-100" id="senhaID" type="password" name="senhaCad" maxlength="16" placeholder="Senha" autocomplete="off">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpSenhaID"></div>
+					    </div>
+					    <div class="form-group col-sm-12" id="divConfSenhaID">
+					    	<label class="col-sm-3 control-label" for="confSenhaID">Confirmação</label>
+			    			<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Confirmação da senha"></i></span>
+				    			<input class="width-100" id="confSenhaID" type="password" name="confSenhaCad" maxlength="16" placeholder="Confirmação da senha" autocomplete="off">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpConfSenhaID"></div>
+					    </div>
+						<h5 class="header blue bolder smaller">Endereço</h5>
+						<div class="vspace-xs"></div>
+						<div class="form-group col-sm-12" id="divCepID">
+							<label for="cepID" class="col-sm-3 control-label">CEP</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
+								<input type="text" id="cepID" name="cep" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+							</div>
+							<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+						</div>																	
+						<div class="form-group col-sm-12" id="divDescLogradouroID">
+							<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
+								<input type="text" id="descLogradouroID" name="descLogradouro" class="width-100" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+							</div>
+							<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
 						</div>	
-					</div>
-			    </div>
-			    <div class="col-sm-6">
-			    	<h4>Colocar informações sobre o Sistema</h4>
-			    </div>
-			</div>
+						<div class="form-group col-sm-12" id="divBairroID">
+							<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
+								<input type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" class="width-100" autocomplete="off" placeholder="Bairro" maxlength="60" />
+							</div>
+							<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
+						</div>
+						<div class="form-group col-sm-12">
+							<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
+								<input type="text" readonly id="descCidadeID" name="descCidade" class="width-100" placeholder="Cidade" />
+							</div>
+						</div>
+						<div class="form-group col-sm-12">
+							<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
+								<input type="text" readonly id="descEstadoID" name="descEstado" class="width-100" placeholder="Estado" />
+							</div>
+						</div>									
+						<div class="form-group col-sm-12" id="divNumeroID">
+							<label for=numeroID" class="col-sm-3 control-label">Número</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
+								<input type="text" id="numeroID" name="numero" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
+							</div>
+						</div>							
+						<div class="form-group col-sm-12" id="divComplementoID">
+							<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
+								<input type="text" id="complementoID" name="complemento" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
+							</div>
+						</div>																			
+						<div class="hidden" id="divEndCorretoID">
+							<div class="col-sm-12">
+								<div class="form-group col-sm-12">
+									<div class="alert alert-info">	
+										Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+										<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
+										<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+									</div>
+								</div>		
+							</div>	
+						</div>
+				    </div>
+				    <div class="col-sm-6">
+				    	<div class="well">
+							<h4 class="green smaller lighter">SuaFormatura.com</h4>
+							Sistema de gestão de formaturas
+						</div>
+				    </div>
+				</div>
 		</div>
 		<div class="clearfix form-actions">
 			<label class="col-sm-3 control-label" >&nbsp;</label>
@@ -237,6 +249,7 @@
 				<i class="fa fa-check bigger-110"></i> Salvar
 			</button>
 		</div>
+	</div>
 	</div>
 </div>
 </form>
@@ -520,70 +533,31 @@ $('#zgFormID').submit(function(e) {
 	return false; 
 });
 
-/******************************************************
-VALIDA FORMULÁRIO  
-/******************************************************/
-//Valida usuário
-function checkEmailUsuarioAlt() {
-	var vEmail	= $('#emailID').val();
-	$('#valID').val(0);
-	
-	if (validarEmail(vEmail) == false) {
-		$('#divEmailID').addClass('has-error');
-		$('#divHelpEmailID').html(zgCriaSpanErro('Email inválido! Verifique se o e-mail foi digitado corretamente.'));
-	}else{
-		
-		//Verificar se o nome está disponível no banco
-		jQuery.ajax({
-	   		url: "%ROOT_URL%/Seg/usuarioVerificaEmail.dp.php",
-	   		data: {  codUsuario: $('#codUsuarioID').val() , email: vEmail},
-	   		success: function(ret) {
-	   			var vData	= JSON.parse(ret);
-	   	    	if (vData.existe == 0) {
-	   	    		$('#valID').val(1);
-	   	    	}else{
-	   	    		$('#valID').val(0);
-	   	    	}
-	   		},
-	   		method: 'get',
-	   		cache: false,
-	   		async:false
-	   });
-		
-		if ($('#valID').val() == 0) {
-			$('#divEmailID').addClass('has-error');
-			$('#divHelpEmailID').html(zgCriaSpanErro('Já existe um usuário cadastrado com esse e-mail! Certique-se que este e-mail nunca foi utilizado para cadastrar um usuário no sistema.'));
-			return false;
-		}else{
-			$('#divEmailID').removeClass('has-error');
-			$('#divHelpEmailID').html('&nbsp;');
-			return true;
-		}
-	}	
-}
-
 //Valida formulário
 function validaUsuarioAlt() {
 	var vNome		 = $('#nomeID').val();
+	var vApelido	 = $('#ApelidoID').val();
+	var vSexo	 	 = $('#sexoID').val();
 	var vSenha		 = $('#senhaID').val();
 	var vConfSenha	 = $('#confSenhaID').val();
 	var vStatus		 = $('#codStatusID').val();
+	var vCep		 = $('#cepID').val();
+	var vCelular	 = $('#celularID').cleanVal();
 		
 	var vOK				= true;
 	var vIdent;
 	
 	//USUARIO
-	//vOK = checkUsuario();
 	
 	//NOME
 	if (vNome) {
 		if (vNome.length < 4){			
 			$('#divNomeID').addClass('has-error');
-			$('#divHelpNomeID').html(zgCriaSpanErro('Nome muito pequeno, informe o nome completo !!'));
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome muito pequeno, informe o nome completo!'));
 			vOK		= false;
 		}else if (vNome.length > 60){
 			$('#divNomeID').addClass('has-error');
-			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 60 caracteres !!'));
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 60 caracteres!'));
 			vOK		= false;
 		}else{
 			$('#divNomeID').removeClass('has-error');
@@ -595,22 +569,80 @@ function validaUsuarioAlt() {
 		vOK		= false;
 	}
 	
+	//APELIDO
+	if (vApelido) {
+		if (vApelido.length > 60){
+			$('#divApelidoID').addClass('has-error');
+			$('#divHelpApelidoID').html(zgCriaSpanErro('O Apelido deve ter no máximo 60 caracteres!'));
+			vOK		= false;
+		}else{
+			$('#divApelidoID').removeClass('has-error');
+			$('#divHelpApelidoID').html('&nbsp;');		
+		}
+	}else{
+		$('#divApelidoID').addClass('has-error');
+		$('#divHelpApelidoID').html(zgCriaSpanErro('O Apelido deve ser preenchido!'));
+		vOK		= false;
+	}
+	
+	//SEXO
+	if (!vSexo) {
+		$('#divSexoID').addClass('has-error');
+		$('#divHelpSexoID').html(zgCriaSpanErro('O Sexo deve ser preenchido!'));
+		vOK		= false;
+	}else{
+		$('#divSexoID').removeClass('has-error');
+		$('#divHelpSexoID').html('&nbsp;');	
+	}
+	
+	//CELULAR
+	if (vCelular) {
+		vNum = vCelular.charAt(2);
+		alert(vCelular);
+		alert(vNum);
+		if (vCelular.length < 10){			
+			$('#divCelularID').addClass('has-error');
+			$('#divHelpCelularID').html(zgCriaSpanErro('Número de telefone celular inválido!'));
+			vOK		= false;
+		}else if (vCelular.length > 11){
+			$('#divCelularID').addClass('has-error');
+			$('#divHelpCelularID').html(zgCriaSpanErro('O telefone celular não deve ter mais de 11 caracteres!'));
+			vOK		= false;
+		}else if (vNum != 7 && vNum != 8 && vNum != 9){
+			$('#divCelularID').addClass('has-error');
+			$('#divHelpCelularID').html(zgCriaSpanErro('Favor inserir um número de CELULAR válido!'));
+			vOK		= false;
+		}
+		else{
+			$('#divCelularID').removeClass('has-error');
+			$('#divHelpCelularID').html('&nbsp;');		
+		}
+	}else{
+		$('#divCelularID').addClass('has-error');
+		$('#divHelpCelularID').html(zgCriaSpanErro('O telefone celular deve ser preenchido!'));
+		vOK		= false;
+	}
+	
 	//SENHA
 	if (vSenha) {
 		if (vSenha.length < 4){			
 			$('#divSenhaID').addClass('has-error');
-			$('#divHelpSenhaID').html(zgCriaSpanErro('Insira uma senha com mais caracteres !!'));
+			$('#divHelpSenhaID').html(zgCriaSpanErro('Insira uma senha com mais caracteres!'));
 			vOK		= false;
 		}else{
 			$('#divSenhaID').removeClass('has-error');
 			$('#divHelpSenhaID').html('&nbsp;');		
 		}
+	}else{
+		$('#divSenhaID').addClass('has-error');
+		$('#divHelpSenhaID').html(zgCriaSpanErro('A senha deve ser preenchida!'));
+		vOK		= false;
 	}
 	
 	//CONF SENHA
 	if (vSenha != vConfSenha) {
 		$('#divConfSenhaID').addClass('has-error');
-		$('#divHelpConfSenhaID').html(zgCriaSpanErro('A senha está diferente da confirmação !!'));
+		$('#divHelpConfSenhaID').html(zgCriaSpanErro('As senhas estão diferentes!'));
 		vOK		= false;
 	}else{
 		$('#divConfSenhaID').removeClass('has-error');
@@ -623,36 +655,6 @@ function validaUsuarioAlt() {
 		return false;
 	}
 }
-
-
-function zgAlteraAvatar(pCodigo,pUrl) {
-	$('#avatarID').val(pCodigo);
-	$("#avatarAtualID").attr("src",pUrl);
-}
-
-var colorbox_params = {
-	reposition:true,
-	scalePhotos:true,
-	scrolling:false,
-	previous:'<i class="fa fa-arrow-left"></i>',
-	next:'<i class="fa fa-arrow-right"></i>',
-	close:'&times;',
-	current:'{current} of {total}',
-	maxWidth:'100%',
-	maxHeight:'100%',
-	onOpen:function(){
-		document.body.style.overflow = 'hidden';
-	},
-	onClosed:function(){
-		document.body.style.overflow = 'auto';
-	},
-	onComplete:function(){
-		$.colorbox.resize();
-	}
-};
-
-$('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
-$("#cboxLoadingGraphic").append("<i class='fa fa-spinner orange'></i>");//let's add a custom loading icon
 
 /******************************************************
 BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
@@ -769,8 +771,6 @@ function mudaEndereco() {
 }
 
 </script>
-
-
 
 </body>
 </html>

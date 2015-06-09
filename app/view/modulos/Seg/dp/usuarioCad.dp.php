@@ -20,7 +20,27 @@ Use \Zend\Mime;
 if (isset($_POST['codOrganizacao'])) 	$codOrganizacao	= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
 if (isset($_POST['email'])) 			$usuario		= \Zage\App\Util::antiInjection($_POST['email']);
 if (isset($_POST['nome'])) 				$nome			= \Zage\App\Util::antiInjection($_POST['nome']);
-if (isset($_POST['codPerfil'])) 		$codPerfil		= \Zage\App\Util::antiInjection($_POST['codPerfil']);
+if (isset($_POST['apelido']))			$apelido		= \Zage\App\Util::antiInjection($_POST['apelido']);
+if (isset($_POST['sexo'])) 				$sexo			= \Zage\App\Util::antiInjection($_POST['sexo']);
+if (isset($_POST['cpf'])) 				$cpf			= \Zage\App\Util::antiInjection($_POST['cpf']);
+if (isset($_POST['perfil'])) 			$codPerfil		= \Zage\App\Util::antiInjection($_POST['perfil']);
+
+if (isset($_POST['codLogradouro']))		$codLogradouro	= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
+if (isset($_POST['endCorreto']))		$endCorreto		= \Zage\App\Util::antiInjection($_POST['endCorreto']);
+if (isset($_POST['descLogradouro']))	$descLogradouro	= \Zage\App\Util::antiInjection($_POST['descLogradouro']);
+if (isset($_POST['bairro']))			$bairro			= \Zage\App\Util::antiInjection($_POST['bairro']);
+if (isset($_POST['complemento']))		$complemento	= \Zage\App\Util::antiInjection($_POST['complemento']);
+if (isset($_POST['numero']))			$numero			= \Zage\App\Util::antiInjection($_POST['numero']);
+if (isset($_POST['cep']))				$cep			= \Zage\App\Util::antiInjection($_POST['cep']);
+
+if (isset($_POST['codTipoTel']))		$codTipoTel			= $_POST['codTipoTel'];
+if (isset($_POST['codTelefone']))		$codTelefone		= $_POST['codTelefone'];
+if (isset($_POST['telefone']))			$telefone			= $_POST['telefone'];
+
+
+if (!isset($codTipoTel))				$codTipoTel			= array();
+if (!isset($codTelefone))				$codTelefone		= array();
+if (!isset($telefone))					$telefone			= array();
 
 #################################################################################
 ## Limpar a variável de erro
@@ -30,7 +50,6 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-
 /** Nome **/
 if (isset($nome) || !empty($nome)) {
 	if (strlen($nome) < 5){
@@ -73,6 +92,37 @@ if (!isset($codOrganizacao) || empty($codOrganizacao)) {
 	$err	= 1;
 }
 
+if (isset($codLogradouro) && (!empty($codLogradouro))){
+	if (!isset($cep) || (empty($cep))) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CEP deve ser preenchido!"));
+		$err	= 1;
+	}
+
+	if (!isset($descLogradouro) || (empty($descLogradouro))) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Logradouro deve ser preenchido!"));
+		$err	= 1;
+	}
+
+	if (!isset($bairro) || (empty($bairro))) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Bairro deve ser preenchido!"));
+		$err	= 1;
+	}
+
+	//Verificar o endereço informado é corresponte a base dos correios
+	if (isset($endCorreto) && (!empty($endCorreto))) {
+		$endCorreto	= 1;
+	}else{
+		$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+
+		if (($oLogradouro->getDescricao() != $descLogradouro) || ($oLogradouro->getCodBairro()->getDescricao() != $bairro)){
+			$endCorreto	= 0;
+		}else{
+			$endCorreto	= 1;
+		}
+	}
+}else{
+	$endCorreto = null; //Se não houver o codLogradouro o indicador deve ser nulo
+}
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
@@ -96,11 +146,25 @@ try {
 		#################################################################################
 		## Criar o usuário com o status pendente
 		#################################################################################
-		$oUsuario	= new \Entidades\ZgsegUsuario();
-		$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'P'));
+		$oUsuario			= new \Entidades\ZgsegUsuario();
+		$oStatus			= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'P'));
+		$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+		$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
+		
 		$oUsuario->setUsuario($usuario);
 		$oUsuario->setNome($nome);
+		$oUsuario->setApelido($apelido);
+		$oUsuario->setCpf($cpf);
+		$oUsuario->setSexo($oSexo);
 		$oUsuario->setCodStatus($oStatus);
+		
+		$oUsuario->setCodLogradouro($oCodLogradouro);
+		$oUsuario->setIndEndCorreto($endCorreto);
+		$oUsuario->setCep($cep);
+		$oUsuario->setEndereco($descLogradouro);
+		$oUsuario->setBairro($bairro);
+		$oUsuario->setNumero($numero);
+		$oUsuario->setComplemento($complemento);
 		
 		$em->persist($oUsuario);
 		
@@ -134,6 +198,28 @@ try {
 	
 	$em->persist($oUsuarioOrg);
 	
+	#################################################################################
+	## Telefones
+	#################################################################################		
+	/***** Criação *****/
+	for ($i = 0; $i < sizeof($codTelefone); $i++) {
+		$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
+	
+		if (!$infoTel) {
+			$infoTel		= new \Entidades\ZgsegUsuarioTelefone();
+		}
+			
+		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
+	
+			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
+	
+			$infoTel->setCodUsuario($oUsuario);
+			$infoTel->setCodTipoTelefone($oTipoTel);
+			$infoTel->setTelefone($telefone[$i]);
+				
+			$em->persist($infoTel);
+		}
+	}
 	
 	#################################################################################
 	## Cria o convite

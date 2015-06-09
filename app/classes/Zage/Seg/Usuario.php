@@ -56,7 +56,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
     /**
      * Lista todos os usuarios de uma organizacao
      */
-    public static function listaUsuarioOrganizacao ($codOrganizacao) {
+    public static function listaUsuarioOrganizacao ($codOrganizacao, $codTipo) {
     	global $em;
     
     	$qb 	= $em->createQueryBuilder();
@@ -71,7 +71,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	))
     	->orderBy('us.nome', 'ASC')
     	->setParameter('codOrganizacao', $codOrganizacao)
-    	->setParameter('codTipoUsuario', U);
+    	->setParameter('codTipoUsuario', $codTipo);
     	$query 		= $qb->getQuery();
     	return($query->getResult());
     	 
