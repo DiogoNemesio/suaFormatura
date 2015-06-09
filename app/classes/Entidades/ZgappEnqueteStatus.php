@@ -5,12 +5,12 @@ namespace Entidades;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ZgmcoEnqueteStatus
+ * ZgappEnqueteStatus
  *
- * @ORM\Table(name="ZGMCO_ENQUETE_STATUS")
+ * @ORM\Table(name="ZGAPP_ENQUETE_STATUS")
  * @ORM\Entity
  */
-class ZgmcoEnqueteStatus
+class ZgappEnqueteStatus
 {
     /**
      * @var string
@@ -43,7 +43,7 @@ class ZgmcoEnqueteStatus
      * Set descricao
      *
      * @param string $descricao
-     * @return ZgmcoEnqueteStatus
+     * @return ZgappEnqueteStatus
      */
     public function setDescricao($descricao)
     {

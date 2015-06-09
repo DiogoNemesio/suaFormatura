@@ -5,12 +5,12 @@ namespace Entidades;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ZgmcoEnquetePerguntaValor
+ * ZgappEnquetePerguntaValor
  *
- * @ORM\Table(name="ZGMCO_ENQUETE_PERGUNTA_VALOR", indexes={@ORM\Index(name="fk_ZGMCO_ENQUETE_PERGUNTA_VALOR_1_idx", columns={"COD_PERGUNTA"})})
+ * @ORM\Table(name="ZGAPP_ENQUETE_PERGUNTA_VALOR", indexes={@ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_VALOR_1_idx", columns={"COD_PERGUNTA"})})
  * @ORM\Entity
  */
-class ZgmcoEnquetePerguntaValor
+class ZgappEnquetePerguntaValor
 {
     /**
      * @var integer
@@ -29,9 +29,9 @@ class ZgmcoEnquetePerguntaValor
     private $valor;
 
     /**
-     * @var \Entidades\ZgmcoEnquetePergunta
+     * @var \Entidades\ZgappEnquetePergunta
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgmcoEnquetePergunta")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappEnquetePergunta")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="COD_PERGUNTA", referencedColumnName="CODIGO")
      * })
@@ -53,7 +53,7 @@ class ZgmcoEnquetePerguntaValor
      * Set valor
      *
      * @param string $valor
-     * @return ZgmcoEnquetePerguntaValor
+     * @return ZgappEnquetePerguntaValor
      */
     public function setValor($valor)
     {
@@ -75,10 +75,10 @@ class ZgmcoEnquetePerguntaValor
     /**
      * Set codPergunta
      *
-     * @param \Entidades\ZgmcoEnquetePergunta $codPergunta
-     * @return ZgmcoEnquetePerguntaValor
+     * @param \Entidades\ZgappEnquetePergunta $codPergunta
+     * @return ZgappEnquetePerguntaValor
      */
-    public function setCodPergunta(\Entidades\ZgmcoEnquetePergunta $codPergunta = null)
+    public function setCodPergunta(\Entidades\ZgappEnquetePergunta $codPergunta = null)
     {
         $this->codPergunta = $codPergunta;
 
@@ -88,7 +88,7 @@ class ZgmcoEnquetePerguntaValor
     /**
      * Get codPergunta
      *
-     * @return \Entidades\ZgmcoEnquetePergunta 
+     * @return \Entidades\ZgappEnquetePergunta 
      */
     public function getCodPergunta()
     {
