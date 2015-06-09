@@ -40,6 +40,9 @@ if (!isset($codOrganizacao)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 ## Resgata as informações do banco
 #################################################################################
 if ($codUsuario) {
+	
+	$podeAlterar = 'readonly';
+	
 	try {
 		$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 		$oPerfil		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario, 'codOrganizacao'=> $codOrganizacao));
@@ -97,6 +100,9 @@ if ($codUsuario) {
 	}
 
 }else{
+	
+	$podeAlterar = 'readonly';
+	
 	$usuario		 = null;
 	$nome			 = null;
 	$apelido		 = null;
@@ -182,6 +188,7 @@ $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
+$tpl->set('PODE_ALTERAR'		,$podeAlterar);
 $tpl->set('COD_USUARIO'			,$codUsuario);
 $tpl->set('COD_ORGANIZACAO'		,$codOrganizacao);
 $tpl->set('USUARIO'				,$usuario);
@@ -192,9 +199,9 @@ $tpl->set('CPF'					,$cpf);
 $tpl->set('PERFIL'				,$oPerfil);
 $tpl->set('SEXO'				,$oSexo);
 
-$tpl->set('TIPO_TEL'				,$oTipoTel);
-$tpl->set('SEGMENTO'				,$oSegmento);
-$tpl->set('TAB_TELEFONE'			,$tabTel);
+$tpl->set('TIPO_TEL'			,$oTipoTel);
+$tpl->set('SEGMENTO'			,$oSegmento);
+$tpl->set('TAB_TELEFONE'		,$tabTel);
 
 $tpl->set ('COD_LOGRADOURO' 	, $codLogradouro);
 $tpl->set ('CEP' 				, $cep);

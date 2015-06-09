@@ -134,10 +134,14 @@ if ($err != null) {
 #################################################################################
 try {
 
+	if (isset($codUsuario) && (!empty($codUsuario))){
+		$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
+	}
+	
 	#################################################################################
 	## Verificar se o usuário já existe
 	#################################################################################
-	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
+	//$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
 	
 	
 	if (!$oUsuario) {
@@ -168,6 +172,29 @@ try {
 		
 		$em->persist($oUsuario);
 		
+		#################################################################################
+		## Telefones
+		#################################################################################
+		/***** Criação *****/
+		for ($i = 0; $i < sizeof($codTelefone); $i++) {
+			$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
+		
+			if (!$infoTel) {
+				$infoTel		= new \Entidades\ZgsegUsuarioTelefone();
+			}
+				
+			if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
+		
+				$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
+		
+				$infoTel->setCodUsuario($oUsuario);
+				$infoTel->setCodTipoTelefone($oTipoTel);
+				$infoTel->setTelefone($telefone[$i]);
+		
+				$em->persist($infoTel);
+			}
+		}
+		
 	}else{
 		$novoUsuario	= false;
 		#################################################################################
@@ -180,7 +207,6 @@ try {
 			die ('1'.\Zage\App\Util::encodeUrl('||'));
 		}
 	}
-	
 	
 	#################################################################################
 	## Usuário - Organização
@@ -198,28 +224,6 @@ try {
 	
 	$em->persist($oUsuarioOrg);
 	
-	#################################################################################
-	## Telefones
-	#################################################################################		
-	/***** Criação *****/
-	for ($i = 0; $i < sizeof($codTelefone); $i++) {
-		$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
-	
-		if (!$infoTel) {
-			$infoTel		= new \Entidades\ZgsegUsuarioTelefone();
-		}
-			
-		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
-	
-			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
-	
-			$infoTel->setCodUsuario($oUsuario);
-			$infoTel->setCodTipoTelefone($oTipoTel);
-			$infoTel->setTelefone($telefone[$i]);
-				
-			$em->persist($infoTel);
-		}
-	}
 	
 	#################################################################################
 	## Cria o convite
