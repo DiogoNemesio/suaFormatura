@@ -254,60 +254,62 @@ try {
 	}
 	
 	
-	#################################################################################
-	## Carregando o template html do email
-	#################################################################################
-	$tpl		= new \Zage\App\Template();
-	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuarioOrg->getCodigo().'&_cdu02='.$oUsuario->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
-	if ($novoUsuario) {
-		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
-		$assunto			= "Cadatro de usuário";
-		$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
-	}else{
-		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
-		$assunto			= "Associação a empresa";
-		$confirmUrl			= ROOT_URL . "/Seg//u02.php?cid=".$cid;
+	if ($enviarEmail) {
+	
+		#################################################################################
+		## Carregando o template html do email
+		#################################################################################
+		$tpl		= new \Zage\App\Template();
+		$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuarioOrg->getCodigo().'&_cdu02='.$oUsuario->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
+		if ($novoUsuario) {
+			$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
+			$assunto			= "Cadatro de usuário";
+			$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
+		}else{
+			$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
+			$assunto			= "Associação a empresa";
+			$confirmUrl			= ROOT_URL . "/Seg//u02.php?cid=".$cid;
+		}
+		
+		#################################################################################
+		## Define os valores das variáveis
+		#################################################################################
+		$tpl->set('ID'					,$id);
+		$tpl->set('CONFIRM_URL'			,$confirmUrl);
+		$tpl->set('ASSUNTO'				,$assunto);
+		
+		#################################################################################
+		## Criar os objeto do email ,transporte e validador
+		#################################################################################
+		$mail 			= \Zage\App\Mail::getMail();
+		$transport 		= \Zage\App\Mail::getTransport();
+		$validator 		= new \Zend\Validator\EmailAddress();
+		$htmlMail 		= new MimePart($tpl->getHtml());
+		$htmlMail->type = "text/html";
+		$body 			= new MimeMessage();
+		
+		#################################################################################
+		## Definir o conteúdo do e-mail
+		#################################################################################
+		$body->setParts(array($htmlMail));
+		$mail->setBody($body);
+		$mail->setSubject("<ZageMail> ".$assunto);
+		
+		#################################################################################
+		## Definir os destinatários
+		#################################################################################
+		$mail->addTo($usuario);
+		
+		#################################################################################
+		## Salvar as informações e enviar o e-mail
+		#################################################################################
+		try {
+			$transport->send($mail);
+		} catch (Exception $e) {
+			$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
+			throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
+		}
 	}
-	
-	#################################################################################
-	## Define os valores das variáveis
-	#################################################################################
-	$tpl->set('ID'					,$id);
-	$tpl->set('CONFIRM_URL'			,$confirmUrl);
-	$tpl->set('ASSUNTO'				,$assunto);
-	
-	#################################################################################
-	## Criar os objeto do email ,transporte e validador
-	#################################################################################
-	$mail 			= \Zage\App\Mail::getMail();
-	$transport 		= \Zage\App\Mail::getTransport();
-	$validator 		= new \Zend\Validator\EmailAddress();
-	$htmlMail 		= new MimePart($tpl->getHtml());
-	$htmlMail->type = "text/html";
-	$body 			= new MimeMessage();
-	
-	#################################################################################
-	## Definir o conteúdo do e-mail
-	#################################################################################
-	$body->setParts(array($htmlMail));
-	$mail->setBody($body);
-	$mail->setSubject("<ZageMail> ".$assunto);
-	
-	#################################################################################
-	## Definir os destinatários
-	#################################################################################
-	$mail->addTo($usuario);
-	
-	#################################################################################
-	## Salvar as informações e enviar o e-mail
-	#################################################################################
-	try {
-		$transport->send($mail);
-	} catch (Exception $e) {
-		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
-		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
-	}
-	
 
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
