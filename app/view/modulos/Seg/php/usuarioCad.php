@@ -55,7 +55,7 @@ if ($codUsuario) {
 	$cpf			= $info->getCpf();
 	$perfil			= $oPerfil->getCodPerfil()->getCodigo();
 	$codStatus		= $info->getCodStatus()->getCodigo();
-	$sexo			= $info->getSexo()->getCodigo();
+	$sexo			= ($info->getSexo()) ? $info->getSexo()->getCodigo() : null;
 
 	/** Endereco **/
 	$codLogradouro   = ($info->getCodLogradouro()) ? $info->getCodLogradouro()->getCodigo() : null;
@@ -101,23 +101,22 @@ if ($codUsuario) {
 
 }else{
 	
-	$podeAlterar = 'readonly';
+	$podeAlterar	= null;
+	$usuario		= null;
+	$nome			= null;
+	$apelido		= null;
+	$cpf			= null;
+	$perfil			= null;
+	$codStatus		= null;
+	$sexo			= null;
 	
-	$usuario		 = null;
-	$nome			 = null;
-	$apelido		 = null;
-	$cpf			 = null;
-	$perfil			 = null;
-	$codStatus		 = null;
-	$sexo			 = null;
-	
-	$codLogradouro   = null;
-	$cep 		     = null;
-	$complemento     = null;
-	$numero		     = null;
-	$endCorreto		 = null;
-	$cidade	  		 = null;
-	$estado    		 = null;
+	$codLogradouro	= null;
+	$cep			= null;
+	$complemento	= null;
+	$numero			= null;
+	$endCorreto		= null;
+	$cidade			= null;
+	$estado			= null;
 	
 }
 
@@ -125,7 +124,8 @@ if ($codUsuario) {
 ## Urls
 #################################################################################
 $uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario=');
-$urlVoltar			= ROOT_URL . "/Seg/usuarioLis.php?id=".$uid;
+$vid				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParceiro='.$codOrganizacao.'&url='.$url);
+$urlVoltar			= ROOT_URL . "/Fmt/parceiroUsuarioLis.php?id=".$vid;
 $urlNovo			= ROOT_URL . "/Seg/usuarioCad.php?id=".$uid;
 
 #################################################################################

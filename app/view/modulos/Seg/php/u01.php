@@ -56,9 +56,24 @@ if (!$convite) 								\Zage\App\Erro::externalHalt('Convite não está mais dis
 if ($convite->getSenha() != $senha)			\Zage\App\Erro::externalHalt('Convite não está mais disponível, COD_ERRO: 11');
 if ($convite->getIndUtilizado() != 0)		\Zage\App\Erro::externalHalt('Convite não está mais disponível, COD_ERRO: 12');
 
+
+#################################################################################
+## Resgatar as informações já disponíveis
+#################################################################################
+$apelido					= $oUsuario->getApelido();
+$cpf						= $oUsuario->getCpf();
+$cep						= $oUsuario->getCep();
+$logradouro					= $oUsuario->getEndereco();
+$bairro						= $oUsuario->getBairro();
+$descCidade					= ($oUsuario->getCodLogradouro()) ? $oUsuario->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome() : null;
+$descEstado					= ($oUsuario->getCodLogradouro()) ? $oUsuario->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUf()->getCodUf() : null;
+$numero						= $oUsuario->getNumero();
+$complemento				= $oUsuario->getComplemento();
+
 #################################################################################
 ## Select de Sexo
 #################################################################################
+$sexo		= ($oUsuario->getSexo()) ? $oUsuario->getSexo()->getCodigo() : null;
 try {
 	$aSexo		= $em->getRepository('Entidades\ZgsegSexoTipo')->findAll();
 	$oSexo		= $system->geraHtmlCombo($aSexo,	'CODIGO', 'DESCRICAO',	$sexo, null);
@@ -89,6 +104,8 @@ for ($i = 0; $i < sizeof($mascaras); $i++) {
 $htmlMask = substr($htmlMask, 0 , -1);
 
 
+
+
 #################################################################################
 ## Carregando o template html
 #################################################################################
@@ -108,6 +125,15 @@ $tpl->set('CD01'				,$_cdu01);
 $tpl->set('CD02'				,$_cdu02);
 $tpl->set('CD03'				,$_cdu03);
 $tpl->set('CD04'				,$_cdu04);
+$tpl->set('APELIDO'				,$apelido);
+$tpl->set('CPF'					,$cpf);
+$tpl->set('CEP'					,$cep);
+$tpl->set('LOGRADOURO'			,$logradouro);
+$tpl->set('BAIRRO'				,$bairro);
+$tpl->set('DESC_CIDADE'			,$descCidade);
+$tpl->set('DESC_ESTADO'			,$descEstado);
+$tpl->set('NUMERO'				,$numero);
+$tpl->set('COMPLEMENTO'			,$complemento);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################

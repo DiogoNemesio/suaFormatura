@@ -122,7 +122,7 @@
 					    	<label class="col-sm-3 control-label" for="apelidoID">Apelido</label>
 			    			<div class="input-group col-sm-8 pull-left">
 				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Apelido"></i></span>
-				    			<input class="width-100" id="apelidoID" type="text" name="apelido" maxlength="60" placeholder="Apelido" autocomplete="off">
+				    			<input class="width-100" id="apelidoID" type="text" name="apelido" maxlength="60" value="%APELIDO%" placeholder="Apelido" autocomplete="off">
 					    	</div>
 					    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
 					    </div>
@@ -130,7 +130,7 @@
 						    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
 				    			<div class="input-group col-sm-8 pull-left">
 			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
-					    			<input class="form-control" id="cpfID" type="text" name="cpf" maxlength="14" placeholder="CPF"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+					    			<input class="form-control" id="cpfID" type="text" name="cpf" maxlength="14" value="%CPF%" placeholder="CPF"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
 						</div>
@@ -175,7 +175,7 @@
 							<label for="cepID" class="col-sm-3 control-label">CEP</label>
 							<div class="input-group col-sm-8 pull-left">
 								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
-								<input type="text" id="cepID" name="cep" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+								<input type="text" id="cepID" name="cep" maxlength="9" class="width-100" value="%CEP%" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
 							</div>
 							<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
 						</div>																	
@@ -183,7 +183,7 @@
 							<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
 							<div class="input-group col-sm-8 pull-left">
 								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
-								<input type="text" id="descLogradouroID" name="descLogradouro" class="width-100" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+								<input type="text" id="descLogradouroID" name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
 							</div>
 							<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
 						</div>	
@@ -191,7 +191,7 @@
 							<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
 							<div class="input-group col-sm-8 pull-left">
 								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
-								<input type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" class="width-100" autocomplete="off" placeholder="Bairro" maxlength="60" />
+								<input type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
 							</div>
 							<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
 						</div>
@@ -199,28 +199,28 @@
 							<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
 							<div class="input-group col-sm-8 pull-left">
 								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
-								<input type="text" readonly id="descCidadeID" name="descCidade" class="width-100" placeholder="Cidade" />
+								<input type="text" readonly id="descCidadeID" name="descCidade" class="width-100" value="%DESC_CIDADE%" placeholder="Cidade" />
 							</div>
 						</div>
 						<div class="form-group col-sm-12">
 							<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
 							<div class="input-group col-sm-8 pull-left">
 								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
-								<input type="text" readonly id="descEstadoID" name="descEstado" class="width-100" placeholder="Estado" />
+								<input type="text" readonly id="descEstadoID" name="descEstado" value="%DESC_ESTADO%" class="width-100" placeholder="Estado" />
 							</div>
 						</div>									
 						<div class="form-group col-sm-12" id="divNumeroID">
 							<label for=numeroID" class="col-sm-3 control-label">Número</label>
 							<div class="input-group col-sm-8 pull-left">
 								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
-								<input type="text" id="numeroID" name="numero" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
+								<input type="text" id="numeroID" name="numero" class="width-100" value="%NUMERO%" autocomplete="off" placeholder="Número" maxlength="10" />
 							</div>
 						</div>							
 						<div class="form-group col-sm-12" id="divComplementoID">
 							<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
 							<div class="input-group col-sm-8 pull-left">
 								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
-								<input type="text" id="complementoID" name="complemento" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
+								<input type="text" id="complementoID" name="complemento" class="width-100" value="%COMPLEMENTO%" autocomplete="off" placeholder="Complemento" maxlength="100" />
 							</div>
 						</div>																			
 						<div class="hidden" id="divEndCorretoID">
@@ -536,7 +536,7 @@ $('#zgFormID').submit(function(e) {
 //Valida formulário
 function validaUsuarioAlt() {
 	var vNome		 = $('#nomeID').val();
-	var vApelido	 = $('#ApelidoID').val();
+	var vApelido	 = $('#apelidoID').val();
 	var vSexo	 	 = $('#sexoID').val();
 	var vSenha		 = $('#senhaID').val();
 	var vConfSenha	 = $('#confSenhaID').val();

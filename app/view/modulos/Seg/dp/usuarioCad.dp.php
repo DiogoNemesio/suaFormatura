@@ -134,15 +134,11 @@ if ($err != null) {
 #################################################################################
 try {
 
-	if (isset($codUsuario) && (!empty($codUsuario))){
-		$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
-	}
 	
 	#################################################################################
 	## Verificar se o usuário já existe
 	#################################################################################
-	//$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
-	
+	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
 	
 	if (!$oUsuario) {
 		$novoUsuario	= true;
@@ -153,66 +149,109 @@ try {
 		#################################################################################
 		$oUsuario			= new \Entidades\ZgsegUsuario();
 		$oStatus			= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'P'));
-		$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
-		$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
 		
-		$oUsuario->setUsuario($usuario);
-		$oUsuario->setNome($nome);
-		$oUsuario->setApelido($apelido);
-		$oUsuario->setCpf($cpf);
-		$oUsuario->setSexo($oSexo);
+		#################################################################################
+		## Ajustar alguns campos para um novo usuário
+		## Não alterar o status caso o usuário já exista
+		#################################################################################
 		$oUsuario->setCodStatus($oStatus);
+		$oUsuario->setUsuario($usuario);
 		
-		$oUsuario->setCodLogradouro($oCodLogradouro);
-		$oUsuario->setIndEndCorreto($endCorreto);
-		$oUsuario->setCep($cep);
-		$oUsuario->setEndereco($descLogradouro);
-		$oUsuario->setBairro($bairro);
-		$oUsuario->setNumero($numero);
-		$oUsuario->setComplemento($complemento);
-		
-		$em->persist($oUsuario);
-		
-		#################################################################################
-		## Telefones
-		#################################################################################
-		/***** Criação *****/
-		for ($i = 0; $i < sizeof($codTelefone); $i++) {
-			$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
-		
-			if (!$infoTel) {
-				$infoTel		= new \Entidades\ZgsegUsuarioTelefone();
-			}
-				
-			if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
-		
-				$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
-		
-				$infoTel->setCodUsuario($oUsuario);
-				$infoTel->setCodTipoTelefone($oTipoTel);
-				$infoTel->setTelefone($telefone[$i]);
-		
-				$em->persist($infoTel);
-			}
-		}
 		
 	}else{
 		$novoUsuario	= false;
+		
 		
 		if ($oUsuario->getCodStatus()->getCodigo() == "A") {
 			$enviarEmail	= false;
 		}else{
 			$enviarEmail	= true;
 		}
+	}
+	
+	#################################################################################
+	## Resgatar os objetos de relacionamento
+	#################################################################################
+	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+	$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
+	
+	#################################################################################
+	## Salvar os dados do usuário
+	#################################################################################
+	$oUsuario->setNome($nome);
+	$oUsuario->setApelido($apelido);
+	$oUsuario->setCpf($cpf);
+	$oUsuario->setSexo($oSexo);
+	$oUsuario->setCodLogradouro($oCodLogradouro);
+	$oUsuario->setIndEndCorreto($endCorreto);
+	$oUsuario->setCep($cep);
+	$oUsuario->setEndereco($descLogradouro);
+	$oUsuario->setBairro($bairro);
+	$oUsuario->setNumero($numero);
+	$oUsuario->setComplemento($complemento);
+	
+	#################################################################################
+	## Colocar na fila para execução
+	#################################################################################
+	$em->persist($oUsuario);
+	
+	#################################################################################
+	## Telefones / Contato
+	#################################################################################
+	$telefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $oUsuario->getCodigo()));
+	
+	#################################################################################
+	## Exclusão
+	#################################################################################
+	for ($i = 0; $i < sizeof($telefones); $i++) {
+		if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
+			try {
+				$em->remove($telefones[$i]);
+			} catch (\Exception $e) {
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
+				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+				exit;
+			}
+		}
+	
+	}
+	
+	#################################################################################
+	## Criação / Alteração
+	#################################################################################
+	for ($i = 0; $i < sizeof($codTelefone); $i++) {
+		$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
+	
+		if (!$infoTel) {
+			$infoTel		= new \Entidades\ZgsegUsuarioTelefone();
+		}
+	
+		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
+	
+			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
+	
+			$infoTel->setCodUsuario($oUsuario);
+			$infoTel->setCodTipoTelefone($oTipoTel);
+			$infoTel->setTelefone($telefone[$i]);
+	
+			$em->persist($infoTel);
+		}
 		
-		#################################################################################
-		## Verificar se o usuário já está associado a organização
-		#################################################################################
-		$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
-		
-		if ($oUsuOrg) {
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email já associado a organização"));
-			die ('1'.\Zage\App\Util::encodeUrl('||'));
+	}
+	
+	#################################################################################
+	## Verificar se o usuário já está associado a organização
+	#################################################################################
+	if ($novoUsuario) {
+		$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
+		$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
+	}else{
+		$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
+		if (!$oUsuarioOrg)	{
+			$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
+			$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
+		}else{
+			$oUsuarioOrgStatus  = $oUsuarioOrg->getCodStatus();
 		}
 	}
 	
@@ -221,25 +260,26 @@ try {
 	#################################################################################
 	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
-	$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
-	
-	$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 	
 	$oUsuarioOrg->setCodUsuario($oUsuario);
 	$oUsuarioOrg->setCodOrganizacao($oOrg);
 	$oUsuarioOrg->setCodPerfil($oPerfil);
 	$oUsuarioOrg->setCodStatus($oUsuarioOrgStatus);
 	
+	#################################################################################
+	## Colocar na fila para execução
+	#################################################################################
 	$em->persist($oUsuarioOrg);
-	
 	
 	#################################################################################
 	## Cria o convite
 	#################################################################################
-	$convite		= new \Zage\Seg\Convite();
-	$convite->setCodOrganizacaoOrigem($oOrg);
-	$convite->setCodUsuarioDestino($oUsuario);
-	$convite->salvar();
+	if ($enviarEmail) {
+		$convite		= new \Zage\Seg\Convite();
+		$convite->setCodOrganizacaoOrigem($oOrg);
+		$convite->setCodUsuarioDestino($oUsuario);
+		$convite->salvar();
+	}
 
 	
 	#################################################################################
@@ -268,7 +308,7 @@ try {
 		}else{
 			$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
 			$assunto			= "Associação a empresa";
-			$confirmUrl			= ROOT_URL . "/Seg//u02.php?cid=".$cid;
+			$confirmUrl			= ROOT_URL . "/Seg/u02.php?cid=".$cid;
 		}
 		
 		#################################################################################
