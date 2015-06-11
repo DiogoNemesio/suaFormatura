@@ -248,5 +248,132 @@ class Parametro {
     
     }
     
+    /**
+     * Gerar o código HTML do parametros
+     * @param integer $codigo
+     * @param integer $codOrganizacao
+     * @param integer $codUsuario
+     * @param integer $tabIndex
+     */
+    public static function geraHtml($codigo,$codOrganizacao,$codUsuario, $tabIndex = -1) {
+    	global $em,$log,$system;
     
+    	#################################################################################
+    	## Resgata as informações do parametro no APP
+    	#################################################################################
+    	$info		= $em->getRepository('Entidades\ZgappParametro')->findOneBy(array('codigo' => $codigo));
+    	 
+    	if (!$info) {
+    		return null;
+    	}
+    	
+    	#################################################################################
+    	## Resgatar o valor já salvo
+    	#################################################################################
+    	if ($info->getCodUso()->getCodigo() == "S") {
+    		$valor		= self::getValorSistema($info->getParametro(),true);
+    	}elseif ($info->getCodUso()->getCodigo() == "O") {
+    		$valor		= self::getValorOrganizacao($info->getParametro(),$codOrganizacao,true);
+    	}elseif ($info->getCodUso()->getCodigo() == "U") {
+    		$valor		= self::getValorUsuario($info->getParametro(),$codUsuario,true);
+    	}else{
+    		die('Uso de parâmetro desconhecido');
+    	}
+    
+    	#################################################################################
+    	## Montar as tags
+    	#################################################################################
+    	$nomeCampo		= self::geraNomeInput($codigo);
+    	$idCampo		= self::geraIdInput($codigo);
+    	$tipo			= $info->getCodTipo()->getCodigo();
+    	 
+    	($info->getIndObrigatorio() == 0) 	?	$tagRequired	= null : $tagRequired 	= 'required';
+    	 
+    	#################################################################################
+    	## Montagem das tags Fixas
+    	#################################################################################
+    	//$tagDateFormat	= $system->config["data"]["maskDateFormat"];
+    	 
+    	#################################################################################
+    	## Montar as tags das máscaras
+    	#################################################################################
+    	if ($info->getCodTipo()->getCodMascara()) {
+    		$tagMask	= ' zg-data-toggle="mask" zg-data-mask="'.$info->getCodTipo()->getCodMascara()->getNome().'" zg-data-mask-retira="'.$info->getCodTipo()->getCodMascara()->getIndRetiraMascara().'"';
+    	}else{
+    		$tagMask	= " ";
+    	}
+    
+    	#################################################################################
+    	## Montar o html de acordo com o tipo do Parâmetro
+    	#################################################################################
+    	$htmlInput		= "";
+    
+    	if ($tipo == 'T') { # Texto
+    		$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+    		$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
+    	}elseif ($tipo == 'N') { # Número
+    		$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+    		$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
+    	}elseif ($tipo == 'DT') { # Data
+    		$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+    		$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control datepicker" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
+    	}elseif ($tipo == 'LIS') { # Lista Pré-Definida
+    		$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+    		$htmlInput	.= '<select tabindex="'.$tabIndex.'" class="select2 " style="width:100%;" id="'.$idCampo.'" name="'.$nomeCampo.'" '.$tagRequired.' data-rel="select2">';
+    
+    		#################################################################################
+    		## Resgatar os valores da combo
+    		#################################################################################
+    		try {
+    			$aValores	= $em->getRepository('Entidades\ZgappParametroTipoValor')->findBy(array('codParametro' => $info->getCodigo()),array('valor' => 'ASC'));
+    			$oValores	= $system->geraHtmlCombo($aValores,	'VALOR', 'VALOR', $valor, null);
+    		} catch (\Exception $e) {
+    			\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+    		}
+    
+    		$htmlInput	.= $oValores;
+    		$htmlInput	.= '</select>';
+    	}elseif ($tipo == 'DIN') { # Dinheiro
+    		$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+    		$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="width-100" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
+    	}elseif ($tipo == 'SN') { # Sim ou Não
+    		$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+    		$htmlInput	.= '<select tabindex="'.$tabIndex.'" class="select2" style="width:100%;" id="'.$idCampo.'" name="'.$nomeCampo.'" '.$tagRequired.' data-rel="select2">';
+    
+    		#################################################################################
+    		## Resgatar os valores da combo SN
+    		#################################################################################
+    		$oValores	= $system->geraHtmlComboSN($valor, null);
+    
+    		$htmlInput	.= $oValores;
+    		$htmlInput	.= '</select>';
+    	}elseif ($tipo == 'P') { # Porcentagem
+    		$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+    		$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'"  value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
+    	}
+    
+    	return $htmlInput;
+    }
+    
+    /**
+     * Gerar o ID do campo
+     * @param integer $codParametro
+     * @param integer$codigo
+     * @return string
+     */
+    public static function geraIdInput($codigo) {
+    	return '_zgParametro_'.$codigo.'ID';
+    }
+    
+    /**
+     * Gerar o Nome do campo
+     * @param integer $codParametro
+     * @param integer$codigo
+     * @return string
+     */
+    public static function geraNomeInput($codigo) {
+    	return '_zgParametro['.$codigo.']';
+    }
+    
+
 }
