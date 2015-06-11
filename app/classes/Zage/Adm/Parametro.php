@@ -71,35 +71,153 @@ class Parametro {
     public static function getValor ($parametro) {
 		global $system,$em;
 		
-		$info	= $em->getRepository('Entidades\ZgadmParametro')->findOneBy(array('parametro' => $parametro));
+		#################################################################################
+		## Buscar os parâmetros na seguinte ordem:
+		##
+		## 1 -> Parâmetro do sistema
+		## 2 -> Parâmetro por Organização
+		## 3 -> Parâmetro por Usuário
+		#################################################################################
 		
-		if (!$info) return null;
 		
-		return ($info->getValor());
+		#################################################################################
+		## Busca o parâmetro do sistema
+		#################################################################################
+		$valor	= self::getValorSistema($parametro);
+		
+		if ($valor !== false)	return $valor;
    	
-    }
-	
-    /**
-     * 
-     * Resgata o código para carregamento dinâmico de códigos html
-     */
-    public static function getDinamicHtmlLoad () {
-		global $db;
+		#################################################################################
+		## Busca o parâmetro por Organização
+		#################################################################################
+		$valor	= self::getValorOrganizacao($parametro,$system->getCodOrganizacao());
 		
-    	$html	= $db->extraiTodos("
-			SELECT	H.URL
-			FROM	ZGAPP_LOAD_HTML H
-			WHERE	ATIVO 	= 1
-			ORDER 	BY H.ORDEM
-		");
-    	
-    	$return = '<!-- Carregado dinamicamente através do dinamicHtmlLoad -->'.PHP_EOL;
-    	foreach ($html as $data) {
-		//for ($i = 0; $i < sizeof($html); $i++) {
-			$return .= $data->URL.PHP_EOL;
-		}
-		$return .= '<!-- Fim do carregamento dinâmico (dinamicHtmlLoad) -->'.PHP_EOL;
-		return ($return);
+		if ($valor !== false)	return $valor;
+		
+		#################################################################################
+		## Busca o parâmetro por Usuário
+		#################################################################################
+		$valor	= self::getValorUsuario($parametro,$system->getCodUsuario());
+		
+		return $valor;
+		
     }
+    
+    
+    /**
+     * Resgata o valor de um parâmetro do sistema
+     * @param string $parametro
+     */
+    public static function getValorSistema ($parametro) {
+    	global $system,$em;
+    
+    	#################################################################################
+    	## Busca o parâmetro do sistema
+    	#################################################################################
+    	$qb 	= $em->createQueryBuilder();
+    
+    	try {
+    		$qb->select('ps')
+    		->from('\Entidades\ZgadmParametroSistema','ps')
+    		->leftJoin('\Entidades\ZgappParametro'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'ps.codParametro 	= p.codigo')
+    		->where($qb->expr()->andX(
+    			$qb->expr()->eq('p.parametro'	, ':parametro')
+    		))
+    		->setParameter('parametro', $parametro);
+    
+    		$query 		= $qb->getQuery();
+    		$return 	= $query->getOneOrNullResult();
+    			
+    		if ($return) {
+    			return $return->getValor();
+    		}else{
+    			return false;
+    		}
+    			
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    
+    }
+    
+    
+    /**
+     * Resgata o valor de um parâmetro por organização
+     * @param string $parametro
+     */
+    public static function getValorOrganizacao ($parametro,$codOrganizacao) {
+    	global $system,$em;
+    
+    	#################################################################################
+    	## Busca o parâmetro por organização
+    	#################################################################################
+    	$qb 	= $em->createQueryBuilder();
+    
+    	try {
+    		$qb->select('po')
+    		->from('\Entidades\ZgadmParametroOrganizacao','po')
+    		->leftJoin('\Entidades\ZgappParametro'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'po.codParametro 	= p.codigo')
+    		->where($qb->expr()->andX(
+    			$qb->expr()->eq('p.parametro'		, ':parametro'),
+    			$qb->expr()->eq('po.codOrganizacao'	, ':codOrganizacao')
+    		))
+    		->setParameter('parametro'		, $parametro)
+    		->setParameter('codOrganizacao'	, $codOrganizacao);
+    
+    		$query 		= $qb->getQuery();
+    		$return 	= $query->getOneOrNullResult();
+    		 
+    	    if ($return) {
+    			return $return->getValor();
+    		}else{
+    			return false;
+    		}
+    		
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    
+    }
+    
+
+    /**
+     * Resgata o valor de um parâmetro por usuário
+     * @param string $parametro
+     */
+    public static function getValorUsuario ($parametro,$codUsuario) {
+    	global $system,$em;
+    
+    	#################################################################################
+    	## Busca o parâmetro por Usuário
+    	#################################################################################
+    	$qb 	= $em->createQueryBuilder();
+    
+    	try {
+    		$qb->select('pu')
+    		->from('\Entidades\ZgadmParametroUsuario','pu')
+    		->leftJoin('\Entidades\ZgappParametro'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'pu.codParametro 	= p.codigo')
+    		->where($qb->expr()->andX(
+    			$qb->expr()->eq('p.parametro'		, ':parametro'),
+    			$qb->expr()->eq('pu.codUsuario'		, ':codUsuario')
+    		))
+    		->setParameter('parametro'		, $parametro)
+    		->setParameter('codUsuario'		, $codUsuario);
+    
+    		$query 		= $qb->getQuery();
+    		$return 	= $query->getOneOrNullResult();
+    		 
+    	    if ($return) {
+    			return $return->getValor();
+    		}else{
+    			return false;
+    		}
+    		
+    		 
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    
+    }
+    
 
 }

@@ -17,13 +17,14 @@ if (!isset($_org) && (!isset($_SESSION['_codOrg']))) {
 	if (isset($_org) && ($_org instanceof \Entidades\ZgadmOrganizacao) ) {
 		$system->setCodOrganizacao($_org->getCodigo());
 	}else{
+		$_org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array ('codigo' => $_SESSION['_codOrg']));
 		$system->setCodOrganizacao($_SESSION['_codOrg']);
 	}
 	
 	/** Define a organização **/
 	$db->setOrganizacao($system->getCodOrganizacao());
 	
-	$log->debug("Código da Organização: ".$system->getCodOrganizacao());
+	//$log->debug("Código da Organização: ".$system->getCodOrganizacao());
 	
 }
 include_once(BIN_PATH . 'auth.php');
@@ -89,8 +90,6 @@ if ((isset($_user)) && ($_user->getIndTrocarSenha() == 1)) {
 	$indTrocarSenha		= 0;
 }
 
-
-
 #################################################################################
 ## Define a constante do site inicial
 #################################################################################
@@ -104,7 +103,7 @@ $system->setDivCentral("zgDivCentral");
 #################################################################################
 ## Cria o objeto do Menu
 #################################################################################
-$menu	= \Zage\App\Menu::criar(\Zage\App\Menu\Tipo::TIPO1);
+$menu	= \Zage\App\Menu::criar(\Zage\App\Menu\Tipo::TIPO2);
 $menu->setTarget($system->getDivCentral());
 
 #################################################################################

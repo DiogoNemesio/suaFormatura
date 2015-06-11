@@ -294,24 +294,29 @@ abstract class Tipo {
 		/** Define a classe do Div principal **/
 		switch ($this->getTipo()) {
 			case self::TIPO1:
-				$classe	= 'main-content';
+				$classe			= 'main-content';
+				$usaBreadcrumb	= true; 
 				break;
 			case self::TIPO2:
-				$classe	= 'main-content';
+				$classe			= 'main-content';
+				$usaBreadcrumb	= false; 
 				break;
 			default:
-				$classe	= 'main-content';
+				$classe			= 'main-content';
+				$usaBreadcrumb	= true; 
 				break;
 		}
 
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'<div class="'.$classe.'">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<div class="main-content-inner">'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<div class="breadcrumbs" id="breadcrumbs">'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<script type="text/javascript">'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,5)."try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}".\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'</script>'.\Zage\App\ZWS::NL;
-		$this->html .= \Zage\App\suaFormatura::geraLocalizacao(null);
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'</div>'.\Zage\App\ZWS::NL;
+		if ($usaBreadcrumb) {
+			$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<div class="breadcrumbs" id="breadcrumbs">'.\Zage\App\ZWS::NL;
+			$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<script type="text/javascript">'.\Zage\App\ZWS::NL;
+			$this->html	.= str_repeat(\Zage\App\ZWS::TAB,5)."try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}".\Zage\App\ZWS::NL;
+			$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'</script>'.\Zage\App\ZWS::NL;
+			$this->html .= \Zage\App\suaFormatura::geraLocalizacao(null);
+			$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'</div>'.\Zage\App\ZWS::NL;
+		}
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<div id="zgSpinnerID" class="hidden" style="width: 100%; height: 100%; position: fixed; display: block; opacity: 0.7; background-color: #fff; z-index: 99; text-align: center;">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<i class="fa fa-spinner fa-spin fa-3x"></i>'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'</div>'.\Zage\App\ZWS::NL;

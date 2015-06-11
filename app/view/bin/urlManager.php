@@ -33,7 +33,7 @@ if (!$url) {
 	
 	if (sizeof($pieces) == 1) {
 		$_ident			= $pieces[0];
-		$log->debug("Ident: ".$_ident);
+		//$log->debug("Ident: ".$_ident);
 		
 		$ret			= \Zage\Fmt\Organizacao::buscaPorIdentificacao($_ident);
 		

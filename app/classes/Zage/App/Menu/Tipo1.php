@@ -48,6 +48,14 @@ class Tipo1 extends \Zage\App\Menu\Tipo {
 	 * Inicia o código html do menu lateral
 	 */
 	private function iniciaMenuLateral() {
+		
+		/* 
+		 * 1 - HOME
+		 * 2 - AJUDA
+		 * 3 - CONFIGURACOES
+		 * 4 - CONTATE-NOS
+		 */
+		
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'<div class="sidebar responsive" id="sidebar">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'<script type="text/javascript">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3)."try{ace.settings.check('sidebar' , 'fixed')}catch(e){}".\Zage\App\ZWS::NL;
