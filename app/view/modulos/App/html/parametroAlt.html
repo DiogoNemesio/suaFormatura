@@ -1,0 +1,385 @@
+<div id="content">
+	<div class="page-header">
+		<h1>Cadastro de Parâmetros 
+			<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+			<a id='a01ID' class='btn btn-white ' title="Novo parâmetro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+		</h1>
+	</div>
+	<!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codParametroID" name="codParametro" value="%COD_PARAMETRO%">
+				<input type='hidden' id='valID'>
+					<div id="Parametro-geral" class="tab-pane in active">
+						<h4 class="header blue bolder smaller">Informações Gerais</h4>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group col-sm-12" id="divParametroID">
+									<label for="parametroID" class="col-sm-3 control-label">Parâmetro</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Não pode haver dois parâmentros iguais cadastrado com um mesmo módulo"></i></span>
+										<input type="text" id="parametroID" name="parametro" value="%PARAMETRO%" maxlength="60" class="width-100" placeholder="Nome do parâmetro" autocomplete="off" onblur="validaNomeParametroAlt();" />
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpParametroID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divModuloID">
+									<label for="moduloID" class="col-xs-12 col-sm-3 control-label">Módulo</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o módulo no qual o parâmetro será utilizado"></i></span>
+										<select class="select2" onchange="validaNomeParametroAlt();" style="width:100%;" id="moduloID" name="modulo" data-rel="select2">
+											%MODULO%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divObrigatorioID">
+									<label for="obrigatorioID" class="col-sm-3 control-label">
+										<input name="obrigatorio" id="obrigatorioID" class="ace ace-switch"  type="checkbox" %OBRIGATORIO%/>
+			    						<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO"></span>
+									</label>
+									<label for="obrigatorioID" class="col-sm-2 control-label">
+										Obrigatório
+									</label>
+
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group col-sm-12" id="divDescricaoID">
+									<label for="descricaoID" class="col-sm-3 control-label">Descrição</label>
+									<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição do parâmetro"></i></span>
+										<input type="text" id="descricaoID" name="descricao" value="%DESCRICAO%" maxlength="100" class="width-100" placeholder="Descrição do parâmentro" autocomplete="off" />
+									</div>
+								</div>										
+							
+								<div class="form-group col-sm-12" id="divSecaoID">
+									<label for="secaoID" class="col-xs-12 col-sm-3 control-label">Seção</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione em que ABA o paramêtro será apresentando na tela de configurações"></i></span>
+										<input type="hidden" name="secao" id="secaoID" style="width:100%;" data-placeholder="Selecione a secao" value="SECAO" zg-selected="%DESC_SECAO%"/>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpSecaoID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divUsoID">
+									<label for="usoID" class="col-xs-12 col-sm-3 control-label">Uso</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o qual o Uso do Parâmetro"></i></span>
+										<select class="select2" style="width:100%;" id="usoID" name="uso" data-rel="select2">
+											%USO%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpUsoID"></div>
+								</div>
+													
+							</div>
+						</div>
+							
+						<h4 class="header blue bolder smaller">Tipo</h4>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group col-sm-12" id="divTipoID">
+									<label for="tipoID" class="col-xs-12 col-sm-3 control-label">Tipo</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o tipo"></i></span>
+										<select class="select2" onchange="zgMostraDivs();" style="width:100%;" id="tipoID" name="tipo" data-rel="select2">
+											%TIPO%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpTipoID"></div>
+								</div>
+								<div class="form-group col-sm-12" id="divValorPadraoID">
+					    			<label for="valorPadraoID" class="col-sm-3 control-label">Valor Padrão</label>
+					    			<div class="input-group col-sm-8 pull-left">
+					   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor predefinido do parâmentro"></i></span>
+					   					<input class="width-100" id="valorPadraoID" type="text" name="valorPadrao" placeholder="Valor padrão" maxlength="400" value="%VALOR_PADRAO%" autocomplete="off">	
+					    			</div>
+				    			</div>
+							</div>
+							<div class="col-sm-6">
+					    		<div class="form-group col-sm-12" id="divValoresID">
+					    			<label for="CodContratoID" class="col-xs-12 col-sm-3 control-label">Valores</label>
+					    			<div class="input-group col-sm-8 pull-left">
+					    				<textarea class="width-100" tabindex="7" id="valoresID" class="autosize limited form-control" placeholder="Digite e aperte enter" name="valores" maxlength="100" autocomplete="off">%VALORES%</textarea>
+					    			</div>
+					    		<div class="col-sm-1 pull-left" id="divHelpValoresID"></div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+					    		<div class="form-group col-sm-12" id="divTamanhoID">
+					    			<label for="tamanhoID" class="col-xs-12 col-sm-3 control-label">Tamanho</label>
+					    			<div class="input-group col-sm-8 pull-left">
+					    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Tamanho máximo de caracteres que o parâmetro poderá ter na configuração do sistema"></i></span>
+					   					<input class="width-100" id="tamanhoID" type="text" name="tamanho" maxlength="60" value="%TAMANHO%" placeholder="Tamanho máximo" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0"autocomplete="off">	
+					    			</div>
+					    			<div class="col-sm-1 pull-left" id="divHelpTamanhoID"></div>
+								</div>
+							</div>
+						</div>		
+					</div>
+
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+/********************* Select2 *********************/
+$('#tipoID').css('width','100%').select2({allowClear:true});
+$('#usoID').css('width','100%').select2({allowClear:true});
+$('#moduloID').css('width','100%').select2({allowClear:true});
+
+/********************* Mascara *********************/
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+
+carregaSecaoSegParametroAlt();
+
+$("#moduloID").on("change", function(e) {
+	carregaSecaoSegParametroAlt();
+});
+
+/************************* Submit Formulário *************************/
+// Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaSegParametroAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+// Submeter o formulário
+$('#zgFormID').submit(function(e) {
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codParametroID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar",'Novo Parâmetro', '%URLNOVO%');
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+/****************** Verificar se já foi cadastrado um parametro no módulo ******************/
+function validaNomeParametroAlt() {
+	var vParametro	= $('#parametroID').val();
+	$('#valID').val(0);
+	
+	//Verificar se o parametro é nulo ou maior que 60 caracteres
+	if (vParametro.length == 0 || vParametro.length > 60 ) {
+		$('#divParametroID').addClass('has-error');
+		if (vParametro.length == 0){
+			$('#divHelpParametroID').html(zgCriaSpanErro('Parâmetro deve ser preenchido !!!'));
+		}else if (vParametro.length > 60){
+			$('#divHelpParametroID').html(zgCriaSpanErro('Parâmentro deve ter no máximo 60 caracteres !!!'));
+		}
+		return false;
+	}else{
+		
+		//Verificar se o paramentro já existe para no módulo
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/App/parametroVerifica.dp.php",
+	   		data: {  codModulo: $('#moduloID').val() , parametro: $('#parametroID').val() , codParametro: $('#codParametroID').val()},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divParametroID').addClass('has-error');
+		$('#divHelpParametroID').html(zgCriaSpanErro('Este parâmetro já existe no módulo selecionado !!!'));
+		return false;
+	}else{
+		$('#divParametroID').removeClass('has-error');
+		$('#divHelpParametroID').html('&nbsp;');
+		return true;
+	}
+}
+
+/*********************** Verificar o formulário ***********************/
+function validaSegParametroAlt() {
+	var vTipo		= $('#tipoID').val();
+	var vUso		= $('#usoID').val();
+	var vModulo		= $('#moduloID').val();
+	var vValores	= $('#valoresID').val();
+	var vTamanho    = $('#tamanhoID').val();
+	
+	var vOK				= true;
+	var vIdent;
+	
+	// Tipo
+	if (!vTipo) {
+		$('#divTipoID').addClass('has-error');
+		$('#divHelpTipoID').html(zgCriaSpanErro('Tipo deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divTipoID').removeClass('has-error');
+		$('#divHelpTipoID').html('&nbsp;');
+	}
+	// Uso
+	if (!vUso) {
+		$('#divUsoID').addClass('has-error');
+		$('#divHelpUsoID').html(zgCriaSpanErro('Uso deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divUsoID').removeClass('has-error');
+		$('#divHelpUsoID').html('&nbsp;');
+	}
+	//Para o tipo Lista de valores o valor não pode estar nulo
+	if ((vTipo == 'LIS') && (!vValores)) {
+		$('#divValoresID').addClass('has-error');
+		$('#divHelpValoresID').html(zgCriaSpanErro('Para o tipo LISTA PREDEFINIDA o campo VALORES não pode estar vazio !!!'));
+		vOK		= false;
+	}else{
+		$('#divValoresID').removeClass('has-error');
+		$('#divHelpValoresID').html('&nbsp;');		
+	}
+	// Modulo
+	if (!vTipo) {
+		$('#divModuloID').addClass('has-error');
+		$('#divHelpModuloID').html(zgCriaSpanErro('Modulo deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divModuloID').removeClass('has-error');
+		$('#divHelpModuloID').html('&nbsp;');
+	}
+	// Tamanho
+	if (isNaN(vTamanho)) {
+		$('#divTamanhoID').addClass('has-error');
+		$('#divHelpTamanhoID').html(zgCriaSpanErro('Tamanho deve conter apenas números !!'));
+		vOK		= false;
+	}else{
+		$('#divTamanhoID').removeClass('has-error');
+		$('#divHelpTamanhoID').html('&nbsp;');
+	}
+	
+	if (validaNomeParametroAlt() == false){
+		vOK = false;
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+/********************** Mostrar div de valores **********************/
+$( document ).ready(function() {
+	zgMostraDivs();
+});
+
+function zgMostraDivs() {
+	var vMostraVal		= ['LIS'];
+	var vMostraTam		= ['T','N'];
+	var vTipo			= $('#tipoID').val(); 
+	
+	if (vMostraVal.indexOf(vTipo) < 0) {
+		$('#divValoresID').addClass("hidden");
+	}else{
+		$('#divValoresID').removeClass("hidden");
+	}
+	
+	if (vMostraTam.indexOf(vTipo) < 0) {
+		$('#divTamanhoID').addClass("hidden");
+	}else{
+		$('#divTamanhoID').removeClass("hidden");		
+	}
+}
+
+
+/********************* TAG *********************/
+var tag_input = $('#valoresID');
+if(! ( /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase())) ) {
+	tag_input.tag({
+		placeholder:tag_input.attr('placeholder')
+	});
+} else {
+	tag_input.after('<textarea id="'+tag_input.attr('id')+'" name="'+tag_input.attr('name')+'" rows="3">'+tag_input.val()+'</textarea>').remove();
+}
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: 'Restando: %n character%s ...',
+	limitText: 'Max: %n.'
+});
+
+/********************* Carrega Seção *********************/
+function carregaSecaoSegParametroAlt() {
+	var $codModulo	= $("#moduloID option:selected").val();
+	
+	$("#secaoID").select2({
+		allowClear:true,
+		ajax: {
+			dataType: "json",
+			url: "%ROOT_URL%/App/parametroGetSecao.dp.php?codModulo="+$codModulo,
+			method: "GET",
+			cache: true,
+			results: function (data) {
+				return {results: data};
+			}
+		},
+		initSelection : function (element, callback) {
+			var id = $(element).val();
+            if (id !== "") {
+                $.ajax("%ROOT_URL%/App/parametroGetSecao.dp.php", {
+                    data: {secao: id, codModulo: $codModulo},
+                    dataType: "json",
+                    method: "GET"
+				}).done(function(data) {
+					callback(data[0]);
+				});
+			}
+		}
+	});
+}
+</script>
+

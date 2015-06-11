@@ -1,6 +1,6 @@
 <?php
 
-namespace Zage\App\Menu\Tipo1;
+namespace Zage\App\Menu\Lateral;
 
 /**
  * Gerenciar os links do Menu 

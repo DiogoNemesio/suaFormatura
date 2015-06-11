@@ -68,7 +68,7 @@ class Parametro {
      * @param varchar $parametro
      * @return array
      */
-    public static function getValor ($parametro) {
+    public static function getValor ($parametro,$indValorPadrao = false) {
 		global $system,$em;
 		
 		#################################################################################
@@ -83,21 +83,21 @@ class Parametro {
 		#################################################################################
 		## Busca o parâmetro do sistema
 		#################################################################################
-		$valor	= self::getValorSistema($parametro);
+		$valor	= self::getValorSistema($parametro,$indValorPadrao);
 		
 		if ($valor !== false)	return $valor;
    	
 		#################################################################################
 		## Busca o parâmetro por Organização
 		#################################################################################
-		$valor	= self::getValorOrganizacao($parametro,$system->getCodOrganizacao());
+		$valor	= self::getValorOrganizacao($parametro,$system->getCodOrganizacao(),$indValorPadrao);
 		
 		if ($valor !== false)	return $valor;
 		
 		#################################################################################
 		## Busca o parâmetro por Usuário
 		#################################################################################
-		$valor	= self::getValorUsuario($parametro,$system->getCodUsuario());
+		$valor	= self::getValorUsuario($parametro,$system->getCodUsuario(),$indValorPadrao);
 		
 		return $valor;
 		
@@ -108,7 +108,7 @@ class Parametro {
      * Resgata o valor de um parâmetro do sistema
      * @param string $parametro
      */
-    public static function getValorSistema ($parametro) {
+    public static function getValorSistema ($parametro,$indValorPadrao = true) {
     	global $system,$em;
     
     	#################################################################################
@@ -128,12 +128,14 @@ class Parametro {
     		$query 		= $qb->getQuery();
     		$return 	= $query->getOneOrNullResult();
     			
-    		if ($return) {
+    	    if ($return) {
     			return $return->getValor();
-    		}else{
-    			return false;
+    		}elseif ($indValorPadrao == true) {
+	    			return self::getValorPadrao($parametro);
+   			}else{
+   				return false;
     		}
-    			
+    		
     	} catch (\Exception $e) {
     		\Zage\App\Erro::halt($e->getMessage());
     	}
@@ -145,7 +147,7 @@ class Parametro {
      * Resgata o valor de um parâmetro por organização
      * @param string $parametro
      */
-    public static function getValorOrganizacao ($parametro,$codOrganizacao) {
+    public static function getValorOrganizacao ($parametro,$codOrganizacao,$indValorPadrao = false) {
     	global $system,$em;
     
     	#################################################################################
@@ -167,10 +169,12 @@ class Parametro {
     		$query 		= $qb->getQuery();
     		$return 	= $query->getOneOrNullResult();
     		 
-    	    if ($return) {
+			if ($return) {
     			return $return->getValor();
-    		}else{
-    			return false;
+    		}elseif ($indValorPadrao == true) {
+	    			return self::getValorPadrao($parametro);
+   			}else{
+   				return false;
     		}
     		
     	} catch (\Exception $e) {
@@ -184,7 +188,7 @@ class Parametro {
      * Resgata o valor de um parâmetro por usuário
      * @param string $parametro
      */
-    public static function getValorUsuario ($parametro,$codUsuario) {
+    public static function getValorUsuario ($parametro,$codUsuario,$indValorPadrao = false) {
     	global $system,$em;
     
     	#################################################################################
@@ -208,8 +212,10 @@ class Parametro {
     		 
     	    if ($return) {
     			return $return->getValor();
-    		}else{
-    			return false;
+    		}elseif ($indValorPadrao == true) {
+	    			return self::getValorPadrao($parametro);
+   			}else{
+   				return false;
     		}
     		
     		 
@@ -220,4 +226,27 @@ class Parametro {
     }
     
 
+    /**
+     * Resgata o valor padrão de um parâmetro
+     * @param string $parametro
+     */
+    public static function getValorPadrao ($parametro) {
+    	global $system,$em;
+    
+    	try {
+	    	$oParametro	= $em->getRepository('Entidades\ZgappParametro')->findOneBy(array('parametro' => $parametro));
+	    
+			if (!$oParametro) {
+				return false;
+			}else{
+				return $oParametro->getValorPadrao();
+			}
+
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    
+    }
+    
+    
 }

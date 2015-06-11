@@ -14,8 +14,8 @@ abstract class Tipo {
 	/**
 	 * Tipos de menu
 	 */
-	const TIPO1 = "Tipo1";
-	const TIPO2 = "Tipo2";
+	const TIPO1 = "Lateral";
+	const TIPO2 = "Topo";
 	const TIPO3 = "Tipo3";
 	
 	/**

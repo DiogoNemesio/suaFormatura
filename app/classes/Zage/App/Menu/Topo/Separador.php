@@ -1,6 +1,6 @@
 <?php
 
-namespace Zage\App\Menu\Tipo1;
+namespace Zage\App\Menu\Topo;
 
 /**
  * Gerenciar os separadores de menu 

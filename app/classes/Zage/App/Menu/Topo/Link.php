@@ -1,6 +1,6 @@
 <?php
 
-namespace Zage\App\Menu\Tipo2;
+namespace Zage\App\Menu\Topo;
 
 /**
  * Gerenciar os links do Menu 
