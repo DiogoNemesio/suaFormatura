@@ -58,6 +58,7 @@ class Convite extends \Entidades\ZgsegConvite {
 		$this->_convite->setData(					$this->getData()					);
 		$this->_convite->setIndUtilizado(			$this->getIndUtilizado()			);
 		$this->_convite->setSenha(					$this->getSenha()					);
+		$this->_convite->setCodStatus(				$this->getCodStatus()				);
 		
 		try {
 		

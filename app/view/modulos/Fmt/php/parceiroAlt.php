@@ -120,8 +120,6 @@ if ((isset($codParceiro) && ($codParceiro))) {
 		$readOnlyEnd 	= 'readonly';
 	}
 	
-	
-		
 }else{
 	
 	$codParceiro	= null;

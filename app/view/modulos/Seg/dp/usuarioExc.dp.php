@@ -11,8 +11,8 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-if (isset($_POST['codUsuario'])) 		$codUsuario		= \Zage\App\Util::antiInjection($_POST['codUsuario']);
-
+if (isset($_POST['codUsuario'])) 		$codUsuario			= \Zage\App\Util::antiInjection($_POST['codUsuario']);
+if (isset($_POST['codOrganizacao']))	$codOrganizacao		= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -21,6 +21,7 @@ $err	= false;
 #################################################################################
 ## Verificar se a pasta existe e excluir
 #################################################################################
+
 try {
 
 	if (!isset($codUsuario) || (!$codUsuario)) {
@@ -28,7 +29,7 @@ try {
 		die('1'.\Zage\App\Util::encodeUrl('||'));
 	}
 	
-	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codUsuario));
+	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 
 	if (!$oUsuario) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Usuário não encontrado'));
@@ -38,24 +39,53 @@ try {
 	#################################################################################
 	## Remover os acessos as empresas
 	#################################################################################
-	$aEmps		= $em->getRepository('Entidades\ZgsegUsuarioEmpresa')->findBy(array('codUsuario' => $codUsuario));
 	
-	for ($i = 0; $i < sizeof($aEmps); $i++) {
-		$em->remove($aEmps[$i]);
-	}
+	$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario));
+
+	if ($oUsuario->getCodStatus()->getCodigo() == P){
+		if (sizeof($oUsuAdm) < 2){
+			
+			/*** Exclusão dos telefone ***/
+			$oTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $codUsuario));
+			for ($i = 0; $i < sizeof($oTel); $i++) {
+				$em->remove($oTel[$i]);
+			}
+			
+			/*** Exclusão da associação ***/
+			$em->remove($oUsuAdm[0]);
+			
+			/*** Exclusão do convite ***/
+			$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario));
+			for ($i = 0; $i < sizeof($oConvite); $i++) {
+				$em->remove($oConvite[$i]);
+			}
+			
+			/*** Exclusão do usuário ***/
+			$em->remove($oUsuario);
+		}
+	}else{
+		
+		$oStatus			= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => C));
+		
+		/*** Status C (cancelado) para o usuario organizacao ***/
+		for ($i = 0; $i < sizeof($oUsuAdm); $i++) {
+			if($oUsuAdm[$i]->getCodOrganizacao()->getCodigo() == $codOrganizacao){
+				if ($oUsuAdm[$i]->getCodStatus()->getCodigo() == P){
+					
+					/*** Status C (cancelado) para o convite ***/
+					$oConvite		 = $em->getRepository('Entidades\ZgsegConvite')->findOneBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao));
+					$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
+					$oConvite->setCodStatus($oConviteStatus);
+				}
+
+				/*** Status C (cancelado) para a associação ***/
+				$oUsuAdm[$i]->setCodStatus($oStatus);
+				$em->persist($oUsuAdm[$i]);
+			}
+		}
+		
+	}	
 	
-	#################################################################################
-	## Remover o Histórico de acesso aos menus
-	#################################################################################
-	$qb = $em->createQueryBuilder();
-	$qb->delete('Entidades\ZgappMenuHistAcesso', 'mh');
-	$qb->andWhere($qb->expr()->eq('mh.codUsuario', ':codUsuario'));
-	$qb->setParameter('codUsuario', $codUsuario);
-	$query 		= $qb->getQuery();
-	$query->execute();
-	
-	
-	$em->remove($oUsuario);
 	$em->flush();
 
 } catch (\Exception $e) {
@@ -66,4 +96,4 @@ try {
 
 
 $system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Usuário excluído com sucesso"));
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oAgencia->getCodigo().'|');
+echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuario->getCodigo().'|');

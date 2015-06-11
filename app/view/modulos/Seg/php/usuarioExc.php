@@ -39,34 +39,26 @@ if (!isset($codUsuario)) 		{
 	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_USUARIO)');
 }
 
+if (!isset($codOrganizacao)) 		{
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_ORGANIZACAO)');
+}
+
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
 try {
 
-	$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codUsuario));
+	$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 	
 	if (!$info) 	{
 		\Zage\App\Erro::halt($tr->trans('Usuário não existe'));
 	}
 	
-	$logs			= $em->getRepository('Entidades\ZgsegLog')->findOneBy(array('codUsuario' => $codUsuario));
+	$podeRemover	= null;
+	$mensagem		= $tr->trans('Deseja realmente excluir o usuário').': <b>'.$info->getNome().'</b> ?';
+	$observacao		= $tr->trans('Após finalizar esta operação, não será mais possível acessar o usuário. Caso queria apenas suspender temporariamente, faça uso do botão de bloqueio.');
+	$classe			= "text-warning";
 
-	if (!empty($logs)) {
-		$podeRemover	= 'disabled';
-		$mensagem		= $tr->trans('Usuário "%s" está em uso e não pode ser excluído (LOGS)',array('%s' => $info->getNome()));
-		$classe			= "text-danger";
-	}elseif ($codUsuario == $system->getCodUsuario()) {
-		$podeRemover	= 'disabled';
-		$mensagem		= $tr->trans('Usuário "%s" está em conectado no momento e não pode ser excluído',array('%s' => $info->getNome()));
-		$classe			= "text-danger";
-	}else{
-		$podeRemover	= null;
-		$mensagem		= $tr->trans('Deseja realmente excluir o usuário').': <em><b>'.$info->getNome().'</b></em> ?';
-		$classe			= "text-warning";
-	}
-	
-	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -74,14 +66,14 @@ try {
 #################################################################################
 ## Urls
 #################################################################################
-$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario=');
-$urlVoltar			= ROOT_URL . "/Seg/usuarioLis.php?id=".$uid;
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParceiro='.$codOrganizacao);
+$urlVoltar			= ROOT_URL . "/Fmt/parceiroUsuarioLis.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . '/templateExc.html');
+$tpl->load(HTML_PATH . '/templateModalExc.html');
 
 #################################################################################
 ## Define os valores das variáveis
@@ -92,10 +84,12 @@ $tpl->set('PODE_REMOVER'		,$podeRemover);
 $tpl->set('TITULO'				,$tr->trans('Exclusão de Usuário'));
 $tpl->set('ID'					,$id);
 $tpl->set('TEXTO'				,$mensagem);
-$tpl->set('MENSAGEM'			,$mensagem);
+$tpl->set('OBSERVACAO'			,$observacao);
 $tpl->set('CLASSE'				,$classe);
 $tpl->set('VAR'					,'codUsuario');
 $tpl->set('VAR_VALUE'			,$info->getCodigo());
+$tpl->set('VAR2'				,'codOrganizacao');
+$tpl->set('VAR_VALUE2'			,$codOrganizacao);
 $tpl->set('NOME'				,$info->getNome());
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 

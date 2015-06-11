@@ -24,7 +24,7 @@ class ZgsegUsuarioTelefone
     /**
      * @var string
      *
-     * @ORM\Column(name="TELEFONE", type="string", length=1, nullable=false)
+     * @ORM\Column(name="TELEFONE", type="string", length=11, nullable=false)
      */
     private $telefone;
 

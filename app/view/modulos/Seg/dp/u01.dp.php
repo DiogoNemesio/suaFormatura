@@ -22,12 +22,21 @@ if (isset($_POST['cpf'])) 				$cpf				= \Zage\App\Util::antiInjection($_POST['cp
 if (isset($_POST['sexo'])) 				$sexo				= \Zage\App\Util::antiInjection($_POST['sexo']);
 if (isset($_POST['senhaCad'])) 			$senha				= \Zage\App\Util::antiInjection($_POST['senhaCad']);
 if (isset($_POST['confSenhaCad'])) 		$confSenha			= \Zage\App\Util::antiInjection($_POST['confSenhaCad']);
+
 if (isset($_POST['codLogradouro'])) 	$codLogradouro		= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
 if (isset($_POST['cep'])) 				$cep				= \Zage\App\Util::antiInjection($_POST['cep']);
 if (isset($_POST['descLogradouro'])) 	$logradouro			= \Zage\App\Util::antiInjection($_POST['descLogradouro']);
 if (isset($_POST['bairro'])) 			$bairro				= \Zage\App\Util::antiInjection($_POST['bairro']);
 if (isset($_POST['numero'])) 			$numero				= \Zage\App\Util::antiInjection($_POST['numero']);
 if (isset($_POST['complemento'])) 		$complemento		= \Zage\App\Util::antiInjection($_POST['complemento']);
+
+if (isset($_POST['codTipoTel']))		$codTipoTel			= $_POST['codTipoTel'];
+if (isset($_POST['codTelefone']))		$codTelefone		= $_POST['codTelefone'];
+if (isset($_POST['telefone']))			$telefone			= $_POST['telefone'];
+
+if (!isset($codTipoTel))				$codTipoTel			= array();
+if (!isset($codTelefone))				$codTelefone		= array();
+if (!isset($telefone))					$telefone			= array();
 
 #################################################################################
 ## Limpar a variável de erro
@@ -140,6 +149,43 @@ try {
 	
 	$senhaCrip	= \Zage\App\Crypt::crypt($oUsuario->getUsuario(), $senha);
 	$oUsuario->setSenha($senhaCrip);
+	
+	#################################################################################
+	## Telefones / Contato
+	#################################################################################
+	$telefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $oUsuario->getCodigo()));
+	
+	/***** EXCLUSÃO *****/
+	for ($i = 0; $i < sizeof($telefones); $i++) {
+		if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
+			try {
+				$em->remove($telefones[$i]);
+			} catch (\Exception $e) {
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
+				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+				exit;
+			}
+		}	
+	}
+	/***** CRIAÇÃO E ALTERAÇÃO *****/
+	for ($i = 0; $i < sizeof($codTelefone); $i++) {
+		$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
+		
+			if (!$infoTel) {
+				$infoTel		= new \Entidades\ZgsegUsuarioTelefone();
+		}
+		
+		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
+		
+			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
+		
+			$infoTel->setCodUsuario($oUsuario);
+			$infoTel->setCodTipoTelefone($oTipoTel);
+			$infoTel->setTelefone($telefone[$i]);
+		
+			$em->persist($infoTel);
+		}
+	}
 	
 	#################################################################################
 	## Mudar o status da associação

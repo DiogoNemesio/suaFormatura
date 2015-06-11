@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegConvite
  *
- * @ORM\Table(name="ZGSEG_CONVITE", indexes={@ORM\Index(name="fk_ZGSEG_CONVITE_1_idx", columns={"COD_USUARIO_ORIGEM"}), @ORM\Index(name="fk_ZGSEG_CONVITE_2_idx", columns={"COD_USUARIO_DESTINO"}), @ORM\Index(name="fk_ZGSEG_CONVITE_3_idx", columns={"COD_ORGANIZACAO_ORIGEM"}), @ORM\Index(name="fk_ZGSEG_CONVITE_4_idx", columns={"COD_ORGANIZACAO_DESTINO"}), @ORM\Index(name="fk_ZGSEG_CONVITE_5_idx", columns={"COD_USUARIO_SOLICITANTE"})})
+ * @ORM\Table(name="ZGSEG_CONVITE", indexes={@ORM\Index(name="fk_ZGSEG_CONVITE_1_idx", columns={"COD_USUARIO_ORIGEM"}), @ORM\Index(name="fk_ZGSEG_CONVITE_2_idx", columns={"COD_USUARIO_DESTINO"}), @ORM\Index(name="fk_ZGSEG_CONVITE_3_idx", columns={"COD_ORGANIZACAO_ORIGEM"}), @ORM\Index(name="fk_ZGSEG_CONVITE_4_idx", columns={"COD_ORGANIZACAO_DESTINO"}), @ORM\Index(name="fk_ZGSEG_CONVITE_5_idx", columns={"COD_USUARIO_SOLICITANTE"}), @ORM\Index(name="fk_ZGSEG_CONVITE_6_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
 class ZgsegConvite
@@ -48,6 +48,13 @@ class ZgsegConvite
      * @ORM\Column(name="DATA_UTILIZACAO", type="datetime", nullable=true)
      */
     private $dataUtilizacao;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CANCELAMENTO", type="datetime", nullable=true)
+     */
+    private $dataCancelamento;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -98,6 +105,16 @@ class ZgsegConvite
      * })
      */
     private $codUsuarioSolicitante;
+
+    /**
+     * @var \Entidades\ZgsegConviteStatus
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegConviteStatus")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codStatus;
 
 
     /**
@@ -200,6 +217,29 @@ class ZgsegConvite
     public function getDataUtilizacao()
     {
         return $this->dataUtilizacao;
+    }
+
+    /**
+     * Set dataCancelamento
+     *
+     * @param \DateTime $dataCancelamento
+     * @return ZgsegConvite
+     */
+    public function setDataCancelamento($dataCancelamento)
+    {
+        $this->dataCancelamento = $dataCancelamento;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCancelamento
+     *
+     * @return \DateTime 
+     */
+    public function getDataCancelamento()
+    {
+        return $this->dataCancelamento;
     }
 
     /**
@@ -315,5 +355,28 @@ class ZgsegConvite
     public function getCodUsuarioSolicitante()
     {
         return $this->codUsuarioSolicitante;
+    }
+
+    /**
+     * Set codStatus
+     *
+     * @param \Entidades\ZgsegConviteStatus $codStatus
+     * @return ZgsegConvite
+     */
+    public function setCodStatus(\Entidades\ZgsegConviteStatus $codStatus = null)
+    {
+        $this->codStatus = $codStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get codStatus
+     *
+     * @return \Entidades\ZgsegConviteStatus 
+     */
+    public function getCodStatus()
+    {
+        return $this->codStatus;
     }
 }

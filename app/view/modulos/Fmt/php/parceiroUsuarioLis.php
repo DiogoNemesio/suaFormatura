@@ -73,7 +73,7 @@ for ($i = 0; $i < sizeof($usuario); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codParceiro.'&codUsuario='.$usuario[$i]->getCodigo().'&url='.$url);
 	
 	$grid->setUrlCelula($i,3,ROOT_URL.'/Seg/usuarioCad.php?id='.$uid);
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Seg/usuarioExc.php?id='.$uid);
+	$grid->setUrlCelula($i,4,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioExc.php?id=".$uid."');");
 }
 
 #################################################################################

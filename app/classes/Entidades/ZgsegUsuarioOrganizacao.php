@@ -22,6 +22,20 @@ class ZgsegUsuarioOrganizacao
     private $codigo;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CANCELAMENTO", type="datetime", nullable=true)
+     */
+    private $dataCancelamento;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_BLOQUEIO", type="datetime", nullable=true)
+     */
+    private $dataBloqueio;
+
+    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -70,6 +84,52 @@ class ZgsegUsuarioOrganizacao
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set dataCancelamento
+     *
+     * @param \DateTime $dataCancelamento
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setDataCancelamento($dataCancelamento)
+    {
+        $this->dataCancelamento = $dataCancelamento;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCancelamento
+     *
+     * @return \DateTime 
+     */
+    public function getDataCancelamento()
+    {
+        return $this->dataCancelamento;
+    }
+
+    /**
+     * Set dataBloqueio
+     *
+     * @param \DateTime $dataBloqueio
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setDataBloqueio($dataBloqueio)
+    {
+        $this->dataBloqueio = $dataBloqueio;
+
+        return $this;
+    }
+
+    /**
+     * Get dataBloqueio
+     *
+     * @return \DateTime 
+     */
+    public function getDataBloqueio()
+    {
+        return $this->dataBloqueio;
     }
 
     /**

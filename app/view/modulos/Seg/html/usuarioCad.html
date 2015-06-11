@@ -113,7 +113,7 @@
 										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
-											<input type="text" id="descLogradouroID" name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+											<input type="text" id="descLogradouroID" %READONLY_END% name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
 										</div>
 										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
 									</div>	
@@ -121,7 +121,7 @@
 										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
-											<input type="text" id="bairroID" name="bairro"  class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
+											<input type="text" id="bairroID" name="bairro" %READONLY_BAIRRO% class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
 										</div>
 										<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
 									</div>
@@ -142,7 +142,7 @@
 										</div>
 									</div>									
 									<div class="form-group col-sm-12" id="divNumeroID">
-										<label for=numeroID" class="col-sm-3 control-label">Número</label>
+										<label for="numeroID" class="col-sm-3 control-label">Número</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
 											<input type="text" id="numeroID" name="numero" value="%NUMERO%" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
@@ -154,8 +154,19 @@
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
 											<input type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
 										</div>
-									</div>																			
+									</div>																		
 								</div>
+								<div class="hidden" id="divEndCorretoID">
+									<div class="col-sm-12">
+										<div class="form-group col-sm-12">
+											<div class="alert alert-info">	
+												Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+												<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
+												<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+											</div>		
+										</div>	
+									</div>
+						    	</div>
 							</div>
 						</div>
 						
@@ -183,10 +194,13 @@
 					</div>
 				</div>
 				<div class="clearfix form-actions">
-					<label class="col-sm-5 control-label" >&nbsp;</label>
-    					<button type="button" class="btn btn-primary" id="btnSubmitID">
-							<i class="fa fa-envelope-o"></i><b> Salvar</b> 
-						</button>
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
 				</div>
 			</form>
 		</div>
@@ -196,9 +210,8 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 
-$('#perfilID').css('width','100%').select2({allowClear:true});
-$('#sexoID').css('width','100%').select2({allowClear:true});
 
+$(".select2").select2();
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
@@ -225,9 +238,6 @@ $('#btnSubmitID').on("click", function(e) {
 		return false;
 	}else{;
 		
-		$('#btnSubmitID').html('Enviando...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-		$('#btnSubmitID').attr("disabled","disabled");
-		
 		$('#zgFormID').submit();
 		
 	}
@@ -235,6 +245,10 @@ $('#btnSubmitID').on("click", function(e) {
 
 // Submeter o formulário
 $('#zgFormID').submit(function(e) {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
 	
 	// Retirar a máscara para os campos que estão configurados para tal 
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
@@ -247,7 +261,16 @@ $('#zgFormID').submit(function(e) {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			$('#codUsuarioID').val(zgGetCodRetorno(data));
-			zgMostraAviso('','Voltar', '%URLNOVO%');
+			zgMostraAviso('Fechar','Novo', '%URLNOVO%');
+			
+			//Voltar o botão de salvar
+			$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+			$('#btnSubmitID').attr("disabled",false);
+			$('#cancel').attr("disabled",false);
+			//Tornar os campos readonly
+			$('#emailID').attr("readonly", true);
+			$('#cpfID').attr("readonly", true);
+			
 		}else{
 			zgMostraAviso("Fechar");
 		}
@@ -266,11 +289,14 @@ $('#zgFormID').submit(function(e) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
 	});
+		
+	//$('#btnSubmitID').html('<i class="fa fa-envelope-o"></i><b> Enviar</b> ');
+	//$('#btnSubmitID').attr("disabled",false);
 	
-	$('#btnSubmitID').html('<i class="fa fa-envelope-o"></i><b> Enviar</b> ');
-	$('#btnSubmitID').attr("disabled",false);
 	
 	return false; 
+	
+	
 });
 
 /******************************************************
@@ -506,7 +532,6 @@ function delRowTelefonePessoaAlt(pObj) {
 	});
 }
 
-
 /******************************************************
 BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
 /******************************************************/
@@ -593,13 +618,12 @@ function limpaInfoLogradouro() {
 //Div de endereço correto, mostrar em caso que esteja editando.
 zgMostraDivsEnderecoEdicao();
 function zgMostraDivsEnderecoEdicao() {
-	var vCodParceiro	= $('#codParceiroID').val();
+	var vCodUsuario		= $('#codUsuarioID').val();
 	var vCep			= $('#cepID').val();
 	
-	if(vCodParceiro && vCep){
+	if(vCodUsuario && vCep){
 		zgMostraDivsEndereco();
 	}
-	
 }
 
 //Div de endereço correto (SIM/NAO)

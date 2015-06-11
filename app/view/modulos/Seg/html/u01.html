@@ -95,7 +95,7 @@
 			<input type="hidden" name="_cdu02" value="%CD02%">
 			<input type="hidden" name="_cdu03" value="%CD03%">
 			<input type="hidden" name="_cdu04" value="%CD04%">
-			<input type="hidden" name="codLogradouro" id='codLogradouroID'>
+			<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
 			<input type='hidden' id='valID'>
 			<div class="tabbable">
 				<h5 class="header blue bolder smaller">Informações Básicas</h5>
@@ -142,14 +142,6 @@
 									%SEXO%
 								</select>
 							</div>
-						</div>
-						<div class="form-group col-sm-12" id="divCelularID">
-					    	<label class="col-xs-12 col-sm-3 control-label" for="celularID">Celular</label>
-			    			<div class="input-group col-sm-8 pull-left">
-		    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe seu número de celular preferencialmente com Whats App."></i></span>
-				    			<input class="form-control" id="celularID" type="text" name="celular" maxlength="15" placeholder="Preferência número com Whasts App"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
-					    	</div>
-					    	<div class="col-sm-1 pull-left" id="divHelpCelularID"></div>
 						</div>
 						<h5 class="header blue bolder smaller">Senha</h5>
 						<div class="vspace-xs"></div>
@@ -227,12 +219,28 @@
 							<div class="col-sm-12">
 								<div class="form-group col-sm-12">
 									<div class="alert alert-info">	
-										Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+										O endereço está correto?
 										<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
 										<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
 									</div>
 								</div>		
 							</div>	
+						</div>
+						<h5 class="header blue bolder smaller">Telefones</h5>
+						<div class="col-sm-5" align="center">
+							<table id="pessoaAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
+								<thead>
+									<tr class="warning">
+										<th class="col-sm-1 center"></th>
+										<th class="col-sm-2 center">Tipo</th>
+										<th class="col-sm-2 center">Telefone</th>
+										<th class="col-sm-1 center"><span onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+									</tr>
+								</thead>
+								<tbody>
+								%TAB_TELEFONE%
+								</tbody>
+							</table>
 						</div>
 				    </div>
 				    <div class="col-sm-6">
@@ -466,7 +474,7 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 
-$('#sexoID').css('width','100%').select2({allowClear:true});
+$(".select2").select2();
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
@@ -542,7 +550,7 @@ function validaUsuarioAlt() {
 	var vConfSenha	 = $('#confSenhaID').val();
 	var vStatus		 = $('#codStatusID').val();
 	var vCep		 = $('#cepID').val();
-	var vCelular	 = $('#celularID').cleanVal();
+	//var vCelular	 = $('#celularID').cleanVal();
 		
 	var vOK				= true;
 	var vIdent;
@@ -595,7 +603,7 @@ function validaUsuarioAlt() {
 		$('#divHelpSexoID').html('&nbsp;');	
 	}
 	
-	//CELULAR
+	/**
 	if (vCelular) {
 		vNum = vCelular.charAt(2);
 		alert(vCelular);
@@ -621,7 +629,7 @@ function validaUsuarioAlt() {
 		$('#divCelularID').addClass('has-error');
 		$('#divHelpCelularID').html(zgCriaSpanErro('O telefone celular deve ser preenchido!'));
 		vOK		= false;
-	}
+	}**/
 	
 	//SENHA
 	if (vSenha) {
@@ -654,6 +662,28 @@ function validaUsuarioAlt() {
 	}else{
 		return false;
 	}
+}
+
+/*********************************************************
+* TELEFONE
+*********************************************************/
+function addRowTelefonePessoaAlt() {
+	$('#pessoaAltTableTelefoneID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">%TIPO_TEL%</select></td><td><input type="text" name="telefone[]" maxlength="15" style="width: 100%;" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]"></td></tr>');
+	$('#pessoaAltTableTelefoneID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+		$( this ).focus();
+	});
+	$('#pessoaAltTableTelefoneID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+}
+
+function delRowTelefonePessoaAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
 }
 
 /******************************************************

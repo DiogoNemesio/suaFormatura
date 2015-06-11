@@ -63,14 +63,16 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	 
     	$qb->select('us')
     	->from('\Entidades\ZgsegUsuario','us')
-    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',	'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 		= uo.codUsuario')
-    	->leftJoin('\Entidades\ZgsegPerfil',				'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil	= p.codigo')
+    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',		'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 	= uo.codUsuario')
+    	->leftJoin('\Entidades\ZgsegPerfil',					'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil	= p.codigo')
     	->where($qb->expr()->andX(
-   			$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao'),
-    		$qb->expr()->eq('p.codTipoUsuario'			, ':codTipoUsuario')
+   			$qb->expr()->eq('uo.codOrganizacao'				, ':codOrganizacao'),
+    		$qb->expr()->eq('p.codTipoUsuario'				, ':codTipoUsuario'),
+    		$qb->expr()->not($qb->expr()->eq('uo.codStatus'	, ':codStatusExcluido'))
     	))
     	->orderBy('us.nome', 'ASC')
     	->setParameter('codOrganizacao', $codOrganizacao)
+    	->setParameter('codStatusExcluido', C)
     	->setParameter('codTipoUsuario', $codTipo);
     	$query 		= $qb->getQuery();
     	return($query->getResult());

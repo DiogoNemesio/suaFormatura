@@ -5,17 +5,17 @@ namespace Entidades;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ZgsegUsuarioOrganizacaoStatus
+ * ZgappEnquetePerguntaTipo
  *
- * @ORM\Table(name="ZGSEG_USUARIO_ORGANIZACAO_STATUS")
+ * @ORM\Table(name="ZGAPP_ENQUETE_PERGUNTA_TIPO")
  * @ORM\Entity
  */
-class ZgsegUsuarioOrganizacaoStatus
+class ZgappEnquetePerguntaTipo
 {
     /**
      * @var string
      *
-     * @ORM\Column(name="CODIGO", type="string", length=1, nullable=false)
+     * @ORM\Column(name="CODIGO", type="string", length=2, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -31,9 +31,9 @@ class ZgsegUsuarioOrganizacaoStatus
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_PERMITE_ACESSO", type="integer", nullable=false)
+     * @ORM\Column(name="INT_ATIVO", type="integer", nullable=false)
      */
-    private $indPermiteAcesso;
+    private $intAtivo;
 
 
     /**
@@ -50,7 +50,7 @@ class ZgsegUsuarioOrganizacaoStatus
      * Set descricao
      *
      * @param string $descricao
-     * @return ZgsegUsuarioOrganizacaoStatus
+     * @return ZgappEnquetePerguntaTipo
      */
     public function setDescricao($descricao)
     {
@@ -70,25 +70,25 @@ class ZgsegUsuarioOrganizacaoStatus
     }
 
     /**
-     * Set indPermiteAcesso
+     * Set intAtivo
      *
-     * @param integer $indPermiteAcesso
-     * @return ZgsegUsuarioOrganizacaoStatus
+     * @param integer $intAtivo
+     * @return ZgappEnquetePerguntaTipo
      */
-    public function setIndPermiteAcesso($indPermiteAcesso)
+    public function setIntAtivo($intAtivo)
     {
-        $this->indPermiteAcesso = $indPermiteAcesso;
+        $this->intAtivo = $intAtivo;
 
         return $this;
     }
 
     /**
-     * Get indPermiteAcesso
+     * Get intAtivo
      *
      * @return integer 
      */
-    public function getIndPermiteAcesso()
+    public function getIntAtivo()
     {
-        return $this->indPermiteAcesso;
+        return $this->intAtivo;
     }
 }

@@ -63,6 +63,7 @@ if ($convite->getIndUtilizado() != 0)		\Zage\App\Erro::externalHalt('Convite nã
 $apelido					= $oUsuario->getApelido();
 $cpf						= $oUsuario->getCpf();
 $cep						= $oUsuario->getCep();
+$codLogradouro   			= ($oUsuario->getCodLogradouro()) ? $oUsuario->getCodLogradouro()->getCodigo() : null;
 $logradouro					= $oUsuario->getEndereco();
 $bairro						= $oUsuario->getBairro();
 $descCidade					= ($oUsuario->getCodLogradouro()) ? $oUsuario->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome() : null;
@@ -79,6 +80,32 @@ try {
 	$oSexo		= $system->geraHtmlCombo($aSexo,	'CODIGO', 'DESCRICAO',	$sexo, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::externalHalt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
+## Select de Tipo de Telefone
+#################################################################################
+try {
+	$aTipoTel		= $em->getRepository('Entidades\ZgappTelefoneTipo')->findAll();
+	$oTipoTel		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	null, 		null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
+## Resgatar os dados de contato
+#################################################################################
+$aTelefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $codUsuario));
+$tabTel			= "";
+for ($i = 0; $i < sizeof($aTelefones); $i++) {
+
+	#################################################################################
+	## Monta a combo de Tipo
+	#################################################################################
+	$codTipoTel		= ($aTelefones[$i]->getCodTipoTelefone()) ? $aTelefones[$i]->getCodTipoTelefone()->getCodigo() : null;
+	$oTipoInt		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	$codTipoTel, '');
+
+	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" style="width:100%;" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
 }
 
 #################################################################################
@@ -128,6 +155,11 @@ $tpl->set('CD04'				,$_cdu04);
 $tpl->set('APELIDO'				,$apelido);
 $tpl->set('CPF'					,$cpf);
 $tpl->set('CEP'					,$cep);
+
+$tpl->set('TIPO_TEL'			,$oTipoTel);
+$tpl->set('TAB_TELEFONE'		,$tabTel);
+
+$tpl->set('COD_LOGRADOURO' 		, $codLogradouro);
 $tpl->set('LOGRADOURO'			,$logradouro);
 $tpl->set('BAIRRO'				,$bairro);
 $tpl->set('DESC_CIDADE'			,$descCidade);

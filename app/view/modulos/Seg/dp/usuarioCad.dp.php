@@ -161,7 +161,6 @@ try {
 	}else{
 		$novoUsuario	= false;
 		
-		
 		if ($oUsuario->getCodStatus()->getCodigo() == "A") {
 			$enviarEmail	= false;
 		}else{
@@ -236,7 +235,6 @@ try {
 	
 			$em->persist($infoTel);
 		}
-		
 	}
 	
 	#################################################################################
@@ -275,9 +273,11 @@ try {
 	## Cria o convite
 	#################################################################################
 	if ($enviarEmail) {
+		$oConviteStatus = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => A));
 		$convite		= new \Zage\Seg\Convite();
 		$convite->setCodOrganizacaoOrigem($oOrg);
 		$convite->setCodUsuarioDestino($oUsuario);
+		$convite->setCodStatus($oConviteStatus);
 		$convite->salvar();
 	}
 

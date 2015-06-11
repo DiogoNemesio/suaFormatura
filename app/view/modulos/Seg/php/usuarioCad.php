@@ -63,11 +63,11 @@ if ($codUsuario) {
 	$complemento     = ($info->getComplemento()) ? $info->getComplemento() : null;
 	$numero		     = ($info->getNumero()) ? $info->getNumero() : null;
 	$endCorreto		 = ($info->getIndEndCorreto() == 1) ? "checked" : null;
-
+	
 	if($codLogradouro != null){
-
+	
 		$infoLogradouro = $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
-
+	
 		if($info->getIndEndCorreto() == 0){
 			if($infoLogradouro->getDescricao() == $info->getEndereco()){
 				$logradouro	  = $infoLogradouro->getDescricao();
@@ -76,7 +76,7 @@ if ($codUsuario) {
 				$logradouro	  = $info->getEndereco();
 				$readOnlyEnd 	  = '';
 			}
-
+			
 			if($infoLogradouro->getCodBairro()->getDescricao() == $info->getBairro()){
 				$bairro = $infoLogradouro->getCodBairro()->getDescricao();
 				$readOnlyBairro 	  = 'readonly';
@@ -84,14 +84,14 @@ if ($codUsuario) {
 				$bairro = $info->getBairro();
 				$readOnlyBairro 	  = '';
 			}
-
+		
 		}else{
 			$logradouro 	= $infoLogradouro->getDescricao();
 			$bairro 		= $infoLogradouro->getCodBairro()->getDescricao();
 			$readOnlyBairro = 'readonly';
 			$readOnlyEnd 	= 'readonly';
 		}
-
+		
 		$cidade	  		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome();
 		$estado    		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUF()->getNome();
 	}else{
@@ -117,13 +117,15 @@ if ($codUsuario) {
 	$endCorreto		= null;
 	$cidade			= null;
 	$estado			= null;
+	$readOnlyBairro = 'readonly';
+	$readOnlyEnd 	= 'readonly';
 	
 }
 
 #################################################################################
 ## Urls
 #################################################################################
-$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario=');
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao);
 $vid				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParceiro='.$codOrganizacao.'&url='.$url);
 $urlVoltar			= ROOT_URL . "/Fmt/parceiroUsuarioLis.php?id=".$vid;
 $urlNovo			= ROOT_URL . "/Seg/usuarioCad.php?id=".$uid;
@@ -144,7 +146,7 @@ try {
 
 try {
 	$aPerfil	= \Zage\Seg\Perfil::listaPerfilOrganizacao($codOrganizacao);
-	$oPerfil	= $system->geraHtmlCombo($aPerfil, 'CODIGO', 'NOME', ''	, null);
+	$oPerfil	= $system->geraHtmlCombo($aPerfil, 'CODIGO', 'NOME', $perfil , null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -172,7 +174,7 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 	$codTipoTel		= ($aTelefones[$i]->getCodTipoTelefone()) ? $aTelefones[$i]->getCodTipoTelefone()->getCodigo() : null;
 	$oTipoInt		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	$codTipoTel, '');
 
-	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
+	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" style="width:100%;" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
 }
 
 #################################################################################
@@ -214,6 +216,8 @@ $tpl->set ('NUMERO' 			, $numero);
 $tpl->set ('READONLY_BAIRRO'	, $readOnlyBairro);
 $tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
 $tpl->set ('IND_END_CORRETO'	, $endCorreto);
+$tpl->set ('READONLY_BAIRRO'	, $readOnlyBairro);
+$tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
 
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
