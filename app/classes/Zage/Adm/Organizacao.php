@@ -51,7 +51,7 @@ class Organizacao {
 	}
 
 	/**
-	 * Listar organizações excluindo os tipos 1 (formatura) e 2(casamentos)
+	 * Listar organizações excluindo os tipos FMT (formatura), CAS (casamentos), ADM (admnistração)
 	 *
 	 * @return array
 	 */
@@ -64,7 +64,7 @@ class Organizacao {
 			$qb->select('o')
 			->from('\Entidades\ZgadmOrganizacao','o')
 			->where($qb->expr()->andX(
-					$qb->expr()->notIn('o.codTipo'	,array('1','2'))
+					$qb->expr()->notIn('o.codTipo'	,array('FMT','CAS','ADM'))
 			))
 			->orderBy('o.nome','ASC');
 	
@@ -77,7 +77,7 @@ class Organizacao {
 	
 	
 	/**
-	 * Listar tipo de organização excluindo os tipos 1 (formatura) e 2(casamentos)
+	 * Listar tipo de organização excluindo os tipos MT (formatura), CAS (casamentos), ADM (admnistração)
 	 *
 	 * @return array
 	 */
@@ -90,7 +90,7 @@ class Organizacao {
 			$qb->select('o')
 			->from('\Entidades\ZgadmOrganizacaoTipo','o')
 			->where($qb->expr()->andX(
-					$qb->expr()->notIn('o.codigo'	,array('1','2'))
+					$qb->expr()->notIn('o.codigo'	,array('FMT','CAS','ADM'))
 			))
 			->orderBy('o.descricao','ASC');
 	

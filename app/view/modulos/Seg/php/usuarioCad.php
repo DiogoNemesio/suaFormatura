@@ -126,7 +126,7 @@ if ($codUsuario) {
 ## Urls
 #################################################################################
 $uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao);
-$vid				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParceiro='.$codOrganizacao.'&url='.$url);
+$vid				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao.'&url='.$url);
 $urlVoltar			= ROOT_URL . "/Fmt/parceiroUsuarioLis.php?id=".$vid;
 $urlNovo			= ROOT_URL . "/Seg/usuarioCad.php?id=".$uid;
 

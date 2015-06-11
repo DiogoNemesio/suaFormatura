@@ -66,7 +66,7 @@ try {
 #################################################################################
 ## Urls
 #################################################################################
-$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParceiro='.$codOrganizacao);
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao);
 $urlVoltar			= ROOT_URL . "/Fmt/parceiroUsuarioLis.php?id=".$uid;
 
 #################################################################################

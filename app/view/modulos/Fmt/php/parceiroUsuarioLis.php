@@ -40,7 +40,7 @@ $url		= ROOT_URL . '/Rhu/'. basename(__FILE__);
 ## Resgata informações de organização
 #################################################################################
 try {
-	$org	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codParceiro));
+	$org	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -49,7 +49,7 @@ try {
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$usuario	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($codParceiro, 'U');
+	$usuario	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($codOrganizacao, 'U');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -59,8 +59,8 @@ try {
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
 $grid->adicionaTexto($tr->trans('NOME/FANTASIA'),	 	15, $grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('NOME'),		15, $grid::CENTER	,'usuario');
-$grid->adicionaTexto($tr->trans('STATUS'),		15, $grid::CENTER	,'codStatus:descricao');
+$grid->adicionaTexto($tr->trans('NOME'),				15, $grid::CENTER	,'usuario');
+$grid->adicionaTexto($tr->trans('CADASTRO'),			15, $grid::CENTER	,'codStatus:descricao');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($usuario);
@@ -70,7 +70,7 @@ $grid->importaDadosDoctrine($usuario);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($usuario); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codParceiro.'&codUsuario='.$usuario[$i]->getCodigo().'&url='.$url);
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao.'&codUsuario='.$usuario[$i]->getCodigo().'&url='.$url);
 	
 	$grid->setUrlCelula($i,3,ROOT_URL.'/Seg/usuarioCad.php?id='.$uid);
 	$grid->setUrlCelula($i,4,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioExc.php?id=".$uid."');");
@@ -88,7 +88,7 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Seg/usuarioCad.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codParceiro.'&codUsuario=');
+$urlAdd			= ROOT_URL.'/Seg/usuarioCad.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao.'&codUsuario=');
 
 #################################################################################
 ## Gerar a url voltar

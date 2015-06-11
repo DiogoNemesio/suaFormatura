@@ -304,6 +304,8 @@ try {
 		if ($novoUsuario) {
 			$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
 			$assunto			= "Cadatro de usuário";
+			$nome				= $oUsuario->getNome();
+			$texto				= "Sua conta já está criada, mas ainda precisa ser confirmada. Para isso, clique no link abaixo:";
 			$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
 		}else{
 			$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
@@ -317,7 +319,7 @@ try {
 		$tpl->set('ID'					,$id);
 		$tpl->set('CONFIRM_URL'			,$confirmUrl);
 		$tpl->set('ASSUNTO'				,$assunto);
-		
+		$tpl->set('NOME'				,$nome);
 		#################################################################################
 		## Criar os objeto do email ,transporte e validador
 		#################################################################################

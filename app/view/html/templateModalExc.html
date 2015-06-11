@@ -54,9 +54,9 @@ $('#zgFormModalID').submit(function() {
 			$('#cancel').attr("disabled",false);
 			
 		}else{
-			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
-			//zgLimpaModalAviso();
-			//zgMostraAviso("Fechar");
+			//zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
+			zgLimpaModalAviso();
+			zgMostraAviso("Fechar");
 		}
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLoadUrl('%URLVOLTAR%');

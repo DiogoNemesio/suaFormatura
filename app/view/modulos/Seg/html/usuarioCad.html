@@ -263,10 +263,7 @@ $('#zgFormID').submit(function(e) {
 			$('#codUsuarioID').val(zgGetCodRetorno(data));
 			zgMostraAviso('Fechar','Novo', '%URLNOVO%');
 			
-			//Voltar o botão de salvar
-			$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
-			$('#btnSubmitID').attr("disabled",false);
-			$('#cancel').attr("disabled",false);
+			
 			//Tornar os campos readonly
 			$('#emailID').attr("readonly", true);
 			$('#cpfID').attr("readonly", true);
@@ -274,6 +271,11 @@ $('#zgFormID').submit(function(e) {
 		}else{
 			zgMostraAviso("Fechar");
 		}
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();
@@ -289,10 +291,6 @@ $('#zgFormID').submit(function(e) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
 	});
-		
-	//$('#btnSubmitID').html('<i class="fa fa-envelope-o"></i><b> Enviar</b> ');
-	//$('#btnSubmitID').attr("disabled",false);
-	
 	
 	return false; 
 	
