@@ -59,7 +59,7 @@ if ($email != null){
 }else{
 	if ($cpf != null){
 		$cpf = \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->retiraMascara($cpf);
-		echo ($cpf);
+		//echo ($cpf);
 		$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('cpf' => $cpf));
 		$campo 		= 'CPF';
 	}
