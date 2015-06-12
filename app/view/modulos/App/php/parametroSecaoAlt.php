@@ -32,73 +32,81 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata a url desse script
+## Verificar parâmetro obrigatório
 #################################################################################
-$url		= ROOT_URL . '/Mco/'. basename(__FILE__);
+if (!isset($codSecao)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
+
 
 #################################################################################
-## Resgata os dados do grid
+## Resgata as informações do banco
+#################################################################################
+if (!empty($codSecao)) {
+	try {
+		$info = $em->getRepository('Entidades\ZgappParametroSecao')->findOneBy(array('codigo' => $codSecao));
+	} catch (\Exception $e) {
+		\Zage\App\Erro::halt($e->getMessage());
+	}
+
+	$codModulo		= ($info->getCodModulo() != null) ? $info->getCodModulo()->getCodigo() : null;
+	$nome			= $info->getNome();
+	$ordem			= $info->getOrdem();
+	$icone			= $info->getIcone();
+	
+}else{
+	$codModulo		= null;
+	$nome			= null;
+	$ordem			= null;
+	$icone			= null;
+}
+
+#################################################################################
+## Select dos módulos
 #################################################################################
 try {
-	$parametro	= $em->getRepository('Entidades\ZgappParametro')->findBy(array(), array('parametro' => 'ASC', 'codModulo' => 'ASC'));
+	$aModulo		= $em->getRepository('Entidades\ZgappModulo')->findAll();
+	$oModulo		= $system->geraHtmlCombo($aModulo,	'CODIGO', 'NOME',	$codModulo, 		null);
 } catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
-	
-#################################################################################
-## Cria o objeto do Grid (bootstrap)
-#################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GParametro");
-$grid->adicionaTexto($tr->trans('PARAMETRO'),	 	18, $grid::CENTER	,'parametro');
-$grid->adicionaTexto($tr->trans('DESCRIÇÃO'), 		28, $grid::CENTER	,'descricao');
-$grid->adicionaTexto($tr->trans('MODULO'),	 		15, $grid::CENTER	,'codModulo:nome');
-$grid->adicionaTexto($tr->trans('SEÇÃO'),	 		15, $grid::CENTER	,'codSecao:nome');
-$grid->adicionaTexto($tr->trans('TIPO'),	 		10, $grid::CENTER	,'codTipo:nome');
-$grid->adicionaTexto($tr->trans('USO'),	 			10, $grid::CENTER	,'codUso:nome');
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($parametro);
-
-
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($parametro); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParametro='.$parametro[$i]->getCodigo().'&url='.$url);
-	
-	$grid->setUrlCelula($i,6,ROOT_URL.'/App/parametroAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/App/parametroExc.php?id='.$uid);
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
-#################################################################################
-## Gerar o código html do grid
-#################################################################################
-try {
-	$htmlGrid	= $grid->getHtmlCode();
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
 
 #################################################################################
-## Gerar a url de adicão
+## Url Voltar
 #################################################################################
-$urlAdd			= ROOT_URL.'/App/parametroAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParametro=');
+$urlVoltar			= ROOT_URL."/App/parametroSecaoLis.php?id=".$id;
+
+#################################################################################
+## Url Novo
+#################################################################################
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codSecao=');
+$urlNovo			= ROOT_URL."/App/parametroSecaoAlt.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Parâmetros'));
-$tpl->set('URLADD'			,$urlAdd);
-$tpl->set('IC'				,$_icone_);
+$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('URLVOLTAR'			,$urlVoltar);
+$tpl->set('URLNOVO'				,$urlNovo);
+$tpl->set('ID'					,$id);
+$tpl->set('COD_SECAO'			,$codSecao);
+$tpl->set('NOME'				,$nome);
+$tpl->set('ORDEM'				,$ordem);
+$tpl->set('ICONE'				,$icone);
+$tpl->set('MODULOS'				,$oModulo);
+$tpl->set('APP_BS_TA_MINLENGTH'	,\Zage\Adm\Parametro::getValor('APP_BS_TA_MINLENGTH'));
+$tpl->set('APP_BS_TA_ITENS'		,\Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS'));
+$tpl->set('APP_BS_TA_TIMEOUT'	,\Zage\Adm\Parametro::getValor('APP_BS_TA_TIMEOUT'));
+$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
+

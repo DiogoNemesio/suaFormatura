@@ -375,5 +375,35 @@ class Parametro {
     	return '_zgParametro['.$codigo.']';
     }
     
-
+    /**
+     *
+     * Busca por Seções
+     */
+    public static function buscaSecao ($codModulo,$nome = null) {
+    	global $em,$system;
+    
+    	$qb 	= $em->createQueryBuilder();
+    
+    	try {
+    		$qb->select('s')
+    		->from('\Entidades\ZgappParametroSecao','s')
+    		->where($qb->expr()->andX(
+   				$qb->expr()->eq('s.codModulo'	,':codModulo'),
+    			$qb->expr()->like(
+   					$qb->expr()->upper('s.nome'),
+    				':nome'
+    			)
+    		))
+    		->orderBy('s.nome','ASC')
+    		->setParameter('codModulo', $codModulo)
+    		->setParameter('nome', '%'.strtoupper($nome).'%');
+    		$query 		= $qb->getQuery();
+    		//echo $query->getSQL();
+    		return($query->getResult());
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    }
+    
+    
 }

@@ -1,0 +1,232 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Seção 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codSecaoID" name="codSecao" value="%COD_SECAO%">
+				<input type='hidden' id='valID'>
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divNomeID">
+						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a seção."></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome da seção" maxlength="40" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />	
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+				    		</div>
+							<div class="form-group col-sm-12" id="divOrdemID">
+						    	<label class="col-sm-3 control-label" for="ordemID">Ordem</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Ordem que a seção será apresentada na tela"></i></span>
+				   					<input class="form-control" id="ordemID" type="text" name="ordem" placeholder="Ordem" maxlength="3" value="%ORDEM%"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpOrdemID"></div>
+				    		</div>
+				    	</div>
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divCodModuloID">
+						    	<label class="col-sm-3 control-label" for="codModuloID">Módulo</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Digite o codígo ou o nome do modulo para iniciar a pesquisa."></i></span>
+					    			<select class="select2" style="width:100%;" id="codModuloID" name="codModulo" data-rel="select2">
+									%MODULOS%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpModuloID"></div>
+						    </div>
+						    <div class="form-group col-sm-12" id="divIconeID">
+						    	<label class="col-sm-3 control-label" for="iconeID">Ícone</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Ícone"></i></span>
+				   					<input class="form-control" id="iconeID" type="text" name="icone" placeholder="Nome da seção" maxlength="60" value="%ICONE%" required autocomplete="off" />	
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+				    		</div>
+				    	</div>						  
+				    </div>
+
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="parSecAltBtnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({"autoclose": true});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+
+/************************* Submit Formulário *************************/
+ 
+//Verificar se a validação está OK
+$('#parSecAltBtnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaSecaoAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codSecaoID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Seção', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+
+function checkNomeAlt() {
+	var vNome	= $('#nomeID').val();
+	$('#valID').val(0);
+	
+	if (vNome.length == 0 || vNome.length > 40 ) {
+		$('#divNomeID').addClass('has-error');
+		if (vNome.length == 0){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
+		}else if (vNome.length > 30){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 40 caracteres !!!'));
+		}
+		return false;
+	}else{	
+		/** Verificar se o Descricao está disponível no modulo **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/App/parametroSecaoValidaNome.dp.php",
+	   		data: {  codSecao: $('#codSecaoID').val() , codModulo: $('#codModuloID').val() ,nome: $('#nomeID').val()},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome já existe nesse módulo, escolha outro'));
+		return false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+		return true;
+	}
+}
+
+
+function validaSecaoAlt() {
+	var vNome			= $('#nomeID').val();
+	var vOrdem			= $('#ordemID').val();
+	var vModulo			= $('#codModuloID').val();
+	var vOK				= true;
+	var vIdent;
+	
+	// Nome
+	if (!vNome) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+	
+	// Ordem
+	if (vOrdem.length == 0 || vOrdem.length > 3 ) {
+		$('#divOrdemID').addClass('has-error');
+		if (vOrdem.length == 0){
+			$('#divHelpOrdemID').html(zgCriaSpanErro('Ordem deve ser preenchida !!!'));
+		}else if (vOrdem.length > 3){
+			$('#divHelpOrdemID').html(zgCriaSpanErro('Ordem deve ter no máximo 3 caracteres !!!'));
+		}
+		vOK		= false;
+	}else{
+		$('#divOrdemID').removeClass('has-error');
+		$('#divHelpOrdemID').html('&nbsp;');
+	}
+	
+	vNomeCheck	= checkNomeAlt();
+	
+	if (vOK == true) {
+		return vNomeCheck;
+	}else{
+		return vOK;
+	}	
+}
+
+</script>
+
