@@ -1,6 +1,6 @@
 <?php
 
-namespace Zage\App\Menu\Tipo2;
+namespace Zage\App\Menu\Lateral;
 
 /**
  * Gerenciar os separadores de menu 
