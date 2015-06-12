@@ -57,7 +57,7 @@ try {
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GUsuario");
 $grid->adicionaTexto($tr->trans('NOME/FANTASIA'),	 	15, $grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('NOME'),				15, $grid::CENTER	,'usuario');
 $grid->adicionaTexto($tr->trans('CADASTRO'),			15, $grid::CENTER	,'codStatus:descricao');

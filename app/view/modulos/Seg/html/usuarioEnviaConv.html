@@ -1,0 +1,159 @@
+<div id="content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h4 class=""><i class="fa fa-user blue"></i>&nbsp;%TITULO%</h4>
+	</div>
+
+	<div id="user-profile-3" class="row">
+		<div class="col-sm-12">
+			<form id="zgFormModalID" class="form-horizontal">
+				<input type="hidden" name="codUsuario" value="%COD_USUARIO%">
+				<input type="hidden" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+				<input type="hidden" name="id" value="%ID%">
+				<div class="tabbable">
+					<div class="tab-content profile-edit-tab-content">
+						<div class="row">
+	    					<div class="col-xs-12 col-sm-12">
+	    
+			    			<div id="divMsgCPPagID">
+			    			</div>
+	   
+			    			<div class="widget-body">
+								<div class="widget-main">
+									<p>
+									%TEXTO%
+									</p>
+								</div>
+							</div>
+	   						</div> 
+	    				</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="widget-box transparent">
+									<div class="widget-header widget-header-small">
+										<h5 class="widget-title smaller">
+										<i class="ace-icon fa fa-check-square-o bigger-110"></i>
+											Dados Cadastrais
+										</h5>
+									</div>
+								</div>
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name"> Email (usuário) </div>
+										<div class="profile-info-value">
+											<span class="editable">%USUARIO%</span>
+										</div>
+									</div>
+								
+									<div class="profile-info-row">
+										<div class="profile-info-name"> Nome </div>
+										<div class="profile-info-value">
+											<span class="editable">%NOME%</span>
+										</div>
+									</div>
+									
+									<div class="profile-info-row">
+										<div class="profile-info-name"> Apelido </div>
+										<div class="profile-info-value">
+											<span class="editable">%APELIDO%</span>
+										</div>
+									</div>
+									
+									<div class="profile-info-row">
+										<div class="profile-info-name"> CPF </div>
+										<div class="profile-info-value">
+											<span class="editable">%CPF%</span>
+										</div>
+									</div>
+									
+									<div class="profile-info-row">
+										<div class="profile-info-name"> Sexo </div>
+										<div class="profile-info-value">
+											<span class="editable">%SEXO%</span>
+										</div>
+									</div>
+									
+									<div class="profile-info-row">
+										<div class="profile-info-name"> Cadastro </div>
+										<div class="profile-info-value">
+											<span class="editable">%STATUS%</span>
+										</div>
+									</div>
+								</div>
+					    	</div>
+					    	<div class="col-sm-6">
+					    		<div class="widget-box transparent">
+									<div class="widget-header widget-header-small">
+										<h5 class="widget-title smaller">
+										<i class="ace-icon fa fa-check-square-o bigger-110"></i>
+											Perfil de acesso
+										</h5>
+									</div>
+								</div>
+								<div class="form-group col-sm-12" id="divPerfilID">
+									<label class="col-sm-3 control-label" for="perfilID">Perfil</label>
+					    			<div class="input-group col-sm-8 pull-left">
+										<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do usuário"></i></span>
+										<select class="select2" style="width:100%;" id="perfilModalID" name="perfil" data-rel="select2Modal">
+											%PERFIL%
+										</select>
+									</div>
+									<div class="col-sm-1 pull-left" id="divHelpPerfilID"></div>
+								</div>
+						    </div>
+					    </div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary" %DISABLED% id="btnSubmitID"><i class="fa fa-check bigger-110"></i>Associar</button>
+					<button type="button" data-dismiss="modal" class="btn" id="cancel" >Fechar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[data-rel="select2Modal"]').select2();
+
+$('#zgFormModalID').submit(function() {
+	
+	//Bloquear botão enquanto estiver salvando
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
+			zgLoadUrl('%URLVOLTAR%');
+		}else{
+			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
+			//zgLimpaModalAviso();
+			//zgMostraAviso("Fechar");
+		}
+		
+		//Desbloquear botão quando terminar de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Associar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+</script>
+

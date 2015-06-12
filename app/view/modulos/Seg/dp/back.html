@@ -1,0 +1,179 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-user blue"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 420px;">
+	<input type="hidden" name="codUsuario" value="%COD_USUARIO%">
+	<input type="hidden" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+	<input type="hidden" name="id" value="%ID%">
+
+	<div class="col-sm-12">
+	    <div class="row">
+	    	<div class="col-xs-12 col-sm-12">
+	    
+			    <div id="divMsgCPPagID">
+			    </div>
+	   
+			    <div class="widget-body">
+					<div class="widget-main">
+						<p>
+						Já existe um usuário cadastrado com este %CAMPO%. Certifique-se que esteja informando os dados corretamente e apenas associe.
+						</p>
+					</div>
+				</div>
+	   		</div> 
+	    </div>
+	    <div class="row">
+			<div class="col-sm-4">
+				<div class="widget-box transparent">
+					<div class="widget-header widget-header-small">
+						<h5 class="widget-title smaller">
+							<i class="ace-icon fa fa-check-square-o bigger-110"></i>
+							Dados Cadastrais
+						</h5>
+					</div>
+				</div>
+				
+				<div class="profile-user-info profile-user-info-striped">
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Email (usuário) </div>
+						<div class="profile-info-value">
+							<span class="editable">%USUARIO%</span>
+						</div>
+					</div>
+				
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Nome </div>
+						<div class="profile-info-value">
+							<span class="editable">%NOME%</span>
+						</div>
+					</div>
+					
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Apelido </div>
+						<div class="profile-info-value">
+							<span class="editable">%APELIDO%</span>
+						</div>
+					</div>
+					
+					<div class="profile-info-row">
+						<div class="profile-info-name"> CPF </div>
+						<div class="profile-info-value">
+							<span class="editable">%CPF%</span>
+						</div>
+					</div>
+					
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Sexo </div>
+						<div class="profile-info-value">
+							<span class="editable">%SEXO%</span>
+						</div>
+					</div>
+					
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Cadastro </div>
+						<div class="profile-info-value">
+							<span class="editable">%STATUS%</span>
+						</div>
+					</div>
+				</div>
+			</div> 
+		</div>   	
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="widget-box transparent">
+					<div class="widget-header widget-header-small">
+						<h5 class="widget-title smaller">
+							<i class="ace-icon fa fa-check-square-o bigger-110"></i>
+							Dados Cadastrais
+						</h5>
+					</div>
+				</div>
+				
+				<div class="profile-user-info profile-user-info-striped">
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Email (usuário) </div>
+						<div class="profile-info-value">
+							<span class="editable">%USUARIO%</span>
+						</div>
+					</div>
+				
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Nome </div>
+						<div class="profile-info-value">
+							<span class="editable">%NOME%</span>
+						</div>
+					</div>
+					
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Apelido </div>
+						<div class="profile-info-value">
+							<span class="editable">%APELIDO%</span>
+						</div>
+					</div>
+					
+					<div class="profile-info-row">
+						<div class="profile-info-name"> CPF </div>
+						<div class="profile-info-value">
+							<span class="editable">%CPF%</span>
+						</div>
+					</div>
+					
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Sexo </div>
+						<div class="profile-info-value">
+							<span class="editable">%SEXO%</span>
+						</div>
+					</div>
+					
+					<div class="profile-info-row">
+						<div class="profile-info-name"> Cadastro </div>
+						<div class="profile-info-value">
+							<span class="editable">%STATUS%</span>
+						</div>
+					</div>
+					
+				</div>
+			</div> 
+		</div>   	
+	</div>
+	
+    
+    
+    
+    
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" id="submit">Associar</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+$('#zgFormModalID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+</script>

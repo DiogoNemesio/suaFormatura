@@ -11,6 +11,7 @@
 				<input type="hidden" name="codUsuario" id="codUsuarioID" value="%COD_USUARIO%">
 				<input type="hidden" name="codOrganizacao" id="codOrganizacaoID" value="%COD_ORGANIZACAO%">
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
+				<input type="hidden" id="id" name="id" value="%ID%">
 				<input type='hidden' id='valID'>
 				<div class="tabbable">
 					<ul class="nav nav-tabs padding-16">
@@ -210,8 +211,8 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 
-
-$(".select2").select2();
+$('#perfilID').css('width','100%').select2({allowClear:true});
+$('#sexoID').css('width','100%').select2({allowClear:true});
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
@@ -333,6 +334,7 @@ function checkEmailUsuarioAlt() {
 	   });
 		
 		if ($('#valID').val() == 0) {
+			zgAbreModal("%ROOT_URL%/Seg/usuarioEnviaConv.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val() + "&codOrganizacao=" + $('#codOrganizacaoID').val());
 			$('#divEmailID').addClass('has-error');
 			$('#divHelpEmailID').html(zgCriaSpanErro('Já existe um usuário cadastrado com esse e-mail! Certique-se que este e-mail nunca foi utilizado para cadastrar um usuário no sistema.'));
 			return false;
@@ -379,6 +381,7 @@ function checkCpfUsuarioAlt() {
 	   });
 		
 		if ($('#valID').val() == 0) {
+			zgAbreModal("%ROOT_URL%/Seg/usuarioEnviaConv.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val() + "&codOrganizacao=" + $('#codOrganizacaoID').val());
 			$('#divCpfID').addClass('has-error');
 			$('#divHelpCpfID').html(zgCriaSpanErro('CPF já utilizado.'));
 			return false;

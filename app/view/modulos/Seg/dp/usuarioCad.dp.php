@@ -293,7 +293,6 @@ try {
 		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
 	}
 	
-	
 	if ($enviarEmail) {
 	
 		#################################################################################
