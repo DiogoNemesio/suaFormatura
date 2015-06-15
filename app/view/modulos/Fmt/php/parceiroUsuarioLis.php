@@ -58,9 +58,11 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GUsuario");
-$grid->adicionaTexto($tr->trans('NOME/FANTASIA'),	 	15, $grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('NOME'),				15, $grid::CENTER	,'usuario');
-$grid->adicionaTexto($tr->trans('CADASTRO'),			15, $grid::CENTER	,'codStatus:descricao');
+$grid->adicionaTexto($tr->trans('NOME'),	 			20, $grid::CENTER	,'codUsuario:nome');
+$grid->adicionaTexto($tr->trans('EMAIL'),				20, $grid::CENTER	,'codUsuario:usuario');
+$grid->adicionaTexto($tr->trans('CPF'),					15, $grid::CENTER	,'codUsuario:cpf');
+$grid->adicionaTexto($tr->trans('CADASTRO'),			10, $grid::CENTER	,'codUsuario:codStatus:descricao');
+$grid->adicionaTexto($tr->trans('ASSOCIAÇÃO'),			10, $grid::CENTER	,'codStatus:descricao');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($usuario);
@@ -70,10 +72,13 @@ $grid->importaDadosDoctrine($usuario);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($usuario); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao.'&codUsuario='.$usuario[$i]->getCodigo().'&url='.$url);
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao.'&codUsuario='.$usuario[$i]->getCodUsuario()->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Seg/usuarioCad.php?id='.$uid);
-	$grid->setUrlCelula($i,4,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioExc.php?id=".$uid."');");
+	$valor	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($usuario[$i]->getCodUsuario()->getCpf());
+	$grid->setValorCelula($i,2,$valor);
+	
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Seg/usuarioCad.php?id='.$uid);
+	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioExc.php?id=".$uid."');");
 }
 
 #################################################################################
@@ -96,6 +101,11 @@ $urlAdd			= ROOT_URL.'/Seg/usuarioCad.php?id='.\Zage\App\Util::encodeUrl('_codMe
 $urlVoltar			= ROOT_URL.'/Fmt/parceiroLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao=');
 
 #################################################################################
+## Gerar a url voltar
+#################################################################################
+$urlAtualizar			= ROOT_URL.'/Fmt/parceiroUsuarioLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao);
+
+#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
@@ -108,6 +118,7 @@ $tpl->set('GRID'			,$htmlGrid);
 $tpl->set('NOME'			,$tr->trans('Usuários'));
 $tpl->set('URLADD'			,$urlAdd);
 $tpl->set('URL_VOLTAR'		,$urlVoltar);
+$tpl->set('URL_ATUALIZAR'	,$urlAtualizar);
 $tpl->set('IC'				,$_icone_);
 
 $tpl->set('NOME_PARCEIRO'	,$org->getNome());

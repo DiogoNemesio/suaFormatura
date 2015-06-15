@@ -23,20 +23,28 @@ $err	= false;
 #################################################################################
 
 try {
-
 	if (!isset($codUsuario) || (!$codUsuario)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Parâmetro não informado'));
-		die('1'.\Zage\App\Util::encodeUrl('||'));
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Parâmetro não informado : COD_USUARIO"))));
+		$err = 1;
 	}
 	
+	/*** Verificar se o usuario existe ***/
 	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 
 	if (!$oUsuario) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Usuário não encontrado!'));
-		$err	= 1;
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Usuário não encontrando"))));
+		$err = 1;
 	}
 	
-	if ($err != null) {
+	/*** Verificar se a organização tem associação com o usuario ***/
+	$oUsuAdmVal	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
+	
+	if (!$oUsuAdmVal) {
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Esta operação não pode ser concluída, porque não existe uma associação entre o usuário e a organização."))));
+		$err = 1;
+	}
+	
+	if ($err) {
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
 		exit;
 	}
@@ -121,5 +129,4 @@ try {
 }
 
 
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Usuário excluído com sucesso"));
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuario->getCodigo().'|');
+echo '0'.\Zage\App\Util::encodeUrl('||'."Usu&aacute;rio exclu&Iacute;do com sucesso!");

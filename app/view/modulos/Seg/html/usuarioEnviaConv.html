@@ -7,8 +7,9 @@
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		<h4 class=""><i class="fa fa-user blue"></i>&nbsp;%TITULO%</h4>
 	</div>
-
 	<div class="modal-body" style="height: 420px;">
+		<div id='UsuEnvCondivMsgID'>
+		</div>
 		<div id="user-profile-3" class="row">
 			<div class="col-sm-12">
 				<div class="row">
@@ -99,8 +100,6 @@
 			    </div>
 			</div>
 		</div>
-		<div id='UsuEnvCondivMsgID'>
-		</div>
 	</div>
 	<div class="modal-footer">
 		<button type="submit" class="btn btn-primary" %DISABLED% id="usuEnvConbtnSubmitID"><i class="fa fa-check bigger-110"></i>Associar</button>
@@ -128,7 +127,7 @@ $('#zgFormModalID').submit(function() {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			//zgMostraMsg('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
-			zgMostraMsg('UsuEnvCondivMsgID','Teste OK');
+			zgMostraMsg('UsuEnvCondivMsgID','Usuário associado com sucesso!');
 		}else{
 			zgMostraErro('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
 			//zgLimpaModalAviso();
@@ -144,7 +143,6 @@ $('#zgFormModalID').submit(function() {
 			zgLoadUrl('%URL_VOLTAR%');
 			$('#zgDivModalID').off('hidden.bs.modal');
 		});
-
 		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraErro('zgDivModalID',errorThrown);

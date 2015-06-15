@@ -32,11 +32,11 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-if ((isset($codParceiro) && ($codParceiro))) {
+if ((isset($codOrganizacao) && ($codOrganizacao))) {
 
 	try {
 		
-		$info 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codParceiro));
+		$info 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 		
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
@@ -122,7 +122,7 @@ if ((isset($codParceiro) && ($codParceiro))) {
 	
 }else{
 	
-	$codParceiro	= null;
+	$codOrganizacao	= null;
 	$tipo			= 'J';
 	$ident			= '';
 	$nome			= '';
@@ -211,7 +211,7 @@ try {
 #################################################################################
 ## Resgatar os dados de contato
 #################################################################################
-$aTelefones		= $em->getRepository('Entidades\ZgadmOrganizacaoTelefone')->findBy(array('codOrganizacao' => $codParceiro));
+$aTelefones		= $em->getRepository('Entidades\ZgadmOrganizacaoTelefone')->findBy(array('codOrganizacao' => $codOrganizacao));
 $tabTel			= "";
 for ($i = 0; $i < sizeof($aTelefones); $i++) {
 
@@ -229,7 +229,7 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 ## Lista de segmentos de mercado
 #################################################################################
 $segMer			= $em->getRepository('Entidades\ZgfmtSegmentoMercado')->findBy(array(),array('nome' => ASC));
-$segAss			= $em->getRepository('Entidades\ZgadmOrganizacaoSegmento')->findBy(array('codOrganizacao' => $codParceiro));
+$segAss			= $em->getRepository('Entidades\ZgadmOrganizacaoSegmento')->findBy(array('codOrganizacao' => $codOrganizacao));
 $arraySegAss 	= array(); 
 
 for ($i = 0; $i < sizeof($segAss); $i++) {
@@ -264,7 +264,7 @@ $tpl->set('URLNOVO'					,$urlNovo);
 $tpl->set('ID'						,$id);
 $tpl->set('TIPO_CAD_PESSOA'			,$tipoCadPessoa);
 $tpl->set('NOME_TIPO_PESSOA'		,$nomeTipoPessoa);
-$tpl->set('COD_PARCEIRO'			,$codParceiro);
+$tpl->set('COD_ORGANIZACAO'			,$codOrganizacao);
 $tpl->set('IDENT'					,$ident);
 $tpl->set('SEXO'					,$oSexo);
 $tpl->set('TIPO'					,$oTipo);

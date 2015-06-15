@@ -40,6 +40,7 @@ if (isset($_GET['email'])){
 
 if (isset($_GET['cpf'])){
 	$cpf		= \Zage\App\Util::antiInjection($_GET['cpf']);
+	$cpf = \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->retiraMascara($cpf);
 }
 
 if (isset($_GET['codOrganizacao'])){
@@ -52,15 +53,15 @@ if (!isset($codOrganizacao)) \Zage\App\Erro::halt('Falta de Parâmetros : COD_OR
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-if ($email != null){
+$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $email));
+
+if ($oUsuario){
 	$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $email));
-	$campo 		= 'EMAIL';
+	$campo 			= 'EMAIL';
 
 }else{
-	if ($cpf != null){
-		$cpf = \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->retiraMascara($cpf);
-		//echo ($cpf);
-		$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('cpf' => $cpf));
+	$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('cpf' => $cpf));
+	if ($oUsuario){
 		$campo 		= 'CPF';
 	}
 }

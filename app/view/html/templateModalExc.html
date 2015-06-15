@@ -9,25 +9,17 @@
 	<input type="hidden" name="%VAR3%" value="%VAR_VALUE3%">
 	<input type="hidden" name="id" value="%ID%">
 	
-	
-	
-    
-    		<h4>%TEXTO%</h4>
-    		<br>
-    		<h5>%OBSERVACAO%</h5>
-    	
-    
-    
-    
-	
-    
-    
-    <div id="divMsgCPPagID">
+	<div id="divMsgCPPagID">
     </div>
+    
+    <h4>%TEXTO%</h4>
+    <br>
+    <h5>%OBSERVACAO%</h5>
+    	
 </div>
 <div class="modal-footer">
-	<button type="submit" class="btn btn-danger" id="submit">Excluir</button>
-	<button type="button" data-dismiss="modal" class="btn" id="cancel">Fechar</button>
+	<button type="submit" class="btn btn-danger" id="submitModalExc"><i class="fa fa-times bigger-110"></i> Excluir</button>
+	<button type="button" data-dismiss="modal" class="btn" id="cancelModalExc">Fechar</button>
 </div>
 </form>
 
@@ -36,9 +28,9 @@
 
 $('#zgFormModalID').submit(function() {
 	
-	$('#submit').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-	$('#submit').attr("disabled","disabled");
-	$('#cancel').attr("disabled","disabled");
+	$('#submitModalExc').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#submitModalExc').attr("disabled","disabled");
+	$('#cancelModalExc').attr("disabled","disabled");
 	
 	$.ajax({
 		type:	"POST", 
@@ -49,15 +41,16 @@ $('#zgFormModalID').submit(function() {
 			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
 			zgLoadUrl('%URLVOLTAR%');
 			
-			$('#submit').html('<i class="fa fa-check bigger-110"></i> Salvar ');
-			$('#submit').attr("disabled",false);
-			$('#cancel').attr("disabled",false);
-			
 		}else{
-			//zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
-			zgLimpaModalAviso();
-			zgMostraAviso("Fechar");
+			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
+			//zgLimpaModalAviso();
+			//zgMostraAviso("Fechar");
 		}
+		
+		$('#submitModalExc').html('<i class="fa fa-times bigger-110"></i> Excluir ');
+		$('#submitModalExc').attr("disabled",false);
+		$('#cancelModalExc').attr("disabled",false);
+		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLoadUrl('%URLVOLTAR%');
 			$('#zgDivModalID').off('hidden.bs.modal');

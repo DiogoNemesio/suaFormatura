@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-if (isset($_POST['codParceiro']))		$codParceiro		= \Zage\App\Util::antiInjection($_POST['codParceiro']);
+if (isset($_POST['codOrganizacao']))	$codOrganizacao		= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
 if (isset($_POST['tipo']))				$tipo				= \Zage\App\Util::antiInjection($_POST['tipo']);
 if (isset($_POST['ident']))				$ident				= \Zage\App\Util::antiInjection($_POST['ident']);
 if (isset($_POST['email']))				$email				= \Zage\App\Util::antiInjection($_POST['email']);
@@ -67,68 +67,94 @@ $err	= false;
 #################################################################################
 /******* IDENTIFICAÇÃO *********/
 if (!isset($ident) || (empty($ident))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A Identificação deve ser preenchida!"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A identificação deve ser preenchida!"));
 	$err	= 1;
+}elseif ((!empty($ident)) && (strlen($ident) > 100)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A identificação não deve conter mais de 60 caracteres!"));
+	$err	= 1;
+}else{
+	$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('identificacao' => $ident));
+	
+	if($oParceiro != null && ($oParceiro->getCodigo() != $codOrganizacao)){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um parceiro cadastrado com esta identificação! Por favor, informe outra."));
+		$err	= 1;
+	}
 }
 
-if ((!empty($ident)) && (strlen($ident) > 100)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A Identificação não deve conter mais de 60 caracteres!"));
+/******* EMAIL *********/
+if ((!empty($email)) && (strlen($email) > 200)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O email não deve conter mais de 200 caracteres!"));
 	$err	= 1;
-}
-
-$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('identificacao' => $ident));
-
-if($oParceiro != null && ($oParceiro->getCodigo() != $codParceiro)){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Está identificação já existe!"));
+}elseif(\Zage\App\Util::validarEMail($email) == false){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email inválido!"));
 	$err	= 1;
 }
 
 /******* SEGMENTO *********/
 if (!isset($codSegmento) || (empty($codSegmento))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Segmento de Mercado deve ser preenchida!"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O segmento de mercado deve ser preenchido!"));
 	$err	= 1;
 }
 
 /******* VALIDAÇÕES DE PJ E PF *********/
+if (!isset($tipo) || (empty($tipo))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O tipo deve ser preenchido!"));
+	$err	= 1;
+}
+
 if ($tipo == 'J'){
 	/******* CNPJ *********/
 	$valCgc			= new \Zage\App\Validador\Cnpj();
 	if (empty($cgc)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("o CNPJ deve ser preenchido!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CNPJ deve ser preenchido!"));
 		$err	= 1;
 	}else{
 		if ($valCgc->isValid($cgc) == false) {
 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("CNPJ inválido!"));
 			$err	= 1;
+		}else{
+			$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('cgc' => $cgc));
+			if($oParceiro != null && ($oParceiro->getCodigo() != $codOrganizacao)){
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um parceiro cadastrado com este CNPJ! Por favor,  verifique os dados informados."));
+				$err	= 1;
+			}
 		}
 	}
 	
 	/******* Nome *********/
 	if (!isset($razao) || (empty($razao))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A Razão Social deve ser preenchida!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A razão social deve ser preenchida!"));
 		$err	= 1;
-	}
-	
-	if ((!empty($razao)) && (strlen($razao) > 100)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A Razão Social não deve conter mais de 100 caracteres!"));
+	}elseif ((!empty($razao)) && (strlen($razao) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A razão social não deve conter mais de 100 caracteres!"));
 		$err	= 1;
 	}
 	
 	/******* Fantasia *********/
 	if (!isset($nome) || (empty($nome))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome Fantasia deve ser preenchido!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome fantasia deve ser preenchido!"));
+		$err	= 1;
+	}elseif ((!empty($nome)) && (strlen($nome) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome fantasia não deve conter mais de 100 caractes!"));
 		$err	= 1;
 	}
 	
-	if ((!empty($nome)) && (strlen($nome) > 60)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome Fantasia não deve conter mais de 60 caractes!"));
+	/******* Inscrição Municipal *********/
+	if ((!empty($inscMunicipal)) && (strlen($inscMunicipal) > 18)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O número da inscrição municipal não deve conter mais de 18 caracteres!"));
+		$err	= 1;
+	}
+	
+	/******* Inscrição Estadual *********/
+	if ((!empty($inscEstadual)) && (strlen($inscEstadual) > 18)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O número da inscrição estadual não deve conter mais de 18 caracteres!"));
 		$err	= 1;
 	}
 	
 	/******** Início de Atividade ***********/
 	if (!empty($dataNascimento)) {
 		if (\Zage\App\Util::validaData($dataNascimento, $system->config["data"]["dateFormat"]) == false) {
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Data de Início de Atividade inválido!"));
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Data da abertura inválida!"));
 			$err	= 1;
 		}
 	}
@@ -138,54 +164,84 @@ if ($tipo == 'F'){
 	/******* CPF *********/
 	$valCgc			= new \Zage\App\Validador\Cpf();
 	if (empty($cgc)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("o Cpf deve ser preenchido!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CPF deve ser preenchido!"));
 		$err	= 1;
 	}else{
 		if ($valCgc->isValid($cgc) == false) {
 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("CPF inválido!"));
 			$err	= 1;
+		}else{
+			$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('cgc' => $cgc));
+			if($oParceiro != null && ($oParceiro->getCodigo() != $codOrganizacao)){
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um parceiro cadastrado com este CPF! Por favor,  verifique os dados informados."));
+				$err	= 1;
+			}
 		}
 	}
 	
 	/******* Nome *********/
 	if (!isset($nome) || (empty($nome))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Nome Completo deve ser preenchido!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome completo deve ser preenchido!"));
 		$err	= 1;
-	}
-
-	if ((!empty($nome)) && (strlen($nome) > 100)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Nome não deve conter mais de 100 caracteres!"));
+	}elseif ((!empty($nome)) && (strlen($nome) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome não deve conter mais de 100 caracteres!"));
 		$err	= 1;
 	}
 	
 	/******* RG *********/
 	if ((!empty($rg)) && (strlen($rg) > 14)) {
-				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O RG não deve conter mais de 14 caracteres!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O número do RG não deve conter mais de 14 caracteres!"));
 		$err	= 1;
 	}
 	
-	/******* DATA NASCIMENTO *********/
+	/******* Data Nascimento *********/
 	if (!empty($dataNascimento)) {
 		if (\Zage\App\Util::validaData($dataNascimento, $system->config["data"]["dateFormat"]) == false) {
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Data de Nascimento inválida"));
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Data de nascimento inválida"));
 			$err	= 1;
 		}
 	}	
 }
 
+/******* ENDEREÇO *********/
 if (isset($codLogradouro) && (!empty($codLogradouro))){
+	
+	/******* CEP *********/
 	if (!isset($cep) || (empty($cep))) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CEP deve ser preenchido!"));
 		$err	= 1;
-	}
-	
-	if (!isset($descLogradouro) || (empty($descLogradouro))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Logradouro deve ser preenchido!"));
+	}elseif ((!empty($cep)) && (strlen($cep) > 8)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CEP não deve conter mais de 8 caracteres!"));
 		$err	= 1;
 	}
 	
+	/******* ENDEREÇO *********/
+	if (!isset($descLogradouro) || (empty($descLogradouro))) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O logradouro deve ser preenchido!"));
+		$err	= 1;
+	}elseif ((!empty($descLogradouro)) && (strlen($descLogradouro) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O logradouro não deve conter mais de 100 caracteres!"));
+		$err	= 1;
+	}
+	
+	/******* BAIRRO *********/
 	if (!isset($bairro) || (empty($bairro))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Bairro deve ser preenchido!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O bairro deve ser preenchido!"));
+		$err	= 1;
+	}elseif ((!empty($bairro)) && (strlen($bairro) > 60)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O bairro não deve conter mais de 60 caracteres!"));
+		$err	= 1;
+	}
+	
+	/******* NÚMERO *********/
+	if ((!empty($numero)) && (strlen($numero) > 10)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O número não deve conter mais de 10 caracteres!"));
+		$err	= 1;
+	}
+	
+	/******* COMPLEMENTO *********/
+	if ((!empty($complemento)) && (strlen($complemento) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O complemento do endereço não deve conter mais de 100 caracteres!"));
 		$err	= 1;
 	}
 	
@@ -214,8 +270,8 @@ if ($err != null) {
 ## Salvar no banco
 #################################################################################
 try {
-	if (isset($codParceiro) && (!empty($codParceiro))){
- 		$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codParceiro));
+	if (isset($codOrganizacao) && (!empty($codOrganizacao))){
+ 		$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
  		if (!$oParceiro) {
  			$oParceiro	= new \Entidades\ZgadmOrganizacao();
  			$oParceiro->setDataCadastro(new \DateTime("now"));
@@ -266,7 +322,7 @@ try {
  	#################################################################################
  	## Telefones
  	#################################################################################
- 	$telefones		= $em->getRepository('Entidades\ZgadmOrganizacaoTelefone')->findBy(array('codOrganizacao' => $codParceiro));
+ 	$telefones		= $em->getRepository('Entidades\ZgadmOrganizacaoTelefone')->findBy(array('codOrganizacao' => $codOrganizacao));
  	
  	/***** Exclusão *****/
  	for ($i = 0; $i < sizeof($telefones); $i++) {
