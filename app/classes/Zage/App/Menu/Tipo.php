@@ -150,7 +150,6 @@ abstract class Tipo {
 		
 		$organizacoes	= \Zage\Seg\Usuario::listaOrganizacaoAcesso($system->getCodUsuario());
 		$numOrg			= sizeof($organizacoes);
-				
 		
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<li class="grey">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="ace-icon fa fa-building-o"></i>&nbsp;'.$ident.'</a>'.\Zage\App\ZWS::NL;

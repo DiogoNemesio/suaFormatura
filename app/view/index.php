@@ -8,6 +8,28 @@ if (defined('DOC_ROOT')) {
 	include_once('../includeNoAuth.php');
 }
 
+
+#################################################################################
+## Verificando se mudou de organização
+#################################################################################
+if (isset($_GET['zid'])) {
+	$zid = \Zage\App\Util::antiInjection($_GET["zid"]);
+	\Zage\App\Util::descompactaId($zid);
+
+	if (isset($_codOrganizacao) && isset($system) && is_object($system)) {
+		/** Verifica se o usuário tem acesso a organização **/
+		$temAcesso			= \Zage\Seg\Usuario::temAcessoOrganizacao($system->getCodUsuario(),$_codOrganizacao);
+		if ($temAcesso) {
+			$_org						= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array ('codigo' => $_codOrganizacao));
+			$_SESSION['_codOrg']		= $_org->getCodigo();
+		}else{
+			$system->desautentica();
+		}
+	}
+}
+
+
+
 if (!isset($_org) && (!isset($_SESSION['_codOrg']))) {
 	die ("Organização não definida !!!");
 }else{

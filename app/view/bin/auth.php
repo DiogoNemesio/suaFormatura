@@ -28,12 +28,6 @@ if ((isset($_POST['zgUsuario'])) && (isset($_POST['zgSenha']))) {
 	$_senha			= '';
 }
 
-if (isset($_GET['zid'])) {
-	$zid = \Zage\App\Util::antiInjection($_GET["zid"]);
-	\Zage\App\Util::descompactaId($zid);
-}else{
-	$codEmpresa	= null;
-}
 
 if ((isset($_org) && (isset($_SESSION['_codOrg'])) && ($_org instanceof \Entidades\ZgadmOrganizacao) && ($_org->getCodigo() != $_SESSION['_codOrg']) ) ) {
 	$system->desautentica();

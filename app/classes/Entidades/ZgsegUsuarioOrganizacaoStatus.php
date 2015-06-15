@@ -28,6 +28,13 @@ class ZgsegUsuarioOrganizacaoStatus
      */
     private $descricao;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_PERMITE_ACESSO", type="integer", nullable=false)
+     */
+    private $indPermiteAcesso;
+
 
     /**
      * Get codigo
@@ -60,5 +67,28 @@ class ZgsegUsuarioOrganizacaoStatus
     public function getDescricao()
     {
         return $this->descricao;
+    }
+
+    /**
+     * Set indPermiteAcesso
+     *
+     * @param integer $indPermiteAcesso
+     * @return ZgsegUsuarioOrganizacaoStatus
+     */
+    public function setIndPermiteAcesso($indPermiteAcesso)
+    {
+        $this->indPermiteAcesso = $indPermiteAcesso;
+
+        return $this;
+    }
+
+    /**
+     * Get indPermiteAcesso
+     *
+     * @return integer 
+     */
+    public function getIndPermiteAcesso()
+    {
+        return $this->indPermiteAcesso;
     }
 }

@@ -75,6 +75,14 @@ class Auth implements \Zend\Authentication\Adapter\AdapterInterface {
 				return new \Zend\Authentication\Result($result,$this->username,$messages);
 			}
 			
+			/** Verifica se o usuário tem acesso a organização **/
+			$temAcesso	= \Zage\Seg\Usuario::temAcessoOrganizacao($user->getCodigo(),$this->codOrganizacao);
+			if (!$temAcesso)	{
+				$result		= \Zend\Authentication\Result::FAILURE_CREDENTIAL_INVALID;
+				$messages[] = "Usuário não tem acesso a essa organização !!!";
+				return new \Zend\Authentication\Result($result,$this->username,$messages);
+			}
+			
 			$result	= \Zend\Authentication\Result::SUCCESS;
 			$messages[] = null;
 			return new \Zend\Authentication\Result($result,$this->username,$messages);
