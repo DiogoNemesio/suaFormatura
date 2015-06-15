@@ -1,0 +1,57 @@
+<div class="row small">
+	<div class="row col-sm-12" id="graficoEnqueteID"></div>
+	<div class="row col-sm-12">&nbsp;</div>
+	<div class="row col-sm-12" id="legendEnqueteID"></div>
+</div>
+
+<script>
+var placeholder = $('#graficoEnqueteID').css({'width':'100%' , 'min-height':'150px'});
+var data = %GRAPH_DATA%;
+
+function drawPieChart(placeholder, data, position) {
+	  $.plot(placeholder, data, {
+		series: {
+			pie: {
+				show: true,
+				tilt:0.8,
+				highlight: {
+					opacity: 0.25
+				},
+				stroke: {
+					color: '#fff',
+					width: 2
+				},
+				startAngle: 2,
+			}
+		},
+		legend: {
+			show: true,
+			labelBoxBorderColor: null,
+			margin:[0,0],
+			container: "#legendEnqueteID",
+			labelFormatter: function(label, series) {
+				var opt = {
+					symbol : "R$ ",
+					decimal : ",",
+					thousand: ".",
+					precision : 2,
+					format: "%s%v"
+				};
+
+	            var $perc	= Math.round(series.percent);
+	            //var $valor	= accounting.formatMoney(series.data[0][1], opt);
+	            var $valor	= series.data[0][1];
+	            
+	            return('<div class="col-sm-6" style="white-space: nowrap;"><div class="pull-left">'+label+'</div></div><div class="col-sm-6" style="white-space: nowrap;"><div class="pull-right">'+$valor+' <strong>('+$perc+'%)</strong></div></div>');
+	        }
+		}
+		,
+		grid: {
+			hoverable: true,
+			clickable: true
+		}
+	 })
+}
+drawPieChart(placeholder, data);
+
+</script>

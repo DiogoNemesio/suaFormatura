@@ -1,0 +1,149 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Resposta
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codRespostaID" name="codResposta" value="%COD_RESPOSTA%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divCodPerguntaID">
+								<label class="col-sm-3 control-label" for="codPerguntaID">Pergunta</label>
+				    			<div class="input-group col-sm-8 pull-left">
+			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a pergunta."></i></span>
+									<select class="select2" onchange="zgMostraDivs();" style="width:100%;" id="codPerguntaID" name="codPergunta" data-placeholder="Selecione a pergunta" data-rel="select2">
+									%COD_PERGUNTA%
+									</select>
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpCodPerguntaID"></div>
+							</div>
+						</div>	
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divRespostaID">
+						    	<label class="col-sm-3 control-label" for="respostaID">Resposta</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Resposta da enquete."></i></span>
+				   					<input class="form-control" id="respostaID" type="text" name="resposta" placeholder="Resposta da enquete" maxlength="200" value="%RESPOSTA%" required autocomplete="off">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpRespostaID"></div>
+				    		</div>
+				    	</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+
+$(".select2").select2();
+$('[data-toggle="popover"]').popover();
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaRespostaAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codRespostaID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Resposta', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+/*********************** Verificar o formulário ***********************/
+function validaRespostaAlt() {
+	var vResposta		= $('#respostaID').val();
+	var vCodPergunta	= $('#codPerguntaID').val();
+	
+	var vOK				= true;
+	var vIdent;
+	
+	// Resposta
+	if (vResposta.length == 0 || vResposta.length > 200 ) {
+		if (vResposta.length == 0){
+			$('#divRespostaID').addClass('has-error');
+			$('#divHelpRespostaID').html(zgCriaSpanErro('A Resposta deve ser preenchida !!'));
+			vOK		= false;
+		}else if (vResposta.length > 200){
+			$('#divRespostaID').addClass('has-error');
+			$('#divHelpRespostaID').html(zgCriaSpanErro('A Resposta deve ter no máximo 200 caracteres !!!'));
+			vOK		= false;
+		}
+	}else{
+		$('#divRespostaID').removeClass('has-error');
+		$('#divHelpRespostaID').html('&nbsp;');
+	}
+	
+	// CodPergunta
+	if (!vCodPergunta) {
+		$('#divCodPerguntaID').addClass('has-error');
+		$('#divHelpCodPerguntaID').html(zgCriaSpanErro('A pergunta deve ser preenchida !!'));
+		vOK		= false;
+	}else{
+		$('#divCodPerguntaID').removeClass('has-error');
+		$('#divHelpCodPerguntaID').html('&nbsp;');
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+</script>
+

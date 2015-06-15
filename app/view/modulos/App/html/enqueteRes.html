@@ -1,0 +1,104 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Resultados 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codEnqueteID" name="codEnquete" value="%COD_ENQUETE%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<a id='a01ID' title="Resposta" href="javascript:zgLoadUrl('%RESPOSTA%');">
+						<button type="button" class="btn btn-primary" id="btnRespostaID">
+							Respostas
+						</button>
+						</a>
+						<div class="space-6"></div>
+						<div class="col-sm-3">
+							<div class="widget-box transparent">
+								<div class="widget-header widget-header-small">
+									<h6 class="widget-title lighter">
+										<i class="ace-icon fa fa-pie-chart red"></i>
+										Resultado
+									</h6>
+									<div class="widget-toolbar">
+										<a href="javascript:mostraGraphEnquete();" ><i class="ace-icon fa fa-refresh green"></i></a>
+										<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+										<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+										<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+									</div>
+								</div>
+								<div class="widget-body">
+									<div class="hidden center" id="divGraphEnqueteSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+									<div class="widget-main padding-4" id="divGraphEnqueteID">
+									</div><!-- /.widget-main -->
+								</div><!-- /.widget-body -->
+							</div><!-- /.widget-box -->
+						</div><!-- /.col -->	
+						<div class="col-sm-3">
+							<div class="widget-box transparent">
+								<div class="widget-header widget-header-small">
+									<h6 class="widget-title lighter">
+										<i class="ace-icon fa fa-pie-chart red"></i>
+										Percentual
+									</h6>
+									<div class="widget-toolbar">
+										<a href="javascript:mostraGraphEnquetePerc();" ><i class="ace-icon fa fa-refresh green"></i></a>
+										<a href="#" data-action="fullscreen" class="orange2"><i class="ace-icon fa fa-expand"></i></a>
+										<a href="#" data-action="close"><i class="ace-icon fa fa-times"></i></a>
+										<a href="#" data-action="collapse"><i class="ace-icon fa fa-chevron-up"></i></a>
+									</div>
+								</div>
+								<div class="widget-body">
+									<div class="hidden center" id="divGraphEnquetePercSpinID"><i class="fa fa-spinner fa-spin bigger-200"></i></div>
+									<div class="widget-main padding-4" id="divGraphEnquetePercID">
+									</div><!-- /.widget-main -->
+								</div><!-- /.widget-body -->
+							</div><!-- /.widget-box -->
+						</div><!-- /.col -->					
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+mostraGraphEnquete();
+mostraGraphEnquetePerc();
+
+function mostraGraphEnquete() {
+	$("#divGraphEnqueteID").html("");
+	$("#divGraphEnqueteSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_GRAPH_ENQUETE%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divGraphEnqueteID").html( data );
+		$("#divGraphEnqueteSpinID").addClass("hidden");
+	});
+}
+
+function mostraGraphEnquetePerc() {
+	$("#divGraphEnqueteIPercD").html("");
+	$("#divGraphEnquetePercSpinID").removeClass("hidden");
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_GRAPH_ENQUETE_PERC%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$("#divGraphEnquetePercID").html( data );
+		$("#divGraphEnquetePercSpinID").addClass("hidden");
+	});
+}
+</script>
+

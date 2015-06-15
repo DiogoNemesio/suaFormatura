@@ -1,0 +1,268 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Enquete
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codEnqueteID" name="codEnquete" value="%COD_ENQUETE%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divPerguntaID">
+						    	<label class="col-sm-3 control-label" for="perguntaID">Pergunta</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Pergunta da enquete."></i></span>
+				   					<input class="form-control" id="perguntaID" type="text" name="pergunta" placeholder="Pergunta da enquete" maxlength="200" value="%PERGUNTA%" required autocomplete="off">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpPerguntaID"></div>
+				    		</div>
+				    	</div>
+				    	<div class="col-sm-6">
+				    		<div class="form-group col-sm-12" id="divDescricaoID">
+						    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da enquete."></i></span>
+				   					<input class="form-control" id="descricaoID" type="text" name="descricao" placeholder="Descrição da enquete" maxlength="100" value="%DESCRICAO%" required autocomplete="off">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
+				    		</div>
+				    	</div>
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divCodTipoID">
+								<label class="col-sm-3 control-label" for="codTipoID">Tipo Pergunta</label>
+				    			<div class="input-group col-sm-8 pull-left">
+			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Tipo da pergunta."></i></span>
+									<select class="select2" onchange="zgMostraDivs();" style="width:100%;" id="codTipoID" name="codTipo" data-placeholder="Tipo da pergunta" data-rel="select2">
+									%COD_TIPO%
+									</select>
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpCodTipoID"></div>
+							</div>
+				    		<div class="form-group col-sm-12" id="divValoresID">
+				    			<label for="CodContratoID" class="col-sm-3 control-label">Valores</label>
+				    			<div class="input-group col-sm-8 pull-left">
+				    				<textarea class="width-100" tabindex="7" id="valoresID" class="autosize limited form-control" placeholder="Digite e aperte enter" name="valores" maxlength="100" autocomplete="off">%VALORES%</textarea>
+				    			</div>
+				    		<div class="col-sm-1 pull-left" id="divHelpValoresID"></div>
+							</div>
+				    		<div class="form-group col-sm-12" id="divTamanhoID">
+				    			<label for="tamanhoID" class="col-sm-3 control-label">Tamanho</label>
+			    				<div class="input-group col-sm-8 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Tamanho máximo de caracteres que o parâmetro poderá ter na configuração do sistema"></i></span>
+				   					<input class="width-100" id="tamanhoID" type="text" name="tamanho" maxlength="60" value="%TAMANHO%" placeholder="Tamanho máximo" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0"autocomplete="off">	
+				    			</div>
+				    			<div class="col-sm-1 pull-left" id="divHelpTamanhoID"></div>
+							</div>
+				    	</div>
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divDataPrazoID">
+						    	<label class="col-sm-3 control-label" for="dataPrazoID">Data Término</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data do Prazo."></i></span>
+					    			<input class="form-control datepicker" id="date-timepicker" type="text" name="dataPrazo" placeholder="Data do Prazo" maxlength="10" value="%DATA_PRAZO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataPrazoID"></div>
+						    </div>
+				    	</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+
+$(".select2").select2();
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('#date-timepicker').datetimepicker({
+	format: 'DD/MM/YYYY HH:mm',
+    language: 'pt-BR'	
+}).next().on(ace.click_event, function(){
+	 
+});
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaEnqueteAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codEnqueteID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Enquete', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+/*********************** Verificar o formulário ***********************/
+function validaEnqueteAlt() {
+	var vDescricao		= $('#descricaoID').val();
+	var vPergunta		= $('#perguntaID').val();
+	var vCodTipo		= $('#codTipoID').val();
+	var vValores		= $('#valoresID').val();
+	var vTamanho    	= $('#tamanhoID').val();
+	
+	var vOK				= true;
+	var vIdent;
+	
+	// Descricao
+	if (vDescricao.length > 100 ) {
+		$('#divDescricaoID').addClass('has-error');
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('A Descrição deve ter no máximo 100 caracteres !!!'));
+		vOK		= false;
+	}else{
+		$('#divDescricaoID').removeClass('has-error');
+		$('#divHelpDescricaoID').html('&nbsp;');
+	}
+	
+	// Pergunta
+	if (vPergunta.length == 0 || vPergunta.length > 200 ) {
+		if (vPergunta.length == 0){
+			$('#divPerguntaID').addClass('has-error');
+			$('#divHelpPerguntaID').html(zgCriaSpanErro('A Pergunta deve ser preenchida !!'));
+			vOK		= false;
+		}else if (vPergunta.length > 200){
+			$('#divPerguntaID').addClass('has-error');
+			$('#divHelpPerguntaID').html(zgCriaSpanErro('A Pergunta deve ter no máximo 200 caracteres !!!'));
+			vOK		= false;
+		}
+	}else{
+		$('#divPerguntaID').removeClass('has-error');
+		$('#divHelpPerguntaID').html('&nbsp;');
+	}
+	
+	// Tipo
+	if (!vCodTipo) {
+		$('#divCodTipoID').addClass('has-error');
+		$('#divHelpCodTipoID').html(zgCriaSpanErro('O tipo da pergunta deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divCodTipoID').removeClass('has-error');
+		$('#divHelpCodTipoID').html('&nbsp;');
+	}
+	
+	//Para o tipo Lista de valores o valor não pode estar nulo
+	if ((vCodTipo == 'LI') && (!vValores)) {
+		$('#divValoresID').addClass('has-error');
+		$('#divHelpValoresID').html(zgCriaSpanErro('Para o tipo LISTA PREDEFINIDA o campo VALORES deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divValoresID').removeClass('has-error');
+		$('#divHelpValoresID').html('&nbsp;');		
+	}
+
+	// Para o tipo Numero o tamanho não pode estar nulo
+	if (((vCodTipo == 'N') || (vCodTipo == 'L')) && (!vTamanho)) {	
+		$('#divTamanhoID').addClass('has-error');
+		$('#divHelpTamanhoID').html(zgCriaSpanErro('Para o tipo selecionado o campo TAMANHO deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divTamanhoID').removeClass('has-error');
+		$('#divHelpTamanhoID').html('&nbsp;');
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+/********************** Mostrar div de valores **********************/
+$( document ).ready(function() {
+	zgMostraDivs();
+});
+
+function zgMostraDivs() {
+	var vMostraVal		= ['LI'];
+	var vMostraTam		= ['N','L'];
+	var vTipo			= $('#codTipoID').val(); 
+	
+	if (vMostraVal.indexOf(vTipo) < 0) {
+		$('#divValoresID').addClass("hidden");
+	}else{
+		$('#divValoresID').removeClass("hidden");
+	}
+	
+	if (vMostraTam.indexOf(vTipo) < 0) {
+		$('#divTamanhoID').addClass("hidden");
+	}else{
+		$('#divTamanhoID').removeClass("hidden");		
+	}
+}
+
+
+/********************* TAG *********************/
+var tag_input = $('#valoresID');
+if(! ( /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase())) ) {
+	tag_input.tag({
+		placeholder:tag_input.attr('placeholder')
+	});
+} else {
+	tag_input.after('<textarea id="'+tag_input.attr('id')+'" name="'+tag_input.attr('name')+'" rows="3">'+tag_input.val()+'</textarea>').remove();
+}
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: 'Restando: %n character%s ...',
+	limitText: 'Max: %n.'
+});
+</script>
+
