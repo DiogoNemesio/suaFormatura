@@ -61,7 +61,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
     
     	$qb 	= $em->createQueryBuilder();
     	 
-    	$qb->select('us')
+    	$qb->select('uo')
     	->from('\Entidades\ZgsegUsuario','us')
     	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',		'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 	= uo.codUsuario')
     	->leftJoin('\Entidades\ZgsegPerfil',					'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil	= p.codigo')

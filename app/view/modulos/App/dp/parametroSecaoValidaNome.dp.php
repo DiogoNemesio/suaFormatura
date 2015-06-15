@@ -16,32 +16,28 @@ include_once(BIN_PATH . 'auth.php');
 #################################################################################
 ## Resgata as variáveis postadas
 #################################################################################
-if (isset($_GET['cpf']))			$cpf			= \Zage\App\Util::antiInjection($_GET["cpf"]);
-if (isset($_GET['codOrganizacao']))	$codOrganizacao	= \Zage\App\Util::antiInjection($_GET["codOrganizacao"]);
+if (isset($_GET['codSecao']))			$codSecao		= \Zage\App\Util::antiInjection($_GET["codSecao"]);
+if (isset($_GET['codModulo']))			$codModulo		= \Zage\App\Util::antiInjection($_GET["codModulo"]);
+if (isset($_GET['nome']))				$nome			= \Zage\App\Util::antiInjection($_GET["nome"]);
 
 $array				= array();
 
-$cpf = \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->retiraMascara($cpf);
-
-if (!$cpf) {
+if (!$nome) {
 	$array["existe"]	= 0;
 	echo json_encode($array);
 	exit;
 }
 
 try {
-	$oCpf	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('cgc' => $cpf));
+	$oSecao		= $em->getRepository('Entidades\ZgappParametroSecao')->findOneBy(array('nome' => $nome,'codModulo' => $codModulo));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
-if ($oCpf != null && ($oCpf->getCodigo() != $codOrganizacao)) {
-	
+if ($oSecao != null && ($oSecao->getCodigo() != $codSecao)) {
 	$array["existe"]	= 1;
-	
 }else{
 	$array["existe"]	= 0;
-	
 }
 
 echo json_encode($array);

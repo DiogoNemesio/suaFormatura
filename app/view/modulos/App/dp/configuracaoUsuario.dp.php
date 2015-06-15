@@ -24,10 +24,16 @@ foreach ($_zgParametro as $codParametro => $valor) {
 	#################################################################################
 	## Resgatar o valor já salvo
 	#################################################################################
-	$oValor		= $em->getRepository('Entidades\ZgadmParametroSistema')->findOneBy(array('codParametro' => $codParametro));
+	$oValor		= $em->getRepository('Entidades\ZgadmParametroUsuario')->findOneBy(array('codUsuario' => $system->getCodUsuario(), 'codParametro' => $codParametro));
 	
-	if (!$oValor)	$oValor = new \Entidades\ZgadmParametroSistema();
+	if (!$oValor)	$oValor = new \Entidades\ZgadmParametroUsuario();
 	
+	#################################################################################
+	## Busca o objeto da organização
+	#################################################################################
+	$oUser		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
+	
+	$oValor->setCodUsuario($oUser);
 	$oValor->setCodParametro($oParametro);
 	$oValor->setValor($valor);
 	

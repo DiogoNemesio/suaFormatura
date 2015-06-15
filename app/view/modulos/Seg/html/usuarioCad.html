@@ -11,7 +11,9 @@
 				<input type="hidden" name="codUsuario" id="codUsuarioID" value="%COD_USUARIO%">
 				<input type="hidden" name="codOrganizacao" id="codOrganizacaoID" value="%COD_ORGANIZACAO%">
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
-				<input type='hidden' id='valID'>
+				<input type="hidden" id="id" name="id" value="%ID%">
+				<input type='hidden' id='valCpfID'>
+				<input type='hidden' id='valEmailID'>
 				<div class="tabbable">
 					<ul class="nav nav-tabs padding-16">
 						<li class="active">
@@ -51,7 +53,7 @@
 								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
 						    			<div class="input-group col-sm-8 pull-left">
 							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome completo do usuário"></i></span>
-							    			<input class="width-100" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" placeholder="Nome completo" autocomplete="off">
+							    			<input class="width-100" id="nomeID" type="text" name="nome" maxlength="100" value="%NOME%" placeholder="Nome completo" autocomplete="off">
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 								    </div>
@@ -105,7 +107,7 @@
 										<label for="cepID" class="col-sm-3 control-label">CEP</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
-											<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+											<input class="form-control" type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
 										</div>
 										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
 									</div>																	
@@ -113,7 +115,7 @@
 										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
-											<input type="text" id="descLogradouroID" %READONLY_END% name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+											<input class="form-control" type="text" id="descLogradouroID" %READONLY_END% name="descLogradouro" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" />
 										</div>
 										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
 									</div>	
@@ -121,7 +123,7 @@
 										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
-											<input type="text" id="bairroID" name="bairro" %READONLY_BAIRRO% class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
+											<input class="form-control" type="text" id="bairroID" name="bairro" %READONLY_BAIRRO% value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
 										</div>
 										<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
 									</div>
@@ -129,7 +131,7 @@
 										<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
-											<input type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" class="width-100" placeholder="Cidade" />
+											<input class="form-control" type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" placeholder="Cidade" />
 										</div>
 									</div>
 								</div>
@@ -138,21 +140,21 @@
 										<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
-											<input type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" class="width-100" placeholder="Estado" />
+											<input class="form-control" type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" placeholder="Estado" />
 										</div>
 									</div>									
 									<div class="form-group col-sm-12" id="divNumeroID">
 										<label for="numeroID" class="col-sm-3 control-label">Número</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
-											<input type="text" id="numeroID" name="numero" value="%NUMERO%" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
+											<input class="form-control" type="text" id="numeroID" name="numero" value="%NUMERO%" autocomplete="off" placeholder="Número" maxlength="10" />
 										</div>
 									</div>							
 									<div class="form-group col-sm-12" id="divComplementoID">
 										<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
-											<input type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
+											<input class="form-control" type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" autocomplete="off" placeholder="Complemento" maxlength="100" />
 										</div>
 									</div>																		
 								</div>
@@ -210,8 +212,8 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 
-
-$(".select2").select2();
+$('#perfilID').css('width','100%').select2({allowClear:true});
+$('#sexoID').css('width','100%').select2({allowClear:true});
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
@@ -303,7 +305,7 @@ VALIDA FORMULÁRIO
 /***** Valida usuário (email) *****/
 function checkEmailUsuarioAlt() {
 	var vEmail	= $('#emailID').val();
-	$('#valID').val(0);
+	$('#valEmailID').val(0);
 
 	if (!vEmail){
 		$('#divEmailID').addClass('has-error');
@@ -322,9 +324,9 @@ function checkEmailUsuarioAlt() {
 	   		success: function(ret) {
 	   			var vData	= JSON.parse(ret);
 	   	    	if (vData.existe == 0) {
-	   	    		$('#valID').val(1);
+	   	    		$('#valEmailID').val(1);
 	   	    	}else{
-	   	    		$('#valID').val(0);
+	   	    		$('#valEmailID').val(0);
 	   	    	}
 	   		},
 	   		method: 'get',
@@ -332,9 +334,10 @@ function checkEmailUsuarioAlt() {
 	   		async:false
 	   });
 		
-		if ($('#valID').val() == 0) {
+		if ($('#valEmailID').val() == 0) {
+			zgAbreModal("%ROOT_URL%/Seg/usuarioEnviaConv.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val() + "&codOrganizacao=" + $('#codOrganizacaoID').val());
 			$('#divEmailID').addClass('has-error');
-			$('#divHelpEmailID').html(zgCriaSpanErro('Já existe um usuário cadastrado com esse e-mail! Certique-se que este e-mail nunca foi utilizado para cadastrar um usuário no sistema.'));
+			$('#divHelpEmailID').html(zgCriaSpanErro('Indentificamos em nosso sistema um usuário cadastrado com este EMAIL. Certifique-se que esteja digitando corretamente e clique em salvar para cadastrá-lo na organização'));
 			return false;
 		}else{
 			$('#divEmailID').removeClass('has-error');
@@ -349,7 +352,7 @@ function checkCpfUsuarioAlt() {
 	var vCpf		= $('#cpfID').val();
 	var vCodOrg		= $('#codOrganizacaoID').val();
 	var vCodUsuario	= $('#codUsuarioID').val();
-	$('#valID').val(0);
+	$('#valCpfID').val(0);
 
 	if (!vCpf){
 		$('#divCpfID').addClass('has-error');
@@ -368,9 +371,9 @@ function checkCpfUsuarioAlt() {
 	   		success: function(ret) {
 	   			var vData	= JSON.parse(ret);
 	   	    	if (vData.existe == 0) {
-	   	    		$('#valID').val(1);
+	   	    		$('#valCpfID').val(1);
 	   	    	}else{
-	   	    		$('#valID').val(0);
+	   	    		$('#valCpfID').val(0);
 	   	    	}
 	   		},
 	   		method: 'get',
@@ -378,7 +381,8 @@ function checkCpfUsuarioAlt() {
 	   		async:false
 	   });
 		
-		if ($('#valID').val() == 0) {
+		if ($('#valCpfID').val() == 0) {
+			zgAbreModal("%ROOT_URL%/Seg/usuarioEnviaConv.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val() + "&codOrganizacao=" + $('#codOrganizacaoID').val());
 			$('#divCpfID').addClass('has-error');
 			$('#divHelpCpfID').html(zgCriaSpanErro('CPF já utilizado.'));
 			return false;

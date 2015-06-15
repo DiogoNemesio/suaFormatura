@@ -17,7 +17,7 @@ include_once(BIN_PATH . 'auth.php');
 ## Resgata as variáveis postadas
 #################################################################################
 if (isset($_GET['cnpj']))			$cnpj			= \Zage\App\Util::antiInjection($_GET["cnpj"]);
-if (isset($_GET['codParceiro']))	$codParceiro	= \Zage\App\Util::antiInjection($_GET["codParceiro"]);
+if (isset($_GET['codOrganizacao']))	$codOrganizacao	= \Zage\App\Util::antiInjection($_GET["codOrganizacao"]);
 
 $array				= array();
 
@@ -35,7 +35,7 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
-if ($oCnpj != null && ($oCnpj->getCodigo() != $codParceiro)) {
+if ($oCnpj != null && ($oCnpj->getCodigo() != $codOrganizacao)) {
 	
 	$array["existe"]	= 1;
 	

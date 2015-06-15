@@ -53,8 +53,6 @@ if ($codParametro) {
 	$tamanho		= $info->getTamanho();
 	$obrigatorio	= ($info->getIndObrigatorio() 	== 1) ? "checked" : null;
 	
-	print_r($secao);
-	
 	if ($infoVal) {
 		$valores = null;
 		foreach ($infoVal as $val) {
@@ -149,6 +147,7 @@ $tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
 $tpl->set('COD_PARAMETRO'		,$codParametro);
 $tpl->set('PARAMETRO'			,$parametro);
+$tpl->set('COD_SECAO'			,$secao);
 $tpl->set('SECAO'				,$oSecao);
 $tpl->set('DESC_SECAO'			,$descSecao);
 $tpl->set('DESCRICAO'			,$descricao);

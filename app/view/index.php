@@ -103,7 +103,10 @@ $system->setDivCentral("zgDivCentral");
 #################################################################################
 ## Cria o objeto do Menu
 #################################################################################
-$menu	= \Zage\App\Menu::criar(\Zage\App\Menu\Tipo::TIPO2);
+$tipoMenu		= \Zage\Adm\Parametro::getValorUsuario("TIPO_MENU", $system->getCodUsuario());
+if (!$tipoMenu)	$tipoMenu	= \Zage\App\Menu\Tipo::TIPO2;
+
+$menu	= \Zage\App\Menu::criar($tipoMenu);
 $menu->setTarget($system->getDivCentral());
 
 #################################################################################

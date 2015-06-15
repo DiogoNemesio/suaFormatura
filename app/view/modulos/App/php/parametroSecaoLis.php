@@ -34,13 +34,13 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . '/Mco/'. basename(__FILE__);
+$url		= ROOT_URL . "/App/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$parametro	= $em->getRepository('Entidades\ZgappParametro')->findBy(array(), array('parametro' => 'ASC', 'codModulo' => 'ASC'));
+	$secoes	= $em->getRepository('Entidades\ZgappParametroSecao')->findBy(array(), array('nome' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -48,26 +48,23 @@ try {
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GParametro");
-$grid->adicionaTexto($tr->trans('PARAMETRO'),	 	18, $grid::CENTER	,'parametro');
-$grid->adicionaTexto($tr->trans('DESCRIÇÃO'), 		28, $grid::CENTER	,'descricao');
-$grid->adicionaTexto($tr->trans('MODULO'),	 		15, $grid::CENTER	,'codModulo:nome');
-$grid->adicionaTexto($tr->trans('SEÇÃO'),	 		15, $grid::CENTER	,'codSecao:nome');
-$grid->adicionaTexto($tr->trans('TIPO'),	 		10, $grid::CENTER	,'codTipo:nome');
-$grid->adicionaTexto($tr->trans('USO'),	 			10, $grid::CENTER	,'codUso:nome');
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GSecao");
+$grid->adicionaTexto($tr->trans('MÓDULO'),				30, $grid::CENTER	,'codModulo:nome');
+$grid->adicionaTexto($tr->trans('NOME'),				40, $grid::CENTER	,'nome');
+$grid->adicionaTexto($tr->trans('ORDEM'),				10, $grid::CENTER	,'ordem');
+$grid->adicionaTexto($tr->trans('ÍCONE'),				10, $grid::CENTER	,'icone');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($parametro);
+$grid->importaDadosDoctrine($secoes);
 
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($parametro); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParametro='.$parametro[$i]->getCodigo().'&url='.$url);
-	
-	$grid->setUrlCelula($i,6,ROOT_URL.'/App/parametroAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/App/parametroExc.php?id='.$uid);
+for ($i = 0; $i < sizeof($secoes); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codSecao='.$secoes[$i]->getCodigo().'&url='.$url);
+	$grid->setUrlCelula($i,4,ROOT_URL.'/App/parametroSecaoAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,5,ROOT_URL.'/App/parametroSecaoExc.php?id='.$uid);
 }
 
 #################################################################################
@@ -82,7 +79,7 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/App/parametroAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParametro=');
+$urlAdd			= ROOT_URL.'/App/parametroSecaoAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codSecao=');
 
 #################################################################################
 ## Carregando o template html
@@ -94,7 +91,7 @@ $tpl->load(HTML_PATH . 'templateLis.html');
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Parâmetros'));
+$tpl->set('NOME'			,$tr->trans("Seções de Configuração"));
 $tpl->set('URLADD'			,$urlAdd);
 $tpl->set('IC'				,$_icone_);
 

@@ -18,6 +18,7 @@ Use \Zend\Mime;
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['codOrganizacao'])) 	$codOrganizacao	= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
+if (isset($_POST['codUsuario'])) 		$codUsuario		= \Zage\App\Util::antiInjection($_POST['codUsuario']);
 if (isset($_POST['email'])) 			$usuario		= \Zage\App\Util::antiInjection($_POST['email']);
 if (isset($_POST['nome'])) 				$nome			= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['apelido']))			$apelido		= \Zage\App\Util::antiInjection($_POST['apelido']);
@@ -50,61 +51,122 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-/** Nome **/
-if (isset($nome) || !empty($nome)) {
-	if (strlen($nome) < 5){
-		if(strlen($nome) == 0){
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Nome deve ser preenchido!"));
-			$err	= 1;
-		}else{
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Nome muito pequeno, informe o nome completo !!"));
-			$err	= 1;
-		}
-	}elseif (strlen($nome) > 60){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Nome tem limite de 60 caracteres !!"));
-		$err	= 1;
-	}
-}
-
-/** Usuário (email) **/
-if (isset($usuario) || !empty($usuario)) {
-	if (strlen($usuario) == 0){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Email deve ser preenchido!"));
-		$err	= 1;
-	}elseif(\Zage\App\Util::validarEMail($usuario) == false){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email inválido"));
-		$err	= 1;
-	}
-}else{
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Email deve ser preenchido!"));
-	$err	= 1;
-}
-
-/** Perfil **/
-if (!isset($codPerfil) || empty($codPerfil)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Perfil deve ser informado!"));
-	$err	= 1;
-}
-
 /** Organização **/
 if (!isset($codOrganizacao) || empty($codOrganizacao)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Organização deve ser informada!"));
 	$err	= 1;
 }
 
+/** Usuário (email) **/
+if (!isset($usuario) || empty($usuario)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O email deve ser preenchido!"));
+	$err	= 1;
+}elseif (strlen($usuario) > 200){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O email não deve conter mais de 200 caracteres!"));
+	$err	= 1;
+}
+
+if(\Zage\App\Util::validarEMail($usuario) == false){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email inválido"));
+	$err	= 1;
+}else{
+	$oUsuario = $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
+	if($oUsuario != null && ($oUsuario->getCodigo() != $codUsuario)){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um usuário cadastrado com este EMAIL! Por favor,  verifique os dados informados."));
+		$err	= 1;
+	}
+}
+
+/** CPF **/
+$valCgc			= new \Zage\App\Validador\Cpf();
+if (empty($cpf)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CPF deve ser preenchido!"));
+	$err	= 1;
+}else{
+	if ($valCgc->isValid($cpf) == false) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("CPF inválido!"));
+		$err	= 1;
+	}else{
+		$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('cpf' => cpf));
+		if($oUsuario != null && ($oUsuario->getCodigo() != $codUsuario)){
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um usuário cadastrado com este CPF! Por favor,  verifique os dados informados."));
+			$err	= 1;
+		}
+	}
+}
+
+/** Nome **/
+if (!isset($nome) || empty($nome)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome deve ser preenchido!"));
+	$err	= 1;
+}elseif (strlen($nome) < 5){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Nome muito pequeno, informe o nome completo!"));
+	$err	= 1;
+}elseif (strlen($nome) > 100){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome não deve conter mais de 100 caracteres!"));
+	$err	= 1;
+}
+
+/** Apelido **/
+if (!isset($apelido) || empty($apelido)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O apelido deve ser preenchido!"));
+	$err	= 1;
+}elseif (strlen($apelido) > 60){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O apelido não deve conter mais de 60 caracteres!"));
+	$err	= 1;
+}
+
+/** Perfil **/
+if (!isset($codPerfil) || empty($codPerfil)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O perfil deve ser preenchido!"));
+	$err	= 1;
+}
+
+/** Sexo **/
+if (!isset($sexo) || empty($sexo)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O sexo deve ser preenchido!"));
+	$err	= 1;
+}
+
+/** ENDEREÇO **/
 if (isset($codLogradouro) && (!empty($codLogradouro))){
+	
+	/******* CEP *********/
 	if (!isset($cep) || (empty($cep))) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CEP deve ser preenchido!"));
 		$err	= 1;
-	}
-
-	if (!isset($descLogradouro) || (empty($descLogradouro))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Logradouro deve ser preenchido!"));
+	}elseif ((!empty($cep)) && (strlen($cep) > 8)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CEP não deve conter mais de 8 caracteres!"));
 		$err	= 1;
 	}
 
+	/******* LOGRADOURO *********/
+	if (!isset($descLogradouro) || (empty($descLogradouro))) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Logradouro deve ser preenchido!"));
+		$err	= 1;
+	}elseif ((!empty($descLogradouro)) && (strlen($descLogradouro) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O logradouro não deve conter mais de 100 caracteres!"));
+		$err	= 1;
+	}
+	
+	/******* BAIRRO *********/
 	if (!isset($bairro) || (empty($bairro))) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Bairro deve ser preenchido!"));
+		$err	= 1;
+	}elseif ((!empty($bairro)) && (strlen($bairro) > 60)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O bairro não deve conter mais de 60 caracteres!"));
+		$err	= 1;
+	}
+	
+	/******* NÚMERO *********/
+	if ((!empty($numero)) && (strlen($numero) > 10)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O número não deve conter mais de 10 caracteres!"));
+		$err	= 1;
+	}
+	
+	/******* COMPLEMENTO *********/
+	if ((!empty($complemento)) && (strlen($complemento) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O complemento do endereço não deve conter mais de 100 caracteres!"));
 		$err	= 1;
 	}
 
@@ -134,7 +196,6 @@ if ($err != null) {
 #################################################################################
 try {
 
-	
 	#################################################################################
 	## Verificar se o usuário já existe
 	#################################################################################
@@ -292,7 +353,6 @@ try {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
 		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
 	}
-	
 	
 	if ($enviarEmail) {
 	
