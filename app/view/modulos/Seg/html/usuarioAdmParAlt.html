@@ -335,7 +335,7 @@ function checkEmailUsuarioAlt() {
 	   });
 		
 		if ($('#valEmailID').val() == 0) {
-			zgAbreModal("%ROOT_URL%/Seg/usuarioEnviaConv.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val() + "&codOrganizacao=" + $('#codOrganizacaoID').val());
+			zgAbreModal("%ROOT_URL%/Seg/usuarioAdmParVer.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val() + "&codOrganizacao=" + $('#codOrganizacaoID').val());
 			$('#divEmailID').addClass('has-error');
 			$('#divHelpEmailID').html(zgCriaSpanErro('Indentificamos em nosso sistema um usuário cadastrado com este EMAIL. Certifique-se que esteja digitando corretamente e clique em salvar para cadastrá-lo na organização'));
 			return false;
@@ -382,7 +382,7 @@ function checkCpfUsuarioAlt() {
 	   });
 		
 		if ($('#valCpfID').val() == 0) {
-			zgAbreModal("%ROOT_URL%/Seg/usuarioEnviaConv.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val() + "&codOrganizacao=" + $('#codOrganizacaoID').val());
+			zgAbreModal("%ROOT_URL%/Seg/usuarioAdmParVer.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val() + "&codOrganizacao=" + $('#codOrganizacaoID').val());
 			$('#divCpfID').addClass('has-error');
 			$('#divHelpCpfID').html(zgCriaSpanErro('CPF já utilizado.'));
 			return false;

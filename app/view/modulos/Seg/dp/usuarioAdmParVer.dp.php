@@ -59,12 +59,17 @@ try {
 	#################################################################################
 	$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
 
+	if ($oUsuarioOrg->getCodStatus()->getCodigo() == A || $oUsuarioOrg->getCodStatus()->getCodigo()){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Este usuário já está associado a organização!'));
+		$err	= 1;
+	}
+	
 	if (!$oUsuarioOrg){
 		$enviarEmail		= true;
 		$associado 			= false;
 		$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 	}else{
-		if ($oUsuarioOrg->getCodStatus()->getCodigo() == P){
+		if ($oUsuarioOrg->getCodStatus()->getCodigo() == P || $oUsuarioOrg->getCodStatus()->getCodigo() == C){
 			$enviarEmail		= true;
 		}
 	}

@@ -41,19 +41,14 @@ $('#zgFormModalID').submit(function() {
 			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
 			zgLoadUrl('%URLVOLTAR%');
 			
-			$('#submitModalBlo').html('%BOTAO_INVERSO%');
-			$('#submitModalBlo').attr("disabled",false);
-			$('#cancelModalBlo').attr("disabled",false);
 		}else{
 			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
 			//zgLimpaModalAviso();
 			//zgMostraAviso("Fechar");
-			
-			
-			$('#submitModalBlo').html('%BOTAO%');
-			$('#submitModalBlo').attr("disabled",false);
-			$('#cancelModalBlo').attr("disabled",false);
 		}
+		
+		$('#submitModalBlo').html('%BOTAO%');
+		$('#cancelModalBlo').attr("disabled",false);
 				
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLoadUrl('%URLVOLTAR%');
