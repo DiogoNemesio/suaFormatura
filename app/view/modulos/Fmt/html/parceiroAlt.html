@@ -728,9 +728,13 @@ function validaParceiroAlt() {
 			$('#divRazaoID').removeClass('has-error');
 			$('#divHelpRazaoID').html('&nbsp;');
 		}
-		if(!vFantasia){
+		if(!vFantasia || vFantasia > 100){
 			$('#divFantasiaID').addClass('has-error');
-			$('#divHelpFantasiaID').html(zgCriaSpanErro('O nome fantasia deve ser preenchido!'));
+			if(!vFantasia){
+				$('#divHelpFantasiaID').html(zgCriaSpanErro('O nome fantasia deve ser preenchido!'));
+			}else if (vFantasia.length > 100){
+				$('#divHelpFantasiaID').html(zgCriaSpanErro('O nome fantasia não deve conter mais de 100 caracteres!'));
+			}
 			vOK		= false;
 			vTab 	= 0;
 		}else{
