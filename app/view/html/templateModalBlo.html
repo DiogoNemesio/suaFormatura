@@ -1,0 +1,70 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-check red"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 250px;">
+	<input type="hidden" name="%VAR%" value="%VAR_VALUE%">
+	<input type="hidden" name="%VAR2%" value="%VAR_VALUE2%">
+	<input type="hidden" name="%VAR3%" value="%VAR_VALUE3%">
+	<input type="hidden" name="id" value="%ID%">
+	
+	<div id="divMsgCPPagID">
+    </div>
+    
+    <h4>%TEXTO%</h4>
+    <br>
+    <h5>%OBSERVACAO%</h5>
+    	
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-danger" id="submitModalBlo">%BOTAO%</button>
+	<button type="button" data-dismiss="modal" class="btn" id="cancelModalBlo">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#zgFormModalID').submit(function() {
+	
+	$('#submitModalBlo').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#submitModalBlo').attr("disabled","disabled");
+	$('#cancelModalBlo').attr("disabled","disabled");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
+			zgLoadUrl('%URLVOLTAR%');
+			
+			$('#submitModalBlo').html('%BOTAO_INVERSO%');
+			$('#submitModalBlo').attr("disabled",false);
+			$('#cancelModalBlo').attr("disabled",false);
+		}else{
+			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
+			//zgLimpaModalAviso();
+			//zgMostraAviso("Fechar");
+			
+			
+			$('#submitModalBlo').html('%BOTAO%');
+			$('#submitModalBlo').attr("disabled",false);
+			$('#cancelModalBlo').attr("disabled",false);
+		}
+				
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URLVOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+</script>

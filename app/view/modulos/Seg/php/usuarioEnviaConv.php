@@ -117,7 +117,7 @@ if($oUsuarioOrg){
 ## Urls
 #################################################################################
 $vid				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao.'&url='.$url);
-$urlVoltar			= ROOT_URL . "/Fmt/parceiroUsuarioLis.php?id=".$vid;
+$urlVoltar			= ROOT_URL . "/Seg/usuarioAdmParLis.php?id=".$vid;
 
 #################################################################################
 ## Carregando o template html

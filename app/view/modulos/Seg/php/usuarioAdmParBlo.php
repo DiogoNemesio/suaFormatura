@@ -1,4 +1,5 @@
 <?php
+use Zage\App\Grid\Coluna\Botao;
 #################################################################################
 ## Includes
 #################################################################################
@@ -49,15 +50,30 @@ if (!isset($codOrganizacao)) 		{
 try {
 
 	$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
+	$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
 	
 	if (!$info) 	{
 		\Zage\App\Erro::halt($tr->trans('Usuário não existe'));
 	}
 	
-	$podeRemover	= null;
-	$mensagem		= $tr->trans('Deseja realmente excluir o usuário').': <b>'.$info->getNome().'</b> ?';
-	$observacao		= $tr->trans('Está operação excluirá definitivamente o usuário do sistema. Caso queria apenas suspender temporariamente, faça uso do botão de bloqueio.');
-	$classe			= "text-warning";
+	if ($oUsuAdm->getCodStatus()->getCodigo() == B){
+		$podeRemover	= null;
+		$titulo			= 'Desbloqueio de usuário';
+		$mensagem		= $tr->trans('Deseja realmente desbloquear o usuário').': <b>'.$info->getNome().'</b> ?';
+		$observacao		= $tr->trans('Está operação desbloqueará o acesso do usuário ao sistema.');
+		$classe			= "text-warning";
+		$botao			= '<i class="fa fa-unlock bigger-110"></i> Desbloquear ';
+		$botaoInverso	= '<i class="fa fa-lock bigger-110"></i> Bloquear ';
+	}else{
+		$titulo			= 'Bloqueio de usuário';
+		$podeRemover	= null;
+		$mensagem		= $tr->trans('Deseja realmente bloquear o usuário').': <b>'.$info->getNome().'</b> ?';
+		$observacao		= $tr->trans('Está operação bloqueará o acesso do usuário ao sistema.');
+		$classe			= "text-warning";
+		$botao			= '<i class="fa fa-lock bigger-110"></i> Bloquear ';
+		$botaoInverso	= '<i class="fa fa-unlock bigger-110"></i> Desbloquear ';
+	}
+	
 
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
@@ -73,7 +89,7 @@ $urlVoltar			= ROOT_URL . "/Seg/usuarioAdmParLis.php?id=".$uid;
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . '/templateModalExc.html');
+$tpl->load(HTML_PATH . '/templateModalBlo.html');
 
 #################################################################################
 ## Define os valores das variáveis
@@ -81,11 +97,13 @@ $tpl->load(HTML_PATH . '/templateModalExc.html');
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('PODE_REMOVER'		,$podeRemover);
-$tpl->set('TITULO'				,$tr->trans('Exclusão de Usuário'));
+$tpl->set('TITULO'				,$titulo);
 $tpl->set('ID'					,$id);
 $tpl->set('TEXTO'				,$mensagem);
 $tpl->set('OBSERVACAO'			,$observacao);
 $tpl->set('CLASSE'				,$classe);
+$tpl->set('BOTAO'				,$botao);
+$tpl->set('BOTAO_INVERSO'		,$botaoInverso);
 $tpl->set('VAR'					,'codUsuario');
 $tpl->set('VAR_VALUE'			,$info->getCodigo());
 $tpl->set('VAR2'				,'codOrganizacao');

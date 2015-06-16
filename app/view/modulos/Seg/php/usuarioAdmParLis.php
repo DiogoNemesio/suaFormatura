@@ -34,7 +34,7 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . '/Rhu/'. basename(__FILE__);
+$url		= ROOT_URL . '/Seg/'. basename(__FILE__);
 
 #################################################################################
 ## Resgata informações de organização
@@ -63,6 +63,7 @@ $grid->adicionaTexto($tr->trans('EMAIL'),				20, $grid::CENTER	,'codUsuario:usua
 $grid->adicionaTexto($tr->trans('CPF'),					15, $grid::CENTER	,'codUsuario:cpf');
 $grid->adicionaTexto($tr->trans('CADASTRO'),			10, $grid::CENTER	,'codUsuario:codStatus:descricao');
 $grid->adicionaTexto($tr->trans('ASSOCIAÇÃO'),			10, $grid::CENTER	,'codStatus:descricao');
+$grid->adicionaIcone(null,'fa fa-lock red',$tr->trans('Bloquear usuário'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($usuario);
@@ -77,8 +78,9 @@ for ($i = 0; $i < sizeof($usuario); $i++) {
 	$valor	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($usuario[$i]->getCodUsuario()->getCpf());
 	$grid->setValorCelula($i,2,$valor);
 	
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Seg/usuarioCad.php?id='.$uid);
-	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioExc.php?id=".$uid."');");
+	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioAdmParBlo.php?id=".$uid."');");
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Seg/usuarioCad.php?id='.$uid);
+	$grid->setUrlCelula($i,7,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioExc.php?id=".$uid."');");
 }
 
 #################################################################################
@@ -101,9 +103,9 @@ $urlAdd			= ROOT_URL.'/Seg/usuarioCad.php?id='.\Zage\App\Util::encodeUrl('_codMe
 $urlVoltar			= ROOT_URL.'/Fmt/parceiroLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao=');
 
 #################################################################################
-## Gerar a url voltar
+## Gerar a url atualizar
 #################################################################################
-$urlAtualizar			= ROOT_URL.'/Fmt/parceiroUsuarioLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao);
+$urlAtualizar			= ROOT_URL.'/Seg/usuarioAdmParLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao);
 
 #################################################################################
 ## Carregando o template html
