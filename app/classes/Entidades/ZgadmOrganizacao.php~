@@ -38,7 +38,7 @@ class ZgadmOrganizacao
     /**
      * @var string
      *
-     * @ORM\Column(name="RAZAO", type="string", length=60, nullable=true)
+     * @ORM\Column(name="RAZAO", type="string", length=100, nullable=true)
      */
     private $razao;
 
