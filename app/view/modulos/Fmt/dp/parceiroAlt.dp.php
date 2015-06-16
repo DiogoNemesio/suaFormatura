@@ -69,7 +69,7 @@ $err	= false;
 if (!isset($ident) || (empty($ident))) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A identificação deve ser preenchida!"));
 	$err	= 1;
-}elseif ((!empty($ident)) && (strlen($ident) > 100)) {
+}elseif ((!empty($ident)) && (strlen($ident) > 60)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A identificação não deve conter mais de 60 caracteres!"));
 	$err	= 1;
 }else{

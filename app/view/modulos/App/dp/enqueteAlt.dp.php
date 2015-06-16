@@ -64,19 +64,6 @@ if ((empty($tamanho))) {
 	}
 }
 
-/** Data 
-if (!isset($dataCadastro) || (empty($dataCadastro))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo DATA CADASTRO é obrigatório");
-	$err	= 1;
-}else{
-	$valData	= new \Zage\App\Validador\DataBR();
-	
-	if ($valData->isValid($dataCadastro) == false) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo DATA CADASTRO inválido");
-		$err	= 1;
-	}
-}
-**/
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  	exit;
@@ -95,7 +82,7 @@ try {
  	}
  	
  	if (!empty($dataPrazo)) {
- 		$dataPrazo		= DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataPrazo);
+ 		$dataPrazo		= DateTime::createFromFormat("Y-m-d H:i:s", $dataPrazo);
  	}else{
  		$dataPrazo		= null;
  	}
@@ -110,7 +97,7 @@ try {
  	$oEnquete->setPergunta($pergunta);
  	$oEnquete->setDescricao($descricao);
  	$oEnquete->setDataCadastro(new \DateTime("now"));
- 	$oEnquete->setDataPrazo($dataPrazo);
+ 	$oEnquete->setDataPrazo(new \DateTime($dataPrazo));
  	$oEnquete->setTamanho($tamanho);
  	
  	$em->persist($oEnquete);
