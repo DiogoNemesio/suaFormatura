@@ -23,6 +23,7 @@
 		<timezone>America/Maceio</timezone>
 		<locale>pt_BR.utf8</locale>
 		<datetimeFormat>d/m/Y H:i:s</datetimeFormat>
+		<datetimeSimplesFormat>d/m/Y H:i</datetimeSimplesFormat>
 		<dateFormat>d/m/Y</dateFormat>
 		<maskDateFormat>dd/mm/yy</maskDateFormat>
 		<jsDateFormat>DD/MM/YYYY</jsDateFormat>

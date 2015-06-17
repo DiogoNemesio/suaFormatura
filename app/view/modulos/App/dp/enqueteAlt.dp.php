@@ -18,6 +18,7 @@ if (isset($_POST['codTipo'])) 			$codTipo			= \Zage\App\Util::antiInjection($_PO
 if (isset($_POST['dataPrazo']))			$dataPrazo			= \Zage\App\Util::antiInjection($_POST['dataPrazo']);
 if (isset($_POST['tamanho']))			$tamanho			= \Zage\App\Util::antiInjection($_POST['tamanho']);
 if (isset($_POST['valores'])) 			$valores			= \Zage\App\Util::antiInjection($_POST['valores']);
+
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -82,7 +83,7 @@ try {
  	}
  	
  	if (!empty($dataPrazo)) {
- 		$dataPrazo		= DateTime::createFromFormat("Y-m-d H:i:s", $dataPrazo);
+ 		$dataPrazo		= DateTime::createFromFormat($system->config["data"]["datetimeSimplesFormat"], $dataPrazo);
  	}else{
  		$dataPrazo		= null;
  	}
@@ -97,7 +98,7 @@ try {
  	$oEnquete->setPergunta($pergunta);
  	$oEnquete->setDescricao($descricao);
  	$oEnquete->setDataCadastro(new \DateTime("now"));
- 	$oEnquete->setDataPrazo(new \DateTime($dataPrazo));
+ 	$oEnquete->setDataPrazo($dataPrazo);
  	$oEnquete->setTamanho($tamanho);
  	
  	$em->persist($oEnquete);

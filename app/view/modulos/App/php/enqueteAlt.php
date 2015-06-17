@@ -48,7 +48,7 @@ if (!empty($codEnquete)) {
 	}
 	/** Pergunta **/
 	$descricao		= $info->getDescricao();
-	$dataPrazo		= ($info->getDataPrazo() != null) ? $info->getDataPrazo()->format($system->config["data"]["dateFormat"]) : null;
+	$dataPrazo		= ($info->getDataPrazo() != null) ? $info->getDataPrazo()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
 	$codTipo		= ($info->getCodTipo()) ? $info->getCodTipo()->getCodigo() : null;
 	$pergunta		= ($info->getPergunta()) ? $info->getPergunta() : null;	
 	$tamanho		= $info->getTamanho();
