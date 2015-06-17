@@ -158,7 +158,9 @@ function validaEnqueteAlt() {
 	var vCodTipo		= $('#codTipoID').val();
 	var vValores		= $('#valoresID').val();
 	var vTamanho    	= $('#tamanhoID').val();
-	
+	var vData	    	= $('#date-timepicker').val();
+	var	data			= new Date();
+	var vDataAtual		= data.getDate() + "/" + data.getMonth() + "/" + data.getFullYear() + " " + data.getHours() + ":" + data.getMinutes();
 	var vOK				= true;
 	var vIdent;
 	
@@ -216,6 +218,16 @@ function validaEnqueteAlt() {
 	}else{
 		$('#divTamanhoID').removeClass('has-error');
 		$('#divHelpTamanhoID').html('&nbsp;');
+	}
+	
+	//Data
+	if (vData < vDataAtual) {
+		$('#divDataPrazoID').addClass('has-error');
+		$('#divHelpDataPrazoID').html(zgCriaSpanErro('Data termino deve ser maior que a data atual !!!'));
+		vOK		= false;
+	}else{
+		$('#divDataPrazoID').removeClass('has-error');
+		$('#divHelpDataPrazoID').html('&nbsp;');		
 	}
 	
 	if (vOK == true) {

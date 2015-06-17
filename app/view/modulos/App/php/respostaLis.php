@@ -37,14 +37,17 @@ $system->checaPermissao($_codMenu_);
 $url		= ROOT_URL . "/App/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
+if (!isset($codEnquete)) \Zage\App\Erro::halt('Falta de Parâmetros');
+
+#################################################################################
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$respostas	= $em->getRepository('Entidades\ZgappEnqueteResposta')->findAll();
+	$respostas	= $em->getRepository('Entidades\ZgappEnqueteResposta')->findBy(array('codPergunta' => $codEnquete));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-	
+
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GRes");
@@ -77,13 +80,24 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/App/respostaAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codResposta=');
+$urlAdd			= ROOT_URL.'/App/respostaAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete='.$codEnquete.'&codResposta=');
+
+#################################################################################
+## Gerar a url voltar
+#################################################################################
+$urlVoltar			= ROOT_URL.'/App/enqueteLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete=');
+
+#################################################################################
+## Gerar a url atualizar
+#################################################################################
+$urlAtualizar			= ROOT_URL.'/App/respostaLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete='.$codEnquete);
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+//$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
@@ -91,6 +105,8 @@ $tpl->load(HTML_PATH . 'templateLis.html');
 $tpl->set('GRID'			,$htmlGrid);
 $tpl->set('NOME'			,$tr->trans("Resultados Enquete"));
 $tpl->set('URLADD'			,$urlAdd);
+$tpl->set('URL_VOLTAR'		,$urlVoltar);
+$tpl->set('URL_ATUALIZAR'	,$urlAtualizar);
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

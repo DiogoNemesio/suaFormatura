@@ -50,6 +50,12 @@ if (!isset($codTipo) || (empty($codTipo))) {
 	$err	= 1;
 }
 
+/** Data **/
+if ((isset($dataPrazo) || (!empty($dataPrazo))) && $dataPrazo < date('d/m/Y H:i')) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Data termino deve ser maior que a data atual!!!");
+	$err	= 1;
+}
+
 /** Tamanho **/
 if ((empty($tamanho))) {
 	$tamanho = null;

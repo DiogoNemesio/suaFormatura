@@ -56,8 +56,8 @@ $grid->adicionaDataHora($tr->trans('DATA PRAZO'),		10, $grid::CENTER	,'dataPrazo
 $grid->adicionaTexto($tr->trans('STATUS'),			10, $grid::CENTER	,'codStatus:descricao');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaIcone(null,'fa fa-level-up',$tr->trans('Finalizar'));
-$grid->adicionaIcone(null,'fa fa-level-up',$tr->trans('Resultados'));
-$grid->adicionaIcone(null,'fa fa-level-up',$tr->trans('Resultados'));
+$grid->adicionaIcone(null,'fa fa-list',$tr->trans('Respostas'));
+$grid->adicionaIcone(null,'fa fa-pie-chart',$tr->trans('Resultados'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($enquetes);
 
@@ -68,7 +68,7 @@ for ($i = 0; $i < sizeof($enquetes); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete='.$enquetes[$i]->getCodigo().'&url='.$url);
 	$grid->setUrlCelula($i,5,ROOT_URL.'/App/enqueteAlt.php?id='.$uid);
 	$grid->setUrlCelula($i,6,ROOT_URL.'/App/enqueteFin.php?id='.$uid);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/App/enqueteResLis.php?id='.$uid);
+	$grid->setUrlCelula($i,7,ROOT_URL.'/App/respostaLis.php?id='.$uid);
 	$grid->setUrlCelula($i,8,ROOT_URL.'/App/enqueteRes.php?id='.$uid);
 	$grid->setUrlCelula($i,9,ROOT_URL.'/App/enqueteExc.php?id='.$uid);
 }
