@@ -13,13 +13,20 @@ use Doctrine\ORM\Mapping as ORM;
 class ZgfinArquivoVariavel
 {
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="CODIGO", type="string", length=20, nullable=false)
+     * @ORM\Column(name="CODIGO", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="VARIAVEL", type="string", length=20, nullable=true)
+     */
+    private $variavel;
 
     /**
      * @var string
@@ -32,11 +39,34 @@ class ZgfinArquivoVariavel
     /**
      * Get codigo
      *
-     * @return string 
+     * @return integer 
      */
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set variavel
+     *
+     * @param string $variavel
+     * @return ZgfinArquivoVariavel
+     */
+    public function setVariavel($variavel)
+    {
+        $this->variavel = $variavel;
+
+        return $this;
+    }
+
+    /**
+     * Get variavel
+     *
+     * @return string 
+     */
+    public function getVariavel()
+    {
+        return $this->variavel;
     }
 
     /**

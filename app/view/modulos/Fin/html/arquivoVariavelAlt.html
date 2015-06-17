@@ -1,0 +1,196 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Variável 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codVariavelID" name="codVariavel" value="%COD_VARIAVEL%">
+				<input type='hidden' id='valID'>
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divVariavelID">
+						    	<label class="col-sm-3 control-label" for="variavelID">Variável</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome da Variável (sem espaços)"></i></span>
+				   					<input class="form-control" id="variavelID" type="text" name="variavel" placeholder="Variavel" maxlength="20" value="%VARIAVEL%" required autocomplete="off" onblur="checkVariavelAlt();" zg-data-toggle="mask" zg-data-mask="variavel" />	
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpVariavelID"></div>
+				    		</div>
+				    	</div>
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divDescricaoID">
+						    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da variável"></i></span>
+					    			<input class="form-control" type="text" name="descricao" id="descricaoID" placeholder="Descrição" value="%DESCRICAO%" maxlength="100" autocomplete="off" />
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
+						    </div>
+				    	</div>						  
+				    </div>
+
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({"autoclose": true});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+/************************* Submit Formulário *************************/
+ 
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+
+	var vOk 	= validaVariavelAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codVariavelID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Variável', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+
+function checkVariavelAlt() {
+	var vVariavel	= $('#variavelID').val();
+	$('#valID').val(0);
+	
+	if (vVariavel.length == 0 || vVariavel.length > 60 ) {
+		$('#divVariavelID').addClass('has-error');
+		if (vVariavel.length == 0){
+			$('#divHelpVariavelID').html(zgCriaSpanErro('Variavel deve ser preenchido !!!'));
+		}else if (vVariavel.length > 20){
+			$('#divHelpVariavelID').html(zgCriaSpanErro('Variavel deve ter no máximo 20 caracteres !!!'));
+		}
+		return false;
+	}else{	
+		/** Verificar se o Descricao está disponível no banco **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Fin/arquivoVariavelValidaNome.dp.php",
+	   		data: {  codVariavel: $('#codVariavelID').val() , variavel: $('#variavelID').val()},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divVariavelID').addClass('has-error');
+		$('#divHelpVariavelID').html(zgCriaSpanErro('Variavel já existe, escolha outro'));
+		return false;
+	}else{
+		$('#divVariavelID').removeClass('has-error');
+		$('#divHelpVariavelID').html('&nbsp;');
+		return true;
+	}
+}
+
+
+function validaVariavelAlt() {
+	var vVariavel			= $('#variavelID').val();
+	var vDescricao			= $('#descricaoID').val();
+	var vOK				= true;
+	var vIdent;
+	
+	// Variavel
+	if (!vVariavel) {
+		$('#divVariavelID').addClass('has-error');
+		$('#divHelpVariavelID').html(zgCriaSpanErro('Variavel deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divVariavelID').removeClass('has-error');
+		$('#divHelpVariavelID').html('&nbsp;');
+	}
+	
+	vVariavelCheck	= checkVariavelAlt();
+	
+	if (vOK == true) {
+		return vVariavelCheck ;
+	}else{
+		return vOK;
+	}	
+}
+
+</script>
+

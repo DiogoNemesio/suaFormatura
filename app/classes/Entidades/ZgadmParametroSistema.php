@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmParametroSistema
  *
- * @ORM\Table(name="ZGADM_PARAMETRO_SISTEMA", indexes={@ORM\Index(name="fk_ZGADM_PARAMETRO_SISTEMA_1", columns={"COD_PARAMETRO"})})
+ * @ORM\Table(name="ZGADM_PARAMETRO_SISTEMA", indexes={@ORM\Index(name="IDX_9575F1CE8D9357D0", columns={"COD_PARAMETRO"})})
  * @ORM\Entity
  */
 class ZgadmParametroSistema
