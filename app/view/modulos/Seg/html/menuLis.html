@@ -125,9 +125,9 @@ $('#menuTree').on('select_node.jstree', function (e, data) {
 });
 
 $('#menuTree').on('hover_node.jstree', function (e, data) {
-	var vNome = data.node.original.zgNome + '&nbsp;&nbsp;&nbsp;<a class="fa fa-caret-down" onmouseover="mostraMenuContexto(\\''+data.node.id+'\\');"></a>';
-	//mostraMenuContexto(data.node.id);
-	$('#menuTree').jstree('set_text',data.node.id , vNome);
+	//alert("Hover");
+	//var vNome = data.node.original.zgNome + '&nbsp;&nbsp;&nbsp;<a class="fa fa-caret-down" onmouseover="mostraMenuContexto(\\''+data.node.id+'\\');"></a>';
+	//$('#menuTree').jstree('set_text',data.node.id , vNome);
 });
 
 function mostraMenuContexto(id) {
@@ -136,8 +136,8 @@ function mostraMenuContexto(id) {
 
 
 $('#menuTree').on('dehover_node.jstree', function (e, data) {
-	//alert(JSON.stringify(data));
-	$('#menuTree').jstree('set_text',data.node.id , data.node.original.zgNome);
+	//alert("Dehover");
+	//$('#menuTree').jstree('set_text',data.node.id , data.node.original.zgNome);
 });
 
 
