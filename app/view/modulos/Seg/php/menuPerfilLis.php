@@ -41,10 +41,6 @@ if (isset($_GET['codMenu'])) 		$codMenu		= \Zage\App\Util::antiInjection($_GET['
 #################################################################################
 ## Resgata os parâmetros passados
 #################################################################################
-if (!isset($codModulo)) {
-	\Zage\App\Erro::halt('Falta de parâmetros 2');
-}
-
 if (!isset($codMenu)) {
 	\Zage\App\Erro::halt('Falta de parâmetros 3');
 }
@@ -84,8 +80,8 @@ try {
 	
 	if ( (\Zage\Seg\Menu::estaAssociado($codMenu,$codPerfil,$codTipoOrg) == true) || (!$codMenu) ) {
 		
-		$associados		= \Zage\Seg\Menu::listaAssociados($codModulo,$codPerfil,$codMenu,$codTipoOrg);
-		$disponiveis	= \Zage\Seg\Menu::listaDisponiveis($codModulo,$codPerfil,$codMenu,$codTipoOrg);
+		$associados		= \Zage\Seg\Menu::listaAssociados($codPerfil,$codMenu,$codTipoOrg);
+		$disponiveis	= \Zage\Seg\Menu::listaDisponiveis($codPerfil,$codMenu,$codTipoOrg);
 		
 		$liAss			= "";
 		$liDis			= "";
@@ -135,7 +131,7 @@ try {
 ## Resgata a url desse script
 #################################################################################
 $url			= ROOT_URL."/Seg/".basename(__FILE__)."?id=".$id;
-$uid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPerfil='.$codPerfil.'&codTipoOrg='.$codTipoOrg.'&codMenu='.$codMenu.'&codModulo='.$codModulo);
+$uid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPerfil='.$codPerfil.'&codTipoOrg='.$codTipoOrg.'&codMenu='.$codMenu);
 $dpUrl			= \Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO)."?id=".$uid;
 
 #################################################################################

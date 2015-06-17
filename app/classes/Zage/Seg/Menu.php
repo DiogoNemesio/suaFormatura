@@ -41,7 +41,7 @@ class Menu {
     /**
      * Lista os menus já associados ao perfil
      */
-    public static function listaAssociados ($codModulo,$codPerfil,$codMenuPai,$codTipoOrg) {
+    public static function listaAssociados ($codPerfil,$codMenuPai,$codTipoOrg) {
     	global $em,$system;
     
     	$qb 	= $em->createQueryBuilder();
@@ -54,7 +54,6 @@ class Menu {
     	->from('\Entidades\ZgappMenu','m')
     	->leftJoin('\Entidades\ZgappMenuPerfil', 'mp', \Doctrine\ORM\Query\Expr\Join::WITH, 'm.codigo = mp.codMenu')
     	->where($qb->expr()->andX(
-   			$qb->expr()->eq('m.codModulo'				, ':codModulo'),
    			$qb->expr()->eq('mp.codPerfil'				, ':codPerfil'),
    			$qb->expr()->eq('mp.codTipoOrganizacao'		, ':codTipoOrg'),
    			$qb->expr()->eq('m.indFixo'					, '0')
@@ -65,10 +64,7 @@ class Menu {
     	->addOrderBy('mp.ordem', 'ASC')
     	
     	->setParameter('codPerfil'	, $codPerfil)
-    	->setParameter('codTipoOrg', $codTipoOrg)
-    	->setParameter('codModulo'	, $codModulo);
-    	
-    	
+    	->setParameter('codTipoOrg', $codTipoOrg);
     	
     	if (!$codMenuPai) {
     		$qb->andWhere(
@@ -86,7 +82,7 @@ class Menu {
     /**
      * Lista os menus disponíveis (não associados ao perfil)
      */
-    public static function listaDisponiveis ($codModulo,$codPerfil,$codMenuPai,$codTipoOrg) {
+    public static function listaDisponiveis ($codPerfil,$codMenuPai,$codTipoOrg) {
     	global $em,$system,$log;
     
     	$qb 	= $em->createQueryBuilder();
@@ -99,23 +95,20 @@ class Menu {
     	
     	/** Sub Query para retirar os menus já associados **/
     	$qb2->select('m2.codigo')
-    	->from('\Entidades\ZgappMenuPerfil','mp')
-    	->leftJoin('\Entidades\ZgappMenu', 'm2', \Doctrine\ORM\Query\Expr\Join::WITH, 'mp.codMenu = m2.codigo')
-    	->where($qb2->expr()->eq('mp.codPerfil',':codPerfil'));
+    		->from('\Entidades\ZgappMenuPerfil','mp')
+    		->leftJoin('\Entidades\ZgappMenu', 'm2', \Doctrine\ORM\Query\Expr\Join::WITH, 'mp.codMenu = m2.codigo')
+    		->where($qb2->expr()->eq('mp.codPerfil',':codPerfil'));
     	$qb2->andWhere($qb2->expr()->eq('mp.codTipoOrganizacao',':codTipoOrg'));
     	
     	$qb->select('m')
     	->from('\Entidades\ZgappMenu','m')
     	->where($qb->expr()->andX(
-   			$qb->expr()->eq('m.codModulo'		, ':codModulo'),
    			$qb->expr()->eq('m.indFixo'			, '0'),
    			$qb->expr()->notIn('m.codigo', $qb2->getDQL())
     	))
     	->orderBy('m.nome', 'ASC')
     	->setParameter('codPerfil'	, $codPerfil)
-    	->setParameter('codTipoOrg', $codTipoOrg)
-    	->setParameter('codModulo'	, $codModulo);
-    	 
+    	->setParameter('codTipoOrg', $codTipoOrg);
     	 
     	if (!$codMenuPai) {
     		$qb->andWhere('m.codMenuPai is null');

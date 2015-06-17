@@ -1,7 +1,7 @@
 /**
  * ### Checkbox plugin
  *
- * This plugin renders checkbox icons in front of each node, making multiple selection much easier. 
+ * This plugin renders checkbox icons in front of each node, making multiple selection much easier.
  * It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.
  */
 /*globals jQuery, define, exports, require, document */
@@ -55,15 +55,15 @@
 		 */
 		keep_selected_style	: true,
 		/**
-		 * This setting controls how cascading and undetermined nodes are applied. 
-		 * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used. 
+		 * This setting controls how cascading and undetermined nodes are applied.
+		 * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used.
 		 * If `three_state` is set to `true` this setting is automatically set to 'up+down+undetermined'. Defaults to ''.
 		 * @name $.jstree.defaults.checkbox.cascade
 		 * @plugin checkbox
 		 */
 		cascade				: '',
 		/**
-		 * This setting controls if checkbox are bound to the general tree selection or to an internal array maintained by the checkbox plugin. Defaults to `true`, only set to `false` if you know exactly what you are doing. 
+		 * This setting controls if checkbox are bound to the general tree selection or to an internal array maintained by the checkbox plugin. Defaults to `true`, only set to `false` if you know exactly what you are doing.
 		 * @name $.jstree.defaults.checkbox.tie_selection
 		 * @plugin checkbox
 		 */
@@ -106,7 +106,7 @@
 							dpc = data.nodes,
 							i, j;
 						for(i = 0, j = dpc.length; i < j; i++) {
-							m[dpc[i]].state.checked = (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);
+							m[dpc[i]].state.checked = m[dpc[i]].state.checked || (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);
 							if(m[dpc[i]].state.checked) {
 								this._data.checkbox.selected.push(dpc[i]);
 							}
@@ -378,10 +378,16 @@
 		 * @plugin checkbox
 		 */
 		this._undetermined = function () {
-			var i, j, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;
+			if(this.element === null) { return; }
+			var i, j, k, l, o = {}, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;
 			for(i = 0, j = s.length; i < j; i++) {
 				if(m[s[i]] && m[s[i]].parents) {
-					p = p.concat(m[s[i]].parents);
+					for(k = 0, l = m[s[i]].parents.length; k < l; k++) {
+						if(o[m[s[i]].parents[k]] === undefined && m[s[i]].parents[k] !== '#') {
+							o[m[s[i]].parents[k]] = true;
+							p.push(m[s[i]].parents[k]);
+						}
+					}
 				}
 			}
 			// attempt for server side undetermined state
@@ -390,22 +396,36 @@
 					var tmp = tt.get_node(this), tmp2;
 					if(!tmp.state.loaded) {
 						if(tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {
-							p.push(tmp.id);
-							p = p.concat(tmp.parents);
+							if(o[tmp.id] === undefined && tmp.id !== '#') {
+								o[tmp.id] = true;
+								p.push(tmp.id);
+							}
+							for(k = 0, l = tmp.parents.length; k < l; k++) {
+								if(o[tmp.parents[k]] === undefined && tmp.parents[k] !== '#') {
+									o[tmp.parents[k]] = true;
+									p.push(tmp.parents[k]);
+								}
+							}
 						}
 					}
 					else {
 						for(i = 0, j = tmp.children_d.length; i < j; i++) {
 							tmp2 = m[tmp.children_d[i]];
 							if(!tmp2.state.loaded && tmp2.original && tmp2.original.state && tmp2.original.state.undetermined && tmp2.original.state.undetermined === true) {
-								p.push(tmp2.id);
-								p = p.concat(tmp2.parents);
+								if(o[tmp2.id] === undefined && tmp2.id !== '#') {
+									o[tmp2.id] = true;
+									p.push(tmp2.id);
+								}
+								for(k = 0, l = tmp2.parents.length; k < l; k++) {
+									if(o[tmp2.parents[k]] === undefined && tmp2.parents[k] !== '#') {
+										o[tmp2.parents[k]] = true;
+										p.push(tmp2.parents[k]);
+									}
+								}
 							}
 						}
 					}
 				});
-			p = $.vakata.array_unique(p);
-			p = $.vakata.array_remove_item(p,'#');
 
 			this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
 			for(i = 0, j = p.length; i < j; i++) {
@@ -420,7 +440,7 @@
 		this.redraw_node = function(obj, deep, is_callback, force_render) {
 			obj = parent.redraw_node.apply(this, arguments);
 			if(obj) {
-				var i, j, tmp = null;
+				var i, j, tmp = null, icon = null;
 				for(i = 0, j = obj.childNodes.length; i < j; i++) {
 					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
 						tmp = obj.childNodes[i];
@@ -429,7 +449,9 @@
 				}
 				if(tmp) {
 					if(!this.settings.checkbox.tie_selection && this._model.data[obj.id].state.checked) { tmp.className += ' jstree-checked'; }
-					tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
+					icon = _i.cloneNode(false);
+					if(this._model.data[obj.id].state.checkbox_disabled) { icon.className += ' jstree-checkbox-disabled'; }
+					tmp.insertBefore(icon, tmp.childNodes[0]);
 				}
 			}
 			if(!is_callback && this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {
@@ -478,8 +500,83 @@
 			}
 			return false;
 		};
+		/**
+		 * disable a node's checkbox
+		 * @name disable_checkbox(obj)
+		 * @param {mixed} obj an array can be used too
+		 * @trigger disable_checkbox.jstree
+		 * @plugin checkbox
+		 */
+		this.disable_checkbox = function (obj) {
+			var t1, t2, dom;
+			if($.isArray(obj)) {
+				obj = obj.slice();
+				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
+					this.disable_checkbox(obj[t1]);
+				}
+				return true;
+			}
+			obj = this.get_node(obj);
+			if(!obj || obj.id === '#') {
+				return false;
+			}
+			dom = this.get_node(obj, true);
+			if(!obj.state.checkbox_disabled) {
+				obj.state.checkbox_disabled = true;
+				if(dom && dom.length) {
+					dom.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-checkbox-disabled');
+				}
+				/**
+				 * triggered when an node's checkbox is disabled
+				 * @event
+				 * @name disable_checkbox.jstree
+				 * @param {Object} node
+				 * @plugin checkbox
+				 */
+				this.trigger('disable_checkbox', { 'node' : obj });
+			}
+		};
+		/**
+		 * enable a node's checkbox
+		 * @name disable_checkbox(obj)
+		 * @param {mixed} obj an array can be used too
+		 * @trigger enable_checkbox.jstree
+		 * @plugin checkbox
+		 */
+		this.enable_checkbox = function (obj) {
+			var t1, t2, dom;
+			if($.isArray(obj)) {
+				obj = obj.slice();
+				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
+					this.enable_checkbox(obj[t1]);
+				}
+				return true;
+			}
+			obj = this.get_node(obj);
+			if(!obj || obj.id === '#') {
+				return false;
+			}
+			dom = this.get_node(obj, true);
+			if(obj.state.checkbox_disabled) {
+				obj.state.checkbox_disabled = false;
+				if(dom && dom.length) {
+					dom.children('.jstree-anchor').children('.jstree-checkbox').removeClass('jstree-checkbox-disabled');
+				}
+				/**
+				 * triggered when an node's checkbox is enabled
+				 * @event
+				 * @name enable_checkbox.jstree
+				 * @param {Object} node
+				 * @plugin checkbox
+				 */
+				this.trigger('enable_checkbox', { 'node' : obj });
+			}
+		};
 
 		this.activate_node = function (obj, e) {
+			if($(e.target).hasClass('jstree-checkbox-disabled')) {
+				return false;
+			}
 			if(this.settings.checkbox.tie_selection && (this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox'))) {
 				e.ctrlKey = true;
 			}
@@ -732,9 +829,16 @@
 					});
 				}
 				delete state.checkbox;
+				this.set_state(state, callback);
 				return false;
 			}
 			return res;
+		};
+		this.refresh = function (skip_loading, forget_state) {
+			if(!this.settings.checkbox.tie_selection) {
+				this._data.checkbox.selected = [];
+			}
+			return parent.refresh.apply(this, arguments);
 		};
 	};
 
