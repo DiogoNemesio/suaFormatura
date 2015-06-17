@@ -38,15 +38,10 @@ $system->checaPermissao($_codMenu_);
 if (isset($_GET['codTipo']))		$codTipo		= \Zage\App\Util::antiInjection($_GET['codTipo']);
 if (isset($_GET['codMenuPai'])) 	$codMenuPai		= \Zage\App\Util::antiInjection($_GET['codMenuPai']);
 if (isset($_GET['codMenu'])) 		$codMenu		= \Zage\App\Util::antiInjection($_GET['codMenu']);
-if (isset($_GET['codModulo'])) 		$codModulo		= \Zage\App\Util::antiInjection($_GET['codModulo']);
 
 
 if (!isset($codTipo)) {
 	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codTipo)');
-}
-
-if (!isset($codModulo)) {
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codModulo)');
 }
 
 #################################################################################
@@ -119,7 +114,6 @@ $tpl->set('ICONE'				,$menu->getIcone());
 $tpl->set('LINK'				,$menu->getLink());
 $tpl->set('READONLY'			,$ro);
 $tpl->set('COD_TIPO'			,$codTipo);
-$tpl->set('COD_MODULO'			,$codModulo);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 

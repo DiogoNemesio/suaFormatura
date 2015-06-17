@@ -6,12 +6,6 @@
 					<div id="filtroID">%FILTRO%</div>
 				</div><!-- /btn-group -->
 				
-				<div class="pull-left col-sm-6">
-					<select onchange="buscaArvore();" class="select2" style="width:100%;" id="moduloID" name="modulo" data-rel="select2">
-					%MODULOS%
-					</select>
-				</div>
-				
 				<div class="nav-search minimized pull-right" id="nav-search">
 					<form class="form-search" id="formBuscaID" onsubmit="return buscaArvore();">
 						<span class="input-icon">
@@ -164,38 +158,38 @@ function selecionaItem(pCodItem,pCodPasta) {
 function criaMenu(pIdPasta) {
 	$('#menuTree').jstree('deselect_all',true);
 	$('#menuTree').jstree('select_node',pIdPasta);
-	zgAbreModal('%ROOT_URL%/Seg/menuAlt.php?id=%ID%&codTipo=M&codModulo=%COD_MODULO%&codMenuPai='+$('#codMenuSelID').val());
+	zgAbreModal('%ROOT_URL%/Seg/menuAlt.php?id=%ID%&codTipo=M&codMenuPai='+$('#codMenuSelID').val());
 
 }
 
 function alteraMenu(pIdPasta) {
 	$('#menuTree').jstree('deselect_all',true);
 	$('#menuTree').jstree('select_node',pIdPasta);
-	zgAbreModal('%ROOT_URL%/Seg/menuAlt.php?id=%ID%&codTipo=M&codModulo=%COD_MODULO%&codMenu='+$('#codMenuSelID').val());
+	zgAbreModal('%ROOT_URL%/Seg/menuAlt.php?id=%ID%&codTipo=M&codMenu='+$('#codMenuSelID').val());
 }
 
 function excluiMenu(pIdPasta) {
 	$('#menuTree').jstree('deselect_all',true);
 	$('#menuTree').jstree('select_node',pIdPasta);
-	zgAbreModal('%ROOT_URL%/Seg/menuExc.php?id=%ID%&codTipo=M&codModulo=%COD_MODULO%&codMenu='+$('#codMenuSelID').val());
+	zgAbreModal('%ROOT_URL%/Seg/menuExc.php?id=%ID%&codTipo=M&codMenu='+$('#codMenuSelID').val());
 }
 
 function criaLink(pIdPasta) {
 	$('#menuTree').jstree('deselect_all',true);
 	$('#menuTree').jstree('select_node',pIdPasta);
-	zgAbreModal('%ROOT_URL%/Seg/menuAlt.php?id=%ID%&codTipo=L&codModulo=%COD_MODULO%&codMenuPai='+$('#codMenuSelID').val());
+	zgAbreModal('%ROOT_URL%/Seg/menuAlt.php?id=%ID%&codTipo=L&codMenuPai='+$('#codMenuSelID').val());
 }
 
 function alteraLink(pIdTipo) {
 	$('#menuTree').jstree('deselect_all',true);
 	$('#menuTree').jstree('select_node',pIdTipo);
-	zgAbreModal('%ROOT_URL%/Seg/menuAlt.php?id=%ID%&codTipo=L&codModulo=%COD_MODULO%&codMenu='+$('#codLinkSelID').val()+'&codMenuPai='+$('#codMenuSelID').val());
+	zgAbreModal('%ROOT_URL%/Seg/menuAlt.php?id=%ID%&codTipo=L&codMenu='+$('#codLinkSelID').val()+'&codMenuPai='+$('#codMenuSelID').val());
 }
 
 function excluiLink(pIdTipo) {
 	$('#menuTree').jstree('deselect_all',true);
 	$('#menuTree').jstree('select_node',pIdTipo);
-	zgAbreModal('%ROOT_URL%/Seg/menuExc.php?id=%ID%&codTipo=L&codModulo=%COD_MODULO%&codMenu='+$('#codLinkSelID').val()+'&codMenuPai='+$('#codMenuSelID').val());
+	zgAbreModal('%ROOT_URL%/Seg/menuExc.php?id=%ID%&codTipo=L&codMenu='+$('#codLinkSelID').val()+'&codMenuPai='+$('#codMenuSelID').val());
 }
 
 $('#formBuscaID').submit(function() {
@@ -203,7 +197,7 @@ $('#formBuscaID').submit(function() {
 });
 
 function buscaArvore() {
-	zgLoadUrl('%URL%&codModulo='+$('#moduloID').val()+'&busca='+$('#nav-search-input').val());
+	zgLoadUrl('%URL%&busca='+$('#nav-search-input').val());
 	return false;
 }
 

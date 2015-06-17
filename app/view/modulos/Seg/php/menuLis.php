@@ -35,7 +35,6 @@ $system->checaPermissao($_codMenu_);
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
 if (isset($_GET['busca'])) 			$busca		= \Zage\App\Util::antiInjection($_GET['busca']);
-if (isset($_GET['codModulo'])) 		$codModulo	= \Zage\App\Util::antiInjection($_GET['codModulo']);
 
 #################################################################################
 ## Resgata os parâmetros passados
@@ -48,20 +47,9 @@ if (isset($_GET['codPasta'])) 		$codPastaSel	= \Zage\App\Util::antiInjection($_G
 #################################################################################
 try {
 
-	$modulos	= $em->getRepository('Entidades\ZgappModulo')->findAll();
-
-	if (isset($codModulo) && (!empty($codModulo))) {
-		$_SESSION["_segCodModulo"]	= $codModulo;
-	}elseif (!isset($_SESSION["_segCodModulo"]) || (empty($_SESSION["_segCodModulo"]))) {
-		$codModulo 					= $modulos[0]->getCodigo();
-		$_SESSION["_segCodModulo"]	= $codModulo;
-	}else{
-		$codModulo		= $_SESSION["_segCodModulo"];
-	}
-	
 	$arvore		= new \Zage\App\Arvore();
 	$arvore->exibirRaiz(true);
-	$menus		= $em->getRepository('Entidades\ZgappMenu')->findBy(array('indFixo' => 0,'codTipo' => "M",'codModulo' => $codModulo),array('nivel' => 'ASC','codigo' => 'ASC'));
+	$menus		= $em->getRepository('Entidades\ZgappMenu')->findBy(array('indFixo' => 0,'codTipo' => "M"),array('nivel' => 'ASC','codigo' => 'ASC'));
 	
 	for ($i = 0; $i < sizeof($menus); $i++) {
 		$pastaMae	= ($menus[$i]->getCodMenuPai()) ? $menus[$i]->getCodMenuPai()->getCodigo() : null;
@@ -74,7 +62,7 @@ try {
 		}
 	}
 	
-	$links	 = $em->getRepository('Entidades\ZgappMenu')->findBy(array('indFixo' => 0,'codTipo' => "L",'codModulo' => $codModulo,"codMenuPai" => null),array('nivel' => 'ASC','codigo' => 'ASC'));
+	$links	 = $em->getRepository('Entidades\ZgappMenu')->findBy(array('indFixo' => 0,'codTipo' => "L","codMenuPai" => null),array('nivel' => 'ASC','codigo' => 'ASC'));
 	for ($j = 0; $j < sizeof($links); $j++) {
 		$pastaMae	= ($links[$j]->getCodMenuPai()) ? $links[$j]->getCodMenuPai()->getCodigo() : null;
 		$arvore->adicionaItem($links[$j]->getCodigo(),$links[$j]->getNome(), $pastaMae);
@@ -96,17 +84,6 @@ if (!isset($codPastaSel)) {
 }
 
 
-#################################################################################
-## Select dos módulos
-#################################################################################
-try {
-	$oModulos	= $system->geraHtmlCombo($modulos,	'CODIGO', 'NOME', $codModulo, null);
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-
 if (isset($busca) && (!empty($busca))) {
 	$filtro = '<button class="btn btn-white btn-info" onclick="buscaArvore();"><i class="ace-icon fa fa-times bigger-120 red"></i>Filtro: '.$busca.'</button>';
 }else{
@@ -116,7 +93,7 @@ if (isset($busca) && (!empty($busca))) {
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$pid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codModulo='.$codModulo);
+$pid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 $url			= ROOT_URL."/Seg/".basename(__FILE__)."?id=".$id;
 $menuPerfilUrl	= ROOT_URL."/Seg/menuPerfilLis.php?id=".$pid;
 
@@ -137,8 +114,6 @@ $tpl->set('TARGET'				,$system->getDivCentral());
 $tpl->set('URL'					,$url);
 $tpl->set('COD_PASTA_SEL'		,$codPastaSel);
 $tpl->set('COD_PASTA_RAIZ'		,\Zage\App\Arvore::_codPastaRaiz);
-$tpl->set('MODULOS'				,$oModulos);
-$tpl->set('COD_MODULO'			,$codModulo);
 $tpl->set('FILTRO'				,$filtro);
 $tpl->set('MENU_PERFIL_URL'		,$menuPerfilUrl);
 
