@@ -77,7 +77,6 @@ $urlVoltar			= ROOT_URL."/App/respostaLis.php?id=".$id;
 ## Url Novo
 #################################################################################
 $uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codResposta=');
-$urlNovo			= ROOT_URL."/App/respostaAlt.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
@@ -90,13 +89,13 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
-$tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
 $tpl->set('COD_RESPOSTA'		,$codResposta);
 $tpl->set('RESPOSTA'			,$resposta);
 $tpl->set('DATA_RESPOSTA'		,$dataResposta);
 $tpl->set('COD_USUARIO'			,$codUsuario);
 $tpl->set('COD_PERGUNTA'		,$oPergunta);
+$tpl->set('PERGUNTA'			,$pergunta);
 
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
