@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
 }elseif (isset($id)) 	{
 	$id = \Zage\App\Util::antiInjection($id);
 }else{
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros'));
+	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
 
 #################################################################################
@@ -31,100 +31,72 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
+#################################################################################
+## Resgata a url desse script
+#################################################################################
+$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
-## Resgata os parâmetros passados pelo formulario de pesquisa
-#################################################################################
-if (isset($_GET['codTipo']))		$codTipo		= \Zage\App\Util::antiInjection($_GET['codTipo']);
-if (isset($_GET['codMenuPai'])) 	$codMenuPai		= \Zage\App\Util::antiInjection($_GET['codMenuPai']);
-if (isset($_GET['codMenu'])) 		$codMenu		= \Zage\App\Util::antiInjection($_GET['codMenu']);
-if (isset($_GET['codModulo'])) 		$codModulo		= \Zage\App\Util::antiInjection($_GET['codModulo']);
-
-
-if (!isset($codTipo)) {
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codTipo)');
-}
-
-if (!isset($codModulo)) {
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codModulo)');
-}
-
-#################################################################################
-## Resgata as informações do banco
+## Resgata os dados do grid
 #################################################################################
 try {
-
-	if (isset($codMenuPai) && $codMenuPai != null) {
-		$menuPai		= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenuPai));
-		if (!$menuPai) $menuPai			= new \Entidades\ZgappMenu();
-	}else{
-		$menuPai		= new \Entidades\ZgappMenu();
-	}
+	$layouts	= $em->getRepository('Entidades\ZgfinArquivoLayout')->findBy(array(), array('nome' => 'ASC'));
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
 	
-	if (isset($codMenu) && $codMenu != null) {
-		$menu			= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenu));
-		if (!$menu) 	$menu	= new \Entidades\ZgappMenu();
-	}else{
-		$menu			= new \Entidades\ZgappMenu();
-	}
+#################################################################################
+## Cria o objeto do Grid (bootstrap)
+#################################################################################
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GLayout");
+$grid->adicionaTexto($tr->trans('TIPO DO LAYOUT'),		30, $grid::CENTER	,'codTipoLayout:nome');
+$grid->adicionaTexto($tr->trans('BANCO'),				20, $grid::CENTER	,'codBanco:nome');
+$grid->adicionaTexto($tr->trans('NOME'),				40, $grid::CENTER	,'nome');
+$grid->adicionaIcone('', 'fa fa-money', 'Carteiras associadas');
+$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
+$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
+$grid->importaDadosDoctrine($layouts);
 
-	if ($codTipo == "M") {
-		$ro		= "readonly";
-	}elseif ($codTipo == "L") {
-		$ro		= null;
-	}else{
-		\Zage\App\Erro::halt($tr->trans('Tipo de menu desconhecido'));
-	}
-	
+
+#################################################################################
+## Popula os valores dos botões
+#################################################################################
+for ($i = 0; $i < sizeof($layouts); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codLayout='.$layouts[$i]->getCodigo().'&url='.$url);
+	$grid->setUrlCelula($i,3,ROOT_URL.'/Fin/arquivoLayoutCar.php?id='.$uid);
+	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/arquivoLayoutAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/arquivoLayoutExc.php?id='.$uid);
+}
+
+#################################################################################
+## Gerar o código html do grid
+#################################################################################
+try {
+	$htmlGrid	= $grid->getHtmlCode();
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
-
 #################################################################################
-## Select dos Tipos de Menu
+## Gerar a url de adicão
 #################################################################################
-/*try {
-	$tipos	= $em->getRepository('Entidades\ZgappMenuTipo')->findAll();
-	$oTipos	= $system->geraHtmlCombo($tipos,	'CODIGO', 'NOME', $codTipo, null);
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}*/
-
-#################################################################################
-## Url do Botão Voltar
-#################################################################################
-$urlVoltar		= ROOT_URL."/Seg/menuLis.php?id=".$id;
-
+$urlAdd			= ROOT_URL.'/Fin/arquivoLayoutAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codLayout=');
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
+$tpl->load(HTML_PATH . 'templateLis.html');
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
-$tpl->set('URL_VOLTAR'			,$urlVoltar);
-$tpl->set('TITULO'				,$tr->trans('Gerenciamento de Menu'));
-$tpl->set('ID'					,$id);
-$tpl->set('COD_MENU_PAI'		,$menuPai->getCodigo());
-$tpl->set('COD_MENU'			,$menu->getCodigo());
-$tpl->set('NOME'				,$menu->getNome());
-$tpl->set('DESCRICAO'			,$menu->getDescricao());
-$tpl->set('ICONE'				,$menu->getIcone());
-$tpl->set('LINK'				,$menu->getLink());
-$tpl->set('READONLY'			,$ro);
-$tpl->set('COD_TIPO'			,$codTipo);
-$tpl->set('COD_MODULO'			,$codModulo);
-$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-
+$tpl->set('GRID'			,$htmlGrid);
+$tpl->set('NOME'			,$tr->trans("Layouts"));
+$tpl->set('URLADD'			,$urlAdd);
+$tpl->set('IC'				,$_icone_);
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
-

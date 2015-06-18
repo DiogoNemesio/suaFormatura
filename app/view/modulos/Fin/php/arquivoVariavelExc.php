@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
 }elseif (isset($id)) 	{
 	$id = \Zage\App\Util::antiInjection($id);
 }else{
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros'));
+	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
 
 #################################################################################
@@ -31,22 +31,11 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codTipo']))		$codTipo		= \Zage\App\Util::antiInjection($_GET['codTipo']);
-if (isset($_GET['codMenuPai'])) 	$codMenuPai		= \Zage\App\Util::antiInjection($_GET['codMenuPai']);
-if (isset($_GET['codMenu'])) 		$codMenu		= \Zage\App\Util::antiInjection($_GET['codMenu']);
-if (isset($_GET['codModulo'])) 		$codModulo		= \Zage\App\Util::antiInjection($_GET['codModulo']);
-
-
-if (!isset($codTipo)) {
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codTipo)');
-}
-
-if (!isset($codModulo)) {
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codModulo)');
+if (!isset($codVariavel)) 		{
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_VARIAVEL)');
 }
 
 #################################################################################
@@ -54,72 +43,54 @@ if (!isset($codModulo)) {
 #################################################################################
 try {
 
-	if (isset($codMenuPai) && $codMenuPai != null) {
-		$menuPai		= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenuPai));
-		if (!$menuPai) $menuPai			= new \Entidades\ZgappMenu();
-	}else{
-		$menuPai		= new \Entidades\ZgappMenu();
+	$info			= $em->getRepository('Entidades\ZgfinArquivoVariavel')->findOneBy(array('codigo' => $codVariavel));
+	
+	if (!$info) 	{
+		\Zage\App\Erro::halt($tr->trans('Variável não existe'));
 	}
 	
-	if (isset($codMenu) && $codMenu != null) {
-		$menu			= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenu));
-		if (!$menu) 	$menu	= new \Entidades\ZgappMenu();
-	}else{
-		$menu			= new \Entidades\ZgappMenu();
-	}
+	$layout			= $em->getRepository('Entidades\ZgfinArquivoLayoutRegistro')->findOneBy(array('codVariavel' => $codVariavel));
 
-	if ($codTipo == "M") {
-		$ro		= "readonly";
-	}elseif ($codTipo == "L") {
-		$ro		= null;
+	if (!empty($layout)) {
+		$podeRemover	= 'disabled';
+		$mensagem		= $tr->trans('Variável "%s" está em uso e não pode ser excluída (REGISTRO DE LAYOUT)',array('%s' => $info->getVariavel()));
+		$classe			= "text-danger";
 	}else{
-		\Zage\App\Erro::halt($tr->trans('Tipo de menu desconhecido'));
+		$podeRemover	= null;
+		$mensagem		= $tr->trans('Deseja realmente excluir a variável').': <em><b>'.$info->getVariavel().'</b></em> ?';
+		$classe			= "text-warning";
 	}
+	
 	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
-
-#################################################################################
-## Select dos Tipos de Menu
-#################################################################################
-/*try {
-	$tipos	= $em->getRepository('Entidades\ZgappMenuTipo')->findAll();
-	$oTipos	= $system->geraHtmlCombo($tipos,	'CODIGO', 'NOME', $codTipo, null);
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}*/
-
 #################################################################################
 ## Url do Botão Voltar
 #################################################################################
-$urlVoltar		= ROOT_URL."/Seg/menuLis.php?id=".$id;
-
+$urlVoltar			= ROOT_URL."/Fin/arquivoVariavelLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
+$tpl->load(HTML_PATH . '/templateExc.html');
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
-$tpl->set('URL_VOLTAR'			,$urlVoltar);
-$tpl->set('TITULO'				,$tr->trans('Gerenciamento de Menu'));
+$tpl->set('URLVOLTAR'			,$urlVoltar);
+$tpl->set('PODE_REMOVER'		,$podeRemover);
+$tpl->set('TITULO'				,$tr->trans('Exclusão de Variável'));
 $tpl->set('ID'					,$id);
-$tpl->set('COD_MENU_PAI'		,$menuPai->getCodigo());
-$tpl->set('COD_MENU'			,$menu->getCodigo());
-$tpl->set('NOME'				,$menu->getNome());
-$tpl->set('DESCRICAO'			,$menu->getDescricao());
-$tpl->set('ICONE'				,$menu->getIcone());
-$tpl->set('LINK'				,$menu->getLink());
-$tpl->set('READONLY'			,$ro);
-$tpl->set('COD_TIPO'			,$codTipo);
-$tpl->set('COD_MODULO'			,$codModulo);
+$tpl->set('TEXTO'				,$mensagem);
+$tpl->set('MENSAGEM'			,$mensagem);
+$tpl->set('CLASSE'				,$classe);
+$tpl->set('VAR'					,'codVariavel');
+$tpl->set('VAR_VALUE'			,$info->getCodigo());
+$tpl->set('NOME'				,$info->getVariavel());
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 

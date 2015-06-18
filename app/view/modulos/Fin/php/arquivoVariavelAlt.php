@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
 }elseif (isset($id)) 	{
 	$id = \Zage\App\Util::antiInjection($id);
 }else{
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros'));
+	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
 
 #################################################################################
@@ -31,72 +31,40 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-
 #################################################################################
-## Resgata os parâmetros passados pelo formulario de pesquisa
+## Verificar parâmetro obrigatório
 #################################################################################
-if (isset($_GET['codTipo']))		$codTipo		= \Zage\App\Util::antiInjection($_GET['codTipo']);
-if (isset($_GET['codMenuPai'])) 	$codMenuPai		= \Zage\App\Util::antiInjection($_GET['codMenuPai']);
-if (isset($_GET['codMenu'])) 		$codMenu		= \Zage\App\Util::antiInjection($_GET['codMenu']);
-if (isset($_GET['codModulo'])) 		$codModulo		= \Zage\App\Util::antiInjection($_GET['codModulo']);
+if (!isset($codVariavel)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 
-
-if (!isset($codTipo)) {
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codTipo)');
-}
-
-if (!isset($codModulo)) {
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codModulo)');
-}
 
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-try {
-
-	if (isset($codMenuPai) && $codMenuPai != null) {
-		$menuPai		= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenuPai));
-		if (!$menuPai) $menuPai			= new \Entidades\ZgappMenu();
-	}else{
-		$menuPai		= new \Entidades\ZgappMenu();
-	}
-	
-	if (isset($codMenu) && $codMenu != null) {
-		$menu			= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenu));
-		if (!$menu) 	$menu	= new \Entidades\ZgappMenu();
-	}else{
-		$menu			= new \Entidades\ZgappMenu();
+if (!empty($codVariavel)) {
+	try {
+		$info = $em->getRepository('Entidades\ZgfinArquivoVariavel')->findOneBy(array('codigo' => $codVariavel));
+	} catch (\Exception $e) {
+		\Zage\App\Erro::halt($e->getMessage());
 	}
 
-	if ($codTipo == "M") {
-		$ro		= "readonly";
-	}elseif ($codTipo == "L") {
-		$ro		= null;
-	}else{
-		\Zage\App\Erro::halt($tr->trans('Tipo de menu desconhecido'));
-	}
+	$variavel		= $info->getVariavel();
+	$descricao		= $info->getDescricao();
 	
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
+}else{
+	$variavel		= null;
+	$descricao		= null;
 }
 
+#################################################################################
+## Url Voltar
+#################################################################################
+$urlVoltar			= ROOT_URL."/Fin/arquivoVariavelLis.php?id=".$id;
 
 #################################################################################
-## Select dos Tipos de Menu
+## Url Novo
 #################################################################################
-/*try {
-	$tipos	= $em->getRepository('Entidades\ZgappMenuTipo')->findAll();
-	$oTipos	= $system->geraHtmlCombo($tipos,	'CODIGO', 'NOME', $codTipo, null);
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}*/
-
-#################################################################################
-## Url do Botão Voltar
-#################################################################################
-$urlVoltar		= ROOT_URL."/Seg/menuLis.php?id=".$id;
-
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codVariavel=');
+$urlNovo			= ROOT_URL."/Fin/arquivoVariavelAlt.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
@@ -108,18 +76,15 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
-$tpl->set('URL_VOLTAR'			,$urlVoltar);
-$tpl->set('TITULO'				,$tr->trans('Gerenciamento de Menu'));
+$tpl->set('URLVOLTAR'			,$urlVoltar);
+$tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
-$tpl->set('COD_MENU_PAI'		,$menuPai->getCodigo());
-$tpl->set('COD_MENU'			,$menu->getCodigo());
-$tpl->set('NOME'				,$menu->getNome());
-$tpl->set('DESCRICAO'			,$menu->getDescricao());
-$tpl->set('ICONE'				,$menu->getIcone());
-$tpl->set('LINK'				,$menu->getLink());
-$tpl->set('READONLY'			,$ro);
-$tpl->set('COD_TIPO'			,$codTipo);
-$tpl->set('COD_MODULO'			,$codModulo);
+$tpl->set('COD_VARIAVEL'		,$codVariavel);
+$tpl->set('VARIAVEL'			,$variavel);
+$tpl->set('DESCRICAO'			,$descricao);
+$tpl->set('APP_BS_TA_MINLENGTH'	,\Zage\Adm\Parametro::getValor('APP_BS_TA_MINLENGTH'));
+$tpl->set('APP_BS_TA_ITENS'		,\Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS'));
+$tpl->set('APP_BS_TA_TIMEOUT'	,\Zage\Adm\Parametro::getValor('APP_BS_TA_TIMEOUT'));
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 

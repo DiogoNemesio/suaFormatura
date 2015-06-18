@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmParametroSistema
  *
- * @ORM\Table(name="ZGADM_PARAMETRO_SISTEMA", indexes={@ORM\Index(name="fk_ZGADM_PARAMETRO_SISTEMA_1", columns={"COD_PARAMETRO"})})
+ * @ORM\Table(name="ZGADM_PARAMETRO_SISTEMA", indexes={@ORM\Index(name="fk_ZGADM_PARAMETRO_SISTEMA_1_idx", columns={"COD_PARAMETRO"})})
  * @ORM\Entity
  */
 class ZgadmParametroSistema
@@ -24,7 +24,7 @@ class ZgadmParametroSistema
     /**
      * @var string
      *
-     * @ORM\Column(name="VALOR", type="string", length=400, nullable=true)
+     * @ORM\Column(name="VALOR", type="string", length=400, nullable=false)
      */
     private $valor;
 

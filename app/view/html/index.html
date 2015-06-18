@@ -81,7 +81,7 @@
 	<!-- <link href="%PKG_URL%/TableTools-2.2.3/css/dataTables.tableTools.min.css" media="screen" rel="stylesheet" type="text/css" />  -->
 
 	<!-- Vakata JSTree -->
-	<link href="%PKG_URL%/vakata-jstree/dist/themes/zage/style.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="%PKG_URL%/vakata-jstree/dist/themes/zage/style.min.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="%PKG_URL%/vakata-jstree/dist/themes/zage/zage.css" media="screen" rel="stylesheet" type="text/css" />
 	
 	
@@ -176,6 +176,7 @@
 			'9': {pattern: /[0-9]/, optional: true}, 
 			'#': {pattern: /\\d/, recursive: true}, 
 			'T': {pattern: /[a-zA-Z0-9]/, recursive: true},
+			'V': {pattern: /[a-zA-Z0-9_]/, recursive: true},
 			'~': {pattern: /[+-]/, optional: true},
 			'A': {pattern: /[A-Z]/},
 			'a': {pattern: /[a-z]/},
