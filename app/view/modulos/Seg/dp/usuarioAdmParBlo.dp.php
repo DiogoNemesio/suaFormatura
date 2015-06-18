@@ -37,13 +37,13 @@ try {
 	}
 	
 	/*** Verificar se a organização tem associação com o usuario ***/
-	$oUsuAdm	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
+	$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
 	
-	if (!$oUsuAdm) {
+	if (!$oUsuOrg) {
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Esta operação não pode ser concluída, porque não existe uma associação entre o usuário e a organização."))));
 		$err = 1;
 	}else{
-		if ($oUsuAdm->getCodStatus()->getCodigo() != B && $oUsuAdm->getCodStatus()->getCodigo() != A ){		
+		if ($oUsuOrg->getCodStatus()->getCodigo() != B && $oUsuOrg->getCodStatus()->getCodigo() != A ){		
 			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Está operação não pode ser concluída, porque a associação entre a organização e o usuário não está ativa."))));
 			$err = 1;				
 		}
@@ -57,21 +57,21 @@ try {
 	#################################################################################
 	## Bloquear usuario
 	#################################################################################
-	if ($oUsuAdm->getCodStatus()->getCodigo() == A){
+	if ($oUsuOrg->getCodStatus()->getCodigo() == A){
 		$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'B'));
 		
-		$oUsuAdm->setCodStatus($oStatus);
-		$oUsuAdm->setDataBloqueio(new \DateTime());
-		$em->persist($oUsuAdm);
+		$oUsuOrg->setCodStatus($oStatus);
+		$oUsuOrg->setDataBloqueio(new \DateTime());
+		$em->persist($oUsuOrg);
 		
 		$mensagem = 'Usu&aacute;rio bloqueado com sucesso!';
 		
-	}elseif ($oUsuAdm->getCodStatus()->getCodigo() == B){
+	}elseif ($oUsuOrg->getCodStatus()->getCodigo() == B){
 		$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'A'));
 		
-		$oUsuAdm->setCodStatus($oStatus);
-		$oUsuAdm->setDataBloqueio(null);
-		$em->persist($oUsuAdm);
+		$oUsuOrg->setCodStatus($oStatus);
+		$oUsuOrg->setDataBloqueio(null);
+		$em->persist($oUsuOrg);
 		
 		$mensagem = 'Usu&aacute;rio desbloqueado com sucesso!';
 	}
@@ -86,4 +86,3 @@ try {
 
 
 echo '0'.\Zage\App\Util::encodeUrl('||'. $mensagem);
-

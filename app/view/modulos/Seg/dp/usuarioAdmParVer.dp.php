@@ -174,5 +174,4 @@ try {
 }
 
 
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Usuário associado com sucesso!"));
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuarioOrg->getCodigo().'|');
+echo '0'.\Zage\App\Util::encodeUrl('||'. 'Usu&aacute;rio associado com sucesso!');

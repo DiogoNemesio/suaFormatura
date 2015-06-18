@@ -131,6 +131,11 @@ for ($i = 0; $i < sizeof($mascaras); $i++) {
 $htmlMask = substr($htmlMask, 0 , -1);
 
 
+#################################################################################
+## Urls
+#################################################################################
+$org = $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+$urlRedirecionar	= ROOT_URL . "/".$org->getIdentificacao();
 
 
 #################################################################################
@@ -144,6 +149,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('REDIRECIONAR'		,$urlRedirecionar);
 $tpl->set('USUARIO'				,$oUsuario->getUsuario());
 $tpl->set('NOME'				,$oUsuario->getNome());
 $tpl->set('SEXO'				,$oSexo);

@@ -50,30 +50,31 @@ if (!isset($codOrganizacao)) 		{
 try {
 
 	$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
-	$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
+	$oUsuOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
 	
 	if (!$info) 	{
 		\Zage\App\Erro::halt($tr->trans('Usuário não existe'));
 	}
 	
-	if ($oUsuAdm->getCodStatus()->getCodigo() == B){
+	if ($oUsuOrg->getCodStatus()->getCodigo() == P || $info->getCodStatus()->getCodigo() == P){
 		$submit			= null;
-		$titulo			= 'Desbloqueio de usuário';
-		$icone			= '<i class="fa fa-unlock red"></i>';
-		$mensagem		= $tr->trans('Deseja realmente desbloquear o usuário').': <b>'.$info->getNome().'</b> ?';
-		$observacao		= $tr->trans('Está operação libera o acesso do usuário ao sistema .');
+		$titulo			= 'Envio de convite';
+		$icone			= '<i class="fa fa-envelope blue"></i>';
+		$mensagem		= $tr->trans('Deseja enviar um novo convite para o usuário').': <b>'.$info->getNome().'</b> ?';
+		$observacao		= $tr->trans('Está operação enviará um email com um novo convite para o usuário.');
 		$classe			= "text-warning";
-		$botao			= '<i class="fa fa-unlock bigger-110"></i> Desbloquear ';
-		$botaoClasse	= 'btn btn-danger';
-	}else{
-		$submit			= null;
-		$titulo			= 'Bloqueio de usuário';
-		$icone			= '<i class="fa fa-lock red"></i>';
-		$mensagem		= $tr->trans('Deseja realmente bloquear o usuário').': <b>'.$info->getNome().'</b> ?';
-		$observacao		= $tr->trans('Está operação bloqueará o acesso do usuário ao sistema.');
+		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';
+		$botaoClasse	= 'btn btn-success';
+	} else{
+		$submit			= 'disabled';
+		$icone			= '<i class="fa fa-envelope blue"></i>';
+		$titulo			= 'Envio de convite';
+		$enviar			= 'disabled';
+		$mensagem		= 'Usuario de <b>'.$info->getNome().'</b> já associado!';
+		$observacao		= 'Este usuário já possui o cadastro e a associação ativada.';
 		$classe			= "text-warning";
-		$botao			= '<i class="fa fa-lock bigger-110"></i> Bloquear ';
-		$botaoClasse	= 'btn btn-danger';
+		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';
+		$botaoClasse	= 'btn btn-success';
 	}
 	
 
@@ -97,8 +98,8 @@ $tpl->load(HTML_PATH . '/templateModal.html');
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('GRID'				,$htmlGrid);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
-$tpl->set('SUBMIT'				,$submit);
 $tpl->set('TITULO'				,$titulo);
 $tpl->set('ICONE'				,$icone);
 $tpl->set('ID'					,$id);
@@ -106,6 +107,7 @@ $tpl->set('TEXTO'				,$mensagem);
 $tpl->set('OBSERVACAO'			,$observacao);
 $tpl->set('CLASSE'				,$classe);
 $tpl->set('BOTAO'				,$botao);
+$tpl->set('SUBMIT'				,$submit);
 $tpl->set('BOTAO_CLASSE'		,$botaoClasse);
 $tpl->set('VAR'					,'codUsuario');
 $tpl->set('VAR_VALUE'			,$info->getCodigo());
