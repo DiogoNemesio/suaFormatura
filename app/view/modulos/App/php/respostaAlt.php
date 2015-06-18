@@ -35,6 +35,7 @@ $system->checaPermissao($_codMenu_);
 ## Verificar parâmetro obrigatório
 #################################################################################
 if (!isset($codResposta)) \Zage\App\Erro::halt('Falta de Parâmetros');
+if (!isset($codEnquete)) \Zage\App\Erro::halt('Falta de Parâmetros');
 
 #################################################################################
 ## Resgata as informações do banco
@@ -47,10 +48,19 @@ if (!empty($codResposta)) {
 	}
 	/** Pergunta **/
 	$codPergunta	= ($info->getCodPergunta()) ? $info->getCodPergunta()->getCodigo() : null;
+	$pergunta		= ($info->getCodPergunta()) ? $info->getCodPergunta()->getPergunta() : null;
 	$resposta		= ($info->getResposta()) ? $info->getResposta() : null;
 	$dataResposta	= ($info->getDataResposta() != null) ? $info->getDataResposta()->format($system->config["data"]["dateFormat"]) : null;
 	$codUsuario		= ($info->getCodUsuario()) ? $info->getCodUsuario()->getCodigo() : null;	
 	
+}else if (!empty($codEnquete)) {
+	try {
+		$info 	 = $em->getRepository('Entidades\ZgappEnquetePergunta')->findOneBy(array('codigo' => $codEnquete));
+	} catch (\Exception $e) {
+		\Zage\App\Erro::halt($e->getMessage());
+	}
+	$codPergunta	= ($info->getCodigo()) ? $info->getCodigo() : null;
+	$pergunta		= ($info->getPergunta()) ? $info->getPergunta() : null;
 }else{
 	/** Resposta **/
 	$codPergunta	= null;
@@ -94,7 +104,7 @@ $tpl->set('COD_RESPOSTA'		,$codResposta);
 $tpl->set('RESPOSTA'			,$resposta);
 $tpl->set('DATA_RESPOSTA'		,$dataResposta);
 $tpl->set('COD_USUARIO'			,$codUsuario);
-$tpl->set('COD_PERGUNTA'		,$oPergunta);
+$tpl->set('COD_PERGUNTA'		,$codPergunta);
 $tpl->set('PERGUNTA'			,$pergunta);
 
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));

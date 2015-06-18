@@ -9,23 +9,12 @@
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codRespostaID" name="codResposta" value="%COD_RESPOSTA%">
+				<input type="hidden" id="codPerguntaID" name="codPergunta" value="%COD_PERGUNTA%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
-					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<h3 class="header blue bolder smaller"><i class="fa fa-list-alt"></i>Enquete: %PERGUNTA%</h3>
 					<div class="vspace-xs"></div>
 					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divCodPerguntaID">
-								<label class="col-sm-3 control-label" for="codPerguntaID">Pergunta</label>
-				    			<div class="input-group col-sm-8 pull-left">
-			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a pergunta."></i></span>
-									<select class="select2" onchange="zgMostraDivs();" style="width:100%;" id="codPerguntaID" name="codPergunta" data-placeholder="Selecione a pergunta" data-rel="select2">
-									%COD_PERGUNTA%
-									</select>
-								</div>
-								<div class="col-sm-1 pull-left" id="divHelpCodPerguntaID"></div>
-							</div>
-						</div>	
 						<div class="col-sm-6">
 							<div class="form-group col-sm-12" id="divRespostaID">
 						    	<label class="col-sm-3 control-label" for="respostaID">Resposta</label>
@@ -107,7 +96,6 @@ $('#zgFormID').submit(function(e) {
 /*********************** Verificar o formulário ***********************/
 function validaRespostaAlt() {
 	var vResposta		= $('#respostaID').val();
-	var vCodPergunta	= $('#codPerguntaID').val();
 	
 	var vOK				= true;
 	var vIdent;
@@ -126,16 +114,6 @@ function validaRespostaAlt() {
 	}else{
 		$('#divRespostaID').removeClass('has-error');
 		$('#divHelpRespostaID').html('&nbsp;');
-	}
-	
-	// CodPergunta
-	if (!vCodPergunta) {
-		$('#divCodPerguntaID').addClass('has-error');
-		$('#divHelpCodPerguntaID').html(zgCriaSpanErro('A pergunta deve ser preenchida !!'));
-		vOK		= false;
-	}else{
-		$('#divCodPerguntaID').removeClass('has-error');
-		$('#divHelpCodPerguntaID').html('&nbsp;');
 	}
 	
 	if (vOK == true) {

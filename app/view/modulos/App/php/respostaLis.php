@@ -63,7 +63,7 @@ $grid->importaDadosDoctrine($respostas);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($respostas); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codResposta='.$respostas[$i]->getCodigo().'&url='.$url);
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codResposta='.$respostas[$i]->getCodigo().'&url='.$url.'&codEnquete='.$codEnquete);
 	$grid->setUrlCelula($i,4,ROOT_URL.'/App/respostaAlt.php?id='.$uid);
 	$grid->setUrlCelula($i,5,ROOT_URL.'/App/respostaExc.php?id='.$uid);
 }
@@ -85,7 +85,7 @@ $urlAdd			= ROOT_URL.'/App/respostaAlt.php?id='.\Zage\App\Util::encodeUrl('_codM
 #################################################################################
 ## Gerar a url voltar
 #################################################################################
-$urlVoltar			= ROOT_URL.'/App/enqueteLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete=');
+$urlVoltar			= ROOT_URL.'/App/enqueteLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete='.$codEnquete);
 
 #################################################################################
 ## Gerar a url atualizar

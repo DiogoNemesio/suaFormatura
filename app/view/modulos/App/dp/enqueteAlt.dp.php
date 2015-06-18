@@ -51,9 +51,15 @@ if (!isset($codTipo) || (empty($codTipo))) {
 }
 
 /** Data **/
-if ((isset($dataPrazo) || (!empty($dataPrazo))) && $dataPrazo < date('d/m/Y H:i')) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Data termino deve ser maior que a data atual!!!");
-	$err	= 1;
+if (!empty($dataPrazo)) {
+	$dataPrazo		= DateTime::createFromFormat($system->config["data"]["datetimeSimplesFormat"], $dataPrazo);
+	
+	if ($dataPrazo < new \DateTime("now")) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Data termino deve ser maior que a data atual!!!");
+		$err	= 1;
+	}
+}else{
+	$dataPrazo		= null;
 }
 
 /** Tamanho **/
@@ -87,13 +93,7 @@ try {
  	}else{
  		$oEnquete	= new \Entidades\ZgappEnquetePergunta();
  	}
- 	
- 	if (!empty($dataPrazo)) {
- 		$dataPrazo		= DateTime::createFromFormat($system->config["data"]["datetimeSimplesFormat"], $dataPrazo);
- 	}else{
- 		$dataPrazo		= null;
- 	}
- 	
+
  	$oOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
  	$oTipo			= $em->getRepository('Entidades\ZgappEnquetePerguntaTipo')->findOneBy(array('codigo' => $codTipo));
  	$oStatus		= $em->getRepository('Entidades\ZgappEnqueteStatus')->findOneBy(array('codigo' => 'A'));
