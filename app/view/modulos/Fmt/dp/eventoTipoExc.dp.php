@@ -24,15 +24,15 @@ $err	= false;
 try {
 
 	if (!isset($codEventoTipo) || (!$codEventoTipo)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Parâmetro não informado'));
-		die('1'.\Zage\App\Util::encodeUrl('||'));
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Parâmetro não informado"))));
+		$err = 1;
 	}
 	
 	$oEventoTipo 	 = $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codEventoTipo));
 	
 	if (!$oEventoTipo) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Tipo Evento não encontrado'));
-		die('1'.\Zage\App\Util::encodeUrl('||'));
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Tipo Evento não encontrado"))));
+		$err = 1;
 	}
 	
 	$em->remove($oEventoTipo);
@@ -45,5 +45,4 @@ try {
 }
 
 
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Tipo Evento excluído com sucesso"));
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oEventoTipo->getCodigo().'|');
+echo '0'.\Zage\App\Util::encodeUrl('||'."Tipo Evento exclu&Iacute;do com sucesso!");

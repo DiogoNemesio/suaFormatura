@@ -40,7 +40,7 @@ $url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$eventoTipo	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findAll();
+	$eventoTipo	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findBy(array(),array('descricao' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -70,7 +70,7 @@ for ($i = 0; $i < sizeof($eventoTipo); $i++) {
 	$grid->setValorCelula($i,1,$valor);
 	
 	$grid->setUrlCelula($i,2,ROOT_URL.'/Fmt/eventoTipoAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/eventoTipoExc.php?id='.$uid);
+	$grid->setUrlCelula($i,3,"javascript:zgAbreModal('".ROOT_URL."/Fmt/eventoTipoExc.php?id=".$uid."');");
 }
 
 #################################################################################

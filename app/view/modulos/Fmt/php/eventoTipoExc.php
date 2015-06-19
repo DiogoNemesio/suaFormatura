@@ -73,7 +73,6 @@ $urlVoltar			= ROOT_URL."/Fmt/eventoTipoLis.php?id=".$id;
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-//$tpl->load(HTML_PATH . '/templateExc.html');
 $tpl->load(HTML_PATH . '/templateModalExc.html');
 
 #################################################################################
