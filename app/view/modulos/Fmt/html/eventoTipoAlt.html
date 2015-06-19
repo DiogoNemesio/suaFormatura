@@ -1,0 +1,142 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro Tipo de Evento
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codEventoTipoID" name="codEventoTipo" value="%COD_EVENTO_TIPO%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+				    	<div class="col-sm-6">
+				    		<div class="form-group col-sm-12" id="divDescricaoID">
+						    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição do tipo do Evento."></i></span>
+				   					<input class="form-control" id="descricaoID" type="text" name="descricao" placeholder="Descrição do tipo do evento" maxlength="60" value="%DESCRICAO%" required autocomplete="off">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
+				    		</div>
+				    	</div>
+				    	<div class="col-sm-3">
+							<div class="form-group col-sm-12" id="divIndAtivoID">
+						    	<label class="col-xs-12 col-sm-5 control-label" for="indAtivoID">Status</label>
+						    	<label>
+						    		<input name="indAtivo" id="indAtivoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_ATIVO% />
+									<span class="lbl"></span>
+								</label>
+						    </div>
+			    		</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaEventoTipoAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codEventoTipoID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Tipo Evento', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+/*********************** Verificar o formulário ***********************/
+function validaEventoTipoAlt() {
+	var vDescricao		= $('#descricaoID').val();
+	var vIndAtivo		= $('#indAtivoID').val();
+	
+	var vOK				= true;
+	var vIdent;
+	
+	// Descricao
+	if (vDescricao.length == 0 || vDescricao.length > 60 ) {
+		if (vDescricao.length == 0){
+			$('#divHelpDescricaoID').html(zgCriaSpanErro('A Descricao deve ser preenchida !!'));
+		}else if (vDescricao.length > 60){
+			$('#divHelpDescricaoID').html(zgCriaSpanErro('A Descricao deve ter no máximo 60 caracteres !!!'));
+		}
+		$('#divDescricaoID').addClass('has-error');
+		vOK		= false;
+	}else{
+		$('#divDescricaoID').removeClass('has-error');
+		$('#divHelpPerguntaID').html('&nbsp;');
+	}
+	
+	// Tipo
+	if (!vIndAtivo) {
+		$('#divIndAtivoID').addClass('has-error');
+		$('#divHelpIndAtivoID').html(zgCriaSpanErro('O Status deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divIndAtivoID').removeClass('has-error');
+		$('#divHelpIndAtivoID').html('&nbsp;');
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+</script>
+

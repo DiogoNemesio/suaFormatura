@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtEvento
  *
- * @ORM\Table(name="ZGFMT_EVENTO", indexes={@ORM\Index(name="fk_ZGFOR_EVENTO_1_idx", columns={"COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFOR_EVENTO_2_idx", columns={"COD_FORMATURA"}), @ORM\Index(name="fk_ZGFOR_EVENTO_3_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="ZGFOR_EVENTO_1_UN", columns={"COD_FORMATURA", "COD_TIPO_EVENTO"})})
+ * @ORM\Table(name="ZGFMT_EVENTO", indexes={@ORM\Index(name="fk_ZGFOR_EVENTO_1_idx", columns={"COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFOR_EVENTO_2_idx", columns={"COD_FORMATURA"}), @ORM\Index(name="fk_ZGFOR_EVENTO_3_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="ZGFOR_EVENTO_1_UN", columns={"COD_FORMATURA", "COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_1_idx", columns={"COD_LOCAL"})})
  * @ORM\Entity
  */
 class ZgfmtEvento
@@ -22,13 +22,6 @@ class ZgfmtEvento
     private $codigo;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="COD_LOCAL", type="integer", nullable=true)
-     */
-    private $codLocal;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="DATA", type="datetime", nullable=true)
@@ -41,6 +34,13 @@ class ZgfmtEvento
      * @ORM\Column(name="NOME", type="string", length=60, nullable=true)
      */
     private $nome;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="CEP", type="string", length=8, nullable=true)
+     */
+    private $cep;
 
     /**
      * @var string
@@ -114,6 +114,16 @@ class ZgfmtEvento
      */
     private $codLogradouro;
 
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_LOCAL", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codLocal;
+
 
     /**
      * Get codigo
@@ -123,29 +133,6 @@ class ZgfmtEvento
     public function getCodigo()
     {
         return $this->codigo;
-    }
-
-    /**
-     * Set codLocal
-     *
-     * @param integer $codLocal
-     * @return ZgfmtEvento
-     */
-    public function setCodLocal($codLocal)
-    {
-        $this->codLocal = $codLocal;
-
-        return $this;
-    }
-
-    /**
-     * Get codLocal
-     *
-     * @return integer 
-     */
-    public function getCodLocal()
-    {
-        return $this->codLocal;
     }
 
     /**
@@ -192,6 +179,29 @@ class ZgfmtEvento
     public function getNome()
     {
         return $this->nome;
+    }
+
+    /**
+     * Set cep
+     *
+     * @param string $cep
+     * @return ZgfmtEvento
+     */
+    public function setCep($cep)
+    {
+        $this->cep = $cep;
+
+        return $this;
+    }
+
+    /**
+     * Get cep
+     *
+     * @return string 
+     */
+    public function getCep()
+    {
+        return $this->cep;
     }
 
     /**
@@ -399,5 +409,28 @@ class ZgfmtEvento
     public function getCodLogradouro()
     {
         return $this->codLogradouro;
+    }
+
+    /**
+     * Set codLocal
+     *
+     * @param \Entidades\ZgadmOrganizacao $codLocal
+     * @return ZgfmtEvento
+     */
+    public function setCodLocal(\Entidades\ZgadmOrganizacao $codLocal = null)
+    {
+        $this->codLocal = $codLocal;
+
+        return $this;
+    }
+
+    /**
+     * Get codLocal
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodLocal()
+    {
+        return $this->codLocal;
     }
 }

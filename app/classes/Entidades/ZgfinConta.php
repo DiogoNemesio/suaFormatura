@@ -57,16 +57,6 @@ class ZgfinConta
     private $ccorrente;
 
     /**
-     * @var \Entidades\ZgfinCarteira
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinCarteira")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CARTEIRA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codCarteira;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -95,6 +85,16 @@ class ZgfinConta
      * })
      */
     private $codAgencia;
+
+    /**
+     * @var \Entidades\ZgfinCarteira
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinCarteira")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_CARTEIRA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codCarteira;
 
 
     /**
@@ -223,29 +223,6 @@ class ZgfinConta
     }
 
     /**
-     * Set codCarteira
-     *
-     * @param \Entidades\ZgfinCarteira $codCarteira
-     * @return ZgfinConta
-     */
-    public function setCodCarteira(\Entidades\ZgfinCarteira $codCarteira = null)
-    {
-        $this->codCarteira = $codCarteira;
-
-        return $this;
-    }
-
-    /**
-     * Get codCarteira
-     *
-     * @return \Entidades\ZgfinCarteira 
-     */
-    public function getCodCarteira()
-    {
-        return $this->codCarteira;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -312,5 +289,28 @@ class ZgfinConta
     public function getCodAgencia()
     {
         return $this->codAgencia;
+    }
+
+    /**
+     * Set codCarteira
+     *
+     * @param \Entidades\ZgfinCarteira $codCarteira
+     * @return ZgfinConta
+     */
+    public function setCodCarteira(\Entidades\ZgfinCarteira $codCarteira = null)
+    {
+        $this->codCarteira = $codCarteira;
+
+        return $this;
+    }
+
+    /**
+     * Get codCarteira
+     *
+     * @return \Entidades\ZgfinCarteira 
+     */
+    public function getCodCarteira()
+    {
+        return $this->codCarteira;
     }
 }

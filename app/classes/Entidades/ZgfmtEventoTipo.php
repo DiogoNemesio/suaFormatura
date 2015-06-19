@@ -28,6 +28,13 @@ class ZgfmtEventoTipo
      */
     private $descricao;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="IND_ATIVO", type="string", length=60, nullable=false)
+     */
+    private $indAtivo;
+
 
     /**
      * Get codigo
@@ -60,5 +67,28 @@ class ZgfmtEventoTipo
     public function getDescricao()
     {
         return $this->descricao;
+    }
+
+    /**
+     * Set indAtivo
+     *
+     * @param string $indAtivo
+     * @return ZgfmtEventoTipo
+     */
+    public function setIndAtivo($indAtivo)
+    {
+        $this->indAtivo = $indAtivo;
+
+        return $this;
+    }
+
+    /**
+     * Get indAtivo
+     *
+     * @return string 
+     */
+    public function getIndAtivo()
+    {
+        return $this->indAtivo;
     }
 }
