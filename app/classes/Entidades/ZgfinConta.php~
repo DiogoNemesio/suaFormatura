@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinConta
  *
- * @ORM\Table(name="ZGFIN_CONTA", indexes={@ORM\Index(name="fk_ZGFIN_CONTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFIN_CONTA_3_idx", columns={"COD_AGENCIA"})})
+ * @ORM\Table(name="ZGFIN_CONTA", indexes={@ORM\Index(name="fk_ZGFIN_CONTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFIN_CONTA_3_idx", columns={"COD_AGENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_4_idx", columns={"COD_CARTEIRA"})})
  * @ORM\Entity
  */
 class ZgfinConta
@@ -55,6 +55,16 @@ class ZgfinConta
      * @ORM\Column(name="CCORRENTE", type="string", length=20, nullable=true)
      */
     private $ccorrente;
+
+    /**
+     * @var \Entidades\ZgfinCarteira
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinCarteira")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_CARTEIRA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codCarteira;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -210,6 +220,29 @@ class ZgfinConta
     public function getCcorrente()
     {
         return $this->ccorrente;
+    }
+
+    /**
+     * Set codCarteira
+     *
+     * @param \Entidades\ZgfinCarteira $codCarteira
+     * @return ZgfinConta
+     */
+    public function setCodCarteira(\Entidades\ZgfinCarteira $codCarteira = null)
+    {
+        $this->codCarteira = $codCarteira;
+
+        return $this;
+    }
+
+    /**
+     * Get codCarteira
+     *
+     * @return \Entidades\ZgfinCarteira 
+     */
+    public function getCodCarteira()
+    {
+        return $this->codCarteira;
     }
 
     /**

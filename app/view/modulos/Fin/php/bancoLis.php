@@ -40,7 +40,7 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$layouts	= $em->getRepository('Entidades\ZgfinArquivoLayout')->findBy(array(), array('nome' => 'ASC'));
+	$bancos	= $em->getRepository('Entidades\ZgfinBanco')->findBy(array(), array('nome' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -48,26 +48,21 @@ try {
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GLayout");
-$grid->adicionaTexto($tr->trans('TIPO DO LAYOUT'),		30, $grid::CENTER	,'codTipoLayout:nome');
-$grid->adicionaTexto($tr->trans('BANCO'),				20, $grid::CENTER	,'codBanco:nome');
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GBanco");
+$grid->adicionaTexto($tr->trans('CODIGO'),				10, $grid::CENTER	,'codBanco');
+$grid->adicionaTexto($tr->trans('CNPJ'),				20, $grid::CENTER	,'cnpj');
 $grid->adicionaTexto($tr->trans('NOME'),				40, $grid::CENTER	,'nome');
-$grid->adicionaIcone('', 'fa fa-money'	, 'Carteiras associadas');
-$grid->adicionaIcone('', 'fa fa-list'	, 'Registros');
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($layouts);
+$grid->adicionaIcone('', 'fa fa-money', 'Carteiras associadas');
+$grid->importaDadosDoctrine($bancos);
 
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($layouts); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codLayout='.$layouts[$i]->getCodigo().'&url='.$url);
-	$grid->setUrlCelula($i,3,"javascript:zgAbreModal('".ROOT_URL."/Fin/arquivoLayoutCarteira.php?id=".$uid."');");
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/arquivoLayoutRegistro.php?id='.$uid);
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/arquivoLayoutAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fin/arquivoLayoutExc.php?id='.$uid);
+for ($i = 0; $i < sizeof($bancos); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codBanco='.$bancos[$i]->getCodigo().'&url='.$url);
+	//$grid->setUrlCelula($i,3,ROOT_URL.'/Fin/bancoCarteira.php?id='.$uid);
+	$grid->setUrlCelula($i,3,"javascript:zgAbreModal('".ROOT_URL."/Fin/bancoCarteira.php?id=".$uid."');");
 }
 
 #################################################################################
@@ -82,7 +77,7 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fin/arquivoLayoutAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codLayout=');
+$urlAdd			= ROOT_URL.'/Fin/bancoAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codBanco=');
 
 #################################################################################
 ## Carregando o template html
@@ -94,8 +89,8 @@ $tpl->load(HTML_PATH . 'templateLis.html');
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Layouts"));
-$tpl->set('URLADD'			,$urlAdd);
+$tpl->set('NOME'			,$tr->trans("Bancos"));
+$tpl->set('URLADD'			,null);
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

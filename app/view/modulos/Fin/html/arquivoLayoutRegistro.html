@@ -1,0 +1,127 @@
+<div id="content">
+	<div class="zgBreadcumb">
+		<a href="javascript:zgLoadUrl('%URLVOLTAR%');"><span class="badge badge-primary">1</span>Layouts</a>
+		<a href="javascript:zgLoadUrl('%URLATUALIZAR%');" class="current"><span class="badge badge-primary">2</span>Registros do Layout "%NOME%"</a>
+	</div>
+	<hr/>
+	<div class="btn-group">
+		%BOTOES%
+	</div>
+
+
+	<div id="user-profile-3" class="user-profile row">
+		<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" name="id" value="%ID%">
+		<input type="hidden" id="codContaID" name="codConta" value="%COD_CONTA%">
+		
+		
+		<div class="col-sm-12">
+			<div>
+				<table id="layRegTableRegistroID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-1 center">Ordem</th>
+							<th class="col-sm-1 center">Posição Inicial</th>
+							<th class="col-sm-1 center">Tamanho</th>
+							<th class="col-sm-2 center">Formato</th>
+							<th class="col-sm-2 center">Variável</th>
+							<th class="col-sm-2 center">Valor</th>
+							<th class="col-sm-1 center"><span class="" onclick="addRowRegistroLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+						</tr>
+					</thead>
+					<tbody>
+					%REGISTROS%
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="2" style="text-align: right;">Total</th>
+							<th id="tableTotalCellID" class="center"></th>
+							<th id="tablePctCellID" class="center"></th>
+							<th></th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<div class="clearfix form-actions">
+				<label class="col-sm-5 control-label" >&nbsp;</label>
+   				<button type="button" class="btn btn-primary" id="btnSubmitID" %BUTTON_VIEW%><i class="fa fa-check bigger-110"></i> Salvar</button>
+			</div>
+			
+		</div>
+		
+		<div class="col-sm-4">
+		</div>
+		</form>
+	</div>
+</div>
+<div id="divMsgContaID"></div>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+function addRowRegistroLayReg() {
+	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;
+	
+	$ultOrdem	= 0;
+	$ultPos		= 0;
+	$ultTam		= 0;
+	
+	
+	$('#layRegTableRegistroID > tbody > tr:last [name*="ordem[]"]').each(function( index ) {
+		$ultOrdem	= parseInt($(this).val());
+	});
+	
+	$('#layRegTableRegistroID > tbody > tr:last [name*="posicao[]"]').each(function( index ) {
+		$ultPos	= parseInt($(this).val());
+	});
+
+	$('#layRegTableRegistroID > tbody > tr:last [name*="tamanho[]"]').each(function( index ) {
+		$ultTam	= parseInt($(this).val());
+		if (zgValidaNumero($ultTam) == false) {
+			alert("Ajuste o campo tamanho na ordem: "+$ultOrdem);
+			$return		= true;
+		}
+	});
+	
+	if ($return == true) return $return;
+
+	$ordem		= parseInt($ultOrdem) + 1;
+	$posicao	= parseInt($ultPos) + parseInt($ultTam);
+	
+	if ($posicao == 0) $posicao = 1;
+		
+	$('#layRegTableRegistroID > tbody:last').append('<tr><td class="col-sm-1 center"><input type="text" name="ordem[]" readonly value="'+$ordem+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" name="posicao[]" value="'+$posicao+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" name="tamanho[]" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFormato[]" data-rel="select2">%FORMATOS%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codVariavel[]" data-rel="select2">%VARIAVEIS%</select></td><td class="col-sm-1 center"><input type="text" name="valorFixo[]" maxlength="400" autocomplete="off"></td><td class="col-sm-1 center"><span class="center zgdelete" onclick="delRowRegistroLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codRegistro[]"></td></tr>');
+	$('#layRegTableRegistroID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	$('#layRegTableRegistroID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+
+	/** Atualizar o Percentual **/
+	if ($indTriggerChange	== 1) {
+		$('#layRegTableRegistroID > tbody > tr:last [name*="valorRateio[]"]').each(function( index ) {
+			$( this ).trigger('change');
+			$( this ).trigger('keyup');
+		});
+	}
+	
+	
+	//atualizaEValidaTotalTabelaRegistroLayReg();
+}
+
+
+function delRowRegistroLayReg(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(500, function(){
+		$tr.remove();
+		atualizaEValidaTotalTabelaRegistroLayReg();
+	});
+}
+
+function atualizaEValidaTotalTabelaRegistroLayReg () {
+	
+}
+
+</script>

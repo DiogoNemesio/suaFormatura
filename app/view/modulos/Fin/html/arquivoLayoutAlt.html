@@ -1,0 +1,257 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Variável 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codLayoutID" name="codLayout" value="%COD_LAYOUT%">
+				<input type='hidden' id='valID'>
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divNomeID">
+						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do Layout"></i></span>
+					    			<input class="form-control" type="text" onchange="checkNomeAltArqLayAlt();" name="nome" id="nomeID" placeholder="Nome" value="%NOME%" maxlength="60" autocomplete="off" />
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+						    </div>
+				    		<div class="form-group col-sm-12" id="divCodBancoID">
+						    	<label class="col-sm-3 control-label" for="codBancoID">Banco</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Digite o codígo ou o nome do banco para iniciar a pesquisa."></i></span>
+					    			<input type="hidden" name="codBanco" id="codBancoID" placeholder="Consulta do Banco" value="%COD_BANCO%" style="width:100%;" class="select2" data-rel="select2Banco">
+					    			
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpCodBancoID"></div>
+						    </div>
+				    	</div>
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divCodTipoID">
+								<label class="col-sm-3 control-label" for="codTipoID">Tipo do Layout</label>
+				    			<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o Tipo do Layout"></i></span>
+									<select class="select2" style="width:100%;" id="codTipoID" name="codTipo" data-rel="select2">
+										%TIPOS%
+									</select>
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpCodTipoID"></div>
+							</div>
+				    	</div>						  
+				    </div>
+
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({"autoclose": true});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('#codBancoID').select2({
+    minimumInputLength: 2,
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fin/getBancoLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fin/getBancoLis.dp.php", {
+                data: {codBanco: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+/************************* Submit Formulário *************************/
+ 
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+
+	var vOk 	= validaLayoutAltArqLayAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codLayoutID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Layout', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+
+function checkNomeAltArqLayAlt() {
+	var vNome	= $('#nomeID').val();
+	$('#valID').val(0);
+	
+	if (vNome.length == 0 || vNome.length > 60 ) {
+		$('#divNomeID').addClass('has-error');
+		if (vNome.length == 0){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
+		}else if (vNome.length > 60){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 60 caracteres !!!'));
+		}
+		return false;
+	}else{	
+		/** Verificar se o Nome está disponível no banco **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Fin/arquivoLayoutValidaNome.dp.php",
+	   		data: {  codLayout: $('#codLayoutID').val() , nome: $('#nomeID').val()},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valID').val(1);
+	   	    	}else{
+	   	    		$('#valID').val(0);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome já existe, escolha outro'));
+		return false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+		return true;
+	}
+}
+
+
+function validaLayoutAltArqLayAlt() {
+	var vNome			= $('#nomeID').val();
+	var vCodTipo		= $('#codTipoID').val();
+	var vCodBanco		= $('#codBancoID').val();
+	var vOK				= true;
+	var vIdent;
+	
+	// Nome
+	if (!vNome) {
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+	
+	// CodTipo
+	if (!vCodTipo) {
+		$('#divCodTipoID').addClass('has-error');
+		$('#divHelpCodTipoID').html(zgCriaSpanErro('Tipo de Layout deve ser selecionado !!!'));
+		vOK		= false;
+	}else{
+		$('#divCodTipoID').removeClass('has-error');
+		$('#divHelpCodTipoID').html('&nbsp;');
+	}
+
+	// CodBanco
+	if (!vCodBanco) {
+		$('#divCodBancoID').addClass('has-error');
+		$('#divHelpCodBancoID').html(zgCriaSpanErro('Banco deve ser selecionado !!!'));
+		vOK		= false;
+	}else{
+		$('#divCodBancoID').removeClass('has-error');
+		$('#divHelpCodBancoID').html('&nbsp;');
+	}
+	
+	vNomeCheck	= checkNomeAltArqLayAlt();
+	
+	if (vOK == true) {
+		return vNomeCheck;
+	}else{
+		return vOK;
+	}	
+}
+
+</script>
+

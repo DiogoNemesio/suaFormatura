@@ -24,23 +24,30 @@ class ZgfinArquivoLayoutRegistro
     /**
      * @var integer
      *
-     * @ORM\Column(name="ORDEM", type="integer", nullable=true)
+     * @ORM\Column(name="ORDEM", type="integer", nullable=false)
      */
     private $ordem;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="POSICAO_INICIAL", type="integer", nullable=true)
+     * @ORM\Column(name="POSICAO_INICIAL", type="integer", nullable=false)
      */
     private $posicaoInicial;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="TAMANHO", type="integer", nullable=true)
+     * @ORM\Column(name="TAMANHO", type="integer", nullable=false)
      */
     private $tamanho;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="VALOR_FIXO", type="string", length=400, nullable=true)
+     */
+    private $valorFixo;
 
     /**
      * @var \Entidades\ZgfinArquivoLayout
@@ -160,6 +167,29 @@ class ZgfinArquivoLayoutRegistro
     public function getTamanho()
     {
         return $this->tamanho;
+    }
+
+    /**
+     * Set valorFixo
+     *
+     * @param string $valorFixo
+     * @return ZgfinArquivoLayoutRegistro
+     */
+    public function setValorFixo($valorFixo)
+    {
+        $this->valorFixo = $valorFixo;
+
+        return $this;
+    }
+
+    /**
+     * Get valorFixo
+     *
+     * @return string 
+     */
+    public function getValorFixo()
+    {
+        return $this->valorFixo;
     }
 
     /**

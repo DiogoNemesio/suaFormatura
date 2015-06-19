@@ -133,7 +133,7 @@ function removenull(str) {
     return new_str;
 }
 
-
+/** Funções de validação **/
 function validarCNPJ(cnpj) {
 	 
     cnpj = cnpj.replace(/[^\d]+/g,'');
@@ -231,4 +231,6 @@ function validarEmail(email) {
 }
 
 
-
+function zgValidaNumero($str) {
+	return $str - parseFloat($str) >= 0;
+}
