@@ -19,7 +19,7 @@ Use \Zend\Mime;
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['codUsuario'])) 		$codUsuario			= \Zage\App\Util::antiInjection($_POST['codUsuario']);
-if (isset($_POST['codOrganizacao']))	$codOrganizacao		= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
+$codOrganizacao		= $system->getCodOrganizacao();
 
 #################################################################################
 ## Limpar a variável de erro
@@ -155,4 +155,4 @@ $transport->send($mail);
 }
 
 
-echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Convite enviado com sucesso!')));
+echo '0'.\Zage\App\Util::encodeUrl('||'.'Convite enviado com sucesso!');

@@ -17,7 +17,7 @@ Use \Zend\Mime;
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-if (isset($_POST['codOrganizacao'])) 	$codOrganizacao	= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
+$codOrganizacao	= $system->getCodOrganizacao();
 if (isset($_POST['codUsuario'])) 		$codUsuario		= \Zage\App\Util::antiInjection($_POST['codUsuario']);
 if (isset($_POST['email'])) 			$usuario		= \Zage\App\Util::antiInjection($_POST['email']);
 if (isset($_POST['nome'])) 				$nome			= \Zage\App\Util::antiInjection($_POST['nome']);

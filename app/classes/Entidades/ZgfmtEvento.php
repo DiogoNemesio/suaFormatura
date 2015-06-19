@@ -38,6 +38,13 @@ class ZgfmtEvento
     /**
      * @var string
      *
+     * @ORM\Column(name="CEP", type="string", length=8, nullable=true)
+     */
+    private $cep;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="ENDERECO", type="string", length=100, nullable=true)
      */
     private $endereco;
@@ -172,6 +179,29 @@ class ZgfmtEvento
     public function getNome()
     {
         return $this->nome;
+    }
+
+    /**
+     * Set cep
+     *
+     * @param string $cep
+     * @return ZgfmtEvento
+     */
+    public function setCep($cep)
+    {
+        $this->cep = $cep;
+
+        return $this;
+    }
+
+    /**
+     * Get cep
+     *
+     * @return string 
+     */
+    public function getCep()
+    {
+        return $this->cep;
     }
 
     /**

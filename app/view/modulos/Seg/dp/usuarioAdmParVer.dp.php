@@ -20,7 +20,7 @@ Use \Zend\Mime;
 #################################################################################
 if (isset($_POST['codUsuario'])) 		$codUsuario			= \Zage\App\Util::antiInjection($_POST['codUsuario']);
 if (isset($_POST['codOrganizacao']))	$codOrganizacao		= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
-if (isset($_POST['perfil']))			$codPerfil				= \Zage\App\Util::antiInjection($_POST['perfil']);
+if (isset($_POST['perfil']))			$codPerfil			= \Zage\App\Util::antiInjection($_POST['perfil']);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -33,19 +33,19 @@ $err	= false;
 try {
 
 	if (!isset($codUsuario) || (!$codUsuario)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Parâmetro não informado : COD_USUARIO'));
-		die('1'.\Zage\App\Util::encodeUrl('||'));
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Parâmetro não informado : COD_USUARIO"))));
+		$err	= 1;
 	}
 	
 	if (!isset($codOrganizacao) || (!$codOrganizacao)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Parâmetro não informado : COD_ORGANIZACAO'));
-		die('1'.\Zage\App\Util::encodeUrl('||'));
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Parâmetro não informado : COD_ORGANIZACAO"))));
+		$err	= 1;
 	}
 	
 	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 
 	if (!$oUsuario) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Usuário não encontrado!'));
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("USUÁRIO NÃO ENCONTRADO"))));
 		$err	= 1;
 	}
 	
@@ -59,9 +59,11 @@ try {
 	#################################################################################
 	$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
 
-	if ($oUsuarioOrg->getCodStatus()->getCodigo() == A || $oUsuarioOrg->getCodStatus()->getCodigo()){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Este usuário já está associado a organização!'));
-		$err	= 1;
+	if ($oUsuarioOrg){
+		if ($oUsuario->getCodStatus()->getCodigo() == A && $oUsuarioOrg->getCodStatus()->getCodigo() == A){
+			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Este usuário já está associado a organização!"))));
+			$err	= 1;
+		}
 	}
 	
 	if (!$oUsuarioOrg){
@@ -174,4 +176,4 @@ try {
 }
 
 
-echo '0'.\Zage\App\Util::encodeUrl('||'. 'Usu&aacute;rio associado com sucesso!');
+echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Usuário associado com sucesso!')));

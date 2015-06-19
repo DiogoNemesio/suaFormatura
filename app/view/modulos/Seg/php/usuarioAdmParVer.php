@@ -107,12 +107,12 @@ if($oUsuarioOrg){
 		$texto = 'Esté usuário já está associado a organizacao.';
 		$podeEnviar = 'disabled';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == B){
-		$texto = 'Este usuário já está associado a organização, porém está bloqueado. Apenas desbloquei para liberar o acesso do usuário.';
+		$texto = 'Este usuário está associado a organização, porém está bloqueado. Apenas desbloquei para liberar o acesso do usuário.';
 		$podeEnviar = 'disabled';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == P){
 		$texto = 'Este usuário já está associado a organização, porém a confirmação do usuário ainda está pendente. Clique em associar para enviar um novo convite ao usuário.';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == C){
-		$texto = 'Este usuário já foi associado a organização, porém hoje está cancelado. Clique em associar para enviar um novo convite ao usuário.';
+		$texto = 'Este usuário já foi cadastro nesta organização. Clique em associar para enviar um novo convite ao usuário.';
 	}
 }else{
 	$texto = 'Indentificamos em nosso sistema um usuário cadastrado com este '.$campo.'. Certifique-se que esteja informando os dados corretamente e clique em associar para cadastrá-lo na organização.';
