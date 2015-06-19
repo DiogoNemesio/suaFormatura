@@ -273,4 +273,4 @@ try {
 }
 
 
-echo '0'.\Zage\App\Util::encodeUrl('||'. 'Seu uUsu&aacute;rio foi ativado!! Você vai ser redirecionado em 4 segundos');
+echo '0'.\Zage\App\Util::encodeUrl('||'. htmlentities('Seu usuário foi ativado!! Você vai ser redirecionado em 4 segundos'));
