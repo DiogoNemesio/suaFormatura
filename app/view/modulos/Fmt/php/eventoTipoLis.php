@@ -62,6 +62,13 @@ $grid->importaDadosDoctrine($eventoTipo);
 for ($i = 0; $i < sizeof($eventoTipo); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEventoTipo='.$eventoTipo[$i]->getCodigo().'&url='.$url);
 	
+	if ($eventoTipo[$i]->getIndAtivo() == 1){ 
+		$valor = "ATIVO";
+	}else{
+		$valor = "DESATIVADO";
+	}
+	$grid->setValorCelula($i,1,$valor);
+	
 	$grid->setUrlCelula($i,2,ROOT_URL.'/Fmt/eventoTipoAlt.php?id='.$uid);
 	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/eventoTipoExc.php?id='.$uid);
 }

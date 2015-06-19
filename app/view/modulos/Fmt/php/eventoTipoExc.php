@@ -73,7 +73,8 @@ $urlVoltar			= ROOT_URL."/Fmt/eventoTipoLis.php?id=".$id;
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . '/templateExc.html');
+//$tpl->load(HTML_PATH . '/templateExc.html');
+$tpl->load(HTML_PATH . '/templateModalExc.html');
 
 #################################################################################
 ## Define os valores das variáveis
@@ -89,6 +90,7 @@ $tpl->set('CLASSE'				,$classe);
 $tpl->set('VAR'					,'codEventoTipo');
 $tpl->set('VAR_VALUE'			,$info->getCodigo());
 $tpl->set('NOME'				,$info->getDescricao());
+$tpl->set('OBSERVACAO'			,$observacao);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
