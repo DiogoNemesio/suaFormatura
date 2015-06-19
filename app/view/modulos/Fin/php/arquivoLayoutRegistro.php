@@ -71,7 +71,7 @@ if (sizeof($tiposRegistro) > 0) {
 		}
 		$bid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codLayout='.$codLayout.'&codTipoRegistro='.$tiposRegistro[$i]->getCodigo());
 		$urlBotao		= ROOT_URL."/Fin/". basename(__FILE__)."?id=".$bid;
-		$htmlBotoes .= '<button type="button" onclick="javascript:zgLoadUrl(\''.$urlBotao.'\');" class="btn '.$class.' btn-sm btn-bold">'.$tiposRegistro[$i]->getCodTipoRegistro(). ' - '.$tiposRegistro[$i]->getNome().'</button>';
+		$htmlBotoes .= '<button type="button" onclick="javascript:zgLoadUrlSeSalvouLayReg(\''.$urlBotao.'\');" class="btn '.$class.' btn-sm btn-bold">'.$tiposRegistro[$i]->getCodTipoRegistro(). ' - '.$tiposRegistro[$i]->getNome().'</button>';
 	}
 }else{
 	if (!isset($codTipoRegistro)) $codTipoRegistro	 = null;
@@ -83,7 +83,7 @@ if (sizeof($tiposRegistro) > 0) {
 #################################################################################
 try {
 	$aFormato	= $em->getRepository('Entidades\ZgfinArquivoCampoFormato')->findBy(array(),array('nome' => 'ASC'));
-	$oFormato	= $system->geraHtmlCombo($aFormato,	'CODIGO', 'NOME',	'', '');
+	$oFormato	= $system->geraHtmlCombo($aFormato,	'CODIGO', 'NOME',	null, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -127,7 +127,7 @@ for ($i = 0; $i < sizeof($registros); $i++) {
 		<tr>
 			<td class="col-sm-1 center"><input type="text" name="ordem[]" readonly value="'.$registros[$i]->getOrdem().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
 			<td class="col-sm-1 center"><input type="text" name="posicao[]" value="'.$registros[$i]->getPosicaoInicial().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
-			<td class="col-sm-1 center"><input type="text" name="tamanho[]" value="'.$registros[$i]->getTamanho().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
+			<td class="col-sm-1 center"><input type="text" name="tamanho[]" onchange="atualizaTotalTabelaRegistroLayReg();" value="'.$registros[$i]->getTamanho().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
 			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFormato[]" data-rel="select2">'.$oFormatoInt.'</select></td>
 			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codVariavel[]" data-rel="select2">'.$oVariavelInt.'</select></td>
 			<td class="col-sm-1 center"><input type="text" name="valorFixo[]" value="'.$registros[$i]->getValorFixo().'" maxlength="400" autocomplete="off"></td>

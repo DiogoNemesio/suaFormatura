@@ -1,18 +1,18 @@
 <div id="content">
 	<div class="zgBreadcumb">
-		<a href="javascript:zgLoadUrl('%URLVOLTAR%');"><span class="badge badge-primary">1</span>Layouts</a>
-		<a href="javascript:zgLoadUrl('%URLATUALIZAR%');" class="current"><span class="badge badge-primary">2</span>Registros do Layout "%NOME%"</a>
+		<a href="javascript:zgLoadUrlSeSalvouLayReg('%URLVOLTAR%');"><span class="badge badge-primary">1</span>Layouts</a>
+		<a href="javascript:zgLoadUrlSeSalvouLayReg('%URLATUALIZAR%');" class="current"><span class="badge badge-primary">2</span>Registros do Layout "%NOME%"</a>
 	</div>
 	<hr/>
 	<div class="btn-group">
 		%BOTOES%
 	</div>
 
-
 	<div id="user-profile-3" class="user-profile row">
 		<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" name="id" value="%ID%">
-		<input type="hidden" id="codContaID" name="codConta" value="%COD_CONTA%">
+		<input type="hidden" name="_precisaSalvar" id="_precisaSalvarID">
+		<input type="hidden" id="codLayoutID" name="codLayout" value="%COD_LAYOUT%">
 		
 		
 		<div class="col-sm-12">
@@ -34,9 +34,10 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<th colspan="2" style="text-align: right;">Total</th>
-							<th id="tableTotalCellID" class="center"></th>
-							<th id="tablePctCellID" class="center"></th>
+							<th id="layRegtableTotalOrdemCellID" class="col-sm-1 center"></th>
+							<th class="col-sm-1 center"></th>
+							<th id="layRegtableTotalTamanhoCellID" class="col-sm-1 center"></th>
+							<th colspan="4" style="text-align: left;">Totalizador</th>
 							<th></th>
 						</tr>
 					</tfoot>
@@ -66,6 +67,8 @@ function addRowRegistroLayReg() {
 	$ultPos		= 0;
 	$ultTam		= 0;
 	
+	$('#_precisaSalvarID').val(1);
+	
 	
 	$('#layRegTableRegistroID > tbody > tr:last [name*="ordem[]"]').each(function( index ) {
 		$ultOrdem	= parseInt($(this).val());
@@ -73,6 +76,13 @@ function addRowRegistroLayReg() {
 	
 	$('#layRegTableRegistroID > tbody > tr:last [name*="posicao[]"]').each(function( index ) {
 		$ultPos	= parseInt($(this).val());
+		if (zgValidaNumero($ultPos) == false) {
+			alert('Ajuste o campo "POSIÇÃO" na ordem: '+$ultOrdem);
+			$return		= true;
+			$(this).addClass('btn-warning');
+		}else{
+			$(this).removeClass('btn-warning');
+		}
 	});
 
 	$('#layRegTableRegistroID > tbody > tr:last [name*="tamanho[]"]').each(function( index ) {
@@ -80,9 +90,22 @@ function addRowRegistroLayReg() {
 		if (zgValidaNumero($ultTam) == false) {
 			alert("Ajuste o campo tamanho na ordem: "+$ultOrdem);
 			$return		= true;
+			$(this).addClass('btn-warning');
+		}else{
+			$(this).removeClass('btn-warning');
 		}
 	});
 	
+	$('#layRegTableRegistroID > tbody > tr:last [name*="codFormato[]"]').each(function( index ) {
+		if (!$(this).val()) {
+			alert('Selecione algum "Formato"');
+			$return		= true;
+			$(this).addClass('btn-warning');
+		}else{
+			$(this).removeClass('btn-warning');
+		}
+	});
+
 	if ($return == true) return $return;
 
 	$ordem		= parseInt($ultOrdem) + 1;
@@ -90,7 +113,7 @@ function addRowRegistroLayReg() {
 	
 	if ($posicao == 0) $posicao = 1;
 		
-	$('#layRegTableRegistroID > tbody:last').append('<tr><td class="col-sm-1 center"><input type="text" name="ordem[]" readonly value="'+$ordem+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" name="posicao[]" value="'+$posicao+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" name="tamanho[]" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFormato[]" data-rel="select2">%FORMATOS%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codVariavel[]" data-rel="select2">%VARIAVEIS%</select></td><td class="col-sm-1 center"><input type="text" name="valorFixo[]" maxlength="400" autocomplete="off"></td><td class="col-sm-1 center"><span class="center zgdelete" onclick="delRowRegistroLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codRegistro[]"></td></tr>');
+	$('#layRegTableRegistroID > tbody:last').append('<tr><td class="col-sm-1 center"><input type="text" name="ordem[]" readonly value="'+$ordem+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" readonly name="posicao[]" value="'+$posicao+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" name="tamanho[]" onchange="alteraTamanhoRegistroLayReg($(this));" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFormato[]" data-rel="select2">%FORMATOS%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codVariavel[]" data-rel="select2">%VARIAVEIS%</select></td><td class="col-sm-1 center"><input type="text" name="valorFixo[]" maxlength="400" autocomplete="off"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpRegistroLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownRegistroLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowRegistroLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codRegistro[]"></td></tr>');
 	$('#layRegTableRegistroID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
@@ -105,23 +128,210 @@ function addRowRegistroLayReg() {
 		});
 	}
 	
-	
-	//atualizaEValidaTotalTabelaRegistroLayReg();
+	atualizaTotalTabelaRegistroLayReg();
 }
 
 
 function delRowRegistroLayReg(pObj) {
-	var $td		= pObj.parent();
+	$('#_precisaSalvarID').val(1);
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
 	var $tr		= $td.parent();
+
+	/** Encontra a ordem que está sendo removida **/
+	$ordemObj 	= $tr.find('[name*="ordem[]"]');
+	$ordem		= parseInt($ordemObj.val());
+	
 	$tr.addClass("danger");
 	$tr.fadeOut(500, function(){
 		$tr.remove();
-		atualizaEValidaTotalTabelaRegistroLayReg();
+		recalculaOrdemLayReg();
+		recalculaPosicaoInicialRegistroLayReg(($ordem-1));
+		atualizaTotalTabelaRegistroLayReg();
 	});
 }
 
-function atualizaEValidaTotalTabelaRegistroLayReg () {
+function alteraTamanhoRegistroLayReg(pObj) {
+	$('#_precisaSalvarID').val(1);
 	
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	
+	/** Encontra a ordem que está sendo movida **/
+	$ordemObj 	= $tr.find('[name*="ordem[]"]');
+	$ordem		= $ordemObj.val();
+
+	recalculaPosicaoInicialRegistroLayReg($ordem);
+	
+	atualizaTotalTabelaRegistroLayReg();
+
+}
+
+function recalculaPosicaoInicialRegistroLayReg($pOrdem) {
+	/** Calcula o número de registros da tabela **/
+	var $numRows 	= $('#layRegTableRegistroID').find('tbody tr').length;
+
+	/** Não faz nada, caso a alteração seja no último registro **/
+	if ($pOrdem 	== $numRows) return false;
+
+	/** Atualizar a Flag de salvar **/
+	$('#_precisaSalvarID').val(1);
+
+	/** Calcula o 1 índice que será ajustado
+	 * O primeiro índice é o registro posterior a ordem indicada
+	 **/
+	var $index	= parseInt($pOrdem);
+	var $i		= parseInt($pOrdem) -1;
+	
+	$('#layRegTableRegistroID > tbody > tr').slice($index,$numRows).each(function( index ) {
+	//$('#layRegTableRegistroID > tbody > tr:gt('+($index-1)+')').each(function( index ) {
+		
+		/** Encontra o input da posição **/
+		$posObj		 	= $(this).find('[name*="posicao[]"]');
+		$ordObj		 	= $(this).find('[name*="ordem[]"]');
+
+		if ($i < 0) {
+			$posObj.val(1);
+		}else{
+			/** Resgatar as informações do registro anterior **/
+			$trAntObj		= $('#layRegTableRegistroID > tbody > tr:eq('+$i+')');
+			$posAntObj 		= $trAntObj.find('[name*="posicao[]"]');
+			$tamAntObj 		= $trAntObj.find('[name*="tamanho[]"]');
+			$posAnt			= parseInt($posAntObj.val()); 
+			$tamAnt			= parseInt($tamAntObj.val());
+			
+			$posObj.val($posAnt + $tamAnt);
+		}
+		
+		$i				+= 1;
+		
+	});
+
+	atualizaTotalTabelaRegistroLayReg();
+}
+
+function moveUpRegistroLayReg(pObj) {
+	$('#_precisaSalvarID').val(1);
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
+	var $tr		= $td.parent();
+	
+	/** Encontra a ordem e posição que está sendo movida **/
+	$ordObj 	= $tr.find('[name*="ordem[]"]');
+	$posObj 	= $tr.find('[name*="posicao[]"]');
+	$tamObj 	= $tr.find('[name*="tamanho[]"]');
+	
+	$ordem		= parseInt($ordObj.val());
+	$posicao	= parseInt($posObj.val());
+	$tamanho	= parseInt($tamObj.val());
+	
+	if ($ordem == 1) return false;
+	
+	/** Resgata a posição inicial do registro anterior **/
+	var $index	= $ordem - 2;
+	
+	$trAntObj		= $('#layRegTableRegistroID > tbody > tr:eq('+$index+')');
+	$posAntObj 		= $trAntObj.find('[name*="posicao[]"]');
+	$tamAntObj 		= $trAntObj.find('[name*="tamanho[]"]');
+	$posAnt			= parseInt($posAntObj.val()); 
+	$tamAnt			= parseInt($tamAntObj.val());
+	
+	/** Ajusta a posição do registro alterado **/
+	$posObj.val($posAnt);
+
+	/** Ajusta a posição do registro anterior **/
+	$posAntObj.val($posAnt + $tamanho);
+	
+	/** Move o registro **/
+	$tr.insertBefore($tr.prev());
+	
+	/** Recalcula a ordem **/
+	recalculaOrdemLayReg();
+}
+
+function moveDownRegistroLayReg(pObj) {
+	$('#_precisaSalvarID').val(1);
+
+	/** Calcula o número de registros da tabela **/
+	$numRows 	= $('#layRegTableRegistroID').find('tbody tr').length;
+
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
+	var $tr		= $td.parent();
+	
+	/** Encontra a ordem e posição que está sendo movida **/
+	$ordObj 	= $tr.find('[name*="ordem[]"]');
+	$posObj 	= $tr.find('[name*="posicao[]"]');
+	$tamObj 	= $tr.find('[name*="tamanho[]"]');
+	
+	$ordem		= parseInt($ordObj.val());
+	$posicao	= parseInt($posObj.val());
+	$tamanho	= parseInt($tamObj.val());
+	
+	if ($ordem == $numRows) return false;
+	
+	/** Resgata a posição inicial do registro posterior **/
+	var $index	= $ordem;
+	
+	$trPosObj		= $('#layRegTableRegistroID > tbody > tr:eq('+$index+')');
+	$posPosObj 		= $trPosObj.find('[name*="posicao[]"]');
+	$tamPosObj 		= $trPosObj.find('[name*="tamanho[]"]');
+	$posPos			= parseInt($posPosObj.val()); 
+	$tamPos			= parseInt($tamPosObj.val());
+	
+	/** Ajusta a posição do registro Posterior **/
+	$posPosObj.val($posicao);
+
+	/** Ajusta a posição do registro alterado **/
+	$posObj.val($posicao + $tamPos);
+
+	/** Move o registro **/
+	$tr.insertAfter($tr.next());
+
+	/** Recalcula a ordem **/
+	recalculaOrdemLayReg();
+
+}
+
+
+function atualizaTotalTabelaRegistroLayReg () {
+
+	var $total,$numRows;
+	
+	/** Calcula o número de registros da tabela **/
+	$numRows 	= $('#layRegTableRegistroID').find('tbody tr').length;
+	
+	/** Calcula o tamanho total  **/
+	$total 		= parseInt(0);
+	$('#layRegTableRegistroID > tbody > tr [name*="tamanho[]"]').each(function( index ) {
+		if (!isNaN(parseInt($(this).val()))) {
+			$total += parseInt($(this).val());
+		}
+	});
+	$total		= parseInt($total);
+	
+	/** Atualiza os campos da tabela  **/
+	$('#layRegtableTotalOrdemCellID').html($numRows);
+	$('#layRegtableTotalTamanhoCellID').html($total);
+	
+}
+
+function zgLoadUrlSeSalvouLayReg($url) {
+	if ($('#_precisaSalvarID').val() == 1) {
+		alert("Salve as informações, antes de mudar de tela !!!");
+		$('#_precisaSalvarID').val(0);
+	}else{
+		zgLoadUrl($url);
+	}
+}
+
+function recalculaOrdemLayReg() {
+	var $ordem	= 1;
+	$('#layRegTableRegistroID > tbody > tr').each(function( index ) {
+		$ordObj 	= $(this).find('[name*="ordem[]"]');
+		$ordObj.val($ordem);
+		$ordem += 1;
+	});
 }
 
 </script>
