@@ -90,7 +90,7 @@
 							<label class="col-sm-3 control-label" for="perfilID">Perfil</label>
 			    			<div class="input-group col-sm-8 pull-left">
 								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do usuário"></i></span>
-								<select class="select2" style="width:100%;" id="perfilModalID" name="perfil" data-rel="select2Modal">
+								<select class="select2" style="width:100%;" id="perfilModalID" name="perfil">
 									%PERFIL%
 								</select>
 							</div>
@@ -102,8 +102,8 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button type="submit" class="btn btn-primary" %DISABLED% id="usuEnvConbtnSubmitID"><i class="fa fa-check bigger-110"></i>Associar</button>
-		<button type="button" data-dismiss="modal" class="btn" id="cancel" >Fechar</button>
+		<button type="submit" class="btn btn-primary" %DISABLED% id="usuParVerSubmitID"><i class="fa fa-check bigger-110"></i>Associar</button>
+		<button type="button" data-dismiss="modal" class="btn" id="usuParVerCancelID" >Fechar</button>
 	</div>
 </div>
 </form>
@@ -116,9 +116,9 @@ $('#perfilModalID').css('width','100%').select2({allowClear:true});
 $('#zgFormModalID').submit(function() {
 	
 	//Bloquear botão enquanto estiver salvando
-	$('#usuEnvConbtnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-	$('#usuEnvConbtnSubmitID').attr("disabled","disabled");
-	$('#cancel').attr("disabled","disabled");
+	$('#usuParVerSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#usuParVerSubmitID').attr("disabled","disabled");
+	$('#usuParVerCancelID').attr("disabled","disabled");
 	
 	$.ajax({
 		type:	"POST", 
@@ -135,9 +135,9 @@ $('#zgFormModalID').submit(function() {
 		}
 		
 		//Desbloquear botão quando terminar de salvar
-		$('#usuEnvConbtnSubmitID').html('<i class="fa fa-check bigger-110"></i> Associar ');
-		$('#usuEnvConbtnSubmitID').attr("disabled",false);
-		$('#cancel').attr("disabled",false);
+		$('#usuParVerSubmitID').html('<i class="fa fa-check bigger-110"></i> Associar ');
+		$('#usuParVerSubmitID').attr("disabled",false);
+		$('#usuParVerCancelID').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLoadUrl('%URL_VOLTAR%');

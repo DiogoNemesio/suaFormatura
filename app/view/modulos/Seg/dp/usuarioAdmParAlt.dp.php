@@ -221,11 +221,16 @@ try {
 		
 	}else{
 		$novoUsuario	= false;
-		
-		if ($oUsuario->getCodStatus()->getCodigo() == "A") {
-			$enviarEmail	= false;
+		$oUsuarioOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
+
+		if ($oUsuarioOrg){
+			if ($oUsuario->getCodStatus()->getCodigo() == "A" && $oUsuarioOrg->getCodStatus()->getCodigo() != "P" ) {
+				$enviarEmail	= false;
+			}else{
+				$enviarEmail 	= true;
+			}
 		}else{
-			$enviarEmail	= true;
+			$enviarEmail 	= true;
 		}
 	}
 	
@@ -307,7 +312,7 @@ try {
 	}else{
 		$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
 		if (!$oUsuarioOrg)	{
-			$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
+			//$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 			$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
 		}else{
 			$oUsuarioOrgStatus  = $oUsuarioOrg->getCodStatus();

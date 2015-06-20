@@ -85,9 +85,11 @@ if (!isset($ident) || (empty($ident))) {
 if ((!empty($email)) && (strlen($email) > 200)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O email não deve conter mais de 200 caracteres!"));
 	$err	= 1;
-}elseif(\Zage\App\Util::validarEMail($email) == false){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email inválido!"));
-	$err	= 1;
+}elseif (!empty($email)){
+	if(\Zage\App\Util::validarEMail($email) == false){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email inválido!"));
+		$err	= 1;
+	}
 }
 
 /******* SEGMENTO *********/

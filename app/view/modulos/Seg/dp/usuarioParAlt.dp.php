@@ -196,18 +196,15 @@ if ($err != null) {
 #################################################################################
 try {
 
-	#################################################################################
-	## Verificar se o usuário já existe
-	#################################################################################
-	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
+	/*** Verificar se o usuário e a associação ja existe no sistema ***/
+	$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
 	
 	if (!$oUsuario) {
 		$novoUsuario	= true;
 		$enviarEmail	= true;
 		
-		#################################################################################
-		## Criar o usuário com o status pendente
-		#################################################################################
+		/*** Criar o usuário com o status pendente ***/
+		
 		$oUsuario			= new \Entidades\ZgsegUsuario();
 		$oStatus			= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'P'));
 		
@@ -221,23 +218,24 @@ try {
 		
 	}else{
 		$novoUsuario	= false;
-		
-		if ($oUsuario->getCodStatus()->getCodigo() == "A") {
-			$enviarEmail	= false;
+		$oUsuarioOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
+
+		if ($oUsuarioOrg){
+			if ($oUsuario->getCodStatus()->getCodigo() == "A" && $oUsuarioOrg->getCodStatus()->getCodigo() != "P" ) {
+				$enviarEmail	= false;
+			}else{
+				$enviarEmail 	= true;
+			}
 		}else{
-			$enviarEmail	= true;
+			$enviarEmail 	= true;
 		}
 	}
 	
-	#################################################################################
-	## Resgatar os objetos de relacionamento
-	#################################################################################
+	/*** Resgatar os objetos de relacionamento ***/
 	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
 	$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
 	
-	#################################################################################
-	## Salvar os dados do usuário
-	#################################################################################
+	/*** Salvar os dados do usuário ***/
 	$oUsuario->setNome($nome);
 	$oUsuario->setApelido($apelido);
 	$oUsuario->setCpf($cpf);
@@ -250,19 +248,15 @@ try {
 	$oUsuario->setNumero($numero);
 	$oUsuario->setComplemento($complemento);
 	
-	#################################################################################
-	## Colocar na fila para execução
-	#################################################################################
+	/*** Colocar na fila para execução ***/
 	$em->persist($oUsuario);
 	
 	#################################################################################
 	## Telefones / Contato
 	#################################################################################
 	$telefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $oUsuario->getCodigo()));
-	
-	#################################################################################
-	## Exclusão
-	#################################################################################
+
+	/*** Exclusão ***/
 	for ($i = 0; $i < sizeof($telefones); $i++) {
 		if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
 			try {
@@ -276,9 +270,7 @@ try {
 	
 	}
 	
-	#################################################################################
-	## Criação / Alteração
-	#################################################################################
+	/***  Criação / Alteração ***/
 	for ($i = 0; $i < sizeof($codTelefone); $i++) {
 		$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
 	
@@ -299,13 +291,14 @@ try {
 	}
 	
 	#################################################################################
-	## Verificar se o usuário já está associado a organização
+	## Usuário - Organização
 	#################################################################################
+	/***  Verificar se o usuário já está associado a organização ***/
 	if ($novoUsuario) {
 		$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 		$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
 	}else{
-		$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
+		//$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
 		if (!$oUsuarioOrg)	{
 			$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 			$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
@@ -314,9 +307,6 @@ try {
 		}
 	}
 	
-	#################################################################################
-	## Usuário - Organização
-	#################################################################################
 	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
 	
@@ -325,9 +315,7 @@ try {
 	$oUsuarioOrg->setCodPerfil($oPerfil);
 	$oUsuarioOrg->setCodStatus($oUsuarioOrgStatus);
 	
-	#################################################################################
-	## Colocar na fila para execução
-	#################################################################################
+	/***  Colocar na fila para execução ***/
 	$em->persist($oUsuarioOrg);
 	
 	#################################################################################

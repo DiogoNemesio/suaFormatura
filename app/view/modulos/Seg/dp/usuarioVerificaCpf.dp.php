@@ -40,5 +40,5 @@ if ($oUsuario != null && ($oUsuario->getCodigo() != $codUsuario)) {
 }else{
 	$array["existe"]	= 0;
 }
-$log->debug($array);
+
 echo json_encode($array);
