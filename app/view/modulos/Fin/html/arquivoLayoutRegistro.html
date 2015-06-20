@@ -25,7 +25,7 @@
 							<th class="col-sm-1 center">Tamanho</th>
 							<th class="col-sm-2 center">Formato</th>
 							<th class="col-sm-2 center">Variável</th>
-							<th class="col-sm-2 center">Valor</th>
+							<th class="col-sm-2 center">Valor Fixo</th>
 							<th class="col-sm-1 center"><span class="" onclick="addRowRegistroLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 						</tr>
 					</thead>
@@ -45,7 +45,7 @@
 			</div>
 			<div class="clearfix form-actions">
 				<label class="col-sm-5 control-label" >&nbsp;</label>
-   				<button type="button" class="btn btn-primary" id="btnSubmitID" %BUTTON_VIEW%><i class="fa fa-check bigger-110"></i> Salvar</button>
+   				<button type="button" class="btn btn-primary" id="btnSubmitLayRegID"><i class="fa fa-check bigger-110"></i> Salvar</button>
 			</div>
 			
 		</div>
@@ -59,6 +59,68 @@
 
 
 <script type="text/javascript" charset="%CHARSET%">
+
+$("#btnSubmitLayRegID").on("click", function(e) {
+	
+	$('#zgFormID').submit();
+	
+});
+
+
+$('#zgFormID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		});
+		
+		if (checaRetornoOK(data) == true) {
+			bootbox.dialog({
+				message: "Conta salva com sucesso !!!", 
+				buttons: {
+					"novo" : {
+						"label" : "<i class='ace-icon fa fa-plus'></i>Cadastrar nova conta",
+						"className" : "btn-sm btn-primary",
+						"callback": function() {
+							zgLoadUrl('%URL_ADD%');
+						}
+					},
+					"fechar" : {
+						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
+						"className" : "btn-sm btn-danger",
+						"callback": function() {
+							zgLoadUrl('%URL_VOLTAR%');
+						}
+
+					},
+					
+				}
+			});
+		}else{
+			zgMostraAviso("Fechar");
+		}
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+
 
 function addRowRegistroLayReg() {
 	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;

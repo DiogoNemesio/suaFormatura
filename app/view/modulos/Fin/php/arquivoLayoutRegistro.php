@@ -126,12 +126,19 @@ for ($i = 0; $i < sizeof($registros); $i++) {
 	$htmlReg	.= '
 		<tr>
 			<td class="col-sm-1 center"><input type="text" name="ordem[]" readonly value="'.$registros[$i]->getOrdem().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
-			<td class="col-sm-1 center"><input type="text" name="posicao[]" value="'.$registros[$i]->getPosicaoInicial().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
-			<td class="col-sm-1 center"><input type="text" name="tamanho[]" onchange="atualizaTotalTabelaRegistroLayReg();" value="'.$registros[$i]->getTamanho().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
+			<td class="col-sm-1 center"><input type="text" readonly name="posicao[]" value="'.$registros[$i]->getPosicaoInicial().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
+			<td class="col-sm-1 center"><input type="text" name="tamanho[]" onchange="alteraTamanhoRegistroLayReg($(this));" value="'.$registros[$i]->getTamanho().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
 			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFormato[]" data-rel="select2">'.$oFormatoInt.'</select></td>
 			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codVariavel[]" data-rel="select2">'.$oVariavelInt.'</select></td>
 			<td class="col-sm-1 center"><input type="text" name="valorFixo[]" value="'.$registros[$i]->getValorFixo().'" maxlength="400" autocomplete="off"></td>
-			<td class="col-sm-1 center"><span class="center zgdelete" onclick="delRowRegistroLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codRegistro[]" value="'.$registros[$i]->getCodigo().'"></td>
+			<td class="col-sm-1 center">
+				<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
+					<span class="btn btn-sm btn-white btn-info center" onclick="moveUpRegistroLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span>
+					<span class="btn btn-sm btn-white btn-info center" onclick="moveDownRegistroLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span>
+					<span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowRegistroLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span>
+				</div>
+				<input type="hidden" name="codRegistro[]" value="'.$registros[$i]->getCodigo().'">
+			</td>
 		</tr>
 	';
 }
