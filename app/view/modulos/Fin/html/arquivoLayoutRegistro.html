@@ -3,6 +3,8 @@
 		<a href="javascript:zgLoadUrlSeSalvouLayReg('%URLVOLTAR%');"><span class="badge badge-primary">1</span>Layouts</a>
 		<a href="javascript:zgLoadUrlSeSalvouLayReg('%URLATUALIZAR%');" class="current"><span class="badge badge-primary">2</span>Registros do Layout "%NOME%"</a>
 	</div>
+	<div id="divAvisoLayoutRegistroID"></div>
+	
 	<hr/>
 	<div class="btn-group">
 		%BOTOES%
@@ -13,6 +15,7 @@
 		<input type="hidden" name="id" value="%ID%">
 		<input type="hidden" name="_precisaSalvar" id="_precisaSalvarID">
 		<input type="hidden" id="codLayoutID" name="codLayout" value="%COD_LAYOUT%">
+		<input type="hidden" id="codTipoRegistroID" name="codTipoRegistro" value="%COD_TIPO_REGISTRO%">
 		
 		
 		<div class="col-sm-12">
@@ -37,8 +40,8 @@
 							<th id="layRegtableTotalOrdemCellID" class="col-sm-1 center"></th>
 							<th class="col-sm-1 center"></th>
 							<th id="layRegtableTotalTamanhoCellID" class="col-sm-1 center"></th>
-							<th colspan="4" style="text-align: left;">Totalizador</th>
-							<th></th>
+							<th colspan="3" style="text-align: left;">Totalizador</th>
+							<th class="col-sm-1 center"><span class="" onclick="addRowRegistroLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 						</tr>
 					</tfoot>
 				</table>
@@ -60,10 +63,21 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 
+var $_indTamanhoFixo		= parseInt('%IND_TAMANHO_FIXO%');
+var $_tamanho				= parseInt('%TAMANHO%');
+
+$('#layRegTableRegistroID > tbody > tr .select2').select2("destroy").select2({allowClear: true});
+
+atualizaTotalTabelaRegistroLayReg();
+
 $("#btnSubmitLayRegID").on("click", function(e) {
+	var vOK;
 	
-	$('#zgFormID').submit();
+	vOK 	= validaRegistroLayReg();
 	
+	if (vOK == true) {
+		$('#zgFormID').submit();
+	}
 });
 
 
@@ -85,36 +99,12 @@ $('#zgFormID').submit(function() {
 		url:	"%DP%",
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
-		/** Recolocar a máscara para os campos que estão configurados para tal **/
-		$('[zg-data-mask-retira="1"]').each(function( index ) {
-			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$('#_precisaSalvarID').val(0);
+		zgMostraAviso("Fechar");
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
 		});
-		
-		if (checaRetornoOK(data) == true) {
-			bootbox.dialog({
-				message: "Conta salva com sucesso !!!", 
-				buttons: {
-					"novo" : {
-						"label" : "<i class='ace-icon fa fa-plus'></i>Cadastrar nova conta",
-						"className" : "btn-sm btn-primary",
-						"callback": function() {
-							zgLoadUrl('%URL_ADD%');
-						}
-					},
-					"fechar" : {
-						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
-						"className" : "btn-sm btn-danger",
-						"callback": function() {
-							zgLoadUrl('%URL_VOLTAR%');
-						}
-
-					},
-					
-				}
-			});
-		}else{
-			zgMostraAviso("Fechar");
-		}
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso("Fechar");
 	});
@@ -139,7 +129,7 @@ function addRowRegistroLayReg() {
 	$('#layRegTableRegistroID > tbody > tr:last [name*="posicao[]"]').each(function( index ) {
 		$ultPos	= parseInt($(this).val());
 		if (zgValidaNumero($ultPos) == false) {
-			alert('Ajuste o campo "POSIÇÃO" na ordem: '+$ultOrdem);
+			zgMostraErro('divAvisoLayoutRegistroID','Ajuste o campo "POSIÇÃO" na ordem: '+$ultOrdem);
 			$return		= true;
 			$(this).addClass('btn-warning');
 		}else{
@@ -150,7 +140,7 @@ function addRowRegistroLayReg() {
 	$('#layRegTableRegistroID > tbody > tr:last [name*="tamanho[]"]').each(function( index ) {
 		$ultTam	= parseInt($(this).val());
 		if (zgValidaNumero($ultTam) == false) {
-			alert("Ajuste o campo tamanho na ordem: "+$ultOrdem);
+			zgMostraErro('divAvisoLayoutRegistroID',"Ajuste o campo tamanho na ordem: "+$ultOrdem);
 			$return		= true;
 			$(this).addClass('btn-warning');
 		}else{
@@ -160,11 +150,11 @@ function addRowRegistroLayReg() {
 	
 	$('#layRegTableRegistroID > tbody > tr:last [name*="codFormato[]"]').each(function( index ) {
 		if (!$(this).val()) {
-			alert('Selecione algum "Formato"');
+			zgMostraErro('divAvisoLayoutRegistroID','Selecione algum "Formato"');
 			$return		= true;
-			$(this).addClass('btn-warning');
+			$(this).addClass('alert-danger');
 		}else{
-			$(this).removeClass('btn-warning');
+			$(this).removeClass('alert-danger');
 		}
 	});
 
@@ -372,15 +362,87 @@ function atualizaTotalTabelaRegistroLayReg () {
 	});
 	$total		= parseInt($total);
 	
+	if ($_indTamanhoFixo 		== 1) {
+		var $vMsg;
+		var $dif	= $_tamanho - $total;
+		
+		if ($dif > 0) {
+			$vMsg	= zgCriaSpanErro('Faltam ainda '+$dif+' caracteres para chegar aos '+$_tamanho+' necessários');
+		}else if ($dif < 0) {
+			$vMsg	= zgCriaSpanErro('Existem '+$dif+' caracteres a mais do que os '+$_tamanho+' necessários');
+		}else{
+			$vMsg	= zgCriaSpanOK();
+		}
+		
+		$total	= $total + "&nbsp;"+$vMsg;
+	}
+
+	
 	/** Atualiza os campos da tabela  **/
 	$('#layRegtableTotalOrdemCellID').html($numRows);
 	$('#layRegtableTotalTamanhoCellID').html($total);
 	
 }
 
+function validaRegistroLayReg () {
+	var $total,$return,$tamanho,$codFormato,$ordem,$ok;
+	
+	$ok	= true;
+	
+	$('#layRegTableRegistroID > tbody > tr').each(function( index ) {
+		
+		$ordObj 	= $(this).find('[name*="ordem[]"]');
+		$tamObj 	= $(this).find('[name*="tamanho[]"]');
+		$fmtObj 	= $(this).find('[name*="codFormato[]"]');
+		
+		$ordem		= $ordObj.val();
+		$tamanho	= $tamObj.val();
+		$codFormato	= $fmtObj.val();
+		
+		if (zgValidaNumero($tamanho) == false) {
+			zgMostraErro('divAvisoLayoutRegistroID','Ajuste o campo "TAMANHO" na ordem: '+$ordem);
+			$(this).addClass('alert-danger');
+			$ok 	= false;
+		}else{
+			$(this).removeClass('alert-danger');
+		}
+		
+		if (!$codFormato) {
+			zgMostraErro('divAvisoLayoutRegistroID','Ajuste o campo "FORMATO" na ordem: '+$ordem);
+			$ok 	= false;
+			$(this).addClass('alert-danger');
+		}else{
+			$(this).removeClass('alert-danger');
+		}
+	
+	});
+
+	if (!$ok)	return false;
+	
+	if ($_indTamanhoFixo 		== 1) {
+		
+		/** Calcula o tamanho total  **/
+		$total 		= parseInt(0);
+		$('#layRegTableRegistroID > tbody > tr [name*="tamanho[]"]').each(function( index ) {
+			if (!isNaN(parseInt($(this).val()))) {
+				$total += parseInt($(this).val());
+			}
+		});
+		$total		= parseInt($total);
+		
+		if ($total != $_tamanho) {
+			zgMostraErro('divAvisoLayoutRegistroID','Tamanho total de caracteres incompatível com o tipo de arquivo !!!, o layout deve conter "'+$_tamanho+'" caracteres !!!');
+			return false;
+		}
+	}
+	
+	return true;	
+}
+
+
 function zgLoadUrlSeSalvouLayReg($url) {
 	if ($('#_precisaSalvarID').val() == 1) {
-		alert("Salve as informações, antes de mudar de tela !!!");
+		zgMostraErro('divAvisoLayoutRegistroID',"Salve as informações, antes de mudar de tela !!!");
 		$('#_precisaSalvarID').val(0);
 	}else{
 		zgLoadUrl($url);

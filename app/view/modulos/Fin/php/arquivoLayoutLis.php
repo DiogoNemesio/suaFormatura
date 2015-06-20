@@ -49,8 +49,8 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GLayout");
-$grid->adicionaTexto($tr->trans('TIPO DO LAYOUT'),		30, $grid::CENTER	,'codTipoLayout:nome');
-$grid->adicionaTexto($tr->trans('BANCO'),				20, $grid::CENTER	,'codBanco:nome');
+$grid->adicionaTexto($tr->trans('TIPO DO LAYOUT'),		28, $grid::CENTER	,'codTipoLayout:nome');
+$grid->adicionaTexto($tr->trans('BANCO'),				15, $grid::CENTER	,'codBanco:nome');
 $grid->adicionaTexto($tr->trans('NOME'),				40, $grid::CENTER	,'nome');
 $grid->adicionaIcone('', 'fa fa-money'	, 'Carteiras associadas');
 $grid->adicionaIcone('', 'fa fa-list'	, 'Registros');

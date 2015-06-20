@@ -51,8 +51,14 @@ try {
 $codTipo		= ($info->getCodTipoLayout()) 	? $info->getCodTipoLayout()->getCodigo() 	: null; 
 $codBanco		= ($info->getCodBanco()) 		? $info->getCodBanco()->getCodigo() 		: null;
 $nome			= $info->getNome();
-$codTipoArq		= ($info->getCodTipoLayout()) 	? $info->getCodTipoLayout()->getCodTipoArquivo()->getCodigo() 	: null;
-	
+$codTipoArq		= ($info->getCodTipoLayout()) 	? $info->getCodTipoLayout()->getCodTipoArquivo()->getCodigo() 			: null;
+$indTamFixo		= ($info->getCodTipoLayout()) 	? $info->getCodTipoLayout()->getCodTipoArquivo()->getIndTamanhoFixo() 	: null;
+if ($indTamFixo	== 1) {
+	$tamanho	= ($info->getCodTipoLayout()) 	? $info->getCodTipoLayout()->getCodTipoArquivo()->getTamanho() 	: null;
+}else{
+	$tamanho	= null;
+}
+
 
 #################################################################################
 ## Resgatas os tipos de registro desse tipo de arquivo
@@ -163,8 +169,11 @@ $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('URLATUALIZAR'		,$urlAtualizar);
 $tpl->set('ID'					,$id);
 $tpl->set('COD_LAYOUT'			,$codLayout);
+$tpl->set('COD_TIPO_REGISTRO'	,$codTipoRegistro);
 $tpl->set('COD_BANCO'			,$codBanco);
 $tpl->set('NOME'				,$nome);
+$tpl->set('IND_TAMANHO_FIXO'	,$indTamFixo);
+$tpl->set('TAMANHO'				,$tamanho);
 $tpl->set('BOTOES'				,$htmlBotoes);
 $tpl->set('REGISTROS'			,$htmlReg);
 $tpl->set('FORMATOS'			,$oFormato);
