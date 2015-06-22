@@ -35,6 +35,20 @@ class ZgfinArquivoTipo
      */
     private $indAtivo;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_TAMANHO_FIXO", type="integer", nullable=false)
+     */
+    private $indTamanhoFixo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="TAMANHO", type="integer", nullable=true)
+     */
+    private $tamanho;
+
 
     /**
      * Get codigo
@@ -90,5 +104,51 @@ class ZgfinArquivoTipo
     public function getIndAtivo()
     {
         return $this->indAtivo;
+    }
+
+    /**
+     * Set indTamanhoFixo
+     *
+     * @param integer $indTamanhoFixo
+     * @return ZgfinArquivoTipo
+     */
+    public function setIndTamanhoFixo($indTamanhoFixo)
+    {
+        $this->indTamanhoFixo = $indTamanhoFixo;
+
+        return $this;
+    }
+
+    /**
+     * Get indTamanhoFixo
+     *
+     * @return integer 
+     */
+    public function getIndTamanhoFixo()
+    {
+        return $this->indTamanhoFixo;
+    }
+
+    /**
+     * Set tamanho
+     *
+     * @param integer $tamanho
+     * @return ZgfinArquivoTipo
+     */
+    public function setTamanho($tamanho)
+    {
+        $this->tamanho = $tamanho;
+
+        return $this;
+    }
+
+    /**
+     * Get tamanho
+     *
+     * @return integer 
+     */
+    public function getTamanho()
+    {
+        return $this->tamanho;
     }
 }
