@@ -42,6 +42,11 @@ try {
 	if (!$oUsuAdmVal) {
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Esta operação não pode ser concluída, porque não existe uma associação entre o usuário e a organização."))));
 		$err = 1;
+	}else{
+		if ($oUsuAdmVal->getCodStatus()->getCodigo() == 'C'){
+			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Este usuário já está cancelado!"))));
+			$err = 1;
+		}
 	}
 	
 	if ($err) {
