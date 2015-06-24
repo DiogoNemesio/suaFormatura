@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmOrganizacao
  *
- * @ORM\Table(name="ZGADM_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_4_idx", columns={"COD_SEXO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_5_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_6_idx", columns={"COD_INSTITUICAO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_7_idx", columns={"COD_CURSO"})})
+ * @ORM\Table(name="ZGADM_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_4_idx", columns={"COD_SEXO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_5_idx", columns={"COD_LOGRADOURO"})})
  * @ORM\Entity
  */
 class ZgadmOrganizacao
@@ -203,26 +203,6 @@ class ZgadmOrganizacao
      * })
      */
     private $codLogradouro;
-
-    /**
-     * @var \Entidades\ZgfmtInstituicao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtInstituicao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_INSTITUICAO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codInstituicao;
-
-    /**
-     * @var \Entidades\ZgfmtCurso
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtCurso")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CURSO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codCurso;
 
 
     /**
@@ -785,51 +765,5 @@ class ZgadmOrganizacao
     public function getCodLogradouro()
     {
         return $this->codLogradouro;
-    }
-
-    /**
-     * Set codInstituicao
-     *
-     * @param \Entidades\ZgfmtInstituicao $codInstituicao
-     * @return ZgadmOrganizacao
-     */
-    public function setCodInstituicao(\Entidades\ZgfmtInstituicao $codInstituicao = null)
-    {
-        $this->codInstituicao = $codInstituicao;
-
-        return $this;
-    }
-
-    /**
-     * Get codInstituicao
-     *
-     * @return \Entidades\ZgfmtInstituicao 
-     */
-    public function getCodInstituicao()
-    {
-        return $this->codInstituicao;
-    }
-
-    /**
-     * Set codCurso
-     *
-     * @param \Entidades\ZgfmtCurso $codCurso
-     * @return ZgadmOrganizacao
-     */
-    public function setCodCurso(\Entidades\ZgfmtCurso $codCurso = null)
-    {
-        $this->codCurso = $codCurso;
-
-        return $this;
-    }
-
-    /**
-     * Get codCurso
-     *
-     * @return \Entidades\ZgfmtCurso 
-     */
-    public function getCodCurso()
-    {
-        return $this->codCurso;
     }
 }

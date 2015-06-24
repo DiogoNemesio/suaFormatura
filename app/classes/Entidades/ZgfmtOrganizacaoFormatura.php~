@@ -24,9 +24,9 @@ class ZgfmtOrganizacaoFormatura
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATA_CONCLUSﾃグ", type="date", nullable=false)
+     * @ORM\Column(name="DATA_CONCLUSﾃO", type="date", nullable=false)
      */
-    private $dataConclusﾃバ;
+    private $dataConclusﾃo;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -80,26 +80,26 @@ class ZgfmtOrganizacaoFormatura
     }
 
     /**
-     * Set dataConclusﾃバ
+     * Set dataConclusﾃo
      *
-     * @param \DateTime $dataConclusﾃバ
+     * @param \DateTime $dataConclusﾃo
      * @return ZgfmtOrganizacaoFormatura
      */
-    public function setDataConclusﾃバ($dataConclusﾃバ)
+    public function setDataConclusﾃo($dataConclusﾃo)
     {
-        $this->dataConclusﾃバ = $dataConclusﾃバ;
+        $this->dataConclusﾃo = $dataConclusﾃo;
 
         return $this;
     }
 
     /**
-     * Get dataConclusﾃバ
+     * Get dataConclusﾃo
      *
      * @return \DateTime 
      */
-    public function getDataConclusﾃバ()
+    public function getDataConclusﾃo()
     {
-        return $this->dataConclusﾃバ;
+        return $this->dataConclusﾃo;
     }
 
     /**
