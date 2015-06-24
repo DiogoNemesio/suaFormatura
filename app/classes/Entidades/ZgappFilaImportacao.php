@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappFilaImportacao
  *
- * @ORM\Table(name="ZGAPP_FILA_IMPORTACAO", indexes={@ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_2_idx", columns={"COD_MODULO"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_3_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_4_idx", columns={"COD_TIPO_ARQUIVO"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_5_idx", columns={"COD_STATUS"})})
+ * @ORM\Table(name="ZGAPP_FILA_IMPORTACAO", indexes={@ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_2_idx", columns={"COD_MODULO"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_3_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_4_idx", columns={"COD_TIPO_ARQUIVO"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_5_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGAPP_FILA_IMPORTACAO_6_idx", columns={"COD_ATIVIDADE"})})
  * @ORM\Entity
  */
 class ZgappFilaImportacao
@@ -112,6 +112,16 @@ class ZgappFilaImportacao
      * })
      */
     private $codStatus;
+
+    /**
+     * @var \Entidades\ZgutlAtividade
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgutlAtividade")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ATIVIDADE", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codAtividade;
 
 
     /**
@@ -375,5 +385,28 @@ class ZgappFilaImportacao
     public function getCodStatus()
     {
         return $this->codStatus;
+    }
+
+    /**
+     * Set codAtividade
+     *
+     * @param \Entidades\ZgutlAtividade $codAtividade
+     * @return ZgappFilaImportacao
+     */
+    public function setCodAtividade(\Entidades\ZgutlAtividade $codAtividade = null)
+    {
+        $this->codAtividade = $codAtividade;
+
+        return $this;
+    }
+
+    /**
+     * Get codAtividade
+     *
+     * @return \Entidades\ZgutlAtividade 
+     */
+    public function getCodAtividade()
+    {
+        return $this->codAtividade;
     }
 }
