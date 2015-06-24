@@ -17,6 +17,11 @@
 		<!-- Caminho relativo ao DOC_ROOT -->
 		<caminho>log/system.log</caminho>
 	</log>
+	
+	<arquivos>
+		<!-- Caminho relativo ao DOC_ROOT -->
+		<caminho>files/</caminho>
+	</arquivos>
 
 	<!-- Tratamento de data -->
 	<data>
