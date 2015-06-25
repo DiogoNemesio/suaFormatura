@@ -85,6 +85,95 @@ class Fila {
 	}
 	
 	/**
+	 * Setar o status para reprocessar o item da fila
+	 * @param number $codFila
+	 */
+	public static function reprocessar($codFila) {
+		self::alteraStatus($codFila, "A");
+	}
+	
+	/**
+	 * Setar o status para cancelado no item da fila
+	 * @param number $codFila
+	 */
+	public static function cancelar($codFila) {
+		self::alteraStatus($codFila, "C");
+	}
+	
+	/**
+	 * Excluir o item da fila
+	 * @param number $codFila
+	 */
+	public static function excluir($codFila) {
+		global $em,$system,$_user,$log;
+	
+		#################################################################################
+		## Buscar o registro da fila
+		#################################################################################
+		$fila		= $em->getRepository('Entidades\ZgappFilaImportacao')->findOneBy(array('codigo' => $codFila));
+		if (!$fila)	throw new \Exception(sprintf('Fila não encontrada "%s" !!!', $codFila));
+
+		try {
+			$em->remove($fila);
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+	
+	/**
+	 * Alterar a linha atual do registro
+	 * @param number $codFila
+	 */
+	public static function alteraLinhaAtual($codFila,$linha) {
+		global $em,$system,$_user,$log;
+	
+		#################################################################################
+		## Buscar o registro da fila
+		#################################################################################
+		$fila		= $em->getRepository('Entidades\ZgappFilaImportacao')->findOneBy(array('codigo' => $codFila));
+		if (!$fila)	throw new \Exception(sprintf('Fila não encontrada "%s" !!!', $codFila));
+	
+	
+		#################################################################################
+		## Alterar a linha
+		#################################################################################
+		$fila->setLinhaAtual($linha);
+	
+		try {
+			$em->persist($fila);
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+	
+	/**
+	 * Alterar o status atual do registro
+	 * @param number $codFila
+	 */
+	public static function alteraStatus($codFila,$codStatus) {
+		global $em,$system,$_user,$log;
+	
+		#################################################################################
+		## Buscar o registro da fila
+		#################################################################################
+		$fila		= $em->getRepository('Entidades\ZgappFilaImportacao')->findOneBy(array('codigo' => $codFila));
+		if (!$fila)	throw new \Exception(sprintf('Fila não encontrada "%s" !!!', $codFila));
+	
+	
+		#################################################################################
+		## Buscar o objeto do status
+		#################################################################################
+		$oStatus		= $em->getRepository('Entidades\ZgappImportacaoStatusTipo')->findOneBy(array('codigo' => $codStatus));
+		$fila->setCodStatus($oStatus);
+		
+		try {
+			$em->persist($fila);
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+	
+	/**
 	 * Calcula o número de linhas do Arquivo
 	 */
 	public static function calculaNumLinhas ($arquivo) {

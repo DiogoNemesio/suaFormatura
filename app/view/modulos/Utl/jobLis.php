@@ -5,8 +5,10 @@
 if (defined('DOC_ROOT')) {
 	include_once(DOC_ROOT . 'include.php');
 }else{
-	include_once('../include.php');
+	include_once('./include.php');
 }
+
+global $em;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -34,58 +36,40 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
+$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$evento		= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormatura' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$eventoTipo	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findBy(array(),array('descricao' => 'ASC'));
+	$jobs	= $em->getRepository('Entidades\ZgutlJob')->findAll(); 
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-	
+
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GEventoA");
-$grid->adicionaTexto($tr->trans('NOME'),				30, $grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('TIPO EVENTO'),			30, $grid::CENTER	,'codTipoEvento:descricao');
-$grid->adicionaTexto($tr->trans('LOCAL'),				20, $grid::CENTER	,'nome');
-$grid->adicionaDataHora($tr->trans('DATA'),				10, $grid::CENTER	,'data');
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GJobs");
+$grid->adicionaTexto('#'					, 4	,$grid::CENTER	,'codigo');
+$grid->adicionaTexto('Módulo'				, 9	,$grid::CENTER	,'codModulo:nome');
+$grid->adicionaTexto('Atividade'			, 7	,$grid::CENTER	,'codAtividade:identificacao');
+$grid->adicionaStatus('Ativo'				, 'indAtivo');
+$grid->adicionaDataHora('Ultima Execução'	,10	,$grid::CENTER	,'dataUltimaExecucao');
+$grid->adicionaTexto('Intervalo'			,10	,$grid::CENTER	,'intervalo');
+$grid->adicionaDataHora('Proxima Execução'	,10	,$grid::CENTER	,'dataProximaExecucao');
+$grid->adicionaTexto('Comando'				,16	,$grid::CENTER	,'comando');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($evento);
+$grid->importaDadosDoctrine($jobs);
 
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($evento); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEvento='.$evento[$i]->getCodigo().'&url='.$url);
+for ($i = 0; $i < sizeof($jobs); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codJob='.$jobs[$i]->getCodigo().'&url='.$url);
+	$grid->setUrlCelula($i,8,ROOT_URL.'/Fin/jobAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,9,ROOT_URL.'/Fin/jobExc.php?id='.$uid);
 	
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Fmt/eventoAgendarAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL."/Fmt/eventoAgendarExc.php?id=".$uid."');");
 }
 
-#################################################################################
-## Gerar a url de adicão
-#################################################################################
-for ($i = 0; $i < sizeof($eventoTipo); $i++) {
-	
-	$existeEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codFormatura' => $system->getCodOrganizacao(),'codTipoEvento' => $eventoTipo[$i]->getCodigo())); 
-	
-	if ($existeEvento) {
-		$urlAdd			= "#";
-		$classe			= "disabled";
-	}else{
-		$urlAdd		   = ROOT_URL.'/Fmt/eventoAgendarAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codTipo='.$eventoTipo[$i]->getCodigo().'&codEvento=');
-		$classe			= "";
-	}
-	$htmlButton	  .= "<li class='".$classe."'>
-						<a href=\"javascript:zgLoadUrl('".$urlAdd."');\">".$eventoTipo[$i]->getDescricao()."</a>
-				  	  </li>";
-}
 
 #################################################################################
 ## Gerar o código html do grid
@@ -97,19 +81,22 @@ try {
 }
 
 #################################################################################
+## Gerar a url de adicão
+#################################################################################
+$urlAdd			= ROOT_URL.'/Fin/jobAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codJob=');
+
+#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
-//$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(HTML_PATH . 'templateLis.html');
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Agendar Evento'));
+$tpl->set('NOME'			,$tr->trans("Jobs (Agendamentos)"));
 $tpl->set('URLADD'			,$urlAdd);
-$tpl->set('HTML_BUTTON'		,$htmlButton);
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################
