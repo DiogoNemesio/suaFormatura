@@ -36,7 +36,7 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
+$url		= ROOT_URL . "/Utl/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
 ## Resgata os dados do grid
@@ -65,8 +65,8 @@ $grid->importaDadosDoctrine($jobs);
 
 for ($i = 0; $i < sizeof($jobs); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codJob='.$jobs[$i]->getCodigo().'&url='.$url);
-	$grid->setUrlCelula($i,8,ROOT_URL.'/Fin/jobAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,9,ROOT_URL.'/Fin/jobExc.php?id='.$uid);
+	$grid->setUrlCelula($i,8,ROOT_URL.'/Utl/jobAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,9,ROOT_URL.'/Utl/jobExc.php?id='.$uid);
 	
 }
 
@@ -83,7 +83,7 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fin/jobAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codJob=');
+$urlAdd			= ROOT_URL.'/Utl/jobAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codJob=');
 
 #################################################################################
 ## Carregando o template html

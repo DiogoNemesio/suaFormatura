@@ -1,0 +1,260 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Jobs (Agendamentos)
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codJobID" name="codJob" value="%COD_JOB%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divCodAtividadeID">
+								<label for="codAtividadeID" class="col-sm-3 control-label">Atividade</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a atividade do Job"></i></span>
+									<select id="codAtividadeID" name="codAtividade" class="select2" data-placeholder="Selecione a atividade">
+										%ATIVIDADES%
+									</select>
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpCodAtividadeID"></div>
+							</div>
+							<div class="form-group col-sm-12" id="divCodModuloID">
+								<label for="codModuloID" class="col-sm-3 control-label">Módulo</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o módulo do Job"></i></span>
+									<select id="codModuloID" name="codModulo" class="select2" data-placeholder="Selecione o Módulo">
+										%MODULOS%
+									</select>
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpCodModuloID"></div>
+							</div>
+							<div class="form-group col-sm-12" id="divDataPrxExeID">
+								<label for="DataPrxExeID" class="col-sm-3 control-label">Próxima execução</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data da Próxima Execução"></i></span>
+									<input class="form-control datepicker" id="date-timepicker" type="text" name="dataPrxExe" placeholder="Data da Próxima Execução" maxlength="16" value="%DATA_PRX_EXE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples">
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpDataPrxExeID"></div>
+							</div>																	
+					    	<div class="form-group col-sm-12" id="divMesID">
+						    	<label class="col-sm-3 control-label" for="mesID">Mês</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Mês"></i></span>
+									<select id="mesID" name="mes" class="select2" data-placeholder="Mês">
+										%MESES%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpMesID"></div>
+						    </div>
+					    	<div class="form-group col-sm-12" id="divHoraID">
+						    	<label class="col-sm-3 control-label" for="horaID">Hora</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Hora"></i></span>
+									<select id="horaID" name="hora" class="select2" data-placeholder="Hora">
+										%HORAS%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpHoraID"></div>
+						    </div>
+					    	<div class="form-group col-sm-12" id="divSegundoID">
+						    	<label class="col-sm-3 control-label" for="segundoID">Segundo</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Segundo"></i></span>
+									<select id="segundoID" name="segundo" class="select2" data-placeholder="Segundo">
+										%SEGUNDOS%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpHoraID"></div>
+						    </div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divComandoID">
+								<label for="comandoID" class="col-sm-3 control-label">Comando</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Comando (Script PHP que será executado)"></i></span>
+									<input type="text" id="comandoID" name="comando" value="%COMANDO%" maxlength="400" class="width-100" placeholder="Comando" autocomplete="off" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpComandoID"></div>
+							</div>																	
+						    <div class="form-group col-sm-12" id="divIndAtivoID">
+						    	<label class="col-xs-12 col-sm-3 control-label" for="indAtivoID">Ativo</label>
+						    	<label class="col-sm-6">
+						    		<input name="indAtivo" id="indAtivoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_ATIVO% />
+									<span class="lbl"></span>
+								</label>
+						    </div>
+					    	<div class="form-group col-sm-12" id="divAnoID">
+						    	<label class="col-sm-3 control-label" for="anoID">Ano</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Ano (Use * para todos os anos)"></i></span>
+					    			<input type="text" id="anoID" name="ano" value="%ANO%" maxlength="4" class="width-100" placeholder="Ano" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0"  />
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpAnoID"></div>
+						    </div>
+					    	<div class="form-group col-sm-12" id="divDiaID">
+						    	<label class="col-sm-3 control-label" for="anoID">Dia</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Dia"></i></span>
+									<select id="diaID" name="dia" class="select2" data-placeholder="Dia">
+										%DIAS%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDiaID"></div>
+						    </div>
+					    	<div class="form-group col-sm-12" id="divMinutoID">
+						    	<label class="col-sm-3 control-label" for="minutoID">Minuto</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Minuto"></i></span>
+									<select id="minutoID" name="minuto" class="select2" data-placeholder="Minuto">
+										%MINUTOS%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpMinutoID"></div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+
+//Datepicker - Calendário
+$('#date-timepicker').datetimepicker({
+	format: 'DD/MM/YYYY HH:mm',
+    language: 'pt-BR'	
+}).next().on(ace.click_event, function(){
+	 
+});
+//Select 2
+$('#codAtividadeID').css('width','100%').select2({allowClear: false});
+$('#codModuloID').css('width','100%').select2({allowClear: false});
+
+/******************************************************
+MASCARA - Inserir as mascaras no campo
+/******************************************************/
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= true;
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codJobID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Job', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});
+
+
+function validaJob() {
+	var vCodAtividade		= $('#codAtividadeID').val();
+	var vCodModulo			= $('#codModuloID').val();
+	var vComando			= $('#comandoID').val();
+	var vIntervalo			= $('#intervaloID').val();
+	var vInstituicao	= $('#instituicaoID').val();
+	var vOK		= true;
+	
+	// NOME DA TURMA
+	if (!vNome){
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('O nome da turma deve ser preenchido!'));
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+
+	// INSTITUIÇÃO DE ENSINO
+	if (!vInstituicao){
+		$('#divInstituicaoID').addClass('has-error');
+		$('#divHelpInstituicaoID').html(zgCriaSpanErro('A instituição de ensino deve ser preenchida!'));
+	}else{
+		$('#divInstituicaoID').removeClass('has-error');
+		$('#divHelpInstituicaoID').html('&nbsp;');
+	}
+	
+	// IDENTIFICAÇÃO
+	if (validaIdent() == false){
+		vOK = false;
+	}
+	
+	if (vOK == true) {
+		return vIdent;
+	}else{
+		return vOK;
+	}
+}
+
+
+</script>
+
