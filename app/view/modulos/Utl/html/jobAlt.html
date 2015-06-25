@@ -36,14 +36,14 @@
 								</div>
 								<div class="col-sm-1 pull-left" id="divHelpCodModuloID"></div>
 							</div>
-							<div class="form-group col-sm-12" id="divDataPrxExeID">
-								<label for="DataPrxExeID" class="col-sm-3 control-label">Próxima execução</label>
-								<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data da Próxima Execução"></i></span>
-									<input class="form-control datepicker" id="date-timepicker" type="text" name="dataPrxExe" placeholder="Data da Próxima Execução" maxlength="16" value="%DATA_PRX_EXE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples">
-								</div>
-								<div class="col-sm-1 pull-left" id="divHelpDataPrxExeID"></div>
-							</div>																	
+					    	<!--<div class="form-group col-sm-12" id="divAnoID">
+						    	<label class="col-sm-3 control-label" for="anoID">Ano</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Ano (Use * para todos os anos)"></i></span>
+					    			<input type="text" id="anoID" name="ano" value="%ANO%" maxlength="4" class="width-100" placeholder="Ano" autocomplete="off" />
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpAnoID"></div>
+						    </div>
 					    	<div class="form-group col-sm-12" id="divMesID">
 						    	<label class="col-sm-3 control-label" for="mesID">Mês</label>
 									<div class="input-group col-sm-8 pull-left">
@@ -53,51 +53,6 @@
 									</select>
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpMesID"></div>
-						    </div>
-					    	<div class="form-group col-sm-12" id="divHoraID">
-						    	<label class="col-sm-3 control-label" for="horaID">Hora</label>
-									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Hora"></i></span>
-									<select id="horaID" name="hora" class="select2" data-placeholder="Hora">
-										%HORAS%
-									</select>
-						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpHoraID"></div>
-						    </div>
-					    	<div class="form-group col-sm-12" id="divSegundoID">
-						    	<label class="col-sm-3 control-label" for="segundoID">Segundo</label>
-									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Segundo"></i></span>
-									<select id="segundoID" name="segundo" class="select2" data-placeholder="Segundo">
-										%SEGUNDOS%
-									</select>
-						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpHoraID"></div>
-						    </div>
-						</div>
-						<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divComandoID">
-								<label for="comandoID" class="col-sm-3 control-label">Comando</label>
-								<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Comando (Script PHP que será executado)"></i></span>
-									<input type="text" id="comandoID" name="comando" value="%COMANDO%" maxlength="400" class="width-100" placeholder="Comando" autocomplete="off" />
-								</div>
-								<div class="col-sm-1 pull-left" id="divHelpComandoID"></div>
-							</div>																	
-						    <div class="form-group col-sm-12" id="divIndAtivoID">
-						    	<label class="col-xs-12 col-sm-3 control-label" for="indAtivoID">Ativo</label>
-						    	<label class="col-sm-6">
-						    		<input name="indAtivo" id="indAtivoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_ATIVO% />
-									<span class="lbl"></span>
-								</label>
-						    </div>
-					    	<div class="form-group col-sm-12" id="divAnoID">
-						    	<label class="col-sm-3 control-label" for="anoID">Ano</label>
-									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Ano (Use * para todos os anos)"></i></span>
-					    			<input type="text" id="anoID" name="ano" value="%ANO%" maxlength="4" class="width-100" placeholder="Ano" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0"  />
-						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpAnoID"></div>
 						    </div>
 					    	<div class="form-group col-sm-12" id="divDiaID">
 						    	<label class="col-sm-3 control-label" for="anoID">Dia</label>
@@ -109,6 +64,50 @@
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpDiaID"></div>
 						    </div>
+						    -->
+							<div class="form-group col-sm-12" id="divIntervaloID">
+								<label for="intervaloID" class="col-sm-3 control-label">Intervalo</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Intervalo (Deve ser do tipo DateTime do PHP)"></i></span>
+									<input type="text" id="intervaloID" name="intervalo" value="%INTERVALO%" maxlength="100" class="width-100" placeholder="Comando" autocomplete="off" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpComandoID"></div>
+							</div>																	
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divComandoID">
+								<label for="comandoID" class="col-sm-3 control-label">Comando</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Comando (Script PHP que será executado, ele deve está no caminho JOB_PATH)"></i></span>
+									<input type="text" id="comandoID" name="comando" value="%COMANDO%" maxlength="400" class="width-100" placeholder="Comando" autocomplete="off" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpComandoID"></div>
+							</div>																	
+							<div class="form-group col-sm-12" id="divDataPrxExeID">
+								<label for="DataPrxExeID" class="col-sm-3 control-label">Próxima execução</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data da Próxima Execução"></i></span>
+									<input class="form-control datepicker" id="date-timepicker" type="text" name="dataPrxExe" placeholder="Data da Próxima Execução" maxlength="19" value="%DATA_PRX_EXE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetime">
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpDataPrxExeID"></div>
+							</div>																	
+						    <div class="form-group col-sm-12" id="divIndAtivoID">
+						    	<label class="col-xs-12 col-sm-3 control-label" for="indAtivoID">Ativo</label>
+						    	<label class="col-sm-6">
+						    		<input name="indAtivo" id="indAtivoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_ATIVO% />
+									<span class="lbl"></span>
+								</label>
+						    </div>
+					    	<!-- <div class="form-group col-sm-12" id="divHoraID">
+						    	<label class="col-sm-3 control-label" for="horaID">Hora</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Hora"></i></span>
+									<select id="horaID" name="hora" class="select2" data-placeholder="Hora">
+										%HORAS%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpHoraID"></div>
+						    </div>
 					    	<div class="form-group col-sm-12" id="divMinutoID">
 						    	<label class="col-sm-3 control-label" for="minutoID">Minuto</label>
 									<div class="input-group col-sm-8 pull-left">
@@ -119,6 +118,17 @@
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpMinutoID"></div>
 						    </div>
+					    	<div class="form-group col-sm-12" id="divSegundoID">
+						    	<label class="col-sm-3 control-label" for="segundoID">Segundo</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Segundo"></i></span>
+									<select id="segundoID" name="segundo" class="select2" data-placeholder="Segundo">
+										%SEGUNDOS%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpHoraID"></div>
+						    </div>
+						     -->
 						</div>
 					</div>
 				</div>
@@ -144,7 +154,7 @@ $('[data-toggle="popover"]').popover();
 
 //Datepicker - Calendário
 $('#date-timepicker').datetimepicker({
-	format: 'DD/MM/YYYY HH:mm',
+	format: 'DD/MM/YYYY HH:mm:ss',
     language: 'pt-BR'	
 }).next().on(ace.click_event, function(){
 	 
@@ -152,6 +162,13 @@ $('#date-timepicker').datetimepicker({
 //Select 2
 $('#codAtividadeID').css('width','100%').select2({allowClear: false});
 $('#codModuloID').css('width','100%').select2({allowClear: false});
+
+$('#mesID').css('width','100%').select2({allowClear: false});
+$('#diaID').css('width','100%').select2({allowClear: false});
+$('#horaID').css('width','100%').select2({allowClear: false});
+$('#minutoID').css('width','100%').select2({allowClear: false});
+$('#segundoID').css('width','100%').select2({allowClear: false});
+
 
 /******************************************************
 MASCARA - Inserir as mascaras no campo

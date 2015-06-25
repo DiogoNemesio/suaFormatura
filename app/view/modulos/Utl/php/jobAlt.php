@@ -52,12 +52,14 @@ if (!empty($codJob)) {
 	$indAtivo		= $info->getIndAtivo();
 	$dataUltExe		= ($info->getDataUltimaExecucao() != null)	? $info->getDataUltimaExecucao()->format($system->config["data"]["datetimeSimplesFormat"])	: null;
 	$dataPrxExe		= ($info->getDataProximaExecucao() != null) ? $info->getDataProximaExecucao()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
-	$ano			= $info->getAno();
+	$intervalo		= $info->getIntervalo();
+	/*$ano			= $info->getAno();
 	$mes			= $info->getMes();
 	$dia			= $info->getDia();
 	$hora			= $info->getHora();
 	$minuto			= $info->getMinuto();
 	$segundo		= $info->getSegundo();
+	*/
 
 }else{
 	$codAtividade	= null;
@@ -66,12 +68,14 @@ if (!empty($codJob)) {
 	$indAtivo		= null;
 	$dataUltExe		= null;
 	$dataPrxExe		= null;
-	$ano			= null;
+	$intervalo		= null;
+	/*$ano			= null;
 	$mes			= null;
 	$dia			= null;
 	$hora			= null;
 	$minuto			= null;
 	$segundo		= null;
+	*/
 }
 
 
@@ -100,20 +104,54 @@ try {
 ################################################################################
 # Select do Mês
 ################################################################################
-try {
-	$aMeses	= array();
-	for ($i = 1; $i <= 12; $i++) {
-		$aMeses[$i]["CODIGO"]	= str_pad($i, 2, "0", STR_PAD_LEFT);
-		$aMeses[$i]["VALOR"]	= \Zage\App\Util::mesPorExtenso($aMeses[$i]["CODIGO"]);
-	}
-	$aMeses[$i]["CODIGO"]	= "*";
-	$aMeses[$i]["VALOR"]	= $tr->trans("Todos os meses");
-	
-	$oModulo = $system->geraHtmlCombo($aMeses, 'CODIGO', 'VALOR', $mes, '');
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
+/*$oMeses	= "";
+$oMeses .= "<option value=\"*\">".$tr->trans("Todos os meses").'</option>';
+for ($i = 1; $i <= 12; $i++) {
+	$codigo		= str_pad($i, 2, "0", STR_PAD_LEFT);
+	$valor		= \Zage\App\Util::mesPorExtenso($codigo);
+	$selected	= ($codigo	== $mes) ? "selected" : "";
+	$oMeses .= "<option $selected value=\"".$codigo."\" $selected>".$valor.'</option>';
+}*/
 
+################################################################################
+# Select do Dia
+################################################################################
+/*$oDias	= "";
+$oDias 	.= "<option value=\"*\">".$tr->trans("Todos os dias").'</option>';
+for ($i = 1; $i <= 31; $i++) {
+	$codigo		= str_pad($i, 2, "0", STR_PAD_LEFT);
+	$valor		= $codigo;
+	$selected	= ($codigo	== $dia) ? "selected" : "";
+	$oDias .= "<option $selected value=\"".$codigo."\" $selected>".$valor.'</option>';
+}*/
+
+################################################################################
+# Select das horas
+################################################################################
+/*$oHoras		= "";
+$oHoras 	.= "<option value=\"*\">".$tr->trans("Todos as horas").'</option>';
+for ($i = 0; $i <= 23; $i++) {
+	$codigo		= str_pad($i, 2, "0", STR_PAD_LEFT);
+	$valor		= $codigo;
+	$selected	= ($codigo	== $hora) ? "selected" : "";
+	$oHoras .= "<option $selected value=\"".$codigo."\" $selected>".$valor.'</option>';
+}*/
+
+################################################################################
+# Select dos minutos / segundos
+################################################################################
+/*$oMinutos	= "";
+$oSegundos	= "";
+$oMinutos 	.= "<option value=\"*\">".$tr->trans("Todos os minutos").'</option>';
+$oSegundos	.= "<option value=\"*\">".$tr->trans("Todos os minutos").'</option>';
+for ($i = 0; $i <= 59; $i++) {
+	$codigo		= str_pad($i, 2, "0", STR_PAD_LEFT);
+	$valor		= $codigo;
+	$selMin		= ($codigo	== $minuto) 	? "selected" : "";
+	$selSeg		= ($codigo	== $segundo) 	? "selected" : "";
+	$oMinutos 	.= "<option $selMin value=\"".$codigo."\" $selected>".$valor.'</option>';
+	$oSegundos 	.= "<option $selSeg value=\"".$codigo."\" $selected>".$valor.'</option>';
+}*/
 
 #################################################################################
 ## Url Voltar
@@ -144,11 +182,18 @@ $tpl->set('COD_ATIVIDADE'		,$codAtividade);
 $tpl->set('COD_MODULO'			,$codModulo);
 $tpl->set('COMANDO'				,$comando);
 $tpl->set('IND_ATIVO'			,$indAtivo);
-$tpl->set('INTERVALO'			,$intervalo);
 $tpl->set('DATA_ULT_EXE'		,$dataUltExe);
 $tpl->set('DATA_PRX_EXE'		,$dataPrxExe);
 $tpl->set('ATIVIDADES'			,$oAtividade);
 $tpl->set('MODULOS'				,$oModulo);
+$tpl->set('INTERVALO'			,$intervalo);
+/*$tpl->set('ANO'					,$ano);
+$tpl->set('MESES'				,$oMeses);
+$tpl->set('DIAS'				,$oDias);
+$tpl->set('HORAS'				,$oHoras);
+$tpl->set('MINUTOS'				,$oMinutos);
+$tpl->set('SEGUNDOS'			,$oSegundos);
+*/
 $tpl->set('APP_BS_TA_MINLENGTH'	,\Zage\Adm\Parametro::getValor('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'		,\Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS'));
 $tpl->set('APP_BS_TA_TIMEOUT'	,\Zage\Adm\Parametro::getValor('APP_BS_TA_TIMEOUT'));

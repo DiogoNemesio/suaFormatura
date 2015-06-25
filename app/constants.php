@@ -101,3 +101,9 @@ define ( 'DP_URL', ROOT_URL . 'dp/' );
  */
 define ( 'XML_PATH', DOC_ROOT . '/view/xml/' );
 define ( 'XML_URL', ROOT_URL . 'xml/' );
+
+
+/**
+ * Caminho dos Jobs
+ */
+define ( 'JOB_PATH', DOC_ROOT . '/jobs/' );

@@ -52,44 +52,9 @@ class ZgutlJob
     /**
      * @var string
      *
-     * @ORM\Column(name="ANO", type="string", length=4, nullable=true)
+     * @ORM\Column(name="INTERVALO", type="string", length=100, nullable=true)
      */
-    private $ano;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="MES", type="string", length=2, nullable=true)
-     */
-    private $mes;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="DIA", type="string", length=2, nullable=true)
-     */
-    private $dia;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="HORA", type="string", length=2, nullable=true)
-     */
-    private $hora;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="MINUTO", type="string", length=2, nullable=true)
-     */
-    private $minuto;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="SEGUNDO", type="string", length=2, nullable=true)
-     */
-    private $segundo;
+    private $intervalo;
 
     /**
      * @var \Entidades\ZgutlAtividade
@@ -215,141 +180,26 @@ class ZgutlJob
     }
 
     /**
-     * Set ano
+     * Set intervalo
      *
-     * @param string $ano
+     * @param string $intervalo
      * @return ZgutlJob
      */
-    public function setAno($ano)
+    public function setIntervalo($intervalo)
     {
-        $this->ano = $ano;
+        $this->intervalo = $intervalo;
 
         return $this;
     }
 
     /**
-     * Get ano
+     * Get intervalo
      *
      * @return string 
      */
-    public function getAno()
+    public function getIntervalo()
     {
-        return $this->ano;
-    }
-
-    /**
-     * Set mes
-     *
-     * @param string $mes
-     * @return ZgutlJob
-     */
-    public function setMes($mes)
-    {
-        $this->mes = $mes;
-
-        return $this;
-    }
-
-    /**
-     * Get mes
-     *
-     * @return string 
-     */
-    public function getMes()
-    {
-        return $this->mes;
-    }
-
-    /**
-     * Set dia
-     *
-     * @param string $dia
-     * @return ZgutlJob
-     */
-    public function setDia($dia)
-    {
-        $this->dia = $dia;
-
-        return $this;
-    }
-
-    /**
-     * Get dia
-     *
-     * @return string 
-     */
-    public function getDia()
-    {
-        return $this->dia;
-    }
-
-    /**
-     * Set hora
-     *
-     * @param string $hora
-     * @return ZgutlJob
-     */
-    public function setHora($hora)
-    {
-        $this->hora = $hora;
-
-        return $this;
-    }
-
-    /**
-     * Get hora
-     *
-     * @return string 
-     */
-    public function getHora()
-    {
-        return $this->hora;
-    }
-
-    /**
-     * Set minuto
-     *
-     * @param string $minuto
-     * @return ZgutlJob
-     */
-    public function setMinuto($minuto)
-    {
-        $this->minuto = $minuto;
-
-        return $this;
-    }
-
-    /**
-     * Get minuto
-     *
-     * @return string 
-     */
-    public function getMinuto()
-    {
-        return $this->minuto;
-    }
-
-    /**
-     * Set segundo
-     *
-     * @param string $segundo
-     * @return ZgutlJob
-     */
-    public function setSegundo($segundo)
-    {
-        $this->segundo = $segundo;
-
-        return $this;
-    }
-
-    /**
-     * Get segundo
-     *
-     * @return string 
-     */
-    public function getSegundo()
-    {
-        return $this->segundo;
+        return $this->intervalo;
     }
 
     /**
