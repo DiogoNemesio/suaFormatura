@@ -72,8 +72,17 @@ for ($i = 0; $i < sizeof($evento); $i++) {
 ## Gerar a url de adicão
 #################################################################################
 for ($i = 0; $i < sizeof($eventoTipo); $i++) {
-	$urlAdd		   = ROOT_URL.'/Fmt/eventoAgendarAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codTipo='.$eventoTipo[$i]->getCodigo().'&codEvento=');
-	$htmlButton	  .= "<li>
+	
+	$existeEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codFormatura' => $system->getCodOrganizacao(),'codTipoEvento' => $eventoTipo[$i]->getCodigo())); 
+	
+	if ($existeEvento) {
+		$urlAdd			= "#";
+		$classe			= "disabled";
+	}else{
+		$urlAdd		   = ROOT_URL.'/Fmt/eventoAgendarAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codTipo='.$eventoTipo[$i]->getCodigo().'&codEvento=');
+		$classe			= "";
+	}
+	$htmlButton	  .= "<li class='".$classe."'>
 						<a href=\"javascript:zgLoadUrl('".$urlAdd."');\">".$eventoTipo[$i]->getDescricao()."</a>
 				  	  </li>";
 }
