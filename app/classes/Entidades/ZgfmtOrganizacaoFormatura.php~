@@ -24,9 +24,9 @@ class ZgfmtOrganizacaoFormatura
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATA_CONCLUSÃO", type="date", nullable=false)
+     * @ORM\Column(name="DATA_CONCLUSAO", type="date", nullable=false)
      */
-    private $dataConclusÃo;
+    private $dataConclusao;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -80,26 +80,26 @@ class ZgfmtOrganizacaoFormatura
     }
 
     /**
-     * Set dataConclusÃo
+     * Set dataConclusao
      *
-     * @param \DateTime $dataConclusÃo
+     * @param \DateTime $dataConclusao
      * @return ZgfmtOrganizacaoFormatura
      */
-    public function setDataConclusÃo($dataConclusÃo)
+    public function setDataConclusao($dataConclusao)
     {
-        $this->dataConclusÃo = $dataConclusÃo;
+        $this->dataConclusao = $dataConclusao;
 
         return $this;
     }
 
     /**
-     * Get dataConclusÃo
+     * Get dataConclusao
      *
      * @return \DateTime 
      */
-    public function getDataConclusÃo()
+    public function getDataConclusao()
     {
-        return $this->dataConclusÃo;
+        return $this->dataConclusao;
     }
 
     /**

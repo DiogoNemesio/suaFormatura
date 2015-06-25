@@ -1,53 +1,68 @@
 <div id="content">
 	<div class="page-header">
-	<h1>Cadastro de Formatura</h1>
+	<h1>Cadastro de Formatura
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
 	</div><!-- /.page-header -->
 	<br />
 		
-	<div id="user-profile-3" class="user-profile row">
+	<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+		<input type="hidden" id="valID" name="validado">
 
-		<form id="zgFormID" class="form-horizontal">
-			<input type="hidden" id="valID" name="validado">
-
-			<div class="row">
-				<div class="form-group col-sm-12" id="divIdentID">
-				    <label for="identID" class="col-sm-3 control-label">www.suaformatura.com/</label>
-		    		<div class="input-group col-sm-5 pull-left">
-	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação para acesso ao sistema"></i></span>
-			    		<input class="form-control" id="identID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="Identificação" %READONLY% onblur="validaIdent();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="identificacao">
-				    </div>
-				    <div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
-				</div>
-				<div class="form-group col-sm-12" id="divNomeID">
-			    	<label for="nomeID" class="col-sm-3 control-label" >Nome da turma</label>
-	    			<div class="input-group col-sm-5 pull-left">
-    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
-		    			<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome da turma" maxlength="100" value="%NOME%" autocomplete="off">
-			    	</div>
-			    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+		<div class="row">
+			<div class="form-group col-sm-12" id="divIdentID">
+			    <label for="identID" class="col-sm-3 control-label">www.suaformatura.com/</label>
+	    		<div class="input-group col-sm-5 pull-left">
+    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação para acesso ao sistema"></i></span>
+		    		<input class="form-control" id="identID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="Identificação" %READONLY% onblur="validaIdent();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="identificacao">
 			    </div>
-			    <div class="form-group col-sm-12" id="divInstituicaoID">
-			    	<label class="col-sm-3 control-label" for="instituicaoID">Instituição</label>
-					<div class="input-group col-sm-5 pull-left">
-		    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Instituição de ensino"></i></span>
-						<input type="hidden" id="instituicaoID" name="instituicao" value="" class="width-100"  data-rel="select2Instituicao">								    	
-					</div>
-			    	<div class="col-sm-1 pull-left" id="divHelpInstituicaoID"></div>
-				</div>
-				<div class="form-group col-sm-12" id="divCidadeID">
-			    	<label class="col-sm-3 control-label" for="instituicaoID">Cidade</label>
-					<div class="input-group col-sm-5 pull-left">
-		    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a cidade onde será realizado a formatura."></i></span>
-						<input type="hidden" id="cidadeID" name="cidade" value="" class="width-100"  data-rel="select2Cidade">								    	
-					</div>
-			    	<div class="col-sm-1 pull-left" id="divHelpCidadeID"></div>
-				</div>
+			    <div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
+			</div>
+			<div class="form-group col-sm-12" id="divNomeID">
+		    	<label for="nomeID" class="col-sm-3 control-label" >Nome da turma</label>
+    			<div class="input-group col-sm-5 pull-left">
+   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+	    			<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome da turma" maxlength="100" value="%NOME%" autocomplete="off">
+		    	</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 		    </div>
+		    <div class="form-group col-sm-12" id="divInstituicaoID">
+		    	<label class="col-sm-3 control-label" for="instituicaoID">Instituição</label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Instituição de ensino"></i></span>
+					<input type="hidden" id="instituicaoID" name="instituicao" value="%INSTITUICAO%" class="width-100"  data-rel="select2Instituicao">								    	
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpInstituicaoID"></div>
+			</div>
+			<div class="form-group col-sm-12" id="divCursoID">
+		    	<label class="col-sm-3 control-label" for="cursoID">Curso</label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Curso"></i></span>
+					<input type="hidden" id="cursoID" name="curso" value="%CURSO%" class="width-100"  data-rel="select2Curso">								    	
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpInstituicaoID"></div>
+			</div>
+			<div class="form-group col-sm-12" id="divCidadeID">
+		    	<label class="col-sm-3 control-label" for="instituicaoID">Cidade</label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade onde será realizado a formatura."></i></span>
+					<input type="hidden" id="cidadeID" name="cidade" value="%CIDADE%" class="width-100"  data-rel="select2Cidade">								    	
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpCidadeID"></div>
+			</div>
+			<div class="form-group col-sm-12" id="divDataConclusaoID">
+		    	<label for="dataConclusaoID" class="col-sm-3 control-label">Data da conclusão</label>
+    			<div class="input-group col-sm-5 pull-left">
+   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data da conclusão do curso."></i></span>
+	    			<input class="form-control datepicker" id="dataConclusaoID" type="text" name="dataConclusao" placeholder="Nome da turma" maxlength="100" value="%DATA_CONCLUSAO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+		    	</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpDataConclusaoID"></div>
+		    </div>
+	    </div>
+	</form>
 
-				
-
-		</form>
-	</div>
 	<hr />
 	<div class="clearfix form-actions">
 		<label class="col-sm-4 control-label">&nbsp;</label>
@@ -62,66 +77,16 @@
 </div>
 
 <script>
-
-$('#codTipoID').css('width','100%').select2({allowClear:true});
-
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Mascaras
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
-
+//Mensagens
 $('[data-rel=tooltip]').tooltip();
 $('[data-rel=popover]').popover({html:true});
-$('[data-rel="select2"]').select2();
 
-
-
-$('#zgFormID').submit(function() {
-	$.ajax({
-		type:	"POST", 
-		url:	"%DP%",
-		data:	$('#zgFormID').serialize(),
-	}).done(function( data, textStatus, jqXHR) {
-		//alert(data);
-		if (checaRetornoOK(data) == true) {
-			var $codCond	= zgGetCodRetorno(data);
-			//$('#codTipoID').val(zgGetCodRetorno(data));
-			bootbox.dialog({
-				message: "As informações do condomínio foram salvas com sucesso !!!", 
-				buttons: {
-					"novo" : {
-						"label" : "<i class='ace-icon fa fa-plus'></i>Cadastrar novo",
-						"className" : "btn-sm btn-primary",
-						"callback": function() {
-							zgLoadUrl('%URL_ADD%');
-						}
-					},
-					"abrir" : {
-						"label" : "Abrir",
-						"className" : "btn-sm btn-warning",
-						"callback": function() {
-							//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
-							zgWindowOpen('%ROOT_URL%index.php?zid='+zgEncodeUrl('_codCondominio='+$codCond));
-						}
-					},
-					"fechar" : {
-						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
-						"className" : "btn-sm btn-danger",
-						"callback": function() {
-							zgLoadUrl('%URL_VOLTAR%');
-						}
-
-					},
-					
-				}
-			});
-		}else{
-			zgMostraAviso("Fechar");
-		}
-	}).fail(function( jqXHR, textStatus, errorThrown) {
-		zgMostraAviso(null);
-	});
-	return false; 
-});
 
 /*********************************************************
 * Busca Select2 typehead Instituição
@@ -149,6 +114,41 @@ $('[data-rel="select2Instituicao"]').select2({
         if (id !== "") {
             $.ajax("%ROOT_URL%/Fmt/getInstituicao.dp.php", {
                 data: {codInstituicao: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+/*********************************************************
+* Busca Select2 typehead Cursos
+*********************************************************/
+$('[data-rel="select2Curso"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Selecione o curso',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fmt/getCurso.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fmt/getCurso.dp.php", {
+                data: {codCurso: id},
     			method: "GET",
                 dataType: "json"
 			}).done(function(data) {
@@ -193,10 +193,68 @@ $('[data-rel="select2Cidade"]').select2({
     },
 });
 
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaFormaturaAlt();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codOrganizacaoID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Formatura', '%URLNOVO%', 'Entrar');
+
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
 
 
 /*********************************************************
-* VALIDA IDENTIFICAÇÃO
+* VALIDA FORMULÁRIO
 *********************************************************/
 //Valida campo identificação
 function validaIdent(){
@@ -246,8 +304,8 @@ function validaIdent(){
 	}
 }
 
-//Valida Step identificação
-function validaIdentificacao() {
+// Valida formatura Alt
+function validaFormaturaAlt() {
 	var vNome			= $('#nomeID').val();
 	var vInstituicao	= $('#instituicaoID').val();
 	var vOK		= true;
@@ -276,11 +334,10 @@ function validaIdentificacao() {
 	}
 	
 	if (vOK == true) {
-		return vIdent;
+		return true;
 	}else{
 		return vOK;
 	}
 }
-
 
 </script>

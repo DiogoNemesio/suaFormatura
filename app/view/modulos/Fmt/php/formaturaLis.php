@@ -34,13 +34,13 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . '/Rhu/'. basename(__FILE__);
+$url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
 try {	
-	$formatura	= \Zage\Fmt\Formatura::listaFormaturaOrganizacao();
+	$formatura	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -48,12 +48,13 @@ try {
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
-$grid->adicionaTexto($tr->trans('NOME'),	 			20, $grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('IDENTIFICAÇÃO'),		20, $grid::CENTER	,'identificacao');
-$grid->adicionaTexto($tr->trans('INSTITUIÇÃO'),			15, $grid::CENTER	,'codInstituicao:sigla');
-$grid->adicionaTexto($tr->trans('STATUS')	,			10, $grid::CENTER	,'codStatus:descricao');
-$grid->adicionaData($tr->trans('CADASTRO EM')	,		10, $grid::CENTER	,'dataCadastro');
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GFormatura");
+$grid->adicionaTexto($tr->trans('NOME DA TURMA'),		20, $grid::CENTER	,'codOrganizacao:nome');
+$grid->adicionaTexto($tr->trans('IDENTIFICAÇÃO'),		15, $grid::CENTER	,'codOrganizacao:identificacao');
+$grid->adicionaTexto($tr->trans('INSTITUIÇÃO'),			20, $grid::CENTER	,'codInstituicao:sigla');
+$grid->adicionaTexto($tr->trans('CURSO'),				25, $grid::CENTER	,'codCurso:nome');
+$grid->adicionaTexto($tr->trans('STATUS')	,			10, $grid::CENTER	,'codOrganizacao:codStatus:descricao');
+$grid->adicionaData($tr->trans('CADASTRO EM')	,		10, $grid::CENTER	,'codOrganizacao:dataCadastro');
 //$grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -64,11 +65,11 @@ $grid->importaDadosDoctrine($formatura);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($formatura); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormatura='.$formatura[$i]->getCodigo().'&url='.$url);
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$formatura[$i]->getCodigo().'&url='.$url);
 	
 	//$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/parceiroUsuarioLis.php?id='.$uid);
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/formaturaAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
 }
 
 #################################################################################

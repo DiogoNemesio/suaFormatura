@@ -15,6 +15,9 @@ if (isset($_POST['codOrganizacao']))	$codOrganizacao		= \Zage\App\Util::antiInje
 if (isset($_POST['ident']))				$ident				= \Zage\App\Util::antiInjection($_POST['ident']);
 if (isset($_POST['nome'])) 				$nome				= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['instituicao']))		$instituicao		= \Zage\App\Util::antiInjection($_POST['instituicao']);
+if (isset($_POST['curso']))				$curso				= \Zage\App\Util::antiInjection($_POST['curso']);
+if (isset($_POST['cidade']))			$cidade				= \Zage\App\Util::antiInjection($_POST['cidade']);
+if (isset($_POST['dataConclusao']))		$dataConclusao		= \Zage\App\Util::antiInjection($_POST['dataConclusao']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -70,27 +73,52 @@ if ($err != null) {
 try {
 	if (isset($codOrganizacao) && (!empty($codOrganizacao))){
  		$oOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+ 		$oOrgFmt		= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $codOrganizacao));
  		
  		if (!$oOrganizacao) {
  			$oOrganizacao	= new \Entidades\ZgadmOrganizacao();
  			$oOrganizacao->setDataCadastro(new \DateTime("now"));
+ 			$oOrgFmt		= new \Entidades\ZgfmtOrganizacaoFormatura();
  		}
  	}else{
  		$oOrganizacao	= new \Entidades\ZgadmOrganizacao();
  		$oOrganizacao->setDataCadastro(new \DateTime("now"));
+ 		$oOrgFmt		= new \Entidades\ZgfmtOrganizacaoFormatura();
  	}
- 	 	
- 	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => 1));
+ 	 
+ 	#################################################################################
+ 	## ORGANIZAÇÃO
+ 	#################################################################################
+ 	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => FMT));
  	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => 1));
- 	$oInstituicao		= $em->getRepository('Entidades\ZgfmtInstituicao')->findOneBy(array('codigo' => $instituicao));
  	
  	$oOrganizacao->setIdentificacao($ident);
  	$oOrganizacao->setNome($nome);
  	$oOrganizacao->setCodTipo($oTipoOrganizacao);
  	$oOrganizacao->setCodStatus($oCodStatus);
- 	$oOrganizacao->setCodInstituicao($oInstituicao);
  	
  	$em->persist($oOrganizacao);
+ 	
+ 	#################################################################################
+ 	## ORGANIZAÇÃO FORMATURA
+ 	#################################################################################
+ 	$oInstituicao		= $em->getRepository('Entidades\ZgfmtInstituicao')->findOneBy(array('codigo' => $instituicao));
+ 	$oCurso				= $em->getRepository('Entidades\ZgfmtCurso')->findOneBy(array('codigo' => $curso));
+ 	$oCidade			= $em->getRepository('Entidades\ZgadmCidade')->findOneBy(array('codigo' => $cidade));
+ 	
+ 	if (!empty($dataConclusao)) {
+ 		$dtCon		= DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataConclusao);
+ 	}else{
+ 		$dtCon		= null;
+ 	}
+ 	
+ 	$oOrgFmt->setCodOrganizacao($oOrganizacao);
+ 	$oOrgFmt->setCodInstituicao($oInstituicao);
+ 	$oOrgFmt->setCodCurso($oCurso);
+ 	$oOrgFmt->setCodCidade($oCidade);
+ 	$oOrgFmt->setDataConclusao($dtCon);
+ 	
+ 	$em->persist($oOrgFmt);
  	
  	#################################################################################
  	## ASSOCIACAO ORGANIZAÇÃO ADMINISTRADOR

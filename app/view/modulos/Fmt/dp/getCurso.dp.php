@@ -12,21 +12,21 @@ if (defined('DOC_ROOT')) {
 ## Resgata as variáveis postadas
 #################################################################################
 if (isset($_GET['q']))					$q			    = \Zage\App\Util::antiInjection($_GET["q"]);
-if (isset($_GET['codInstituicao']))		$codInstituicao	= \Zage\App\Util::antiInjection($_GET["codInstituicao"]);
+if (isset($_GET['codCurso']))			$codCurso		= \Zage\App\Util::antiInjection($_GET["codCurso"]);
 
-if (isset($codInstituicao)) {
-	$instituicoes		= $em->getRepository('Entidades\ZgfmtInstituicao')->findBy(array('codigo' => $codInstituicao));
+if (isset($codCurso)) {
+	$cursos		= $em->getRepository('Entidades\ZgfmtCurso')->findBy(array('codigo' => $codCurso));
 }else{
-	$instituicoes		= \Zage\Fmt\Instituicao::busca($q);
+	$cursos		= \Zage\Fmt\Curso::busca($q);
 }
 
 
 $array		= array();
 //$numItens	= \Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS');
 
-for ($i = 0; $i < sizeof($instituicoes); $i++) {
-	$array[$i]["id"]		= $instituicoes[$i]->getCodigo();
-	$array[$i]["text"]		= '(' . $instituicoes[$i]->getSigla() . ') '.$instituicoes[$i]->getNome();
+for ($i = 0; $i < sizeof($cursos); $i++) {
+	$array[$i]["id"]		= $cursos[$i]->getCodigo();
+	$array[$i]["text"]		= '(' . $cursos[$i]->getCodOcde() . ') '.$cursos[$i]->getNome();
 }
 
 echo json_encode($array);

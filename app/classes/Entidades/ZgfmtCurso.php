@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtCurso
  *
- * @ORM\Table(name="ZGFMT_CURSO", indexes={@ORM\Index(name="fk_ZGFMT_CURSO_1_idx", columns={"COD_TIPO"})})
+ * @ORM\Table(name="ZGFMT_CURSO", indexes={@ORM\Index(name="fk_ZGFMT_CURSO_1_idx", columns={"COD_GRAU"}), @ORM\Index(name="fk_ZGFMT_CURSO_2_idx", columns={"COD_AREA"})})
  * @ORM\Entity
  */
 class ZgfmtCurso
@@ -24,19 +24,36 @@ class ZgfmtCurso
     /**
      * @var string
      *
+     * @ORM\Column(name="COD_OCDE", type="string", length=8, nullable=false)
+     */
+    private $codOcde;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="NOME", type="string", length=100, nullable=false)
      */
     private $nome;
 
     /**
-     * @var \Entidades\ZgfmtCursoTipo
+     * @var \Entidades\ZgfmtCursoGrau
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtCursoTipo")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtCursoGrau")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TIPO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_GRAU", referencedColumnName="CODIGO")
      * })
      */
-    private $codTipo;
+    private $codGrau;
+
+    /**
+     * @var \Entidades\ZgfmtCursoArea
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtCursoArea")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_AREA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codArea;
 
 
     /**
@@ -47,6 +64,29 @@ class ZgfmtCurso
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set codOcde
+     *
+     * @param string $codOcde
+     * @return ZgfmtCurso
+     */
+    public function setCodOcde($codOcde)
+    {
+        $this->codOcde = $codOcde;
+
+        return $this;
+    }
+
+    /**
+     * Get codOcde
+     *
+     * @return string 
+     */
+    public function getCodOcde()
+    {
+        return $this->codOcde;
     }
 
     /**
@@ -73,25 +113,48 @@ class ZgfmtCurso
     }
 
     /**
-     * Set codTipo
+     * Set codGrau
      *
-     * @param \Entidades\ZgfmtCursoTipo $codTipo
+     * @param \Entidades\ZgfmtCursoGrau $codGrau
      * @return ZgfmtCurso
      */
-    public function setCodTipo(\Entidades\ZgfmtCursoTipo $codTipo = null)
+    public function setCodGrau(\Entidades\ZgfmtCursoGrau $codGrau = null)
     {
-        $this->codTipo = $codTipo;
+        $this->codGrau = $codGrau;
 
         return $this;
     }
 
     /**
-     * Get codTipo
+     * Get codGrau
      *
-     * @return \Entidades\ZgfmtCursoTipo 
+     * @return \Entidades\ZgfmtCursoGrau 
      */
-    public function getCodTipo()
+    public function getCodGrau()
     {
-        return $this->codTipo;
+        return $this->codGrau;
+    }
+
+    /**
+     * Set codArea
+     *
+     * @param \Entidades\ZgfmtCursoArea $codArea
+     * @return ZgfmtCurso
+     */
+    public function setCodArea(\Entidades\ZgfmtCursoArea $codArea = null)
+    {
+        $this->codArea = $codArea;
+
+        return $this;
+    }
+
+    /**
+     * Get codArea
+     *
+     * @return \Entidades\ZgfmtCursoArea 
+     */
+    public function getCodArea()
+    {
+        return $this->codArea;
     }
 }
