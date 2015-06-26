@@ -38,13 +38,6 @@ if (!isset($codTipo) || empty($codTipo)) {
 	$err	= 1;
 }
 
-$oTipo	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codTipoEvento' => $codTipo));
-
-if($oTipo != null && ($oTipo->getCodTipoEvento() != $codTipo)){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Este EVENTO já foi cadastrado!"));
-	$err	= 1;
-}
-
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  	exit;
