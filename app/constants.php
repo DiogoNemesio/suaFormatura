@@ -107,3 +107,8 @@ define ( 'XML_URL', ROOT_URL . 'xml/' );
  * Caminho dos Jobs
  */
 define ( 'JOB_PATH', DOC_ROOT . '/jobs/' );
+
+/**
+ * Caminho dos executáveis do sistema
+ */
+define ( 'EXE_PATH', DOC_ROOT . '/bin/' );

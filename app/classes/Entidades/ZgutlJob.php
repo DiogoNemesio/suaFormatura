@@ -57,6 +57,27 @@ class ZgutlJob
     private $intervalo;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_EXECUTANDO", type="integer", nullable=true)
+     */
+    private $indExecutando;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="NUM_FALHAS", type="integer", nullable=true)
+     */
+    private $numFalhas;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="NUM_EXECUCOES", type="integer", nullable=true)
+     */
+    private $numExecucoes;
+
+    /**
      * @var \Entidades\ZgutlAtividade
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgutlAtividade")
@@ -200,6 +221,75 @@ class ZgutlJob
     public function getIntervalo()
     {
         return $this->intervalo;
+    }
+
+    /**
+     * Set indExecutando
+     *
+     * @param integer $indExecutando
+     * @return ZgutlJob
+     */
+    public function setIndExecutando($indExecutando)
+    {
+        $this->indExecutando = $indExecutando;
+
+        return $this;
+    }
+
+    /**
+     * Get indExecutando
+     *
+     * @return integer 
+     */
+    public function getIndExecutando()
+    {
+        return $this->indExecutando;
+    }
+
+    /**
+     * Set numFalhas
+     *
+     * @param integer $numFalhas
+     * @return ZgutlJob
+     */
+    public function setNumFalhas($numFalhas)
+    {
+        $this->numFalhas = $numFalhas;
+
+        return $this;
+    }
+
+    /**
+     * Get numFalhas
+     *
+     * @return integer 
+     */
+    public function getNumFalhas()
+    {
+        return $this->numFalhas;
+    }
+
+    /**
+     * Set numExecucoes
+     *
+     * @param integer $numExecucoes
+     * @return ZgutlJob
+     */
+    public function setNumExecucoes($numExecucoes)
+    {
+        $this->numExecucoes = $numExecucoes;
+
+        return $this;
+    }
+
+    /**
+     * Get numExecucoes
+     *
+     * @return integer 
+     */
+    public function getNumExecucoes()
+    {
+        return $this->numExecucoes;
     }
 
     /**
