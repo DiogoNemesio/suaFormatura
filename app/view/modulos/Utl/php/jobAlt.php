@@ -49,9 +49,9 @@ if (!empty($codJob)) {
 	$codAtividade	= ($info->getCodAtividade() != null) ? $info->getCodAtividade()->getCodigo()	: null;
 	$codModulo		= ($info->getCodModulo() 	!= null) ? $info->getCodModulo()->getCodigo() 		: null;
 	$comando		= $info->getComando();
-	$indAtivo		= $info->getIndAtivo();
-	$dataUltExe		= ($info->getDataUltimaExecucao() != null)	? $info->getDataUltimaExecucao()->format($system->config["data"]["datetimeSimplesFormat"])	: null;
-	$dataPrxExe		= ($info->getDataProximaExecucao() != null) ? $info->getDataProximaExecucao()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
+	$indAtivo		= ($info->getIndAtivo() == 1) ? "checked" : null;
+	$dataUltExe		= ($info->getDataUltimaExecucao() != null)	? $info->getDataUltimaExecucao()->format($system->config["data"]["datetimeFormat"])	: null;
+	$dataPrxExe		= ($info->getDataProximaExecucao() != null) ? $info->getDataProximaExecucao()->format($system->config["data"]["datetimeFormat"]) : null;
 	$intervalo		= $info->getIntervalo();
 	/*$ano			= $info->getAno();
 	$mes			= $info->getMes();
@@ -65,7 +65,7 @@ if (!empty($codJob)) {
 	$codAtividade	= null;
 	$codModulo		= null;
 	$comando		= null;
-	$indAtivo		= null;
+	$indAtivo		= "checked";
 	$dataUltExe		= null;
 	$dataPrxExe		= null;
 	$intervalo		= null;

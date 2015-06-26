@@ -68,10 +68,10 @@
 							<div class="form-group col-sm-12" id="divIntervaloID">
 								<label for="intervaloID" class="col-sm-3 control-label">Intervalo</label>
 								<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Intervalo (Deve ser do tipo DateTime do PHP)"></i></span>
-									<input type="text" id="intervaloID" name="intervalo" value="%INTERVALO%" maxlength="100" class="width-100" placeholder="Comando" autocomplete="off" />
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Intervalo (Deve ser do tipo DateInterval do PHP, veja: http://php.net/manual/en/dateinterval.createfromdatestring.php)"></i></span>
+									<input type="text" id="intervaloID" name="intervalo" value="%INTERVALO%" maxlength="100" class="width-100" placeholder="Intervalo" autocomplete="off" />
 								</div>
-								<div class="col-sm-1 pull-left" id="divHelpComandoID"></div>
+								<div class="col-sm-1 pull-left" id="divHelpIntervaloID"></div>
 							</div>																	
 						</div>
 						<div class="col-sm-6">
@@ -87,7 +87,7 @@
 								<label for="DataPrxExeID" class="col-sm-3 control-label">Próxima execução</label>
 								<div class="input-group col-sm-8 pull-left">
 									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data da Próxima Execução"></i></span>
-									<input class="form-control datepicker" id="date-timepicker" type="text" name="dataPrxExe" placeholder="Data da Próxima Execução" maxlength="19" value="%DATA_PRX_EXE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetime">
+									<input class="form-control datepicker" id="dataPrxExeID" type="text" name="dataPrxExe" placeholder="Data da Próxima Execução" maxlength="19" value="%DATA_PRX_EXE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetime">
 								</div>
 								<div class="col-sm-1 pull-left" id="divHelpDataPrxExeID"></div>
 							</div>																	
@@ -153,9 +153,9 @@ $('[data-rel=popover]').popover({html:true});
 $('[data-toggle="popover"]').popover();
 
 //Datepicker - Calendário
-$('#date-timepicker').datetimepicker({
+$('#dataPrxExeID').datetimepicker({
 	format: 'DD/MM/YYYY HH:mm:ss',
-    language: 'pt-BR'	
+    language: 'pt-BR'
 }).next().on(ace.click_event, function(){
 	 
 });
@@ -181,7 +181,7 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 //Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
 	
-	var vOk 	= true;
+	var vOk 	= validaJob();
 	
 	if(vOk == false) 	{
 		$.gritter.add({
@@ -239,34 +239,65 @@ function validaJob() {
 	var vCodModulo			= $('#codModuloID').val();
 	var vComando			= $('#comandoID').val();
 	var vIntervalo			= $('#intervaloID').val();
-	var vInstituicao	= $('#instituicaoID').val();
-	var vOK		= true;
+	var vDataPrxExe			= $('#dataPrxExeID').val();
+	var vIndAtivo			= $('#indAtivoID').is(':checked');
+	var vOK					= true;
 	
-	// NOME DA TURMA
-	if (!vNome){
-		$('#divNomeID').addClass('has-error');
-		$('#divHelpNomeID').html(zgCriaSpanErro('O nome da turma deve ser preenchido!'));
+	// Atividade
+	if (!vCodAtividade){
+		$('#divCodAtividadeID').addClass('has-error');
+		$('#divHelpCodAtividadeID').html(zgCriaSpanErro('Selecione uma atividade !!'));
+		vOK					= false;
 	}else{
-		$('#divNomeID').removeClass('has-error');
-		$('#divHelpNomeID').html('&nbsp;');
+		$('#divCodAtividadeID').removeClass('has-error');
+		$('#divHelpCodAtividadeID').html('&nbsp;');
 	}
 
-	// INSTITUIÇÃO DE ENSINO
-	if (!vInstituicao){
-		$('#divInstituicaoID').addClass('has-error');
-		$('#divHelpInstituicaoID').html(zgCriaSpanErro('A instituição de ensino deve ser preenchida!'));
+	// Módulo
+	if (!vCodModulo){
+		$('#divCodModuloID').addClass('has-error');
+		$('#divHelpCodModuloID').html(zgCriaSpanErro('Selecione um módulo !!'));
+		vOK					= false;
 	}else{
-		$('#divInstituicaoID').removeClass('has-error');
-		$('#divHelpInstituicaoID').html('&nbsp;');
+		$('#divCodModuloID').removeClass('has-error');
+		$('#divHelpCodModuloID').html('&nbsp;');
+	}
+
+	// Comando
+	if (!vComando){
+		$('#divComandoID').addClass('has-error');
+		$('#divHelpComandoID').html(zgCriaSpanErro('Comando dever ser informado !!'));
+		vOK					= false;
+	}else{
+		$('#divComandoID').removeClass('has-error');
+		$('#divHelpComandoID').html('&nbsp;');
+	}
+	
+	// vIntervalo
+	if (!vIntervalo){
+		$('#divIntervaloID').addClass('has-error');
+		$('#divHelpIntervaloID').html(zgCriaSpanErro('Intervalo dever ser informado !!'));
+		vOK					= false;
+	}else{
+		$('#divIntervaloID').removeClass('has-error');
+		$('#divHelpIntervaloID').html('&nbsp;');
+	}
+	
+	// Data 
+	if ( (!vDataPrxExe) && (vIndAtivo == true) ) {
+		$('#divDataPrxExeID').addClass('has-error');
+		$('#divHelpDataPrxExeID').html(zgCriaSpanErro('Data da Próxima execução dever ser informada !!'));
+		vOK					= false;
+	}else{
+		$('#divDataPrxExeID').removeClass('has-error');
+		$('#divHelpDataPrxExeID').html('&nbsp;');
 	}
 	
 	// IDENTIFICAÇÃO
-	if (validaIdent() == false){
-		vOK = false;
-	}
+	
 	
 	if (vOK == true) {
-		return vIdent;
+		return vOK;
 	}else{
 		return vOK;
 	}
