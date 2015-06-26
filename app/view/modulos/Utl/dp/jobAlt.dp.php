@@ -81,9 +81,6 @@ if (!defined ( 'JOB_PATH' )) {
 	}
 }
 
-$log->debug("OI");
-
-
 /** IndAtivo **/
 if (isset($indAtivo) && (!empty($indAtivo))) {
 	$indAtivo	= 1;
@@ -97,7 +94,7 @@ if ((!isset($dataPrxExe) || empty($dataPrxExe)) && ($indAtivo == 1)) {
 	$err	= 1;
 }else{
 	try{
-		$oDataPrxExe		= @DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataPrxExe);
+		$oDataPrxExe		= DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataPrxExe);
 	} catch (\Exception $e) {
 	 	$system->criaAviso("Campo Data Próxima Execução inválido !!");
 	 	$err	= 1;
@@ -112,7 +109,7 @@ if (!isset($intervalo) || empty($intervalo)) {
 }
 
 try{
-	$oInterval		= @DateInterval::createFromDateString($intervalo);
+	$oInterval		= DateInterval::createFromDateString($intervalo);
 } catch (\Exception $e) {
 	$system->criaAviso("Campo Intervalo inválido !!");
 	$err	= 1;

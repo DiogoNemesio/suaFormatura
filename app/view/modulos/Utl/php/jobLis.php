@@ -51,23 +51,27 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GJobs");
-$grid->adicionaTexto('#'					, 4	,$grid::CENTER	,'codigo');
-$grid->adicionaTexto('Módulo'				, 9	,$grid::CENTER	,'codModulo:nome');
-$grid->adicionaTexto('Atividade'			, 7	,$grid::CENTER	,'codAtividade:identificacao');
-$grid->adicionaStatus('Ativo'				, 'indAtivo');
-$grid->adicionaDataHora('Ultima Execução'	,10	,$grid::CENTER	,'dataUltimaExecucao');
-$grid->adicionaTexto('Intervalo'			,10	,$grid::CENTER	,'intervalo');
-$grid->adicionaDataHora('Proxima Execução'	,10	,$grid::CENTER	,'dataProximaExecucao');
-$grid->adicionaTexto('Comando'				,16	,$grid::CENTER	,'comando');
+$grid->adicionaTexto('#'									,2	,$grid::CENTER	,'codigo');
+$grid->adicionaTexto('Módulo'								,8	,$grid::CENTER	,'codModulo:nome');
+$grid->adicionaTexto('Atividade'							,8	,$grid::CENTER	,'codAtividade:identificacao');
+$grid->adicionaTexto('Intervalo'							,8	,$grid::CENTER	,'intervalo');
+$grid->adicionaDataHora('Última Exe.'						,8	,$grid::CENTER	,'dataUltimaExecucao');
+$grid->adicionaDataHora('Proxima Exe.'						,8	,$grid::CENTER	,'dataProximaExecucao');
+$grid->adicionaStatus('Ativo'													, 'indAtivo');
+$grid->adicionaStatus('<i class="fa fa-cog fa-1x fa-spin"></i>'					, 'indExecutando');
+$grid->adicionaTexto('Comando'								,16	,$grid::CENTER	,'comando');
+$grid->adicionaTexto('Falhas'								,6	,$grid::CENTER	,'numFalhas');
+$grid->adicionaTexto('Execuções'							,6	,$grid::CENTER	,'numExecucoes');
+$grid->adicionaIcone(null, 'fa fa-history grey bigger-140', "Visualizar Histórico de execução");
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($jobs);
 
 for ($i = 0; $i < sizeof($jobs); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codJob='.$jobs[$i]->getCodigo().'&url='.$url);
-	$grid->setUrlCelula($i,8,ROOT_URL.'/Utl/jobAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,9,ROOT_URL.'/Utl/jobExc.php?id='.$uid);
-	
+	$grid->setUrlCelula($i,11,"javascript:zgAbreModal('".ROOT_URL."/Utl/jobHis.php?id=".$uid."');");
+	$grid->setUrlCelula($i,12,ROOT_URL.'/Utl/jobAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,13,ROOT_URL.'/Utl/jobExc.php?id='.$uid);
 }
 
 

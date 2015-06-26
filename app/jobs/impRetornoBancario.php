@@ -1,10 +1,17 @@
-<?php 
+<?php
+#################################################################################
+## Includes
+#################################################################################
+if (defined('DOC_ROOT')) {
+	include_once(DOC_ROOT . 'includeNoAuth.php');
+}else{
+	define('DOC_ROOT', realpath(dirname( __FILE__ ) . '/../') . "/" );
+	include_once(DOC_ROOT . 'includeNoAuth.php');
+}
 
-echo "oi\n";
-echo "o421341i\n";
-echo "2143oi\n";
-echo "oi1311\n";
-echo "oi2\n";
-sleep(2);
 
-?>
+#################################################################################
+## Busca os arquivos que ainda não foram importados
+#################################################################################
+$oCodTipoArquivo	= "";
+$oJob	= $em->getRepository('\Entidades\ZgutlJob')->findOneBy(array('codigo' => $argv[1]));

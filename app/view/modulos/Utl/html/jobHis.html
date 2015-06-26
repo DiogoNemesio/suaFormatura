@@ -1,0 +1,44 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-history yellow"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 420px;">
+	<input type="hidden" name="codJob" value="%COD_JOB%">
+	<input type="hidden" name="id" value="%ID%">
+	<div class="row">
+	</div>		    
+	<div class="row">
+		<div class="col-sm-12">
+		%GRID%
+		</div>
+	</div>		    
+    <div id="divMsgJOBHisID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+<script type="text/javascript" charset="%CHARSET%">
+$('[data-rel="select2"]').select2();
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.datepicker').datepicker();
+
+</script>

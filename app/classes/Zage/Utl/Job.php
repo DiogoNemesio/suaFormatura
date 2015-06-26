@@ -29,7 +29,7 @@ class Job {
      * @return array
      */
 	public static function listaJobsAexecutar() {
-		global $em;
+		global $em,$log;
 	
 		$qb 	= $em->createQueryBuilder();
 		
@@ -43,7 +43,7 @@ class Job {
 				$qb->expr()->lte('j.dataProximaExecucao'	, ':data')
 			))
 			->setParameter('ativo', 1)
-			->setParameter('data', $agora, \Doctrine\DBAL\Types\Type::DATE);
+			->setParameter('data', $agora, \Doctrine\DBAL\Types\Type::DATETIME);
 	
 			$query 		= $qb->getQuery();
 			return($query->getResult());

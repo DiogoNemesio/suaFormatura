@@ -24,6 +24,7 @@ if (!is_numeric($argv[1])) exit;
 ## Salvar a data de início do job
 #################################################################################
 $dataInicio		= new \DateTime();
+$dataProxima	= new \DateTime();
 
 #################################################################################
 ## Verifica se o job existe
@@ -77,7 +78,7 @@ try {
 ## Calcula a data da Próxima execução do Job
 #################################################################################
 try {
-	$interval	= date_interval_create_from_date_string($oJob->getIntervalo());
+	$interval	= \DateInterval::createFromDateString($oJob->getIntervalo());
 } catch (\Exception $e) {
 	$log->err("Job: ($codJob) Erro ao calcular a data da próxima execução: ".$e->getMessage());
 	\Zage\Utl\Job::desabilitaJob($codJob);
@@ -104,8 +105,6 @@ $dataFim		= new \DateTime();
 
 if ($codigoSaida == 0) {
 	$oStatus		= $em->getRepository('\Entidades\ZgutlJobStatusTipo')->findOneBy(array('codigo' => 'OK'));
-	$numExe			= $oJob->getNumExecucoes() + 1;
-	$oJob->setNumExecucoes($numExe);
 }else{
 	$oStatus		= $em->getRepository('\Entidades\ZgutlJobStatusTipo')->findOneBy(array('codigo' => 'ER'));
 	$numFalhas		= $oJob->getNumFalhas() + 1;
@@ -117,7 +116,7 @@ $log->info("Job: ($codJob) codigo de saida: $codigoSaida");
 ## Formata o retorno
 #################################################################################
 if (is_array($saida)) {
-	$retorno	= implode('\n',$saida);
+	$retorno	= implode(PHP_EOL,$saida);
 }else{
 	$retorno	= $saida;
 }
@@ -134,10 +133,12 @@ $hist->setRetorno($retorno);
 #################################################################################
 ## Atualiza o job
 #################################################################################
-$dtPrxExe	= $dataInicio->add($interval);
+$numExe			= $oJob->getNumExecucoes() + 1;
+$dataProxima->add($interval);
+$oJob->setNumExecucoes($numExe);
 $oJob->setIndExecutando(0);
 $oJob->setDataUltimaExecucao($dataInicio);
-$oJob->setDataProximaExecucao($dtPrxExe);
+$oJob->setDataProximaExecucao($dataProxima);
 
 try {
 	$em->persist($oJob);
