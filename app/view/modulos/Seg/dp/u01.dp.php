@@ -251,7 +251,20 @@ try {
 	## Mudar o status da associação
 	#################################################################################
 	$oUsuOrg->setCodStatus($oUsuOrgSt);
-
+	
+	#################################################################################
+	## Mudar o status da associação com as formaturas
+	#################################################################################
+	$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($codUsuario);
+	
+	for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
+		if ($fmtUsuOrg[$i]->getCodStatus()->getCodigo() == P){
+			$fmtUsuOrg[$i]->setCodStatus($oUsuOrgSt);
+			
+			$em->persist($fmtUsuOrg[$i]);
+		}
+	}
+	
 	#################################################################################
 	## Mudar o status do convite
 	#################################################################################

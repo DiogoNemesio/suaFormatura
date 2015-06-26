@@ -34,7 +34,6 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 if ((isset($codOrganizacao) && ($codOrganizacao))) {
 
-	echo ($codOrganizacao);
 	try {
 		
 		$org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
@@ -93,6 +92,9 @@ $tpl->set('INSTITUICAO'				,$instituicao);
 $tpl->set('CURSO'					,$curso);
 $tpl->set('CIDADE'					,$cidade);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao);
+
+$tpl->set('DUAL_LIST'				,$htmlLis);
+
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValor('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS'));

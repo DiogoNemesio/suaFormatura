@@ -51,9 +51,9 @@ class Organizacao {
 	}
 	
 	/**
-	 * Lista formatura por organizacao
+	 * Lista todas as formatura vinculadas (vínculo sem data de validade preenchida) a uma organizacao
 	 *
-	 * @param integer $ident
+	 * @param integer $codOrganizacao
 	 * @return array
 	 */
 	public static function listaFormaturaOrganizacao() {
@@ -68,7 +68,8 @@ class Organizacao {
 			->leftJoin('\Entidades\ZgadmOrganizacaoAdm'			,'oa',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= oa.codOrganizacao')
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
-					$qb->expr()->eq('o.codTipo'	, ':codTipo')
+					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
+					$qb->expr()->isNull('oa.dataValidade')
 	
 			))
 			->setParameter('codOrganizacao', $system->getCodOrganizacao())
@@ -79,8 +80,39 @@ class Organizacao {
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
-			
 	}
 	
+	/**
+	 * Lista as formaturas que um usuario está vinculado em uma organizacao
+	 *
+	 * @param integer $codOrganizacao
+	 * @return array
+	 */
+	public static function listaFmtUsuOrg($codUsuario) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+			
+		try {
+			$qb->select('uo')
+			->from('\Entidades\ZgadmOrganizacao','o')
+			->leftJoin('\Entidades\ZgsegUsuarioOrganizacao'		,'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= uo.codOrganizacao')
+			->leftJoin('\Entidades\ZgadmOrganizacaoAdm'			,'oa',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= oa.codOrganizacao')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('uo.codUsuario'			, ':codUsuario'),
+					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
+					$qb->expr()->eq('o.codTipo'				, ':codTipo')
+	
+			))
+			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('codUsuario'	   , $codUsuario)
+			->setParameter('codTipo'	   , 'FMT');
+	
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
 
 }

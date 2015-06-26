@@ -127,8 +127,8 @@ if ($codUsuario) {
 ## Urls
 #################################################################################
 $uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario=');
-$urlVoltar			= ROOT_URL . "/Seg/usuarioParLis.php?id=".$uid;
-$urlNovo			= ROOT_URL . "/Seg/usuarioParAlt.php?id=".$uid;
+$urlVoltar			= ROOT_URL . "/Fmt/usuarioFormandoLis.php?id=".$uid;
+$urlNovo			= ROOT_URL . "/Fmt/usuarioFormandoAlt.php?id=".$uid;
 
 #################################################################################
 ## Select de Sexo
@@ -177,31 +177,6 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" style="width:100%;" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
 }
 
-
-#################################################################################
-## Lista de segmentos de mercado
-#################################################################################
-$orgAcesso		= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
-$usuOrg			= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario , 'codStatus' => A));
-
-$arrayUsuOrg 	= array();
-
-for ($i = 0; $i < sizeof($usuOrg); $i++) {
-	$arrayUsuOrg[$i] = $usuOrg[$i]->getCodOrganizacao()->getCodigo();
-}
-
-$htmlLis		= "";
-
-for ($i = 0; $i < sizeof($orgAcesso); $i++) {
-
-	if (in_array($orgAcesso[$i]->getCodOrganizacao()->getCodigo(), $arrayUsuOrg)){
-		$selected = 'selected';
-	}else{
-		$selected = '';
-	}
-	
-	$htmlLis .= '<option value="'.$orgAcesso[$i]->getCodOrganizacao()->getCodigo().'" '.$selected.'>'.$orgAcesso[$i]->getCodOrganizacao()->getNome().'</option>';
-}
 
 #################################################################################
 ## Carregando o template html

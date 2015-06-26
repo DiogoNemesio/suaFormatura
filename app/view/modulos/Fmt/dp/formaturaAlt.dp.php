@@ -121,7 +121,7 @@ try {
  	$em->persist($oOrgFmt);
  	
  	#################################################################################
- 	## ASSOCIACAO ORGANIZAÇÃO ADMINISTRADOR
+ 	## ORGANIZACAO - ADM
  	#################################################################################
  	$orgAdm		= $em->getRepository('Entidades\ZgadmOrganizacaoAdm')->findOneBy(array('codOrganizacao' => $oOrganizacao->getCodigo(), 'codOrganizacaoPai' => $system->getCodOrganizacao()));
  	
@@ -141,8 +141,35 @@ try {
  				exit;
  			}
  	}
-	
+ 	
  	#################################################################################
+ 	## USUÁRIO - ORGANIZACAO
+ 	#################################################################################
+	$usuOrg 	= \Zage\Seg\Usuario::listaUsuarioOrganizacaoAtivo($system->getCodOrganizacao(), U);
+ 	
+	for ($i = 0; $i < sizeof($usuOrg); $i++) {
+		
+		$oUsuOrg  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $usuOrg[$i]->getCodUsuario()->getCodigo() , 'codOrganizacao' => $oOrganizacao->getCodigo()));
+		
+		if (!$oUsuOrg){
+			$oUsuOrg = new \Entidades\ZgsegUsuarioOrganizacao();
+		}
+		
+	
+		$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $usuOrg[$i]->getCodPerfil()->getCodigo()));
+		$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'A'));
+		$oUsu				= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $usuOrg[$i]->getCodUsuario()->getCodigo()));
+		
+		$oUsuOrg->setCodOrganizacao($oOrganizacao);
+		$oUsuOrg->setCodPerfil($oPerfil);
+		$oUsuOrg->setCodStatus($oUsuarioOrgStatus);
+		$oUsuOrg->setCodUsuario($oUsu);
+		
+		$em->persist($oUsuOrg);
+
+	}
+
+	#################################################################################
  	## Salvar as informações
  	#################################################################################
  	try {

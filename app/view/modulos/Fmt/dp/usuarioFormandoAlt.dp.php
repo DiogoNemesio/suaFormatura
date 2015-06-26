@@ -370,7 +370,35 @@ try {
 		$convite->setCodStatus($oConviteStatus);
 		$convite->salvar();
 	}
-
+	
+	#################################################################################
+	## REPLICA AS INFORMAÇÕES PARA A TABELA DE CLIENTE
+	#################################################################################
+	if ($novoUsuario){
+		$oUsuCli	=  new \Entidades\ZgfinPessoa();
+		$oUsuCli->setDataCadastro((new \DateTime("now")));
+	}else{
+		$oUsuCli	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf()));
+	}
+	
+	$oTipoPessoa = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => F));
+	
+	$oUsuCli->setCodOrganizacao($oOrg);
+	$oUsuCli->setNome($nome);
+	$oUsuCli->setCgc($cpf);
+	$oUsuCli->setCodTipoPessoa($oTipoPessoa);
+	$oUsuCli->setEmail($usuario);
+	$oUsuCli->setIndCliente(1);
+	$oUsuCli->setIndContribuinte(0);
+	$oUsuCli->setIndFornecedor(0);
+	$oUsuCli->setIndTransportadora(0);
+	$oUsuCli->setIndAtivo(1);
+	$oUsuCli->setIndEstrangeiro(0);
+	$oUsuCli->setObservacao('Importado do cadastro de formando.');
+	$oUsuCli->setCodSexo($oSexo);
+	
+	$em->persist($oUsuCli);
+	
 	
 	#################################################################################
 	## Salvar as informações

@@ -182,8 +182,8 @@ $('[data-rel="select2Cidade"]').select2({
 	initSelection : function (element, callback) {
 		var id = $(element).val();
         if (id !== "") {
-            $.ajax("%ROOT_URL%/Fmt/getCidadeLis.dp.php", {
-                data: {codInstituicao: id},
+            $.ajax("%ROOT_URL%/Adm/getCidadeLis.dp.php", {
+                data: {codCidade: id},
     			method: "GET",
                 dataType: "json"
 			}).done(function(data) {
@@ -228,18 +228,10 @@ $('#zgFormID').submit(function() {
 		if (checaRetornoOK(data) == true) {
 			$('#codOrganizacaoID').val(zgGetCodRetorno(data));
 			zgMostraAviso("Fechar",'Nova Formatura', '%URLNOVO%', 'Entrar');
-
 		}else{
 			zgMostraAviso("Fechar");
 		}
-		zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
-		
-		$('#zgDivModalID').on('hidden.bs.modal', function () {
-			zgLimpaModalAviso();
-			$('#zgDivModalID').off('hidden.bs.modal');
-		});
-		
-		
+				
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
 		$('[zg-data-mask-retira="1"]').each(function( index ) {
 			zgMask($( this ), $( this ).attr('zg-data-mask'));
@@ -277,7 +269,7 @@ function validaIdent(){
 			/** Verificar se a identificação está disponível no banco **/
 			jQuery.ajax({
 		   		url: "%ROOT_URL%/Fmt/orgIdentVerifica.dp.php",
-		   		data: {  codOrganizacao: $('#codParceiroID').val() , ident: vIdent},
+		   		data: {  codOrganizacao: $('#codOrganizacaoID').val() , ident: vIdent},
 		   		success: function(ret) {
 		   			var vData	= JSON.parse(ret);
 		   	    	if (vData.existe == 0) {

@@ -54,7 +54,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
     }
     
     /**
-     * Lista todos os usuarios de uma organizacao
+     * Lista todos os usuarios de uma organizacao (retirando os cancelados)
      */
     public static function listaUsuarioOrganizacao ($codOrganizacao, $codTipo) {
     	global $em;
@@ -77,6 +77,32 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	$query 		= $qb->getQuery();
     	return($query->getResult());
     	 
+    }
+    
+    /**
+     * Lista todos os usuarios ATIVOS de uma organizacao
+     */
+    public static function listaUsuarioOrganizacaoAtivo ($codOrganizacao, $codTipo) {
+    	global $em;
+    
+    	$qb 	= $em->createQueryBuilder();
+    
+    	$qb->select('uo')
+    	->from('\Entidades\ZgsegUsuario','us')
+    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',		'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 	= uo.codUsuario')
+    	->leftJoin('\Entidades\ZgsegPerfil',					'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil	= p.codigo')
+    	->where($qb->expr()->andX(
+    			$qb->expr()->eq('uo.codOrganizacao'		, ':codOrganizacao'),
+    			$qb->expr()->eq('p.codTipoUsuario'		, ':codTipoUsuario'),
+    			$qb->expr()->eq('uo.codStatus'			, ':codStatusAtivo'))
+    	)
+    	->orderBy('us.nome', 'ASC')
+    	->setParameter('codOrganizacao', $codOrganizacao)
+    	->setParameter('codStatusAtivo', A)
+    	->setParameter('codTipoUsuario', $codTipo);
+    	$query 		= $qb->getQuery();
+    	return($query->getResult());
+    
     }
 	
     /**
@@ -229,6 +255,4 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		}
 	
 	}
-	
-
 }
