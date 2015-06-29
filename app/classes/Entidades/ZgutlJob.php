@@ -24,6 +24,13 @@ class ZgutlJob
     /**
      * @var string
      *
+     * @ORM\Column(name="NOME", type="string", length=60, nullable=false)
+     */
+    private $nome;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="COMANDO", type="string", length=400, nullable=false)
      */
     private $comando;
@@ -106,6 +113,29 @@ class ZgutlJob
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set nome
+     *
+     * @param string $nome
+     * @return ZgutlJob
+     */
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
+
+        return $this;
+    }
+
+    /**
+     * Get nome
+     *
+     * @return string 
+     */
+    public function getNome()
+    {
+        return $this->nome;
     }
 
     /**

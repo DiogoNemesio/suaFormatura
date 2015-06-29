@@ -103,6 +103,10 @@ $log->info("Job: ($codJob) executando o comando: ".$comando);
 exec ($comando, $saida,$codigoSaida);
 $dataFim		= new \DateTime();
 
+
+#################################################################################
+## Analisa o código de saída, para saber se o comando foi executado com sucesso
+#################################################################################
 if ($codigoSaida == 0) {
 	$oStatus		= $em->getRepository('\Entidades\ZgutlJobStatusTipo')->findOneBy(array('codigo' => 'OK'));
 }else{

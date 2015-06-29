@@ -32,46 +32,75 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata a url desse script
+## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
-
-#################################################################################
-## Combo de 
-#################################################################################
-
-
-#################################################################################
-## Gerar lista de extensoes que podem ser enviadas
-#################################################################################
-
-
-#################################################################################
-## Select do tipo de layout
-#################################################################################
-try {
-	$aTiposLayout		= $em->getRepository('\Entidades\ZgfinArquivoLayoutTipo')->findBy(array(), array('nome' => 'ASC'));
-	$oTiposLayout		= $system->geraHtmlCombo($aTiposLayout,	'CODIGO', 'NOME',	'', 		null);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+if (!isset($codAtividade)) 		{
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_ATIVIDADE)');
 }
 
+#################################################################################
+## Resgata as informações do banco
+#################################################################################
+try {
+
+	$info			= $em->getRepository('\Entidades\ZgutlAtividade')->findOneBy(array('codigo' => $codAtividade));
+	
+	if (!$info) 	{
+		\Zage\App\Erro::halt($tr->trans('Atividade não existe'));
+	}
+	
+	$jobs			= $em->getRepository('\Entidades\ZgutlJob')->findOneBy(array('codAtividade' => $codAtividade));
+	$fila			= $em->getRepository('\Entidades\ZgappFilaImportacao')->findOneBy(array('codAtividade' => $codAtividade));
+
+	if (!empty($jobs)) {
+		$podeRemover	= 'disabled';
+		$mensagem		= $tr->trans('Atividade "%s" está em uso e não pode ser excluída (JOBS)',array('%s' => $info->getIdentificacao()));
+		$classe			= "text-danger";
+	}elseif (!empty($fila)) {
+		$podeRemover	= 'disabled';
+		$mensagem		= $tr->trans('Atividade "%s" está em uso e não pode ser excluída (FILA)',array('%s' => $info->getIdentificacao()));
+		$classe			= "text-danger";
+	}else{
+		$podeRemover	= null;
+		$mensagem		= $tr->trans('Deseja realmente excluir a atividade').': <em><b>'.$info->getIdentificacao().'</b></em> ?';
+		$classe			= "text-warning";
+	}
+	
+	
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+#################################################################################
+## Url do Botão Voltar
+#################################################################################
+$urlVoltar			= ROOT_URL."/Utl/atividadeLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
+$tpl->load(HTML_PATH . '/templateExc.html');
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('ID'				,$id);
-$tpl->set('LAYOUTS'			,$oTiposLayout);
-$tpl->set('EXTENSOES'		,null);
-$tpl->set('DP'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('URLVOLTAR'			,$urlVoltar);
+$tpl->set('PODE_REMOVER'		,$podeRemover);
+$tpl->set('TITULO'				,$tr->trans('Exclusão de Atividade'));
+$tpl->set('ID'					,$id);
+$tpl->set('TEXTO'				,$mensagem);
+$tpl->set('MENSAGEM'			,$mensagem);
+$tpl->set('CLASSE'				,$classe);
+$tpl->set('VAR'					,'codAtividade');
+$tpl->set('VAR_VALUE'			,$info->getCodigo());
+$tpl->set('NOME'				,$info->getIdentificacao());
+$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
+

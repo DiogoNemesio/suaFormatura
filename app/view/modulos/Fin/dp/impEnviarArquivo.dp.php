@@ -15,8 +15,6 @@ global $em,$log,$system;
 #################################################################################
 if (isset($_POST['codTipoArquivoLayout']))	$codTipoArquivoLayout	= \Zage\App\Util::antiInjection($_POST['codTipoArquivoLayout']);
 
-$log->debug(serialize($_FILES));
-
 #################################################################################
 ## Checar se o Layout existe
 #################################################################################
@@ -79,7 +77,7 @@ if (sizeof($types) != 2) {
 if (($type == "application/octet-stream") || ($type == "text/plain") || ($type == "application/download") || (($types[0] == "application"  && is_numeric($types[1])) )  ) {
 
 	try {
-		\Zage\App\Fila::cadastrar("Fin", $target_path, "RTB", "IMP_RET_BANCARIO");
+		\Zage\App\Fila::cadastrar("Fin", $target_path, "RTB", "IMP_RET_BANCARIO",$codTipoArquivoLayout);
 		$em->flush();
 		$em->clear();
 	} catch (\Exception $e) {

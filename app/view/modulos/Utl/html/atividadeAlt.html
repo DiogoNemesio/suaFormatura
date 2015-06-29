@@ -1,0 +1,239 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Atividades
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codAtividadeID" name="codAtividade" value="%COD_ATIVIDADE%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divIdentificacaoID">
+								<label for="codAtividadeID" class="col-sm-3 control-label">Identificação</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação da atividade"></i></span>
+									<input type="text" id="identificacaoID" name="identificacao" value="%IDENTIFICACAO%" maxlength="40" class="width-100" onchange="validaIdentAtividadeAlt();" placeholder="Identificação" autocomplete="off" zg-data-toggle="mask" zg-data-mask="identificacao" zg-data-mask-retira="0" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpIdentificacaoID"></div>
+							</div>
+							<div class="form-group col-sm-12" id="divDescricaoID">
+								<label for="codAtividadeID" class="col-sm-3 control-label">Descrição</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da atividade"></i></span>
+									<input type="text" id="descricaoID" name="descricao" value="%DESCRICAO%" maxlength="100" class="width-100" placeholder="Descrição" autocomplete="off" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
+							</div>
+						</div>
+						<div class="col-sm-6">
+					    	<div class="form-group col-sm-12" id="divCodTipoID">
+						    	<label class="col-sm-3 control-label" for="horaID">Tipo da Atividade</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Tipo da Atividade"></i></span>
+									<select id="codTipoID" name="codTipo" class="select2" data-placeholder="Tipo da Atividade">
+										%TIPOS%
+									</select>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpCodTipoID"></div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+
+//Datepicker - Calendário
+$('#dataPrxExeID').datetimepicker({
+	format: 'DD/MM/YYYY HH:mm:ss',
+    language: 'pt-BR'
+}).next().on(ace.click_event, function(){
+	 
+});
+//Select 2
+$('#codTipoID').css('width','100%').select2({allowClear: false});
+
+/******************************************************
+MASCARA - Inserir as mascaras no campo
+/******************************************************/
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaAtividadeAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codAtividadeID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Atividade', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});
+
+
+function validaAtividadeAlt() {
+	var vCodAtividade		= $('#codAtividadeID').val();
+	var vIdentificacao		= $('#identificacaoID').val();
+	var vDescricao			= $('#descricaoID').val();
+	var vCodTipo			= $('#codTipoID').val();
+	var vOK					= true;
+	
+	// Tipo de Atividade
+	if (!vCodTipo){
+		$('#divCodTipoID').addClass('has-error');
+		$('#divHelpCodTipoID').html(zgCriaSpanErro('Selecione um tipo de atividade !!'));
+		vOK					= false;
+	}else{
+		$('#divCodTipoID').removeClass('has-error');
+		$('#divHelpCodTipoID').html('&nbsp;');
+	}
+
+	// Identificação
+	if (!vIdentificacao){
+		$('#divIdentificacaoID').addClass('has-error');
+		$('#divHelpIdentificacaoID').html(zgCriaSpanErro('Identificação dever ser informada !!'));
+		vOK					= false;
+	}else{
+		$('#divIdentificacaoID').removeClass('has-error');
+		$('#divHelpIdentificacaoID').html('&nbsp;');
+	}
+	
+	// Descrição
+	if (!vDescricao){
+		$('#divDescricaoID').addClass('has-error');
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição dever ser informada !!'));
+		vOK					= false;
+	}else{
+		$('#divDescricaoID').removeClass('has-error');
+		$('#divHelpDescricaoID').html('&nbsp;');
+	}
+	
+	
+	
+	if (validaIdentAtividadeAlt() == false) {
+		return false;
+	}else{
+		return vOK;
+	}
+}
+
+function validaIdentAtividadeAlt(){
+	
+	var vIdent	= $('#identificacaoID').val();
+	$('#valID').val(0);
+	
+	if (!vIdent) {
+		$('#divIdentificacaoID').addClass('has-error');
+		$('#divHelpIdentificacaoID').html(zgCriaSpanErro('A identificação deve ser preenchida!'));
+		return false;
+	}else{
+		if (vIdent.length > 40){
+			$('#divIdentificacaoID').addClass('has-error');
+			$('#divHelpIdentificacaoID').html(zgCriaSpanErro('A identificação não deve conter mais de 40 caracteres!'));
+			return false;
+		}else{
+				
+			/** Verificar se a identificação está disponível no banco **/
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/Utl/verificaAtividadeIdent.dp.php",
+		   		data: {  codAtividade: $('#codAtividadeID').val() , ident: vIdent},
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(1);
+		   	    	}else{
+		   	    		$('#valID').val(0);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+		}
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divIdentificacaoID').addClass('has-error');
+		$('#divHelpIdentificacaoID').html(zgCriaSpanErro('Já existe uma atividade cadastrada com esta identificação! Por favor, informe outra.'));
+		return false;
+	}else{
+		$('#divIdentificacaoID').removeClass('has-error');
+		$('#divHelpIdentificacaoID').html('&nbsp;');
+		return true;
+	}
+}
+
+
+
+</script>
+

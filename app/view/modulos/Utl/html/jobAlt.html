@@ -16,6 +16,14 @@
 					<div class="vspace-xs"></div>
 					<div class="row">
 				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divNomeID">
+								<label for="comandoID" class="col-sm-3 control-label">Nome</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do Job"></i></span>
+									<input type="text" id="nomeID" name="nome" value="%NOME%" maxlength="60" class="width-100" placeholder="Nome" autocomplete="off" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+							</div>																	
 							<div class="form-group col-sm-12" id="divCodAtividadeID">
 								<label for="codAtividadeID" class="col-sm-3 control-label">Atividade</label>
 								<div class="input-group col-sm-8 pull-left">
@@ -235,6 +243,7 @@ $('#zgFormID').submit(function(e) {
 
 
 function validaJob() {
+	var vNome				= $('#nomeID').val();
 	var vCodAtividade		= $('#codAtividadeID').val();
 	var vCodModulo			= $('#codModuloID').val();
 	var vComando			= $('#comandoID').val();
@@ -243,6 +252,16 @@ function validaJob() {
 	var vIndAtivo			= $('#indAtivoID').is(':checked');
 	var vOK					= true;
 	
+	// Nome
+	if (!vNome){
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('Nome dever ser informado !!'));
+		vOK					= false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+
 	// Atividade
 	if (!vCodAtividade){
 		$('#divCodAtividadeID').addClass('has-error');

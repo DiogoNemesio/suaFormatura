@@ -46,6 +46,7 @@ if (!empty($codJob)) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
 
+	$nome			= $info->getNome();
 	$codAtividade	= ($info->getCodAtividade() != null) ? $info->getCodAtividade()->getCodigo()	: null;
 	$codModulo		= ($info->getCodModulo() 	!= null) ? $info->getCodModulo()->getCodigo() 		: null;
 	$comando		= $info->getComando();
@@ -62,6 +63,7 @@ if (!empty($codJob)) {
 	*/
 
 }else{
+	$nome			= null;
 	$codAtividade	= null;
 	$codModulo		= null;
 	$comando		= null;
@@ -178,6 +180,7 @@ $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
 $tpl->set('COD_JOB'				,$codJob);
+$tpl->set('NOME'				,$nome);
 $tpl->set('COD_ATIVIDADE'		,$codAtividade);
 $tpl->set('COD_MODULO'			,$codModulo);
 $tpl->set('COMANDO'				,$comando);

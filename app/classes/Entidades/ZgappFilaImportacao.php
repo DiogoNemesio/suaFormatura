@@ -64,6 +64,13 @@ class ZgappFilaImportacao
     private $linhaAtual;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="VARIAVEL", type="string", length=200, nullable=true)
+     */
+    private $variavel;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -270,6 +277,29 @@ class ZgappFilaImportacao
     public function getLinhaAtual()
     {
         return $this->linhaAtual;
+    }
+
+    /**
+     * Set variavel
+     *
+     * @param string $variavel
+     * @return ZgappFilaImportacao
+     */
+    public function setVariavel($variavel)
+    {
+        $this->variavel = $variavel;
+
+        return $this;
+    }
+
+    /**
+     * Get variavel
+     *
+     * @return string 
+     */
+    public function getVariavel()
+    {
+        return $this->variavel;
     }
 
     /**

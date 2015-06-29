@@ -8,7 +8,11 @@ if (defined('DOC_ROOT')) {
 	include_once('./include.php');
 }
 
-global $em;
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -42,7 +46,7 @@ $url		= ROOT_URL . "/Utl/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$jobs	= $em->getRepository('Entidades\ZgutlJob')->findAll(); 
+	$atividades	= $em->getRepository('Entidades\ZgutlAtividade')->findAll(); 
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -50,29 +54,19 @@ try {
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GJobs");
-$grid->adicionaTexto('#'									,2	,$grid::CENTER	,'codigo');
-$grid->adicionaTexto('Nome'									,10	,$grid::CENTER	,'nome');
-$grid->adicionaTexto('Módulo'								,6	,$grid::CENTER	,'codModulo:nome');
-$grid->adicionaTexto('Atividade'							,8	,$grid::CENTER	,'codAtividade:identificacao');
-$grid->adicionaTexto('Intervalo'							,8	,$grid::CENTER	,'intervalo');
-$grid->adicionaDataHora('Última Exe.'						,8	,$grid::CENTER	,'dataUltimaExecucao');
-$grid->adicionaDataHora('Proxima Exe.'						,8	,$grid::CENTER	,'dataProximaExecucao');
-$grid->adicionaStatus('Ativo'													, 'indAtivo');
-$grid->adicionaStatus('<i class="fa fa-cog fa-1x fa-spin"></i>'					, 'indExecutando');
-$grid->adicionaTexto('Comando'								,16	,$grid::CENTER	,'comando');
-$grid->adicionaTexto('Falhas'								,5	,$grid::CENTER	,'numFalhas');
-$grid->adicionaTexto('Execuções'							,6	,$grid::CENTER	,'numExecucoes');
-$grid->adicionaIcone(null, 'fa fa-history grey bigger-140', "Visualizar Histórico de execução");
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GAtividades");
+$grid->adicionaTexto('#'							,2	,$grid::CENTER	,'codigo');
+$grid->adicionaTexto('Identificação'				,20	,$grid::CENTER	,'identificacao');
+$grid->adicionaTexto('Descrição'					,40	,$grid::CENTER	,'descricao');
+$grid->adicionaTexto('Tipo'							,20	,$grid::CENTER	,'codTipoAtividade:nome');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($jobs);
+$grid->importaDadosDoctrine($atividades);
 
-for ($i = 0; $i < sizeof($jobs); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codJob='.$jobs[$i]->getCodigo().'&url='.$url);
-	$grid->setUrlCelula($i,12,"javascript:zgAbreModal('".ROOT_URL."/Utl/jobHis.php?id=".$uid."');");
-	$grid->setUrlCelula($i,13,ROOT_URL.'/Utl/jobAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,14,ROOT_URL.'/Utl/jobExc.php?id='.$uid);
+for ($i = 0; $i < sizeof($atividades); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codAtividade='.$atividades[$i]->getCodigo().'&url='.$url);
+	$grid->setUrlCelula($i,4,ROOT_URL.'/Utl/atividadeAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Utl/atividadeExc.php?id='.$uid);
 }
 
 
@@ -88,7 +82,7 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Utl/jobAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codJob=');
+$urlAdd			= ROOT_URL.'/Utl/atividadeAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codAtividade=');
 
 #################################################################################
 ## Carregando o template html
@@ -100,7 +94,7 @@ $tpl->load(HTML_PATH . 'templateLis.html');
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Jobs (Agendamentos)"));
+$tpl->set('NOME'			,$tr->trans("Atividades"));
 $tpl->set('URLADD'			,$urlAdd);
 $tpl->set('IC'				,$_icone_);
 

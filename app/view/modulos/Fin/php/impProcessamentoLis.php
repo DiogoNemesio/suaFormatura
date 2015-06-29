@@ -53,7 +53,7 @@ if (isset($acao) && isset($codigo)) {
 	}elseif ($acao == "baixar") {
 		$nomeArquivo	= "REL_ERRO.pdf";
 		$info			= $em->getRepository('Entidades\ZgappFilaImportacao')->findOneBy(array('codigo' => $codigo));
-		if ((!$info) || (!isset($info->getCodigo())) ) 	exit;
+		if ((!$info)) 	exit;
 
 		$dir		= $info->DIR_VERSAO;
 		$tipoPTU 	= $info->COD_TIPO_PTU;
@@ -109,6 +109,7 @@ $grid->adicionaTexto('Tipo'					, 6	,$grid::CENTER	,'codTipoArquivo:nome');
 $grid->adicionaDataHora('Data'				,10	,$grid::CENTER	,'dataImportacao');
 $grid->adicionaTexto('Usuário'				,10	,$grid::CENTER	,'codUsuario:nome');
 $grid->adicionaTexto('Status'				,16	,$grid::CENTER	,'codStatus:nome');
+$grid->adicionaTexto('Variavel'				,10	,$grid::CENTER	,'variavel');
 $grid->adicionaTexto('% Processado'			,10	,$grid::CENTER	,'');
 $grid->adicionaIcone("#", $icReproc		,'Reprocessar');
 $grid->adicionaIcone("#", $icLog		,'Baixar');
@@ -214,21 +215,21 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 	$grid->setValorCelula($i,2,\Zage\App\Util::mostraTamanhoLegivel($fila[$i]->getBytes(),2));
 	
 	/* Define o percentual **/
-	$grid->setValorCelula($i,7,$percHtml);
+	$grid->setValorCelula($i,8,$percHtml);
 	
 	/* Define os ícones de cada registro */
-	$grid->setIconeCelula($i,8,$ic1);
-	$grid->setIconeCelula($i,9,$ic2);
-	$grid->setIconeCelula($i,10,$ic3);
-	$grid->setIconeCelula($i,11,$ic4);
-	$grid->setIconeCelula($i,12,$ic5);
+	$grid->setIconeCelula($i,9,$ic1);
+	$grid->setIconeCelula($i,10,$ic2);
+	$grid->setIconeCelula($i,11,$ic3);
+	$grid->setIconeCelula($i,12,$ic4);
+	$grid->setIconeCelula($i,13,$ic5);
 
 	/* Define as Urls de cada registro */
-	$grid->setUrlCelula($i,8,$url1);
-	$grid->setUrlCelula($i,9,$url2);
-	$grid->setUrlCelula($i,10,$url3);
-	$grid->setUrlCelula($i,11,$url4);
-	$grid->setUrlCelula($i,12,$url5);
+	$grid->setUrlCelula($i,9,$url1);
+	$grid->setUrlCelula($i,10,$url2);
+	$grid->setUrlCelula($i,11,$url3);
+	$grid->setUrlCelula($i,12,$url4);
+	$grid->setUrlCelula($i,13,$url5);
 	
 }
 

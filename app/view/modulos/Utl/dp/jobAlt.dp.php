@@ -9,18 +9,21 @@ if (defined('DOC_ROOT')) {
 }
  
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata os parâmetros passados pelo formulário
 #################################################################################
 if (isset($_POST['codJob']))				$codJob				= \Zage\App\Util::antiInjection($_POST['codJob']);
+if (isset($_POST['nome']))					$nome				= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['codAtividade']))			$codAtividade		= \Zage\App\Util::antiInjection($_POST['codAtividade']);
 if (isset($_POST['codModulo']))				$codModulo			= \Zage\App\Util::antiInjection($_POST['codModulo']);
 if (isset($_POST['comando']))				$comando			= \Zage\App\Util::antiInjection($_POST['comando']);
 if (isset($_POST['indAtivo']))				$indAtivo			= \Zage\App\Util::antiInjection($_POST['indAtivo']);
 if (isset($_POST['dataPrxExe']))			$dataPrxExe			= \Zage\App\Util::antiInjection($_POST['dataPrxExe']);
 if (isset($_POST['intervalo']))				$intervalo			= \Zage\App\Util::antiInjection($_POST['intervalo']);
-
-
-global $em,$system,$tr;
 
 #################################################################################
 ## Limpar a variável de erro
@@ -36,6 +39,14 @@ if (!isset($codJob)) {
 	$err	= 1;
 }
 
+/** Nome **/
+if (!isset($nome) || empty($nome)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Nome é obrigatório !!"));
+	$err	= 1;
+}elseif ((!empty($ident)) && (strlen($ident) > 60)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome não deve conter mais de 60 caracteres!"));
+	$err	= 1;
+}
 
 /** Atividade **/
 if (!isset($codAtividade) || empty($codAtividade)) {
@@ -133,6 +144,7 @@ try {
  	}
  	
  	$oJob->setCodAtividade($oAtividade);
+ 	$oJob->setNome($nome);
  	$oJob->setCodModulo($oModulo);
  	$oJob->setComando($comando);
  	$oJob->setDataProximaExecucao($oDataPrxExe);

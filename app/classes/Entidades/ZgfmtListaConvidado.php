@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtListaConvidado
  *
- * @ORM\Table(name="ZGFMT_LISTA_CONVIDADO", indexes={@ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_2_idx", columns={"COD_GRUPO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_3_idx", columns={"COD_FAIXA ETARIA"})})
+ * @ORM\Table(name="ZGFMT_LISTA_CONVIDADO", indexes={@ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_1_idx", columns={"COD_GRUPO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_2_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_3_idx", columns={"COD_FAIXA ETARIA"})})
  * @ORM\Entity
  */
 class ZgfmtListaConvidado
@@ -50,16 +50,6 @@ class ZgfmtListaConvidado
     private $email;
 
     /**
-     * @var \Entidades\ZgsegUsuario
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codUsuario;
-
-    /**
      * @var \Entidades\ZgfmtConvidadoGrupo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtConvidadoGrupo")
@@ -68,6 +58,16 @@ class ZgfmtListaConvidado
      * })
      */
     private $codGrupo;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codUsuario;
 
     /**
      * @var \Entidades\ZgfmtConvidadoFaixaEtaria
@@ -183,29 +183,6 @@ class ZgfmtListaConvidado
     }
 
     /**
-     * Set codUsuario
-     *
-     * @param \Entidades\ZgsegUsuario $codUsuario
-     * @return ZgfmtListaConvidado
-     */
-    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario = null)
-    {
-        $this->codUsuario = $codUsuario;
-
-        return $this;
-    }
-
-    /**
-     * Get codUsuario
-     *
-     * @return \Entidades\ZgsegUsuario 
-     */
-    public function getCodUsuario()
-    {
-        return $this->codUsuario;
-    }
-
-    /**
      * Set codGrupo
      *
      * @param \Entidades\ZgfmtConvidadoGrupo $codGrupo
@@ -226,6 +203,29 @@ class ZgfmtListaConvidado
     public function getCodGrupo()
     {
         return $this->codGrupo;
+    }
+
+    /**
+     * Set codUsuario
+     *
+     * @param \Entidades\ZgsegUsuario $codUsuario
+     * @return ZgfmtListaConvidado
+     */
+    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario = null)
+    {
+        $this->codUsuario = $codUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get codUsuario
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getCodUsuario()
+    {
+        return $this->codUsuario;
     }
 
     /**

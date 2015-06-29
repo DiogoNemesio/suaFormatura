@@ -13,5 +13,11 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Busca os arquivos que ainda não foram importados
 #################################################################################
-$oCodTipoArquivo	= "";
-$oJob	= $em->getRepository('\Entidades\ZgutlJob')->findOneBy(array('codigo' => $argv[1]));
+$codTipoArquivo		= "RTB";
+$codStatus			= "A";
+$codAtividade		= 1;
+$fila				= $em->getRepository('\Entidades\ZgappFilaImportacao')->findBy(array('codStatus' => $codStatus,'codTipoArquivo' => $codTipoArquivo ,'codAtividade' => $codAtividade),array('dataImportacao' => "ASC"));
+
+for ($i = 0; $i < sizeof($fila); $i++) {
+	
+}

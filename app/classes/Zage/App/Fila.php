@@ -29,7 +29,7 @@ class Fila {
      * @param integer $ident
      * @return array
      */
-	public static function cadastrar($modulo,$arquivo,$codTipoArq,$atividade) {
+	public static function cadastrar($modulo,$arquivo,$codTipoArq,$atividade,$variavel) {
 		global $em,$system,$_user,$log;
 	
 		
@@ -74,7 +74,7 @@ class Fila {
 		$fila->setDataImportacao(new \DateTime());
 		$fila->setNome($nomeArquivo);
 		$fila->setNumLinhas($numLinhas);
-
+		$fila->setVariavel($variavel);
 		
 		try {
 			$em->persist($fila);
