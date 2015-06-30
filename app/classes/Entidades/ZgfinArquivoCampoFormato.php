@@ -42,6 +42,13 @@ class ZgfinArquivoCampoFormato
      */
     private $charPreenchimento;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="NUM_CASAS_DECIMAIS", type="integer", nullable=true)
+     */
+    private $numCasasDecimais;
+
 
     /**
      * Get codigo
@@ -120,5 +127,28 @@ class ZgfinArquivoCampoFormato
     public function getCharPreenchimento()
     {
         return $this->charPreenchimento;
+    }
+
+    /**
+     * Set numCasasDecimais
+     *
+     * @param integer $numCasasDecimais
+     * @return ZgfinArquivoCampoFormato
+     */
+    public function setNumCasasDecimais($numCasasDecimais)
+    {
+        $this->numCasasDecimais = $numCasasDecimais;
+
+        return $this;
+    }
+
+    /**
+     * Get numCasasDecimais
+     *
+     * @return integer 
+     */
+    public function getNumCasasDecimais()
+    {
+        return $this->numCasasDecimais;
     }
 }
