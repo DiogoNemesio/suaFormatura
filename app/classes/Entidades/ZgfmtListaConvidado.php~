@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtListaConvidado
  *
- * @ORM\Table(name="ZGFMT_LISTA_CONVIDADO", indexes={@ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_1_idx", columns={"COD_GRUPO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_2_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_3_idx", columns={"COD_FAIXA ETARIA"})})
+ * @ORM\Table(name="ZGFMT_LISTA_CONVIDADO", indexes={@ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_1_idx", columns={"COD_GRUPO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_2_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_3_idx", columns={"COD_FAIXA_ETARIA"})})
  * @ORM\Entity
  */
 class ZgfmtListaConvidado
@@ -74,7 +74,7 @@ class ZgfmtListaConvidado
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtConvidadoFaixaEtaria")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_FAIXA ETARIA", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_FAIXA_ETARIA", referencedColumnName="CODIGO")
      * })
      */
     private $codFaixaEtaria;
