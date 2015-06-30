@@ -89,7 +89,7 @@ class Link {
 		}
 		
 		if ($this->getIcone()) {
-			$icone	= '<i class="menu-icon fa fa-caret-right"></i><i class="'.$this->getIcone().'"></i><span>&nbsp;</span>';
+			$icone	= '<i class="menu-icon '.$this->getIcone().'"></i>';
 		}else{
 			$icone = '<i class="menu-icon fa fa-caret-right"></i>';
 		}
