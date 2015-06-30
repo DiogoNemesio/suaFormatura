@@ -1,17 +1,17 @@
 <?php
-namespace Zage\Fin\Arquivos\Campos;
+namespace Zage\Fin\Arquivos\TipoDado;
 
 /**
- * @package: Zage\Fin\Arquivos\Campos\NUM
- * @created: 01/07/2013
+ * @package: Zage\Fin\Arquivos\TipoDado\NUM
+ * @created: 30/06/2015
  * @Author: Daniel Henrique Cassela
  * @version: 1.0
  * 
  * Gerenciar os tipos de dado do tipo N
  */
 
-class NUM extends Zage\Fin\Arquivos\TipoDeDado {
-	
+class NUM extends Zage\Fin\Arquivos\TipoDado {
+
 	#################################################################################
 	## Construtor
 	#################################################################################
