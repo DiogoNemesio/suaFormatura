@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinPessoaEndereco
  *
- * @ORM\Table(name="ZGFIN_PESSOA_ENDERECO", indexes={@ORM\Index(name="fk_ZGFIN_PESSOA_ENDERECO_1_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_PESSOA_ENDERECO_2_idx", columns={"COD_TIPO_ENDERECO"}), @ORM\Index(name="fk_ZGFIN_PESSOA_ENDERECO_3_idx", columns={"COD_CIDADE"}), @ORM\Index(name="fk_ZGFIN_PESSOA_ENDERECO_4_idx", columns={"COD_LOGRADOURO"})})
+ * @ORM\Table(name="ZGFIN_PESSOA_ENDERECO", indexes={@ORM\Index(name="fk_ZGFIN_PESSOA_ENDERECO_1_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_PESSOA_ENDERECO_2_idx", columns={"COD_TIPO_ENDERECO"}), @ORM\Index(name="fk_ZGFIN_PESSOA_ENDERECO_4_idx", columns={"COD_LOGRADOURO"})})
  * @ORM\Entity
  */
 class ZgfinPessoaEndereco
@@ -24,28 +24,35 @@ class ZgfinPessoaEndereco
     /**
      * @var string
      *
-     * @ORM\Column(name="NUMERO", type="string", length=100, nullable=true)
-     */
-    private $numero;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="CEP", type="string", length=8, nullable=true)
+     * @ORM\Column(name="CEP", type="string", length=8, nullable=false)
      */
     private $cep;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="BAIRRO", type="string", length=60, nullable=true)
+     * @ORM\Column(name="ENDERECO", type="string", length=100, nullable=false)
+     */
+    private $endereco;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="BAIRRO", type="string", length=60, nullable=false)
      */
     private $bairro;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="COMPLEMENTO", type="string", length=120, nullable=true)
+     * @ORM\Column(name="NUMERO", type="string", length=10, nullable=true)
+     */
+    private $numero;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="COMPLEMENTO", type="string", length=100, nullable=true)
      */
     private $complemento;
 
@@ -70,16 +77,6 @@ class ZgfinPessoaEndereco
     private $codTipoEndereco;
 
     /**
-     * @var \Entidades\ZgadmCidade
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmCidade")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CIDADE", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codCidade;
-
-    /**
      * @var \Entidades\ZgadmLogradouro
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmLogradouro")
@@ -98,29 +95,6 @@ class ZgfinPessoaEndereco
     public function getCodigo()
     {
         return $this->codigo;
-    }
-
-    /**
-     * Set numero
-     *
-     * @param string $numero
-     * @return ZgfinPessoaEndereco
-     */
-    public function setNumero($numero)
-    {
-        $this->numero = $numero;
-
-        return $this;
-    }
-
-    /**
-     * Get numero
-     *
-     * @return string 
-     */
-    public function getNumero()
-    {
-        return $this->numero;
     }
 
     /**
@@ -147,6 +121,29 @@ class ZgfinPessoaEndereco
     }
 
     /**
+     * Set endereco
+     *
+     * @param string $endereco
+     * @return ZgfinPessoaEndereco
+     */
+    public function setEndereco($endereco)
+    {
+        $this->endereco = $endereco;
+
+        return $this;
+    }
+
+    /**
+     * Get endereco
+     *
+     * @return string 
+     */
+    public function getEndereco()
+    {
+        return $this->endereco;
+    }
+
+    /**
      * Set bairro
      *
      * @param string $bairro
@@ -167,6 +164,29 @@ class ZgfinPessoaEndereco
     public function getBairro()
     {
         return $this->bairro;
+    }
+
+    /**
+     * Set numero
+     *
+     * @param string $numero
+     * @return ZgfinPessoaEndereco
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    /**
+     * Get numero
+     *
+     * @return string 
+     */
+    public function getNumero()
+    {
+        return $this->numero;
     }
 
     /**
@@ -236,29 +256,6 @@ class ZgfinPessoaEndereco
     public function getCodTipoEndereco()
     {
         return $this->codTipoEndereco;
-    }
-
-    /**
-     * Set codCidade
-     *
-     * @param \Entidades\ZgadmCidade $codCidade
-     * @return ZgfinPessoaEndereco
-     */
-    public function setCodCidade(\Entidades\ZgadmCidade $codCidade = null)
-    {
-        $this->codCidade = $codCidade;
-
-        return $this;
-    }
-
-    /**
-     * Get codCidade
-     *
-     * @return \Entidades\ZgadmCidade 
-     */
-    public function getCodCidade()
-    {
-        return $this->codCidade;
     }
 
     /**

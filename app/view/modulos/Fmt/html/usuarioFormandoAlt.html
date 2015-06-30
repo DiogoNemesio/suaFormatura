@@ -1,6 +1,6 @@
 <div id="content">
 	<div class="page-header">
-	<h1>Cadastro de Usuário 
+	<h1>Cadastro de Formandos 
 		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
 		<a id='a01ID' class='btn btn-white ' title="Novo Usuário" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
 	</h1>
@@ -226,8 +226,8 @@ SUBMIT FORMULÁRIO
 // Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
 	
-	var vOk 	= validaUsuarioAlt();
-	
+	//var vOk 	= validaUsuarioAlt();
+	var vOk 	= true;
 	if(vOk == false) 	{
 		$.gritter.add({
 			title: 'Está faltando alguma coisa !!!',

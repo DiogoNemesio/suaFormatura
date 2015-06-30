@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtListaConvidado
  *
- * @ORM\Table(name="ZGFMT_LISTA_CONVIDADO", indexes={@ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_1_idx", columns={"COD_GRUPO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_2_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_3_idx", columns={"COD_FAIXA_ETARIA"})})
+ * @ORM\Table(name="ZGFMT_LISTA_CONVIDADO", indexes={@ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_1_idx", columns={"COD_GRUPO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_2_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_3_idx", columns={"COD_FAIXA_ETARIA"}), @ORM\Index(name="fk_ZGFMT_LISTA_CONVIDADO_4_idx", columns={"SEXO"})})
  * @ORM\Entity
  */
 class ZgfmtListaConvidado
@@ -34,13 +34,6 @@ class ZgfmtListaConvidado
      * @ORM\Column(name="TELEFONE", type="string", length=9, nullable=true)
      */
     private $telefone;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="SEXO", type="string", length=1, nullable=true)
-     */
-    private $sexo;
 
     /**
      * @var string
@@ -78,6 +71,16 @@ class ZgfmtListaConvidado
      * })
      */
     private $codFaixaEtaria;
+
+    /**
+     * @var \Entidades\ZgsegSexoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegSexoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="SEXO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $sexo;
 
 
     /**
@@ -134,29 +137,6 @@ class ZgfmtListaConvidado
     public function getTelefone()
     {
         return $this->telefone;
-    }
-
-    /**
-     * Set sexo
-     *
-     * @param string $sexo
-     * @return ZgfmtListaConvidado
-     */
-    public function setSexo($sexo)
-    {
-        $this->sexo = $sexo;
-
-        return $this;
-    }
-
-    /**
-     * Get sexo
-     *
-     * @return string 
-     */
-    public function getSexo()
-    {
-        return $this->sexo;
     }
 
     /**
@@ -249,5 +229,28 @@ class ZgfmtListaConvidado
     public function getCodFaixaEtaria()
     {
         return $this->codFaixaEtaria;
+    }
+
+    /**
+     * Set sexo
+     *
+     * @param \Entidades\ZgsegSexoTipo $sexo
+     * @return ZgfmtListaConvidado
+     */
+    public function setSexo(\Entidades\ZgsegSexoTipo $sexo = null)
+    {
+        $this->sexo = $sexo;
+
+        return $this;
+    }
+
+    /**
+     * Get sexo
+     *
+     * @return \Entidades\ZgsegSexoTipo 
+     */
+    public function getSexo()
+    {
+        return $this->sexo;
     }
 }
