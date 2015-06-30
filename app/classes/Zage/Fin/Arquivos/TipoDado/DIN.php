@@ -2,7 +2,7 @@
 namespace Zage\Fin\Arquivos\TipoDado;
 
 /**
- * @package: Zage\Fin\Arquivos\TipoDado\NUM
+ * @package: Zage\Fin\Arquivos\TipoDado\DIN
  * @created: 30/06/2015
  * @Author: Daniel Henrique Cassela
  * @version: 1.0
@@ -10,8 +10,8 @@ namespace Zage\Fin\Arquivos\TipoDado;
  * Gerenciar os tipos de dado do tipo N
  */
 
-class NUM extends \Zage\Fin\Arquivos\TipoDado {
-
+class DIN extends \Zage\Fin\Arquivos\TipoDado {
+	
 	#################################################################################
 	## Construtor
 	#################################################################################
@@ -20,10 +20,10 @@ class NUM extends \Zage\Fin\Arquivos\TipoDado {
 		#################################################################################
 		## Inicializa os atributos
 		#################################################################################
-		$this->setNome("Numérico");
+		$this->setNome("Dinheiro");
 		$this->setAlinhamento("D");
 		$this->setCharPreenchimento("0");
-		$this->setNumCasasDecimais(null);
+		$this->setNumCasasDecimais(2);
 		$this->setTamanho(null);
 		$this->setValor(null);
 		$this->setMensagemInvalido("Campo deve ser numérico de 0 a 9");

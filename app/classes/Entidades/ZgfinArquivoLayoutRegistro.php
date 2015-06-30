@@ -22,6 +22,13 @@ class ZgfinArquivoLayoutRegistro
     private $codigo;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="NOME", type="string", length=60, nullable=true)
+     */
+    private $nome;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="ORDEM", type="integer", nullable=false)
@@ -98,6 +105,29 @@ class ZgfinArquivoLayoutRegistro
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set nome
+     *
+     * @param string $nome
+     * @return ZgfinArquivoLayoutRegistro
+     */
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
+
+        return $this;
+    }
+
+    /**
+     * Get nome
+     *
+     * @return string 
+     */
+    public function getNome()
+    {
+        return $this->nome;
     }
 
     /**

@@ -17,6 +17,7 @@ if (isset($_POST['codLayout']))			$codLayout			= \Zage\App\Util::antiInjection($
 if (isset($_POST['codTipoRegistro']))	$codTipoRegistro	= \Zage\App\Util::antiInjection($_POST['codTipoRegistro']);
 if (isset($_POST['ordem']))				$ordem				= \Zage\App\Util::antiInjection($_POST['ordem']);
 if (isset($_POST['posicao']))			$posicao			= \Zage\App\Util::antiInjection($_POST['posicao']);
+if (isset($_POST['nome']))				$nome				= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['tamanho']))			$tamanho			= \Zage\App\Util::antiInjection($_POST['tamanho']);
 if (isset($_POST['codFormato']))		$codFormato			= \Zage\App\Util::antiInjection($_POST['codFormato']);
 if (isset($_POST['codVariavel']))		$codVariavel		= \Zage\App\Util::antiInjection($_POST['codVariavel']);
@@ -28,14 +29,12 @@ if (isset($_POST['codRegistro']))		$codRegistro		= \Zage\App\Util::antiInjection
 #################################################################################
 if (!isset($ordem))				$ordem				= array();
 if (!isset($posicao))			$posicao			= array();
+if (!isset($nome))				$nome				= array();
 if (!isset($tamanho))			$tamanho			= array();
 if (!isset($codFormato))		$codFormato			= array();
 if (!isset($codVariavel))		$codVariavel		= array();
 if (!isset($valorFixo))			$valorFixo			= array();
 if (!isset($codRegistro))		$codRegistro		= array();
-
-
-$log->debug("POst: ".serialize($_POST));
 
 #################################################################################
 ## Limpar a variável de erro
@@ -83,6 +82,12 @@ if (!is_array($posicao)) {
 	$err 	= 1;
 }
 
+/** Nome **/
+if (!is_array($nome)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME inválido !!!"));
+	$err 	= 1;
+}
+
 /** Tamanho **/
 if (!is_array($tamanho)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo TAMANHO inválido !!!"));
@@ -127,6 +132,12 @@ if (sizeof($ordem) != $numReg) {
 /** Posição **/
 if (sizeof($posicao) != $numReg) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo POSIÇÃO com tamanho inválido !!!"));
+	$err 	= 1;
+}
+
+/** Nome **/
+if (sizeof($nome) != $numReg) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME com tamanho inválido !!!"));
 	$err 	= 1;
 }
 
@@ -225,6 +236,7 @@ try {
 		$oReg->setCodVariavel($oVariavel);
 		$oReg->setOrdem($ordem[$i]);
 		$oReg->setPosicaoInicial($posicao[$i]);
+		$oReg->setNome($nome[$i]);
 		$oReg->setTamanho($tamanho[$i]);
 		$oReg->setValorFixo($valorFixo[$i]);
 		

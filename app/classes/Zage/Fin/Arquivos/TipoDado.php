@@ -131,8 +131,48 @@ abstract class TipoDado extends \Entidades\ZgfinArquivoCampoFormato {
 	/**
 	 * Função de ajuste de tamanho do campo
 	 */
-	public abstract function completar();
 	
+	/**
+	 * Função para completar a string
+	 */
+	public function completar() {
+
+		#################################################################################
+		## Retornar se o tamanho for variável
+		#################################################################################
+		if ($this->getTamanho() == "V") return;
+		
+		#################################################################################
+		## Verifica o Caractere de preenchimento, retornar exceção se não definido
+		#################################################################################
+		$char	= $this->getCharPreenchimento();
+		if (mb_strlen($char,$system->config["database"]["charset"]) == 0) {
+			throw new Exception('Character de preenchimento não definido');
+		}
+		
+		#################################################################################
+		## Completar a string de acordo com o alinhamento
+		#################################################################################
+		for ($i = mb_strlen($this->getValor(),$system->config["database"]["charset"]); $i < $this->getTamanho(); $i++) {
+			if ($this->getAlinhamento() == "D") {
+				$this->setValor($char . $this->getValor());
+			}else{
+				$this->setValor($this->getValor() . $char);
+			}
+		}
+		
+		#################################################################################
+		## Verificar se a string está maior que o tamanho definido pra ela 
+		#################################################################################
+		$dif	= mb_strlen($this->getValor(),$system->config["database"]["charset"]) - $this->getTamanho() ;
+		if ($dif > 0) {
+			if ($this->getAlinhamento() == "D") {
+				$this->setValor(substr($this->getValor(),$dif, $this->getTamanho()));					
+			}else{
+				$this->setValor(substr($this->getValor(),0, $this->getTamanho()));
+			}
+		}
+	}
 	
 	/**
 	 * Monta o regex de Caracteres especiais

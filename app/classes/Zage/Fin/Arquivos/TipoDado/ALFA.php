@@ -2,7 +2,7 @@
 namespace Zage\Fin\Arquivos\TipoDado;
 
 /**
- * @package: Zage\Fin\Arquivos\TipoDado\NUM
+ * @package: Zage\Fin\Arquivos\TipoDado\ALFA
  * @created: 30/06/2015
  * @Author: Daniel Henrique Cassela
  * @version: 1.0
@@ -10,7 +10,7 @@ namespace Zage\Fin\Arquivos\TipoDado;
  * Gerenciar os tipos de dado do tipo N
  */
 
-class NUM extends \Zage\Fin\Arquivos\TipoDado {
+class ALFA extends \Zage\Fin\Arquivos\TipoDado {
 
 	#################################################################################
 	## Construtor
@@ -20,13 +20,13 @@ class NUM extends \Zage\Fin\Arquivos\TipoDado {
 		#################################################################################
 		## Inicializa os atributos
 		#################################################################################
-		$this->setNome("Numérico");
-		$this->setAlinhamento("D");
-		$this->setCharPreenchimento("0");
+		$this->setNome("AlfaNumérico");
+		$this->setAlinhamento("E");
+		$this->setCharPreenchimento(" ");
 		$this->setNumCasasDecimais(null);
 		$this->setTamanho(null);
 		$this->setValor(null);
-		$this->setMensagemInvalido("Campo deve ser numérico de 0 a 9");
+		$this->setMensagemInvalido("Campo deve ser Alfabético de A à Z, maiúsculas e minúsculas, brancos, números de 0 a 9 e caracteres especiais");
 	}
 	
 	
@@ -48,9 +48,11 @@ class NUM extends \Zage\Fin\Arquivos\TipoDado {
 		#################################################################################
 		## Verifica se o valor so tem os caracteres desse tipo de dados
 		#################################################################################
-		if (!preg_match("/^[0-9]+$/", $this->getValor()) ) {
+		$ces	= $this->_getCERegex();
+		if (!preg_match("/^[a-zA-Z0-9(".$ces.")\s]+$/", $this->getValor()) ) {
 			return false;
 		}
+		return true;
 		
 		return true;
 	}

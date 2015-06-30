@@ -25,6 +25,7 @@
 						<tr class="warning">
 							<th class="col-sm-1 center">Ordem</th>
 							<th class="col-sm-1 center">Posição Inicial</th>
+							<th class="col-sm-2 center">Nome</th>
 							<th class="col-sm-1 center">Tamanho</th>
 							<th class="col-sm-2 center">Formato</th>
 							<th class="col-sm-2 center">Variável</th>
@@ -38,7 +39,7 @@
 					<tfoot>
 						<tr>
 							<th id="layRegtableTotalOrdemCellID" class="col-sm-1 center"></th>
-							<th class="col-sm-1 center"></th>
+							<th colspan="2" class="col-sm-1 center"></th>
 							<th id="layRegtableTotalTamanhoCellID" class="col-sm-1 center"></th>
 							<th colspan="3" style="text-align: left;">Totalizador</th>
 							<th class="col-sm-1 center"><span class="" onclick="addRowRegistroLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
@@ -165,7 +166,7 @@ function addRowRegistroLayReg() {
 	
 	if ($posicao == 0) $posicao = 1;
 		
-	$('#layRegTableRegistroID > tbody:last').append('<tr><td class="col-sm-1 center"><input type="text" name="ordem[]" readonly value="'+$ordem+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" readonly name="posicao[]" value="'+$posicao+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" name="tamanho[]" onchange="alteraTamanhoRegistroLayReg($(this));" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFormato[]" data-rel="select2">%FORMATOS%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codVariavel[]" data-rel="select2">%VARIAVEIS%</select></td><td class="col-sm-1 center"><input type="text" name="valorFixo[]" maxlength="400" autocomplete="off"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpRegistroLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownRegistroLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowRegistroLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codRegistro[]"></td></tr>');
+	$('#layRegTableRegistroID > tbody:last').append('<tr><td class="col-sm-1 center"><input type="text" name="ordem[]" class="col-xs-6" readonly value="'+$ordem+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-1 center"><input type="text" class="col-xs-6" readonly name="posicao[]" value="'+$posicao+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-2 center"><input type="text" name="nome[]" maxlength="60" autocomplete="off"></td><td class="col-sm-1 center"><input type="text" name="tamanho[]" class="col-xs-6" onchange="alteraTamanhoRegistroLayReg($(this));" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td class="col-sm-2 center"><select class="select2" style="width:90%;" name="codFormato[]" data-rel="select2">%FORMATOS%</select></td><td class="col-sm-2 center"><select class="select2" style="width:90%;" name="codVariavel[]" data-rel="select2">%VARIAVEIS%</select></td><td class="col-sm-1 center"><input type="text" name="valorFixo[]" maxlength="400" autocomplete="off"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpRegistroLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownRegistroLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowRegistroLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codRegistro[]"></td></tr>');
 	$('#layRegTableRegistroID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');

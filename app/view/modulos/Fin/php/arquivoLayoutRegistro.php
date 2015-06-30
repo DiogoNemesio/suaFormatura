@@ -131,11 +131,12 @@ for ($i = 0; $i < sizeof($registros); $i++) {
 	
 	$htmlReg	.= '
 		<tr>
-			<td class="col-sm-1 center"><input type="text" name="ordem[]" readonly value="'.$registros[$i]->getOrdem().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
-			<td class="col-sm-1 center"><input type="text" readonly name="posicao[]" value="'.$registros[$i]->getPosicaoInicial().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
-			<td class="col-sm-1 center"><input type="text" name="tamanho[]" onchange="alteraTamanhoRegistroLayReg($(this));" value="'.$registros[$i]->getTamanho().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
-			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFormato[]" data-rel="select2">'.$oFormatoInt.'</select></td>
-			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codVariavel[]" data-rel="select2">'.$oVariavelInt.'</select></td>
+			<td class="col-sm-1 center"><input type="text" name="ordem[]" class="col-xs-6" readonly value="'.$registros[$i]->getOrdem().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
+			<td class="col-sm-1 center"><input type="text" readonly name="posicao[]" class="col-xs-6" value="'.$registros[$i]->getPosicaoInicial().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
+			<td class="col-sm-2 center"><input type="text" name="nome[]" maxlength="60" autocomplete="off" value="'.$registros[$i]->getNome().'"></td>
+			<td class="col-sm-1 center"><input type="text" name="tamanho[]" class="col-xs-6" onchange="alteraTamanhoRegistroLayReg($(this));" value="'.$registros[$i]->getTamanho().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
+			<td class="col-sm-2 center"><select class="select2" style="width:90%;" name="codFormato[]" data-rel="select2">'.$oFormatoInt.'</select></td>
+			<td class="col-sm-2 center"><select class="select2" style="width:90%;" name="codVariavel[]" data-rel="select2">'.$oVariavelInt.'</select></td>
 			<td class="col-sm-1 center"><input type="text" name="valorFixo[]" value="'.$registros[$i]->getValorFixo().'" maxlength="400" autocomplete="off"></td>
 			<td class="col-sm-1 center">
 				<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
