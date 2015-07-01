@@ -1,0 +1,309 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Convidados
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+	<div id="divAvisoLayoutConvidadoID"></div>
+	
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="_precisaSalvar" id="_precisaSalvarID">
+				<input type="hidden" id="codConvidadoID" name="codConvidado" value="%COD_CONVIDADO%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+				    	<div class="col-sm-12">
+							<div>
+								<table id="layRegTableConvidadoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
+									<thead>
+										<tr class="warning">
+											<th class="col-sm-1 center">Grupo</th>
+											<th class="col-sm-1 center">Nome</th>
+											<th class="col-sm-1 center">Telefone</th>
+											<th class="col-sm-2 center">Faixa Etaria</th>
+											<th class="col-sm-2 center">Sexo</th>
+											<th class="col-sm-2 center">Email</th>
+											<th class="col-sm-1 center"><span class="" onclick="addRowConvidadoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									%CONVIDADOS%
+									</tbody>
+									<tfoot>
+										<tr>
+											<th colspan="6" style="text-align: left;"></th>
+											<th class="col-sm-1 center"><span class="" onclick="addRowConvidadoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+							<div class="clearfix form-actions">
+								<label class="col-sm-5 control-label" >&nbsp;</label>
+				   				<button type="button" class="btn btn-primary" id="btnSubmitLayRegID"><i class="fa fa-check bigger-110"></i> Salvar</button>
+								<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.select2').css('width','100%').select2({allowClear:true});
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitLayRegID').on("click", function(e) {
+	
+	var vOk 	= validaConvidadoLayReg();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$('#_precisaSalvarID').val(0);
+		zgMostraAviso("Fechar");
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+
+function addRowConvidadoLayReg() {
+	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;
+	
+	$ultOrdem	= 0;
+	$ultPos		= 0;
+	$ultTam		= 0;
+	
+	$('#_precisaSalvarID').val(1);
+	
+	$('#layRegTableConvidadoID > tbody > tr:last [name*="ordem[]"]').each(function( index ) {
+		$ultOrdem	= parseInt($(this).val());
+	});
+	
+	$('#layRegTableConvidadoID > tbody > tr:last [name*="posicao[]"]').each(function( index ) {
+		$ultPos	= parseInt($(this).val());
+		if (zgValidaNumero($ultPos) == false) {
+			zgMostraErro('divAvisoLayoutConvidadoID','Ajuste o campo "POSIÇÃO" na ordem: '+$ultOrdem);
+			$return		= true;
+			$(this).addClass('btn-warning');
+		}else{
+			$(this).removeClass('btn-warning');
+		}
+	});
+
+	$('#layRegTableConvidadoID > tbody > tr:last [name*="tamanho[]"]').each(function( index ) {
+		$ultTam	= parseInt($(this).val());
+		if (zgValidaNumero($ultTam) == false) {
+			zgMostraErro('divAvisoLayoutConvidadoID',"Ajuste o campo tamanho na ordem: "+$ultOrdem);
+			$return		= true;
+			$(this).addClass('btn-warning');
+		}else{
+			$(this).removeClass('btn-warning');
+		}
+	});
+	
+	$('#layRegTableConvidadoID > tbody > tr:last [name*="codFormato[]"]').each(function( index ) {
+		if (!$(this).val()) {
+			zgMostraErro('divAvisoLayoutConvidadoID','Selecione algum "Formato"');
+			$return		= true;
+			$(this).addClass('alert-danger');
+		}else{
+			$(this).removeClass('alert-danger');
+		}
+	});
+
+	if ($return == true) return $return;
+
+	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codGrupo[]" data-rel="select2">%COD_GRUPO%</select></td><td class="col-sm-1 center"><input type="text" name="nome[]" value="%NOME%" maxlength="100" autocomplete="off"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpConvidadoLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownConvidadoLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
+	$('#layRegTableConvidadoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	$('#layRegTableConvidadoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+}
+
+function delRowConvidadoLayReg(pObj) {
+	$('#_precisaSalvarID').val(1);
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
+	var $tr		= $td.parent();
+
+	/** Encontra a ordem que está sendo removida **/
+	$ordemObj 	= $tr.find('[name*="ordem[]"]');
+	$ordem		= parseInt($ordemObj.val());
+	
+	$tr.addClass("danger");
+	$tr.fadeOut(500, function(){
+		$tr.remove();
+		recalculaOrdemLayReg();
+		recalculaPosicaoInicialConvidadoLayReg(($ordem-1));
+	});
+}
+
+function moveUpConvidadoLayReg(pObj) {
+	$('#_precisaSalvarID').val(1);
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
+	var $tr		= $td.parent();
+	
+	/** Encontra a ordem e posição que está sendo movida **/
+	$ordObj 	= $tr.find('[name*="ordem[]"]');
+	$posObj 	= $tr.find('[name*="posicao[]"]');
+	$tamObj 	= $tr.find('[name*="tamanho[]"]');
+	
+	$ordem		= parseInt($ordObj.val());
+	$posicao	= parseInt($posObj.val());
+	$tamanho	= parseInt($tamObj.val());
+	
+	if ($ordem == 1) return false;
+	
+	/** Resgata a posição inicial do Convidado anterior **/
+	var $index	= $ordem - 2;
+	
+	$trAntObj		= $('#layRegTableConvidadoID > tbody > tr:eq('+$index+')');
+	$posAntObj 		= $trAntObj.find('[name*="posicao[]"]');
+	$tamAntObj 		= $trAntObj.find('[name*="tamanho[]"]');
+	$posAnt			= parseInt($posAntObj.val()); 
+	$tamAnt			= parseInt($tamAntObj.val());
+	
+	/** Ajusta a posição do Convidado alterado **/
+	$posObj.val($posAnt);
+
+	/** Ajusta a posição do Convidado anterior **/
+	$posAntObj.val($posAnt + $tamanho);
+	
+	/** Move o Convidado **/
+	$tr.insertBefore($tr.prev());
+	
+	/** Recalcula a ordem **/
+	recalculaOrdemLayReg();
+}
+
+function moveDownConvidadoLayReg(pObj) {
+	$('#_precisaSalvarID').val(1);
+
+	/** Calcula o número de Convidados da tabela **/
+	$numRows 	= $('#layRegTableConvidadoID').find('tbody tr').length;
+
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
+	var $tr		= $td.parent();
+	
+	/** Encontra a ordem e posição que está sendo movida **/
+	$ordObj 	= $tr.find('[name*="ordem[]"]');
+	$posObj 	= $tr.find('[name*="posicao[]"]');
+	$tamObj 	= $tr.find('[name*="tamanho[]"]');
+	
+	$ordem		= parseInt($ordObj.val());
+	$posicao	= parseInt($posObj.val());
+	$tamanho	= parseInt($tamObj.val());
+	
+	if ($ordem == $numRows) return false;
+	
+	/** Resgata a posição inicial do Convidado posterior **/
+	var $index	= $ordem;
+	
+	$trPosObj		= $('#layRegTableConvidadoID > tbody > tr:eq('+$index+')');
+	$posPosObj 		= $trPosObj.find('[name*="posicao[]"]');
+	$tamPosObj 		= $trPosObj.find('[name*="tamanho[]"]');
+	$posPos			= parseInt($posPosObj.val()); 
+	$tamPos			= parseInt($tamPosObj.val());
+	
+	/** Ajusta a posição do Convidado Posterior **/
+	$posPosObj.val($posicao);
+
+	/** Ajusta a posição do Convidado alterado **/
+	$posObj.val($posicao + $tamPos);
+
+	/** Move o Convidado **/
+	$tr.insertAfter($tr.next());
+
+	/** Recalcula a ordem **/
+	recalculaOrdemLayReg();
+}
+
+function validaConvidadoLayReg () {
+	var $total,$return,$tamanho,$codFormato,$ordem,$ok;
+	
+	$ok	= true;
+	
+	$('#layRegTableConvidadoID > tbody > tr').each(function( index ) {
+		
+		$nomeObj 	= $(this).find('[name*="nome[]"]');
+		
+		$nome		= $nomeObj.val();
+		
+		if (!$nome) {
+			zgMostraErro('divAvisoLayoutConvidadoID','Campo NOME é obrigatório !!!');
+			$ok 	= false;
+			$(this).addClass('alert-danger');
+		}else{
+			$(this).removeClass('alert-danger');
+		}
+	
+	});
+
+	if (!$ok)	return false;
+	
+	return true;	
+}
+
+function zgLoadUrlSeSalvouLayReg($url) {
+	if ($('#_precisaSalvarID').val() == 1) {
+		zgMostraErro('divAvisoLayoutConvidadoID',"Salve as informações, antes de mudar de tela !!!");
+		$('#_precisaSalvarID').val(0);
+	}else{
+		zgLoadUrl($url);
+	}
+}
+</script>
+
