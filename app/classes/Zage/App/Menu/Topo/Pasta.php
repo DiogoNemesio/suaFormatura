@@ -59,7 +59,7 @@ class Pasta {
 		if ($this->getIcone() != null) {
 			$menuIcone	= '<i class="menu-icon '.$this->getIcone().'"></i>';
 		}else{
-			$menuIcone	= '';
+			$menuIcone	= '<i class="menu-icon fa fa-caret-right"></i>';
 		}
 
 		$html  = str_repeat(\Zage\App\ZWS::TAB,5).'<a id="pasta_a_'.$this->getCodigo().'" href="#" class="dropdown-toggle">'.\Zage\App\ZWS::NL;

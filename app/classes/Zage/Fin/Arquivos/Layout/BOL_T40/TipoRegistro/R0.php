@@ -19,7 +19,8 @@ class R0 extends \Zage\Fin\Arquivos\Layout\BOL_T40\TipoRegistro {
 		#################################################################################
 		## Define o tipo do registro e o tamanho
 		#################################################################################
-		$this->setTipoArquivo("BOL_T40");
+		$this->setTipoArquivo("C400");
+		$this->setCodLayout("BOL_T40");
 		$this->setTipoRegistro("0");
 		$this->setConfigFromDB();
 		

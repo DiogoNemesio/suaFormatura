@@ -14,15 +14,6 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 global $em,$system,$tr,$log;
 
-
-
-$campo	= new \Zage\Fin\Arquivos\TipoDado\ALFA();
-
-
-print_r($campo);
-
-exit;
-
 #################################################################################
 ## Busca os arquivos que ainda não foram importados
 #################################################################################
@@ -37,5 +28,16 @@ if (!$codAtividade)	{
 $fila				= $em->getRepository('\Entidades\ZgappFilaImportacao')->findBy(array('codStatus' => $codStatus,'codTipoArquivo' => $codTipoArquivo ,'codAtividade' => $codAtividade),array('dataImportacao' => "ASC"));
 
 for ($i = 0; $i < sizeof($fila); $i++) {
+	
+	$classe	= "\\Zage\\Fin\\Arquivos\\Layout\\".$fila[$i]->getVariavel();
+	$file	= CLASS_PATH . "/Zage/Fin/Arquivos/Layout/".$fila[$i]->getVariavel().'.php';
+	
+	
+	if (!file_exists($file)) {
+		$log->err("Classe não encontrada (".$file."), código da fila: ".$fila[$i]->getCodigo());
+	}else{
+		$layout	= new $classe;
+		$layout->loadFile($fila[$i]->getArquivo());
+	}
 	
 }

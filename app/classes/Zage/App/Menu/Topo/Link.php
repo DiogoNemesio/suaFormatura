@@ -89,13 +89,13 @@ class Link {
 		}
 		
 		if ($this->getIcone()) {
-			$icone	= '<i class="menu-icon '.$this->getIcone().'"></i>';
+			$icone	= '<i class=" '.$this->getIcone().'"></i>';
 		}else{
 			$icone = '<i class="menu-icon fa fa-caret-right"></i>';
 		}
 		
 		$html  = str_repeat(\Zage\App\ZWS::TAB,5).'<li id="link_li_'.$this->getCodigo().'">'.\Zage\App\ZWS::NL;
-		$html .= str_repeat(\Zage\App\ZWS::TAB,6).'<a id="link_a_'.$this->getCodigo().'" '.$link.' >'.$icone.$tr->trans(trim($this->getNome())).'</a>'.\Zage\App\ZWS::NL;
+		$html .= str_repeat(\Zage\App\ZWS::TAB,6).'<a id="link_a_'.$this->getCodigo().'" '.$link.' >'.$icone.'&nbsp;'.$tr->trans(trim($this->getNome())).'</a>'.\Zage\App\ZWS::NL;
 		$html .= str_repeat(\Zage\App\ZWS::TAB,6).'<b class="arrow"></b>'.\Zage\App\ZWS::NL;
 		$html .= str_repeat(\Zage\App\ZWS::TAB,5).'</li>'.\Zage\App\ZWS::NL;
 		

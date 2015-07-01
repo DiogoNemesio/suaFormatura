@@ -58,13 +58,6 @@ class Campo extends \Zage\Fin\Arquivos\TipoDado {
 	 */
 	public $tipo;
 	
-	/**
-	 * Uso
-	 *
-	 * @var string
-	 */
-	private $uso;
-	
 	
 	/**
 	 * Construtor
@@ -181,20 +174,6 @@ class Campo extends \Zage\Fin\Arquivos\TipoDado {
 		$this->tipo->setTamanho($tamanho);
 	}
 
-	/**
-	 * @return the $uso
-	 */
-	public function getUso() {
-		return $this->uso;
-	}
-
-	/**
-	 * @param string $uso
-	 */
-	public function setUso($uso) {
-		$this->uso = $uso;
-	}
-	
 	/**
 	 * @return the $valor
 	 */

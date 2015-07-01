@@ -12,15 +12,6 @@ namespace Zage\Fin\Arquivos\Layout\BOL_T40;
 
 abstract class TipoRegistro {
 	
-	/**
-	 * Tipos de Uso
-	 *
-	 * @var string
-	 */
-	const USO_O	= 'O';
-	const USO_M	= 'M';
-	const USO_F	= 'F';
-	
 	
 	/**
 	 * Tipo do arquivo PTU
@@ -65,6 +56,20 @@ abstract class TipoRegistro {
 	private $codLayout;
 	
 	/**
+	 * Tipo de Arquivo
+	 *
+	 * @var string
+	 */
+	private $tipoArquivo;
+	
+	/**
+	 * Indicador de tamanho Fixo
+	 * 
+	 * @var boolean
+	 */
+	private $indTamanhoFixo;
+	
+	/**
 	 * Construtor
 	 */
 	public function __construct() {
@@ -74,7 +79,7 @@ abstract class TipoRegistro {
 	#################################################################################
 	## Adicionar um campo
 	#################################################################################
-	public function adicionaCampo($ordem,$posicaoInicial,$posicaoFinal,$nome,$tipo,$tamanho,$uso) {
+	public function adicionaCampo($ordem,$posicaoInicial,$posicaoFinal,$nome,$tipo,$tamanho) {
 
 		#################################################################################
 		## Validação dos campos
@@ -120,7 +125,7 @@ abstract class TipoRegistro {
 	#################################################################################
 	## Adiciona um campo
 	#################################################################################
-	public function _adicionaCampo($tamanho,$nome,$tipo,$uso) {
+	public function _adicionaCampo($tamanho,$nome,$tipo) {
 		$i = sizeof($this->campos);
 		
 		if ($i == 0) {
@@ -128,34 +133,24 @@ abstract class TipoRegistro {
 			$posicaoInicial = 1;
 			$posicaoFinal	= $tamanho;
 		}else{
-			$ordem		= $i + 1;
-			if ($tamanho == "V") {
-				$posicaoInicial	= $this->campos[$i]->getPosicaoFinal() + 1;
-				$posicaoFinal	= $this->campos[$i]->getPosicaoFinal() + 1;
-			}else{
-				$posicaoInicial	= $this->campos[$i]->getPosicaoFinal() + 1;
-				$posicaoFinal	= $this->campos[$i]->getPosicaoFinal() + $tamanho;
-			}
+			$ordem			= $i + 1;
+			$posicaoInicial	= $this->campos[$i]->getPosicaoFinal() + 1;
+			$posicaoFinal	= $this->campos[$i]->getPosicaoFinal() + $tamanho;
 		}
-		//echo "Sequencia: ".$ordem." Tamanho: ".$tamanho."<BR>";
-		$this->adicionaCampo($ordem, $posicaoInicial, $posicaoFinal, $nome, $tipo, $tamanho, $uso);
+		$this->adicionaCampo($ordem, $posicaoInicial, $posicaoFinal, $nome, $tipo, $tamanho);
 	}
 	
 	#################################################################################
 	## Carregar as configurações dos campos a partir do banco
 	#################################################################################
 	public function carregarCampos() {
-		global $system,$em,$log;
-		
 		$campos		= $this->_listaCampos();
 		
 		for ($i = 0; $i < sizeof($campos); $i++) {
 			$this->_adicionaCampo(
 				$campos[$i]->getTamanho(),
-				$campos[$i]->CAMPO,
-				$campos[$i]->DESCRICAO,
-				$campos[$i]->COD_TIPO_ELEMENTO_DADO,
-				$campos[$i]->COD_TIPO_USO
+				$campos[$i]->getNome(),
+				$campos[$i]->getCodFormato()->getCodigo()
 			);
 		}
 	}
@@ -164,26 +159,25 @@ abstract class TipoRegistro {
 	## Resgatar as configurações do tipo de registro no banco
 	#################################################################################
 	public function setConfigFromDB() {
-		global $system;
+		global $em;
 		
 		#################################################################################
 		## Verifica se as configurações iniciais foram atribuídas
 		#################################################################################
-		if (!isset($this->tipoRegistro)) 	die('Tipo de Registro não definido !!!');
-		if (!isset($this->versao)) 			die('Versão não definida !!!');
-		if (!isset($this->tipoArquivo)) 	die('Tipo de Arquivo não definido !!!');
+		if (!$this->getTipoRegistro()) 	throw new \Exception('Tipo de Registro não definido !!! '.__FILE__);
+		if (!$this->getTipoArquivo()) 	throw new \Exception('Tipo de Arquivo não definido !!! '.__FILE__);
 		
 		#################################################################################
 		# Resgata as informações do tipo de registro do banco
 		#################################################################################
-		//echo "Versão: ".$this->getVersao()." TipoReistro: ".$this->getTipoRegistro()." Tipo Arquivo: ". $this->getTipoArquivo()."\n";
-		$info	= \Alagipe\dicionarioPTU::getConfigTipoRegistro($this->getVersao(),$this->getTipoRegistro(),$this->getTipoArquivo());
+		$info	= $em->getRepository('\Entidades\ZgfinArquivoRegistroTipo')->findOneBy(array('codTipoRegistro' => $this->getTipoRegistro(),'codTipoArquivo' => $this->getTipoArquivo()));
 		
 		if ($info !== null) {
-			$this->setTamanho((int)$info->TAMANHO);
-			$this->setDescricao($info->DESCRICAO);
+			$this->setNome($info->getNome());
+			$this->setTamanho($info->getCodTipoArquivo()->getTamanho());
+			$this->setIndTamanhoFixo($info->getCodTipoArquivo()->getIndTamanhoFixo());
 		}else{
-			die("Configurações do Tipo de Registro não encontradas !!!");
+			\Exception('Configurações do Tipo de Registro não encontradas !!!'.__FILE__);
 		}
 		
 	}
@@ -191,9 +185,6 @@ abstract class TipoRegistro {
 	/**
 	 * @return the $tipoRegistro
 	 */
-	#################################################################################
-	## Resgatar as configurações do tipo de registro no banco
-	#################################################################################
 	public function getTipoRegistro() {
 		return $this->tipoRegistro;
 	}
@@ -209,12 +200,13 @@ abstract class TipoRegistro {
 	## Validar o Registro
 	#################################################################################
 	public function validar() {
+		global $system;
 		$registro = "";
 		foreach ($this->campos as $campo) {
 			$campo->tipo->completar();
 			if ($campo->tipo->validar() == false) {
-				$erro	= new \Alagipe\PTU\Erro();
-				$erro->setSequencial($campo->getSequencia());
+				$erro	= new \Zage\Fin\Arquivos\Erro();
+				$erro->setOrdem($campo->getOrdem());
 				$erro->setTipoRegistro($this->getTipoRegistro());
 				$erro->setMensagem($campo->tipo->getMensagemInvalido());
 				return $erro;
@@ -224,8 +216,12 @@ abstract class TipoRegistro {
 		}
 		
 		if ($this->getTamanho() != "V") {
-			if (mb_strlen($registro) !== $this->getTamanho()) {
-				return "Tamanho do registro (".strlen($registro).") inválido, deveria ser (".$this->getTamanho().") ";
+			if (mb_strlen($registro,$system->config["database"]["charset"]) !== $this->getTamanho()) {
+				$erro	= new \Zage\Fin\Arquivos\Erro();
+				$erro->setOrdem(0);
+				$erro->setTipoRegistro($this->getTipoRegistro());
+				$erro->setMensagem("Tamanho do registro (".mb_strlen($registro,$system->config["database"]["charset"]).") inválido, deveria ser (".$this->getTamanho().")" );
+				return $erro;
 			}
 		}
 		return true;
@@ -235,7 +231,7 @@ abstract class TipoRegistro {
 	## Carregar a Linha em memória
 	#################################################################################
 	public function carregaLinha($linha) {
-		if ($this->getTamanho() !== strlen($linha)) {
+		if ($this->getTamanho() !== mb_strlen($linha,$system->config["database"]["charset"])) {
 			return 'Número de caracteres imcompatível com o tipo de registro ('.strlen($linha).') esperado: ('.$this->getTamanho().')';
 		}
 		foreach ($this->campos as $campo) {
@@ -371,15 +367,45 @@ abstract class TipoRegistro {
 	}
 	
 	/**
+	 * @return the $tipoArquivo
+	 */
+	public function getTipoArquivo() {
+		return $this->tipoArquivo;
+	}
+	
+	/**
+	 * @param string $tipoArquivo
+	 */
+	public function setTipoArquivo($tipoArquivo) {
+		$this->tipoArquivo = $tipoArquivo;
+	}
+	
+	/**
+	 *
+	 * @return the boolean
+	 */
+	public function getIndTamanhoFixo() {
+		return $this->indTamanhoFixo;
+	}
+	
+	/**
+	 *
+	 * @param boolean $indTamanhoFixo        	
+	 */
+	public function setIndTamanhoFixo($indTamanhoFixo) {
+		$this->indTamanhoFixo = $indTamanhoFixo;
+	}
+	
+	/**
 	 * Listar os campos para esse tipo de registro
 	 */
 	private function _listaCampos() {
 		if (!$this->getCodLayout()) 	throw new Exception('Código do Layout não definido !!! '.__FILE__);
 		if (!$this->getTipoRegistro()) 	throw new Exception('Tipo do registro não definido !!! '.__FILE__);
-		
-		$campos		= $em->getRepository('\Entidades\ZgfinArquivoLayoutRegistro')->findBy(array('codLayout' => $this->getCodLayout(),'codTipoRegistro' => $this->getTipoRegistro()),array('ordem' => "ASC")); 
+	
+		$campos		= $em->getRepository('\Entidades\ZgfinArquivoLayoutRegistro')->findBy(array('codLayout' => $this->getCodLayout(),'codTipoRegistro' => $this->getTipoRegistro()),array('ordem' => "ASC"));
 		return $campos;
-		
+	
 	}
-
+	
 }
