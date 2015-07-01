@@ -12,10 +12,12 @@ namespace Zage\Fin\Arquivos\Layout;
 
 class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 	
+	
 	#################################################################################
 	## Construtor
 	#################################################################################
 	public function __construct() {
+		global $em;
 		
 		#################################################################################
 		## Chama o construtor da classe mãe
@@ -26,6 +28,23 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		## Define o tipo do Arquivo
 		#################################################################################
 		$this->setCodTipoLayout("BOL_T40");
+		
+		#################################################################################
+		## Descobre o Tipo de arquivo através do Layout
+		#################################################################################
+		$info		= $em->getRepository('\Entidades\ZgfinArquivoLayoutTipo')->findOneBy(array('codigo' => $this->getCodTipoLayout()));
+		if (!$info)	throw new \Exception('Configuração do Layout "'.$this->getCodTipoLayout().'" não encontradas !!! ');
+		$this->setCodTipoArquivo($info->getCodTipoArquivo()->getCodigo());
+		$this->setNome($info->getNome());
+		
+		#################################################################################
+		## Carrega os tipos de registros 
+		#################################################################################
+		$tipos		= $em->getRepository('\Entidades\ZgfinArquivoRegistroTipo')->findBy(array('codTipoArquivo' => $this->getCodTipoArquivo()),array('codTipoRegistro' => "ASC"));
+		for ($i = 0; $i < sizeof($tipos); $i++) {
+			$this->_tiposRegistro["R".$tipos[$i]->getCodTipoRegistro()] = $tipos[$i]->getNome();
+		}
+		
 
 	}
 	

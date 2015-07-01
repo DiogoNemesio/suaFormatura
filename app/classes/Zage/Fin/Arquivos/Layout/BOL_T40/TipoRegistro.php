@@ -73,40 +73,35 @@ abstract class TipoRegistro {
 	 * Construtor
 	 */
 	public function __construct() {
-	
+		#################################################################################
+		## Inicializa algumas variáveis
+		#################################################################################
+		$this->setTipoRegistro(false);
+		$this->setTipoArquivo(false);
+		
 	}
 	
 	#################################################################################
 	## Adicionar um campo
 	#################################################################################
-	public function adicionaCampo($ordem,$posicaoInicial,$posicaoFinal,$nome,$tipo,$tamanho) {
+	public function adicionaCampo($ordem,$posicaoInicial,$posicaoFinal,$nome,$tipo,$tamanho,$variavel,$valorFixo) {
 
 		#################################################################################
 		## Validação dos campos
 		#################################################################################
-		if ( (empty($ordem)) || (!is_int($ordem)) ) {
-			die('Parâmetro Ordem ('.$ordem.') nulo ou inválido !!!');
-		}
+		if ( (empty($ordem)) || (!is_int($ordem)) )		throw new \Exception('Parâmetro Ordem ('.$ordem.') nulo ou inválido !!!');
 		
 		if ($tamanho != "V") {
-			if ( (empty($posicaoInicial)) || (!is_integer($posicaoInicial)) ) {
-				die('Parâmetro posicaoInicial nulo ou inválido !!!');
-			}
-		
-			if ( (empty($posicaoFinal)) || (!is_integer($posicaoFinal)) ) {
-				die('Parâmetro posicaoFinal nulo ou inválido !!!');
-			}
-		
-			if ( $posicaoInicial > $posicaoFinal ) {
-				die('Parâmetro Posição Final deve ser maior que a Posição inicial');
-			}
+			if ( (empty($posicaoInicial)) || (!is_integer($posicaoInicial)) ) 	throw new \Exception('Parâmetro posicaoInicial nulo ou inválido !!!');
+			if ( (empty($posicaoFinal)) || (!is_integer($posicaoFinal)) ) 		throw new \Exception('Parâmetro posicaoFinal nulo ou inválido !!!');
+			if ( $posicaoInicial > $posicaoFinal ) 								throw new \Exception('Parâmetro Posição Final deve ser maior que a Posição inicial');
 		}
 		
 		#################################################################################
 		## Verifica se a sequencia já existe
 		#################################################################################
 		if (array_key_exists($ordem, $this->campos)) {
-			die('Ordem já existente !!!');
+			throw new \Exception('Ordem "'.$ordem.'" já existente !!!');
 		}
 
 		#################################################################################
@@ -118,14 +113,15 @@ abstract class TipoRegistro {
 		$this->campos[$ordem]->setPosicaoFinal($posicaoFinal);
 		$this->campos[$ordem]->setNome($nome);
 		$this->campos[$ordem]->setTamanho($tamanho);
-		$this->campos[$ordem]->setUso($uso);
+		$this->campos[$ordem]->setVariavel($variavel);
+		$this->campos[$ordem]->setValorFixo($valorFixo);
 		
 	}
 	
 	#################################################################################
 	## Adiciona um campo
 	#################################################################################
-	public function _adicionaCampo($tamanho,$nome,$tipo) {
+	public function _adicionaCampo($tamanho,$nome,$tipo,$variavel,$valorFixo) {
 		$i = sizeof($this->campos);
 		
 		if ($i == 0) {
@@ -137,7 +133,7 @@ abstract class TipoRegistro {
 			$posicaoInicial	= $this->campos[$i]->getPosicaoFinal() + 1;
 			$posicaoFinal	= $this->campos[$i]->getPosicaoFinal() + $tamanho;
 		}
-		$this->adicionaCampo($ordem, $posicaoInicial, $posicaoFinal, $nome, $tipo, $tamanho);
+		$this->adicionaCampo($ordem, $posicaoInicial, $posicaoFinal, $nome, $tipo, $tamanho, $variavel, $valorFixo);
 	}
 	
 	#################################################################################
@@ -147,11 +143,23 @@ abstract class TipoRegistro {
 		$campos		= $this->_listaCampos();
 		
 		for ($i = 0; $i < sizeof($campos); $i++) {
-			$this->_adicionaCampo(
+			$this->adicionaCampo(
+				$campos[$i]->getOrdem(), 
+				$campos[$i]->getPosicaoInicial(), 
+				$campos[$i]->getPosicaoInicial() + $campos[$i]->getTamanho(), 
+				$campos[$i]->getNome(), 
+				$campos[$i]->getCodFormato()->getCodigo(), 
+				$campos[$i]->getTamanho(), 
+				$campos[$i]->getVariavel(), 
+				$campos[$i]->getValorFixo()
+			);
+			/*$this->_adicionaCampo(
 				$campos[$i]->getTamanho(),
 				$campos[$i]->getNome(),
-				$campos[$i]->getCodFormato()->getCodigo()
-			);
+				$campos[$i]->getCodFormato()->getCodigo(),
+				$campos[$i]->getVariavel(), 
+				$campos[$i]->getValorFixo()
+			);*/
 		}
 	}
 	
@@ -164,8 +172,8 @@ abstract class TipoRegistro {
 		#################################################################################
 		## Verifica se as configurações iniciais foram atribuídas
 		#################################################################################
-		if (!$this->getTipoRegistro()) 	throw new \Exception('Tipo de Registro não definido !!! '.__FILE__);
-		if (!$this->getTipoArquivo()) 	throw new \Exception('Tipo de Arquivo não definido !!! '.__FILE__);
+		if ($this->getTipoRegistro() 	=== false) 	throw new \Exception('Tipo de Registro não definido !!! ');
+		if ($this->getTipoArquivo()		=== false) 	throw new \Exception('Tipo de Arquivo não definido !!! ');
 		
 		#################################################################################
 		# Resgata as informações do tipo de registro do banco
@@ -177,7 +185,7 @@ abstract class TipoRegistro {
 			$this->setTamanho($info->getCodTipoArquivo()->getTamanho());
 			$this->setIndTamanhoFixo($info->getCodTipoArquivo()->getIndTamanhoFixo());
 		}else{
-			\Exception('Configurações do Tipo de Registro não encontradas !!!'.__FILE__);
+			throw new \Exception('Configurações do Tipo de Registro não encontradas !!!');
 		}
 		
 	}
@@ -231,6 +239,8 @@ abstract class TipoRegistro {
 	## Carregar a Linha em memória
 	#################################################################################
 	public function carregaLinha($linha) {
+		global $system;
+		
 		if ($this->getTamanho() !== mb_strlen($linha,$system->config["database"]["charset"])) {
 			return 'Número de caracteres imcompatível com o tipo de registro ('.strlen($linha).') esperado: ('.$this->getTamanho().')';
 		}
@@ -400,8 +410,10 @@ abstract class TipoRegistro {
 	 * Listar os campos para esse tipo de registro
 	 */
 	private function _listaCampos() {
-		if (!$this->getCodLayout()) 	throw new Exception('Código do Layout não definido !!! '.__FILE__);
-		if (!$this->getTipoRegistro()) 	throw new Exception('Tipo do registro não definido !!! '.__FILE__);
+		global $em;
+		
+		if ($this->getCodLayout()		=== false) 	throw new \Exception('Código do Layout não definido !!! ');
+		if ($this->getTipoRegistro()	=== false) 	throw new \Exception('Tipo do registro não definido !!! ');
 	
 		$campos		= $em->getRepository('\Entidades\ZgfinArquivoLayoutRegistro')->findBy(array('codLayout' => $this->getCodLayout(),'codTipoRegistro' => $this->getTipoRegistro()),array('ordem' => "ASC"));
 		return $campos;

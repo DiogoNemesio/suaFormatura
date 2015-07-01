@@ -40,6 +40,10 @@ abstract class Layout {
 	 */
 	private $nome;
 	
+	/**
+	 * Código do tipo de Arquivo
+	 */
+	private $codTipoArquivo;
 	
 	/**
 	 * Array de erros
@@ -47,6 +51,12 @@ abstract class Layout {
 	 * @var array
 	 */
 	public $erros = array();
+
+	/**
+	 * Tipos de Registro
+	 * @var array
+	 */
+	protected $_tiposRegistro	= array();
 	
 	/**
 	 * Caracter de fim de linha
@@ -72,6 +82,11 @@ abstract class Layout {
 		## Verifica se o Tipo do Layout foi informado
 		#################################################################################
 		if (!$this->getCodTipoLayout())	throw new \Exception('Tipo do Layout nao definido !!! '.__FILE__);
+		
+		#################################################################################
+		## Verifica se o Tipo do Registro é válido para esse layout
+		#################################################################################
+		if (!array_key_exists($tipoRegistro, $this->_tiposRegistro))	throw new \Exception('Tipo de registro "'.$tipoRegistro.'" não é válido para o layout "'.$this->getCodTipoLayout().'" !!! ');
 		
 		#################################################################################
 		## Calcula o próximo índice

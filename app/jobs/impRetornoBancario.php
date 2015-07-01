@@ -38,6 +38,8 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 	}else{
 		$layout	= new $classe;
 		$layout->loadFile($fila[$i]->getArquivo());
+		echo "Nome: ".$layout->getNome().PHP_EOL;
+		echo "Num registros: ".sizeof($layout->registros).PHP_EOL;
 	}
 	
 }

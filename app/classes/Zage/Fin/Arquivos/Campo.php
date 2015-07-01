@@ -45,11 +45,26 @@ class Campo extends \Zage\Fin\Arquivos\TipoDado {
 	private $posicaoFinal;
 
 	/**
-	 * Descrição
+	 * Nome
 	 *
 	 * @var string
 	 */
-	private $descricao;
+	private $nome;
+	
+	/**
+	 * Variável
+	 *
+	 * @var string
+	 */
+	private $variavel;
+
+	/**
+	 * valorFixo
+	 *
+	 * @var string
+	 */
+	private $valorFixo;
+	
 	
 	/**
 	 * Tipo
@@ -133,17 +148,17 @@ class Campo extends \Zage\Fin\Arquivos\TipoDado {
 	}
 
 	/**
-	 * @return the $descricao
+	 * @return the $nome
 	 */
-	public function getDescricao() {
-		return $this->descricao;
+	public function getNome() {
+		return $this->nome;
 	}
 
 	/**
-	 * @param string $descricao
+	 * @param string $nome
 	 */
-	public function setDescricao($descricao) {
-		$this->descricao = $descricao;
+	public function setNome($nome) {
+		$this->nome = $nome;
 	}
 
 	/**
@@ -187,5 +202,40 @@ class Campo extends \Zage\Fin\Arquivos\TipoDado {
 	public function setValor($valor) {
 		$this->tipo->setValor($valor);
 	}
+	
+	/**
+	 *
+	 * @return the string
+	 */
+	public function getVariavel() {
+		return $this->variavel;
+	}
+	
+	/**
+	 *
+	 * @param string $variavel        	
+	 */
+	public function setVariavel($variavel) {
+		$this->variavel = $variavel;
+		return $this;
+	}
+	
+	/**
+	 *
+	 * @return the string
+	 */
+	public function getValorFixo() {
+		return $this->valorFixo;
+	}
+	
+	/**
+	 *
+	 * @param string $valorFixo        	
+	 */
+	public function setValorFixo($valorFixo) {
+		$this->valorFixo = $valorFixo;
+		return $this;
+	}
+	
 	
 }
