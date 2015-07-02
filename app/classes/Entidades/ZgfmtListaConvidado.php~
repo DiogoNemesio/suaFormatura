@@ -31,7 +31,7 @@ class ZgfmtListaConvidado
     /**
      * @var string
      *
-     * @ORM\Column(name="TELEFONE", type="string", length=9, nullable=true)
+     * @ORM\Column(name="TELEFONE", type="string", length=11, nullable=true)
      */
     private $telefone;
 
