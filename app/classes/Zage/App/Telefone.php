@@ -112,10 +112,12 @@ class Telefone {
 		$codTipoTel		= $this->_getCodTipoTel();
 		$telefone		= $this->_getTelefone();
 		$entidade		= $this->_getEntidadeTel();
-		$oCliente		= $this->_getCodProp();
+		$oProp			= $this->_getCodProp();
+		
+		$log->debug($oProp->getCodigo());
 		
 		
-		$telefones		= $em->getRepository(''.$entidade.'')->findBy(array('codProprietario' => $oCliente->getCodigo()));
+		$telefones		= $em->getRepository(''.$entidade.'')->findBy(array('codProprietario' => $oProp->getCodigo()));
 		
 		/*** Exclusão ***/
 		for ($i = 0; $i < sizeof($telefones); $i++) {
@@ -132,7 +134,7 @@ class Telefone {
 		
 		/***  Criação / Alteração ***/
 		for ($i = 0; $i < sizeof($codTelefone); $i++) {
-			$infoTel		= $em->getRepository(''.$entidade.'')->findOneBy(array('codigo' => $codTelefone[$i] , 'codProprietario' => $oCliente->getCodigo()));
+			$infoTel		= $em->getRepository(''.$entidade.'')->findOneBy(array('codigo' => $codTelefone[$i] , 'codProprietario' => $oProp->getCodigo()));
 		
 			if (!$infoTel) {
 				$infoTel		= new $entidade();
@@ -142,7 +144,7 @@ class Telefone {
 		
 				$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
 		
-				$infoTel->setCodProprietario($oCliente);
+				$infoTel->setCodProprietario($oProp);
 				$infoTel->setCodTipoTelefone($oTipoTel);
 				$infoTel->setTelefone($telefone[$i]);
 		

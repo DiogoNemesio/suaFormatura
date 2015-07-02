@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinPessoaTelefone
  *
- * @ORM\Table(name="ZGFIN_PESSOA_TELEFONE", indexes={@ORM\Index(name="fk_ZGFIN_PESSOA_TELEFONE_1_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_PESSOA_TELEFONE_2_idx", columns={"COD_TIPO_TELEFONE"})})
+ * @ORM\Table(name="ZGFIN_PESSOA_TELEFONE", indexes={@ORM\Index(name="fk_ZGFIN_PESSOA_TELEFONE_2_idx", columns={"COD_TIPO_TELEFONE"}), @ORM\Index(name="fk_ZGFIN_PESSOA_TELEFONE_1_idx", columns={"COD_PROPRIETARIO"})})
  * @ORM\Entity
  */
 class ZgfinPessoaTelefone
@@ -33,10 +33,10 @@ class ZgfinPessoaTelefone
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_PROPRIETARIO", referencedColumnName="CODIGO")
      * })
      */
-    private $codPessoa;
+    private $codProprietario;
 
     /**
      * @var \Entidades\ZgappTelefoneTipo
@@ -83,26 +83,26 @@ class ZgfinPessoaTelefone
     }
 
     /**
-     * Set codPessoa
+     * Set codProprietario
      *
-     * @param \Entidades\ZgfinPessoa $codPessoa
+     * @param \Entidades\ZgfinPessoa $codProprietario
      * @return ZgfinPessoaTelefone
      */
-    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
+    public function setCodProprietario(\Entidades\ZgfinPessoa $codProprietario = null)
     {
-        $this->codPessoa = $codPessoa;
+        $this->codProprietario = $codProprietario;
 
         return $this;
     }
 
     /**
-     * Get codPessoa
+     * Get codProprietario
      *
      * @return \Entidades\ZgfinPessoa 
      */
-    public function getCodPessoa()
+    public function getCodProprietario()
     {
-        return $this->codPessoa;
+        return $this->codProprietario;
     }
 
     /**

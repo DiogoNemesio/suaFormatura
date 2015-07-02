@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinArquivoRegistroTipo
  *
- * @ORM\Table(name="ZGFIN_ARQUIVO_REGISTRO_TIPO", indexes={@ORM\Index(name="fk_ZGFIN_ARQUIVO_REGISTRO_TIPO_1_idx", columns={"COD_TIPO_ARQUIVO"})})
+ * @ORM\Table(name="ZGFIN_ARQUIVO_REGISTRO_TIPO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_ARQUIVO_REGISTRO_TIPO_uk01", columns={"COD_TIPO_REGISTRO", "COD_TIPO_ARQUIVO"})}, indexes={@ORM\Index(name="fk_ZGFIN_ARQUIVO_REGISTRO_TIPO_1_idx", columns={"COD_TIPO_ARQUIVO"})})
  * @ORM\Entity
  */
 class ZgfinArquivoRegistroTipo
