@@ -16,7 +16,7 @@ class Telefone {
 	 * Proprietário do telefone
 	 * @var unknown
 	 */
-	private $_proprietário;
+	private $_codProp;
 	
 	/**
 	 * Ententidade do telefone
@@ -53,12 +53,12 @@ class Telefone {
 		
 	}
 	
-	public function _setProprietario($prop) {
-		$this->_proprietário = $prop;
+	public function _setCodProp($prop) {
+		$this->_codProp = $prop;
 	}
 	
-	public function _getProprietario() {
-		return ($this->_proprietário);
+	public function _getCodProp() {
+		return ($this->_codProp);
 	}
 	
 	public function _setEntidadeTel($entidade) {
@@ -93,8 +93,6 @@ class Telefone {
 		return ($this->_codTelefone);
 	}
 	
-    
-	
 	/**
 	 * Salvar telefones
 	 */
@@ -110,11 +108,14 @@ class Telefone {
 		## Salvar Telefones
 		#################################################################################
 
-		$telefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $this->_getCodigo()));
 		$codTelefone 	= $this->_getCodTelefone();
 		$codTipoTel		= $this->_getCodTipoTel();
 		$telefone		= $this->_getTelefone();
 		$entidade		= $this->_getEntidadeTel();
+		$oCliente		= $this->_getCodProp();
+		
+		
+		$telefones		= $em->getRepository(''.$entidade.'')->findBy(array('codProprietario' => $oCliente->getCodigo()));
 		
 		/*** Exclusão ***/
 		for ($i = 0; $i < sizeof($telefones); $i++) {
@@ -131,7 +132,7 @@ class Telefone {
 		
 		/***  Criação / Alteração ***/
 		for ($i = 0; $i < sizeof($codTelefone); $i++) {
-			$infoTel		= $em->getRepository(''.$entidade.'')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $this->_getCodigo()));
+			$infoTel		= $em->getRepository(''.$entidade.'')->findOneBy(array('codigo' => $codTelefone[$i] , 'codProprietario' => $oCliente->getCodigo()));
 		
 			if (!$infoTel) {
 				$infoTel		= new $entidade();
@@ -141,21 +142,12 @@ class Telefone {
 		
 				$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
 		
-				$infoTel->setCodUsuario($this->_usuario);
+				$infoTel->setCodProprietario($oCliente);
 				$infoTel->setCodTipoTelefone($oTipoTel);
 				$infoTel->setTelefone($telefone[$i]);
 		
 				$em->persist($infoTel);
 			}
 		}
-	}
-	
-	public function _getCodigo() {
-		return $this->_usuario->getCodigo();
-	}
-	
-	public function _getUsuario() {
-		return $this->_usuario;
-	}
-	
+	}	
 }

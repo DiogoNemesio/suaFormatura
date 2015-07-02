@@ -621,46 +621,18 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		$em->persist($oUsuarioOrg);
 		
 		#################################################################################
-		## Telefones / Contato
+		## Telefones
 		#################################################################################
-		$telefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $this->_getCodigo()));
-		$codTelefone 	= $this->_getCodTelefone();
-		$codTipoTel		= $this->_getCodTipoTel();
-		$telefone		= $this->_getTelefone();
-		$entidade		= $this->_getEntidadeTel();
+
+		$oUsuTel			= new \Zage\App\Telefone();
+		$oUsuTel->_setEntidadeTel('Entidades\ZgsegUsuarioTelefone');
+		$oUsuTel->_setCodProp($this->_usuario);
+		$oUsuTel->_setTelefone($this->_getTelefone());
+		$oUsuTel->_setCodTipoTel($this->_getCodTipoTel());
+		$oUsuTel->_setCodTelefone($this->_getCodTelefone());
 		
-		/*** Exclusão ***/
-		for ($i = 0; $i < sizeof($telefones); $i++) {
-			if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
-				try {
-					$em->remove($telefones[$i]);
-				} catch (\Exception $e) {
-					$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
-					echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
-					exit;
-				}
-			}
-		}
-		
-		/***  Criação / Alteração ***/
-		for ($i = 0; $i < sizeof($codTelefone); $i++) {
-			$infoTel		= $em->getRepository(''.$entidade.'')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $this->_getCodigo()));
-		
-			if (!$infoTel) {
-				$infoTel		= new $entidade();
-			}
-		
-			if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
-		
-				$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
-		
-				$infoTel->setCodUsuario($this->_usuario);
-				$infoTel->setCodTipoTelefone($oTipoTel);
-				$infoTel->setTelefone($telefone[$i]);
-		
-				$em->persist($infoTel);
-			}
-		}
+		$retorno	= $oUsuTel->salvar();
+
 	}
 	
 	public function _getCodigo() {
