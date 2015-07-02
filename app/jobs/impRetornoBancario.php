@@ -40,6 +40,7 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 		$layout->loadFile($fila[$i]->getArquivo());
 		echo "Nome: ".$layout->getNome().PHP_EOL;
 		echo "Num registros: ".sizeof($layout->registros).PHP_EOL;
+		print_r($layout->erros);
 	}
 	
 }
