@@ -155,14 +155,22 @@ try {
 	$oClienteEnd->setCodTipoEndereco($oEndTipo);
 	$oClienteEnd->setCodLogradouro($oCodLogradouro);
 	$oClienteEnd->setCep($oUsuario->_getUsuario()->getCep());
-	$oClienteEnd->setNumero($oUsuario->_getUsuario()->getEndereco());
+	$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getEndereco());
 	$oClienteEnd->setBairro($oUsuario->_getUsuario()->getBairro());
 	$oClienteEnd->setNumero($oUsuario->_getUsuario()->getNumero());
 	$oClienteEnd->setComplemento($oUsuario->_getUsuario()->getComplemento());
 	
 	$em->persist($oClienteEnd);
 	
-	$oUsuario			= new \Zage\Seg\Usuario();
+	//Telefone
+	$oCliTel			= new \Zage\App\Telefone();
+	$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
+	$oCliTel->_setCodProp($oCliente);
+	$oCliTel->_setTelefone($telefone);
+	$oCliTel->_setCodTipoTel($codTipoTel);
+	$oCliTel->_setCodTelefone($codTelefone);
+	
+	$retorno	= $oCliTel->salvar();
 	
 	/*********************** 
 	 * Cria o convite 
@@ -175,7 +183,7 @@ try {
 		$convite->setCodStatus($oConviteStatus);
 		$convite->salvar();
 	}
-
+	
 	/********** Salvar as informações *********/
 	try {
 		$em->flush();

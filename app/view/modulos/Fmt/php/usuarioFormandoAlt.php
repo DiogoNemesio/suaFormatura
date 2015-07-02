@@ -164,7 +164,7 @@ try {
 #################################################################################
 ## Resgatar os dados de contato
 #################################################################################
-$aTelefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $codUsuario));
+$aTelefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codProprietario' => $codUsuario));
 $tabTel			= "";
 for ($i = 0; $i < sizeof($aTelefones); $i++) {
 
