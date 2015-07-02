@@ -14,7 +14,9 @@
 				<input type="hidden" id="codConvidadoID" name="codConvidado" value="%COD_CONVIDADO%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
-					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="btn-group">
+						%BOTOES%
+					</div>
 					<div class="vspace-xs"></div>
 					<div class="row">
 				    	<div class="col-sm-12">
@@ -22,8 +24,7 @@
 								<table id="layRegTableConvidadoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
 									<thead>
 										<tr class="warning">
-											<th class="col-sm-1 center">Grupo</th>
-											<th class="col-sm-1 center">Nome</th>
+											<th class="col-sm-4 center">Nome</th>
 											<th class="col-sm-1 center">Telefone</th>
 											<th class="col-sm-2 center">Faixa Etaria</th>
 											<th class="col-sm-2 center">Sexo</th>
@@ -36,7 +37,7 @@
 									</tbody>
 									<tfoot>
 										<tr>
-											<th colspan="6" style="text-align: left;"></th>
+											<th colspan="5" style="text-align: left;"></th>
 											<th class="col-sm-1 center"><span class="" onclick="addRowConvidadoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 										</tr>
 									</tfoot>
@@ -119,10 +120,6 @@ $('#zgFormID').submit(function() {
 function addRowConvidadoLayReg() {
 	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;
 	
-	$ultOrdem	= 0;
-	$ultPos		= 0;
-	$ultTam		= 0;
-	
 	$('#_precisaSalvarID').val(1);
 	
 	$('#layRegTableConvidadoID > tbody > tr:last [name*="ordem[]"]').each(function( index ) {
@@ -163,7 +160,7 @@ function addRowConvidadoLayReg() {
 
 	if ($return == true) return $return;
 
-	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codGrupo[]" data-rel="select2">%COD_GRUPO%</select></td><td class="col-sm-1 center"><input type="text" name="nome[]" value="%NOME%" maxlength="100" autocomplete="off"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpConvidadoLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownConvidadoLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
+	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codGrupo[]" data-rel="select2">%COD_GRUPO%</select></td><td class="col-sm-1 center"><input type="text" name="nome[]" value="%NOME%" maxlength="100" autocomplete="off"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
 	$('#layRegTableConvidadoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
@@ -177,98 +174,10 @@ function delRowConvidadoLayReg(pObj) {
 	var $td		= $div.parent();
 	var $tr		= $td.parent();
 
-	/** Encontra a ordem que está sendo removida **/
-	$ordemObj 	= $tr.find('[name*="ordem[]"]');
-	$ordem		= parseInt($ordemObj.val());
-	
 	$tr.addClass("danger");
 	$tr.fadeOut(500, function(){
 		$tr.remove();
-		recalculaOrdemLayReg();
-		recalculaPosicaoInicialConvidadoLayReg(($ordem-1));
 	});
-}
-
-function moveUpConvidadoLayReg(pObj) {
-	$('#_precisaSalvarID').val(1);
-	var $div	= pObj.parent();
-	var $td		= $div.parent();
-	var $tr		= $td.parent();
-	
-	/** Encontra a ordem e posição que está sendo movida **/
-	$ordObj 	= $tr.find('[name*="ordem[]"]');
-	$posObj 	= $tr.find('[name*="posicao[]"]');
-	$tamObj 	= $tr.find('[name*="tamanho[]"]');
-	
-	$ordem		= parseInt($ordObj.val());
-	$posicao	= parseInt($posObj.val());
-	$tamanho	= parseInt($tamObj.val());
-	
-	if ($ordem == 1) return false;
-	
-	/** Resgata a posição inicial do Convidado anterior **/
-	var $index	= $ordem - 2;
-	
-	$trAntObj		= $('#layRegTableConvidadoID > tbody > tr:eq('+$index+')');
-	$posAntObj 		= $trAntObj.find('[name*="posicao[]"]');
-	$tamAntObj 		= $trAntObj.find('[name*="tamanho[]"]');
-	$posAnt			= parseInt($posAntObj.val()); 
-	$tamAnt			= parseInt($tamAntObj.val());
-	
-	/** Ajusta a posição do Convidado alterado **/
-	$posObj.val($posAnt);
-
-	/** Ajusta a posição do Convidado anterior **/
-	$posAntObj.val($posAnt + $tamanho);
-	
-	/** Move o Convidado **/
-	$tr.insertBefore($tr.prev());
-	
-	/** Recalcula a ordem **/
-	recalculaOrdemLayReg();
-}
-
-function moveDownConvidadoLayReg(pObj) {
-	$('#_precisaSalvarID').val(1);
-
-	/** Calcula o número de Convidados da tabela **/
-	$numRows 	= $('#layRegTableConvidadoID').find('tbody tr').length;
-
-	var $div	= pObj.parent();
-	var $td		= $div.parent();
-	var $tr		= $td.parent();
-	
-	/** Encontra a ordem e posição que está sendo movida **/
-	$ordObj 	= $tr.find('[name*="ordem[]"]');
-	$posObj 	= $tr.find('[name*="posicao[]"]');
-	$tamObj 	= $tr.find('[name*="tamanho[]"]');
-	
-	$ordem		= parseInt($ordObj.val());
-	$posicao	= parseInt($posObj.val());
-	$tamanho	= parseInt($tamObj.val());
-	
-	if ($ordem == $numRows) return false;
-	
-	/** Resgata a posição inicial do Convidado posterior **/
-	var $index	= $ordem;
-	
-	$trPosObj		= $('#layRegTableConvidadoID > tbody > tr:eq('+$index+')');
-	$posPosObj 		= $trPosObj.find('[name*="posicao[]"]');
-	$tamPosObj 		= $trPosObj.find('[name*="tamanho[]"]');
-	$posPos			= parseInt($posPosObj.val()); 
-	$tamPos			= parseInt($tamPosObj.val());
-	
-	/** Ajusta a posição do Convidado Posterior **/
-	$posPosObj.val($posicao);
-
-	/** Ajusta a posição do Convidado alterado **/
-	$posObj.val($posicao + $tamPos);
-
-	/** Move o Convidado **/
-	$tr.insertAfter($tr.next());
-
-	/** Recalcula a ordem **/
-	recalculaOrdemLayReg();
 }
 
 function validaConvidadoLayReg () {
@@ -297,7 +206,7 @@ function validaConvidadoLayReg () {
 	return true;	
 }
 
-function zgLoadUrlSeSalvouLayReg($url) {
+function zgLoadUrlSeSalvouConv($url) {
 	if ($('#_precisaSalvarID').val() == 1) {
 		zgMostraErro('divAvisoLayoutConvidadoID',"Salve as informações, antes de mudar de tela !!!");
 		$('#_precisaSalvarID').val(0);

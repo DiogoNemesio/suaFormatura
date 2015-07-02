@@ -57,6 +57,29 @@ if ($codConvidado) {
 }
 
 #################################################################################
+## Resgatas os grupos de convidados
+#################################################################################
+$grupos		= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findBy(array(),array('descricao' => "ASC"));
+
+$htmlBotoes			= "";
+if (sizeof($grupos) > 0) {
+	if (!isset($codGrupo)) $codGrupo	 = $grupos[0]->getCodigo();
+
+	for ($i = 0; $i < sizeof($grupos); $i++) {
+		if ($grupos[$i]->getCodigo() == $codGrupo) {
+			$class		= "btn-info";
+		}else{
+			$class		= "btn-white";
+		}
+		$bid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codGrupo='.$grupos[$i]->getCodigo());
+		$urlBotao		= ROOT_URL."/Fmt/". basename(__FILE__)."?id=".$bid;
+		$htmlBotoes 	.= '<button type="button" onclick="javascript:zgLoadUrlSeSalvouConv(\''.$urlBotao.'\');" class="btn '.$class.' btn-sm btn-bold">'.$grupos[$i]->getDescricao().'</button>';
+	}
+}else{
+	if (!isset($codGrupo)) $codGrupo	 = null;
+}
+
+#################################################################################
 ## Select da Faixa Etaria
 #################################################################################
 try {
@@ -89,7 +112,7 @@ try {
 #################################################################################
 ## Buscar os convidados
 #################################################################################
-$convidados			= $em->getRepository('Entidades\ZgfmtListaConvidado')->findBy(array('codigo' => $codConvidado));
+$convidados			= $em->getRepository('Entidades\ZgfmtListaConvidado')->findBy(array('codUsuario' => $system->getCodUsuario(), 'codGrupo' => $codGrupo));
 
 #################################################################################
 ## Montar a tabela de convidados
@@ -116,16 +139,13 @@ for ($i = 0; $i < sizeof($convidados); $i++) {
 
 	$htmlReg	.= '
 	<tr>
-			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codGrupo[]" data-rel="select2">'.$oGrupoInt.'</select></td>
-			<td class="col-sm-1 center"><input type="text" name="nome[]" value="'.$convidados[$i]->getNome().'" maxlength="100" autocomplete="off"></td>
+			<td class="col-sm-2 center"><input type="text" name="nome[]" value="'.$convidados[$i]->getNome().'" maxlength="100" style="width:100%;" autocomplete="off"></td>
 			<td class="col-sm-1 center"><input type="text" name="telefone[]" value="'.$convidados[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td>
 			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2">'.$oFaixaEtariaInt.'</select></td>
 			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2">'.$oSexoInt.'</select></td>
 			<td class="col-sm-1 center"><input type="text" name="email[]" value="'.$convidados[$i]->getEmail().'" maxlength="100" autocomplete="off"></td>
 			<td class="col-sm-1 center">
 				<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
-					<span class="btn btn-sm btn-white btn-info center" onclick="moveUpConvidadoLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span>
-					<span class="btn btn-sm btn-white btn-info center" onclick="moveDownConvidadoLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span>
 					<span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span>
 				</div>
 				<input type="hidden" name="codConvidado[]" value="'.$convidados[$i]->getCodigo().'">
@@ -166,6 +186,7 @@ $tpl->set ( 'SEXO'				   , $oSexo);
 $tpl->set ( 'COD_FAIXA_ETARIA'	   , $oFaixaEtaria);
 $tpl->set ( 'EMAIL'				   , $email);
 $tpl->set ( 'CONVIDADOS'		   , $htmlReg);
+$tpl->set ( 'BOTOES'			   , $htmlBotoes);
 
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 
