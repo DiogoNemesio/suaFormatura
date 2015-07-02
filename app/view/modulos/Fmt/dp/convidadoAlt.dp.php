@@ -22,7 +22,6 @@ if (isset($_POST['email']))					$email				= \Zage\App\Util::antiInjection($_POST
 #################################################################################
 ## Caso não venha as variáveis (ARRAY) inicializar eles
 #################################################################################
-if (!isset($codGrupo))			$codGrupo			= array();
 if (!isset($nome))				$nome				= array();
 if (!isset($telefone))			$telefone			= array();
 if (!isset($sexo))				$sexo				= array();
@@ -57,12 +56,6 @@ if (!isset($codGrupo) || (empty($codGrupo))) {
 /** Nome **/
 if (!is_array($nome)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME inválido !!!"));
-	$err 	= 1;
-}
-
-/** Grupo **/
-if (!is_array($codGrupo)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo GRUPO inválido !!!"));
 	$err 	= 1;
 }
 
@@ -104,12 +97,6 @@ $numCon	= sizeof($codConvidado);
 /** Nome **/
 if (sizeof($nome) != $numCon) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME com tamanho inválido !!!"));
-	$err 	= 1;
-}
-
-/** Grupo **/
-if (sizeof($codGrupo) != $numCon) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo GRUPO com tamanho inválido !!!"));
 	$err 	= 1;
 }
 
@@ -182,10 +169,10 @@ try {
 		## Constroi os objetos
 		#################################################################################
 		$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
-		$oGrupo			= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findOneBy(array('codigo' => $codGrupo[$i]));
+		$oGrupo			= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findOneBy(array('codigo' => $codGrupo));
 		$oSexo			= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo[$i]));
 		$oFaixaEtaria	= $em->getRepository('Entidades\ZgfmtConvidadoFaixaEtaria')->findOneBy(array('codigo' => $codFaixaEtaria[$i]));
-		
+		$log->debug($codGrupo);
 		$oConvidado->setCodUsuario($oUsuario);
 		$oConvidado->setCodGrupo($oGrupo);
 		$oConvidado->setNome($nome[$i]);

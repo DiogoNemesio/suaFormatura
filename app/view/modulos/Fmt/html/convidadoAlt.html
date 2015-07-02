@@ -1,8 +1,6 @@
 <div id="content">
 	<div class="page-header">
 	<h1>Cadastro de Convidados
-		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
-		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
 	</h1>
 	</div><!-- /.page-header -->
 	<div id="divAvisoLayoutConvidadoID"></div>
@@ -11,6 +9,8 @@
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" name="_precisaSalvar" id="_precisaSalvarID">
+				<input type="hidden" name="_alterarGrupo" id="_alterarGrupoID">
+				<input type="hidden" id="codGrupoID" name="codGrupo" value="%COD_GRUPO%">
 				<input type="hidden" id="codConvidadoID" name="codConvidado" value="%COD_CONVIDADO%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
@@ -72,7 +72,7 @@ $('.select2').css('width','100%').select2({allowClear:true});
 //Verificar se a validação está OK
 $('#btnSubmitLayRegID').on("click", function(e) {
 	
-	var vOk 	= validaConvidadoLayReg();
+	var vOk 	= validaConvidado();
 	
 	if(vOk == false) 	{
 		$.gritter.add({
@@ -100,11 +100,15 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		$('#_precisaSalvarID').val(0);
-		zgMostraAviso("Fechar");
-		$('#zgDivModalID').on('hidden.bs.modal', function () {
-			zgLimpaModalAviso();
-			$('#zgDivModalID').off('hidden.bs.modal');
-		});
+		if($('#_alterarGrupoID').val() == 0){
+			zgMostraAviso("Fechar");
+			$('#zgDivModalID').on('hidden.bs.modal', function () {
+				zgLimpaModalAviso();
+				$('#zgDivModalID').off('hidden.bs.modal');
+			});
+		}else{
+			$('#_alterarGrupoID').val(0);
+		}
 		
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
 		$('[zg-data-mask-retira="1"]').each(function( index ) {
@@ -121,46 +125,10 @@ function addRowConvidadoLayReg() {
 	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;
 	
 	$('#_precisaSalvarID').val(1);
-	
-	$('#layRegTableConvidadoID > tbody > tr:last [name*="ordem[]"]').each(function( index ) {
-		$ultOrdem	= parseInt($(this).val());
-	});
-	
-	$('#layRegTableConvidadoID > tbody > tr:last [name*="posicao[]"]').each(function( index ) {
-		$ultPos	= parseInt($(this).val());
-		if (zgValidaNumero($ultPos) == false) {
-			zgMostraErro('divAvisoLayoutConvidadoID','Ajuste o campo "POSIÇÃO" na ordem: '+$ultOrdem);
-			$return		= true;
-			$(this).addClass('btn-warning');
-		}else{
-			$(this).removeClass('btn-warning');
-		}
-	});
-
-	$('#layRegTableConvidadoID > tbody > tr:last [name*="tamanho[]"]').each(function( index ) {
-		$ultTam	= parseInt($(this).val());
-		if (zgValidaNumero($ultTam) == false) {
-			zgMostraErro('divAvisoLayoutConvidadoID',"Ajuste o campo tamanho na ordem: "+$ultOrdem);
-			$return		= true;
-			$(this).addClass('btn-warning');
-		}else{
-			$(this).removeClass('btn-warning');
-		}
-	});
-	
-	$('#layRegTableConvidadoID > tbody > tr:last [name*="codFormato[]"]').each(function( index ) {
-		if (!$(this).val()) {
-			zgMostraErro('divAvisoLayoutConvidadoID','Selecione algum "Formato"');
-			$return		= true;
-			$(this).addClass('alert-danger');
-		}else{
-			$(this).removeClass('alert-danger');
-		}
-	});
 
 	if ($return == true) return $return;
 
-	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codGrupo[]" data-rel="select2">%COD_GRUPO%</select></td><td class="col-sm-1 center"><input type="text" name="nome[]" value="%NOME%" maxlength="100" autocomplete="off"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
+	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><input type="text" name="nome[]" value="%NOME%" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" onchange="verificaAlteracao($(this));"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
 	$('#layRegTableConvidadoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
@@ -180,8 +148,12 @@ function delRowConvidadoLayReg(pObj) {
 	});
 }
 
-function validaConvidadoLayReg () {
-	var $total,$return,$tamanho,$codFormato,$ordem,$ok;
+function verificaAlteracao(pObj) {
+	$('#_precisaSalvarID').val(1);
+}
+
+function validaConvidado () {
+	var $return,$ok;
 	
 	$ok	= true;
 	
@@ -190,7 +162,6 @@ function validaConvidadoLayReg () {
 		$nomeObj 	= $(this).find('[name*="nome[]"]');
 		
 		$nome		= $nomeObj.val();
-		
 		if (!$nome) {
 			zgMostraErro('divAvisoLayoutConvidadoID','Campo NOME é obrigatório !!!');
 			$ok 	= false;
@@ -207,12 +178,28 @@ function validaConvidadoLayReg () {
 }
 
 function zgLoadUrlSeSalvouConv($url) {
-	if ($('#_precisaSalvarID').val() == 1) {
-		zgMostraErro('divAvisoLayoutConvidadoID',"Salve as informações, antes de mudar de tela !!!");
-		$('#_precisaSalvarID').val(0);
+	
+	var vOk 	= validaConvidado();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
 	}else{
-		zgLoadUrl($url);
+		if ($('#_precisaSalvarID').val() == 1) {
+			$('#_alterarGrupoID').val(1);
+			$('#zgFormID').submit();
+			zgLoadUrl($url);
+		}else{
+			zgLoadUrl($url);
+		}
 	}
+	
 }
 </script>
 

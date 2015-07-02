@@ -31,31 +31,6 @@ if (isset ( $_GET ['id'] )) {
 ################################################################################
 $system->checaPermissao ( $_codMenu_ );
 
-################################################################################
-# Resgata as informações do banco
-################################################################################
-if ($codConvidado) {
-	try {
-		$info = $em->getRepository ( 'Entidades\ZgfmtListaConvidado' )->findOneBy (array ('codigo' => $codConvidado));
-	} catch ( \Exception $e ) {
-		\Zage\App\Erro::halt ( $e->getMessage () );
-	}
-	
-	$codGrupo		 = ($info->getCodGrupo()) ? $info->getCodGrupo()->getCodigo() : null;
-	$nome			 = ($info->getNome()) ? $info->getNome() : null;
-	$telefone		 = ($info->getTelefone()) ? $info->getTelefone() : null;
-	$sexo			 = ($info->getSexo()) ? $info->getSexo()->getCodigo() : null;
-	$codFaixaEtaria	 = ($info->getCodFaixaEtaria()) ? $info->getCodFaixaEtaria()->getCodigo() : null;
-	$email			 = ($info->getEmail()) ? $info->getEmail() : null;
-} else {
-	$codGrupo 	 	 = null;
-	$nome			 = null;
-	$telefone		 = null;
-	$sexo			 = null;
-	$codFaixaEtaria	 = null;
-	$email			 = null;
-}
-
 #################################################################################
 ## Resgatas os grupos de convidados
 #################################################################################
@@ -100,19 +75,13 @@ try {
 }
 
 #################################################################################
-## Select do Grupo
+## Buscar os convidados
 #################################################################################
 try {
-	$aGrupo	= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findBy(array(),array('descricao' => 'ASC'));
-	$oGrupo	= $system->geraHtmlCombo($aGrupo,	'CODIGO', 'DESCRICAO',	$codGrupo, null);
+	$convidados			= $em->getRepository('Entidades\ZgfmtListaConvidado')->findBy(array('codUsuario' => $system->getCodUsuario(), 'codGrupo' => $codGrupo));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
-
-#################################################################################
-## Buscar os convidados
-#################################################################################
-$convidados			= $em->getRepository('Entidades\ZgfmtListaConvidado')->findBy(array('codUsuario' => $system->getCodUsuario(), 'codGrupo' => $codGrupo));
 
 #################################################################################
 ## Montar a tabela de convidados
@@ -139,11 +108,11 @@ for ($i = 0; $i < sizeof($convidados); $i++) {
 
 	$htmlReg	.= '
 	<tr>
-			<td class="col-sm-2 center"><input type="text" name="nome[]" value="'.$convidados[$i]->getNome().'" maxlength="100" style="width:100%;" autocomplete="off"></td>
-			<td class="col-sm-1 center"><input type="text" name="telefone[]" value="'.$convidados[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td>
-			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2">'.$oFaixaEtariaInt.'</select></td>
-			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2">'.$oSexoInt.'</select></td>
-			<td class="col-sm-1 center"><input type="text" name="email[]" value="'.$convidados[$i]->getEmail().'" maxlength="100" autocomplete="off"></td>
+			<td class="col-sm-2 center"><input type="text" name="nome[]" value="'.$convidados[$i]->getNome().'" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
+			<td class="col-sm-1 center"><input type="text" name="telefone[]" value="'.$convidados[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" onchange="verificaAlteracao($(this));"></td>
+			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oFaixaEtariaInt.'</select></td>
+			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oSexoInt.'</select></td>
+			<td class="col-sm-1 center"><input type="text" name="email[]" value="'.$convidados[$i]->getEmail().'" maxlength="100" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
 			<td class="col-sm-1 center">
 				<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
 					<span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span>
@@ -179,7 +148,7 @@ $tpl->set ( 'URLVOLTAR'			   , $urlVoltar );
 $tpl->set ( 'URLNOVO'		 	   , $urlNovo );
 $tpl->set ( 'ID'				   , $id );
 $tpl->set ( 'COD_CONVIDADO'	  	   , $codConvidado);
-$tpl->set ( 'COD_GRUPO'	  		   , $oGrupo);
+$tpl->set ( 'COD_GRUPO'	  		   , $codGrupo);
 $tpl->set ( 'NOME'				   , $nome);
 $tpl->set ( 'TELEFONE'			   , $telefone);
 $tpl->set ( 'SEXO'				   , $oSexo);
