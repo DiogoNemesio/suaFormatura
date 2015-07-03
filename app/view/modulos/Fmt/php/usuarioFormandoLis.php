@@ -84,10 +84,10 @@ for ($i = 0; $i < sizeof($usuario); $i++) {
 	
 	$grid->setValorCelula($i,2,$valor);
 	
-	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioParEnv.php?id=".$uid."');");
+	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoEnv.php?id=".$uid."');");
 	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioParBlo.php?id=".$uid."');");
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/usuarioFormandoAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,8,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioParExc.php?id=".$uid."');");
+	$grid->setUrlCelula($i,8,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoExc.php?id=".$uid."');");
 }
 
 #################################################################################

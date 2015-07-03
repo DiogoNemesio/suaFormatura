@@ -107,16 +107,12 @@ class Telefone {
 		#################################################################################
 		## Salvar Telefones
 		#################################################################################
-
 		$codTelefone 	= $this->_getCodTelefone();
 		$codTipoTel		= $this->_getCodTipoTel();
 		$telefone		= $this->_getTelefone();
 		$entidade		= $this->_getEntidadeTel();
 		$oProp			= $this->_getCodProp();
-		
-		$log->debug($oProp->getCodigo());
-		
-		
+
 		$telefones		= $em->getRepository(''.$entidade.'')->findBy(array('codProprietario' => $oProp->getCodigo()));
 		
 		/*** Exclusão ***/
@@ -152,4 +148,25 @@ class Telefone {
 			}
 		}
 	}	
+
+	/**
+	 * Excluir telefones de um proprietario
+	 */
+	public function excluir() {
+		global $em,$system,$log,$tr;
+			
+		#################################################################################
+		## Excluir Telefones
+		#################################################################################
+		$entidade		= $this->_getEntidadeTel();
+		$oProp			= $this->_getCodProp();
+	
+		/*** Exclusão dos telefone ***/
+		$oTel		= $em->getRepository(''.$entidade.'')->findBy(array('codProprietario' => $oProp->getCodigo()));
+		for ($i = 0; $i < sizeof($oTel); $i++) {
+			$em->remove($oTel[$i]);
+		}
+	}
+
+
 }

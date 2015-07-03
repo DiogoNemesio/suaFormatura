@@ -39,7 +39,6 @@ $('#zgFormModalID').submit(function() {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
-			zgLoadUrl('%URLVOLTAR%');
 			
 		}else{
 			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));

@@ -42,7 +42,7 @@ if ((empty($nome))) {
 	$err	= 1;
 }
 
-if ((!empty($nome)) && (strlen($nome) > 100)) {
+if ((strlen($nome) > 100)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo NOME não deve conter mais de 100 caracteres");
 	$err	= 1;
 }
@@ -172,7 +172,7 @@ try {
 		$oGrupo			= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findOneBy(array('codigo' => $codGrupo));
 		$oSexo			= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo[$i]));
 		$oFaixaEtaria	= $em->getRepository('Entidades\ZgfmtConvidadoFaixaEtaria')->findOneBy(array('codigo' => $codFaixaEtaria[$i]));
-		$log->debug($codGrupo);
+
 		$oConvidado->setCodUsuario($oUsuario);
 		$oConvidado->setCodGrupo($oGrupo);
 		$oConvidado->setNome($nome[$i]);
