@@ -15,7 +15,7 @@ class ResumoPDF {
 	 * Itens
 	 * @var array
 	 */
-	private $itens;
+	public $itens;
 	
 	/**
 	 * Inidicador de agrupamento de itens
@@ -26,7 +26,7 @@ class ResumoPDF {
 	## Construtor
 	#################################################################################
 	public function __construct() {
-		global $system;
+		global $system,$log;
 		
 		#################################################################################
 		## Inicializa o array de itens
@@ -49,7 +49,8 @@ class ResumoPDF {
 	## Adiciona um Item
 	#################################################################################
 	public function adicionaItem($tipo,$posicao,$linha,$tipoRegistro,$mensagem) {
-
+		global $system,$log;
+		
 		#################################################################################
 		## Verifica se o tipo de item é válido
 		#################################################################################
@@ -74,7 +75,13 @@ class ResumoPDF {
 			#################################################################################
 			## o índice é a própria mensagem
 			#################################################################################
-			$i		= $mensagem;
+			if (is_object($mensagem)) {
+				$i	= $mensagem->getMensagem();
+			}else{
+				$i	= $mensagem;
+			}
+			
+			
 		}else{
 			
 			#################################################################################
@@ -95,7 +102,14 @@ class ResumoPDF {
 			$this->itens[$i]->setMensagem($mensagem);
 				
 		}elseif (is_object($this->itens[$i])) {
-			$linhas		=	$this->itens[$i]->getLinha() . ",".$linha; 
+			$qtde		= $this->itens[$i]->getQuantidade();
+			if ($qtde == 10) {
+				$linhas		= $this->itens[$i]->getLinha() . " ...";
+			}elseif ( $qtde < 10) {
+				$linhas		= $this->itens[$i]->getLinha() . ",".$linha;
+			}else{
+				$linhas		= $this->itens[$i]->getLinha();
+			}
 			$this->itens[$i]->aumentaQuantidade();
 			$this->itens[$i]->setLinha($linhas);
 		}else{
@@ -143,18 +157,26 @@ class ResumoPDF {
 	 * Gerar o PDF do Resumo
 	 */
 	public function geraPDF() {
-
+		#################################################################################
+		## Monta as linhas
+		#################################################################################
+		$numItens	= sizeof($this->itens); 
+		if ($numItens == 0)	return;
+		
 		#################################################################################
 		## Inicializa o PDF
 		#################################################################################
-		$pdf		= new \Zage\App\FilaImportacao\ResumoPDF\PDF();
-	
-		#################################################################################
-		## Monta as linhas 
-		#################################################################################
-		if (sizeof($this->itens) == 0)	return;
+		$pdf		= new \Zage\App\FilaImportacao\ResumoPDF\PDF($numItens);
 		
 		foreach ($this->itens as $item) {
+			
+			$mensagem	= $item->getMensagem();
+			
+			if (is_object($mensagem)) 	{
+				$_message	= $mensagem->getMensagem();
+			}else{
+				$_message	= $mensagem;
+			}
 			
 			if ($this->getIndAgruparItens()) {
 				$pdf->addRow(
@@ -185,7 +207,7 @@ class ResumoPDF {
 					null
 				);
 			}
-			$pdf->addText($item->getMensagem(),"L","N");
+			$pdf->addText($_message,"L","N");
 			$pdf->addLine();
 		}
 	

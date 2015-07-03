@@ -55,14 +55,28 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 		try {
 			$layout	= new $classe;
 			$layout->loadFile($fila[$i]->getArquivo());
+			$layout->valida();
 			
+			if ($layout->estaValido() == true) {
+				#################################################################################
+				## Alterar o status para OK
+				#################################################################################
+				\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'OK');
+			}else{
+				#################################################################################
+				## Salvar o PDF de erro
+				#################################################################################
+				\Zage\App\Fila::salvaResumo($fila[$i]->getCodigo(),$layout->getResumoPDF());
 				
+				#################################################################################
+				## Alterar o status para OK
+				#################################################################################
+				\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'E');
+			}
+				
+		
 		} catch (\Exception $e) {
 			
-			#################################################################################
-			## Salvar o PDF de erro
-			#################################################################################
-			\Zage\App\Fila::salvaResumo($fila[$i]->getCodigo(),$layout->getResumoPDF());
 					
 			#################################################################################
 			## Alterar o status para "Com Erro"

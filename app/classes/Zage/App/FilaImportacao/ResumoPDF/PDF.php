@@ -215,7 +215,7 @@ class PDF extends \ZendPdf\PdfDocument {
 					array('Tipo',80,'C'),
 					array('Posição',80,'C'),
 					array('Tipo Registro',80,'C'),
-					array('Linha',200,'C'),
+					array('Linha(s)',200,'C'),
 					array('Qtde',80,'C')
 				),
 				'B',

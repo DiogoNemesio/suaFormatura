@@ -140,6 +140,7 @@ abstract class TipoRegistro {
 	## Carregar as configurações dos campos a partir do banco
 	#################################################################################
 	public function carregarCampos() {
+		global $log;
 		$campos		= $this->_listaCampos();
 		
 		for ($i = 0; $i < sizeof($campos); $i++) {
@@ -150,7 +151,7 @@ abstract class TipoRegistro {
 				$campos[$i]->getNome(), 
 				$campos[$i]->getCodFormato()->getCodigo(), 
 				$campos[$i]->getTamanho(), 
-				$campos[$i]->getVariavel(), 
+				$campos[$i]->getCodVariavel(), 
 				$campos[$i]->getValorFixo()
 			);
 			/*$this->_adicionaCampo(
@@ -208,25 +209,26 @@ abstract class TipoRegistro {
 	## Validar o Registro
 	#################################################################################
 	public function validar() {
-		global $system;
+		global $system,$log;
 		$registro = "";
 		foreach ($this->campos as $campo) {
 			$campo->tipo->completar();
 			if ($campo->tipo->validar() == false) {
-				$erro	= new \Zage\Fin\Arquivos\Erro();
-				$erro->setOrdem($campo->getOrdem());
+				$erro	= new \Zage\App\FilaImportacao\ResumoPDF\Item\Erro();
+				$erro->setPosicao($campo->getOrdem());
 				$erro->setTipoRegistro($this->getTipoRegistro());
 				$erro->setMensagem($campo->tipo->getMensagemInvalido());
 				return $erro;
 			}else{
 				$registro .= $campo->getValor();
 			}
+			
 		}
 		
 		if ($this->getTamanho() != "V") {
 			if (mb_strlen($registro,$system->config["database"]["charset"]) !== $this->getTamanho()) {
-				$erro	= new \Zage\Fin\Arquivos\Erro();
-				$erro->setOrdem(0);
+				$erro	= new \Zage\App\FilaImportacao\ResumoPDF\Item\Erro();
+				$erro->setPosicao(0);
 				$erro->setTipoRegistro($this->getTipoRegistro());
 				$erro->setMensagem("Tamanho do registro (".mb_strlen($registro,$system->config["database"]["charset"]).") inválido, deveria ser (".$this->getTamanho().")" );
 				return $erro;
@@ -239,7 +241,7 @@ abstract class TipoRegistro {
 	## Carregar a Linha em memória
 	#################################################################################
 	public function carregaLinha($linha) {
-		global $system;
+		global $system,$log;
 		
 		if ($this->getTamanho() !== mb_strlen($linha,$system->config["database"]["charset"])) {
 			return 'Número de caracteres imcompatível com o tipo de registro ('.strlen($linha).') esperado: ('.$this->getTamanho().')';
@@ -410,12 +412,20 @@ abstract class TipoRegistro {
 	 * Listar os campos para esse tipo de registro
 	 */
 	private function _listaCampos() {
-		global $em;
+		global $em,$log;
 		
 		if ($this->getCodLayout()		=== false) 	throw new \Exception('Código do Layout não definido !!! ');
 		if ($this->getTipoRegistro()	=== false) 	throw new \Exception('Tipo do registro não definido !!! ');
-	
-		$campos		= $em->getRepository('\Entidades\ZgfinArquivoLayoutRegistro')->findBy(array('codLayout' => $this->getCodLayout(),'codTipoRegistro' => $this->getTipoRegistro()),array('ordem' => "ASC"));
+		if ($this->getTipoArquivo()		=== false) 	throw new \Exception('Tipo de arquivo não definido !!! ');
+		
+		$layout			=	$em->getRepository('\Entidades\ZgfinArquivoLayout')->findOneBy(array('codTipoLayout' => $this->getCodLayout())); 
+		if (!$layout)		throw new \Exception('Configuração do Layout não encontrada !!! ');
+
+		$tipoRegistro	=	$em->getRepository('\Entidades\ZgfinArquivoRegistroTipo')->findOneBy(array('codTipoRegistro' => $this->getTipoRegistro(),'codTipoArquivo' => $this->getTipoArquivo()));
+		if (!$tipoRegistro)		throw new \Exception('Configuração do tipo de registro não encontrada !!! ');
+		
+		
+		$campos		= $em->getRepository('\Entidades\ZgfinArquivoLayoutRegistro')->findBy(array('codLayout' => $layout->getCodigo(),'codTipoRegistro' => $tipoRegistro->getCodigo()),array('ordem' => "ASC"));
 		return $campos;
 	
 	}

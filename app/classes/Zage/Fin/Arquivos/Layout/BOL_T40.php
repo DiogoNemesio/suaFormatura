@@ -79,7 +79,7 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 			#################################################################################
 			## Verifica se a primeira linha é o header
 			#################################################################################
-			if (($linha == 1) && ($tipoReg !== 'R0')) {
+			if (($linha == 1) && ($tipoReg !== '0')) {
 				$this->_resumo->adicionaErro(0, $reg->getLinha(), $reg->getTipoRegistro(), 'Header não encontrado');
 			}
 			
@@ -192,15 +192,13 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 			$linha		= str_replace(array("\n", "\r"), '', $lines[$i]); 
 			$reg		= $this->adicionaRegistro($tipoReg);
 			if ($reg === null) {
-				$this->adicionaErro("Linha fora do padrão definido",$i+1,"",0);
+				$this->_resumo->adicionaErro(0, $i+1, null, "Linha fora do padrão definido");
 				return;
 			}else{
 				$ok			= $this->registros[$reg]->carregaLinha($linha);
 			}
 			
-			if ($ok !== true) {
-				$this->adicionaErro($ok,$this->registros[$reg]->getLinha(),$this->registros[$reg]->getTipoRegistro(),0);
-			}
+			if ($ok !== true) 	$this->_resumo->adicionaErro(0, $this->registros[$reg]->getLinha(), $this->registros[$reg]->getTipoRegistro(), $ok);
 		}
 
 	}
