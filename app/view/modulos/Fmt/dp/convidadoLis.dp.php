@@ -42,7 +42,7 @@ if ((empty($nome))) {
 	$err	= 1;
 }
 
-if ((strlen($nome) > 100)) {
+if ((!empty($nome)) && (strlen($nome) > 100)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo NOME não deve conter mais de 100 caracteres");
 	$err	= 1;
 }
