@@ -176,11 +176,11 @@ try {
 	->leftJoin('\Entidades\ZgfinPessoa'			,'pe',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codPessoa 			= pe.codigo')
 	->leftJoin('\Entidades\ZgfinContaStatusTipo','st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codStatus 			= st.codigo')
 	->where($qb1->expr()->andX(
-		$qb1->expr()->eq('p.codFilial'	, ':codFilial')
+		$qb1->expr()->eq('p.codOrganizacao'	, ':codOrganizacao')
 	))
 	->orderBy('ce.descricao','ASC')
 	->addOrderBy('p.dataVencimento','ASC')
-	->setParameter('codFilial', $system->getcodOrganizacao());
+	->setParameter('codOrganizacao', $system->getcodOrganizacao());
 	
 	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.fantasia as FORNEC_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ce.codigo AS COD_CENTRO_CUSTO,ce.descricao AS CENTRO_DESCRICAO')
 	->from('\Entidades\ZgfinContaReceberRateio'	,'cr')
@@ -189,11 +189,11 @@ try {
 	->leftJoin('\Entidades\ZgfinPessoa'			,'pe',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codPessoa 			= pe.codigo')
 	->leftJoin('\Entidades\ZgfinContaStatusTipo','st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codStatus 			= st.codigo')
 	->where($qb2->expr()->andX(
-		$qb2->expr()->eq('p.codFilial'	, ':codFilial')
+		$qb2->expr()->eq('p.codOrganizacao'	, ':codOrganizacao')
 	))
 	->orderBy('ce.descricao','ASC')
 	->addOrderBy('p.dataVencimento','ASC')
-	->setParameter('codFilial', $system->getcodOrganizacao());
+	->setParameter('codOrganizacao', $system->getcodOrganizacao());
 	
 	
 	if (!empty($valorIni)) {

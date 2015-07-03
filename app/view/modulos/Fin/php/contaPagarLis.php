@@ -485,7 +485,7 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
 	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codContaPag, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

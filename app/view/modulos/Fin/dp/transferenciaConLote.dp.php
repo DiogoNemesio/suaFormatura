@@ -47,7 +47,7 @@ if (!isset($usaOrigForma) || (empty($usaOrigForma))) {
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$transferencias		= $em->getRepository('Entidades\ZgfinTransferencia')->findBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $aSelTransfs));
+$transferencias		= $em->getRepository('Entidades\ZgfinTransferencia')->findBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $aSelTransfs));
 
 
 #################################################################################

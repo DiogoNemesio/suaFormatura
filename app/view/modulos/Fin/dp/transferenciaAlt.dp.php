@@ -62,8 +62,8 @@ $oStatus	= $em->getRepository('Entidades\ZgfinTransferenciaStatusTipo')->findOne
 $oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
 $oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codPeriodoRec));
 $oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
-$oContaOrig	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codContaOrig));
-$oContaDest	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codContaDest));
+$oContaOrig	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codContaOrig));
+$oContaDest	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codContaDest));
 
 #################################################################################
 ## Ajustar os valores
@@ -84,7 +84,7 @@ $flagAlterarSeq	= (isset($flagAlterarSeq)) 	? 1 : 0;
 #################################################################################
 ## Escrever os valores no objeto
 #################################################################################
-$transf->setCodFilial($oFil);
+$transf->setcodOrganizacao($oFil);
 $transf->setCodFormaPagamento($oForma);
 $transf->setCodStatus($oStatus);
 $transf->setCodMoeda($oMoeda);

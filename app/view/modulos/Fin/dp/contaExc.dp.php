@@ -28,7 +28,7 @@ try {
 		die('1'.\Zage\App\Util::encodeUrl('||'));
 	}
 	
-	$oConta	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+	$oConta	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 
 	if (!$oConta) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Conta não encontrada'));

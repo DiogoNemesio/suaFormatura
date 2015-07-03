@@ -74,7 +74,7 @@ $oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' 
 $oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
 $oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codPeriodoRec));
 $oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
-$oContaPag	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codContaPag));
+$oContaPag	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codContaPag));
 
 #################################################################################
 ## Validação de rateio
@@ -170,7 +170,7 @@ if (isset($codTipoValor) && $codTipoValor == "P") {
 #################################################################################
 ## Escrever os valores no objeto
 #################################################################################
-$conta->setCodFilial($oFil);
+$conta->setcodOrganizacao($oFil);
 $conta->setCodFormaPagamento($oForma);
 $conta->setCodStatus($oStatus);
 $conta->setCodMoeda($oMoeda);

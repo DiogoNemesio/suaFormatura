@@ -243,7 +243,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	## Verifica se está vencida
 	#################################################################################
 	$vencimento			= $contas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$numDiasAtraso		= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getCodFilial());
+	$numDiasAtraso		= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getcodOrganizacao());
 	if ($numDiasAtraso > 0) {
 	//if ($contas[$i]->getDataVencimento() < \DateTime::createFromFormat($system->config["data"]["dateFormat"].' H:i:s',date($system->config["data"]["dateFormat"].' H:i:s',mktime(0,0,0,date('m'),date('d'),date('Y'))))) {
 		$vencida 	= 1;
@@ -509,7 +509,7 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
 	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codContaRec, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

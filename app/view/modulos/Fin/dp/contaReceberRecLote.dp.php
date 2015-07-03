@@ -57,7 +57,7 @@ if (!isset($usaOrigConta) || (empty($usaOrigConta))) {
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$contas		= $em->getRepository('Entidades\ZgfinContaReceber')->findBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $aSelContas));
+$contas		= $em->getRepository('Entidades\ZgfinContaReceber')->findBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $aSelContas));
 
 
 #################################################################################

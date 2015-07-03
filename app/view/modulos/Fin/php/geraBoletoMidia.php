@@ -82,7 +82,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	#################################################################################
 	## Resgata as informações da conta
 	#################################################################################
-	$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+	$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 	
 	if (!$oConta) {
 		\Zage\App\Erro::halt('Conta não encontrada');
@@ -121,12 +121,12 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	#################################################################################
 	## Resgata as informações do Cedente (Filial)
 	#################################################################################
-	$cedenteNome		= $oConta->getCodFilial()->getNome();
-	$cedenteCNPJ		= \Zage\App\Util::formatCGC($oConta->getCodFilial()->getCnpj());
-	$cedenteEndereco	= \Zage\Adm\Endereco::formataEndereco($oConta->getCodFilial()->getEndereco(), $oConta->getCodFilial()->getNumero(), $oConta->getCodFilial()->getBairro(),$oConta->getCodFilial()->getComplemento());
-	$cedenteCep			= $oConta->getCodFilial()->getCep();
-	$cedenteCidade		= ($oConta->getCodFilial()->getCodLogradouro()) ? $oConta->getCodFilial()->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome() : null;
-	$cedenteUF			= ($oConta->getCodFilial()->getCodLogradouro()) ? $oConta->getCodFilial()->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUf()->getCodUf() : null;
+	$cedenteNome		= $oConta->getcodOrganizacao()->getNome();
+	$cedenteCNPJ		= \Zage\App\Util::formatCGC($oConta->getcodOrganizacao()->getCnpj());
+	$cedenteEndereco	= \Zage\Adm\Endereco::formataEndereco($oConta->getcodOrganizacao()->getEndereco(), $oConta->getcodOrganizacao()->getNumero(), $oConta->getcodOrganizacao()->getBairro(),$oConta->getcodOrganizacao()->getComplemento());
+	$cedenteCep			= $oConta->getcodOrganizacao()->getCep();
+	$cedenteCidade		= ($oConta->getcodOrganizacao()->getCodLogradouro()) ? $oConta->getcodOrganizacao()->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome() : null;
+	$cedenteUF			= ($oConta->getcodOrganizacao()->getCodLogradouro()) ? $oConta->getcodOrganizacao()->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUf()->getCodUf() : null;
 	
 	#################################################################################
 	## Resgata as informações do Sacado (Cliente)

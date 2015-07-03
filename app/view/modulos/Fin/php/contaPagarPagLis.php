@@ -40,7 +40,7 @@ if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 
 if (!$oConta) {
 	\Zage\App\Erro::halt($tr->trans('Conta %s não encontrada !!!',array('%s' => $codConta)));

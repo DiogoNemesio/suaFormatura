@@ -57,7 +57,7 @@ if ($valData->isValid($dataPag) == false) {
 #################################################################################
 ## Resgata as informações da conta
 #################################################################################
-$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 
 if (!$oConta) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Conta não encontrada (".$codConta.")"))));

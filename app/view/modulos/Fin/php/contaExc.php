@@ -44,7 +44,7 @@ if (!isset($codConta)) 		{
 #################################################################################
 try {
 
-	$info			= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+	$info			= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 	
 	if (!$info) 	{
 		\Zage\App\Erro::halt($tr->trans('Conta não existe'));

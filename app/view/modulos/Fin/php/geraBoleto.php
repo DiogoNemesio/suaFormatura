@@ -39,7 +39,7 @@ if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 #################################################################################
 ## Resgata as informações da conta
 #################################################################################
-$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 
 if (!$oConta) {
 	\Zage\App\Erro::halt('Conta não encontrada');
@@ -51,7 +51,7 @@ if (!$oConta) {
 #################################################################################
 $contas		= $em->getRepository('Entidades\ZgfinContaReceber')->
 	findBy(
-		array('codFilial' => $system->getcodOrganizacao(), 'codGrupoConta' => $oConta->getCodGrupoConta(),'codStatus' => array('A','P')),
+		array('codOrganizacao' => $system->getcodOrganizacao(), 'codGrupoConta' => $oConta->getCodGrupoConta(),'codStatus' => array('A','P')),
 		array('parcela' => 'ASC')
 	);
 
@@ -118,19 +118,19 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	## Verificar se a conta está atrasada
 	#################################################################################
 	$vencimento			= $contas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getCodFilial()->getCodigo());
+	$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getcodOrganizacao()->getCodigo());
 	
 	
 	#################################################################################
 	## Calcular o vencimento do boleto
 	#################################################################################
 	if ($numDias > 0) {
-		$vencBol		= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]),$contas[$i]->getCodFilial()->getCodigo());
+		$vencBol		= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]),$contas[$i]->getcodOrganizacao()->getCodigo());
 		
 		#################################################################################
 		## Calcular os dias em atraso com a data de referência o vencimento do boleto
 		#################################################################################
-		$numDias		= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getCodFilial()->getCodigo(),$vencBol);
+		$numDias		= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getcodOrganizacao()->getCodigo(),$vencBol);
 		$htmlAtraso		= $numDias;
 	}else{
 		$vencBol		= $vencimento;

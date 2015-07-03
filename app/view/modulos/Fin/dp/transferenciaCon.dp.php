@@ -56,7 +56,7 @@ if ($valData->isValid($dataTransf) == false) {
 #################################################################################
 ## Resgata as informações da conta
 #################################################################################
-$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
+$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
 
 if (!$oTransf) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Transferência não encontrada (".$codTransf.")"))));

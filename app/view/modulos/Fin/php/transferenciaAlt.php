@@ -41,7 +41,7 @@ if (!isset($codTransf)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 #################################################################################
 if (!empty($codTransf)) {
 	try {
-		$info = $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
+		$info = $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
@@ -174,7 +174,7 @@ try {
 ## Select da Conta de Origem
 #################################################################################
 try {
-	$aContaOrig		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aContaOrig		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
 	$oContaOrig		= $system->geraHtmlCombo($aContaOrig,	'CODIGO', 'NOME',	$codContaOrig, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -184,7 +184,7 @@ try {
 ## Select da Conta de Destino
 #################################################################################
 try {
-	$aContaDest		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aContaDest		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
 	$oContaDest		= $system->geraHtmlCombo($aContaDest,	'CODIGO', 'NOME',	$codContaDest, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

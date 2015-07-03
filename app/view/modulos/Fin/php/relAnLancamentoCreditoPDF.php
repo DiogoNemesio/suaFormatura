@@ -175,11 +175,11 @@ try {
 	->leftJoin('\Entidades\ZgfinPessoa'			,'pe',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codPessoa 			= pe.codigo')
 	->leftJoin('\Entidades\ZgfinContaStatusTipo','st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codStatus 			= st.codigo')
 	->where($qb2->expr()->andX(
-		$qb2->expr()->eq('p.codFilial'	, ':codFilial')
+		$qb2->expr()->eq('p.codOrganizacao'	, ':codOrganizacao')
 	))
 	->orderBy('p.dataVencimento','ASC')
 	->addOrderBy('p.codigo','ASC')
-	->setParameter('codFilial', $system->getcodOrganizacao());
+	->setParameter('codOrganizacao', $system->getcodOrganizacao());
 	
 	
 	if (!empty($valorIni)) {
