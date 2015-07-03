@@ -29,9 +29,9 @@ class ZgfinContaPagarRateio
     private $valor;
 
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Column(name="PCT_VALOR", type="string", length=45, nullable=false)
+     * @ORM\Column(name="PCT_VALOR", type="float", precision=10, scale=0, nullable=false)
      */
     private $pctValor;
 
@@ -102,7 +102,7 @@ class ZgfinContaPagarRateio
     /**
      * Set pctValor
      *
-     * @param string $pctValor
+     * @param float $pctValor
      * @return ZgfinContaPagarRateio
      */
     public function setPctValor($pctValor)
@@ -115,7 +115,7 @@ class ZgfinContaPagarRateio
     /**
      * Get pctValor
      *
-     * @return string 
+     * @return float 
      */
     public function getPctValor()
     {

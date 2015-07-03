@@ -15,7 +15,7 @@ class ZgfinArquivoCampoFormato
     /**
      * @var string
      *
-     * @ORM\Column(name="CODIGO", type="string", length=4, nullable=false)
+     * @ORM\Column(name="CODIGO", type="string", length=6, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

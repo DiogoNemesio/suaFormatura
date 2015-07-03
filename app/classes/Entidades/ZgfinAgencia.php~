@@ -31,7 +31,14 @@ class ZgfinAgencia
     /**
      * @var string
      *
-     * @ORM\Column(name="NOME", type="string", length=60, nullable=true)
+     * @ORM\Column(name="AGENCIA_DV", type="string", length=1, nullable=true)
+     */
+    private $agenciaDv;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="NOME", type="string", length=60, nullable=false)
      */
     private $nome;
 
@@ -87,6 +94,29 @@ class ZgfinAgencia
     public function getAgencia()
     {
         return $this->agencia;
+    }
+
+    /**
+     * Set agenciaDv
+     *
+     * @param string $agenciaDv
+     * @return ZgfinAgencia
+     */
+    public function setAgenciaDv($agenciaDv)
+    {
+        $this->agenciaDv = $agenciaDv;
+
+        return $this;
+    }
+
+    /**
+     * Get agenciaDv
+     *
+     * @return string 
+     */
+    public function getAgenciaDv()
+    {
+        return $this->agenciaDv;
     }
 
     /**

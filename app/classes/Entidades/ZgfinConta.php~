@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinConta
  *
- * @ORM\Table(name="ZGFIN_CONTA", indexes={@ORM\Index(name="fk_ZGFIN_CONTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFIN_CONTA_3_idx", columns={"COD_AGENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_4_idx", columns={"COD_CARTEIRA"})})
+ * @ORM\Table(name="ZGFIN_CONTA", indexes={@ORM\Index(name="fk_ZGFIN_CONTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFIN_CONTA_3_idx", columns={"COD_AGENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_4_idx", columns={"CARTEIRA"})})
  * @ORM\Entity
  */
 class ZgfinConta
@@ -29,9 +29,9 @@ class ZgfinConta
     private $nome;
 
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Column(name="SALDO_INICIAL", type="decimal", precision=15, scale=2, nullable=false)
+     * @ORM\Column(name="SALDO_INICIAL", type="float", precision=10, scale=0, nullable=false)
      */
     private $saldoInicial;
 
@@ -55,6 +55,48 @@ class ZgfinConta
      * @ORM\Column(name="CCORRENTE", type="string", length=20, nullable=true)
      */
     private $ccorrente;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="CCORRENTE_DV", type="string", length=1, nullable=true)
+     */
+    private $ccorrenteDv;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_MORA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorMora;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_JUROS", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorJuros;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_MORA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctMora;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_JUROS", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctJuros;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="INSTRUCAO", type="string", length=60, nullable=true)
+     */
+    private $instrucao;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -91,10 +133,10 @@ class ZgfinConta
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinCarteira")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CARTEIRA", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="CARTEIRA", referencedColumnName="CODIGO")
      * })
      */
-    private $codCarteira;
+    private $carteira;
 
 
     /**
@@ -133,7 +175,7 @@ class ZgfinConta
     /**
      * Set saldoInicial
      *
-     * @param string $saldoInicial
+     * @param float $saldoInicial
      * @return ZgfinConta
      */
     public function setSaldoInicial($saldoInicial)
@@ -146,7 +188,7 @@ class ZgfinConta
     /**
      * Get saldoInicial
      *
-     * @return string 
+     * @return float 
      */
     public function getSaldoInicial()
     {
@@ -223,6 +265,144 @@ class ZgfinConta
     }
 
     /**
+     * Set ccorrenteDv
+     *
+     * @param string $ccorrenteDv
+     * @return ZgfinConta
+     */
+    public function setCcorrenteDv($ccorrenteDv)
+    {
+        $this->ccorrenteDv = $ccorrenteDv;
+
+        return $this;
+    }
+
+    /**
+     * Get ccorrenteDv
+     *
+     * @return string 
+     */
+    public function getCcorrenteDv()
+    {
+        return $this->ccorrenteDv;
+    }
+
+    /**
+     * Set valorMora
+     *
+     * @param float $valorMora
+     * @return ZgfinConta
+     */
+    public function setValorMora($valorMora)
+    {
+        $this->valorMora = $valorMora;
+
+        return $this;
+    }
+
+    /**
+     * Get valorMora
+     *
+     * @return float 
+     */
+    public function getValorMora()
+    {
+        return $this->valorMora;
+    }
+
+    /**
+     * Set valorJuros
+     *
+     * @param float $valorJuros
+     * @return ZgfinConta
+     */
+    public function setValorJuros($valorJuros)
+    {
+        $this->valorJuros = $valorJuros;
+
+        return $this;
+    }
+
+    /**
+     * Get valorJuros
+     *
+     * @return float 
+     */
+    public function getValorJuros()
+    {
+        return $this->valorJuros;
+    }
+
+    /**
+     * Set pctMora
+     *
+     * @param float $pctMora
+     * @return ZgfinConta
+     */
+    public function setPctMora($pctMora)
+    {
+        $this->pctMora = $pctMora;
+
+        return $this;
+    }
+
+    /**
+     * Get pctMora
+     *
+     * @return float 
+     */
+    public function getPctMora()
+    {
+        return $this->pctMora;
+    }
+
+    /**
+     * Set pctJuros
+     *
+     * @param float $pctJuros
+     * @return ZgfinConta
+     */
+    public function setPctJuros($pctJuros)
+    {
+        $this->pctJuros = $pctJuros;
+
+        return $this;
+    }
+
+    /**
+     * Get pctJuros
+     *
+     * @return float 
+     */
+    public function getPctJuros()
+    {
+        return $this->pctJuros;
+    }
+
+    /**
+     * Set instrucao
+     *
+     * @param string $instrucao
+     * @return ZgfinConta
+     */
+    public function setInstrucao($instrucao)
+    {
+        $this->instrucao = $instrucao;
+
+        return $this;
+    }
+
+    /**
+     * Get instrucao
+     *
+     * @return string 
+     */
+    public function getInstrucao()
+    {
+        return $this->instrucao;
+    }
+
+    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -292,25 +472,25 @@ class ZgfinConta
     }
 
     /**
-     * Set codCarteira
+     * Set carteira
      *
-     * @param \Entidades\ZgfinCarteira $codCarteira
+     * @param \Entidades\ZgfinCarteira $carteira
      * @return ZgfinConta
      */
-    public function setCodCarteira(\Entidades\ZgfinCarteira $codCarteira = null)
+    public function setCarteira(\Entidades\ZgfinCarteira $carteira = null)
     {
-        $this->codCarteira = $codCarteira;
+        $this->carteira = $carteira;
 
         return $this;
     }
 
     /**
-     * Get codCarteira
+     * Get carteira
      *
      * @return \Entidades\ZgfinCarteira 
      */
-    public function getCodCarteira()
+    public function getCarteira()
     {
-        return $this->codCarteira;
+        return $this->carteira;
     }
 }

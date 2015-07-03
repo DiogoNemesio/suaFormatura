@@ -60,6 +60,10 @@ if (($oNome != null) && ($oNome->getCodigo() != $codConta)){
 	$err 	= 1;
 }
 
+if (!$saldoInicial)	$saldoInicial	= 0;
+if (!$valorJuros)	$valorJuros		= 0;
+if (!$valorMora)	$valorMora		= 0;
+
 /** Ajustando os valores para o formato do banco **/
 $saldo		= \Zage\App\Util::toMysqlNumber($saldoInicial);
 $valorJuros	= \Zage\App\Util::toMysqlNumber($valorJuros);

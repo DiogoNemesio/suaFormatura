@@ -24,7 +24,7 @@ class ZgadmOrigem
     /**
      * @var string
      *
-     * @ORM\Column(name="DESCRICAO", type="string", length=45, nullable=false)
+     * @ORM\Column(name="DESCRICAO", type="string", length=60, nullable=false)
      */
     private $descricao;
 
