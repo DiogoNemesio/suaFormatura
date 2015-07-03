@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegUsuarioTelefone
  *
- * @ORM\Table(name="ZGSEG_USUARIO_TELEFONE", indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_TELEFONE_1_idx", columns={"COD_PROPRIETARIO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_TELEFONE_2_idx", columns={"COD_TIPO_TELEFONE"})})
+ * @ORM\Table(name="ZGSEG_USUARIO_TELEFONE", indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_TELEFONE_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_TELEFONE_2_idx", columns={"COD_TIPO_TELEFONE"})})
  * @ORM\Entity
  */
 class ZgsegUsuarioTelefone
@@ -47,10 +47,10 @@ class ZgsegUsuarioTelefone
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PROPRIETARIO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
      * })
      */
-    private $codProprietario;
+    private $codUsuario;
 
     /**
      * @var \Entidades\ZgappTelefoneTipo
@@ -143,26 +143,26 @@ class ZgsegUsuarioTelefone
     }
 
     /**
-     * Set codProprietario
+     * Set codUsuario
      *
-     * @param \Entidades\ZgsegUsuario $codProprietario
+     * @param \Entidades\ZgsegUsuario $codUsuario
      * @return ZgsegUsuarioTelefone
      */
-    public function setCodProprietario(\Entidades\ZgsegUsuario $codProprietario = null)
+    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario = null)
     {
-        $this->codProprietario = $codProprietario;
+        $this->codUsuario = $codUsuario;
 
         return $this;
     }
 
     /**
-     * Get codProprietario
+     * Get codUsuario
      *
      * @return \Entidades\ZgsegUsuario 
      */
-    public function getCodProprietario()
+    public function getCodUsuario()
     {
-        return $this->codProprietario;
+        return $this->codUsuario;
     }
 
     /**

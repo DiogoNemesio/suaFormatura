@@ -172,6 +172,125 @@ class Fila {
 			return $e->getMessage();
 		}
 	}
+
+	/**
+	 * Salvar o resumo PDF 
+	 * @param number $codFila
+	 */
+	public static function salvaResumo($codFila,$conteudo) {
+		global $em,$system,$_user,$log;
+	
+		#################################################################################
+		## Buscar o registro da fila
+		#################################################################################
+		$fila		= $em->getRepository('\Entidades\ZgappFilaImportacao')->findOneBy(array('codigo' => $codFila));
+		if (!$fila)	throw new \Exception(sprintf('Fila não encontrada "%s" !!!', $codFila));
+	
+		#################################################################################
+		## Verifica se já existe um resumo
+		#################################################################################
+		$resumo		= $em->getRepository('\Entidades\ZgappFilaImportacaoResumo')->findOneBy(array('codFila' => $codFila));
+		
+		if (!$resumo)	$resumo = new \Entidades\ZgappFilaImportacaoResumo();
+		
+		#################################################################################
+		## Alterar a linha
+		#################################################################################
+		$resumo->setResumo($conteudo);
+	
+		try {
+			$em->persist($resumo);
+			$em->flush();
+			$em->detach($resumo);
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Associa um arquivo a um documento
+	 * @param int $codDocumento
+	 * @param string $arquivo
+	 */
+	public static function associaArquivo ($codDocumento,$tempFile,$nomeArquivo,$type) {
+		global $em,$log;
+	
+	
+		try {
+	
+			/** Define os valores dos campos **/
+			$doc->setIndVirtual(1);
+	
+			$em->persist($doc);
+				
+			/** Cria as instâncias das informações do arquivo **/
+			$oInfo		= new \Entidades\ZgdocArquivoInfo();
+			$oFile		= new \Entidades\ZgdocArquivo();
+			$em->persist($oInfo);
+			$em->persist($oFile);
+	
+			/** Cria o objeto da data atual **/
+			$dateTime	= new \DateTime("now");
+				
+			/** Cria o objeto do tipo do Arquivo **/
+			$tipoArq	= $em->getRepository('Entidades\ZgdocArquivoTipo')->findOneBy(array( 'extensao' => strtolower($ext)));
+				
+			if ($tipoArq)	{
+				$oInfo->setCodTipoArquivo($tipoArq);
+			}
+	
+			/** Define os valores dos campos **/
+			$oInfo->setNome($nomeArquivo);
+			$oInfo->setCodDocumento($doc);
+			$oInfo->setDataCadastro($dateTime);
+			$oInfo->setTamanho($tamArq);
+			$oInfo->setMimetype($type);
+				
+			$data 	= fread(fopen($tempFile, 'r'), $tamArq);
+				
+			if ($type == 'application/pdf') {
+				$num_pag = preg_match_all("/\/Page\W/", $data,$dummy);
+				if ($num_pag > 0) {
+					$oInfo->setPaginas($num_pag);
+				}else{
+					$oInfo->setPaginas(1);
+				}
+			}else{
+				$oInfo->setPaginas(1);
+			}
+	
+				
+			//$log->debug("Codigo Gerado: ".$oInfo->getCodigo());
+				
+			/** Cria a instância do arquivo **/
+			$oFile->setCodArquivoInfo($oInfo);
+			$oFile->setArquivo($data);
+	
+				
+			$em->flush();
+			$em->detach($doc);
+			$em->detach($oInfo);
+			$em->detach($oFile);
+	
+	
+			return ($oFile->getCodigo());
+	
+		} catch (\Exception $e) {
+			return($e->getMessage());
+		}
+	}
+	
+	
+	
+	
+	
 	
 	/**
 	 * Calcula o número de linhas do Arquivo

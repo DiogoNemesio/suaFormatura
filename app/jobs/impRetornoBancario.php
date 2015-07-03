@@ -29,18 +29,48 @@ $fila				= $em->getRepository('\Entidades\ZgappFilaImportacao')->findBy(array('c
 
 for ($i = 0; $i < sizeof($fila); $i++) {
 	
+	#################################################################################
+	## Alterar o status para Iniciando a importação
+	#################################################################################
+	\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'IN');
+	
+	#################################################################################
+	## Descobrindo a classe que ira gerenciar o arquivo
+	#################################################################################
 	$classe	= "\\Zage\\Fin\\Arquivos\\Layout\\".$fila[$i]->getVariavel();
 	$file	= CLASS_PATH . "/Zage/Fin/Arquivos/Layout/".$fila[$i]->getVariavel().'.php';
 	
-	
 	if (!file_exists($file)) {
-		$log->err("Classe não encontrada (".$file."), código da fila: ".$fila[$i]->getCodigo());
+		#################################################################################
+		## Cancelar a importação
+		#################################################################################
+		\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'C');
+		$log->err("Classe não encontrada (".$file."), código da fila: ".$fila[$i]->getCodigo().' a importação será cancelada');
+		
 	}else{
-		$layout	= new $classe;
-		$layout->loadFile($fila[$i]->getArquivo());
-		echo "Nome: ".$layout->getNome().PHP_EOL;
-		echo "Num registros: ".sizeof($layout->registros).PHP_EOL;
-		print_r($layout->erros);
+		#################################################################################
+		## Alterar o status para analisando o arquivo
+		#################################################################################
+		\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'AN');
+		try {
+			$layout	= new $classe;
+			$layout->loadFile($fila[$i]->getArquivo());
+			
+				
+		} catch (\Exception $e) {
+			
+			#################################################################################
+			## Salvar o PDF de erro
+			#################################################################################
+			\Zage\App\Fila::salvaResumo($fila[$i]->getCodigo(),$layout->getResumoPDF());
+					
+			#################################################################################
+			## Alterar o status para "Com Erro"
+			#################################################################################
+			\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'E');
+			$log->err("ATIVIDADE: (".$atividade.") -> Código da fila: ".$fila[$i]->getCodigo().' com erro: '.$e->getMessage());
+			continue;
+		}
 	}
 	
 }
