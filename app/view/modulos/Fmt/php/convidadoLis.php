@@ -34,7 +34,7 @@ $system->checaPermissao ( $_codMenu_ );
 #################################################################################
 ## Resgatas os grupos de convidados
 #################################################################################
-$grupos		= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findBy(array(),array('codigo' => "ASC"));
+$grupos		= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findBy(array(),array('descricao' => "ASC"));
 
 $htmlBotoes			= "";
 if (sizeof($grupos) > 0) {
@@ -58,7 +58,7 @@ if (sizeof($grupos) > 0) {
 ## Select da Faixa Etaria
 #################################################################################
 try {
-	$aSexo	= $em->getRepository('Entidades\ZgsegSexoTipo')->findBy(array(),array('codigo' => 'ASC'));
+	$aSexo	= $em->getRepository('Entidades\ZgsegSexoTipo')->findBy(array(),array('descricao' => 'ASC'));
 	$oSexo	= $system->geraHtmlCombo($aSexo,  'CODIGO', 'DESCRICAO',	$sexo, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -88,13 +88,25 @@ try {
 #################################################################################
 $htmlReg			= "";
 for ($i = 0; $i < sizeof($convidados); $i++) {
+	#################################################################################
+	## Monta a combo do Sexo
+	#################################################################################
+	$codSexo	= ($convidados[$i]->getSexo()) ? $convidados[$i]->getSexo()->getCodigo() : null;
+	$oSexoInt	= $system->geraHtmlCombo($aSexo,	'CODIGO', 'DESCRICAO',	$codSexo, null);
+
+	
+	#################################################################################
+	## Monta a combo da Faixa Etaria
+	#################################################################################
+	$faixaEtaria		= ($convidados[$i]->getCodFaixaEtaria()) ? $convidados[$i]->getCodFaixaEtaria()->getCodigo() : null;
+	$oFaixaEtariaInt	= $system->geraHtmlCombo($aFaixaEtaria,	'CODIGO', 'DESCRICAO',	$faixaEtaria, null);
 	
 	$htmlReg	.= '
 	<tr>
 			<td class="col-sm-2 center"><input type="text" name="nome[]" value="'.$convidados[$i]->getNome().'" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
 			<td class="col-sm-1 center"><input type="text" name="telefone[]" value="'.$convidados[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" onchange="verificaAlteracao($(this));"></td>
-			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oFaixaEtaria.'</select></td>
-			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oSexo.'</select></td>
+			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oFaixaEtariaInt.'</select></td>
+			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oSexoInt.'</select></td>
 			<td class="col-sm-1 center"><input type="text" name="email[]" value="'.$convidados[$i]->getEmail().'" maxlength="100" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
 			<td class="col-sm-1 center">
 				<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
