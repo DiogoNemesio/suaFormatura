@@ -34,7 +34,7 @@ $system->checaPermissao ( $_codMenu_ );
 #################################################################################
 ## Resgatas os grupos de convidados
 #################################################################################
-$grupos		= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findBy(array(),array('descricao' => "ASC"));
+$grupos		= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findBy(array(),array('codigo' => "ASC"));
 
 $htmlBotoes			= "";
 if (sizeof($grupos) > 0) {
@@ -58,7 +58,7 @@ if (sizeof($grupos) > 0) {
 ## Select da Faixa Etaria
 #################################################################################
 try {
-	$aSexo	= $em->getRepository('Entidades\ZgsegSexoTipo')->findBy(array(),array('descricao' => 'ASC'));
+	$aSexo	= $em->getRepository('Entidades\ZgsegSexoTipo')->findBy(array(),array('codigo' => 'ASC'));
 	$oSexo	= $system->geraHtmlCombo($aSexo,  'CODIGO', 'DESCRICAO',	$sexo, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
