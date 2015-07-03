@@ -172,7 +172,7 @@ try {
 		$oGrupo			= $em->getRepository('Entidades\ZgfmtConvidadoGrupo')->findOneBy(array('codigo' => $codGrupo));
 		$oSexo			= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo[$i]));
 		$oFaixaEtaria	= $em->getRepository('Entidades\ZgfmtConvidadoFaixaEtaria')->findOneBy(array('codigo' => $codFaixaEtaria[$i]));
-		$log->debug($codGrupo);
+
 		$oConvidado->setCodUsuario($oUsuario);
 		$oConvidado->setCodGrupo($oGrupo);
 		$oConvidado->setNome($nome[$i]);

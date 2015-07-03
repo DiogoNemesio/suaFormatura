@@ -59,7 +59,7 @@ if (sizeof($grupos) > 0) {
 #################################################################################
 try {
 	$aSexo	= $em->getRepository('Entidades\ZgsegSexoTipo')->findBy(array(),array('descricao' => 'ASC'));
-	$oSexo	= $system->geraHtmlCombo($aSexo,	'CODIGO', 'DESCRICAO',	$sexo, null);
+	$oSexo	= $system->geraHtmlCombo($aSexo,  'CODIGO', 'DESCRICAO',	$sexo, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -68,7 +68,7 @@ try {
 ## Select da Faixa Etaria
 #################################################################################
 try {
-	$aFaixaEtaria	= $em->getRepository('Entidades\ZgfmtConvidadoFaixaEtaria')->findBy(array(),array('descricao' => 'ASC'));
+	$aFaixaEtaria	= $em->getRepository('Entidades\ZgfmtConvidadoFaixaEtaria')->findBy(array(),array('codigo' => 'ASC'));
 	$oFaixaEtaria	= $system->geraHtmlCombo($aFaixaEtaria,	'CODIGO', 'DESCRICAO',	$codFaixaEtaria, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -100,12 +100,6 @@ for ($i = 0; $i < sizeof($convidados); $i++) {
 	$faixaEtaria		= ($convidados[$i]->getCodFaixaEtaria()) ? $convidados[$i]->getCodFaixaEtaria()->getCodigo() : null;
 	$oFaixaEtariaInt	= $system->geraHtmlCombo($aFaixaEtaria,	'CODIGO', 'DESCRICAO',	$faixaEtaria, null);
 
-	#################################################################################
-	## Monta a combo de Grupo
-	#################################################################################
-	$codGrupo		= ($convidados[$i]->getCodGrupo()) ? $convidados[$i]->getCodGrupo()->getCodigo() : null;
-	$oGrupoInt		= $system->geraHtmlCombo($aGrupo,	'CODIGO', 'DESCRICAO',	$codGrupo, null);
-
 	$htmlReg	.= '
 	<tr>
 			<td class="col-sm-2 center"><input type="text" name="nome[]" value="'.$convidados[$i]->getNome().'" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
@@ -132,7 +126,7 @@ $urlVoltar = ROOT_URL . "/Fmt/convidadoLis.php?id=" . $id;
 # Url Novo
 ################################################################################
 $uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ . '&codConvidado=' );
-$urlNovo = ROOT_URL . "/Fmt/convidadoAlt.php?id=" . $uid;
+$urlNovo = ROOT_URL . "/Fmt/convidadoLis.php?id=" . $uid;
 
 ################################################################################
 # Carregando o template html
