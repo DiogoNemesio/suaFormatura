@@ -17,7 +17,6 @@
 		<input type="hidden" name="id" value="%ID%">
 		<input type="hidden" name="_edit" value="1">
 		<input type="hidden" id="codContaID" name="codConta" value="%COD_CONTA%">
-		<input type="hidden" id="codPessoaID" name="codPessoa" value="%COD_PESSOA%">
 		<input type="hidden" id="codStatusID" name="codStatus" value="%COD_STATUS%">
 		<input type="hidden" id="codParcelaID" name="parcela" value="%PARCELA%">
 		<input type="hidden" id="indValorParcelaID" name="indValorParcela" value="1">
@@ -249,13 +248,13 @@
 					    	</div>
 						</div>
 						<div class="row">
-							<div class="form-group col-sm-12" id="divPessoaID">
+							<div class="form-group col-sm-12" id="divCodPessoaID">
 								<label class="col-sm-3 control-label">Pessoa (Fornecedor)</label>
 				    			<div class="input-group col-sm-4 pull-left">
 				    				<span tabindex="99017" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Pessoa que irá realizar o pagamento"></i></span>
-				    				<input  class="form-control" placeholder="digite o nome ou o cpf/cnpj" data-provide="typeahead" id="pessoaID" type="text" name="pessoa" maxlength="30" value="%PESSOA%" autocomplete="off" %TEXT_VIEW%>
+				    				<input type="hidden" id="codPessoaID" name="codPessoa" value="%COD_PESSOA%" class="width-100" placeholder="digite o nome ou o cpf/cnpj" data-rel="select2Pessoa" />
 							    </div>
-							    <div class="help-block col-sm-5 inline" id="divHelpPessoaID"></div>
+							    <div class="help-block col-sm-5 inline" id="divHelpCodPessoaID"></div>
 					    	</div>
 						</div>
 						<div class="row">
@@ -548,65 +547,39 @@ $('#zgFormID').submit(function() {
 	return false; 
 });
 
-var timer;
-$("#pessoaID").typeahead({
-	minLength: 	%APP_BS_TA_MINLENGTH%,
-	itens:		%APP_BS_TA_ITENS%,
-	updater: function (item) {
-		 var item = JSON.parse(item);
-		 $('#codPessoaID').val(item.id);
-		 atualizaInfoFornec20140921();
-		 //$('#pessoaID').val(item.name);
-		 return item.name;
-	},
-    source : function(query,process) {
-    	var $datas = new Array;
-    	$datas = [""];
-    	clearTimeout(timer);
-    	timer=setTimeout(function() {
-	    	$.ajax({
-	            type: "GET",
-	    	    url: "%ROOT_URL%/Fin/clienteLis.dp.php",
-	        	dataType: "json",
-				data: { q: query },
-	        	async: false,
-	        	success: function(data) {
-	        		
-	        		$.map(data, function(data){
-	        			 var group;
-	        			 group = {
-	        			 	id: data.id,
-	        			 	name: data.name,
-	        			 	toString: function () {
-	        			 		return JSON.stringify(this);
-	        			 	},
-	        			 
-	        			 	toLowerCase: function () {
-	        			 		return this.name.toLowerCase();
-	        			 	},
-	        			 	indexOf: function (string) {
-	        			 		return String.prototype.indexOf.apply(this.name, arguments);
-	        			 	},
-	        			 	replace: function (string) {
-	        			 		var value = '';
-	        			 		value += this.name;
-	        			 		
-	        			 		if(typeof(this.name) != 'undefined') {
-	        			 			value += ' <span class="pull-right muted">';
-	        			 			value += '</span>';
-	        			 		}
-	        			 		return String.prototype.replace.apply('<div style="padding: 10px; font-size: 1em;">' + value + '</div>', arguments);
-	        			 	}
-	        			 };
-	        			 $datas.push(group);
-	        		});
-	        		
-	        		//alert(JSON.stringify(data));
-	        		return(process($datas));
-	            }
-	    	})
-    	}, %APP_BS_TA_TIMEOUT%);
-    }
+/*********************************************************
+* Busca Select2 typehead Pessoa
+*********************************************************/
+$('[data-rel="select2Pessoa"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar Pessoa',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fin/clienteLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%//Fin/clienteLis.dp.php", {
+                data: {codPessoa: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
 });
 
 function delRowRateioCRAlt(pObj) {

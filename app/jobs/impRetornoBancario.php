@@ -55,13 +55,14 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 		try {
 			$layout	= new $classe;
 			$layout->loadFile($fila[$i]->getArquivo());
-			$layout->valida();
+			$layout->valida($fila[$i]->getCodigo());
 			
 			if ($layout->estaValido() == true) {
 				#################################################################################
 				## Alterar o status para OK
 				#################################################################################
 				\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'OK');
+				print_r($layout->detalhes);
 			}else{
 				#################################################################################
 				## Salvar o PDF de erro

@@ -144,6 +144,7 @@ abstract class TipoRegistro {
 		$campos		= $this->_listaCampos();
 		
 		for ($i = 0; $i < sizeof($campos); $i++) {
+			$variavel	= ($campos[$i]->getCodVariavel()) ? $campos[$i]->getCodVariavel()->getVariavel() : null; 
 			$this->adicionaCampo(
 				$campos[$i]->getOrdem(), 
 				$campos[$i]->getPosicaoInicial(), 
@@ -151,7 +152,7 @@ abstract class TipoRegistro {
 				$campos[$i]->getNome(), 
 				$campos[$i]->getCodFormato()->getCodigo(), 
 				$campos[$i]->getTamanho(), 
-				$campos[$i]->getCodVariavel(), 
+				$variavel, 
 				$campos[$i]->getValorFixo()
 			);
 			/*$this->_adicionaCampo(

@@ -12,6 +12,11 @@ namespace Zage\Fin\Arquivos\Layout;
 
 class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 	
+	/**
+	 * Array com os detalhes
+	 * @var array
+	 */
+	public $detalhes;
 	
 	#################################################################################
 	## Construtor
@@ -48,12 +53,18 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 			$this->_tiposRegistro["R".$tipos[$i]->getCodTipoRegistro()] = $tipos[$i]->getNome();
 		}
 
+		#################################################################################
+		## Inicializa o array de detalhes
+		#################################################################################
+		$this->detalhes		= array();
+		
+	
 	}
 	
 	#################################################################################
 	## Validar o arquivo PTU
 	#################################################################################
-	public function valida () {
+	public function valida ($codFila) {
 		global $log;
 		
 		#################################################################################
@@ -62,6 +73,12 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		$linha			= 0;
 		$numDetalhes	= 0;
 		
+		#################################################################################
+		## Alterar o status para Validando
+		#################################################################################
+		\Zage\App\Fila::alteraStatus($codFila, 'V');
+		
+		
 		foreach ($this->registros as $reg) {
 			
 			#################################################################################
@@ -69,6 +86,11 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 			#################################################################################
 			$tipoReg	= $reg->getTipoRegistro();
 			$linha++;
+			
+			#################################################################################
+			## Alterar a linha atual
+			#################################################################################
+			\Zage\App\Fila::alteraLinhaAtual($codFila, $linha);
 			
 			#################################################################################
 			## Faz a validação do registro (tipo de dados, tamanho e etc ...)
@@ -82,21 +104,6 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 			if (($linha == 1) && ($tipoReg !== '0')) {
 				$this->_resumo->adicionaErro(0, $reg->getLinha(), $reg->getTipoRegistro(), 'Header não encontrado');
 			}
-			
-			/*
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 * Executar comando para atualizar a linha atual
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 */
 			
 			#################################################################################
 			## Verifica o tipo de arquivo, para fazer a devida validação
@@ -120,8 +127,15 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 					$numDetalhes++;
 					
 					#################################################################################
-					## 
+					## Salva os detalhes com as variáveis
 					#################################################################################
+					$i	= sizeof($this->detalhes);
+					foreach ($reg->campos as $campo) {
+						$var	= $campo->getVariavel();
+						if ($var) {
+							$this->detalhes[$i][$var]	= $campo->getCleanVal();
+						}
+					}
 					
 					
 				break;

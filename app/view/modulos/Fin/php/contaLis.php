@@ -51,10 +51,11 @@ try {
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCli");
 $grid->adicionaTexto($tr->trans('TIPO'),				10, $grid::CENTER	,'codTipo:descricao');
-$grid->adicionaTexto($tr->trans('NOME'),				25, $grid::CENTER	,'nome');
+$grid->adicionaTexto($tr->trans('NOME'),				20, $grid::CENTER	,'nome');
 $grid->adicionaMoeda($tr->trans('SALDO INICIAL'),		10, $grid::CENTER 	,'saldoInicial');
 $grid->adicionaTexto($tr->trans('AGÊNCIA'),				15, $grid::CENTER	,'codAgencia:nome');
 $grid->adicionaTexto($tr->trans('C/C'),					10, $grid::CENTER	,'ccorrente');
+$grid->adicionaTexto($tr->trans('DÍGITO'),				10, $grid::CENTER	,'ccorrenteDV');
 $grid->adicionaData($tr->trans('DATA INÍCIO'),			10, $grid::CENTER	,'dataInicial');
 $grid->adicionaStatus($tr->trans('STATUS'),'indAtiva');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
@@ -67,8 +68,8 @@ $grid->importaDadosDoctrine($contas);
 #################################################################################
 for ($i = 0; $i < sizeof($contas); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$contas[$i]->getCodigo().'&url='.$url);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/Fin/contaAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,8,ROOT_URL.'/Fin/contaExc.php?id='.$uid);
+	$grid->setUrlCelula($i,8,ROOT_URL.'/Fin/contaAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,9,ROOT_URL.'/Fin/contaExc.php?id='.$uid);
 }
 
 #################################################################################

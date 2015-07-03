@@ -112,8 +112,11 @@ class Fila {
 		#################################################################################
 		$fila		= $em->getRepository('Entidades\ZgappFilaImportacao')->findOneBy(array('codigo' => $codFila));
 		if (!$fila)	throw new \Exception(sprintf('Fila não encontrada "%s" !!!', $codFila));
+		$resumo		= $em->getRepository('Entidades\ZgappFilaImportacaoResumo')->findOneBy(array('codFila' => $codFila));
 
 		try {
+			
+			if ($resumo) $em->remove($resumo);
 			$em->remove($fila);
 			$em->flush();
 			$em->clear();

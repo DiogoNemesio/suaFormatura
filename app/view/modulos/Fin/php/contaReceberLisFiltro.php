@@ -46,7 +46,7 @@ try {
 #################################################################################
 try {
 	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getCodEmpresa()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_CRLIS_codContaFiltro"], null);
+	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_CRLIS_codContaRecFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }

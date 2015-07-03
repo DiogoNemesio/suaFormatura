@@ -129,6 +129,11 @@ abstract class TipoDado extends \Entidades\ZgfinArquivoCampoFormato {
 	public abstract function validar();
 	
 	/**
+	 * Função de resgatar o valor sem a formatação
+	 */
+	public abstract function getCleanVal();
+	
+	/**
 	 * Função de ajuste de tamanho do campo
 	 */
 	

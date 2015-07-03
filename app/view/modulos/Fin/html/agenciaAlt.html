@@ -10,7 +10,8 @@
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codAgenciaID" name="codAgencia" value="%COD_AGENCIA%">
-				<input type="hidden" id="codBancoID" name="codBanco" value="%COD_BANCO%">
+				<input type="hidden" id="_codBancoID" name="_codBanco">
+				
 				<input type='hidden' id='valID'>
 					<h4 class="header blue bolder smaller">Informações Gerais</h4>
 					<div class="vspace-xs"></div>
@@ -27,7 +28,7 @@
 							<div class="form-group col-sm-12" id="divAgenciaID">
 						    	<label class="col-sm-3 control-label" for="agenciaID">Cód. Agência</label>
 									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número da agẽncia."></i></span>
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número da agência."></i></span>
 				   					<input class="form-control" id="agenciaID" type="text" name="agencia" placeholder="Número da agência" maxlength="8" value="%AGENCIA%" required autocomplete="off">	
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpAgenciaID"></div>
@@ -38,10 +39,19 @@
 						    	<label class="col-sm-3 control-label" for="bancoID">Banco</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Digite o codígo ou o nome do banco para iniciar a pesquisa."></i></span>
-					    			<input class="form-control" type="text" name="banco" id="bancoID" placeholder="Consulta do Banco" value="%BANCO%" data-provide="typeahead" maxlength="100" autocomplete="off" onblur="checkBancoAlt();" />
+					    			<input type="hidden" name="codBanco" id="codBancoID" placeholder="Consulta do Banco" value="%COD_BANCO%" style="width:100%;" class="select2" data-rel="select2Banco">
+					    			
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpBancoID"></div>
 						    </div>
+							<div class="form-group col-sm-12" id="divAgenciaDVID">
+						    	<label class="col-sm-3 control-label" for="agenciaID">Dígito Verificador da Agência</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Dígito verificador da agência."></i></span>
+				   					<input class="form-control" id="agenciaDVID" type="text" name="agenciaDV" placeholder="Digito Verificador da agência" maxlength="1" value="%AGENCIADV%" required autocomplete="off">	
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpAgenciaDVID"></div>
+				    		</div>
 				    	</div>						  
 				    </div>
 
@@ -62,67 +72,51 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 /********************* Popover *********************/
+
 $('[data-rel=popover]').popover({html:true});
 $('[data-toggle="popover"]').popover();
 
-var timer;
-$("#bancoID").typeahead({
-	minLength: 	%APP_BS_TA_MINLENGTH%,
-	itens:		%APP_BS_TA_ITENS%,
-	updater: function (item) {
-		 var item = JSON.parse(item);
-		 $('#codBancoID').val(item.id);
-		 return item.name;
-	},
-    source : function(query,process) {
-    	var $datas = new Array;
-    	$datas = [""];
-    	clearTimeout(timer);
-    	timer=setTimeout(function() {
-	    	$.ajax({
-	            type: "GET",
-	    	    url: "%ROOT_URL%/Fin/bancoLis.dp.php",
-	        	dataType: "json",
-				data: { q: query },
-	        	async: false,
-	        	success: function(data) {
-	        		
-	        		$.map(data, function(data){
-	        			 var group;
-	        			 group = {
-	        			 	id: data.id,
-	        			 	name: data.name,
-	        			 	toString: function () {
-	        			 		return JSON.stringify(this);
-	        			 	},
-	        			 
-	        			 	toLowerCase: function () {
-	        			 		return this.name.toLowerCase();
-	        			 	},
-	        			 	indexOf: function (string) {
-	        			 		return String.prototype.indexOf.apply(this.name, arguments);
-	        			 	},
-	        			 	replace: function (string) {
-	        			 		var value = '';
-	        			 		value += this.name;
-	        			 		
-	        			 		if(typeof(this.name) != 'undefined') {
-	        			 			value += ' <span class="pull-right muted">';
-	        			 			value += '</span>';
-	        			 		}
-	        			 		return String.prototype.replace.apply('<div style="padding: 10px; font-size: 1em;">' + value + '</div>', arguments);
-	        			 	}
-	        			 };
-	        			 $datas.push(group);
-	        		});
-	        		
-	        		//alert(JSON.stringify(data));
-	        		return(process($datas));
-	            }
-	    	})
-    	}, %APP_BS_TA_TIMEOUT%);
-    }
+$('#codBancoID').select2({
+    minimumInputLength: 2,
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fin/getBancoLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+    formatSelection: function(el ){
+    	var originalOption = el.element;
+	
+    	if (typeof el.codBanco != 'undefined'){
+    		$('#_codBancoID').val(el.codBanco);
+    	}
+    	zgCheckVerificador();
+    	return (el.text);
+    },
+    
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fin/getBancoLis.dp.php", {
+                data: {codBanco: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
 });
+
 
 /************************* Submit Formulário *************************/
  
@@ -169,6 +163,16 @@ $('#zgFormID').submit(function(e) {
 	return false; 
 });
 
+function zgCheckVerificador() {
+	var vBanco		= $('#_codBancoID').val();
+	
+	if (vBanco == '341') {
+		$('#agenciaDVID').attr("readonly", "readonly");
+		$('#agenciaDVID').val("");
+	}else{
+		$('#agenciaDVID').removeAttr("readonly");
+	}
+}
 
 function checkNomeAlt() {
 	var vNome	= $('#nomeID').val();
@@ -253,9 +257,11 @@ function validaAgenciaAlt() {
 	var vNome			= $('#nomeID').val();
 	var vAgencia		= $('#agenciaID').val();
 	var vBanco			= $('#bancoID').val();
+	var vAgenciaDV		= $('#agenciaDVID').val();
+	var vVerReadonly	= $('#agenciaDVID').attr('readonly');
 	var vOK				= true;
 	var vIdent;
-	
+
 	// Nome
 	if (!vNome) {
 		$('#divNomeID').addClass('has-error');
@@ -278,6 +284,17 @@ function validaAgenciaAlt() {
 	}else{
 		$('#divAgenciaID').removeClass('has-error');
 		$('#divHelpAgenciaID').html('&nbsp;');
+	}
+
+	
+	// Dígito Verificador
+	if (!vAgenciaDV && !vVerReadonly) {
+		$('#divAgenciaDVID').addClass('has-error');
+		$('#divHelpAgenciaDVID').html(zgCriaSpanErro('Dígito verificador deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divAgenciaDVID').removeClass('has-error');
+		$('#divHelpAgenciaDVID').html('&nbsp;');
 	}
 	
 	vNomeCheck	= checkNomeAlt();

@@ -34,159 +34,103 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Verificar parâmetro obrigatório
 #################################################################################
-if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
+if (!isset($codConta))	\Zage\App\Erro::halt('Falta de Parâmetros 2');
+if (empty($codConta)) 	\Zage\App\Erro::halt('Conta não encontrada !!!');
 
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-if (!empty($codConta)) {
-	try {
-		$info = $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codConta));
-	} catch (\Exception $e) {
-		\Zage\App\Erro::halt($e->getMessage());
-	}
+try {
+	$info = $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codConta));
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
 
-	$codConta		= $info->getCodigo();
-	$numero			= $info->getNumero();
-	$descricao		= $info->getDescricao();
-	$codPessoa		= ($info->getCodPessoa() != null) ? $info->getCodPessoa()->getCodigo() : null;
-	$parcela		= $info->getParcela();
-	$codStatus		= ($info->getCodStatus() != null) ? $info->getCodStatus()->getCodigo() : null;
-	$status			= ($info->getCodStatus() != null) ? $info->getCodStatus()->getDescricao() : null;
-	$numParcelas	= $info->getNumParcelas();
-	$codMoeda		= ($info->getCodMoeda() != null) ? $info->getCodMoeda()->getCodigo() : null;
-	$valor			= \Zage\App\Util::toPHPNumber($info->getValor());
-	$valorJuros		= \Zage\App\Util::toPHPNumber($info->getValorJuros());
-	$valorMora		= \Zage\App\Util::toPHPNumber($info->getValorMora());
-	$valorDesconto	= \Zage\App\Util::toPHPNumber($info->getValorDesconto());
-	$valorCancelado	= \Zage\App\Util::toPHPNumber($info->getValorCancelado());
-	$dataEmissao	= ($info->getDataEmissao() != null) 		? $info->getDataEmissao()->format($system->config["data"]["dateFormat"]) : null;
-	$dataLiq		= ($info->getDataLiquidacao() != null) 		? $info->getDataLiquidacao()->format($system->config["data"]["dateFormat"]) : null;
-	$dataVenc		= ($info->getDataVencimento() != null) 		? $info->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
-	$dataAut		= ($info->getDataAutorizacao() != null) 	? $info->getDataAutorizacao()->format($system->config["data"]["dateFormat"]) : null;
-	$indAut			= ($info->getIndAutorizado()	== 1) ? "checked" : null;
-	$documento		= $info->getDocumento();
-	$codFormaPag	= ($info->getCodFormaPagamento() != null) ? $info->getCodFormaPagamento()->getCodigo() : null;
-	$nossoNumero	= $info->getNossoNumero();
-	$codGrupoConta	= $info->getCodGrupoConta();
-	$codGrupoLanc	= $info->getCodGrupoLanc();
-	$obs			= $info->getObservacao();
-	$codTipoRec		= ($info->getCodTipoRecorrencia() != null) ? $info->getCodTipoRecorrencia()->getCodigo() : null;
-	$codPeriodoRec	= ($info->getCodPeriodoRecorrencia() != null) ? $info->getCodPeriodoRecorrencia()->getCodigo() : null;
-	$parcelaInicial	= $info->getParcelaInicial();
-	$intervaloRec	= $info->getIntervaloRecorrencia();
-	$codContaRec	= ($info->getCodConta() != null) 	? $info->getCodConta()->getCodigo() : null;
-	$indRecAuto		= $info->getIndReceberAuto();
+$codConta		= $info->getCodigo();
+$numero			= $info->getNumero();
+$descricao		= $info->getDescricao();
+$codPessoa		= ($info->getCodPessoa() != null) ? $info->getCodPessoa()->getCodigo() : null;
+$parcela		= $info->getParcela();
+$codStatus		= ($info->getCodStatus() != null) ? $info->getCodStatus()->getCodigo() : null;
+$status			= ($info->getCodStatus() != null) ? $info->getCodStatus()->getDescricao() : null;
+$numParcelas	= $info->getNumParcelas();
+$codMoeda		= ($info->getCodMoeda() != null) ? $info->getCodMoeda()->getCodigo() : null;
+$valor			= \Zage\App\Util::toPHPNumber($info->getValor());
+$valorJuros		= \Zage\App\Util::toPHPNumber($info->getValorJuros());
+$valorMora		= \Zage\App\Util::toPHPNumber($info->getValorMora());
+$valorDesconto	= \Zage\App\Util::toPHPNumber($info->getValorDesconto());
+$valorCancelado	= \Zage\App\Util::toPHPNumber($info->getValorCancelado());
+$dataEmissao	= ($info->getDataEmissao() != null) 		? $info->getDataEmissao()->format($system->config["data"]["dateFormat"]) : null;
+$dataLiq		= ($info->getDataLiquidacao() != null) 		? $info->getDataLiquidacao()->format($system->config["data"]["dateFormat"]) : null;
+$dataVenc		= ($info->getDataVencimento() != null) 		? $info->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
+$dataAut		= ($info->getDataAutorizacao() != null) 	? $info->getDataAutorizacao()->format($system->config["data"]["dateFormat"]) : null;
+$indAut			= ($info->getIndAutorizado()	== 1) ? "checked" : null;
+$documento		= $info->getDocumento();
+$codFormaPag	= ($info->getCodFormaPagamento() != null) ? $info->getCodFormaPagamento()->getCodigo() : null;
+$nossoNumero	= $info->getNossoNumero();
+$codGrupoConta	= $info->getCodGrupoConta();
+$codGrupoLanc	= $info->getCodGrupoLanc();
+$obs			= $info->getObservacao();
+$codTipoRec		= ($info->getCodTipoRecorrencia() != null) ? $info->getCodTipoRecorrencia()->getCodigo() : null;
+$codPeriodoRec	= ($info->getCodPeriodoRecorrencia() != null) ? $info->getCodPeriodoRecorrencia()->getCodigo() : null;
+$parcelaInicial	= $info->getParcelaInicial();
+$intervaloRec	= $info->getIntervaloRecorrencia();
+$codContaRec	= ($info->getCodConta() != null) 	? $info->getCodConta()->getCodigo() : null;
+$indRecAuto		= $info->getIndReceberAuto();
 
-	
-	#$codCategoria	= ($info->getCodCategoria() != null) ? $info->getCodCategoria()->getCodigo() : null;
-	#$codCentroCusto	= ($info->getCodCentroCusto() != null) ? $info->getCodCentroCusto()->getCodigo() : null;
-	
-	
-	if ($indRecAuto == 1) {
-		$indRecAuto		= 'checked="checked"';
-	}else{
-		$indRecAuto		= "";
-	}
-	
-	if ($info->getCodPessoa() != null) {
-		if ($info->getCodPessoa()->getCodTipoPessoa()->getCodigo() == "F") {
-			$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($info->getCodPessoa()->getCgc());
-		}else{
-			$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CNPJ)->aplicaMascara($info->getCodPessoa()->getCgc());
-		}
-		$pessoa			= $info->getCodPessoa()->getNome() . " (".$infoCgc.")";
-		
-		$nomePessoa		= $info->getCodPessoa()->getNome();
-		$datacadPessoa	= ($info->getCodPessoa()->getDataCadastro() != null) ? $info->getCodPessoa()->getDataCadastro()->format($system->config["data"]["dateFormat"]) : null;
-		
-		
-	}else{
-		$pessoa			= null;
-		$nomePessoa		= null;
-		$datacadPessoa	= null;
-		$infoCgc		= null;
-	}
-
-	/** Cancelamento **/
-	$hist			= $em->getRepository('Entidades\ZgfinContaRecHistCanc')->findOneBy(array('codConta' => $codConta));
-	
-	if ($hist) {
-		$userCanc		= ($hist->getCodUsuario() != null) ? $hist->getCodUsuario()->getNome() : null;
-		$motivoCanc		= $hist->getMotivo();
-		$dataCanc		= ($info->getDataCancelamento() != null) 		? $info->getDataCancelamento()->format($system->config["data"]["dateFormat"]) : null;
-		$valorCanc		= \Zage\App\Util::to_money($info->getValorCancelado());
-	}else{
-		$userCanc		= null;
-		$motivoCanc		= null;
-		$dataCanc		= null;
-		$valorCanc		= null;
-	}
-	
-	
-	$valorTotal			= \Zage\App\Util::to_money($info->getValor() + $info->getValorJuros() + $info->getValorMora() - ($info->getValorCancelado() + $info->getValorDesconto()));
-	
-	switch ($codStatus) {
-		case "L":
-			$view	= 1;
-			break;
-		default:
-			if (!isset($view)) $view = 0;
-			break;
-			
-	}
-
+if ($indRecAuto == 1) {
+	$indRecAuto		= 'checked="checked"';
 }else{
-	$codConta		= null;
-	$numero			= null;
-	$descricao		= null;
-	$codPessoa		= null;
+	$indRecAuto		= "";
+}
+
+if ($info->getCodPessoa() != null) {
+	if ($info->getCodPessoa()->getCodTipoPessoa()->getCodigo() == "F") {
+		$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($info->getCodPessoa()->getCgc());
+	}else{
+		$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CNPJ)->aplicaMascara($info->getCodPessoa()->getCgc());
+	}
+	$pessoa			= $info->getCodPessoa()->getNome() . " (".$infoCgc.")";
+	
+	$nomePessoa		= $info->getCodPessoa()->getNome();
+	$datacadPessoa	= ($info->getCodPessoa()->getDataCadastro() != null) ? $info->getCodPessoa()->getDataCadastro()->format($system->config["data"]["dateFormat"]) : null;
+	
+	
+}else{
+	$pessoa			= null;
 	$nomePessoa		= null;
 	$datacadPessoa	= null;
 	$infoCgc		= null;
-	$pessoa			= null;
-	$parcela		= 1;
-	$codStatus		= null;
-	$status			= null;
-	$numParcelas	= 1;
-	$codMoeda		= null;
-	$valor			= null;
-	$valorJuros		= null;
-	$valorMora		= null;
-	$valorDesconto	= null;
-	$valorCancelado	= null;
-	$dataEmissao	= null;
-	$dataLiq		= null;
-	$dataVenc		= null;
-	$dataAut		= null;
-	$indAut			= null;
-	$documento		= null;
-	$codFormaPag	= null;
-	$nossoNumero	= null;
-	$codGrupoConta	= null;
-	$codGrupoLanc	= null;
-	$obs			= null;
-	$codTipoRec		= null;
-	$codPeriodoRec	= 'M';
-	$parcelaInicial	= 1;
-	$intervaloRec	= null;
-	$codContaRec	= null;
-	$indRecAuto		= 0;
-	$chkU			= "checked";
-	$chkP			= null;
+}
 
-	#$codCategoria	= null;
-	#$codCentroCusto	= null;
-	
-	
+/** Cancelamento **/
+$hist			= $em->getRepository('Entidades\ZgfinContaRecHistCanc')->findOneBy(array('codConta' => $codConta));
+
+if ($hist) {
+	$userCanc		= ($hist->getCodUsuario() != null) ? $hist->getCodUsuario()->getNome() : null;
+	$motivoCanc		= $hist->getMotivo();
+	$dataCanc		= ($info->getDataCancelamento() != null) 		? $info->getDataCancelamento()->format($system->config["data"]["dateFormat"]) : null;
+	$valorCanc		= \Zage\App\Util::to_money($info->getValorCancelado());
+}else{
 	$userCanc		= null;
 	$motivoCanc		= null;
 	$dataCanc		= null;
 	$valorCanc		= null;
-	
-	$valorTotal		= null;
-
 }
+
+
+$valorTotal			= \Zage\App\Util::to_money($info->getValor() + $info->getValorJuros() + $info->getValorMora() - ($info->getValorCancelado() + $info->getValorDesconto()));
+
+switch ($codStatus) {
+	case "L":
+		$view	= 1;
+		break;
+	default:
+		if (!isset($view)) $view = 0;
+		break;
+		
+}
+
 
 
 #################################################################################
@@ -312,7 +256,7 @@ for ($i = 0; $i < sizeof($rateios); $i++) {
 	$oCentroCustoInt	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'DESCRICAO',	$codCentro, '');
 	
 	
-	$tabRateio	.= '<tr><td><select class="select2 '.$sView.'" style="width:100%;" name="codCategoria[]" data-rel="select2">'.$oCatInt.'</select></td><td><select class="select2 '.$sView.'" style="width:100%;" name="codCentroCusto[]" data-rel="select2">'.$oCentroCustoInt.'</select></td><td><input type="text" '.$tView.' '.$tView.' name="valorRateio[]" onchange="calculaPctCellRateioCPAlt($(this));" value="'.\Zage\App\Util::toPHPNumber(round($rateios[$i]->getValor(),2)).'" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td><input type="text" name="pctRateio[]" '.$tView.' '.$tView.' value="'.\Zage\App\Util::toPHPNumber(round($rateios[$i]->getPctValor(),2)).'" onchange="calculaValorCellRateioCPAlt($(this));" maxlength="7" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"></td><td class="center"><span class="center '.$hView.'" '.$bView.' zgdelete onclick="delRowRateioCPAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codRateio[]" value="'.$rateios[$i]->getCodigo().'"></td></tr>';
+	$tabRateio	.= '<tr><td><select class="select2 '.$sView.'" style="width:100%;" name="codCategoria[]" data-rel="select2">'.$oCatInt.'</select></td><td><select class="select2 '.$sView.'" style="width:100%;" name="codCentroCusto[]" data-rel="select2">'.$oCentroCustoInt.'</select></td><td><input type="text" '.$tView.' '.$tView.' name="valorRateio[]" onchange="calculaPctCellRateioCRAlt($(this));" value="'.\Zage\App\Util::toPHPNumber(round($rateios[$i]->getValor(),2)).'" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td><input type="text" name="pctRateio[]" '.$tView.' '.$tView.' value="'.\Zage\App\Util::toPHPNumber(round($rateios[$i]->getPctValor(),2)).'" onchange="calculaValorCellRateioCRAlt($(this));" maxlength="7" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"></td><td class="center"><span class="center '.$hView.'" '.$bView.' zgdelete onclick="delRowRateioCRAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codRateio[]" value="'.$rateios[$i]->getCodigo().'"></td></tr>';
 }
 
 

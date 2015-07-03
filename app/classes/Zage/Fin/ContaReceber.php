@@ -294,13 +294,13 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
-				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]);
+				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]) + \Zage\App\Util::toMysqlNumber($this->getValorJuros()) + \Zage\App\Util::toMysqlNumber($this->getValorMora()) - \Zage\App\Util::toMysqlNumber($this->getValorDesconto());
 				$_valorTotal	+= $valores[$i];
 			}
 		}
 		
-		if (\Zage\App\Util::toPHPNumber($_valorTotal) !== $this->_getValorTotal()) {
-			$log->debug("Valor informado: ".$this->_getValorTotal()." Valor calculado: ".$_valorTotal);
+		if (\Zage\App\Util::toPHPNumber($_valorTotal) != \Zage\App\Util::toPHPNumber($this->_getValorTotal())) {
+			$log->debug("Valor informado: ".\Zage\App\Util::toPHPNumber($this->_getValorTotal())." Valor calculado: ".\Zage\App\Util::toPHPNumber($_valorTotal));
 			return $tr->trans('Valor total difere da soma de valores do array !!!');
 		}
 		
@@ -1388,6 +1388,50 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		return (date('Ymd').'/'.str_pad(mt_rand(0,999999), 6, "0", STR_PAD_LEFT));
 	}
 
+	/**
+	 * Gerar o nossoNumero para Emissão do Boleto
+	 * @param number $codConta
+	 */
+	public static function geraNossoNumero($codConta) {
+		global $em,$system;
+		
+		#################################################################################
+		## Resgata as informaçoes da conta 
+		#################################################################################
+		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codigo' => $codConta));
+		if (!$oConta) return null;
+		$codFilial	= $oConta->getCodFilial();
+		
+		#################################################################################
+		## Resgata o último nossoNúmero da filial da conta
+		#################################################################################
+		$qb 	= $em->createQueryBuilder();
+		try {
+			$qb->select('max(cr.nossoNumero) as valor')
+			->from('\Entidades\ZgfinContaReceber','cr')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('cr.codFilial'	, ':codFilial'),
+				$qb->expr()->isNotNull('cr.nossoNumero')
+			))
+			->setParameter('codFilial', $codFilial);
+	
+	
+			$query 			= $qb->getQuery();
+			$ultNumero		= $query->getSingleScalarResult();
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		if (!$ultNumero) {
+			$nossoNumero	= 1;
+		}else{
+			$nossoNumero	= $ultNumero + 1;
+		}
+	
+		return $nossoNumero;
+		
+	}
+	
 	public function _setCodConta($codigo) {
 		$this->_codigo	= $codigo;
 	}

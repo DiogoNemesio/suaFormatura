@@ -294,17 +294,16 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
-				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]);
+				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]) + \Zage\App\Util::toMysqlNumber($this->getValorJuros()) + \Zage\App\Util::toMysqlNumber($this->getValorMora()) - \Zage\App\Util::toMysqlNumber($this->getValorDesconto());
 				$_valorTotal	+= $valores[$i];
 			}
 		}
 		
-		if (\Zage\App\Util::toPHPNumber($_valorTotal) !== $this->_getValorTotal()) {
+		if (\Zage\App\Util::toPHPNumber($_valorTotal) != \Zage\App\Util::toPHPNumber($this->_getValorTotal())) {
 			$log->debug("Valor informado: ".$this->_getValorTotal()." Valor calculado: ".$_valorTotal);
 			return $tr->trans('Valor total difere da soma de valores do array !!!');
 		}
 		
-		$log->debug("Array de valores: ".serialize($valores));
 		
 		#################################################################################
 		## Validações das datas
@@ -425,7 +424,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		## Validações dos percentuais
 		#################################################################################
 		for ($i = 0; $i < $numRateio; $i++) {
-			$perc		= floatval(str_replace("%", "", $this->_pctRateio[$i]));
+			$perc		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $this->_pctRateio[$i]));
 			if ($perc == 0) {
 				return $tr->trans('Array de Percentuais tem registro com percentual = 0 na posição "'.$i.'" ');
 			}elseif (!\Zage\App\Util::ehNumero($perc)) {

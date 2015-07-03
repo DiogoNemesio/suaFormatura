@@ -40,7 +40,7 @@ if (isset($_POST['codStatus']))			$codStatus			= $_POST['codStatus'];
 if (isset($_POST['codCategoria']))		$codCategoria		= $_POST['codCategoria'];
 if (isset($_POST['codFormaPag']))		$codFormaPag		= $_POST['codFormaPag'];
 if (isset($_POST['codCentroCusto']))	$codCentroCusto		= $_POST['codCentroCusto'];
-if (isset($_POST['codConta']))			$codConta			= $_POST['codConta'];
+if (isset($_POST['codContaPag']))		$codContaPag		= $_POST['codContaPag'];
 if (isset($_POST['codTipoFiltro']))		$codTipoFiltro		= \Zage\App\Util::antiInjection($_POST['codTipoFiltro']);
 if (isset($_POST['dataFiltro']))		$dataFiltro			= \Zage\App\Util::antiInjection($_POST['dataFiltro']);
 if (isset($_POST['mesFiltro']))			$mesFiltro			= \Zage\App\Util::antiInjection($_POST['mesFiltro']);
@@ -62,7 +62,7 @@ $codCategoria	= (isset($codCategoria))	? $codCategoria 	: array();
 $codStatus		= (isset($codStatus)) 		? $codStatus		: array();
 $codCentroCusto	= (isset($codCentroCusto))	? $codCentroCusto	: array();
 $codFormaPag	= (isset($codFormaPag)) 	? $codFormaPag		: array();
-$codConta	= (isset($codConta)) 	? $codConta		: array();
+$codContaPag	= (isset($codContaPag)) 	? $codContaPag		: array();
 
 #################################################################################
 ## Ajustar valores padrão das datas
@@ -74,7 +74,7 @@ if (isset($codStatus))		$_SESSION["_CPLIS_codStatusFiltro"] 		= $codStatus;
 if (isset($codFormaPag))	$_SESSION["_CPLIS_codFormaPagFiltro"] 		= $codFormaPag;
 if (isset($codCategoria))	$_SESSION["_CPLIS_codCategoriaFiltro"] 		= $codCategoria;
 if (isset($codCentroCusto))	$_SESSION["_CPLIS_codCentroCustoFiltro"] 	= $codCentroCusto;
-if (isset($codConta))		$_SESSION["_CPLIS_codContaFiltro"] 			= $codConta;
+if (isset($codContaPag))	$_SESSION["_CPLIS_codContapagFiltro"]		= $codContaPag;
 if (isset($valorIni))		$_SESSION["_CPLIS_valorIniFiltro"] 			= $valorIni;
 if (isset($valorFim))		$_SESSION["_CPLIS_valorFimFiltro"] 			= $valorFim;
 if (isset($descricao))		$_SESSION["_CPLIS_descricaoFiltro"] 		= $descricao;
@@ -84,7 +84,7 @@ if (!isset($_SESSION["_CPLIS_codStatusFiltro"]))			$_SESSION["_CPLIS_codStatusFi
 if (!isset($_SESSION["_CPLIS_codFormaPagFiltro"]))			$_SESSION["_CPLIS_codFormaPagFiltro"]		= null;
 if (!isset($_SESSION["_CPLIS_codCategoriaFiltro"]))			$_SESSION["_CPLIS_codCategoriaFiltro"]		= null;
 if (!isset($_SESSION["_CPLIS_codCentroCustoFiltro"]))		$_SESSION["_CPLIS_codCentroCustoFiltro"]	= null;
-if (!isset($_SESSION["_CPLIS_codContaFiltro"]))				$_SESSION["_CPLIS_codContaFiltro"]			= null;
+if (!isset($_SESSION["_CPLIS_codContaPagFiltro"]))			$_SESSION["_CPLIS_codContaPagFiltro"]		= null;
 if (!isset($_SESSION["_CPLIS_valorIniFiltro"]))				$_SESSION["_CPLIS_valorIniFiltro"]			= null;
 if (!isset($_SESSION["_CPLIS_valorFimFiltro"]))				$_SESSION["_CPLIS_valorFimFiltro"]			= null;
 if (!isset($_SESSION["_CPLIS_descricaoFiltro"]))			$_SESSION["_CPLIS_descricaoFiltro"]			= null;
@@ -184,7 +184,7 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$contas	= \Zage\Fin\ContaPagar::busca($dataIni,$dataFim,$_SESSION["_CPLIS_dataTipo"],$_SESSION["_CPLIS_valorIniFiltro"],$_SESSION["_CPLIS_valorFimFiltro"],$_SESSION["_CPLIS_codCategoriaFiltro"],$_SESSION["_CPLIS_codStatusFiltro"],$_SESSION["_CPLIS_codCentroCustoFiltro"],$_SESSION["_CPLIS_codFormaPagFiltro"],$_SESSION["_CPLIS_codContaFiltro"],$_SESSION["_CPLIS_descricaoFiltro"],$_SESSION["_CPLIS_fornecedorFiltro"]);
+	$contas	= \Zage\Fin\ContaPagar::busca($dataIni,$dataFim,$_SESSION["_CPLIS_dataTipo"],$_SESSION["_CPLIS_valorIniFiltro"],$_SESSION["_CPLIS_valorFimFiltro"],$_SESSION["_CPLIS_codCategoriaFiltro"],$_SESSION["_CPLIS_codStatusFiltro"],$_SESSION["_CPLIS_codCentroCustoFiltro"],$_SESSION["_CPLIS_codFormaPagFiltro"],$_SESSION["_CPLIS_codContaPagFiltro"],$_SESSION["_CPLIS_descricaoFiltro"],$_SESSION["_CPLIS_fornecedorFiltro"]);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -271,7 +271,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= true;
 			$podeCan	= true;
 			$podeCon	= true;
-			$podeHis	= false;
+			$podePls	= false;
 			$podeImp	= true;
 			break;
 		case "C":
@@ -279,7 +279,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= true;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podeHis	= false;
+			$podePls	= false;
 			$podeImp	= true;
 			break;
 		case "L":
@@ -287,7 +287,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podeHis	= true;
+			$podePls	= true;
 			$podeImp	= true;
 			break;
 		case "SC":
@@ -295,7 +295,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podeHis	= true;
+			$podePls	= true;
 			$podeImp	= true;
 			break;
 		case "S":
@@ -303,7 +303,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podeHis	= false;
+			$podePls	= false;
 			$podeImp	= true;
 			break;
 		case "SS":
@@ -311,7 +311,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podeHis	= true;
+			$podePls	= true;
 			$podeImp	= true;
 			break;
 		case "P":
@@ -319,7 +319,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= false;
 			$podeCan	= true;
 			$podeCon	= true;
-			$podeHis	= true;
+			$podePls	= true;
 			$podeImp	= true;
 			break;
 		default:
@@ -327,7 +327,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podeHis	= false;
+			$podePls	= false;
 			$podeImp	= false;
 			break;
 	}
@@ -440,22 +440,22 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$urlExc			= ($podeExc)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarExc.php?id=".$uid."');" : null;
 	$urlCan			= ($podeCan)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarCan.php?id=".$uid."');" : null;
 	$urlCon			= ($podeCon)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarPag.php?id=".$uid."');" : null;
-	$urlHis			= ($podeHis)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarHis.php?id=".$uid."');" : null;
-	$urlImp			= ($podeImp)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarPri.php?id=".$uid."');" : null;
+	$urlPls			= ($podePls)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarPagLis.php?id=".$uid."');" : null;
+	$urlImp			= ($podeImp)	? "javascript:zgAbreModalFull('".ROOT_URL."/Fin/contaPagarPreview.php?id=".$uid."');" : null;
 		
 	
-	$htmlVis		= str_replace("%M%","Visualizar"	, str_replace("%U%",$urlVis, $htmlTplAcaoIni)) . '<i class="ace-icon fa fa-search grey bigger-140"></i>' . $htmlTplAcaoFim;
-	$htmlAlt		= str_replace("%M%","Alterar"		, str_replace("%U%",$urlAlt, $htmlTplAcaoIni)) . (($podeAlt)	?  '<i class="ace-icon fa fa-edit blue bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
-	$htmlExc		= str_replace("%M%","Excluir"		, str_replace("%U%",$urlExc, $htmlTplAcaoIni)) . (($podeExc)	?  '<i class="ace-icon fa fa-trash red bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
-	$htmlCan		= str_replace("%M%","Cancelar"		, str_replace("%U%",$urlCan, $htmlTplAcaoIni)) . (($podeCan)	?  '<i class="ace-icon fa fa-ban red bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
-	$htmlCon		= str_replace("%M%","Confirmar"		, str_replace("%U%",$urlCon, $htmlTplAcaoIni)) . (($podeCon)	?  '<i class="ace-icon fa fa-check green bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
-	$htmlHis		= str_replace("%M%","Ver Histórico"	, str_replace("%U%",$urlHis, $htmlTplAcaoIni)) . (($podeHis)	?  '<i class="ace-icon fa fa-history grey bigger-140"></i>'		: null) . $htmlTplAcaoFim;
-	$htmlImp		= str_replace("%M%","Imprimir"		, str_replace("%U%",$urlImp, $htmlTplAcaoIni)) . (($podeImp)	?  '<i class="ace-icon fa fa-print grey bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
+	$htmlVis		= str_replace("%M%","Visualizar"				, str_replace("%U%",$urlVis, $htmlTplAcaoIni)) . '<i class="ace-icon fa fa-search grey bigger-140"></i>' . $htmlTplAcaoFim;
+	$htmlAlt		= str_replace("%M%","Alterar"					, str_replace("%U%",$urlAlt, $htmlTplAcaoIni)) . (($podeAlt)	?  '<i class="ace-icon fa fa-edit blue bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
+	$htmlExc		= str_replace("%M%","Excluir"					, str_replace("%U%",$urlExc, $htmlTplAcaoIni)) . (($podeExc)	?  '<i class="ace-icon fa fa-trash red bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
+	$htmlCan		= str_replace("%M%","Cancelar"					, str_replace("%U%",$urlCan, $htmlTplAcaoIni)) . (($podeCan)	?  '<i class="ace-icon fa fa-ban red bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
+	$htmlCon		= str_replace("%M%","Confirmar"					, str_replace("%U%",$urlCon, $htmlTplAcaoIni)) . (($podeCon)	?  '<i class="ace-icon fa fa-check green bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
+	$htmlPls		= str_replace("%M%","Pagamentos confirmados"	, str_replace("%U%",$urlPls, $htmlTplAcaoIni)) . (($podePls)	?  '<i class="ace-icon fa fa-usd grey bigger-140"></i>'		: null) . $htmlTplAcaoFim;
+	$htmlImp		= str_replace("%M%","Imprimir"					, str_replace("%U%",$urlImp, $htmlTplAcaoIni)) . (($podeImp)	?  '<i class="ace-icon fa fa-print grey bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
 	
 	$htmlAcao	= '<div class="inline dropdown dropup"><a href="#" data-toggle="dropdown"><i class="ace-icon fa fa-cog icon-on-right bigger-140"></i></a>
 	<ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
 		<li class="active"><a href="#"><div class="center small bolder blue">Ações para: '.$contas[$i]->getDescricao().' ('.$contas[$i]->getParcela() . "/".$contas[$i]->getNumParcelas().')</div></a></li>
-		<li><a href="#">'.$htmlVis.$htmlAlt.$htmlExc.$htmlCan.$htmlCon.$htmlHis.$htmlImp.'</a></li>
+		<li><a href="#">'.$htmlVis.$htmlAlt.$htmlExc.$htmlCan.$htmlCon.$htmlPls.$htmlImp.'</a></li>
 	</ul>
 	</div>';
 	$grid->setValorCelula($i,$colAcao,$htmlAcao);
@@ -486,7 +486,7 @@ try {
 #################################################################################
 try {
 	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getCodEmpresa()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codConta, null);
+	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codContaPag, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }

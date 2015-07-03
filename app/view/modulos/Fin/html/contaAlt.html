@@ -11,84 +11,184 @@
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codContaID" name="codConta" value="%COD_CONTA%">
 				<input type='hidden' id='valID'>
-					<h4 class="header blue bolder smaller">Informações Gerais</h4>
-					<div class="vspace-xs"></div>
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divTipoID">
-								<label class="col-sm-3 control-label" for="tipoID">Tipo</label>
-									<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o tipo desta conta."></i></span>
-									<select class="select2 %READONLY%" style="width:100%;" onchange="zgMostraDivs20140909();" id="tipoID" name="tipo" %DISABLED% data-rel="select2">
-									%CONTAS%
-									</select>
-								</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpTipoID"></div>
-							</div>
-							<div class="form-group col-sm-12" id="divNomeID">
-						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
-									<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a conta."></i></span>
-				   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="60" placeholder="Identificação da conta" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />
-				    			</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
-				    		</div>
-				    	</div>
-				    	<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divSaldoInicialID">
-						    	<label class="col-sm-3 control-label" for="saldoInicialID">Saldo Inicial</label>
-									<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
-					    			<input class="form-control" type="text" name="saldoInicial" id="saldoInicialID" value="%SALDO_INICIAL%" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#conta-principal">
+								<i class="green fa fa-edit bigger-125"></i>
+								Informações Gerais
+							</a>
+						</li>
+						<li id='liContaBoletoID'>
+							<a id='aContaBoletoID' data-toggle="tab"  href="#conta-boleto">
+								<i class="blue fa fa-cog bigger-125"></i>
+								Configurações Boleto
+							</a>
+						</li>
+					</ul>
+					<div class="tab-content profile-edit-tab-content">
+						<div id="conta-principal" class="tab-pane in active">				
+							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divTipoID">
+										<label class="col-sm-3 control-label" for="tipoID">Tipo</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o tipo desta conta."></i></span>
+											<select class="select2 %READONLY%" style="width:100%;" onchange="zgMostraDivsContaAlt();" id="tipoID" name="tipo" %DISABLED% data-rel="select2">
+											%CONTAS%
+											</select>
+										</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpTipoID"></div>
+									</div>
+									<div class="form-group col-sm-12" id="divNomeID">
+								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a conta."></i></span>
+						   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="60" placeholder="Identificação da conta" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />
+						    			</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+						    		</div>
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpSaldoInicialID"></div>
-						    </div>
-							<div class="form-group col-sm-12" id="divDataInicialID">
-						    	<label class="col-sm-3 control-label" for="dataInicialID">Data Início</label>
-									<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
-					    			<input class="form-control datepicker" id="dataInicialID" type="text" name="dataInicial" maxlength="10" value="%DATA_INICIAL%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divSaldoInicialID">
+								    	<label class="col-sm-3 control-label" for="saldoInicialID">Saldo Inicial</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control" type="text" name="saldoInicial" id="saldoInicialID" value="%SALDO_INICIAL%" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpSaldoInicialID"></div>
+								    </div>
+									<div class="form-group col-sm-12" id="divDataInicialID">
+								    	<label class="col-sm-3 control-label" for="dataInicialID">Data Início</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+							    			<input class="form-control datepicker" id="dataInicialID" type="text" name="dataInicial" maxlength="10" value="%DATA_INICIAL%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpDataInicialID"></div>
+								    </div>
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpDataInicialID"></div>
 						    </div>
-				    	</div>
-				    </div>
-				    <div class="row" id="divContaAgenciaID">
-				    	<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divCodAgenciaID">
-								<label class="col-sm-3 control-label" for="codAgenciaID">Agência</label>
-									<div class="input-group col-sm-8 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a agência desta conta."></i></span>
-									<select class="select2" style="width:100%;" id="codAgenciaID" name="codAgencia" placeholder="Selecione a agência" data-rel="select2">
-									%AGENCIAS%
-									</select>
+						    <div class="row" id="divContaAgenciaID">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCodAgenciaID">
+										<label class="col-sm-3 control-label" for="codAgenciaID">Agência</label>
+											<div class="input-group col-sm-8 pull-left">
+						    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a agência desta conta."></i></span>
+											<select class="select2" style="width:100%;" id="codAgenciaID" name="codAgencia" placeholder="Selecione a agência" data-rel="select2">
+											%AGENCIAS%
+											</select>
+										</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCodAgenciaID"></div>
+									</div>
 								</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpCodAgenciaID"></div>
-							</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCcorrenteID">
+								    	<label class="col-sm-3 control-label" for="ccorrenteID">Conta Corrente</label>
+											<div class="input-group col-sm-8 pull-left">
+						    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número da Conta Corrente"></i></span>
+							    			<input class="form-control" type="text" name="ccorrente" id="ccorrenteID" value="%CCORRENTE%" maxlength="20" autocomplete="off"/>
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCcorrenteID"></div>
+								    </div>
+						    	</div>
+						    </div>
+						    <div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divAtivaID">
+								    	<label class="col-sm-4 control-label" for="ativaID">Ativa</label>
+								    	<label>
+								    		<input name="ativa" id="ativaID" class="ace ace-switch ace-switch-6" type="checkbox" %ATIVA% />
+											<span class="lbl"></span>
+										</label>
+								    </div>
+						    	</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCcorrenteDVID">
+								    	<label class="col-sm-3 control-label" for="ccorrenteID">Dígito da Conta</label>
+											<div class="input-group col-sm-8 pull-left">
+						    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Dígito verificador da Conta Corrente"></i></span>
+							    			<input class="form-control" type="text" name="ccorrenteDV" id="ccorrenteDVID" value="%CCORRENTEDV%" maxlength="1" autocomplete="off"/>
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCcorrenteDVID"></div>
+								    </div>
+						    	</div>
+						    </div>
 						</div>
-						<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divCcorrenteID">
-						    	<label class="col-sm-3 control-label" for="ccorrenteID">Conta Corrente</label>
-									<div class="input-group col-sm-8 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
-					    			<input class="form-control" type="text" name="ccorrente" id="ccorrenteID" value="%CCORRENTE%" maxlength="20" autocomplete="off"/>
+						<div id="conta-boleto" class="tab-pane in">
+							<h4 class="header blue bolder smaller">Informações de Boleto</h4>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCarteiraID">
+								    	<label class="col-sm-3 control-label" for="nomeID">Carteira</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Código da Carteira utilizada"></i></span>
+						   					<input class="form-control" id="carteiraID" type="text" name="carteira" maxlength="3" placeholder="Carteira" value="%CARTEIRA%" required autocomplete="off" />
+						    			</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCarteiraID"></div>
+						    		</div>
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpCcorrenteID"></div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divInstrucaoID">
+								    	<label class="col-sm-3 control-label" for="instrucaoID">Instruções Adicionais</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Primeira linha do campo instrução"></i></span>
+						   					<input class="form-control" id="instrucaoID" type="text" name="instrucao" maxlength="60" placeholder="instruções adicionais" value="%INSTRUCAO%" required autocomplete="off" />
+						    			</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpInstrucaoID"></div>
+						    		</div>
+						    	</div>
+						    	
 						    </div>
-				    	</div>
-				    </div>
-				    <div class="row">
-				    	<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divAtivaID">
-						    	<label class="col-sm-4 control-label" for="ativaID">Ativa</label>
-						    	<label>
-						    		<input name="ativa" id="ativaID" class="ace ace-switch ace-switch-6" type="checkbox" %ATIVA% />
-									<span class="lbl"></span>
-								</label>
+						    <div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divValorJurosID">
+								    	<label class="col-sm-3 control-label" for="valorJurosID">Valor Juros</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor Fixo de Júros"></i></span>
+						   					<input class="form-control" type="text" name="valorJuros" id="valorJurosID" value="%VALOR_JUROS%" placeholder="Valor do Juros" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+						    			</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpValorJurosID"></div>
+						    		</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divPctJurosID">
+								    	<label class="col-sm-3 control-label" for="pctJurosID">Perc. Juros</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de Júros em cima do valor da conta"></i></span>
+						   					<input class="form-control" type="text" name="pctJuros" id="pctJurosID" value="%PCT_JUROS%" placeholder="Pct do Juros" maxlength="8" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"/>
+						    			</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpPctJurosID"></div>
+						    		</div>
+						    	</div>
 						    </div>
-				    	</div>
-				    </div>
-
+						    <div class="row">
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divValorMoraID">
+								    	<label class="col-sm-3 control-label" for="valorMoraID">Valor Mora</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor Fixo de Mora"></i></span>
+						   					<input class="form-control" type="text" name="valorMora" id="valorMoraID" value="%VALOR_MORA%" placeholder="Valor da Mora" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+						    			</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpValorMoraID"></div>
+						    		</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divPctMoraID">
+								    	<label class="col-sm-3 control-label" for="pctMoraID">Perc. Mora</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de Mora em cima do valor da conta"></i></span>
+						   					<input class="form-control" type="text" name="pctMora" id="pctMoraID" value="%PCT_MORA%" maxlength="8" placeholder="Pct da Mora" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"/>
+						    			</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpPctMoraD"></div>
+						    		</div>
+						    	</div>
+						    </div>
+						</div>
+					</div>
+				</div>
 				<div class="clearfix form-actions">
 					<label class="col-sm-4 control-label">&nbsp;</label>
 					<button type="button" class="btn btn-primary" id="btnSubmitID">
@@ -117,17 +217,31 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+
 $('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
 
-zgMostraDivs20140909();
+zgMostraDivsContaAlt();
 
-function zgMostraDivs20140909() {
+function zgMostraDivsContaAlt() {
 	var vTipo			= $('#tipoID').val();
 	
 	if (vTipo == "CC") {
 		$('#divContaAgenciaID').removeClass("hidden");
+		$('#divCcorrenteDVID').removeClass("hidden");
+		$('#liContaBoletoID').removeClass("disabled");
+		$('#aContaBoletoID').removeClass("disabled");
 	}else{
 		$('#divContaAgenciaID').addClass("hidden");
+		$('#divCcorrenteDVID').addClass("hidden");
+		$('#liContaBoletoID').addClass("disabled");
+		$('#aContaBoletoID').addClass("disabled");
 	}
 }
 
@@ -153,6 +267,20 @@ $('#btnSubmitID').on("click", function(e) {
 });
 
 $('#zgFormID').submit(function(e) {
+	
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+
+	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -165,6 +293,13 @@ $('#zgFormID').submit(function(e) {
 			zgMostraAviso("Fechar");
 		}
 		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+
+		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();
 			$('#zgDivModalID').off('hidden.bs.modal');
@@ -173,6 +308,13 @@ $('#zgFormID').submit(function(e) {
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
 	});
+	
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", true );
+		}
+	});
+
 	return false; 
 });
 

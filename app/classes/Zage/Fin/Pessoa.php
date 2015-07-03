@@ -203,6 +203,38 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	}
 	
 	
+	/**
+	 * Resgata o endereço de uma pessoa, com a seguinte precedência:
+	 * 1 -> Endereço de cobrança
+	 * 2 -> Endereço de Faturamento
+	 * 3 -> Endereço de Entrega
+	 * @param number $codPessoa
+	 */
+	public static function getEndereco($codPessoa) {
+		global $em,$system;
+		
+		#################################################################################
+		## Busca o Endereço de cobrança
+		#################################################################################
+		$oEnd			= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa,'codTipoEndereco' => "C"));
+		
+		if (!$oEnd)		{
+			#################################################################################
+			## Caso não encontre Busca o Endereço de Faturamento
+			#################################################################################
+			$oEnd			= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oConta->getCodPessoa()->getCodigo(),'codTipoEndereco' => "F"));
+		
+			if (!$oEnd)		{
+				#################################################################################
+				## Caso não encontre Busca o Endereço de Entrega
+				#################################################################################
+				$oEnd			= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oConta->getCodPessoa()->getCodigo(),'codTipoEndereco' => "E"));
+			}
+		}
+		
+		return $oEnd;
+		
+	}
 
 }
 

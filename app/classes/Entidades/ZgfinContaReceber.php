@@ -94,7 +94,7 @@ class ZgfinContaReceber
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATA_VENCIMENTO", type="datetime", nullable=false)
+     * @ORM\Column(name="DATA_VENCIMENTO", type="date", nullable=false)
      */
     private $dataVencimento;
 

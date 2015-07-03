@@ -1,0 +1,176 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Feriado 
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codFeriadoNacID" name="codFeriadoNac" value="%COD_FERIADO_NAC%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divDescricaoID">
+						    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição do feriado."></i></span>
+				   					<input class="form-control" id="descricaoID" type="text" name="descricao" placeholder="Descrição do feriado" maxlength="60" value="%DESCRICAO%" required autocomplete="off">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
+				    		</div>
+				    		<div class="form-group col-sm-12" id="divDiaID">
+						    	<label class="col-sm-3 control-label" for="diaID">Dia</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Dia do feriado."></i></span>
+				   					<input class="form-control" id="diaID" type="text" name="dia" placeholder="Dia do feriado" maxlength="2" value="%DIA%" required autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDiaID"></div>
+				    		</div>
+				    	</div>
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divMesID">
+						    	<label class="col-sm-3 control-label" for="mesID">Mês</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Mês do feriado."></i></span>
+				   					<input class="form-control" id="mesID" type="text" name="mes" placeholder="Mês do feriado" maxlength="2" value="%MES%" required autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpMesID"></div>
+				    		</div>
+				    	</div>
+				    </div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+
+$(".select2").select2();
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaFeriadoNacAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codFeriadoNacID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Feriado', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+/*********************** Verificar o formulário ***********************/
+function validaFeriadoNacAlt() {
+	var vDescricao	= $('#descricaoID').val();
+	var vDia		= $('#diaID').val();
+	var vMes		= $('#mesID').val();
+
+	var vOK				= true;
+	var vIdent;
+	
+	// Descricao
+	if (vDescricao.length == 0 || vDescricao.length > 60 ) {
+		$('#divDescricaoID').addClass('has-error');
+		if (vDescricao.length == 0){
+			$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve ser preenchido !!!'));
+		}else if (vDescricao.length > 60){
+			$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve ter no máximo 60 caracteres !!!'));
+		}
+		vOK		= false;
+	}else{
+		$('#divDescricaoID').removeClass('has-error');
+		$('#divHelpDescricaoID').html('&nbsp;');		
+	}
+	
+	// Dia
+	if (!vDia || vDia == 0 || vDia > 31) {
+		$('#divDiaID').addClass('has-error');
+		if (!vDia) {
+			$('#divHelpDiaID').html(zgCriaSpanErro('Campo dia é obrigatório !!!'));
+		}else if (vDia == 0 || vDia > 31){
+			$('#divHelpDiaID').html(zgCriaSpanErro('Dia deve ser maior que 0 e menor que 31 !!!'));
+		}
+		vOK		= false;
+	}else{
+		$('#divDiaID').removeClass('has-error');
+		$('#divHelpDiaID').html('&nbsp;');		
+	}
+
+	// Mes
+	if (!vMes || vMes == 0 || vMes > 12) {
+		$('#divMesID').addClass('has-error');
+		if (!vMes) {
+			$('#divHelpMesID').html(zgCriaSpanErro('Campo mês é obrigatório !!!'));
+		}else if (vMes == 0 || vMes > 12){
+			$('#divHelpMesID').html(zgCriaSpanErro('Mês deve ser maior que 0 e menor que 12 !!!'));
+		}
+		vOK		= false;
+	}else{
+		$('#divMesID').removeClass('has-error');
+		$('#divHelpMesID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+</script>
+

@@ -32,7 +32,6 @@ abstract class Layout {
 	 */
 	private $conteudo;
 	
-
 	/**
 	 * Nome do Layout
 	 *

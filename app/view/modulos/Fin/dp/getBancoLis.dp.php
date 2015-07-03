@@ -27,6 +27,7 @@ for ($i = 0; $i < sizeof($bancos); $i++) {
 	
 	$array[$i]["id"]		= $bancos[$i]->getCodigo();
 	$array[$i]["text"]		= $bancos[$i]->getCodBanco() . ' / '.$bancos[$i]->getNome();
+	$array[$i]["codBanco"]	= $bancos[$i]->getCodBanco();
 	
 	//if ($i > $numItens) break;
 }

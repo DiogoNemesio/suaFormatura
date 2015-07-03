@@ -18,7 +18,15 @@ if (isset($_POST['codAgencia']))		$codAgencia			= \Zage\App\Util::antiInjection(
 if (isset($_POST['saldoInicial']))	 	$saldoInicial		= \Zage\App\Util::antiInjection($_POST['saldoInicial']);
 if (isset($_POST['dataInicial']))	 	$dataInicial		= \Zage\App\Util::antiInjection($_POST['dataInicial']);
 if (isset($_POST['ccorrente']))	 		$ccorrente			= \Zage\App\Util::antiInjection($_POST['ccorrente']);
+if (isset($_POST['ccorrenteDV'])) 		$ccorrenteDV		= \Zage\App\Util::antiInjection($_POST['ccorrenteDV']);
 if (isset($_POST['ativa']))	 			$ativa				= \Zage\App\Util::antiInjection($_POST['ativa']);
+
+if (isset($_POST['carteira'])) 			$carteira			= \Zage\App\Util::antiInjection($_POST['carteira']);
+if (isset($_POST['valorJuros'])) 		$valorJuros			= \Zage\App\Util::antiInjection($_POST['valorJuros']);
+if (isset($_POST['valorMora'])) 		$valorMora			= \Zage\App\Util::antiInjection($_POST['valorMora']);
+if (isset($_POST['pctJuros'])) 			$pctJuros			= \Zage\App\Util::antiInjection($_POST['pctJuros']);
+if (isset($_POST['pctMora'])) 			$pctMora			= \Zage\App\Util::antiInjection($_POST['pctMora']);
+if (isset($_POST['instrucao'])) 		$instrucao			= \Zage\App\Util::antiInjection($_POST['instrucao']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -52,9 +60,27 @@ if (($oNome != null) && ($oNome->getCodigo() != $codConta)){
 	$err 	= 1;
 }
 
-/** Ajustando o valor para o formato do banco **/
-$saldo	= \Zage\App\Util::toMysqlNumber($saldoInicial);
-if (!$saldo)	$saldo	= 0;
+/** Ajustando os valores para o formato do banco **/
+$saldo		= \Zage\App\Util::toMysqlNumber($saldoInicial);
+$valorJuros	= \Zage\App\Util::toMysqlNumber($valorJuros);
+$valorMora	= \Zage\App\Util::toMysqlNumber($valorMora);
+
+if ($pctJuros)	{
+	$pctJuros		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctJuros));
+}else{
+	$pctJuros		= 0;
+}
+
+if ($pctMora)	{
+	$pctMora		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctMora));
+}else{
+	$pctMora		= 0;
+}
+
+
+if (!$saldo)		$saldo			= 0;
+if (!$valorJuros)	$valorJuros		= 0;
+if (!$valorMora)	$valorMora		= 0;
 
 
 /** Data **/
@@ -90,7 +116,7 @@ if ($err != null) {
 try {
 	
 	if (isset($codConta) && (!empty($codConta))) {
- 		$oConta	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codEmpresa' => $system->getCodEmpresa(), 'codigo' => $codConta));
+ 		$oConta	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codConta));
  		if (!$oConta) $oConta	= new \Entidades\ZgfinConta();
  	}else{
  		$oConta	= new \Entidades\ZgfinConta();
@@ -111,9 +137,16 @@ try {
  	$oConta->setNome($nome);
  	$oConta->setCodAgencia($oAge);
  	$oConta->setCcorrente($ccorrente);
+ 	$oConta->setCcorrenteDV($ccorrenteDV);
  	$oConta->setDataInicial($dataInicial);
  	$oConta->setSaldoInicial($saldo);
  	$oConta->setIndAtiva($ativa);
+ 	$oConta->setCarteira($carteira);
+ 	$oConta->setValorJuros($valorJuros);
+ 	$oConta->setValorMora($valorMora);
+ 	$oConta->setPctJuros($pctJuros);
+ 	$oConta->setPctMora($pctMora);
+ 	$oConta->setInstrucao($instrucao);
  	
  	$em->persist($oConta);
  	$em->flush();

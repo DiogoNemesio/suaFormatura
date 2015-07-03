@@ -55,4 +55,12 @@ class NUM extends \Zage\Fin\Arquivos\TipoDado {
 		return true;
 	}
 	
+	#################################################################################
+	## Função de retornar o valor limpo de formatação
+	#################################################################################
+	public function getCleanVal() {
+		return ((int) $this->getValor());
+	}
+	
+	
 }

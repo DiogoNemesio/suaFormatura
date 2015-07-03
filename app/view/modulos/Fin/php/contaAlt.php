@@ -53,7 +53,14 @@ if (!empty($codConta)) {
 	$dataInicial	= ($info->getDataInicial() != null) ? $info->getDataInicial()->format($system->config["data"]["dateFormat"]) : null;
 	$codAgencia		= ($info->getcodAgencia() != null) ? $info->getcodAgencia()->getCodigo() : null;
 	$ccorrente		= $info->getCcorrente();
+	$ccorrenteDV	= $info->getCcorrenteDV();
 	$ativa			= ($info->getIndAtiva()	== 1) ? "checked" : null;
+	$carteira		= $info->getCarteira();
+	$valorJuros		= \Zage\App\Util::toPHPNumber($info->getValorJuros());
+	$valorMora		= \Zage\App\Util::toPHPNumber($info->getValorMora());
+	$pctJuros		= \Zage\App\Util::toPHPNumber($info->getPctJuros());
+	$pctMora		= \Zage\App\Util::toPHPNumber($info->getPctMora());
+	$instrucao		= $info->getInstrucao();
 	
 }else{
 	$codTipo		= null;
@@ -62,7 +69,14 @@ if (!empty($codConta)) {
 	$dataInicial	= null;
 	$codAgencia		= null;
 	$ccorrente		= null;
+	$ccorrenteDV	= null;
 	$ativa			= "checked";
+	$carteira		= null;
+	$valorJuros		= null;
+	$valorMora		= null;
+	$pctJuros		= null;
+	$pctMora		= null;
+	$instrucao		= null;
 }
 
 
@@ -120,6 +134,13 @@ $tpl->set('ATIVA'				,$ativa);
 $tpl->set('COD_AGENCIA'			,$codAgencia);
 $tpl->set('AGENCIAS'			,$oAgencia);
 $tpl->set('CCORRENTE'			,$ccorrente);
+$tpl->set('CCORRENTEDV'			,$ccorrenteDV);
+$tpl->set('CARTEIRA'			,$carteira);
+$tpl->set('VALOR_JUROS'			,$valorJuros);
+$tpl->set('VALOR_MORA'			,$valorMora);
+$tpl->set('PCT_JUROS'			,$pctJuros);
+$tpl->set('PCT_MORA'			,$pctMora);
+$tpl->set('INSTRUCAO'			,$instrucao);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################

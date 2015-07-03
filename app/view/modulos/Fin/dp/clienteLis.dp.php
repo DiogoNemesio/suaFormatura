@@ -16,12 +16,17 @@ include_once(BIN_PATH . 'auth.php');
 #################################################################################
 ## Resgata as variáveis postadas
 #################################################################################
-if (isset($_GET['q']))			$q			= \Zage\App\Util::antiInjection($_GET["q"]);
+if (isset($_GET['q']))				$q				= \Zage\App\Util::antiInjection($_GET["q"]);
+if (isset($_GET['codPessoa']))		$codPessoa		= \Zage\App\Util::antiInjection($_GET["codPessoa"]);
 
-$pessoas		= \Zage\Fin\Pessoa::busca($q,true,false,false);
+if (isset($codPessoa)) {
+	$pessoas	= $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codigo' => $codPessoa));
+}else{
+	$pessoas		= \Zage\Fin\Pessoa::busca($q,true,false,false);
+}
+
 $array			= array();
 $numItens		= \Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS');
-
 
 for ($i = 0; $i < sizeof($pessoas); $i++) {
 	
@@ -33,7 +38,7 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 	}
 	
 	$array[$i]["id"]		= $pessoas[$i]->getCodigo();
-	$array[$i]["name"]		= $pessoas[$i]->getNome() . " (".$infoCgc.")";
+	$array[$i]["text"]		= $pessoas[$i]->getNome() . " (".$infoCgc.")";
 	
 	
 	if ($i > $numItens) break;

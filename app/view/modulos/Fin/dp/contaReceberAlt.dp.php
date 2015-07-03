@@ -10,7 +10,6 @@ if (defined('DOC_ROOT')) {
 
 global $em,$log,$system;
 
-
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
@@ -77,6 +76,7 @@ $oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOn
 $oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
 $oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codContaRec));
 
+$log->debug($codPessoa);
 #################################################################################
 ## Validação de rateio
 #################################################################################

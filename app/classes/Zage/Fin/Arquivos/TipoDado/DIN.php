@@ -55,4 +55,12 @@ class DIN extends \Zage\Fin\Arquivos\TipoDado {
 		return true;
 	}
 	
+	#################################################################################
+	## Função de retornar o valor limpo de formatação
+	#################################################################################
+	public function getCleanVal() {
+		return (\Zage\App\Util::to_float((int) $this->getValor())/100);
+	}
+	
+	
 }

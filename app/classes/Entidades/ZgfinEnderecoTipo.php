@@ -15,7 +15,7 @@ class ZgfinEnderecoTipo
     /**
      * @var string
      *
-     * @ORM\Column(name="CODIGO", type="string", length=1, nullable=false)
+     * @ORM\Column(name="CODIGO", type="string", length=2, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

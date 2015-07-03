@@ -24,23 +24,9 @@ class ZgfinPessoaEndereco
     /**
      * @var string
      *
-     * @ORM\Column(name="CEP", type="string", length=8, nullable=false)
-     */
-    private $cep;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="ENDERECO", type="string", length=100, nullable=false)
      */
     private $endereco;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="BAIRRO", type="string", length=60, nullable=false)
-     */
-    private $bairro;
 
     /**
      * @var string
@@ -52,7 +38,21 @@ class ZgfinPessoaEndereco
     /**
      * @var string
      *
-     * @ORM\Column(name="COMPLEMENTO", type="string", length=100, nullable=true)
+     * @ORM\Column(name="CEP", type="string", length=8, nullable=false)
+     */
+    private $cep;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="BAIRRO", type="string", length=60, nullable=false)
+     */
+    private $bairro;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="COMPLEMENTO", type="string", length=120, nullable=true)
      */
     private $complemento;
 
@@ -98,29 +98,6 @@ class ZgfinPessoaEndereco
     }
 
     /**
-     * Set cep
-     *
-     * @param string $cep
-     * @return ZgfinPessoaEndereco
-     */
-    public function setCep($cep)
-    {
-        $this->cep = $cep;
-
-        return $this;
-    }
-
-    /**
-     * Get cep
-     *
-     * @return string 
-     */
-    public function getCep()
-    {
-        return $this->cep;
-    }
-
-    /**
      * Set endereco
      *
      * @param string $endereco
@@ -144,29 +121,6 @@ class ZgfinPessoaEndereco
     }
 
     /**
-     * Set bairro
-     *
-     * @param string $bairro
-     * @return ZgfinPessoaEndereco
-     */
-    public function setBairro($bairro)
-    {
-        $this->bairro = $bairro;
-
-        return $this;
-    }
-
-    /**
-     * Get bairro
-     *
-     * @return string 
-     */
-    public function getBairro()
-    {
-        return $this->bairro;
-    }
-
-    /**
      * Set numero
      *
      * @param string $numero
@@ -187,6 +141,52 @@ class ZgfinPessoaEndereco
     public function getNumero()
     {
         return $this->numero;
+    }
+
+    /**
+     * Set cep
+     *
+     * @param string $cep
+     * @return ZgfinPessoaEndereco
+     */
+    public function setCep($cep)
+    {
+        $this->cep = $cep;
+
+        return $this;
+    }
+
+    /**
+     * Get cep
+     *
+     * @return string 
+     */
+    public function getCep()
+    {
+        return $this->cep;
+    }
+
+    /**
+     * Set bairro
+     *
+     * @param string $bairro
+     * @return ZgfinPessoaEndereco
+     */
+    public function setBairro($bairro)
+    {
+        $this->bairro = $bairro;
+
+        return $this;
+    }
+
+    /**
+     * Get bairro
+     *
+     * @return string 
+     */
+    public function getBairro()
+    {
+        return $this->bairro;
     }
 
     /**

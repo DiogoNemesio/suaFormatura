@@ -16,9 +16,14 @@ include_once(BIN_PATH . 'auth.php');
 #################################################################################
 ## Resgata as variáveis postadas
 #################################################################################
-if (isset($_GET['q']))			$q			= \Zage\App\Util::antiInjection($_GET["q"]);
+if (isset($_GET['q']))				$q				= \Zage\App\Util::antiInjection($_GET["q"]);
+if (isset($_GET['codPessoa']))		$codPessoa		= \Zage\App\Util::antiInjection($_GET["codPessoa"]);
 
-$pessoas		= \Zage\Fin\Pessoa::busca($q,false,true,false);
+if (isset($codPessoa)) {
+	$pessoas	= $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codigo' => $codPessoa));
+}else{
+	$pessoas	= \Zage\Fin\Pessoa::busca($q,false,true,false);
+}
 $array			= array();
 $numItens		= \Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS');
 
@@ -31,9 +36,9 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 		$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CNPJ)->aplicaMascara($pessoas[$i]->getCgc());
 	}
 	
-	$array[$i]["id"]		= $pessoas[$i]->getCodigo();
-	$array[$i]["name"]		= $pessoas[$i]->getNome() . " (".$infoCgc.")";
 	
+	$array[$i]["id"]		= $pessoas[$i]->getCodigo();
+	$array[$i]["text"]		= $pessoas[$i]->getNome() . " (".$infoCgc.")";
 	if ($i > $numItens ) break;
 }
 

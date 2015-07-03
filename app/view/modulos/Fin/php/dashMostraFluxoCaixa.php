@@ -66,7 +66,7 @@ while ($data != $dataFim) {
 	
 	$data	= date($system->config["data"]["dateFormat"], mktime (0,0,0,($mes),$dia + $i,$ano));
 	
-	$log->debug("Data: ".$data);
+	//$log->debug("Data: ".$data);
 	
 }
 

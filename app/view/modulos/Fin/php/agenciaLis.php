@@ -50,8 +50,9 @@ try {
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GAgencia");
 $grid->adicionaTexto($tr->trans('BANCO'),				30, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('AGÊNCIA'),				20, $grid::CENTER	,'agencia');
-$grid->adicionaTexto($tr->trans('NOME'),				40, $grid::CENTER	,'nome');
+$grid->adicionaTexto($tr->trans('AGÊNCIA'),				15, $grid::CENTER	,'agencia');
+$grid->adicionaTexto($tr->trans('DIGITO'),				15, $grid::CENTER	,'agenciaDV');
+$grid->adicionaTexto($tr->trans('NOME'),				30, $grid::CENTER	,'nome');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($agencias);
@@ -63,8 +64,8 @@ $grid->importaDadosDoctrine($agencias);
 for ($i = 0; $i < sizeof($agencias); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codAgencia='.$agencias[$i]->getCodigo().'&url='.$url);
 	$grid->setValorCelula($i,0,$agencias[$i]->getCodBanco()->getCodBanco() . ' - '.$agencias[$i]->getCodBanco()->getNome());
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Fin/agenciaAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/agenciaExc.php?id='.$uid);
+	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/agenciaAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/agenciaExc.php?id='.$uid);
 }
 
 #################################################################################

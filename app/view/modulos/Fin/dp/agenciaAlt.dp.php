@@ -14,6 +14,7 @@ if (defined('DOC_ROOT')) {
 if (isset($_POST['codAgencia']))		$codAgencia			= \Zage\App\Util::antiInjection($_POST['codAgencia']);
 if (isset($_POST['nome'])) 				$nome				= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['agencia']))			$agencia			= \Zage\App\Util::antiInjection($_POST['agencia']);
+if (isset($_POST['agenciaDV']))			$agenciaDV			= \Zage\App\Util::antiInjection($_POST['agenciaDV']);
 if (isset($_POST['codBanco']))	 		$codBanco			= \Zage\App\Util::antiInjection($_POST['codBanco']);
 if (isset($_POST['banco']))	 			$banco				= \Zage\App\Util::antiInjection($_POST['banco']);
 
@@ -54,21 +55,9 @@ if (($oNome != null) && ($oNome->getCodigo() != $codAgencia)){
 	$err 	= 1;
 }
 
-$oCodAgencia	= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodorganizacao(), 'agencia' => $agencia ));
-
-if (($oCodAgencia != null) && ($oCodAgencia->getCodigo() != $codAgencia)){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Código da Agência já existe"));
-	$err 	= 1;
-}
-
 /** Banco **/
 if (!isset($codBanco) || (empty($codBanco))) {
-	
-	if (isset($banco) && !empty($banco)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Banco inválido, selecione um banco válido");
-	}else{
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo BANCO é obrigatório");
-	}
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo BANCO é obrigatório");
 	$err	= 1;
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
 	exit;
@@ -84,6 +73,21 @@ if ($infoBanco == false) {
 	exit;
 }
 
+$oCodAgencia	= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodorganizacao(), 'agencia' => $agencia ));
+
+if (($oCodAgencia != null) && ($oCodAgencia->getCodigo() != $codAgencia)){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Código da Agência já existe"));
+	$err 	= 1;
+}
+
+/** Dígito Verificador da Agência **/
+if (!isset($agenciaDV) || (empty($agenciaDV) && $agenciaDV != '0') && $infoBanco->getCodBanco() != 341) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo Dígito Verificador da AGÊNCIA é obrigatório");
+	$err	= 1;
+}else if($infoBanco->getCodBanco() == 341){
+	$agenciaDV = null;
+}
+
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  	exit;
@@ -95,7 +99,7 @@ if ($err != null) {
 try {
 	
 	if (isset($codAgencia) && (!empty($codAgencia))) {
- 		$oAgencia	= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codEmpresa' => $system->getCodMatriz(), 'codigo' => $codAgencia));
+ 		$oAgencia	= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codAgencia));
  		if (!$oAgencia) $oAgencia	= new \Entidades\ZgfinAgencia();
  	}else{
  		$oAgencia	= new \Entidades\ZgfinAgencia();
@@ -111,6 +115,7 @@ try {
  	$oAgencia->setCodBanco($infoBanco);
  	$oAgencia->setNome($nome);
  	$oAgencia->setAgencia($agencia);
+ 	$oAgencia->setAgenciaDV($agenciaDV);
  	
  	$em->persist($oAgencia);
  	$em->flush();

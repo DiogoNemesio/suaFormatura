@@ -178,7 +178,7 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 		#################################################################################
 		$percs		= array();
 		for ($i = 0; $i < $n; $i++) {
-			$perc		= floatval(str_replace("%", "", $this->_pctRateio[$i]));
+			$perc		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $this->_pctRateio[$i]));
 			if ($perc == 0) {
 				return $tr->trans('Array de Percentuais tem registro com percentual = 0 na posição "'.$i.'" ');
 			}elseif (!\Zage\App\Util::ehNumero($perc)) {

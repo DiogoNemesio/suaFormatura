@@ -47,14 +47,16 @@ if (!empty($codAgencia)) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
 
-	$codBanco		= ($info->getCodBanco() != null) ? $info->getCodBanco()->getCodBanco() : null;
+	$codBanco		= ($info->getCodBanco() != null) ? $info->getCodBanco()->getCodigo() : null;
 	$agencia		= $info->getAgencia();
+	$agenciaDV		= $info->getAgenciaDV();
 	$nome			= $info->getNome();
 	$banco			= ($info->getCodBanco() != null) ? $info->getCodBanco()->getCodBanco() . ' / '.$info->getCodBanco()->getNome() : null;
 	
 }else{
 	$codBanco		= null;
 	$agencia		= null;
+	$agenciaDV		= null;
 	$nome			= null;
 	$banco			= null;
 }
@@ -85,6 +87,7 @@ $tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
 $tpl->set('COD_AGENCIA'			,$codAgencia);
 $tpl->set('AGENCIA'				,$agencia);
+$tpl->set('AGENCIADV'			,$agenciaDV);
 $tpl->set('COD_BANCO'			,$codBanco);
 $tpl->set('BANCO'				,$banco);
 $tpl->set('NOME'				,$nome);

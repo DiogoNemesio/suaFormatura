@@ -53,8 +53,13 @@ class ALFA extends \Zage\Fin\Arquivos\TipoDado {
 			return false;
 		}
 		return true;
-		
-		return true;
 	}
 	
+	
+	#################################################################################
+	## Função de retornar o valor limpo de formatação
+	#################################################################################
+	public function getCleanVal() {
+		return trim($this->getValor());
+	}
 }
