@@ -36,12 +36,12 @@ class Conta extends \Entidades\ZgfinConta {
 		try {
 			$qb->select('ca')
 			->from('\Entidades\ZgfinConta','ca')
-			->leftJoin('ca.codEmpresa', 'c')
+			->leftJoin('ca.codOrganizacao', 'c')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('ca.codFilial'	, ':codEmpresa')
+				$qb->expr()->eq('ca.codFilial'	, ':codOrganizacao')
 			))
 			->orderBy('ca.nome', 'ASC')
-			->setParameter('codFilial', $system->getCodEmpresa());
+			->setParameter('codFilial', $system->getcodOrganizacao());
 			$query 		= $qb->getQuery();
 			return($query->getResult());
 		} catch (\Exception $e) {

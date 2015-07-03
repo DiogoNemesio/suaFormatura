@@ -89,7 +89,7 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 			))
 			->orderBy('cp.codigo','ASC')
 			->setParameter('codConta', $codConta)
-			->setParameter('codFilial', $system->getCodMatriz());
+			->setParameter('codFilial', $system->getCodOrganizacao());
 			
 			$query 		= $qb->getQuery();
 			return($query->getResult());
@@ -194,7 +194,7 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 		$cats		= array();
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_categoriasRateio[$i]) {
-				$oCat		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codEmpresa' => $system->getCodMatriz(),'codigo' => $this->_categoriasRateio[$i]));
+				$oCat		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codigo' => $this->_categoriasRateio[$i]));
 				if (!$oCat) {
 					return $tr->trans('Array de Categorias tem categoria inexistente  na posição "'.$i.'" !!!');
 				}else{
@@ -211,7 +211,7 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 		$centros	= array();
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_centroCustosRateio[$i]) {
-				$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codEmpresa' => $system->getCodMatriz(),'codigo' => $this->_centroCustosRateio[$i]));
+				$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codigo' => $this->_centroCustosRateio[$i]));
 				if (!$oCentro) {
 					return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$i.'" !!!');
 				}else{
@@ -283,7 +283,7 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 		#################################################################################
 		## Verifica se a conta existe
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 		
 		if (!$oConta) {
 			return($tr->trans('Conta %s não encontrada !!!',array('%s' => $codConta)));

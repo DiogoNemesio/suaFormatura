@@ -39,7 +39,7 @@ if (!isset($codTransf)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codTransf));
+$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
 
 if (!$oTransf) {
 	\Zage\App\Erro::halt('Transferência não encontrada');
@@ -101,7 +101,7 @@ try {
 ## Select da Conta de Origem
 #################################################################################
 try {
-	$aConta			= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getCodEmpresa()),array('nome' => 'ASC'));
+	$aConta			= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
 	$oContaOrig		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codContaOrig, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

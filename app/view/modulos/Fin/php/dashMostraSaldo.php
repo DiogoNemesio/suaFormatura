@@ -57,7 +57,7 @@ if (\DateTime::createFromFormat($system->config["data"]["dateFormat"],$hoje) < \
 ## Resgata as contas
 #################################################################################
 try {
-	$contas	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getCodEmpresa()), array('nome' => 'ASC'));
+	$contas	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getcodOrganizacao()), array('nome' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

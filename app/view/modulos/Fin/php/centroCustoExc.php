@@ -44,7 +44,7 @@ if (!isset($codCentro)) 		{
 #################################################################################
 try {
 
-	$info			= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codEmpresa' => $system->getCodMatriz(), 'codigo' => $codCentro));
+	$info			= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codCentro));
 	
 	if (!$info) 	{
 		\Zage\App\Erro::halt($tr->trans('Centro de Custo não existe'));

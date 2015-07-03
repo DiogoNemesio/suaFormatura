@@ -46,7 +46,7 @@ if (isset($_GET['codCategoria'])) 		{
 #################################################################################
 try {
 
-	$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria, 'codEmpresa' => $system->getCodMatriz()));
+	$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria, 'codOrganizacao' => $system->getCodOrganizacao()));
 	
 	if (!$cat) 	{
 		\Zage\App\Erro::halt($tr->trans('Categoria não existe'));

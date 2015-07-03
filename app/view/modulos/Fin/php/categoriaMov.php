@@ -52,7 +52,7 @@ if (!isset($codTipo) || ($codTipo != "C" && $codTipo != "D")) {
 #################################################################################
 try {
 
-	$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria, 'codEmpresa' => $system->getCodEmpresa()));
+	$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria, 'codOrganizacao' => $system->getcodOrganizacao()));
 	
 	if (!$cat) 	{
 		\Zage\App\Erro::halt($tr->trans('Categoria não existe'));

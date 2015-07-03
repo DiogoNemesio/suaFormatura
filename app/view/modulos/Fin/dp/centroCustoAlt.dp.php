@@ -35,7 +35,7 @@ if ((!empty($descricao)) && (strlen($descricao) > 60)) {
 	$err	= 1;
 }
 
-$oNome	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codEmpresa' => $system->getCodMatriz(), 'descricao' => $descricao ));
+$oNome	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'descricao' => $descricao ));
 
 if (($oNome != null) && ($oNome->getCodigo() != $codCentro)){
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Descrição do centro de custo já existe"));
@@ -70,15 +70,15 @@ if ($err != null) {
 try {
 	
 	if (isset($codCentro) && (!empty($codCentro))) {
- 		$oConta	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codEmpresa' => $system->getCodMatriz(), 'codigo' => $codCentro));
+ 		$oConta	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codCentro));
  		if (!$oConta) $oConta	= new \Entidades\ZgfinCentroCusto();
  	}else{
  		$oConta	= new \Entidades\ZgfinCentroCusto();
  	}
  	
- 	$oMat		= $em->getRepository('Entidades\ZgadmEmpresa')->findOneBy(array('codigo' => $system->getCodMatriz()));
+ 	$oMat		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
  	
- 	$oConta->setCodEmpresa($oMat);
+ 	$oConta->setcodOrganizacao($oMat);
  	$oConta->setDescricao($descricao);
  	$oConta->setIndDebito($debito);
  	$oConta->setIndCredito($credito);

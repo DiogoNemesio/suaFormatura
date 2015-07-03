@@ -82,7 +82,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	#################################################################################
 	## Resgata as informações da conta
 	#################################################################################
-	$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codConta));
+	$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 	
 	if (!$oConta) {
 		\Zage\App\Erro::halt('Conta não encontrada');

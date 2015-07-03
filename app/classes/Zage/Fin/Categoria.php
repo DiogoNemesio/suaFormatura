@@ -36,12 +36,12 @@ class Categoria extends \Entidades\ZgfinCategoria {
 		try {
 			$qb->select('ca')
 			->from('\Entidades\ZgfinCategoria','ca')
-			->leftJoin('ca.codEmpresa', 'c')
+			->leftJoin('ca.codOrganizacao', 'c')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('ca.codEmpresa'	, ':codEmpresa')
+				$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao')
 			))
 			->orderBy('ca.codCategoriaPai,ca.descricao', 'ASC')
-			->setParameter('codEmpresa', $system->getCodMatriz());
+			->setParameter('codOrganizacao', $system->getCodOrganizacao());
 			$query 		= $qb->getQuery();
 			return($query->getResult());
 		} catch (\Exception $e) {
@@ -60,12 +60,12 @@ class Categoria extends \Entidades\ZgfinCategoria {
     	try {
 	    	$qb->select('ca')
 	    	->from('\Entidades\ZgfinCategoria','ca')
-	    	->leftJoin('ca.codEmpresa', 'c')
+	    	->leftJoin('ca.codOrganizacao', 'c')
 	    	->where($qb->expr()->andX(
-	    		$qb->expr()->eq('ca.codEmpresa'	, ':codEmpresa')
+	    		$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao')
 	    	))
 	    	->orderBy('ca.descricao', 'ASC')
-	    	->setParameter('codEmpresa', $system->getCodMatriz());
+	    	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 
 	    	if ($codTipo != null) {
 	    		$qb->andWhere($qb->expr()->eq('ca.codTipo'	, ':codTipo'))
@@ -141,12 +141,12 @@ class Categoria extends \Entidades\ZgfinCategoria {
     		->from('\Entidades\ZgfinCategoria','ca')
     		->leftOuterJoin('\Entidades\ZgfinCategoriaTipo', 'ct', \Doctrine\Orm\Query\Expr\Join::WITH, 'ct.codigo = ca.codTipo')
     		->where($qb->expr()->andX(
-    			$qb->expr()->eq('ca.codEmpresa'	, ':codEmpresa'),
+    			$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao'),
     			$qb->expr()->like($qb->expr()->upper('ca.nome'), ':busca')
     		))
     		->orderBy('ca.codCategoriaPai,ca.descricao', 'ASC')
     		->setParameter('busca', '%'.strtoupper($sBusca).'%')
-    		->setParameter('codEmpresa', $system->getCodMatriz());
+    		->setParameter('codOrganizacao', $system->getCodOrganizacao());
     		$query 		= $qb->getQuery();
     		return($query->getResult());
     	} catch (\Exception $e) {
@@ -168,11 +168,11 @@ class Categoria extends \Entidades\ZgfinCategoria {
     		->from('\Entidades\ZgfinCategoria','ca')
     		->leftJoin('\Entidades\ZgfinCategoria', 'p', \Doctrine\Orm\Query\Expr\Join::WITH, 'p.codigo = ca.codCategoriaPai')
     		->where($qb->expr()->andX(
-    			$qb->expr()->eq('ca.codEmpresa'	, ':codEmpresa'),
+    			$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao'),
     			$qb->expr()->eq('ca.codTipo'		, ':codTipo')
     		))
     		->orderBy('ca.descricao', 'ASC')
-    		->setParameter('codEmpresa', $system->getCodMatriz())
+    		->setParameter('codOrganizacao', $system->getCodOrganizacao())
     		->setParameter('codTipo', $codTipo);
     
     		$query 		= $qb->getQuery();

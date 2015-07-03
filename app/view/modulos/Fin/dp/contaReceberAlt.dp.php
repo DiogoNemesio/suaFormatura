@@ -67,14 +67,14 @@ $conta->_setCodConta($codConta);
 #################################################################################
 ## Resgata os objetos (chave estrangeiras)
 #################################################################################
-$oFil		= $em->getRepository('Entidades\ZgadmEmpresa')->findOneBy(array('codigo' => $system->getCodEmpresa()));
+$oFil		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
 $oForma		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
 $oStatus	= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => "A"));
 $oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
 $oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
 $oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codPeriodoRec));
 $oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
-$oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codContaRec));
+$oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codContaRec));
 
 $log->debug($codPessoa);
 #################################################################################

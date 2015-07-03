@@ -28,13 +28,13 @@ try {
 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Parâmetro CATEGORIA não informado'))));
 	}
 	
-	$oCat	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria,'codEmpresa' => $system->getCodMatriz()));
+	$oCat	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria,'codOrganizacao' => $system->getCodOrganizacao()));
 
 	if (!$oCat) {
 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Categoria não encontrada'))));
 	}
 	
-	$oCatDest	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoriaDest,'codEmpresa' => $system->getCodMatriz(), 'codCategoriaPai' => null));
+	$oCatDest	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoriaDest,'codOrganizacao' => $system->getCodOrganizacao(), 'codCategoriaPai' => null));
 	
 	if (!$oCatDest) {
 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Categoria de Destino não encontrada'))));

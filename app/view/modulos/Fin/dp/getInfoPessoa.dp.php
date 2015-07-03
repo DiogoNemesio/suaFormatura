@@ -33,7 +33,7 @@ if (!isset($codPessoa) || empty($codPessoa)) {
 	exit;
 }
 
-$pessoa			= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codEmpresa' => $system->getCodMatriz(), 'codigo' => $codPessoa));
+$pessoa			= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
 
 if ($pessoa) {
 	$array["nome"]		= $pessoa->getNome();

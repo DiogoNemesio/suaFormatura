@@ -53,7 +53,7 @@ if ( ($codTipo == "CC") && ( !isset($codAgencia) || empty($codAgencia) )   ) {
 	$err	= 1;
 }
 
-$oNome	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'nome' => $nome ));
+$oNome	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'nome' => $nome ));
 
 if (($oNome != null) && ($oNome->getCodigo() != $codConta)){
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("NOME da conta já existe"));
@@ -116,7 +116,7 @@ if ($err != null) {
 try {
 	
 	if (isset($codConta) && (!empty($codConta))) {
- 		$oConta	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codConta));
+ 		$oConta	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
  		if (!$oConta) $oConta	= new \Entidades\ZgfinConta();
  	}else{
  		$oConta	= new \Entidades\ZgfinConta();
@@ -128,7 +128,7 @@ try {
  		$dataInicial		= null;
  	}
  	
- 	$oFil		= $em->getRepository('Entidades\ZgadmEmpresa')->findOneBy(array('codigo' => $system->getCodEmpresa()));
+ 	$oFil		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
  	$oTipo		= $em->getRepository('Entidades\ZgfinContaTipo')->findOneBy(array('codigo' => $codTipo));
  	$oAge		= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codAgencia));
  	

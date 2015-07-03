@@ -55,7 +55,7 @@ $aSelTransfs		= explode(",",$aSelTransfs);
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$transferencias		= $em->getRepository('Entidades\ZgfinTransferencia')->findBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $aSelTransfs));
+$transferencias		= $em->getRepository('Entidades\ZgfinTransferencia')->findBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $aSelTransfs));
 
 if (sizeof($transferencias) == 0) {
 	\Zage\App\Erro::halt($tr->trans('Transferência[s] não encontrada !!!'));
@@ -181,7 +181,7 @@ try {
 ## Select da Conta de Origem
 #################################################################################
 try {
-	$aConta			= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getCodEmpresa()),array('nome' => 'ASC'));
+	$aConta			= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
 	$oContaOrig		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

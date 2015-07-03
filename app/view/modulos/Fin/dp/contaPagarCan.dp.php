@@ -37,7 +37,7 @@ if ($err) {
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$contas		= $em->getRepository('Entidades\ZgfinContaPagar')->findBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $aSelContas));
+$contas		= $em->getRepository('Entidades\ZgfinContaPagar')->findBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $aSelContas));
 
 
 #################################################################################

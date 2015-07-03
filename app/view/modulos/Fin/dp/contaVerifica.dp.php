@@ -28,7 +28,7 @@ if (!$nome) {
 }
 
 try {
-	$oNome	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'nome' => $nome));
+	$oNome	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'nome' => $nome));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

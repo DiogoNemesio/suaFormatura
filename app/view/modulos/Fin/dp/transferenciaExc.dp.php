@@ -33,7 +33,7 @@ if ($err) {
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$transferencias		= $em->getRepository('Entidades\ZgfinTransferencia')->findBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $aSelTransfs));
+$transferencias		= $em->getRepository('Entidades\ZgfinTransferencia')->findBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $aSelTransfs));
 
 #################################################################################
 ## Salvar no banco

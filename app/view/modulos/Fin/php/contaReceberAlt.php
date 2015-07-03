@@ -41,7 +41,7 @@ if (empty($codConta)) 	\Zage\App\Erro::halt('Conta não encontrada !!!');
 ## Resgata as informações do banco
 #################################################################################
 try {
-	$info = $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getCodEmpresa(), 'codigo' => $codConta));
+	$info = $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -157,7 +157,7 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getCodEmpresa()),array('nome' => 'ASC'));
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codFilial' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
 	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codContaRec, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -197,7 +197,7 @@ try {
 ## Select do Centro de Custo
 #################################################################################
 try {
-	$aCentroCusto	= $em->getRepository('Entidades\ZgfinCentroCusto')->findBy(array('codEmpresa' => $system->getCodMatriz(),'indCredito' => 1),array('descricao' => 'ASC'));
+	$aCentroCusto	= $em->getRepository('Entidades\ZgfinCentroCusto')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(),'indCredito' => 1),array('descricao' => 'ASC'));
 	$oCentroCusto	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'DESCRICAO',	null, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

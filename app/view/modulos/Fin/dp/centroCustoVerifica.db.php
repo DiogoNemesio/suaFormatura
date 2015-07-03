@@ -28,7 +28,7 @@ if (!$descricao) {
 }
 
 try {
-	$oDescricao	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codEmpresa' => $system->getCodMatriz(), 'descricao' => $descricao));
+	$oDescricao	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'descricao' => $descricao));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

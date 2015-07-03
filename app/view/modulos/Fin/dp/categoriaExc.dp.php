@@ -27,7 +27,7 @@ try {
 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Parâmetro CATEGORIA não informado'))));
 	}
 	
-	$oCat	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria,'codEmpresa' => $system->getCodMatriz()));
+	$oCat	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria,'codOrganizacao' => $system->getCodOrganizacao()));
 
 	if (!$oCat) {
 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Categoria não encontrada'))));

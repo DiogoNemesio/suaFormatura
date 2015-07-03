@@ -28,7 +28,7 @@ try {
 		die('1'.\Zage\App\Util::encodeUrl('||'));
 	}
 	
-	$oConta	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codEmpresa' => $system->getCodMatriz(), 'codigo' => $codCentro));
+	$oConta	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codCentro));
 
 	if (!$oConta) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Centro de Custo não encontrado'));

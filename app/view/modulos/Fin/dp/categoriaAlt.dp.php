@@ -38,7 +38,7 @@ if (!$oTipo) {
 if (!$codCategoriaPai) $codCategoriaPai = null;
 
 /** Verifica se o nome já existe no mesmo nível **/
-$existeCat	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codEmpresa' => $system->getCodMatriz(),'codCategoriaPai' => $codCategoriaPai,'descricao' => $descricao,'codTipo' => $codTipo));
+$existeCat	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codCategoriaPai' => $codCategoriaPai,'descricao' => $descricao,'codTipo' => $codTipo));
 
 if (is_object($existeCat) && $existeCat->getCodigo() != $codCategoria) {
 	$err	= $tr->trans("Descrição já utilizada, escolha outra descricação para a Categoria");
@@ -62,7 +62,7 @@ if ($err != null) {
 try {
 
 	if (isset($codCategoria) && (!empty($codCategoria))) {
-		$oCat	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria,'codEmpresa' => $system->getCodMatriz()));
+		$oCat	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria,'codOrganizacao' => $system->getCodOrganizacao()));
 		if (!$oCat) $oCat	= new \Entidades\ZgfinCategoria();
 	}else{
 		$oCat		= new \Entidades\ZgfinCategoria();
@@ -71,18 +71,18 @@ try {
 	#################################################################################
 	## Resgatar o objeto da Matriz
 	#################################################################################
-	$oMat	= $em->getRepository('Entidades\ZgadmEmpresa')->findOneBy(array('codigo' => $system->getCodMatriz()));
+	$oMat	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 	
 	
 	if ($codCategoriaPai != null) {
-		$oCatPai	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoriaPai,'codEmpresa' => $system->getCodMatriz()));
+		$oCatPai	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoriaPai,'codOrganizacao' => $system->getCodOrganizacao()));
 	}else{
 		$oCatPai	= null;
 	}
 	
 	$oCat->setDescricao($descricao);
 	$oCat->setCodCategoriaPai($oCatPai);
-	$oCat->setCodEmpresa($oMat);
+	$oCat->setcodOrganizacao($oMat);
 	$oCat->setIndAtiva($ativa);
 	$oCat->setCodTipo($oTipo);
 	

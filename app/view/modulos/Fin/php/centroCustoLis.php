@@ -39,7 +39,7 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$centros	= $em->getRepository('Entidades\ZgfinCentroCusto')->findBy(array('codEmpresa' => $system->getCodMatriz()), array('descricao' => 'ASC'));
+	$centros	= $em->getRepository('Entidades\ZgfinCentroCusto')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()), array('descricao' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

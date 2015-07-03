@@ -179,7 +179,7 @@ try {
 	))
 	->orderBy('p.dataVencimento','ASC')
 	->addOrderBy('p.codigo','ASC')
-	->setParameter('codFilial', $system->getCodEmpresa());
+	->setParameter('codFilial', $system->getcodOrganizacao());
 	
 	
 	if (!empty($valorIni)) {

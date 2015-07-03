@@ -102,7 +102,7 @@ $('#zgFormID').submit(function(e) {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			$('#codCentroID').val(zgGetCodRetorno(data));
-			zgMostraAviso("Fechar",'Centro de Custo', '%URLNOVO%');
+			zgMostraAviso("Fechar",'Novo Centro de Custo', '%URLNOVO%');
 		}else{
 			zgMostraAviso("Fechar");
 		}
