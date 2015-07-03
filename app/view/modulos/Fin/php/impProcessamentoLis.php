@@ -51,33 +51,14 @@ if (isset($acao) && isset($codigo)) {
 		\Zage\App\Fila::cancelar($codigo);
 		\Zage\App\Fila::alteraLinhaAtual($codigo,0);
 	}elseif ($acao == "baixar") {
-		$nomeArquivo	= "REL_ERRO.pdf";
-		$info			= $em->getRepository('Entidades\ZgappFilaImportacao')->findOneBy(array('codigo' => $codigo));
-		if ((!$info)) 	exit;
-
-		$dir		= $info->DIR_VERSAO;
-		$tipoPTU 	= $info->COD_TIPO_PTU;
-
-		if ($tipoPTU == "ZIP") {
-			$czip		= "\\Alagipe\\PTU\\$dir\\$tipoPTU";
-			$ptuFile	= $czip::getPtu($info->ARQUIVO,$info->CODIGO);
-			$tipoPTU	= \Alagipe\PTU::descobreTipoPTU($ptuFile);
-		}
-		$classe 	= "\\Alagipe\\PTU\\$dir\\$tipoPTU";
-
-		$conteudo 		= $classe::getPdfErros($codigo);
-		\Zage\Util::sendHeaderDownload($nomeArquivo,'pdf');
-		echo $conteudo;
+		$nomeArquivo	= "RESUMO.pdf";
+		$resumo			= $em->getRepository('Entidades\ZgappFilaImportacaoResumo')->findOneBy(array('codFila' => $codigo));
+		if ((!$resumo)) 	exit;
+		$conteudo 		= $resumo->getResumo();
+		\Zage\App\Util::sendHeaderDownload($nomeArquivo,'pdf');
+		echo stream_get_contents($conteudo);
 		exit;
 	}
-
-	if (isset($err) && ($err != "")  ) {
-		echo "<script>alert('".$err."');</script>";
-	}
-	
-	$em->flush();
-	$em->clear();
-
 }
 
 

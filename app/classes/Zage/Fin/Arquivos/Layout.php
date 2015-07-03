@@ -46,11 +46,11 @@ abstract class Layout {
 	private $codTipoArquivo;
 	
 	/**
-	 * Array de erros
+	 * Objeto de Resumo
 	 *
-	 * @var array
+	 * @var \Zage\App\FilaImportacao\ResumoPDF
 	 */
-	public $erros = array();
+	protected $_resumo;
 
 	/**
 	 * Tipos de Registro
@@ -66,10 +66,31 @@ abstract class Layout {
 	private $EOL;
 	
 	/**
+	 * Indicador de layout válido
+	 * @var boolean
+	 */
+	private $indValido;
+	
+	/**
 	 * Construtor
 	 */
 	public function __construct() {
+		#################################################################################
+		## Inicia o objeto de resumo
+		#################################################################################
+		$this->_resumo	= new \Zage\App\FilaImportacao\ResumoPDF();
+		
+		
+		#################################################################################
+		## Seta a variável de Fim de linha
+		#################################################################################
 		$this->EOL = chr(10);
+
+		#################################################################################
+		## Define como true o indicador de valido
+		#################################################################################
+		$this->valido();
+		
 	}
 	
 	/**
@@ -81,12 +102,18 @@ abstract class Layout {
 		#################################################################################
 		## Verifica se o Tipo do Layout foi informado
 		#################################################################################
-		if (!$this->getCodTipoLayout())	throw new \Exception('Tipo do Layout nao definido !!! '.__FILE__);
+		if (!$this->getCodTipoLayout())	{
+			$this->_resumo->adicionaErro(0, 0, null, 'Tipo do Layout nao definido !!! ');
+			throw new \Exception('Tipo do Layout nao definido !!! ');
+		}
 		
 		#################################################################################
 		## Verifica se o Tipo do Registro é válido para esse layout
 		#################################################################################
-		if (!array_key_exists($tipoRegistro, $this->_tiposRegistro))	throw new \Exception('Tipo de registro "'.$tipoRegistro.'" não é válido para o layout "'.$this->getCodTipoLayout().'" !!! ');
+		if (!array_key_exists($tipoRegistro, $this->_tiposRegistro))	{
+			$this->_resumo->adicionaErro(0, 0, null, 'Tipo de registro "'.$tipoRegistro.'" não é válido para o layout "'.$this->getCodTipoLayout().'" !!! ');
+			throw new \Exception('Tipo de registro "'.$tipoRegistro.'" não é válido para o layout "'.$this->getCodTipoLayout().'" !!! ');
+		}
 		
 		#################################################################################
 		## Calcula o próximo índice
@@ -103,8 +130,8 @@ abstract class Layout {
 			$this->registros[$i]   = new $classe;
 			$this->registros[$i]->setLinha($i+1);
 		}else{
-			$log->debug("Classe não existe ($classe)");
-			throw new \Exception('Tipo de Registro não encontrado: '.$tipoRegistro.' !!! '.__FILE__);
+			$this->_resumo->adicionaErro(0, 0, null, "Classe não existe ($classe)");
+			throw new \Exception("Classe não existe ($classe)");
 		}
 
 		return ($i);
@@ -138,11 +165,13 @@ abstract class Layout {
 	 */
 	public function getValor($registro,$ordem) {
 		if (!isset($this->registros[$registro])) {
-			throw new \Exception('Registro não encontrado ('.$registro.') !!!'.__FILE__);
+			$this->_resumo->adicionaErro(0, 0, null, 'Registro não encontrado ('.$registro.') !!!');
+			throw new \Exception('Registro não encontrado ('.$registro.') !!!');
 		}
 	
 		if (!isset($this->registros[$registro]->campos[$ordem])) {
-			throw new \Exception('Sequência não encontrada ('.$ordem.') !!!'.__FILE__);
+			$this->_resumo->adicionaErro(0, 0, null, 'Sequência não encontrada ('.$ordem.') !!!');
+			throw new \Exception('Sequência não encontrada ('.$ordem.') !!!');
 		}
 		return ($this->registros[$registro]->getValor());
 	}
@@ -152,7 +181,8 @@ abstract class Layout {
 	 */
 	public function getRegistro($registro) {
 		if (!isset($this->registros[$registro])) {
-			throw new \Exception('Registro não encontrado ('.$registro.') !!!'.__FILE__);
+			$this->_resumo->adicionaErro(0, 0, null, 'Registro não encontrado ('.$registro.') !!!');
+			throw new \Exception('Registro não encontrado ('.$registro.') !!!');
 		}
 		return ($this->registros[$registro]->getRegistro());
 	}
@@ -167,9 +197,11 @@ abstract class Layout {
 				$this->conteudo .= $reg->getRegistro() . $this->EOL;
 			}else{
 				if ($valido instanceof \Zage\Fin\Arquivos\Erro) {
-					throw new \Exception("Linha: '".$reg->getLinha(). "' " . $valido->getMensagem() . $this->EOL.__FILE__);
+					$this->_resumo->adicionaErro(0, 0, null, $valido->getMensagem());
+					throw new \Exception("Linha: '".$reg->getLinha(). "' " . $valido->getMensagem() . $this->EOL);
 				}else{
-					throw new \Exception("Linha: '".$reg->getLinha(). "' " . $valido . $this->EOL.__FILE__);
+					$this->_resumo->adicionaErro(0, 0, null, $valido);
+					throw new \Exception("Linha: '".$reg->getLinha(). "' " . $valido . $this->EOL);
 				}
 			}
 		}
@@ -196,38 +228,32 @@ abstract class Layout {
 	 * @param string||\Zage\Fin\Arquivos\Erro $erro
 	 * @param integer $linha
 	 * @param string $tipoReg
-	 * @param integer $ordem
+	 * @param integer $posicao
 	 */
-	protected function adicionaErro ($erro,$linha,$tipoReg,$ordem) {
+	public function adicionaErro ($erro,$linha,$tipoReg,$posicao) {
 		#################################################################################
 		## Número máximo de erros
 		#################################################################################
 		$max = 100;
+
+		#################################################################################
+		## Define o indicador para inválido
+		#################################################################################
+		$this->invalido();		
 		
-		$n	= sizeof($this->erros);
+		$n	= sizeof($this->_resumo->itens);
 		
 		if ($n == $max) {
-			$this->erros[$n]	= new \Zage\Fin\Arquivos\Erro();
-			$this->erros[$n]->setLinha(0);
-			$this->erros[$n]->setTipoRegistro("Geral");
-			$this->erros[$n]->setOrdem(0);
-			$this->erros[$n]->setMensagem("Número máximo de erros alcançado !!!");
+			$this->_resumo->adicionaErro(0, 0, "Geral", "Número máximo de erros alcançado !!!");
 			return;
 		}elseif ($n > $max) {
 			return;
 		}
 		
-		if ($erro instanceof \Zage\Fin\Arquivos\Erro) {
-			$this->erros[$n]	= $erro;
-			if ($erro->getLinha() 			== null)	$erro->setLinha($linha);
-			if ($erro->getTipoRegistro() 	== null) 	$erro->setTipoRegistro($tipoReg);
-			if ($erro->getOrdem() 			== null) 	$erro->setOrdem($ordem);
+		if ($erro instanceof \Zage\App\FilaImportacao\ResumoPDF\Item\Erro) {
+			$this->_resumo->adicionaErro($erro->getPosicao(), $erro->getLinha, $erro->getTipoRegistro(), $erro->getMensagem());
 		}else{
-			$this->erros[$n]	= new \Zage\Fin\Arquivos\Erro();
-			$this->erros[$n]->setLinha($linha);
-			$this->erros[$n]->setTipoRegistro($tipoReg);
-			$this->erros[$n]->setOrdem($ordem);
-			$this->erros[$n]->setMensagem($erro);
+			$this->_resumo->adicionaErro($posicao, $linha, $tipoReg, $erro);
 		}
 	}
 
@@ -279,4 +305,36 @@ abstract class Layout {
 		$this->nome = $nome;
 		return $this;
 	}
+	
+	/**
+	 * Retornar o resumo em PDF
+	 */
+	public function getResumoPDF() {
+		return $this->_resumo->getPdf();
+	}
+	
+	/**
+	 *
+	 * @return the boolean
+	 */
+	public function estaValido() {
+		return $this->indValido;
+	}
+	
+	/**
+	 * Seta para false o indicador de valido
+	 */
+	protected function invalido() {
+		$this->indValido = false;
+	}
+	
+	
+	/**
+	 * Seta para true o indicador de valido
+	 */
+	protected function valido() {
+		$this->indValido = true;
+	}
+	
+	
 }

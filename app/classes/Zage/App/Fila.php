@@ -115,6 +115,8 @@ class Fila {
 
 		try {
 			$em->remove($fila);
+			$em->flush();
+			$em->clear();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -141,6 +143,8 @@ class Fila {
 	
 		try {
 			$em->persist($fila);
+			$em->flush();
+			$em->clear();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -168,10 +172,48 @@ class Fila {
 		
 		try {
 			$em->persist($fila);
+			$em->flush();
+			$em->clear();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
+
+	/**
+	 * Salvar o resumo PDF 
+	 * @param number $codFila
+	 */
+	public static function salvaResumo($codFila,$conteudo) {
+		global $em,$system,$_user,$log;
+	
+		#################################################################################
+		## Buscar o registro da fila
+		#################################################################################
+		$fila		= $em->getRepository('\Entidades\ZgappFilaImportacao')->findOneBy(array('codigo' => $codFila));
+		if (!$fila)	throw new \Exception(sprintf('Fila não encontrada "%s" !!!', $codFila));
+	
+		#################################################################################
+		## Verifica se já existe um resumo
+		#################################################################################
+		$resumo		= $em->getRepository('\Entidades\ZgappFilaImportacaoResumo')->findOneBy(array('codFila' => $codFila));
+		
+		if (!$resumo)	$resumo = new \Entidades\ZgappFilaImportacaoResumo();
+		
+		#################################################################################
+		## Alterar a linha
+		#################################################################################
+		$resumo->setCodFila($fila);
+		$resumo->setResumo($conteudo);
+	
+		try {
+			$em->persist($resumo);
+			$em->flush();
+			$em->detach($resumo);
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+	
 	
 	/**
 	 * Calcula o número de linhas do Arquivo
@@ -181,6 +223,5 @@ class Fila {
 		return (intval(exec('wc -l ' . $arquivo)));
 	}
 	
-
 
 }

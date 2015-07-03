@@ -49,10 +49,10 @@ abstract class TipoDado extends \Entidades\ZgfinArquivoCampoFormato {
 	}
 	
 	/**
-	 * @return the $nome
+	 * @return the $tamanho
 	 */
-	public function getNome() {
-		return $this->nome;
+	public function getTamanho() {
+		return $this->tamanho;
 	}
 
 	/**
@@ -136,7 +136,8 @@ abstract class TipoDado extends \Entidades\ZgfinArquivoCampoFormato {
 	 * Função para completar a string
 	 */
 	public function completar() {
-
+		global $system;
+		
 		#################################################################################
 		## Retornar se o tamanho for variável
 		#################################################################################
@@ -147,7 +148,7 @@ abstract class TipoDado extends \Entidades\ZgfinArquivoCampoFormato {
 		#################################################################################
 		$char	= $this->getCharPreenchimento();
 		if (mb_strlen($char,$system->config["database"]["charset"]) == 0) {
-			throw new Exception('Character de preenchimento não definido');
+			throw new \Exception('Character de preenchimento não definido');
 		}
 		
 		#################################################################################
