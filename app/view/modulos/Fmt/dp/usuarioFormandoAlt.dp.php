@@ -242,7 +242,7 @@ if ($oUsuario->_getEnviarEmail() == true) {
 	$mail->setBody($body);
 	$mail->setSubject("<ZageMail> ".$assunto);
 
-		#################################################################################
+	#################################################################################
 	## Definir os destinatários
 	#################################################################################
 	$mail->addTo($usuario);
@@ -251,10 +251,10 @@ if ($oUsuario->_getEnviarEmail() == true) {
 	## Salvar as informações e enviar o e-mail
 	#################################################################################
 	try {
-	$transport->send($mail);
-} catch (Exception $e) {
-$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
-			throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
+		$transport->send($mail);
+	} catch (Exception $e) {
+		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
+		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
 		}
 	}
 

@@ -624,15 +624,136 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		## Telefones
 		#################################################################################
 
-		$oUsuTel			= new \Zage\App\Telefone();
+		$oUsuTel = new \Zage\App\Telefone();
 		$oUsuTel->_setEntidadeTel('Entidades\ZgsegUsuarioTelefone');
 		$oUsuTel->_setCodProp($this->_usuario);
 		$oUsuTel->_setTelefone($this->_getTelefone());
 		$oUsuTel->_setCodTipoTel($this->_getCodTipoTel());
 		$oUsuTel->_setCodTelefone($this->_getCodTelefone());
 		
-		$retorno	= $oUsuTel->salvar();
+		$oUsuTel->salvar();
 
+	}
+	
+	/**
+	 * Excluir um usuário
+	 */
+	public function excluir() {
+		global $em,$system,$log,$tr;
+		
+		#################################################################################
+		## Validar dados
+		#################################################################################
+		// Validação do usuário
+		if (!$this->_getCodUsuario()) {
+			return $tr->trans('Parâmetro não informado : COD_USUARIO');
+		}
+		
+		$this->_usuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $this->_getCodUsuario()));
+
+		if (!$this->_usuario) {
+			return $tr->trans('Usuário não não existe');			
+		}
+		
+		// Validação da associação
+		if (!$this->_getCodOrganizacao()) {
+			return $tr->trans('Parâmetro não informado : COD_ORGANIZACAO');
+		}
+		
+		$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $this->_getCodUsuario() , 'codOrganizacao' => $this->_getCodOrganizacao()));
+		
+		if (!$oUsuOrg) {
+			return $tr->trans('Esta operação não pode ser concluída, porque não existe uma associação entre o usuário e a organização.');
+		}else{
+			if ($oUsuOrg->getCodStatus()->getCodigo() == 'C'){
+				return $tr->trans('Este usuário já está cancelado!');
+			}
+		}
+		
+		#################################################################################
+		## Excluir ou Cancelar usuário
+		#################################################################################
+		$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $this->_getCodUsuario()));
+		
+		if ($this->_usuario->getCodStatus()->getCodigo() == P){
+			if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $this->_getCodOrganizacao() && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
+					
+				\Zage\Seg\Usuario::Exclusao($this->_usuario, $oUsuOrg);
+				
+			}else{
+				
+				\Zage\Seg\Usuario::Cancelar($this->_usuario, $oUsuOrg);
+			}
+			
+		}else{
+			
+			\Zage\Seg\Usuario::Cancelar($this->_usuario, $oUsuOrg);
+		}
+	}
+	
+	/**
+	 * Exclusão completa do usuário
+	 */
+	public function Exclusao($oUsuario,$oUsuOrg) {
+		global $em,$system,$log,$tr;
+	
+		/*** Exclusão dos telefone ***/
+		$oTel = new \Zage\App\Telefone();
+		$oTel->_setEntidadeTel('Entidades\ZgsegUsuarioTelefone');
+		$oTel->_setCodProp($oUsuario);
+		$oTel->excluir();
+			
+		/*** Exclusão da associação ***/
+		$em->remove($oUsuOrg);
+		
+		/*** Exclusão do convite ***/
+		$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codOrganizacaoOrigem' => $oUsuOrg->getCodOrganizacao(),'codUsuarioDestino' => $oUsuario->getCodigo()));
+		for ($i = 0; $i < sizeof($oConvite); $i++) {
+			$em->remove($oConvite[$i]);
+		}
+		
+		/*** Exclusão do usuário ***/
+		$em->remove($oUsuario);
+	}
+	
+	/**
+	 * Cancelar
+	 */
+	public function Cancelar($oUsuario,$oUsuOrg) {
+		global $em,$system,$log,$tr;
+		
+		#################################################################################
+		## Validações
+		#################################################################################
+		if (!$oUsuOrg) {
+			return $tr->trans('Esta operação não pode ser concluída, porque não existe uma associação entre o usuário e a organização.');
+		}else{
+			if ($oUsuOrg->getCodStatus()->getCodigo() == 'C'){
+				return $tr->trans('Este usuário já está cancelado!');
+			}
+		}
+
+		#################################################################################
+		## Cancelar
+		#################################################################################
+		$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
+		$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codOrganizacaoOrigem' => $oUsuOrg->getCodOrganizacao(),'codUsuarioDestino' => $oUsuario->getCodigo(),'codStatus' => A));
+	
+		/*** Cancelar associação ***/
+		$oUsuOrg->setCodStatus($oStatus);
+		$oUsuOrg->setDataCancelamento(new \DateTime());
+		$em->persist($oUsuOrg);
+		
+		/*** Cancelar convites ***/
+		if($oConvite){
+			$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
+	
+			for ($i = 0; $i < sizeof($oConvite); $i++) {
+				$oConvite[$i]->setCodStatus($oConviteStatus);
+				$oConvite[$i]->setDataCancelamento(new \DateTime());
+				$em->persist($oConvite[$i]);
+			}
+		}
 	}
 	
 	public function _getCodigo() {
