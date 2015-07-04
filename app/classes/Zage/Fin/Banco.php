@@ -47,7 +47,6 @@ class Banco {
 					,':nome')
 			)
 			->orderBy('b.nome','ASC')
-			->addOrderBy('b.nome','ASC')
 			->setParameter('nome', '%'.strtoupper($nome).'%');
 			$query 		= $qb->getQuery();
 			//echo $query->getSQL();
@@ -57,4 +56,36 @@ class Banco {
 		}
 	}
 
+
+	/**
+	 *
+	 * Busca as carteiras
+	 */
+	public static function buscaCarteirasPorAgencia ($codAgencia,$nome = null) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('c')
+			->from('\Entidades\ZgfinCarteira','c')
+			->leftJoin('\Entidades\ZgfinBanco', 'b', \Doctrine\ORM\Query\Expr\Join::WITH, 'c.codBanco = b.codigo')
+			->leftJoin('\Entidades\ZgfinAgencia', 'a', \Doctrine\ORM\Query\Expr\Join::WITH, 'a.codBanco = b.codigo')
+			->where(
+				$qb->expr()->like(
+					$qb->expr()->upper('c.codCarteira') ,':nome'
+				),
+				$qb->expr()->eq('a.codigo'	, ':codAgencia')
+			)
+			->orderBy('c.codCarteira','ASC')
+			->setParameter('nome', '%'.strtoupper($nome).'%')
+			->setParameter('codAgencia', $codAgencia);
+			$query 		= $qb->getQuery();
+			//echo $query->getSQL();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 }

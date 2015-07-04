@@ -250,14 +250,13 @@
 								<table id="pessoaAltTableEnderecoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
 									<thead>
 										<tr class="warning">
-											<th class="center"></th>
+											<th class="center">&nbsp;</th>
 											<th class="col-sm-1 center">Tipo</th>
 											<th class="col-sm-1 center">Cep</th>
-											<th class="col-sm-1 center">Bairro</th>
-											<th class="col-sm-2 center">Endereço</th>
+											<th class="col-sm-2 center">Bairro</th>
+											<th class="col-sm-3 center">Endereço</th>
 											<th class="col-sm-1 center">Número</th>
 											<th class="col-sm-2 center">Complemento</th>
-											<th class="col-sm-2 center">Cidade</th>
 											<th class="col-sm-1 center"><span onclick="addRowEnderecoPessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 										</tr>
 									</thead>
@@ -410,14 +409,11 @@ function pessoaAltCarregaEndereco(pObj) {
 	    		$tr.find('input[name="endereco[]"]').removeAttr("readonly");
 	    		$tr.find('input[name="numero[]"]').removeAttr("readonly");
 	    		$tr.find('input[name="complemento[]"]').removeAttr("readonly");
-	    		$tr.find('input[name="codCidade[]"]').prop("disabled", false);
 	    		
 	    		$tr.find('input[name="bairro[]"]').val(vData.descBairro);
 	    		$tr.find('input[name="endereco[]"]').val(vData.descLogradouro);
 	    		$tr.find('input[name="codLogradouro[]"]').val(vData.codLogradouro);
 
-	    		$tr.find('input[name="codCidade[]"]').select2("val", vData.codCidade);
-	    		
 	    		$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
 
 	    	}else{
@@ -425,12 +421,9 @@ function pessoaAltCarregaEndereco(pObj) {
 	    		$tr.find('input[name="endereco[]"]').attr('readonly', 'readonly');
 	    		$tr.find('input[name="numero[]"]').attr('readonly', 'readonly');
 	    		$tr.find('input[name="complemento[]"]').attr('readonly', 'readonly');
-	    		$tr.find('input[name="codCidade[]"]').prop("disabled", true);
 	    		
 	    		$tr.find('input[name="bairro[]"]').val(null);
 	    		$tr.find('input[name="endereco[]"]').val(null);
-	    		$tr.find('input[name="codCidade[]"]').select2("val", null);
-
 	    		
 	    		$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro('Cep não encontrado !!!'));
 	    		
@@ -446,42 +439,12 @@ function pessoaAltCarregaEndereco(pObj) {
 }
 
 function addRowEnderecoPessoaAlt() {
-	$('#pessoaAltTableEnderecoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width: 120px;" name="codTipoEnd[]" data-rel="select2">%TIPO_END%</select></td><td><input type="text" name="cep[]" style="width: 90px;" onchange="pessoaAltCarregaEndereco($(this));" maxlength="9" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"></td><td><input type="text" readonly name="bairro[]" style="width: 120px;" maxlength="60" autocomplete="off"></td><td><input type="text" readonly name="endereco[]" maxlength="100" autocomplete="off"></td><td><input type="text" readonly name="numero[]" style="width: 80px;" maxlength="20" autocomplete="off"></td><td><input type="text" readonly name="complemento[]" maxlength="120" autocomplete="off"></td><td><input type="hidden" name="codCidade[]" style="width:180px;" disabled="disabled" class="select2Cidade" data-rel="select2Cidade"></td><td class="center"><span class="center" zgdelete onclick="delRowEnderecoPessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codEndereco[]"><input type="hidden" name="codLogradouro[]"></td></tr>');
+	$('#pessoaAltTableEnderecoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width: 120px;" name="codTipoEnd[]" data-rel="select2">%TIPO_END%</select></td><td><input type="text" name="cep[]" style="width: 99%;" onchange="pessoaAltCarregaEndereco($(this));" maxlength="9" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"></td><td><input type="text" readonly style="width: 99%;" name="bairro[]" maxlength="60" autocomplete="off"></td><td><input type="text" style="width: 99%;" readonly name="endereco[]" maxlength="100" autocomplete="off"></td><td><input type="text" style="width: 99%;" readonly name="numero[]" maxlength="20" autocomplete="off"></td><td><input type="text" style="width: 99%;" readonly name="complemento[]" maxlength="120" autocomplete="off"></td><td class="center"><span class="center" zgdelete onclick="delRowEnderecoPessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codEndereco[]"><input type="hidden" name="codLogradouro[]"></td></tr>');
 	$('#pessoaAltTableEnderecoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
 	});
 	$('#pessoaAltTableEnderecoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	$('#pessoaAltTableEnderecoID > tbody > tr:last .select2Cidade').select2({
-	    minimumInputLength: 2,
-	    allowClear: true,
-	    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-	        url: "%ROOT_URL%/Fin/getCidadeLis.dp.php",
-	        dataType: 'json',
-	        quietMillis: 250,
-	        data: function (term, page) {
-	            return {
-	                q: term, // search term
-	            };
-	        },
-	        results: function (data) {
-				return {results: data};
-			},
-	        cache: true
-	    },
-		initSelection : function (element, callback) {
-			var id = $(element).val();
-            if (id !== "") {
-                $.ajax("%ROOT_URL%/Fin/getCidadeLis.dp.php", {
-                    data: {codCidade: id},
-        			method: "GET",
-                    dataType: "json"
-				}).done(function(data) {
-					callback(data[0]);
-				});
-			}
-	    },
-	});
 }
 
 function delRowEnderecoPessoaAlt(pObj) {
@@ -571,38 +534,6 @@ $('[data-rel="select2Banco"]').select2({
 		}
     },
 });
-
-$('[data-rel="select2Cidade"]').select2({
-    minimumInputLength: 2,
-    allowClear: true,
-    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-        url: "%ROOT_URL%/Fin/getCidadeLis.dp.php",
-        dataType: 'json',
-        quietMillis: 250,
-        data: function (term, page) {
-            return {
-                q: term, // search term
-            };
-        },
-        results: function (data) {
-			return {results: data};
-		},
-        cache: true
-    },
-	initSelection : function (element, callback) {
-		var id = $(element).val();
-        if (id !== "") {
-            $.ajax("%ROOT_URL%/Fin/getCidadeLis.dp.php", {
-                data: {codCidade: id},
-    			method: "GET",
-                dataType: "json"
-			}).done(function(data) {
-				callback(data[0]);
-			});
-		}
-    },
-});
-
 
 /************************* Submit Formulário *************************/
 //Verificar se a validação está OK
@@ -836,7 +767,6 @@ function validaPessoaAlt() {
 	var $cep 			= $("input[name='cep\\[\\]']");
 	var $bairro			= $("input[name='bairro\\[\\]']");
 	var $endereco		= $("input[name='endereco\\[\\]']");
-	var $cidade			= $("input[name='codCidade\\[\\]']");
 	for (i = 0; i < $codEndereco.length; i++) {
 		var $td		= $cep.eq(i).parent();
 		var $tr		= $td.parent();
@@ -855,10 +785,6 @@ function validaPessoaAlt() {
 			vOK		= false;
 		}else if (!$endereco.eq(i).val()) {
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Endereço deve ser preenchido"));
-			$tr.addClass("alert-danger");
-			vOK		= false;
-		}else if (!$cidade.eq(i).val()) {
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Cidade deve ser selecionada"));
 			$tr.addClass("alert-danger");
 			vOK		= false;
 		}else{

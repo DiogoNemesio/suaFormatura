@@ -140,9 +140,9 @@ $tpl->set('FORMAS_PAG'				,$oFormaPag);
 $tpl->set('CATEGORIAS'				,$oCat);
 $tpl->set('CONTAS'					,$oConta);
 $tpl->set('PERIODOS_REC'			,$oPeriodo);
-$tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValor('APP_BS_TA_MINLENGTH'));
-$tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS'));
-$tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValor('APP_BS_TA_TIMEOUT'));
+$tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
+$tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
+$tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
 $tpl->set('DP'						,ROOT_URL.'/Fin/contaReceberAlt.dp.php');
 $tpl->set('FORMATO_DATA'			,$system->config["data"]["jsDateFormat"]);
 

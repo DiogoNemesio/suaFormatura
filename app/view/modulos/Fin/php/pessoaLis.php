@@ -53,7 +53,7 @@ try {
 		$nomeTipoPessoa	= "Transportadoras";
 	}
 	
-	$cliente	= $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), $indTipo => 1), array('nome' => 'ASC'));
+	$cliente	= $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), $indTipo => 1,'codTipoPessoa' => array("F","J")), array('nome' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

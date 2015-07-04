@@ -21,7 +21,7 @@ if (isset($_POST['ccorrente']))	 		$ccorrente			= \Zage\App\Util::antiInjection(
 if (isset($_POST['ccorrenteDV'])) 		$ccorrenteDV		= \Zage\App\Util::antiInjection($_POST['ccorrenteDV']);
 if (isset($_POST['ativa']))	 			$ativa				= \Zage\App\Util::antiInjection($_POST['ativa']);
 
-if (isset($_POST['carteira'])) 			$carteira			= \Zage\App\Util::antiInjection($_POST['carteira']);
+if (isset($_POST['codCarteira'])) 			$codCarteira			= \Zage\App\Util::antiInjection($_POST['codCarteira']);
 if (isset($_POST['valorJuros'])) 		$valorJuros			= \Zage\App\Util::antiInjection($_POST['valorJuros']);
 if (isset($_POST['valorMora'])) 		$valorMora			= \Zage\App\Util::antiInjection($_POST['valorMora']);
 if (isset($_POST['pctJuros'])) 			$pctJuros			= \Zage\App\Util::antiInjection($_POST['pctJuros']);
@@ -108,6 +108,28 @@ if (isset($ativa) && (!empty($ativa))) {
 	$ativa	= 0;
 }
 
+/** Carteira **/
+if (isset($codCarteira) && (!empty($codCarteira))) {
+	$oCarteira	= $em->getRepository('Entidades\ZgfinCarteira')->findOneBy(array('codigo' => $codCarteira));
+	if (!$oCarteira) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione uma Carteira válida");
+		$err	= 1;
+	}
+}else{
+	$oCarteira	= null;
+}
+
+/** Apagar as informações de Boleto caso o tipo não seja CC **/
+if ($codTipo	!== "CC") {
+	$codAgencia		= null;
+	$ccorrente		= null;
+	$ccorrenteDV	= null;
+	$valorJuros		= 0;
+	$valorMora		= 0;
+	$pctMora		= 0;
+	$pctJuros		= 0;
+	$instrucao		= null;
+}
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
@@ -132,11 +154,12 @@ try {
  		$dataInicial		= null;
  	}
  	
- 	$oFil		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
+ 	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
  	$oTipo		= $em->getRepository('Entidades\ZgfinContaTipo')->findOneBy(array('codigo' => $codTipo));
  	$oAge		= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codAgencia));
  	
- 	$oConta->setcodOrganizacao($oFil);
+ 	
+ 	$oConta->setcodOrganizacao($oOrg);
  	$oConta->setCodTipo($oTipo);
  	$oConta->setNome($nome);
  	$oConta->setCodAgencia($oAge);
@@ -145,7 +168,7 @@ try {
  	$oConta->setDataInicial($dataInicial);
  	$oConta->setSaldoInicial($saldo);
  	$oConta->setIndAtiva($ativa);
- 	$oConta->setCarteira($carteira);
+ 	$oConta->setCodCarteira($oCarteira);
  	$oConta->setValorJuros($valorJuros);
  	$oConta->setValorMora($valorMora);
  	$oConta->setPctJuros($pctJuros);

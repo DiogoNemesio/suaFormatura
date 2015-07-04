@@ -52,7 +52,6 @@ try {
 	
 	$movPag			= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codPessoa' => $codPessoa));
 	$movRec			= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codPessoa' => $codPessoa));
-	$movPed			= $em->getRepository('Entidades\ZgvndPedido')->findOneBy(array('codCliente' => $codPessoa));
 
 	if (!empty($movPag)) {
 		$podeRemover	= 'disabled';
@@ -61,10 +60,6 @@ try {
 	}elseif (!empty($movRec)) {
 		$podeRemover	= 'disabled';
 		$mensagem		= $tr->trans('Pessoa "%s" está em uso e não pode ser excluído (CONTAS A RECEBER)',array('%s' => $info->getNome()));
-		$classe			= "text-danger";
-	}elseif (!empty($movPed)) {
-		$podeRemover	= 'disabled';
-		$mensagem		= $tr->trans('Pessoa "%s" está em uso e não pode ser excluído (PEDIDO)',array('%s' => $info->getNome()));
 		$classe			= "text-danger";
 	}else{
 		$podeRemover	= null;

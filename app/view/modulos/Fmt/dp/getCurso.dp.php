@@ -22,7 +22,7 @@ if (isset($codCurso)) {
 
 
 $array		= array();
-//$numItens	= \Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS');
+//$numItens	= \Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS');
 
 for ($i = 0; $i < sizeof($cursos); $i++) {
 	$array[$i]["id"]		= $cursos[$i]->getCodigo();

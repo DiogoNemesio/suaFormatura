@@ -11,24 +11,23 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Resgata as variáveis postadas
 #################################################################################
-if (isset($_GET['q']))			$q			= \Zage\App\Util::antiInjection($_GET["q"]);
-if (isset($_GET['codBanco']))	$codBanco	= \Zage\App\Util::antiInjection($_GET["codBanco"]);
+if (isset($_GET['q']))				$q				= \Zage\App\Util::antiInjection($_GET["q"]);
+if (isset($_GET['codAgencia']))		$codAgencia		= \Zage\App\Util::antiInjection($_GET["codAgencia"]);
+if (isset($_GET['codCarteira']))	$codCarteira	= \Zage\App\Util::antiInjection($_GET["codCarteira"]);
 
 
-if (isset($codBanco)) {
-	$bancos		= $em->getRepository('Entidades\ZgfinBanco')->findBy(array('codigo' => $codBanco));
+if (isset($codCarteira)) {
+	$carteiras		= $em->getRepository('Entidades\ZgfinCarteira')->findBy(array('codigo' => $codCarteira));
 }else{
-	$bancos		= \Zage\Fin\Banco::busca($q);
+	$carteiras		= \Zage\Fin\Banco::buscaCarteirasPorAgencia($codAgencia,$q);
 }
 
 $array		= array();
 //$numItens	= \Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS');
-for ($i = 0; $i < sizeof($bancos); $i++) {
+for ($i = 0; $i < sizeof($carteiras); $i++) {
 	
-	$array[$i]["id"]		= $bancos[$i]->getCodigo();
-	$array[$i]["text"]		= $bancos[$i]->getCodBanco();
-	
-	//if ($i > $numItens) break;
+	$array[$i]["id"]		= $carteiras[$i]->getCodigo();
+	$array[$i]["text"]		= $carteiras[$i]->getCodCarteira();
 }
 
 echo json_encode($array);

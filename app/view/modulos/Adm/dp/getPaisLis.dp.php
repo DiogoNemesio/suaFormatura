@@ -22,7 +22,7 @@ if (isset($codPais)) {
 
 
 $array		= array();
-//$numItens	= \Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS');
+//$numItens	= \Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS');
 
 for ($i = 0; $i < sizeof($paises); $i++) {
 	$array[$i]["id"]		= $paises[$i]->getCodigo();

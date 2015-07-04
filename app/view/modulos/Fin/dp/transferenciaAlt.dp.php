@@ -56,7 +56,7 @@ $transf->_setCodTransferencia($codTransf);
 #################################################################################
 ## Resgata os objetos (chave estrangeiras)
 #################################################################################
-$oFil		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
+$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
 $oForma		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
 $oStatus	= $em->getRepository('Entidades\ZgfinTransferenciaStatusTipo')->findOneBy(array('codigo' => "P"));
 $oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
@@ -84,7 +84,7 @@ $flagAlterarSeq	= (isset($flagAlterarSeq)) 	? 1 : 0;
 #################################################################################
 ## Escrever os valores no objeto
 #################################################################################
-$transf->setcodOrganizacao($oFil);
+$transf->setcodOrganizacao($oOrg);
 $transf->setCodFormaPagamento($oForma);
 $transf->setCodStatus($oStatus);
 $transf->setCodMoeda($oMoeda);

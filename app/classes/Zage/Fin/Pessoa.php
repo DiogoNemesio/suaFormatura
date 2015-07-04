@@ -52,7 +52,7 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 			/** Telefones **/
 			$qb 	= $em->createQueryBuilder();
 			$qb->delete('Entidades\ZgfinPessoaTelefone', 't');
-			$qb->andWhere($qb->expr()->eq('t.codPessoa', ':codPessoa'));
+			$qb->andWhere($qb->expr()->eq('t.codProprietario', ':codPessoa'));
 			$qb->setParameter(':codPessoa', $codPessoa);
 			$numDeleted = $qb->getQuery()->execute();
 		

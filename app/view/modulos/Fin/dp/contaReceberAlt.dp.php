@@ -67,7 +67,7 @@ $conta->_setCodConta($codConta);
 #################################################################################
 ## Resgata os objetos (chave estrangeiras)
 #################################################################################
-$oFil		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
+$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
 $oForma		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
 $oStatus	= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => "A"));
 $oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
@@ -171,7 +171,7 @@ if (isset($codTipoValor) && $codTipoValor == "P") {
 #################################################################################
 ## Escrever os valores no objeto
 #################################################################################
-$conta->setcodOrganizacao($oFil);
+$conta->setcodOrganizacao($oOrg);
 $conta->setCodFormaPagamento($oForma);
 $conta->setCodStatus($oStatus);
 $conta->setCodMoeda($oMoeda);

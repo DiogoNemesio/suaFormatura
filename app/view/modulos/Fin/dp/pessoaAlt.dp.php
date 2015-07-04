@@ -294,7 +294,7 @@ try {
  	#################################################################################
  	## Contato
  	#################################################################################
- 	$telefones		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findBy(array('codPessoa' => $codPessoa));
+ 	$telefones		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findBy(array('codProprietario' => $codPessoa));
  	
  	#################################################################################
  	## Exclusão
@@ -317,7 +317,7 @@ try {
  	## Criação / Alteração 
  	#################################################################################
  	for ($i = 0; $i < sizeof($codTelefone); $i++) {
- 		$infoTel		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codPessoa' => $oPessoa->getCodigo()));
+ 		$infoTel		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codProprietario' => $oPessoa->getCodigo()));
  	
  		if (!$infoTel) {
  			$infoTel		= new \Entidades\ZgfinPessoaTelefone();
@@ -327,7 +327,7 @@ try {
  			
  			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
  			
- 			$infoTel->setCodPessoa($oPessoa);
+ 			$infoTel->setCodProprietario($oPessoa);
  			$infoTel->setCodTipoTelefone($oTipoTel);
  			$infoTel->setTelefone($telefone[$i]);
  		 	
@@ -386,7 +386,7 @@ try {
  		$infoEnd		= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codigo' => $codEndereco[$i] , 'codPessoa' => $oPessoa->getCodigo()));
  		if (!$infoEnd) 	$infoEnd		= new \Entidades\ZgfinPessoaEndereco();
 
- 		$oCidade		= $em->getRepository('Entidades\ZgadmCidade')->findOneBy(array('codigo' => $codCidade[$i]));
+ 		//$oCidade		= $em->getRepository('Entidades\ZgadmCidade')->findOneBy(array('codigo' => $codCidade[$i]));
 		$oTipoEnd		= $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => $codTipoEnd[$i]));
 		$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro[$i]));
  		
@@ -397,7 +397,7 @@ try {
  		$infoEnd->setBairro($bairro[$i]);
  		$infoEnd->setComplemento($complemento[$i]);
  		$infoEnd->setCep($cep[$i]);
- 		$infoEnd->setCodCidade($oCidade);
+ 		//$infoEnd->setCodCidade($oCidade);
  		$infoEnd->setCodLogradouro($oLogradouro);
  				
  		try {

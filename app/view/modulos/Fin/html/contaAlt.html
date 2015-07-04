@@ -125,7 +125,8 @@
 								    	<label class="col-sm-3 control-label" for="nomeID">Carteira</label>
 											<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Código da Carteira utilizada"></i></span>
-						   					<input class="form-control" id="carteiraID" type="text" name="carteira" maxlength="3" placeholder="Carteira" value="%CARTEIRA%" required autocomplete="off" />
+											<input type="hidden" name="codCarteira" id="codCarteiraID" placeholder="Carteiras" value="%COD_CARTEIRA%" style="width:100%;" class="select2" data-rel="select2">
+
 						    			</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpCarteiraID"></div>
 						    		</div>
@@ -237,12 +238,15 @@ function zgMostraDivsContaAlt() {
 		$('#divCcorrenteDVID').removeClass("hidden");
 		$('#liContaBoletoID').removeClass("disabled");
 		$('#aContaBoletoID').removeClass("disabled");
+		
+		atualizaCarteirasContaAlt();
 	}else{
 		$('#divContaAgenciaID').addClass("hidden");
 		$('#divCcorrenteDVID').addClass("hidden");
 		$('#liContaBoletoID').addClass("disabled");
 		$('#aContaBoletoID').addClass("disabled");
 	}
+	
 }
 
 /************************* Submit Formulário *************************/
@@ -408,6 +412,42 @@ function validaContaAlt() {
 	}else{
 		return vOK;
 	}	
+}
+
+function atualizaCarteirasContaAlt() {
+	$('#codCarteiraID').css('width','100%').select2("destroy").select2({
+	    minimumInputLength: 0,
+	    allowClear: true,
+	    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+	        url: "%ROOT_URL%/Fin/getCarteiraLis.dp.php",
+	        dataType: 'json',
+	        quietMillis: 250,
+	        data: function (term, page) {
+	            return {
+	                q: term, // search term
+	                codAgencia: $('#codAgenciaID').val()	
+	            };
+	        },
+	        results: function (data) {
+				return {results: data};
+			},
+	        cache: true
+	    },
+		initSelection : function (element, callback) {
+			var id = $(element).val();
+	        if (id !== "") {
+	            $.ajax("%ROOT_URL%/Fin/getCarteiraLis.dp.php", {
+	                data: {codCarteira: id, codAgencia: $('#codAgenciaID').val()},
+	    			method: "GET",
+	                dataType: "json"
+				}).done(function(data) {
+					callback(data[0]);
+				});
+			}
+	    },
+	});
+
+	
 }
 
 </script>

@@ -38,20 +38,21 @@ if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) 
 		
 		if (isset($loadCgc) && !empty($loadCgc)) {
 			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'cgc' => $loadCgc,));
-			$codPessoa	= $info->getCodigo();
+			if ($info) {
+				$codPessoa	= $info->getCodigo();
+			}else{
+				\Zage\App\Erro::halt('Cgc "'.$loadCgc.'" não encontrado !!!');
+			}
 		}else{
 			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
+			if (!$info) \Zage\App\Erro::halt('Pessoa "'.$codPessoa.'" não encontrada !!!');
 		}
 		
-	//	\Doctrine\Common\Util\Debug::dump($info);
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
 	
-	$tipo			= $info->getCodTipoPessoa()->getCodigo();
-
-	
-	
+	$tipo			= ($info->getCodTipoPessoa()) ? $info->getCodTipoPessoa()->getCodigo() : null;
 	$ativo			= ($info->getIndAtivo()			== 1) ? "checked" : null;
 	$indEst			= ($info->getIndEstrangeiro()	== 1) ? "checked" : null;
 	$email			= $info->getEmail();
@@ -158,7 +159,7 @@ $urlNovo			= ROOT_URL."/Fin/pessoaAlt.php?id=".$uid;
 ## Resgata as informações do banco
 #################################################################################
 try {
-	$aTipo	= $em->getRepository('Entidades\ZgfmtOrganizacaoPessoaTipo')->findAll();
+	$aTipo	= $em->getRepository('Entidades\ZgfinPessoaTipo')->findBy(array('codigo' => array('F','J')));
 	$oTipo	= $system->geraHtmlCombo($aTipo,'CODIGO', 'DESCRICAO', $tipo, null);
 
 } catch (\Exception $e) {
@@ -201,7 +202,7 @@ try {
 #################################################################################
 ## Resgatar os dados de contato
 #################################################################################
-$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findBy(array('codPessoa' => $codPessoa));
+$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findBy(array('codProprietario' => $codPessoa));
 $tabTel			= "";
 for ($i = 0; $i < sizeof($aTelefones); $i++) {
 
@@ -227,15 +228,8 @@ for ($i = 0; $i < sizeof($aEnd); $i++) {
 	#################################################################################
 	$codTipoEnd		= ($aEnd[$i]->getCodTipoEndereco() 	!= null) 	? $aEnd[$i]->getCodTipoEndereco()->getCodigo() 	: null;
 	$oTipoEnd		= $system->geraHtmlCombo($aTipoEnd,	'CODIGO', 'DESCRICAO',	$codTipoEnd, '');
-	
-	$codCidade		= ($aEnd[$i]->getCodCidade()		!= null) 	? $aEnd[$i]->getCodCidade()->getCodigo() 		: null;
-	$descCidade		= ($aEnd[$i]->getCodCidade()		!= null) 	? $aEnd[$i]->getCodCidade()->getCodUf()->getCodUf() . ' / '.$aEnd[$i]->getCodCidade()->getNome() : null;
-	
 	$codLogradouro	= ($aEnd[$i]->getCodLogradouro()	!= null) 	? $aEnd[$i]->getCodLogradouro()->getCodigo() 	: null;
-
-	//$oCidade	= "<option value='".$codCidade."' selected>".$descCidade."</option>";
-
-	$tabEnd		.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width: 120px;" name="codTipoEnd[]" data-rel="select2">'.$oTipoEnd.'</select></td><td><input type="text" name="cep[]" value="'.$aEnd[$i]->getCep().'" style="width: 90px;" onchange="pessoaAltCarregaEndereco($(this));" maxlength="9" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"></td><td><input type="text" name="bairro[]" value="'.$aEnd[$i]->getBairro().'" style="width: 120px;" maxlength="60" autocomplete="off"></td><td><input type="text" name="endereco[]" value="'.$aEnd[$i]->getEndereco().'" maxlength="100" autocomplete="off"></td><td><input type="text" name="numero[]" value="'.$aEnd[$i]->getNumero().'" style="width: 80px;" maxlength="20" autocomplete="off"></td><td><input type="text" name="complemento[]" value="'.$aEnd[$i]->getComplemento().'" maxlength="120" autocomplete="off"></td><td><input type="hidden" name="codCidade[]" value="'.$codCidade.'" style="width:180px;" class="select2Cidade" data-rel="select2Cidade"></td><td class="center"><span class="center" zgdelete onclick="delRowEnderecoPessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codEndereco[]" value="'.$aEnd[$i]->getCodigo().'"><input type="hidden" name="codLogradouro[]" value="'.$codLogradouro.'"></td></tr>';
+	$tabEnd		.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width: 120px;" name="codTipoEnd[]" data-rel="select2">'.$oTipoEnd.'</select></td><td><input type="text" name="cep[]" style="width: 99%;" value="'.$aEnd[$i]->getCep().'" onchange="pessoaAltCarregaEndereco($(this));" maxlength="9" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"></td><td><input type="text" name="bairro[]" style="width: 99%;" value="'.$aEnd[$i]->getBairro().'" maxlength="60" autocomplete="off"></td><td><input type="text" name="endereco[]" style="width: 99%;" value="'.$aEnd[$i]->getEndereco().'" maxlength="100" autocomplete="off"></td><td><input type="text" style="width: 99%;" name="numero[]" value="'.$aEnd[$i]->getNumero().'" maxlength="20" autocomplete="off"></td><td><input type="text" name="complemento[]" style="width: 99%;" value="'.$aEnd[$i]->getComplemento().'" maxlength="120" autocomplete="off"></td><td class="center"><span class="center" zgdelete onclick="delRowEnderecoPessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codEndereco[]" value="'.$aEnd[$i]->getCodigo().'"><input type="hidden" name="codLogradouro[]" value="'.$codLogradouro.'"></td></tr>';
 }
 
 #################################################################################
@@ -320,9 +314,9 @@ $tpl->set('TAB_TELEFONE'			,$tabTel);
 $tpl->set('TAB_CONTA'				,$tabConta);
 $tpl->set('TAB_ENDERECO'			,$tabEnd);
 
-$tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValor('APP_BS_TA_MINLENGTH'));
-$tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS'));
-$tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValor('APP_BS_TA_TIMEOUT'));
+$tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
+$tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
+$tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'						,$_icone_);
 $tpl->set('COD_MENU'				,$_codMenu_);

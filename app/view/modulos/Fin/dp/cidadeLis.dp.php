@@ -20,7 +20,7 @@ if (isset($_GET['q']))			$q			= \Zage\App\Util::antiInjection($_GET["q"]);
 
 $cidades	= \Zage\Adm\Cidade::busca($q);
 $array		= array();
-$numItens	= \Zage\Adm\Parametro::getValor('APP_BS_TA_ITENS');
+$numItens	= \Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS');
 
 
 for ($i = 0; $i < sizeof($cidades); $i++) {

@@ -55,7 +55,7 @@ if (!empty($codConta)) {
 	$ccorrente		= $info->getCcorrente();
 	$ccorrenteDV	= $info->getCcorrenteDV();
 	$ativa			= ($info->getIndAtiva()	== 1) ? "checked" : null;
-	$carteira		= $info->getCarteira();
+	$codCarteira	= ($info->getcodCarteira() != null) ? $info->getcodCarteira()->getCodigo() : null;
 	$valorJuros		= \Zage\App\Util::toPHPNumber($info->getValorJuros());
 	$valorMora		= \Zage\App\Util::toPHPNumber($info->getValorMora());
 	$pctJuros		= \Zage\App\Util::toPHPNumber($info->getPctJuros());
@@ -71,7 +71,7 @@ if (!empty($codConta)) {
 	$ccorrente		= null;
 	$ccorrenteDV	= null;
 	$ativa			= "checked";
-	$carteira		= null;
+	$codCarteira	= null;
 	$valorJuros		= null;
 	$valorMora		= null;
 	$pctJuros		= null;
@@ -135,7 +135,7 @@ $tpl->set('COD_AGENCIA'			,$codAgencia);
 $tpl->set('AGENCIAS'			,$oAgencia);
 $tpl->set('CCORRENTE'			,$ccorrente);
 $tpl->set('CCORRENTEDV'			,$ccorrenteDV);
-$tpl->set('CARTEIRA'			,$carteira);
+$tpl->set('COD_CARTEIRA'		,$codCarteira);
 $tpl->set('VALOR_JUROS'			,$valorJuros);
 $tpl->set('VALOR_MORA'			,$valorMora);
 $tpl->set('PCT_JUROS'			,$pctJuros);
