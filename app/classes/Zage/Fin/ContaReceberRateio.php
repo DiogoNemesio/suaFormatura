@@ -84,12 +84,12 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 			->from('\Entidades\ZgfinContaReceberRateio','crr')
 			->leftJoin('\Entidades\ZgfinContaReceber', 'cp', \Doctrine\ORM\Query\Expr\Join::WITH, 'crr.codContaRec = cp.codigo')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cp.codFilial'	, ':codFilial'),
+				$qb->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
 				$qb->expr()->eq('crr.codContaRec'	, ':codConta')
 			))
 			->orderBy('cp.codigo','ASC')
 			->setParameter('codConta', $codConta)
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 			
 			$query 		= $qb->getQuery();
 			return($query->getResult());

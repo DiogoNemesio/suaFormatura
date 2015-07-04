@@ -84,12 +84,12 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 			->from('\Entidades\ZgfinContaPagarRateio','cpr')
 			->leftJoin('\Entidades\ZgfinContaPagar', 'cp', \Doctrine\ORM\Query\Expr\Join::WITH, 'cpr.codContaPag = cp.codigo')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cp.codFilial'	, ':codFilial'),
+				$qb->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
 				$qb->expr()->eq('cpr.codContaPag'	, ':codConta')
 			))
 			->orderBy('cp.codigo','ASC')
 			->setParameter('codConta', $codConta)
-			->setParameter('codFilial', $system->getCodOrganizacao());
+			->setParameter('codOrganizacao', $system->getCodOrganizacao());
 			
 			$query 		= $qb->getQuery();
 			return($query->getResult());
@@ -283,7 +283,7 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 		#################################################################################
 		## Verifica se a conta existe
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 		
 		if (!$oConta) {
 			return($tr->trans('Conta %s não encontrada !!!',array('%s' => $codConta)));

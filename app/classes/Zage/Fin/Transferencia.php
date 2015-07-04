@@ -71,11 +71,11 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 			$qb->select('t')
 			->from('\Entidades\ZgfinTransferencia','t')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('t.codFilial'	, ':codFilial')
+				$qb->expr()->eq('t.codOrganizacao'	, ':codOrganizacao')
 			))
 			->orderBy('t.codStatus','ASC')
 			->addOrderBy('t.dataEmissao','DESC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 			
 			$query 		= $qb->getQuery();
 			return($query->getResult());
@@ -97,11 +97,11 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 			$qb->select('t')
 			->from('\Entidades\ZgfinTransferencia','t')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('t.codFilial'	, ':codFilial')
+				$qb->expr()->eq('t.codOrganizacao'	, ':codOrganizacao')
 			))
 			->orderBy('t.dataTransferencia','ASC')
 			->addOrderBy('t.descricao,t.parcela,t.dataEmissao','ASC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 				
 			if ($dataTipo == "E") {
 				$campoData		= "t.dataEmissao";
@@ -320,7 +320,7 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 			if (!$this->getCodGrupoTransferencia()) $this->setCodGrupoTransferencia(\Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoConta"));
 			if (!$this->getCodGrupoLanc()) 			$this->setCodGrupoLanc(\Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoLanc"));
 		}else{
-			$oTransfInicial		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'codigo' => $this->_getCodTransferencia()));
+			$oTransfInicial		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'codigo' => $this->_getCodTransferencia()));
 			$this->setCodGrupoTransferencia($oTransfInicial->getCodGrupoTransferencia());
 			$this->setCodGrupoLanc($oTransfInicial->getCodGrupoLanc());
 				
@@ -370,9 +370,9 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 			#################################################################################
 			if ($this->_getCodTransferencia() != null) {
 				if ($this->_getIndAlterarSeq () == 1) {
-					$object			= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'parcela' => $p, 'codGrupoTransferencia' => $this->getCodGrupoTransferencia(),'codStatus' => array('P')));
+					$object			= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'parcela' => $p, 'codGrupoTransferencia' => $this->getCodGrupoTransferencia(),'codStatus' => array('P')));
 				}else{
-					$object			= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'codigo' => $this->_getCodTransferencia()));
+					$object			= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'codigo' => $this->_getCodTransferencia()));
 				}
 				if (!$object)	continue;
 			}else{
@@ -399,7 +399,7 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 				$object->setCodStatus($this->getCodStatus());
 			}
 
-			$object->setCodFilial($this->getCodFilial());
+			$object->setcodOrganizacao($this->getcodOrganizacao());
 			$object->setCodFormaPagamento($this->getCodFormaPagamento());
 			$object->setCodMoeda($this->getCodMoeda());
 			$object->setDescricao($this->getDescricao());
@@ -626,7 +626,7 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 		## Gerar as movimentações bancárias
 		#################################################################################
 		$oMovOrig	= new \Zage\Fin\MovBancaria();
-		$oMovOrig->setCodFilial($oFil);
+		$oMovOrig->setcodOrganizacao($oFil);
 		$oMovOrig->setCodConta($oContaOrig);
 		$oMovOrig->setCodOrigem($oOrigem);
 		$oMovOrig->setCodTipoOperacao($oTipoOperD);
@@ -636,7 +636,7 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 		$oMovOrig->setCodGrupoMov($grupoMov);
 	
 		$oMovDest	= new \Zage\Fin\MovBancaria();
-		$oMovDest->setCodFilial($oFil);
+		$oMovDest->setcodOrganizacao($oFil);
 		$oMovDest->setCodConta($oContaDest);
 		$oMovDest->setCodOrigem($oOrigem);
 		$oMovDest->setCodTipoOperacao($oTipoOperC);
@@ -673,7 +673,7 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 		#################################################################################
 		## Verifica se a conta existe
 		#################################################################################
-		$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codTransferencia));
+		$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codTransferencia));
 		
 		if (!$oTransf) {
 			return($tr->trans('Transferência %s não encontrada !!!',array('%s' => $codTransferencia)));
@@ -778,7 +778,7 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 		#################################################################################
 		## Resgata as informações da transferência
 		#################################################################################
-		$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
+		$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
 		
 		if (!$oTransf) {
 			return (null);
@@ -802,7 +802,7 @@ class Transferencia extends \Entidades\ZgfinTransferencia {
 		#################################################################################
 		## Resgata as informações da transferência
 		#################################################################################
-		$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
+		$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
 		
 		if (!$oTransf) {
 			return (null);

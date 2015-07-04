@@ -29,7 +29,7 @@ class Data {
 	 * @param number $filial
 	 * @param date $data
 	 */
-	public static function ehDiaUtil($data,$filial = null) {
+	public static function ehDiaUtil($data) {
 		global $em,$system;
 		
 		$dateObj		= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $data);
@@ -62,31 +62,6 @@ class Data {
 		}
 		
 		if ($feriadoNacional) {
-			return false;
-		}
-		
-		/** Se a filial não for informada retornar **/
-		if (!$filial) return true;
-		
-		/** Checando se é feriado fixo na filial informada **/
-		try {
-			$feriadoFilial = $em->getRepository ( 'Entidades\ZgfinFeriadoFilial' )->findOneBy (array ('codFilial' => $filial,'dia' => $diaMes,'mes' => $mes));
-		} catch ( \Exception $e ) {
-			\Zage\App\Erro::halt ( $e->getMessage () );
-		}
-		
-		if ($feriadoFilial) {
-			return false;
-		}
-		
-		/** Checando se é feriado Variável na filial informada **/
-		try {
-			$feriadoFilial = $em->getRepository ( 'Entidades\ZgfinFeriadoFilialVariavel' )->findOneBy (array ('codFilial' => $filial,'data' => $dateObj));
-		} catch ( \Exception $e ) {
-			\Zage\App\Erro::halt ( $e->getMessage () );
-		}
-
-		if ($feriadoFilial) {
 			return false;
 		}
 		

@@ -456,7 +456,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	#################################################################################
 	$contaRec	= $contas[$i]->getCodConta();
 	if ( ($contaRec) && ($formaPag == 'BOL') ) {
-		if ($contaRec->getCodTipo()->getCodigo() == 'CC' && ($contaRec->getCarteira() != null) ) {
+		if ($contaRec->getCodTipo()->getCodigo() == 'CC' && ($contaRec->getCodCarteira() != null) ) {
 			$urlBol		= ($podeBol)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/geraBoleto.php?id=".$uid."');" : null;
 		}else{
 			$urlBol		= null;

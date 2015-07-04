@@ -107,11 +107,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$qb->select('cr')
 			->from('\Entidades\ZgfinContaReceber','cr')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cr.codFilial'	, ':codFilial')
+				$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao')
 			))
 			->orderBy('cr.codStatus','ASC')
 			->addOrderBy('cr.dataEmissao','DESC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 			
 			$query 		= $qb->getQuery();
 			return($query->getResult());
@@ -135,11 +135,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			->from('\Entidades\ZgfinContaReceber','cr')
 			->leftJoin('\Entidades\ZgfinPessoa', 'p', \Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa = p.codigo')
 			->where($qb->expr()->andX(
-					$qb->expr()->eq('cr.codFilial'	, ':codFilial')
+					$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao')
 			))
 			->orderBy('cr.dataVencimento','ASC')
 			->addOrderBy('cr.descricao,cr.parcela,cr.dataEmissao','ASC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 			
 			if ($dataTipo == "E") {
 				$campoData		= "cr.dataEmissao";
@@ -463,7 +463,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			if (!$this->getCodGrupoConta()) $this->setCodGrupoConta(\Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoConta"));
 			if (!$this->getCodGrupoLanc()) 	$this->setCodGrupoLanc(\Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoLanc"));
 		}else{
-			$oContaInicial		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'codigo' => $this->_getCodigo()));
+			$oContaInicial		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'codigo' => $this->_getCodigo()));
 			$this->setCodGrupoConta($oContaInicial->getCodGrupoConta());
 			$this->setCodGrupoLanc($oContaInicial->getCodGrupoLanc());
 			
@@ -523,9 +523,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			#################################################################################
 			if ($this->_getCodigo() != null) {
 				if ($this->_getIndAlterarSeq () == 1) {
-					$object			= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'parcela' => $p, 'codGrupoConta' => $this->getCodGrupoConta(),'codStatus' => array('A')));
+					$object			= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'parcela' => $p, 'codGrupoConta' => $this->getCodGrupoConta(),'codStatus' => array('A')));
 				}else{
-					$object			= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'codigo' => $this->_getCodigo()));
+					$object			= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'codigo' => $this->_getCodigo()));
 				}
 				if (!$object)	continue;
 			}else{
@@ -550,9 +550,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$object->setCodGrupoConta($this->getCodGrupoConta());
 				$object->setCodGrupoLanc($this->getCodGrupoLanc());
 				$object->setCodStatus($this->getCodStatus());
+				$object->setValorCancelado(0);
 			}
 				
-			$object->setCodFilial($this->getCodFilial());
+			$object->setcodOrganizacao($this->getcodOrganizacao());
 			$object->setCodFormaPagamento($this->getCodFormaPagamento());
 			$object->setCodMoeda($this->getCodMoeda());
 			$object->setCodPessoa($this->getCodPessoa());
@@ -973,7 +974,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Gerar a movimentação bancária
 		#################################################################################
 		$oMov	= new \Zage\Fin\MovBancaria();
-		$oMov->setCodFilial($oFil);
+		$oMov->setcodOrganizacao($oFil);
 		$oMov->setCodConta($oContaCre);
 		$oMov->setCodOrigem($oOrigem);
 		$oMov->setCodTipoOperacao($oTipoOper);
@@ -1011,7 +1012,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Resgata as informações da conta
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 		
 		if (!$oConta) {
 			return (null);
@@ -1042,7 +1043,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Resgata as informações da conta
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 	
 		if (!$oConta) {
 			return (null);
@@ -1070,7 +1071,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Verifica se a conta existe
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 	
 		if (!$oConta) {
 			return($tr->trans('Conta %s não encontrada !!!',array('%s' => $codConta)));
@@ -1133,13 +1134,13 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			->leftJoin('\Entidades\ZgfinContaReceberRateio', 'crr', \Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo = crr.codContaRec')
 			->leftJoin('\Entidades\ZgfinCategoria', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 'crr.codCategoria = c.codigo')
 			->where($qb->expr()->andX(
-					$qb->expr()->eq('cr.codFilial'	, ':codFilial'),
+					$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
 					$qb->expr()->isNotNull('crr.codCategoria')
 			))
 			->addGroupBy('c.descricao')
 			->orderBy('cr.dataVencimento','ASC')
 			->addOrderBy('cr.descricao,cr.parcela,cr.dataEmissao','ASC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 	
 			if ($dataTipo == "E") {
 				$campoData		= "cr.dataEmissao";
@@ -1267,13 +1268,13 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			->leftJoin('\Entidades\ZgfinContaReceberRateio', 'crr', \Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo = crr.codContaRec')
 			->leftJoin('\Entidades\ZgfinCentroCusto', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 'crr.codCentroCusto = c.codigo')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cr.codFilial'	, ':codFilial'),
+				$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
 				$qb->expr()->isNotNull('crr.codCentroCusto')
 			))
 			->addGroupBy('c.descricao')
 			->orderBy('cr.dataVencimento','ASC')
 			->addOrderBy('cr.descricao,cr.parcela,cr.dataEmissao','ASC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 	
 			if ($dataTipo == "E") {
 				$campoData		= "cr.dataEmissao";
@@ -1400,7 +1401,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codigo' => $codConta));
 		if (!$oConta) return null;
-		$codFilial	= $oConta->getCodFilial();
+		$codOrganizacao	= $oConta->getcodOrganizacao();
 		
 		#################################################################################
 		## Resgata o último nossoNúmero da filial da conta
@@ -1410,10 +1411,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$qb->select('max(cr.nossoNumero) as valor')
 			->from('\Entidades\ZgfinContaReceber','cr')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cr.codFilial'	, ':codFilial'),
+				$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
 				$qb->expr()->isNotNull('cr.nossoNumero')
 			))
-			->setParameter('codFilial', $codFilial);
+			->setParameter('codOrganizacao', $codOrganizacao);
 	
 	
 			$query 			= $qb->getQuery();

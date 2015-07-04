@@ -45,4 +45,14 @@ class Endereco {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
 	}
+	
+	/**
+	 * Retornar o endereço formatado
+	 * @param string $endereco
+	 * @param string $numero
+	 * @param string $bairro
+	 */
+	public static function formataEndereco($endereco,$numero,$bairro,$complemento = null) {
+		return trim($endereco . " ".$numero. ", ".$bairro." ".$complemento);
+	}
 }

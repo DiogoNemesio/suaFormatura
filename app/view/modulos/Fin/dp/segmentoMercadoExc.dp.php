@@ -28,7 +28,7 @@ try {
 		die('1'.\Zage\App\Util::encodeUrl('||'));
 	}
 	
-	$oSeg	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codSegmento));
+	$oSeg	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codigo' => $codSegmento));
 
 	if (!$oSeg) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Segmento de Mercado não encontrado'));

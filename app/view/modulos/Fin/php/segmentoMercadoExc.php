@@ -44,7 +44,7 @@ if (!isset($codSegmento)) 		{
 #################################################################################
 try {
 
-	$info			= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codSegmento));
+	$info			= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codigo' => $codSegmento));
 	
 	if (!$info) 	{
 		\Zage\App\Erro::halt($tr->trans('Segmento de Mercado não existe'));

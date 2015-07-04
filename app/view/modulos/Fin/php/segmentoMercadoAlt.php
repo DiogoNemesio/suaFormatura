@@ -42,7 +42,7 @@ if (!isset($codSegmento)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 #################################################################################
 if (!empty($codSegmento)) {
 	try {
-		$info = $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codSegmento));
+		$info = $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codigo' => $codSegmento));
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}

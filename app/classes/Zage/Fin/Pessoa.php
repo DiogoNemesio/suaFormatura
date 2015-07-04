@@ -222,13 +222,13 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 			#################################################################################
 			## Caso não encontre Busca o Endereço de Faturamento
 			#################################################################################
-			$oEnd			= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oConta->getCodPessoa()->getCodigo(),'codTipoEndereco' => "F"));
+			$oEnd			= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa,'codTipoEndereco' => "F"));
 		
 			if (!$oEnd)		{
 				#################################################################################
 				## Caso não encontre Busca o Endereço de Entrega
 				#################################################################################
-				$oEnd			= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oConta->getCodPessoa()->getCodigo(),'codTipoEndereco' => "E"));
+				$oEnd			= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa,'codTipoEndereco' => "E"));
 			}
 		}
 		

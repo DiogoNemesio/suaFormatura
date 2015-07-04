@@ -93,24 +93,24 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	$vencimento			= ($contas[$i]->getDataVencimento() 	!= null) ? $contas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
 	
 	if (!$vencimento) {
-		continue;
-		//\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Vencimento não configurado (%s)',array('%s' => $vencimento)));
+		//continue;
+		\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Vencimento não configurado (%s)',array('%s' => $vencimento)));
 	}
 	
 	if ($codFormaPag	!== "BOL") {
-		continue;
-		//\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Forma de pagamento não é BOLETO (%s)',array('%s' => $codFormaPag)));
+		//continue;
+		\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Forma de pagamento não é BOLETO (%s)',array('%s' => $codFormaPag)));
 	}
 	
 	if (!$codContaRec) {
-		continue;
-		//\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Nenhuma conta corrente informada !!!'));
+		//continue;
+		\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Nenhuma conta corrente informada !!!'));
 	}else if ($codContaRec->getCodTipo()->getCodigo() !== "CC") {
-		continue;
-		//\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Conta de recebimento não é do tipo "CONTA CORRENTE" !!! (%s)',array('%s' => $codContaRec->getCodTipo()->getCodigo())));
-	}else if (!$codContaRec->getCarteira()) {
-		continue;
-		//\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Carteira não configurada na conta corrente !!!'));
+		//continue;
+		\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Conta de recebimento não é do tipo "CONTA CORRENTE" !!! (%s)',array('%s' => $codContaRec->getCodTipo()->getCodigo())));
+	}else if (!$codContaRec->getCodCarteira()) {
+		//continue;
+		\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Carteira não configurada na conta corrente !!!'));
 	}
 	
 

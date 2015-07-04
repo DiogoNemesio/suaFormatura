@@ -40,7 +40,7 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$segmentos	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()), array('descricao' => 'ASC'));
+	$segmentos	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findBy(array(), array('descricao' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

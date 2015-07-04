@@ -33,7 +33,7 @@ if ((!empty($descricao)) && (strlen($descricao) > 60)) {
 	$err	= 1;
 }
 
-$oNome	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'descricao' => $descricao ));
+$oNome	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('descricao' => $descricao ));
 
 if (($oNome != null) && ($oNome->getCodigo() != $codSegmento)){
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Descrição do Segmento de Mercado já existe"));
@@ -51,18 +51,12 @@ if ($err != null) {
 try {
 	
 	if (isset($codSegmento) && (!empty($codSegmento))) {
- 		$oSeg	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codSegmento));
+ 		$oSeg	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codigo' => $codSegmento));
  		if (!$oSeg) $oSeg	= new \Entidades\ZgfinSegmentoMercado();
  	}else{
  		$oSeg	= new \Entidades\ZgfinSegmentoMercado();
  	}
  	
- 	#################################################################################
- 	## Resgatar o objeto da Organização
- 	#################################################################################
- 	$oOrg	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-
- 	$oSeg->setCodOrganizacao($oOrg);
  	$oSeg->setDescricao($descricao);
  	
  	$em->persist($oSeg);

@@ -107,11 +107,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			$qb->select('cp')
 			->from('\Entidades\ZgfinContaPagar','cp')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cp.codFilial'	, ':codFilial')
+				$qb->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao')
 			))
 			->orderBy('cp.codStatus','ASC')
 			->addOrderBy('cp.dataEmissao','DESC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 			
 			$query 		= $qb->getQuery();
 			return($query->getResult());
@@ -135,11 +135,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			->from('\Entidades\ZgfinContaPagar','cp')
 			->leftJoin('\Entidades\ZgfinPessoa', 'p', \Doctrine\ORM\Query\Expr\Join::WITH, 'cp.codPessoa = p.codigo')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cp.codFilial'	, ':codFilial')
+				$qb->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao')
 			))
 			->orderBy('cp.dataVencimento','ASC')
 			->addOrderBy('cp.descricao,cp.parcela,cp.dataEmissao','ASC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 			
 			if ($dataTipo == "E") {
 				$campoData		= "cp.dataEmissao";
@@ -463,7 +463,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			if (!$this->getCodGrupoConta()) $this->setCodGrupoConta(\Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoConta"));
 			if (!$this->getCodGrupoLanc()) 	$this->setCodGrupoLanc(\Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoLanc"));
 		}else{
-			$oContaInicial		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'codigo' => $this->_getCodigo()));
+			$oContaInicial		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'codigo' => $this->_getCodigo()));
 			$this->setCodGrupoConta($oContaInicial->getCodGrupoConta());
 			$this->setCodGrupoLanc($oContaInicial->getCodGrupoLanc());
 			
@@ -523,9 +523,9 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			#################################################################################
 			if ($this->_getCodigo() != null) {
 				if ($this->_getIndAlterarSeq () == 1) {
-					$object			= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'parcela' => $p, 'codGrupoConta' => $this->getCodGrupoConta(),'codStatus' => array('A')));
+					$object			= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'parcela' => $p, 'codGrupoConta' => $this->getCodGrupoConta(),'codStatus' => array('A')));
 				}else{
-					$object			= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(),'codigo' => $this->_getCodigo()));
+					$object			= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(),'codigo' => $this->_getCodigo()));
 				}
 				if (!$object)	continue;
 			}else{
@@ -550,9 +550,10 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 				$object->setCodGrupoConta($this->getCodGrupoConta());
 				$object->setCodGrupoLanc($this->getCodGrupoLanc());
 				$object->setCodStatus($this->getCodStatus());
+				$object->setValorCancelado(0);
 			}
 				
-			$object->setCodFilial($this->getCodFilial());
+			$object->setcodOrganizacao($this->getcodOrganizacao());
 			$object->setCodFormaPagamento($this->getCodFormaPagamento());
 			$object->setCodMoeda($this->getCodMoeda());
 			$object->setCodPessoa($this->getCodPessoa());
@@ -972,7 +973,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		## Gerar a movimentação bancária
 		#################################################################################
 		$oMov	= new \Zage\Fin\MovBancaria();
-		$oMov->setCodFilial($oFil);
+		$oMov->setcodOrganizacao($oFil);
 		$oMov->setCodConta($oContaDeb);
 		$oMov->setCodOrigem($oOrigem);
 		$oMov->setCodTipoOperacao($oTipoOper);
@@ -1010,7 +1011,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Resgata as informações da conta
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 		
 		if (!$oConta) {
 			return (null);
@@ -1041,7 +1042,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Resgata as informações da conta
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 	
 		if (!$oConta) {
 			return (null);
@@ -1069,7 +1070,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Verifica se a conta existe
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codFilial' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
 	
 		if (!$oConta) {
 			return($tr->trans('Conta %s não encontrada !!!',array('%s' => $codConta)));
@@ -1131,13 +1132,13 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			->leftJoin('\Entidades\ZgfinContaPagarRateio', 'cpr', \Doctrine\ORM\Query\Expr\Join::WITH, 'cp.codigo = cpr.codContaPag')
 			->leftJoin('\Entidades\ZgfinCategoria', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 'cpr.codCategoria = c.codigo')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cp.codFilial'	, ':codFilial'),
+				$qb->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
 				$qb->expr()->isNotNull('cpr.codCategoria')
 			))
 			->addGroupBy('c.descricao')
 			->orderBy('cp.dataVencimento','ASC')
 			->addOrderBy('cp.descricao,cp.parcela,cp.dataEmissao','ASC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 				
 			if ($dataTipo == "E") {
 				$campoData		= "cp.dataEmissao";
@@ -1265,13 +1266,13 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			->leftJoin('\Entidades\ZgfinContaPagarRateio', 'cpr', \Doctrine\ORM\Query\Expr\Join::WITH, 'cp.codigo = cpr.codContaPag')
 			->leftJoin('\Entidades\ZgfinCentroCusto', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 'cpr.codCentroCusto = c.codigo')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('cp.codFilial'	, ':codFilial'),
+				$qb->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
 				$qb->expr()->isNotNull('cpr.codCentroCusto')
 			))
 			->addGroupBy('c.descricao')
 			->orderBy('cp.dataVencimento','ASC')
 			->addOrderBy('cp.descricao,cp.parcela,cp.dataEmissao','ASC')
-			->setParameter('codFilial', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getcodOrganizacao());
 	
 			if ($dataTipo == "E") {
 				$campoData		= "cp.dataEmissao";

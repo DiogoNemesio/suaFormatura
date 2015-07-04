@@ -82,7 +82,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	#################################################################################
 	## Resgata as informações da conta
 	#################################################################################
-	$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+	$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
 	
 	if (!$oConta) {
 		\Zage\App\Erro::halt('Conta não encontrada');
@@ -121,12 +121,12 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	#################################################################################
 	## Resgata as informações do Cedente (Filial)
 	#################################################################################
-	$cedenteNome		= $oConta->getcodOrganizacao()->getNome();
-	$cedenteCNPJ		= \Zage\App\Util::formatCGC($oConta->getcodOrganizacao()->getCnpj());
-	$cedenteEndereco	= \Zage\Adm\Endereco::formataEndereco($oConta->getcodOrganizacao()->getEndereco(), $oConta->getcodOrganizacao()->getNumero(), $oConta->getcodOrganizacao()->getBairro(),$oConta->getcodOrganizacao()->getComplemento());
-	$cedenteCep			= $oConta->getcodOrganizacao()->getCep();
-	$cedenteCidade		= ($oConta->getcodOrganizacao()->getCodLogradouro()) ? $oConta->getcodOrganizacao()->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome() : null;
-	$cedenteUF			= ($oConta->getcodOrganizacao()->getCodLogradouro()) ? $oConta->getcodOrganizacao()->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUf()->getCodUf() : null;
+	$cedenteNome		= $oConta->getCodOrganizacao()->getNome();
+	$cedenteCNPJ		= \Zage\App\Util::formatCGC($oConta->getCodOrganizacao()->getCgc());
+	$cedenteEndereco	= \Zage\Adm\Endereco::formataEndereco($oConta->getCodOrganizacao()->getEndereco(), $oConta->getCodOrganizacao()->getNumero(), $oConta->getCodOrganizacao()->getBairro(),$oConta->getCodOrganizacao()->getComplemento());
+	$cedenteCep			= $oConta->getCodOrganizacao()->getCep();
+	$cedenteCidade		= ($oConta->getCodOrganizacao()->getCodLogradouro()) ? $oConta->getCodOrganizacao()->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome() : null;
+	$cedenteUF			= ($oConta->getCodOrganizacao()->getCodLogradouro()) ? $oConta->getCodOrganizacao()->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUf()->getCodUf() : null;
 	
 	#################################################################################
 	## Resgata as informações do Sacado (Cliente)
@@ -174,6 +174,10 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	//$especieDoc				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getSimbolo() 	: null;
 	$especieDoc				= "DM"; # Duplicata Mercantil
 	
+	if (!$juros)			$juros		= 0;
+	if (!$mora)				$mora		= 0;
+	if (!$desconto)			$desconto	= 0;
+	
 	#################################################################################
 	## Verifica se a conta já gerou o nosso número
 	#################################################################################
@@ -192,7 +196,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$agenciaDV			= $codAgencia->getAgenciaDv();
 	$ccorrente			= $codContaRec->getCcorrente();
 	$ccorrenteDV		= $codContaRec->getCcorrenteDv();
-	$carteira			= $codContaRec->getCarteira();
+	$carteira			= $codContaRec->getCodCarteira()->getCodCarteira();
 	
 	#################################################################################
 	## Resgata as informações de acréscimos
@@ -201,6 +205,11 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$valMora			= \Zage\App\Util::to_float($codContaRec->getValorMora());
 	$pctJuros			= $codContaRec->getPctJuros();
 	$pctMora			= $codContaRec->getPctMora();
+	
+	if (!$valJuros)		$valJuros	= 0;
+	if (!$valMora)		$valMora	= 0;
+	if (!$pctJuros)		$pctJuros	= 0;
+	if (!$pctMora)		$pctMora	= 0;
 	
 	#################################################################################
 	## Resgata as informações referente ao serviço prestado

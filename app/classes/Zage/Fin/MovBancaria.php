@@ -38,7 +38,7 @@ class MovBancaria extends \Entidades\ZgfinMovBancaria {
 		#################################################################################
 		## Validações de campos 
 		#################################################################################
-		if (!$this->getCodFilial()) {
+		if (!$this->getcodOrganizacao()) {
 			return $tr->trans('Filial deve ser informada');
 		}
 		
@@ -74,7 +74,7 @@ class MovBancaria extends \Entidades\ZgfinMovBancaria {
 		## Copia os valores de um objeto para o outro
 		#################################################################################
 		$mov	= new \Entidades\ZgfinMovBancaria();
-		$mov->setCodFilial($this->getCodFilial());
+		$mov->setcodOrganizacao($this->getcodOrganizacao());
 		$mov->setCodConta($this->getCodConta());
 		$mov->setCodOrigem($this->getCodOrigem());
 		$mov->setCodTipoOperacao($this->getCodTipoOperacao());
