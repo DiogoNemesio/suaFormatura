@@ -22,44 +22,82 @@ $err	= false;
 #################################################################################
 ## Verificações
 #################################################################################
+try {
+	if (!isset($codUsuario) || (!$codUsuario)) {
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Parâmetro não informado : COD_USUARIO"))));
+		$err = 1;
+	}
+
+	/*** Verificar se o usuario existe ***/
+	$oUsu	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
+
+	if (!$oUsu) {
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Usuário não encontrando"))));
+		$err = 1;
+	}
+
+	/*** Verificar se a organização tem associação com o usuario ***/
+	$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
+
+	if (!$oUsuOrg) {
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Esta operação não pode ser concluída, porque não existe uma associação entre o usuário e a organização."))));
+		$err = 1;
+	}else{
+		if ($oUsuOrg->getCodStatus()->getCodigo() == 'C'){
+			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Este usuário já está cancelado!"))));
+			$err = 1;
+		}
+	}
+
+	if ($err) {
+		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
+		exit;
+	}
 
 #################################################################################
 ## Excluir usuario(formando) e cliente
 #################################################################################
-try {
+
+	$oUsuario			= new \Zage\Seg\Usuario();	
 	
 	/***********************
-	* Excluir usuario
+	* Excluir/Cancelar
 	***********************/
-	$oUsuario			= new \Zage\Seg\Usuario();
-	$oUsuario->_setCodUsuario($codUsuario);
-	$oUsuario->_setCodOrganizacao($codOrganizacao);
+	$oCli = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsu->getCpf(),'codOrganizacao' => $codOrganizacao));
 	
-	$retorno	= $oUsuario->excluir();
-	
-	if ($retorno && is_string($retorno)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$retorno);
-		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($retorno));
-		exit;
+	if ($oCli){
+		$oCliPagar 		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codPessoa' => $oCli->getCodigo()));
+		$oCliReceber 	= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codPessoa' => $oCli->getCodigo()));
+	}	
+
+	if ($oCliPagar || $oCliReceber){
+		//Cancelar o usuário
+		$oUsuario->cancelar($oUsu, $oUsuOrg);
+		//Inativar a Pessoa do cliente
+		\Zage\Fin\Pessoa::inativa($oCli->getCodigo());			
+	}else{
+		$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario));
+		if ($oUsu->getCodStatus()->getCodigo() == P){
+			if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $codOrganizacao && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
+				//Excluir usuário
+				$oUsuario->excluirCompleto($oUsu, $oUsuOrg);
+				//Excluir cliente
+				\Zage\Fin\Pessoa::exclui($oCli->getCodigo());
+			}else{
+				//Cancelar usuário
+				$oUsuario->cancelar($oUsu, $oUsuOrg);
+				//Canceçar cliente
+				\Zage\Fin\Pessoa::inativa($oCli->getCodigo());		
+			}
+		}else{
+			//Cancelar usuário
+			$oUsuario->cancelar($oUsu, $oUsuOrg);
+			//Canceçar cliente
+			\Zage\Fin\Pessoa::inativa($oCli->getCodigo());
+		}
 	}
 	
-	/***********************
-	* Excluir cliente
-	***********************
-	$oCli = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->_getUsuario()->getCpf()));
-	
-	//Endereço
-	$oCliEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findBy(array('codPessoa' => $oCli->getCodigo()));
-	
-	for ($i = 0; $i < sizeof($oCliEnd); $i++) {
-		$em->remove($oCliEnd[$i]);
-	}
-	***/
-	
-	
-	$em->flush();
-	$em->clear();
-	/***** Flush 
+	/***** Flush *****/
 	try {
 		$em->flush();
 		$em->clear();
@@ -67,7 +105,7 @@ try {
 		$log->debug("Erro ao excluir o formando:". $e->getTraceAsString());
 		throw new \Exception("Erro excluir o formando. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
 	}	
-*****/
+
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	die('1'.\Zage\App\Util::encodeUrl('||'));
@@ -75,4 +113,4 @@ try {
 }
 
 
-echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Usuário excluído com sucesso!")));
+echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Formando excluído com sucesso!")));

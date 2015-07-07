@@ -55,8 +55,8 @@ try {
 	}
 	
 	$podeRemover	= null;
-	$mensagem		= $tr->trans('Deseja realmente excluir o usuário').': <b>'.$info->getNome().'</b> ?';
-	$observacao		= $tr->trans('Está operação excluirá definitivamente o formando do sistema. Caso queria apenas suspender temporariamente, faça uso do botão de bloqueio.');
+	$mensagem		= $tr->trans('Deseja realmente excluir o formando').': <b>'.$info->getNome().'</b> ?';
+	$observacao		= $tr->trans('<i class="fa fa-exclamation-triangle red"></i> Está operação excluirá definitivamente a participação do formando na formatura.');
 	$classe			= "text-warning";
 
 } catch (\Exception $e) {
@@ -67,7 +67,7 @@ try {
 ## Urls
 #################################################################################
 $uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
-$urlVoltar			= ROOT_URL . "/Seg/usuarioParLis.php?id=".$uid;
+$urlVoltar			= ROOT_URL . "/Fmt/usuarioFormandoLis.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
@@ -81,7 +81,7 @@ $tpl->load(HTML_PATH . '/templateModalExc.html');
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('PODE_REMOVER'		,$podeRemover);
-$tpl->set('TITULO'				,$tr->trans('Exclusão de Usuário'));
+$tpl->set('TITULO'				,$tr->trans('Excluir Formando'));
 $tpl->set('ID'					,$id);
 $tpl->set('TEXTO'				,$mensagem);
 $tpl->set('OBSERVACAO'			,$observacao);

@@ -678,23 +678,23 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		if ($this->_usuario->getCodStatus()->getCodigo() == P){
 			if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $this->_getCodOrganizacao() && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
 					
-				\Zage\Seg\Usuario::Exclusao($this->_usuario, $oUsuOrg);
+				\Zage\Seg\Usuario::excluirCompleto($this->_usuario, $oUsuOrg);
 				
 			}else{
 				
-				\Zage\Seg\Usuario::Cancelar($this->_usuario, $oUsuOrg);
+				\Zage\Seg\Usuario::cancelar($this->_usuario, $oUsuOrg);
 			}
 			
 		}else{
 			
-			\Zage\Seg\Usuario::Cancelar($this->_usuario, $oUsuOrg);
+			\Zage\Seg\Usuario::cancelar($this->_usuario, $oUsuOrg);
 		}
 	}
 	
 	/**
 	 * Exclusão completa do usuário
 	 */
-	public function Exclusao($oUsuario,$oUsuOrg) {
+	public function excluirCompleto($oUsuario,$oUsuOrg) {
 		global $em,$system,$log,$tr;
 	
 		/*** Exclusão dos telefone ***/
@@ -719,7 +719,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 	/**
 	 * Cancelar
 	 */
-	public function Cancelar($oUsuario,$oUsuOrg) {
+	public function cancelar($oUsuario,$oUsuOrg) {
 		global $em,$system,$log,$tr;
 		
 		#################################################################################

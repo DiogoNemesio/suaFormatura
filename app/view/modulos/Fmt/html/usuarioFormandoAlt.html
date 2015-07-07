@@ -334,7 +334,7 @@ function checkEmailUsuarioAlt() {
 	   });
 		
 		if ($('#valEmailID').val() == 0) {
-			zgAbreModal("%ROOT_URL%/Seg/usuarioParVer.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val());
+			zgAbreModal("%ROOT_URL%/Fmt/usuarioFormandoVer.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val());
 			$('#divEmailID').addClass('has-error');
 			$('#divHelpEmailID').html(zgCriaSpanErro('Já existe um usuário cadastrado com este EMAIL! Por favor,  verifique os dados informados.'));
 			return false;

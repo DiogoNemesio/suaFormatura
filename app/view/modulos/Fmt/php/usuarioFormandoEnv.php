@@ -59,22 +59,22 @@ try {
 	if ($oUsuOrg->getCodStatus()->getCodigo() == P || $info->getCodStatus()->getCodigo() == P){
 		$submit			= null;
 		$titulo			= 'Envio de convite';
-		$icone			= '<i class="fa fa-envelope blue"></i>';
+		$icone			= '<i class="fa fa-envelope orange"></i>';
 		$mensagem		= $tr->trans('Deseja enviar um novo convite para o formando').': <b>'.$info->getNome().'</b> ?';
-		$observacao		= $tr->trans('Está operação enviará um email com um novo convite para o formando.');
+		$observacao		= '<i class="fa fa-arrow-right orange"></i> Está operação enviará um email com um novo convite para o formando acessar o sistema.';
 		$classe			= "text-warning";
 		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';
-		$botaoClasse	= 'btn btn-success';
+		$botaoClasse	= 'btn btn-warning';
 	} else{
 		$submit			= 'disabled';
-		$icone			= '<i class="fa fa-envelope blue"></i>';
+		$icone			= '<i class="fa fa-envelope orange"></i>';
 		$titulo			= 'Envio de convite';
 		$enviar			= 'disabled';
 		$mensagem		= 'Formando de <b>'.$info->getNome().'</b> já associado!';
-		$observacao		= 'Este formando já possui o cadastro e a associação ativada.';
+		$observacao		= '<i class="fa fa-arrow-right orange"></i> Este formando já possui o cadastro e a associação ativada.';
 		$classe			= "text-warning";
 		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';
-		$botaoClasse	= 'btn btn-success';
+		$botaoClasse	= 'btn btn-warning';
 	}
 	
 

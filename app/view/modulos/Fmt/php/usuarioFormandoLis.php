@@ -63,8 +63,7 @@ $grid->adicionaTexto($tr->trans('EMAIL'),				20, $grid::CENTER	,'codUsuario:usua
 $grid->adicionaTexto($tr->trans('CPF'),					15, $grid::CENTER	,'codUsuario:cpf');
 $grid->adicionaTexto($tr->trans('CADASTRO'),			10, $grid::CENTER	,'codUsuario:codStatus:descricao');
 $grid->adicionaTexto($tr->trans('ASSOCIAÇÃO'),			10, $grid::CENTER	,'codStatus:descricao');
-$grid->adicionaIcone(null,'fa fa-envelope green',$tr->trans('Reenviar convite'));
-$grid->adicionaIcone(null,'fa fa-lock red',$tr->trans('Bloquear/Desbloquear usuário'));
+$grid->adicionaIcone(null,'fa fa-envelope orange',$tr->trans('Reenviar convite'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($usuario);
@@ -85,9 +84,8 @@ for ($i = 0; $i < sizeof($usuario); $i++) {
 	$grid->setValorCelula($i,2,$valor);
 	
 	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoEnv.php?id=".$uid."');");
-	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioParBlo.php?id=".$uid."');");
-	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/usuarioFormandoAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,8,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoExc.php?id=".$uid."');");
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/usuarioFormandoAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,7,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoExc.php?id=".$uid."');");
 }
 
 #################################################################################

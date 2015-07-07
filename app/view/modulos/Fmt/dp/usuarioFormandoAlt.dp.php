@@ -123,6 +123,7 @@ try {
 	if(!$oCliente){
 		$oCliente = new \Entidades\ZgfinPessoa();
 		$oCliente->setDataCadastro(new DateTime(now));
+		$oCliente->setObservacao('Importado do cadastro de formando.');
 	}
 	
 	$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => F));
@@ -138,7 +139,6 @@ try {
 	$oCliente->setIndTransportadora(0);
 	$oCliente->setIndEstrangeiro(0);
 	$oCliente->setIndAtivo(1);
-	$oCliente->setObservacao('Importado do cadastro de formando.');
 	$oCliente->setCodSexo($oSexo);
 	
 	$em->persist($oCliente);
@@ -200,7 +200,7 @@ try {
 }
 
 if ($oUsuario->_getEnviarEmail() == true) {
-
+	$log->debug($oUsuario->_getUsuario()->getCodigo());
 	#################################################################################
 	## Carregando o template html do email
 	#################################################################################

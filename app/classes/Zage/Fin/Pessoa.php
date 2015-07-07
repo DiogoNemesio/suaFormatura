@@ -88,6 +88,42 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 			return $e->getMessage();
 		}
 	}
+	
+	/**
+	 * Inativar uma pessoa
+	 */
+	public static function inativa ($codPessoa) {
+		global $em,$system,$log,$tr;
+	
+		#################################################################################
+		## Verificar se a pessoa inativar
+		#################################################################################
+		
+		try {
+	
+			if (!isset($codPessoa) || (!$codPessoa)) {
+				return ($tr->trans('Falta de Parâmetros'));
+			}
+	
+			$oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codPessoa));
+	
+			if (!$oPessoa) {
+				return ($tr->trans('Pessoa não encontrada'));
+			}
+	
+			/** Inativar **/
+				
+			$oPessoa->setIndAtivo(0);
+
+			$em->persist($oPessoa);
+				
+			return null;
+	
+		} catch (\Exception $e) {
+			$em->getConnection()->rollback();
+			return $e->getMessage();
+		}
+	}
 
 	/**
 	 * Lista os segmentos da Pessoa
