@@ -767,11 +767,12 @@ function selecionaContaParceladaCPAlt() {
 
 
 function calculaPctCellRateioCPAlt(pObj) {
-	var	$td		= pObj.parent();
-	var $tr		= $td.parent();
-	var $total	= getValorParcelaCPAlt().replace(".", "").replace(",",".");
-	var $valor	= parseFloat(pObj.val().replace(".", "").replace(",","."));
-	var $pct	= parseFloat(($valor * 100 / $total).toFixed(2));
+	var	$td			= pObj.parent();
+	var $tr			= $td.parent();
+	var $total		= getValorParcelaCPAlt().replace(".", "").replace(",",".");
+	var $valor		= parseFloat(pObj.val().replace(".", "").replace(",","."));
+	var $pct		= parseFloat(($valor * 100 / $total).toFixed(2));
+	var $pctTotal	= 0;
 
 	var options = {
 		symbol : "",
@@ -789,15 +790,36 @@ function calculaPctCellRateioCPAlt(pObj) {
 		$( this ).trigger('keyup');
 	});
 	
+	$('#CPAltTableRateioID > tbody > tr [name*="pctRateio[]"]').each(function( index ) {
+		$pctTotal += parseFloat($(this).val().replace(".", "").replace(",","."));
+	});
+
+	/** Verifica se ficou uma diferença de arredondamento **/
+	$dif	= $pctTotal - 100;
+	
+	if (($dif > 0 && $dif < 0.02) || ($dif < 0 && $dif > -0.02) ) {
+
+		/** Atualiza o valor com a diferença **/
+		$pct	= parseFloat($pct.replace(".", "").replace(",",".")) - $dif;
+		$pct	= accounting.formatMoney($pct, options);
+		
+		$tr.find('[name*="pctRateio[]"]').each(function( index ) {
+			$(this).val($pct);
+			$( this ).trigger('keyup');
+		});
+	}
+
 	atualizaEValidaTotalTabelaRateioCPAlt();
 }
 
 function calculaValorCellRateioCPAlt(pObj) {
-	var	$td		= pObj.parent();
-	var $tr		= $td.parent();
-	var $total	= getValorParcelaCPAlt().replace(".", "").replace(",",".");
-	var $pct	= parseFloat(pObj.val().replace(".", "").replace(",","."));
-	var $valor	= (parseFloat($total) * $pct / 100);
+	var	$td			= pObj.parent();
+	var $tr			= $td.parent();
+	var $total		= getValorParcelaCPAlt().replace(".", "").replace(",",".");
+	var $pct		= parseFloat(pObj.val().replace(".", "").replace(",","."));
+	var $valor		= (parseFloat($total) * $pct / 100);
+	var $valTotal 	= 0;
+	var $dif		= 0;
 
 	var options = {
 		symbol : "",
@@ -807,6 +829,7 @@ function calculaValorCellRateioCPAlt(pObj) {
 		format: "%s%v"
 	};
 		
+	
 	$valor	= accounting.formatMoney($valor, options);
 	
 	$tr.find('[name*="valorRateio[]"]').each(function( index ) {
@@ -814,6 +837,25 @@ function calculaValorCellRateioCPAlt(pObj) {
 		$( this ).trigger('keyup');
 	});
 	
+
+	$('#CPAltTableRateioID > tbody > tr [name*="valorRateio[]"]').each(function( index ) {
+		$valTotal += parseFloat($(this).val().replace(".", "").replace(",","."));
+	});
+
+	/** Verifica se ficou uma diferença de arredondamento **/
+	$dif	= $valTotal - $total;
+	
+	if (($dif > 0 && $dif < 0.02) || ($dif < 0 && $dif > -0.02) ) {
+		/** Atualiza o valor com a diferença **/
+		$valor	= parseFloat($valor.replace(".", "").replace(",",".")) - $dif;
+		$valor	= accounting.formatMoney($valor, options);
+		
+		$tr.find('[name*="valorRateio[]"]').each(function( index ) {
+			$(this).val($valor);
+			$( this ).trigger('keyup');
+		});
+	}
+
 	atualizaEValidaTotalTabelaRateioCPAlt();
 }
 
