@@ -31,14 +31,46 @@ if (isset($_GET['id'])) {
 $codUsuario		= $_user->getCodigo();
 $usuario		= $_user->getUsuario();
 $nome			= $_user->getNome();
+$apelido		= $_user->getApelido();
+$cpf			= $_user->getCpf();
 $codStatus		= $_user->getCodStatus()->getCodigo();
-//$email			= $_user->getEmail();
-//$telefone		= $_user->getTelefone();
-//$celular		= $_user->getCelular();
 $sexo			= $_user->getSexo()->getCodigo();
+$codLogradouro  = ($_user->getCodLogradouro() != null) ? $_user->getCodLogradouro()->getCodigo() : null;
+$endereco		= $_user->getEndereco();
+$bairro 		= $_user->getBairro();
+$complemento    = $_user->getcomplemento();
+$numero		    = $_user->getnumero();
 $avatar			= $_user->getAvatar()->getCodigo();
 $avatarLink		= $_user->getAvatar()->getLink();
 if (empty($avatarLink)) $avatarLink		= IMG_URL.'/avatars/usuarioGenerico.png';
+if (!empty($cpf)) $cpfReadonly = 'readonly';
+
+if($codLogradouro != null){
+
+	$infoLogradouro = $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+
+	if($infoLogradouro->getDescricao() == $endereco){
+		$endPadrao 	  = $infoLogradouro->getDescricao();
+		$bairroPadrao = $infoLogradouro->getCodBairro()->getDescricao();
+		$readonly 	  = 'readonly';
+	}else{
+		$endPadrao 	  = $endereco;
+		$bairroPadrao = $bairro;
+		$readonly 	  = '';
+	}
+
+	$cep	= $infoLogradouro->getCep();
+	$cidade = $infoLogradouro->getCodBairro()->getCodLocalidade()->getDescricao();
+	$estado = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodUF()->getNome();
+
+}else{
+	$endPadrao 		= '';
+	$bairroPadrao 	= '';
+	$cidade	 		= '';
+	$estado 		= '';
+	$readonly 	  	= 'readonly';
+
+}
 
 #################################################################################
 ## Select de Tipo de Telefone
@@ -114,13 +146,25 @@ $tpl->set('NOME'			,$nome);
 $tpl->set('TELEFONE'		,$telefone);
 $tpl->set('CELULAR'			,$celular);
 $tpl->set('SEXO'			,$oSexo);
-$tpl->set('EMAIL'			,$email);
+$tpl->set('APELIDO'			,$apelido);
+$tpl->set('CPF'				,$cpf);
 $tpl->set('COD_STATUS'		,$codStatus);
 $tpl->set('COD_AVATAR'		,$avatar);
 $tpl->set('AVATAR_LINK'		,$avatarLink);
 $tpl->set('AVATARS'			,$hAvatar);
 $tpl->set('TAB_TELEFONE'	,$tabTel);
 $tpl->set('TIPO_TEL'		,$oTipoTel);
+$tpl->set('COD_LOGRADOURO'  ,$codLogradouro);
+$tpl->set('LOGRADOURO'	 	,$endPadrao);
+$tpl->set('BAIRRO'			,$bairroPadrao);
+$tpl->set('ENDERECO' 		,$endereco);
+$tpl->set('CIDADE'		 	,$cidade);
+$tpl->set('ESTADO'			,$estado);
+$tpl->set('COMPLEMENTO' 	,$complemento);
+$tpl->set('NUMERO' 			,$numero);
+$tpl->set('CEP'				,$cep);
+$tpl->set('READONLY'		,$readonly);
+$tpl->set('CPF_READONLY'	,$cpfReadonly);
 $tpl->set('DP'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'				,$_icone_);
 
