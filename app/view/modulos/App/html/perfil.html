@@ -18,6 +18,12 @@
 							</a>
 						</li>
 						<li>
+							<a data-toggle="tab" href="#contato-perfil">
+								<i class="blue fa fa-phone bigger-125"></i>
+								Contato
+							</a>
+						</li>
+						<li>
 							<a data-toggle="tab" href="#usuario-perfil">
 								<i class="purple fa fa-cog bigger-125"></i>
 								Perfil
@@ -57,34 +63,24 @@
 									</div>
 						    	</div>
 						    </div>
-							<h4 class="header blue bolder smaller">Contato</h4>
+						</div>
+						<div id="contato-perfil" class="tab-pane">
+							<h4 class="header blue bolder smaller">Lista de contatos</h4>
 							<div class="vspace-xs"></div>
 							<div class="row">
-						    	<div class="col-sm-6">
-									<div class="form-group">
-						    			<label class="col-sm-4 control-label" for="emailID">Email</label>
-						    			<div class="input-group col-sm-6">
-						   					<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-						   					<input class="input-large" id="emailID" type="email" name="email" maxlength="120" value="%EMAIL%" autocomplete="off">
-						    			</div>
-						    		</div>
-									<div class="form-group">
-						    			<label class="col-sm-4 control-label" for="telefoneID">Telefone</label>
-						    			<div class="input-group col-sm-6">
-						   					<span class="input-group-addon"><i class="fa fa-phone"></i></span>
-						   					<input class="input-large" id="telefoneID" type="number" name="telefone" maxlength="14" value="%TELEFONE%" autocomplete="off">
-						    			</div>
-						    		</div>
-						    	</div>
-						    	<div class="col-sm-6">
-									<div class="form-group">
-						    			<label class="col-sm-4 control-label" for="celularID">Celular</label>
-						    			<div class="input-group col-sm-6">
-						   					<span class="input-group-addon"><i class="fa fa-phone"></i></span>
-						   					<input class="input-large" id="celularID" type="number" name="celular" maxlength="14" value="%CELULAR%" autocomplete="off">
-						    			</div>
-						    		</div>
-								</div>
+								<table id="perfilAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
+									<thead>
+										<tr class="warning">
+											<th class="col-sm-1 center"></th>
+											<th class="col-sm-2 center">Tipo</th>
+											<th class="col-sm-4 center">Telefone</th>
+											<th class="col-sm-1 center"><span onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									%TAB_TELEFONE%
+									</tbody>
+								</table>
 							</div>
 						</div>
 						<div id="usuario-perfil" class="tab-pane">
@@ -116,6 +112,10 @@
 </div>
 
 <script type="text/javascript" charset="%CHARSET%">
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
 
 function zgAlteraAvatar(pCodigo,pUrl) {
 	$('#avatarID').val(pCodigo);
@@ -123,12 +123,23 @@ function zgAlteraAvatar(pCodigo,pUrl) {
 }
 
 $('#zgFormID').submit(function() {
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		zgMostraAviso("Fechar");
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
 	});
@@ -161,4 +172,25 @@ var colorbox_params = {
 $('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
 $("#cboxLoadingGraphic").append("<i class='fa fa-spinner orange'></i>");//let's add a custom loading icon
 
+/******************************************************
+ADD E REMOVER TELEFONE
+/******************************************************/
+function addRowTelefonePessoaAlt() {
+	$('#perfilAltTableTelefoneID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">%TIPO_TEL%</select></td><td><input type="text" name="telefone[]" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]"></td></tr>');
+	$('#perfilAltTableTelefoneID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+		$( this ).focus();
+	});
+	$('#perfilAltTableTelefoneID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+}
+
+function delRowTelefonePessoaAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
+}
 </script>

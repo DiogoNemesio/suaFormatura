@@ -42,11 +42,6 @@ if ((empty($nome))) {
 	$err	= 1;
 }
 
-if ((!empty($nome)) && (strlen($nome) > 100)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo NOME não deve conter mais de 100 caracteres");
-	$err	= 1;
-}
-
 /** Grupo **/
 if (!isset($codGrupo) || (empty($codGrupo))) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo GRUPO é obrigatório"));

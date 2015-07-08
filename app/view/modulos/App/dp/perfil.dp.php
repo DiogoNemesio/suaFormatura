@@ -12,14 +12,18 @@ if (defined('DOC_ROOT')) {
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['nome'])) 				$nome			= \Zage\App\Util::antiInjection($_POST['nome']);
-if (isset($_POST['email'])) 			$email			= \Zage\App\Util::antiInjection($_POST['email']);
-if (isset($_POST['telefone'])) 			$telefone		= \Zage\App\Util::antiInjection($_POST['telefone']);
-if (isset($_POST['celular'])) 			$celular		= \Zage\App\Util::antiInjection($_POST['celular']);
 if (isset($_POST['sexo'])) 				$sexo			= \Zage\App\Util::antiInjection($_POST['sexo']);
 if (isset($_POST['avatar'])) 			$avatar			= \Zage\App\Util::antiInjection($_POST['avatar']);
 if (isset($_POST['indTrocarSenha']))	$indTrocarSenha	= \Zage\App\Util::antiInjection($_POST['indTrocarSenha']);
 
+/** Contato **/
+if (isset($_POST['codTipoTel']))		$codTipoTel			= $_POST['codTipoTel'];
+if (isset($_POST['codTelefone']))		$codTelefone		= $_POST['codTelefone'];
+if (isset($_POST['telefone']))			$telefone			= $_POST['telefone'];
 
+if (!isset($codTipoTel))				$codTipoTel			= array();
+if (!isset($codTelefone))				$codTelefone		= array();
+if (!isset($telefone))					$telefone			= array();
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -31,18 +35,6 @@ $err	= false;
 /** Nome **/
 if (!isset($nome) || (empty($nome)) || (strlen($nome) < 4)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Nome inválido"));
-	$err	= 1;
-}
-
-/** Telefone **/
-if (isset($telefone) && (!empty($telefone)) && (!is_int($telefone))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Telefone inválido"));
-	$err	= 1;
-}
-
-/** Celular **/
-if (isset($celular) && (!empty($celular)) && (!is_numeric($celular))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Celular inválido"));
 	$err	= 1;
 }
 
@@ -65,9 +57,6 @@ try {
 	$oSexo		= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
 	
 	$oUsuario->setNome($nome);
-	$oUsuario->setEmail($email);
-	$oUsuario->setTelefone($telefone);
-	$oUsuario->setCelular($celular);
 	$oUsuario->setSexo($oSexo);
 	
 	if (isset($avatar) && (!empty($avatar))) {
@@ -77,7 +66,65 @@ try {
 
 	$em->persist($oUsuario);
 	$em->flush();
-	$em->detach($oUsuario);
+	//$em->detach($oUsuario);
+	
+	#################################################################################
+	## Contato
+	#################################################################################
+	$telefones = $em->getRepository ( 'Entidades\ZgsegUsuarioTelefone' )->findBy ( array (
+			'codProprietario' => $system->getCodUsuario() 
+	) );
+	
+	################################################################################
+	# Exclusão
+	################################################################################
+	for($i = 0; $i < sizeof ( $telefones ); $i ++) {
+		if (! in_array ( $telefones [$i]->getCodigo (), $codTelefone )) {
+			try {
+				$em->remove ( $telefones [$i] );
+				$em->flush ();
+			} catch ( \Exception $e ) {
+				$system->criaAviso ( \Zage\App\Aviso\Tipo::ERRO, "Não foi possível excluir o telefone: " . $telefones [$i]->getTelefone () . " Erro: " . $e->getMessage () );
+				echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities ( $e->getMessage () ) );
+				exit ();
+			}
+		}
+	}
+	
+	################################################################################
+	# Criação / Alteração
+	################################################################################
+	for($i = 0; $i < sizeof ( $codTelefone ); $i ++) {
+		$infoTel = $em->getRepository ( 'Entidades\ZgsegUsuarioTelefone' )->findOneBy ( array (
+				'codigo' => $codTelefone [$i],
+				'codProprietario' => $oUsuario->getCodigo () 
+		) );
+		
+		if (! $infoTel) {
+			$infoTel = new \Entidades\ZgsegUsuarioTelefone ();
+		}
+		
+		if ($infoTel->getCodTipoTelefone () !== $codTipoTel [$i] || $infoTel->getTelefone () !== $telefone [$i]) {
+			
+			$oTipoTel = $em->getRepository ( 'Entidades\ZgappTelefoneTipo' )->findOneBy ( array (
+					'codigo' => $codTipoTel [$i] 
+			) );
+			
+			$infoTel->setCodProprietario($oUsuario);
+			$infoTel->setCodTipoTelefone ( $oTipoTel );
+			$infoTel->setTelefone ( $telefone [$i] );
+			
+			try {
+				$em->persist ( $infoTel );
+				$em->flush ();
+				$em->detach ( $infoTel );
+			} catch ( \Exception $e ) {
+				$system->criaAviso ( \Zage\App\Aviso\Tipo::ERRO, "Não foi possível cadastrar o telefone: " . $telefone [$i] . " Erro: " . $e->getMessage () );
+				echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities ( $e->getMessage () ) );
+				exit ();
+			}
+		}
+	}
 
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());

@@ -32,13 +32,39 @@ $codUsuario		= $_user->getCodigo();
 $usuario		= $_user->getUsuario();
 $nome			= $_user->getNome();
 $codStatus		= $_user->getCodStatus()->getCodigo();
-$email			= $_user->getEmail();
-$telefone		= $_user->getTelefone();
-$celular		= $_user->getCelular();
+//$email			= $_user->getEmail();
+//$telefone		= $_user->getTelefone();
+//$celular		= $_user->getCelular();
 $sexo			= $_user->getSexo()->getCodigo();
 $avatar			= $_user->getAvatar()->getCodigo();
 $avatarLink		= $_user->getAvatar()->getLink();
 if (empty($avatarLink)) $avatarLink		= IMG_URL.'/avatars/usuarioGenerico.png';
+
+#################################################################################
+## Select de Tipo de Telefone
+#################################################################################
+try {
+	$aTipoTel		= $em->getRepository('Entidades\ZgappTelefoneTipo')->findAll();
+	$oTipoTel		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	null, 	null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
+## Resgatar os dados de contato
+#################################################################################
+$aTelefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codProprietario' => $codUsuario));
+$tabTel			= "";
+for ($i = 0; $i < sizeof($aTelefones); $i++) {
+
+	#################################################################################
+	## Monta a combo de Tipo
+	#################################################################################
+	$codTipoTel		= ($aTelefones[$i]->getCodTipoTelefone()) ? $aTelefones[$i]->getCodTipoTelefone()->getCodigo() : null;
+	$oTipoInt		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	$codTipoTel, '');
+
+	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
+}
 
 #################################################################################
 ## Select de Status / Sexo
@@ -93,6 +119,8 @@ $tpl->set('COD_STATUS'		,$codStatus);
 $tpl->set('COD_AVATAR'		,$avatar);
 $tpl->set('AVATAR_LINK'		,$avatarLink);
 $tpl->set('AVATARS'			,$hAvatar);
+$tpl->set('TAB_TELEFONE'	,$tabTel);
+$tpl->set('TIPO_TEL'		,$oTipoTel);
 $tpl->set('DP'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'				,$_icone_);
 
