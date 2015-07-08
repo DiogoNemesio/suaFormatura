@@ -79,21 +79,48 @@ try {
 		$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario));
 		if ($oUsu->getCodStatus()->getCodigo() == P){
 			if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $codOrganizacao && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
-				//Excluir usuário
+				/*** Excluir usuario ***/
 				$oUsuario->excluirCompleto($oUsu, $oUsuOrg);
-				//Excluir cliente
+				/*** Excluir cliente ***/
 				\Zage\Fin\Pessoa::exclui($oCli->getCodigo());
+				/*** Exclusão do convite ***/
+				$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario));
+				for ($i = 0; $i < sizeof($oConvite); $i++) {
+					$em->remove($oConvite[$i]);
+				}
 			}else{
-				//Cancelar usuário
+				/*** Cancelar usuario ***/
 				$oUsuario->cancelar($oUsu, $oUsuOrg);
-				//Canceçar cliente
-				\Zage\Fin\Pessoa::inativa($oCli->getCodigo());		
+				/*** Cancelar cliente ***/
+				\Zage\Fin\Pessoa::inativa($oCli->getCodigo());	
+				/*** Cancelar convite ***/
+				$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
+				if($oConvite){
+					$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
+						
+					for ($i = 0; $i < sizeof($oConvite); $i++) {
+						$oConvite[$i]->setCodStatus($oConviteStatus);
+						$oConvite[$i]->setDataCancelamento(new \DateTime());
+						$em->persist($oConvite[$i]);
+					}
+				}
 			}
 		}else{
-			//Cancelar usuário
+			/*** Cancelar usuario ***/
 			$oUsuario->cancelar($oUsu, $oUsuOrg);
-			//Canceçar cliente
+			/*** Cancelar cliente ***/
 			\Zage\Fin\Pessoa::inativa($oCli->getCodigo());
+			/*** Cancelar convite ***/
+			$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
+			if($oConvite){
+				$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
+			
+				for ($i = 0; $i < sizeof($oConvite); $i++) {
+					$oConvite[$i]->setCodStatus($oConviteStatus);
+					$oConvite[$i]->setDataCancelamento(new \DateTime());
+					$em->persist($oConvite[$i]);
+				}
+			}
 		}
 	}
 	

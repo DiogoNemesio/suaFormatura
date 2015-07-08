@@ -29,21 +29,21 @@ try {
 	}
 	
 	/*** Verificar se o usuario existe ***/
-	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
+	$oUsu	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 
-	if (!$oUsuario) {
+	if (!$oUsu) {
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Usuário não encontrando"))));
 		$err = 1;
 	}
 	
 	/*** Verificar se a organização tem associação com o usuario ***/
-	$oUsuAdmVal	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
+	$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
 	
-	if (!$oUsuAdmVal) {
+	if (!$oUsuOrg) {
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Esta operação não pode ser concluída, porque não existe uma associação entre o usuário e a organização."))));
 		$err = 1;
 	}else{
-		if ($oUsuAdmVal->getCodStatus()->getCodigo() == 'C'){
+		if ($oUsuOrg->getCodStatus()->getCodigo() == 'C'){
 			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Este usuário já está cancelado!"))));
 			$err = 1;
 		}
@@ -58,19 +58,13 @@ try {
 	## Remover usuario
 	#################################################################################
 	
+	$oUsuario			= new \Zage\Seg\Usuario();
 	$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario));
-
-	if ($oUsuario->getCodStatus()->getCodigo() == P){
+	
+	if ($oUsu->getCodStatus()->getCodigo() == P){
 		if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $codOrganizacao && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
-			
-			/*** Exclusão dos telefone ***/
-			$oTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $codUsuario));
-			for ($i = 0; $i < sizeof($oTel); $i++) {
-				$em->remove($oTel[$i]);
-			}
-			
-			/*** Exclusão da associação ***/
-			$em->remove($oUsuAdm[0]);
+			/*** Excluir usuario ***/
+			$oUsuario->excluirCompleto($oUsu, $oUsuOrg);
 			
 			/*** Exclusão do convite ***/
 			$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario));
@@ -78,18 +72,27 @@ try {
 				$em->remove($oConvite[$i]);
 			}
 			
-			/*** Exclusão do usuário ***/
-			$em->remove($oUsuario);
 		}else{
-			$aUsuAdm 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
-			$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
-			$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
+			/*** Cancelar usuario ***/
+			$oUsuario->cancelar($oUsu, $oUsuOrg);
 			
-			if ($aUsuAdm){
-				$aUsuAdm->setCodStatus($oStatus);
-				$aUsuAdm->setDataCancelamento(new \DateTime());
-				$em->persist($aUsuAdm);
+			/*** Cancelar associação formatura ***/
+			$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
+			$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsu->getCodigo());
+			
+			for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
+				try {
+					$fmtUsuOrg[$i]->setCodStatus($oStatus);
+					$fmtUsuOrg[$i]->setDataCancelamento(new \DateTime());
+					$em->persist($fmtUsuOrg[$i]);
+				} catch (\Exception $e) {
+					echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
+					exit;
+				}
 			}
+			
+			/*** Cancelar convite ***/
+			$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
 			
 			if($oConvite){
 				$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
@@ -100,29 +103,36 @@ try {
 					$em->persist($oConvite[$i]);
 				}
 			}
-			
 		}
 	}else{
+		/*** Cancelar usuario ***/
+		$oUsuario->cancelar($oUsu, $oUsuOrg);
 		
+		/*** Cancelar associação formatura ***/
 		$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
-		$aUsuAdm 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $codOrganizacao));
-		$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
-		
-		if ($aUsuAdm){
-			$aUsuAdm->setCodStatus($oStatus);
-			$aUsuAdm->setDataCancelamento(new \DateTime());
-			$em->persist($aUsuAdm);
+		$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsu->getCodigo());
+		for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
+			try {
+				$fmtUsuOrg[$i]->setCodStatus($oStatus);
+				$fmtUsuOrg[$i]->setDataCancelamento(new \DateTime());
+				$em->persist($fmtUsuOrg[$i]);
+			} catch (\Exception $e) {
+				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
+				exit;
+			}
 		}
-		
+
+		/*** Cancelar convite ***/
+		$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
 		if($oConvite){
 			$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
-				
+		
 			for ($i = 0; $i < sizeof($oConvite); $i++) {
 				$oConvite[$i]->setCodStatus($oConviteStatus);
 				$oConvite[$i]->setDataCancelamento(new \DateTime());
 				$em->persist($oConvite[$i]);
 			}
-		}		
+		}
 	}
 
 	$em->flush();

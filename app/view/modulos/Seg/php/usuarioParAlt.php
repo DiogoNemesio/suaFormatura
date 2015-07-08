@@ -124,6 +124,22 @@ if ($codUsuario) {
 }
 
 #################################################################################
+## Mensagem de acesso
+#################################################################################
+if ($oPerfil){
+	if ($oPerfil->getCodStatus()->getCodigo() == B){
+		$msgAcesso .= '<div class="alert alert-warning">';
+		$msgAcesso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> As alterações de acesso não serão realizadas, pois o usuário está bloqueado.';
+		$msgAcesso .= '</div>';
+	}elseif ($oPerfil->getCodStatus()->getCodigo() == P){
+		$msgAcesso .= '<div class="alert alert-warning">';
+		$msgAcesso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> As informações de acesso ainda não foram efetivadas, pois o usuário está pendente.';
+		$msgAcesso .= '</div>';
+	}else{
+		$msgAcesso = null;
+	}
+}
+#################################################################################
 ## Urls
 #################################################################################
 $uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario=');
@@ -164,7 +180,7 @@ try {
 #################################################################################
 ## Resgatar os dados de contato
 #################################################################################
-$aTelefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $codUsuario));
+$aTelefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codProprietario' => $codUsuario));
 $tabTel			= "";
 for ($i = 0; $i < sizeof($aTelefones); $i++) {
 
@@ -246,6 +262,7 @@ $tpl->set ('READONLY_BAIRRO'	, $readOnlyBairro);
 $tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
 
 $tpl->set ('DUAL_LIST'	 	 	, $htmlLis);
+$tpl->set ('MSG_ACESSO' 	 	, $msgAcesso);
 
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 

@@ -210,48 +210,26 @@ try {
 	$senhaCrip	= \Zage\App\Crypt::crypt($oUsuario->getUsuario(), $senha);
 	$oUsuario->setSenha($senhaCrip);
 	
+	$em->persist($oUsuario);
+	
 	#################################################################################
 	## Telefones / Contato
 	#################################################################################
-	$telefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $oUsuario->getCodigo()));
+	$oUsuTel = new \Zage\App\Telefone();
+	$oUsuTel->_setEntidadeTel('Entidades\ZgsegUsuarioTelefone');
+	$oUsuTel->_setCodProp($oUsuario);
+	$oUsuTel->_setTelefone($telefone);
+	$oUsuTel->_setCodTipoTel($codTipoTel);
+	$oUsuTel->_setCodTelefone($codTelefone);
 	
-	/***** EXCLUSÃO *****/
-	for ($i = 0; $i < sizeof($telefones); $i++) {
-		if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
-			try {
-				$em->remove($telefones[$i]);
-			} catch (\Exception $e) {
-				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
-				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
-				exit;
-			}
-		}	
-	}
-	/***** CRIAÇÃO E ALTERAÇÃO *****/
-	for ($i = 0; $i < sizeof($codTelefone); $i++) {
-		$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
-		
-			if (!$infoTel) {
-				$infoTel		= new \Entidades\ZgsegUsuarioTelefone();
-		}
-		
-		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
-		
-			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
-		
-			$infoTel->setCodUsuario($oUsuario);
-			$infoTel->setCodTipoTelefone($oTipoTel);
-			$infoTel->setTelefone($telefone[$i]);
-		
-			$em->persist($infoTel);
-		}
-	}
+	$oUsuTel->salvar();
 	
 	#################################################################################
 	## Mudar o status da associação
 	#################################################################################
 	$oUsuOrg->setCodStatus($oUsuOrgSt);
 	
+	$em->persist($oUsuOrg);
 	#################################################################################
 	## Mudar o status da associação com as formaturas
 	#################################################################################
@@ -266,14 +244,69 @@ try {
 	}
 	
 	#################################################################################
-	## Mudar o status do convite
+	## Mudar o Status do convite
 	#################################################################################
-	$convite->setIndUtilizado(1);
-	//$convite->setDataUtilizacao(new \DateTime());
+	$oConviteStatus = $oStatus 	= $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => 'U'));
 	
-	$em->persist($oUsuario);
-	$em->persist($oUsuOrg);
+	$convite->setIndUtilizado(1);
+	$convite->setDataUtilizacao(new \DateTime());
+	$convite->setCodStatus($oConviteStatus);
+	
 	$em->persist($convite);
+	
+	#################################################################################
+	## Salvar Cliente se necessário
+	#################################################################################
+	$oCliente = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf() , 'codOrganizacao' => $codOrganizacao));
+	
+	if($oCliente){
+		
+		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => F));
+		
+		$oCliente->setCodOrganizacao($oOrg);
+		$oCliente->setNome($oUsuario->_getUsuario()->getNome());
+		$oCliente->setCgc($oUsuario->_getUsuario()->getCpf());
+		$oCliente->setEmail($oUsuario->_getUsuario()->getUsuario());
+		$oCliente->setCodTipoPessoa($clienteTipo);
+		$oCliente->setIndContribuinte(0);
+		$oCliente->setIndCliente(1);
+		$oCliente->setIndFornecedor(0);
+		$oCliente->setIndTransportadora(0);
+		$oCliente->setIndEstrangeiro(0);
+		$oCliente->setIndAtivo(1);
+		$oCliente->setCodSexo($oSexo);
+		
+		$em->persist($oCliente);
+	
+		//ENDEREÇO
+		$oClienteEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oCliente->getCodigo()));
+		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => C));
+		
+		if (!$oClienteEnd){
+			$oClienteEnd = new \Entidades\ZgfinPessoaEndereco();
+		}
+		
+		$oClienteEnd->setCodPessoa($oCliente);
+		$oClienteEnd->setCodTipoEndereco($oEndTipo);
+		$oClienteEnd->setCodLogradouro($oCodLogradouro);
+		$oClienteEnd->setCep($oUsuario->getCep());
+		$oClienteEnd->setEndereco($oUsuario->getEndereco());
+		$oClienteEnd->setBairro($oUsuario->getBairro());
+		$oClienteEnd->setNumero($oUsuario->getNumero());
+		$oClienteEnd->setComplemento($oUsuario->getComplemento());
+		
+		$em->persist($oClienteEnd);
+		
+		//Telefone
+		$oCliTel			= new \Zage\App\Telefone();
+		$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
+		$oCliTel->_setCodProp($oCliente);
+		$oCliTel->_setTelefone($telefone);
+		$oCliTel->_setCodTipoTel($codTipoTel);
+		$oCliTel->_setCodTelefone($codTelefone);
+		
+		$retorno	= $oCliTel->salvar();
+	}
 	
 	$em->flush();
 	$em->clear();
