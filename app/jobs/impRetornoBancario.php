@@ -57,12 +57,32 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 			$layout->loadFile($fila[$i]->getArquivo());
 			$layout->valida($fila[$i]->getCodigo());
 			
+
+			#################################################################################
+			## Busca a conta corrente que está sendo manipulada
+			#################################################################################
 			if ($layout->estaValido() == true) {
+				$codContaCorrente			= \Zage\Fin\Conta::busca($fila[$i]->getCodOrganizacao()->getCodigo(), $layout->header["AGENCIA"], $layout->header["CONTA_CORRENTE"]);
+				if (!$codContaCorrente)		$layout->adicionaErro('Conta "'.$layout->header["CONTA_CORRENTE"].'" da agência "'.$layout->header["AGENCIA"].'" não localizada no sistema !!!', 0, "0", 0);
+			}
+			
+			if ($layout->estaValido() == true) {
+
+				
+				echo "Header: \n";
+				print_r($layout->header);
+				
+				echo "Detalhes: \n";
+				print_r($layout->detalhes);
+				
+				echo "Trailler: \n";
+				print_r($layout->trailler);
+				
 				#################################################################################
 				## Alterar o status para OK
 				#################################################################################
 				\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'OK');
-				print_r($layout->detalhes);
+				
 			}else{
 				#################################################################################
 				## Salvar o PDF de erro
