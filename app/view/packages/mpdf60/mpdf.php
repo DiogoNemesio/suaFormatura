@@ -12705,7 +12705,7 @@ function Header($content='') {
 
 /*-- TABLES --*/
 function TableHeaderFooter($content='',$tablestartpage='',$tablestartcolumn ='',$horf = 'H',$level, $firstSpread=true, $finalSpread=true) {
-  if(($horf=='H' || $horf=='F') && !empty($content)) {	// mPDF 5.7.2
+  if(($horf=='H' || $horf=='F') && !empty($content) ) {	// mPDF 5.7.2
 	$table = &$this->table[1][1];
 
 	// mPDF 5.7.2
@@ -12763,6 +12763,9 @@ function TableHeaderFooter($content='',$tablestartpage='',$tablestartcolumn ='',
 /*-- END COLUMNS --*/
 
     $colctr = 0;
+    return;
+    if (is_array($content[$i])) {
+    
     foreach($content[$i] as $tablehf) {
 	$colctr++;
 	$y = $tablehf['y'] - $topy;
@@ -13194,6 +13197,7 @@ function TableHeaderFooter($content='',$tablestartpage='',$tablestartcolumn ='',
 
 
      }// end column $content
+    } // end if is_array()
      $this->y = $y + $h; //Update y coordinate
    }// end row $i
    unset($table );
