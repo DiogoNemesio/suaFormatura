@@ -146,7 +146,7 @@ try {
 
 try {
 	$aPerfil	= \Zage\Seg\Perfil::listaPerfilOrganizacao($codOrganizacao);
-	$oPerfil	= $system->geraHtmlCombo($aPerfil, 'CODIGO', 'NOME', $perfil , null);
+	$perfil	= $system->geraHtmlCombo($aPerfil, 'CODIGO', 'NOME', $perfil , null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -164,7 +164,7 @@ try {
 #################################################################################
 ## Resgatar os dados de contato
 #################################################################################
-$aTelefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $codUsuario));
+$aTelefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codProprietario' => $codUsuario));
 $tabTel			= "";
 for ($i = 0; $i < sizeof($aTelefones); $i++) {
 
@@ -175,6 +175,48 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 	$oTipoInt		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	$codTipoTel, '');
 
 	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" style="width:100%;" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
+}
+
+#################################################################################
+## Lista de acessos (formaturas)
+#################################################################################
+$orgAcesso		= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
+$usuOrg			= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario , 'codStatus' => A));
+
+$arrayUsuOrg 	= array();
+
+for ($i = 0; $i < sizeof($usuOrg); $i++) {
+	$arrayUsuOrg[$i] = $usuOrg[$i]->getCodOrganizacao()->getCodigo();
+}
+
+$htmlLis		= "";
+
+for ($i = 0; $i < sizeof($orgAcesso); $i++) {
+
+	if (in_array($orgAcesso[$i]->getCodOrganizacao()->getCodigo(), $arrayUsuOrg)){
+		$selected = 'selected';
+	}else{
+		$selected = '';
+	}
+
+	$htmlLis .= '<option value="'.$orgAcesso[$i]->getCodOrganizacao()->getCodigo().'" '.$selected.'>'.$orgAcesso[$i]->getCodOrganizacao()->getNome().'</option>';
+}
+
+#################################################################################
+## Mensagem de acesso
+#################################################################################
+if ($oPerfil){
+	if ($oPerfil->getCodStatus()->getCodigo() == B){
+		$msgAcesso .= '<div class="alert alert-warning">';
+		$msgAcesso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> As alterações de acesso não serão realizadas, pois o usuário está bloqueado.';
+		$msgAcesso .= '</div>';
+	}elseif ($oPerfil->getCodStatus()->getCodigo() == P){
+		$msgAcesso .= '<div class="alert alert-warning">';
+		$msgAcesso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> As informações de acesso ainda não foram efetivadas, pois o usuário está pendente.';
+		$msgAcesso .= '</div>';
+	}else{
+		$msgAcesso = null;
+	}
 }
 
 #################################################################################
@@ -198,7 +240,7 @@ $tpl->set('NOME'				,$nome);
 $tpl->set('APELIDO'				,$apelido);
 $tpl->set('EMAIL'				,$email);
 $tpl->set('CPF'					,$cpf);
-$tpl->set('PERFIL'				,$oPerfil);
+$tpl->set('PERFIL'				,$perfil);
 $tpl->set('SEXO'				,$oSexo);
 
 $tpl->set('TIPO_TEL'			,$oTipoTel);
@@ -218,6 +260,9 @@ $tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
 $tpl->set ('IND_END_CORRETO'	, $endCorreto);
 $tpl->set ('READONLY_BAIRRO'	, $readOnlyBairro);
 $tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
+
+$tpl->set ('DUAL_LIST'	 	 	, $htmlLis);
+$tpl->set ('MSG_ACESSO' 	 	, $msgAcesso);
 
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
