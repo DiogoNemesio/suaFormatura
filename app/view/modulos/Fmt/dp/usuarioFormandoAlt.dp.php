@@ -200,12 +200,12 @@ try {
 }
 
 if ($oUsuario->_getEnviarEmail() == true) {
-	$log->debug($oUsuario->_getUsuario()->getCodigo());
+	
 	#################################################################################
 	## Carregando o template html do email
 	#################################################################################
 	$tpl		= new \Zage\App\Template();
-	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuario->_getUsuOrg()->getCodigo().'&_cdu02='.$oUsuario->_getUsuario()->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->getCodigo().'&_cdsenha='.$convite->getSenha());
+	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuario->_getUsuOrg()->getCodigo().'&_cdu02='.$oUsuario->_getUsuario()->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
 	if ($oUsuario->_getUsuario()->getCodStatus()->getCodigo() == P) {
 	$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
 			$assunto			= "Cadatro de usuário";

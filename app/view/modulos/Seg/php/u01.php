@@ -52,8 +52,9 @@ if ($oUsuOrg->getCodStatus()->getCodigo() != "P")	\Zage\App\Erro::externalHalt('
 ## Verificar a senha do convite
 #################################################################################
 $convite		= $em->getRepository('Entidades\ZgsegConvite')->findOneBy(array('codigo' => $codConvite));
+
 if (!$convite) 								\Zage\App\Erro::externalHalt('Convite não está mais disponível, COD_ERRO: 10');
-if ($convite->getSenha() != $senha)			\Zage\App\Erro::externalHalt('Convite não está mais disponível, COD_ERRO: 11');
+if ($convite->getSenha() != $senha)			\Zage\App\Erro::externalHalt('Convite não '.$codConvite.'está mais disponível, COD_ERRO: 11');
 if ($convite->getIndUtilizado() != 0)		\Zage\App\Erro::externalHalt('Convite não está mais disponível, COD_ERRO: 12');
 
 

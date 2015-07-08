@@ -53,140 +53,6 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-/** Organização **/
-if (!isset($codOrganizacao) || empty($codOrganizacao)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Organização deve ser informada!"));
-	$err	= 1;
-}
-
-/** Usuário (email) **/
-if (!isset($usuario) || empty($usuario)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O email deve ser preenchido!"));
-	$err	= 1;
-}elseif (strlen($usuario) > 200){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O email não deve conter mais de 200 caracteres!"));
-	$err	= 1;
-}
-
-if(\Zage\App\Util::validarEMail($usuario) == false){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Email inválido"));
-	$err	= 1;
-}else{
-	$oUsuario = $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
-	if($oUsuario != null && ($oUsuario->getCodigo() != $codUsuario)){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um usuário cadastrado com este EMAIL! Por favor,  verifique os dados informados."));
-		$err	= 1;
-	}
-}
-
-/** CPF **/
-$valCgc			= new \Zage\App\Validador\Cpf();
-if (empty($cpf)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CPF deve ser preenchido!"));
-	$err	= 1;
-}else{
-	if ($valCgc->isValid($cpf) == false) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("CPF inválido!"));
-		$err	= 1;
-	}else{
-		$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('cpf' => cpf));
-		if($oUsuario != null && ($oUsuario->getCodigo() != $codUsuario)){
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um usuário cadastrado com este CPF! Por favor,  verifique os dados informados."));
-			$err	= 1;
-		}
-	}
-}
-
-/** Nome **/
-if (!isset($nome) || empty($nome)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome deve ser preenchido!"));
-	$err	= 1;
-}elseif (strlen($nome) < 5){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Nome muito pequeno, informe o nome completo!"));
-	$err	= 1;
-}elseif (strlen($nome) > 100){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome não deve conter mais de 100 caracteres!"));
-	$err	= 1;
-}
-
-/** Apelido **/
-if (!isset($apelido) || empty($apelido)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O apelido deve ser preenchido!"));
-	$err	= 1;
-}elseif (strlen($apelido) > 60){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O apelido não deve conter mais de 60 caracteres!"));
-	$err	= 1;
-}
-
-/** Perfil **/
-if (!isset($codPerfil) || empty($codPerfil)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O perfil deve ser preenchido!"));
-	$err	= 1;
-}
-
-/** Sexo **/
-if (!isset($sexo) || empty($sexo)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O sexo deve ser preenchido!"));
-	$err	= 1;
-}
-
-/** ENDEREÇO **/
-if (isset($codLogradouro) && (!empty($codLogradouro))){
-	
-	/******* CEP *********/
-	if (!isset($cep) || (empty($cep))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CEP deve ser preenchido!"));
-		$err	= 1;
-	}elseif ((!empty($cep)) && (strlen($cep) > 8)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O CEP não deve conter mais de 8 caracteres!"));
-		$err	= 1;
-	}
-
-	/******* LOGRADOURO *********/
-	if (!isset($descLogradouro) || (empty($descLogradouro))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Logradouro deve ser preenchido!"));
-		$err	= 1;
-	}elseif ((!empty($descLogradouro)) && (strlen($descLogradouro) > 100)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O logradouro não deve conter mais de 100 caracteres!"));
-		$err	= 1;
-	}
-	
-	/******* BAIRRO *********/
-	if (!isset($bairro) || (empty($bairro))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Bairro deve ser preenchido!"));
-		$err	= 1;
-	}elseif ((!empty($bairro)) && (strlen($bairro) > 60)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O bairro não deve conter mais de 60 caracteres!"));
-		$err	= 1;
-	}
-	
-	/******* NÚMERO *********/
-	if ((!empty($numero)) && (strlen($numero) > 10)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O número não deve conter mais de 10 caracteres!"));
-		$err	= 1;
-	}
-	
-	/******* COMPLEMENTO *********/
-	if ((!empty($complemento)) && (strlen($complemento) > 100)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O complemento do endereço não deve conter mais de 100 caracteres!"));
-		$err	= 1;
-	}
-
-	//Verificar o endereço informado é corresponte a base dos correios
-	if (isset($endCorreto) && (!empty($endCorreto))) {
-		$endCorreto	= 1;
-	}else{
-		$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
-
-		if (($oLogradouro->getDescricao() != $descLogradouro) || ($oLogradouro->getCodBairro()->getDescricao() != $bairro)){
-			$endCorreto	= 0;
-		}else{
-			$endCorreto	= 1;
-		}
-	}
-}else{
-	$endCorreto = null; //Se não houver o codLogradouro o indicador deve ser nulo
-}
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
@@ -198,46 +64,18 @@ if ($err != null) {
 #################################################################################
 try {
 
-	/*** Verificar se o usuário e a associação ja existe no sistema ***/
-	$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
+	$oUsuario			= new \Zage\Seg\Usuario();
 	
-	if (!$oUsuario) {
-		$novoUsuario	= true;
-		$enviarEmail	= true;
-		
-		/*** Criar o usuário com o status pendente ***/
-		
-		$oUsuario			= new \Entidades\ZgsegUsuario();
-		$oStatus			= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'P'));
-		
-		#################################################################################
-		## Ajustar alguns campos para um novo usuário
-		## Não alterar o status caso o usuário já exista
-		#################################################################################
-		$oUsuario->setCodStatus($oStatus);
-		$oUsuario->setUsuario($usuario);
-		
-		
-	}else{
-		$novoUsuario	= false;
-		$oUsuarioOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
-
-		if ($oUsuarioOrg){
-			if ($oUsuario->getCodStatus()->getCodigo() == "A" && $oUsuarioOrg->getCodStatus()->getCodigo() != "P" ) {
-				$enviarEmail	= false;
-			}else{
-				$enviarEmail 	= true;
-			}
-		}else{
-			$enviarEmail 	= true;
-		}
-	}
-	
-	/*** Resgatar os objetos de relacionamento ***/
+	/*********************** 
+	 * Resgatar os objetos de relacionamento 
+	 ***********************/
 	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
 	$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
 	
-	/*** Salvar os dados do usuário ***/
+	/*********************** 
+	 * Salvar os dados do usuário 
+	 ***********************/
+	$oUsuario->setUsuario($usuario);
 	$oUsuario->setNome($nome);
 	$oUsuario->setApelido($apelido);
 	$oUsuario->setCpf($cpf);
@@ -250,86 +88,43 @@ try {
 	$oUsuario->setNumero($numero);
 	$oUsuario->setComplemento($complemento);
 	
-	/*** Colocar na fila para execução ***/
-	$em->persist($oUsuario);
+	//Resgate de variáveis
+	$oUsuario->_setCodUsuario($codUsuario);
+	$oUsuario->_setCodOrganizacao($codOrganizacao);
 	
-	#################################################################################
-	## Telefones / Contato
-	#################################################################################
-	$telefones		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findBy(array('codUsuario' => $oUsuario->getCodigo()));
-
-	/*** Exclusão ***/
-	for ($i = 0; $i < sizeof($telefones); $i++) {
-		if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
-			try {
-				$em->remove($telefones[$i]);
-			} catch (\Exception $e) {
-				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
-				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
-				exit;
-			}
-		}
+	//Associação
+	$oUsuario->_setPerfil($codPerfil);
 	
-	}
+	//Endereço
+	$oUsuario->_setIndEndObrigatorio(false);
 	
-	/***  Criação / Alteração ***/
-	for ($i = 0; $i < sizeof($codTelefone); $i++) {
-		$infoTel		= $em->getRepository('Entidades\ZgsegUsuarioTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codUsuario' => $oUsuario->getCodigo()));
+	//Telefone
+	$oUsuario->_setEntidadeTel('Entidades\ZgsegUsuarioTelefone');
+	$oUsuario->_setTelefone($telefone);
+	$oUsuario->_setCodTipoTel($codTipoTel);
+	$oUsuario->_setCodTelefone($codTelefone);
 	
-		if (!$infoTel) {
-			$infoTel		= new \Entidades\ZgsegUsuarioTelefone();
-		}
+	$retorno	= $oUsuario->salvar();
 	
-		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
-	
-			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
-	
-			$infoTel->setCodUsuario($oUsuario);
-			$infoTel->setCodTipoTelefone($oTipoTel);
-			$infoTel->setTelefone($telefone[$i]);
-	
-			$em->persist($infoTel);
-		}
+	if ($retorno && is_string($retorno)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$retorno);
+		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($retorno));
+		exit;
 	}
 	
 	#################################################################################
-	## Usuário - Organização
+	## Salvar os acessos a organizações(formaturas)
 	#################################################################################
-	/***  Verificar se o usuário já está associado a organização ***/
-	if ($novoUsuario) {
-		$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
-		$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
-	}else{
-		//$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
-		if (!$oUsuarioOrg)	{
-			$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
-			$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
-		}else{
-			$oUsuarioOrgStatus  = $oUsuarioOrg->getCodStatus();
-		}
-	}
+	$oPerfil	= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
 	
-	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
-	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
-	
-	$oUsuarioOrg->setCodUsuario($oUsuario);
-	$oUsuarioOrg->setCodOrganizacao($oOrg);
-	$oUsuarioOrg->setCodPerfil($oPerfil);
-	$oUsuarioOrg->setCodStatus($oUsuarioOrgStatus);
-	
-	/***  Colocar na fila para execução ***/
-	$em->persist($oUsuarioOrg);
-	
-	#################################################################################
-	## Salvar os acessos a organizações
-	#################################################################################
-	/** Excluir **/
-	$oUsuOrgStatusBlo  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'B'));
-	$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->getCodigo());
+	//Retirar acesso
+	$oUsuOrgStatusCan  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
+	$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->_getUsuario()->getCodigo());
 	for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
 		if (!in_array($fmtUsuOrg[$i]->getCodOrganizacao()->getCodigo(), $acesso)) {
 			try {
-				$fmtUsuOrg[$i]->setCodStatus($oUsuOrgStatusBlo);
+				$fmtUsuOrg[$i]->setCodStatus($oUsuOrgStatusCan);
+				$fmtUsuOrg[$i]->setCodPerfil($oPerfil);
 				$em->persist($fmtUsuOrg[$i]);
 			} catch (\Exception $e) {
 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
@@ -337,20 +132,19 @@ try {
 			}
 		}
 	}
-	/** Criar **/
+	//Atribuir acesso
 	for ($i = 0; $i < sizeof($acesso); $i++) {
-		$oValor		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $acesso[$i]));
+		$oValor		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->_getUsuario()->getCodigo(), 'codOrganizacao' => $acesso[$i]));
 		if (!$oValor) {
 			$oValor		= new \Entidades\ZgsegUsuarioOrganizacao();
 		}	
 		
-		$oFmt	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $acesso[$i]));
-		$oValor->setCodUsuario($oUsuario);
+		$oFmt		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $acesso[$i]));
+		$oValor->setCodUsuario($oUsuario->_getUsuario());
 		$oValor->setCodOrganizacao($oFmt);
 		$oValor->setCodPerfil($oPerfil);
-		$oValor->setCodStatus($oUsuarioOrgStatus);
+		$oValor->setCodStatus($oUsuario->_getUsuOrg()->getCodStatus());
 		
-	
 		try {
 			$em->persist($oValor);
 		} catch (\Exception $e) {
@@ -362,16 +156,16 @@ try {
 	#################################################################################
 	## Cria o convite
 	#################################################################################
-	if ($enviarEmail) {
+	if ($oUsuario->_getEnviarEmail() == true) {
+		$oOrg	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 		$oConviteStatus = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => A));
 		$convite		= new \Zage\Seg\Convite();
 		$convite->setCodOrganizacaoOrigem($oOrg);
-		$convite->setCodUsuarioDestino($oUsuario);
+		$convite->setCodUsuarioDestino($oUsuario->_getUsuario());
 		$convite->setCodStatus($oConviteStatus);
 		$convite->salvar();
 	}
 
-	
 	#################################################################################
 	## Salvar as informações
 	#################################################################################
@@ -383,14 +177,13 @@ try {
 		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
 	}
 	
-	if ($enviarEmail) {
-	
+	if ($oUsuario->_getEnviarEmail() == true) {
 		#################################################################################
 		## Carregando o template html do email
 		#################################################################################
 		$tpl		= new \Zage\App\Template();
-		$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuarioOrg->getCodigo().'&_cdu02='.$oUsuario->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
-		if ($oUsuario->getCodStatus()->getCodigo() == P) {
+		$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuario->_getUsuOrg()->getCodigo().'&_cdu02='.$oUsuario->_getUsuario()->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
+		if ($oUsuario->_getUsuario()->getCodStatus()->getCodigo() == P) {
 			$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
 			$assunto			= "Cadatro de usuário";
 			$nome				= $oUsuario->getNome();
@@ -450,4 +243,4 @@ try {
 
 
 $system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Informações salvas com sucesso"));
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuario->getCodigo());
+echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuario->_getUsuario()->getCodigo());
