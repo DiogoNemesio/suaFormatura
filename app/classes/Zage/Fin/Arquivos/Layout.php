@@ -238,7 +238,7 @@ abstract class Layout {
 		#################################################################################
 		## Define o indicador para inválido
 		#################################################################################
-		$this->invalido();		
+		$this->invalido();
 		
 		$n	= sizeof($this->_resumo->itens);
 		

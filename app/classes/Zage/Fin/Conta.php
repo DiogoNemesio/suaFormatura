@@ -364,4 +364,33 @@ class Conta extends \Entidades\ZgfinConta {
     	}
     }
     
+    
+    /**
+     * Busca o código da conta através da agencia e conta corrente
+     */
+    public static function busca ($codOrganizacao,$agencia,$contaCorrente) {
+    	global $em,$system;
+    
+    	$qb 	= $em->createQueryBuilder();
+    		
+    	try {
+    		$qb->select('c')
+    		->from('\Entidades\ZgfinConta','c')
+			->leftJoin('\Entidades\ZgfinAgencia', 'a', \Doctrine\ORM\Query\Expr\Join::WITH, 'c.codAgencia = a.codigo')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('c.codOrganizacao'	, ':codOrganizacao'),
+				$qb->expr()->eq('a.agencia'			, ':agencia'),
+				$qb->expr()->eq('c.ccorrente'		, ':contaCorrente')
+			))
+    		->setParameter('codOrganizacao'	, $codOrganizacao)
+    		->setParameter('agencia'		, $agencia)
+    		->setParameter('contaCorrente'	, $contaCorrente);
+    		$query 		= $qb->getQuery();
+    		return($query->getOneOrNullResult());
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    }
+    
+    
 }

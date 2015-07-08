@@ -1394,43 +1394,42 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param number $codConta
 	 */
 	public static function geraNossoNumero($codConta) {
-		global $em,$system;
+		global $em;
 		
 		#################################################################################
 		## Resgata as informaçoes da conta 
 		#################################################################################
 		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codigo' => $codConta));
 		if (!$oConta) return null;
-		$codOrganizacao	= $oConta->getcodOrganizacao();
+		$codContaCorrente	= ($oConta->getCodConta()) ? $oConta->getCodConta()->getCodigo() : null;
 		
+		if (!$codContaCorrente)	throw new \Exception('Não pode gerar o nosso número referente a conta: '.$oConta->getDescricao().", pois a conta não possui conta corrente");
+
 		#################################################################################
-		## Resgata o último nossoNúmero da filial da conta
+		## Resgata o último nossoNúmero da conta corrente
 		#################################################################################
-		$qb 	= $em->createQueryBuilder();
+		$em->getConnection()->beginTransaction(); // suspend auto-commit
 		try {
-			$qb->select('max(cr.nossoNumero) as valor')
-			->from('\Entidades\ZgfinContaReceber','cr')
-			->where($qb->expr()->andX(
-				$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
-				$qb->expr()->isNotNull('cr.nossoNumero')
-			))
-			->setParameter('codOrganizacao', $codOrganizacao);
 	
-	
-			$query 			= $qb->getQuery();
-			$ultNumero		= $query->getSingleScalarResult();
+			$oCcorrente	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codContaCorrente),array(),\Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
+				
+			if (!$oCcorrente) {
+				throw new \Exception('Não pode gerar o nosso número referente a conta: '.$oConta->getDescricao().", pois a conta corrente da conta não foi encontrada !!!");
+			}else{
+				$valor		= ((int) $oCcorrente->getUltimoNossoNumero()) + 1;
+			}
+
+			$oCcorrente->setUltimoNossoNumero($valor);
+			$em->persist($oCcorrente);
+			$em->flush();
+			$em->getConnection()->commit();
+				
+			return ($valor);
 		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
+			$em->getConnection()->rollback();
+			$em->close();
+			throw $e;
 		}
-		
-		if (!$ultNumero) {
-			$nossoNumero	= 1;
-		}else{
-			$nossoNumero	= $ultNumero + 1;
-		}
-	
-		return $nossoNumero;
-		
 	}
 	
 	public function _setCodConta($codigo) {

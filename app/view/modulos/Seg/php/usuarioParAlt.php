@@ -195,7 +195,7 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 
 
 #################################################################################
-## Lista de segmentos de mercado
+## Lista de acessos (formaturas)
 #################################################################################
 $orgAcesso		= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
 $usuOrg			= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario , 'codStatus' => A));

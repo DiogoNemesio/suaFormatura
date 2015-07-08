@@ -13,6 +13,18 @@ namespace Zage\Fin\Arquivos\Layout;
 class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 	
 	/**
+	 * Array com os campos do header
+	 * @var array
+	 */
+	public $header;
+	
+	/**
+	 * Array com os campos do trailler
+	 * @var array
+	 */
+	public $trailler;
+	
+	/**
 	 * Array com os detalhes
 	 * @var array
 	 */
@@ -39,7 +51,7 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		#################################################################################
 		$info		= $em->getRepository('\Entidades\ZgfinArquivoLayoutTipo')->findOneBy(array('codigo' => $this->getCodTipoLayout()));
 		if (!$info)	{
-			$this->_resumo->adicionaErro(0, 0, null, 'Configuração do Layout "'.$this->getCodTipoLayout().'" não encontradas !!! ');
+			$this->adicionaErro(0, 0, null, 'Configuração do Layout "'.$this->getCodTipoLayout().'" não encontradas !!! ');
 			throw new \Exception('Configuração do Layout "'.$this->getCodTipoLayout().'" não encontradas !!! ');
 		}
 		$this->setCodTipoArquivo($info->getCodTipoArquivo()->getCodigo());
@@ -57,7 +69,6 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		## Inicializa o array de detalhes
 		#################################################################################
 		$this->detalhes		= array();
-		
 	
 	}
 	
@@ -78,7 +89,6 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		#################################################################################
 		\Zage\App\Fila::alteraStatus($codFila, 'V');
 		
-		
 		foreach ($this->registros as $reg) {
 			
 			#################################################################################
@@ -96,13 +106,13 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 			## Faz a validação do registro (tipo de dados, tamanho e etc ...)
 			#################################################################################
 			$valido	= $reg->validar();
-			if ($valido !== true)	$this->_resumo->adicionaErro(0, $reg->getLinha(), $reg->getTipoRegistro(), $valido);
+			if ($valido !== true)	$this->adicionaErro(0, $reg->getLinha(), $reg->getTipoRegistro(), $valido);
 			
 			#################################################################################
 			## Verifica se a primeira linha é o header
 			#################################################################################
 			if (($linha == 1) && ($tipoReg !== '0')) {
-				$this->_resumo->adicionaErro(0, $reg->getLinha(), $reg->getTipoRegistro(), 'Header não encontrado');
+				$this->adicionaErro(0, $reg->getLinha(), $reg->getTipoRegistro(), 'Header não encontrado');
 			}
 			
 			#################################################################################
@@ -115,9 +125,15 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 				#################################################################################
 				case '0':
 					#################################################################################
-					## 
+					## Salva os campos do header
 					#################################################################################
-
+					foreach ($reg->campos as $campo) {
+						$var	= $campo->getVariavel();
+						if ($var) {
+							$this->header[$var]	= $campo->getCleanVal();
+						}
+					}
+						
 				break;
 				
 				#################################################################################
@@ -137,7 +153,6 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 						}
 					}
 					
-					
 				break;
 
 				#################################################################################
@@ -145,9 +160,15 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 				#################################################################################
 				case '9':
 					#################################################################################
-					##
+					## Salva os campos do trailler
 					#################################################################################
-
+					foreach ($reg->campos as $campo) {
+						$var	= $campo->getVariavel();
+						if ($var) {
+							$this->trailler[$var]	= $campo->getCleanVal();
+						}
+					}
+					
 				break;
 			}
 			
@@ -156,11 +177,20 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		#################################################################################
 		## Validação geral do arquivo
 		#################################################################################
+		if (empty($this->header))			$this->adicionaErro(0, 0, "0", 'As informações do Header não foram encontradas');
+		if (empty($this->trailler))			$this->adicionaErro(0, 0, "9", 'As informações do trailler não foram encontradas');
 
 		#################################################################################
 		## Verifica a quantidade de registros
 		#################################################################################
+		if (sizeof($this->detalhes)	== 0)	$this->adicionaErro(0, 0, "1", 'As informações dos registros de detalhes não foram encontradas');
 		
+		#################################################################################
+		## Verifica as variáveis obrigatórias
+		#################################################################################
+		if (!isset($this->header["AGENCIA"]) 		|| empty($this->header["AGENCIA"]))			$this->adicionaErro(0, 0, "0", 'Variável "Agência" não encontrada no Header');
+		if (!isset($this->header["CONTA_CORRENTE"]) || empty($this->header["CONTA_CORRENTE"]))	$this->adicionaErro(0, 0, "0", 'Variável "CONTA_CORRENTE" não encontrada no Header');
+	
 	}
 	
 	/**
@@ -172,7 +202,7 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		## Verifica se o arquivo existe
 		#################################################################################
 		if (!file_exists($arquivo)) 	{
-			$this->_resumo->adicionaErro(0, 0, null, 'Arquivo não encontrado ('.$arquivo.') ');
+			$this->adicionaErro(0, 0, null, 'Arquivo não encontrado ('.$arquivo.') ');
 			throw new \Exception('Arquivo não encontrado ('.$arquivo.') ');
 		}
 
@@ -180,7 +210,7 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		## Verifica se o arquivo pode ser lido
 		#################################################################################
 		if (!is_readable($arquivo)) 	{
-			$this->_resumo->adicionaErro(0, 0, null, 'Arquivo não pode ser lido ('.$arquivo.') ');
+			$this->adicionaErro(0, 0, null, 'Arquivo não pode ser lido ('.$arquivo.') ');
 			throw new \Exception('Arquivo não pode ser lido ('.$arquivo.') ');
 		}
 
@@ -193,7 +223,7 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 		## Verifica se o arquivo tem informação
 		#################################################################################
 		if (sizeof($lines) < 2) {
-			$this->_resumo->adicionaErro(0, 0, null, 'Arquivo sem informações ('.$arquivo.') ');
+			$this->adicionaErro(0, 0, null, 'Arquivo sem informações ('.$arquivo.') ');
 			throw new \Exception('Arquivo sem informações ('.$arquivo.') ');
 		}
 		 
@@ -206,13 +236,13 @@ class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
 			$linha		= str_replace(array("\n", "\r"), '', $lines[$i]); 
 			$reg		= $this->adicionaRegistro($tipoReg);
 			if ($reg === null) {
-				$this->_resumo->adicionaErro(0, $i+1, null, "Linha fora do padrão definido");
+				$this->adicionaErro(0, $i+1, null, "Linha fora do padrão definido");
 				return;
 			}else{
 				$ok			= $this->registros[$reg]->carregaLinha($linha);
 			}
 			
-			if ($ok !== true) 	$this->_resumo->adicionaErro(0, $this->registros[$reg]->getLinha(), $this->registros[$reg]->getTipoRegistro(), $ok);
+			if ($ok !== true) 	$this->adicionaErro(0, $this->registros[$reg]->getLinha(), $this->registros[$reg]->getTipoRegistro(), $ok);
 		}
 
 	}
