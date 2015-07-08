@@ -120,6 +120,13 @@ try {
 			$infoTel = new \Entidades\ZgsegUsuarioTelefone ();
 		}
 		
+		if(!$telefone [$i]){
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Telefone precisa ser preenchido !!!"));
+			echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
+			exit;
+		}
+		
+		
 		if ($infoTel->getCodTipoTelefone () !== $codTipoTel [$i] || $infoTel->getTelefone () !== $telefone [$i]) {
 			
 			$oTipoTel = $em->getRepository ( 'Entidades\ZgappTelefoneTipo' )->findOneBy ( array (
