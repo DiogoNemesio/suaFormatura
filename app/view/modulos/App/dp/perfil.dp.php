@@ -12,18 +12,26 @@ if (defined('DOC_ROOT')) {
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['nome'])) 				$nome			= \Zage\App\Util::antiInjection($_POST['nome']);
+if (isset($_POST['apelido'])) 			$apelido		= \Zage\App\Util::antiInjection($_POST['apelido']);
+if (isset($_POST['cpf'])) 				$cpf			= \Zage\App\Util::antiInjection($_POST['cpf']);
 if (isset($_POST['sexo'])) 				$sexo			= \Zage\App\Util::antiInjection($_POST['sexo']);
 if (isset($_POST['avatar'])) 			$avatar			= \Zage\App\Util::antiInjection($_POST['avatar']);
 if (isset($_POST['indTrocarSenha']))	$indTrocarSenha	= \Zage\App\Util::antiInjection($_POST['indTrocarSenha']);
-
+/** Endereco **/
+if (isset($_POST['codLogradouro']))		$codLogradouro	= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
+if (isset($_POST['descLogradouro']))	$descLogradouro	= \Zage\App\Util::antiInjection($_POST['descLogradouro']);
+if (isset($_POST['bairro']))			$bairro			= \Zage\App\Util::antiInjection($_POST['bairro']);
+if (isset($_POST['complemento']))		$complemento	= \Zage\App\Util::antiInjection($_POST['complemento']);
+if (isset($_POST['numero']))			$numero			= \Zage\App\Util::antiInjection($_POST['numero']);
+if (isset($_POST['cep']))				$cep			= \Zage\App\Util::antiInjection($_POST['cep']);
 /** Contato **/
-if (isset($_POST['codTipoTel']))		$codTipoTel			= $_POST['codTipoTel'];
-if (isset($_POST['codTelefone']))		$codTelefone		= $_POST['codTelefone'];
-if (isset($_POST['telefone']))			$telefone			= $_POST['telefone'];
+if (isset($_POST['codTipoTel']))		$codTipoTel		= $_POST['codTipoTel'];
+if (isset($_POST['codTelefone']))		$codTelefone	= $_POST['codTelefone'];
+if (isset($_POST['telefone']))			$telefone		= $_POST['telefone'];
 
-if (!isset($codTipoTel))				$codTipoTel			= array();
-if (!isset($codTelefone))				$codTelefone		= array();
-if (!isset($telefone))					$telefone			= array();
+if (!isset($codTipoTel))				$codTipoTel		= array();
+if (!isset($codTelefone))				$codTelefone	= array();
+if (!isset($telefone))					$telefone		= array();
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -52,12 +60,20 @@ if ($err != null) {
 #################################################################################
 try {
 	
-	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
-
-	$oSexo		= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
+	$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
+	$oSexo			= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
+	$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
 	
 	$oUsuario->setNome($nome);
+	$oUsuario->setApelido($apelido);
+	$oUsuario->setCpf($cpf);
 	$oUsuario->setSexo($oSexo);
+	$oUsuario->setCodLogradouro($oLogradouro);
+	$oUsuario->setCep($cep);
+ 	$oUsuario->setEndereco($descLogradouro);
+ 	$oUsuario->setBairro($bairro);
+ 	$oUsuario->setComplemento($complemento);
+ 	$oUsuario->setNumero($numero);
 	
 	if (isset($avatar) && (!empty($avatar))) {
 		$oAvatar	= $em->getRepository('Entidades\ZgsegAvatar')->findOneBy(array('codigo' => $avatar));
