@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappNotificacao
  *
- * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"})})
+ * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"})})
  * @ORM\Entity
  */
 class ZgappNotificacao
@@ -15,18 +15,11 @@ class ZgappNotificacao
     /**
      * @var integer
      *
-     * @ORM\Column(name="CODIGO", type="integer", nullable=false)
+     * @ORM\Column(name="CODIGO", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $codigo;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="MENSAGEM", type="string", length=200, nullable=false)
-     */
-    private $mensagem;
 
     /**
      * @var \DateTime
@@ -36,11 +29,11 @@ class ZgappNotificacao
     private $data;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="IND_LIDA", type="integer", nullable=false)
+     * @ORM\Column(name="MENSAGEM", type="string", length=1000, nullable=true)
      */
-    private $indLida;
+    private $mensagem;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -52,6 +45,36 @@ class ZgappNotificacao
      */
     private $codUsuario;
 
+    /**
+     * @var \Entidades\ZgappNotificacaoMensTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappNotificacaoMensTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_MENSAGEM", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoMensagem;
+
+    /**
+     * @var \Entidades\ZgappNotificacaoDestTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappNotificacaoDestTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_DESTINATARIO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoDestinatario;
+
+    /**
+     * @var \Entidades\ZgappNotificacaoTemplate
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappNotificacaoTemplate")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TEMPLATE", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTemplate;
+
 
     /**
      * Get codigo
@@ -61,29 +84,6 @@ class ZgappNotificacao
     public function getCodigo()
     {
         return $this->codigo;
-    }
-
-    /**
-     * Set mensagem
-     *
-     * @param string $mensagem
-     * @return ZgappNotificacao
-     */
-    public function setMensagem($mensagem)
-    {
-        $this->mensagem = $mensagem;
-
-        return $this;
-    }
-
-    /**
-     * Get mensagem
-     *
-     * @return string 
-     */
-    public function getMensagem()
-    {
-        return $this->mensagem;
     }
 
     /**
@@ -110,26 +110,26 @@ class ZgappNotificacao
     }
 
     /**
-     * Set indLida
+     * Set mensagem
      *
-     * @param integer $indLida
+     * @param string $mensagem
      * @return ZgappNotificacao
      */
-    public function setIndLida($indLida)
+    public function setMensagem($mensagem)
     {
-        $this->indLida = $indLida;
+        $this->mensagem = $mensagem;
 
         return $this;
     }
 
     /**
-     * Get indLida
+     * Get mensagem
      *
-     * @return integer 
+     * @return string 
      */
-    public function getIndLida()
+    public function getMensagem()
     {
-        return $this->indLida;
+        return $this->mensagem;
     }
 
     /**
@@ -153,5 +153,74 @@ class ZgappNotificacao
     public function getCodUsuario()
     {
         return $this->codUsuario;
+    }
+
+    /**
+     * Set codTipoMensagem
+     *
+     * @param \Entidades\ZgappNotificacaoMensTipo $codTipoMensagem
+     * @return ZgappNotificacao
+     */
+    public function setCodTipoMensagem(\Entidades\ZgappNotificacaoMensTipo $codTipoMensagem = null)
+    {
+        $this->codTipoMensagem = $codTipoMensagem;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoMensagem
+     *
+     * @return \Entidades\ZgappNotificacaoMensTipo 
+     */
+    public function getCodTipoMensagem()
+    {
+        return $this->codTipoMensagem;
+    }
+
+    /**
+     * Set codTipoDestinatario
+     *
+     * @param \Entidades\ZgappNotificacaoDestTipo $codTipoDestinatario
+     * @return ZgappNotificacao
+     */
+    public function setCodTipoDestinatario(\Entidades\ZgappNotificacaoDestTipo $codTipoDestinatario = null)
+    {
+        $this->codTipoDestinatario = $codTipoDestinatario;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoDestinatario
+     *
+     * @return \Entidades\ZgappNotificacaoDestTipo 
+     */
+    public function getCodTipoDestinatario()
+    {
+        return $this->codTipoDestinatario;
+    }
+
+    /**
+     * Set codTemplate
+     *
+     * @param \Entidades\ZgappNotificacaoTemplate $codTemplate
+     * @return ZgappNotificacao
+     */
+    public function setCodTemplate(\Entidades\ZgappNotificacaoTemplate $codTemplate = null)
+    {
+        $this->codTemplate = $codTemplate;
+
+        return $this;
+    }
+
+    /**
+     * Get codTemplate
+     *
+     * @return \Entidades\ZgappNotificacaoTemplate 
+     */
+    public function getCodTemplate()
+    {
+        return $this->codTemplate;
     }
 }
