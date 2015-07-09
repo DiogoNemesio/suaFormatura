@@ -43,16 +43,6 @@ class ZgfmtInstituicao
     private $sigla;
 
     /**
-     * @var \Entidades\ZgfmtInstituicaoAdm
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtInstituicaoAdm")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_ADM", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codAdm;
-
-    /**
      * @var \Entidades\ZgadmCidade
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmCidade")
@@ -81,6 +71,16 @@ class ZgfmtInstituicao
      * })
      */
     private $codTipo;
+
+    /**
+     * @var \Entidades\ZgfmtInstituicaoAdm
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtInstituicaoAdm")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ADM", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codAdm;
 
 
     /**
@@ -163,29 +163,6 @@ class ZgfmtInstituicao
     }
 
     /**
-     * Set codAdm
-     *
-     * @param \Entidades\ZgfmtInstituicaoAdm $codAdm
-     * @return ZgfmtInstituicao
-     */
-    public function setCodAdm(\Entidades\ZgfmtInstituicaoAdm $codAdm = null)
-    {
-        $this->codAdm = $codAdm;
-
-        return $this;
-    }
-
-    /**
-     * Get codAdm
-     *
-     * @return \Entidades\ZgfmtInstituicaoAdm 
-     */
-    public function getCodAdm()
-    {
-        return $this->codAdm;
-    }
-
-    /**
      * Set codCidade
      *
      * @param \Entidades\ZgadmCidade $codCidade
@@ -252,5 +229,28 @@ class ZgfmtInstituicao
     public function getCodTipo()
     {
         return $this->codTipo;
+    }
+
+    /**
+     * Set codAdm
+     *
+     * @param \Entidades\ZgfmtInstituicaoAdm $codAdm
+     * @return ZgfmtInstituicao
+     */
+    public function setCodAdm(\Entidades\ZgfmtInstituicaoAdm $codAdm = null)
+    {
+        $this->codAdm = $codAdm;
+
+        return $this;
+    }
+
+    /**
+     * Get codAdm
+     *
+     * @return \Entidades\ZgfmtInstituicaoAdm 
+     */
+    public function getCodAdm()
+    {
+        return $this->codAdm;
     }
 }
