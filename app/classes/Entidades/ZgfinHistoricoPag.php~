@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinHistoricoPag
  *
- * @ORM\Table(name="ZGFIN_HISTORICO_PAG", indexes={@ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_1_idx", columns={"COD_CONTA_PAG"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_2_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_3_idx", columns={"COD_CONTA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_5_idx", columns={"COD_BANCO_FORNECEDOR"})})
+ * @ORM\Table(name="ZGFIN_HISTORICO_PAG", indexes={@ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_1_idx", columns={"COD_CONTA_PAG"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_2_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_3_idx", columns={"COD_CONTA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_5_idx", columns={"COD_BANCO_FORNECEDOR"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_PAG_6_idx", columns={"COD_TIPO_BAIXA"})})
  * @ORM\Entity
  */
 class ZgfinHistoricoPag
@@ -99,6 +99,13 @@ class ZgfinHistoricoPag
     private $ccorrenteFornecedor;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="SEQ_RETORNO_BANCARIO", type="integer", nullable=true)
+     */
+    private $seqRetornoBancario;
+
+    /**
      * @var \Entidades\ZgfinContaPagar
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaPagar")
@@ -147,6 +154,16 @@ class ZgfinHistoricoPag
      * })
      */
     private $codBancoFornecedor;
+
+    /**
+     * @var \Entidades\ZgfinBaixaTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinBaixaTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_BAIXA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoBaixa;
 
 
     /**
@@ -413,6 +430,29 @@ class ZgfinHistoricoPag
     }
 
     /**
+     * Set seqRetornoBancario
+     *
+     * @param integer $seqRetornoBancario
+     * @return ZgfinHistoricoPag
+     */
+    public function setSeqRetornoBancario($seqRetornoBancario)
+    {
+        $this->seqRetornoBancario = $seqRetornoBancario;
+
+        return $this;
+    }
+
+    /**
+     * Get seqRetornoBancario
+     *
+     * @return integer 
+     */
+    public function getSeqRetornoBancario()
+    {
+        return $this->seqRetornoBancario;
+    }
+
+    /**
      * Set codContaPag
      *
      * @param \Entidades\ZgfinContaPagar $codContaPag
@@ -525,5 +565,28 @@ class ZgfinHistoricoPag
     public function getCodBancoFornecedor()
     {
         return $this->codBancoFornecedor;
+    }
+
+    /**
+     * Set codTipoBaixa
+     *
+     * @param \Entidades\ZgfinBaixaTipo $codTipoBaixa
+     * @return ZgfinHistoricoPag
+     */
+    public function setCodTipoBaixa(\Entidades\ZgfinBaixaTipo $codTipoBaixa = null)
+    {
+        $this->codTipoBaixa = $codTipoBaixa;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoBaixa
+     *
+     * @return \Entidades\ZgfinBaixaTipo 
+     */
+    public function getCodTipoBaixa()
+    {
+        return $this->codTipoBaixa;
     }
 }

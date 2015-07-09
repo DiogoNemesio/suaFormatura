@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinHistoricoRec
  *
- * @ORM\Table(name="ZGFIN_HISTORICO_REC", indexes={@ORM\Index(name="fk_ZGFIN_HISTORICO_REC_1_idx", columns={"COD_CONTA_REC"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_2_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_3_idx", columns={"COD_CONTA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_5_idx", columns={"COD_TIPO_BAIXA"})})
+ * @ORM\Table(name="ZGFIN_HISTORICO_REC", indexes={@ORM\Index(name="fk_ZGFIN_HISTORICO_REC_1_idx", columns={"COD_CONTA_REC"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_2_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_3_idx", columns={"COD_CONTA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_5_idx", columns={"COD_TIPO_BAIXA"}), @ORM\Index(name="ZGFIN_HISTORICO_REC_IX01", columns={"COD_CONTA_REC", "DOCUMENTO", "SEQ_RETORNO_BANCARIO"})})
  * @ORM\Entity
  */
 class ZgfinHistoricoRec

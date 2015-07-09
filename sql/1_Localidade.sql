@@ -22,22 +22,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `ZGADM_LOCALIDADE`
---
-
-CREATE TABLE IF NOT EXISTS `ZGADM_LOCALIDADE` (
-  `CODIGO` int(11) NOT NULL AUTO_INCREMENT,
-  `COD_CORREIO` int(11) DEFAULT NULL,
-  `COD_UF` varchar(2) NOT NULL,
-  `DESCRICAO` varchar(200) NOT NULL,
-  `COD_CIDADE` varchar(8) DEFAULT NULL,
-  PRIMARY KEY (`CODIGO`),
-  UNIQUE KEY `COD_CORREIO_UNIQUE` (`COD_CORREIO`),
-  KEY `fk_ZGADM_LOCALIDADE_1_idx` (`COD_UF`),
-  KEY `fk_ZGADM_LOCALIDADE_2_idx` (`COD_CIDADE`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10256 ;
-
---
 -- Extraindo dados da tabela `ZGADM_LOCALIDADE`
 --
 
