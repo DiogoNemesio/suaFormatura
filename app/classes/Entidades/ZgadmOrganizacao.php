@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmOrganizacao
  *
- * @ORM\Table(name="ZGADM_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_4_idx", columns={"COD_SEXO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_5_idx", columns={"COD_LOGRADOURO"})})
+ * @ORM\Table(name="ZGADM_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_4_idx", columns={"COD_SEXO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_5_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_6_idx", columns={"COD_MOTIVO_CANCELAMENTO"})})
  * @ORM\Entity
  */
 class ZgadmOrganizacao
@@ -155,6 +155,20 @@ class ZgadmOrganizacao
     private $dataCadastro;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CANCELAMENTO", type="datetime", nullable=true)
+     */
+    private $dataCancelamento;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="OBSERVACAO_CANCELAMENTO", type="string", length=200, nullable=true)
+     */
+    private $observacaoCancelamento;
+
+    /**
      * @var \Entidades\ZgadmOrganizacaoPessoaTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoPessoaTipo")
@@ -203,6 +217,16 @@ class ZgadmOrganizacao
      * })
      */
     private $codLogradouro;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacaoMotivoCancelamento
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoMotivoCancelamento")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_MOTIVO_CANCELAMENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codMotivoCancelamento;
 
 
     /**
@@ -653,6 +677,52 @@ class ZgadmOrganizacao
     }
 
     /**
+     * Set dataCancelamento
+     *
+     * @param \DateTime $dataCancelamento
+     * @return ZgadmOrganizacao
+     */
+    public function setDataCancelamento($dataCancelamento)
+    {
+        $this->dataCancelamento = $dataCancelamento;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCancelamento
+     *
+     * @return \DateTime 
+     */
+    public function getDataCancelamento()
+    {
+        return $this->dataCancelamento;
+    }
+
+    /**
+     * Set observacaoCancelamento
+     *
+     * @param string $observacaoCancelamento
+     * @return ZgadmOrganizacao
+     */
+    public function setObservacaoCancelamento($observacaoCancelamento)
+    {
+        $this->observacaoCancelamento = $observacaoCancelamento;
+
+        return $this;
+    }
+
+    /**
+     * Get observacaoCancelamento
+     *
+     * @return string 
+     */
+    public function getObservacaoCancelamento()
+    {
+        return $this->observacaoCancelamento;
+    }
+
+    /**
      * Set codTipoPessoa
      *
      * @param \Entidades\ZgadmOrganizacaoPessoaTipo $codTipoPessoa
@@ -765,5 +835,28 @@ class ZgadmOrganizacao
     public function getCodLogradouro()
     {
         return $this->codLogradouro;
+    }
+
+    /**
+     * Set codMotivoCancelamento
+     *
+     * @param \Entidades\ZgadmOrganizacaoMotivoCancelamento $codMotivoCancelamento
+     * @return ZgadmOrganizacao
+     */
+    public function setCodMotivoCancelamento(\Entidades\ZgadmOrganizacaoMotivoCancelamento $codMotivoCancelamento = null)
+    {
+        $this->codMotivoCancelamento = $codMotivoCancelamento;
+
+        return $this;
+    }
+
+    /**
+     * Get codMotivoCancelamento
+     *
+     * @return \Entidades\ZgadmOrganizacaoMotivoCancelamento 
+     */
+    public function getCodMotivoCancelamento()
+    {
+        return $this->codMotivoCancelamento;
     }
 }
