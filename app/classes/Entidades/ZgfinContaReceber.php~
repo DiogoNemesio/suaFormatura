@@ -136,7 +136,7 @@ class ZgfinContaReceber
     /**
      * @var string
      *
-     * @ORM\Column(name="NOSSO_NUMERO", type="string", length=50, nullable=true)
+     * @ORM\Column(name="NOSSO_NUMERO", type="string", length=20, nullable=true)
      */
     private $nossoNumero;
 
@@ -181,6 +181,13 @@ class ZgfinContaReceber
      * @ORM\Column(name="IND_RECEBER_AUTO", type="integer", nullable=false)
      */
     private $indReceberAuto;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="SEQUENCIAL_NOSSO_NUMERO", type="integer", nullable=true)
+     */
+    private $sequencialNossoNumero;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -800,6 +807,29 @@ class ZgfinContaReceber
     public function getIndReceberAuto()
     {
         return $this->indReceberAuto;
+    }
+
+    /**
+     * Set sequencialNossoNumero
+     *
+     * @param integer $sequencialNossoNumero
+     * @return ZgfinContaReceber
+     */
+    public function setSequencialNossoNumero($sequencialNossoNumero)
+    {
+        $this->sequencialNossoNumero = $sequencialNossoNumero;
+
+        return $this;
+    }
+
+    /**
+     * Get sequencialNossoNumero
+     *
+     * @return integer 
+     */
+    public function getSequencialNossoNumero()
+    {
+        return $this->sequencialNossoNumero;
     }
 
     /**

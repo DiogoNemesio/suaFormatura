@@ -31,6 +31,13 @@ class ZgfinBoletoHistorico
     /**
      * @var string
      *
+     * @ORM\Column(name="NOSSO_NUMERO", type="string", length=40, nullable=true)
+     */
+    private $nossoNumero;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="LINHA_DIGITAVEL", type="string", length=100, nullable=true)
      */
     private $linhaDigitavel;
@@ -136,6 +143,29 @@ class ZgfinBoletoHistorico
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * Set nossoNumero
+     *
+     * @param string $nossoNumero
+     * @return ZgfinBoletoHistorico
+     */
+    public function setNossoNumero($nossoNumero)
+    {
+        $this->nossoNumero = $nossoNumero;
+
+        return $this;
+    }
+
+    /**
+     * Get nossoNumero
+     *
+     * @return string 
+     */
+    public function getNossoNumero()
+    {
+        return $this->nossoNumero;
     }
 
     /**

@@ -43,32 +43,53 @@ class ZgsegUsuarioHistEmail
     private $dataAlteracao;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="IND_CONFIRMADO", type="integer", nullable=false)
-     */
-    private $indConfirmado;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="DATA_CONFIRMACAO", type="datetime", nullable=true)
-     */
-    private $dataConfirmacao;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="IP_CONFIRMACAO", type="string", length=45, nullable=true)
-     */
-    private $ipConfirmacao;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="SENHA_ALTERACAO", type="string", length=200, nullable=true)
      */
     private $senhaAlteracao;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_CONFIRMADO_ANTERIOR", type="integer", nullable=false)
+     */
+    private $indConfirmadoAnterior;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CONFIRMACAO_ANTERIOR", type="datetime", nullable=true)
+     */
+    private $dataConfirmacaoAnterior;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="IP_CONFIRMACAO_ANTERIOR", type="string", length=45, nullable=true)
+     */
+    private $ipConfirmacaoAnterior;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_CONFIRMADO_NOVO", type="integer", nullable=false)
+     */
+    private $indConfirmadoNovo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CONFIRMACAO_NOVO", type="datetime", nullable=true)
+     */
+    private $dataConfirmacaoNovo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="IP_CONFIRMACAO_NOVO", type="string", length=45, nullable=true)
+     */
+    private $ipConfirmacaoNovo;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -161,75 +182,6 @@ class ZgsegUsuarioHistEmail
     }
 
     /**
-     * Set indConfirmado
-     *
-     * @param integer $indConfirmado
-     * @return ZgsegUsuarioHistEmail
-     */
-    public function setIndConfirmado($indConfirmado)
-    {
-        $this->indConfirmado = $indConfirmado;
-
-        return $this;
-    }
-
-    /**
-     * Get indConfirmado
-     *
-     * @return integer 
-     */
-    public function getIndConfirmado()
-    {
-        return $this->indConfirmado;
-    }
-
-    /**
-     * Set dataConfirmacao
-     *
-     * @param \DateTime $dataConfirmacao
-     * @return ZgsegUsuarioHistEmail
-     */
-    public function setDataConfirmacao($dataConfirmacao)
-    {
-        $this->dataConfirmacao = $dataConfirmacao;
-
-        return $this;
-    }
-
-    /**
-     * Get dataConfirmacao
-     *
-     * @return \DateTime 
-     */
-    public function getDataConfirmacao()
-    {
-        return $this->dataConfirmacao;
-    }
-
-    /**
-     * Set ipConfirmacao
-     *
-     * @param string $ipConfirmacao
-     * @return ZgsegUsuarioHistEmail
-     */
-    public function setIpConfirmacao($ipConfirmacao)
-    {
-        $this->ipConfirmacao = $ipConfirmacao;
-
-        return $this;
-    }
-
-    /**
-     * Get ipConfirmacao
-     *
-     * @return string 
-     */
-    public function getIpConfirmacao()
-    {
-        return $this->ipConfirmacao;
-    }
-
-    /**
      * Set senhaAlteracao
      *
      * @param string $senhaAlteracao
@@ -250,6 +202,144 @@ class ZgsegUsuarioHistEmail
     public function getSenhaAlteracao()
     {
         return $this->senhaAlteracao;
+    }
+
+    /**
+     * Set indConfirmadoAnterior
+     *
+     * @param integer $indConfirmadoAnterior
+     * @return ZgsegUsuarioHistEmail
+     */
+    public function setIndConfirmadoAnterior($indConfirmadoAnterior)
+    {
+        $this->indConfirmadoAnterior = $indConfirmadoAnterior;
+
+        return $this;
+    }
+
+    /**
+     * Get indConfirmadoAnterior
+     *
+     * @return integer 
+     */
+    public function getIndConfirmadoAnterior()
+    {
+        return $this->indConfirmadoAnterior;
+    }
+
+    /**
+     * Set dataConfirmacaoAnterior
+     *
+     * @param \DateTime $dataConfirmacaoAnterior
+     * @return ZgsegUsuarioHistEmail
+     */
+    public function setDataConfirmacaoAnterior($dataConfirmacaoAnterior)
+    {
+        $this->dataConfirmacaoAnterior = $dataConfirmacaoAnterior;
+
+        return $this;
+    }
+
+    /**
+     * Get dataConfirmacaoAnterior
+     *
+     * @return \DateTime 
+     */
+    public function getDataConfirmacaoAnterior()
+    {
+        return $this->dataConfirmacaoAnterior;
+    }
+
+    /**
+     * Set ipConfirmacaoAnterior
+     *
+     * @param string $ipConfirmacaoAnterior
+     * @return ZgsegUsuarioHistEmail
+     */
+    public function setIpConfirmacaoAnterior($ipConfirmacaoAnterior)
+    {
+        $this->ipConfirmacaoAnterior = $ipConfirmacaoAnterior;
+
+        return $this;
+    }
+
+    /**
+     * Get ipConfirmacaoAnterior
+     *
+     * @return string 
+     */
+    public function getIpConfirmacaoAnterior()
+    {
+        return $this->ipConfirmacaoAnterior;
+    }
+
+    /**
+     * Set indConfirmadoNovo
+     *
+     * @param integer $indConfirmadoNovo
+     * @return ZgsegUsuarioHistEmail
+     */
+    public function setIndConfirmadoNovo($indConfirmadoNovo)
+    {
+        $this->indConfirmadoNovo = $indConfirmadoNovo;
+
+        return $this;
+    }
+
+    /**
+     * Get indConfirmadoNovo
+     *
+     * @return integer 
+     */
+    public function getIndConfirmadoNovo()
+    {
+        return $this->indConfirmadoNovo;
+    }
+
+    /**
+     * Set dataConfirmacaoNovo
+     *
+     * @param \DateTime $dataConfirmacaoNovo
+     * @return ZgsegUsuarioHistEmail
+     */
+    public function setDataConfirmacaoNovo($dataConfirmacaoNovo)
+    {
+        $this->dataConfirmacaoNovo = $dataConfirmacaoNovo;
+
+        return $this;
+    }
+
+    /**
+     * Get dataConfirmacaoNovo
+     *
+     * @return \DateTime 
+     */
+    public function getDataConfirmacaoNovo()
+    {
+        return $this->dataConfirmacaoNovo;
+    }
+
+    /**
+     * Set ipConfirmacaoNovo
+     *
+     * @param string $ipConfirmacaoNovo
+     * @return ZgsegUsuarioHistEmail
+     */
+    public function setIpConfirmacaoNovo($ipConfirmacaoNovo)
+    {
+        $this->ipConfirmacaoNovo = $ipConfirmacaoNovo;
+
+        return $this;
+    }
+
+    /**
+     * Get ipConfirmacaoNovo
+     *
+     * @return string 
+     */
+    public function getIpConfirmacaoNovo()
+    {
+        return $this->ipConfirmacaoNovo;
     }
 
     /**

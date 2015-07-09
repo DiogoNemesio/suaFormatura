@@ -179,12 +179,12 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	if (!$desconto)			$desconto	= 0;
 	
 	#################################################################################
-	## Verifica se a conta já gerou o nosso número
+	## Verifica se a conta já gerou o Sequencial do nosso número
 	#################################################################################
-	$nossoNumero			= $oConta->getNossoNumero();
-	if (!$nossoNumero)		{
-		$nossoNumero 		= \Zage\Fin\ContaReceber::geraNossoNumero($codConta);
-		$oConta->setNossoNumero($nossoNumero);
+	$sequencial			= $oConta->getSequencialNossoNumero();
+	if (!$sequencial)		{
+		$sequencial 		= \Zage\Fin\ContaReceber::geraNossoNumero($codConta);
+		$oConta->setSequencialNossoNumero($sequencial);
 		$em->persist($oConta);
 		$em->flush();
 	}
@@ -260,7 +260,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$boleto->setEndereco($cedenteEndereco);
 	$boleto->setEspecie($especie);
 	$boleto->setEspecieDocumento($especieDoc);
-	$boleto->setNossoNumero($nossoNumero);
+	$boleto->setSequencial($sequencial);
 	$boleto->setQuantidade(1);
 	$boleto->setNumeroDocumento($numeroDoc);
 	$boleto->setSacadoCep($sacadoCep);
@@ -286,12 +286,20 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$boleto->emitir();
 	$htmlBol	.= $boleto->getHtml();
 	if ($i < sizeof($codContaSel) -1) $htmlBol	.= '<div style="page-break-after:always;">&nbsp;</div>';
-	
-	
+
 	#################################################################################
-	## Salvar a linha digitável
+	## Salvar a linha digitável e o nosso número
 	#################################################################################
 	$linhaDigitavel		= $boleto->getLinhaDigitavel();
+	$nossoNumero		= $boleto->getNossoNumero();
+	$nossoNumeroLimpo	= str_replace(array('.', '/', ' ', '-'), '', $nossoNumero);
+
+	#################################################################################
+	## Atualiza o nosso número
+	#################################################################################
+	$oConta->setNossoNumero($nossoNumeroLimpo);
+	$em->persist($oConta);
+	$em->flush();
 	
 	#################################################################################
 	## Salvar o histórico do Boleto
@@ -303,6 +311,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$hist->setDesconto($desconto);
 	$hist->setJuros($juros);
 	$hist->setLinhaDigitavel($linhaDigitavel);
+	$hist->setNossoNumero($nossoNumero);
 	$hist->setMora($mora);
 	$hist->setValor($valor);
 	$hist->setVencimento(\DateTime::createFromFormat($system->config["data"]["dateFormat"], $vencimento));

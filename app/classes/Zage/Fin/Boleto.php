@@ -49,6 +49,12 @@ class Boleto {
 	private $desconto;
 	
 	/**
+	 * Sequencial do Nosso Número do Boleto
+	 * @var number
+	 */
+	private $sequencial;
+	
+	/**
 	 * Nosso Número do Boleto
 	 * o nosso numero é a identificação do boleto no banco e é aconselhável que ele não se repita para um mesmo cedente, embora alguns bancos permitam que isso aconteça.
 	 * @var string
@@ -294,7 +300,7 @@ class Boleto {
 		#################################################################################
 		if (!$this->getVencimento()) 		throw new \Exception("Vencimento do boleto não informado");
 		if (!$this->getValor()) 			throw new \Exception("Valor do boleto não informado");
-		if (!$this->getNossoNumero()) 		throw new \Exception("Nosso Número do boleto não informado");
+		if (!$this->getSequencial()) 		throw new \Exception("Sequencial do Nosso Número do boleto não informado");
 		if (!$this->getAgencia()) 			throw new \Exception("Agência não informada");
 		if (!$this->getConta()) 			throw new \Exception("Conta corrente não informada");
 		if (!$this->getCarteira()) 			throw new \Exception("Carteira não informada");
@@ -379,7 +385,7 @@ class Boleto {
 		$config	= array(
 			'dataVencimento'			=> $vencimento,
 			'valor' 					=> $valorTotal,
-			'sequencial' 				=> $this->getNossoNumero(),
+			'sequencial' 				=> $this->getSequencial(),
 			'sacado' 					=> $sacado,
 			'cedente'					=> $cedente,
 			'agencia' 					=> $agencia,
@@ -429,6 +435,11 @@ class Boleto {
 		## Salvar a linha digitável
 		#################################################################################
 		$this->setLinhaDigitavel($this->_boleto->getLinhaDigitavel());
+		
+		#################################################################################
+		## Salvar o nosso número
+		#################################################################################
+		$this->setNossoNumero($this->_boleto->getNossoNumero(true));
 		
 	}
 	
@@ -541,7 +552,24 @@ class Boleto {
 		$this->desconto = $desconto;
 		return $this;
 	}
-			
+	
+	/**
+	 *
+	 * @return the number
+	 */
+	public function getSequencial() {
+		return $this->sequencial;
+	}
+	
+	/**
+	 *
+	 * @param number $sequencial        	
+	 */
+	public function setSequencial($sequencial) {
+		$this->sequencial = $sequencial;
+		return $this;
+	}
+				
 	/**
 	 *
 	 * @return the string

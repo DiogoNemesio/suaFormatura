@@ -208,10 +208,10 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 		<td class="col-sm-1 center">'.$vencimento.'</td>
 		<td class="col-sm-1 center"><input class="form-control datepicker" id="vencimentoID" type="text" name="vencimento['.$contas[$i]->getCodigo().']" maxlength="10" value="'.$vencBol.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
 		<td class="col-sm-1 center">'.$htmlAtraso.'</td>
-		<td class="col-sm-2 center"><input type="text" name="valor['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.\Zage\App\Util::to_money($valor).'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.\Zage\App\Util::to_money($valorJuros).'"	 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorMora['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.\Zage\App\Util::to_money($valorMora).'" 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.\Zage\App\Util::to_money($valorDesconto).'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-2 center"><input type="text" name="valor['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.$valor.'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorJuros.'"	 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorMora['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorMora.'" 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.$valorDesconto.'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
 	</tr>
 	';	
 

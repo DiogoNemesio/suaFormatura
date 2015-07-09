@@ -136,7 +136,7 @@ class ZgfinContaPagar
     /**
      * @var string
      *
-     * @ORM\Column(name="NOSSO_NUMERO", type="string", length=50, nullable=true)
+     * @ORM\Column(name="NOSSO_NUMERO", type="string", length=20, nullable=true)
      */
     private $nossoNumero;
 
@@ -181,6 +181,13 @@ class ZgfinContaPagar
      * @ORM\Column(name="IND_PAGAR_AUTO", type="integer", nullable=true)
      */
     private $indPagarAuto;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="SEQUENCIAL_NOSSO_NUMERO", type="integer", nullable=true)
+     */
+    private $sequencialNossoNumero;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -800,6 +807,29 @@ class ZgfinContaPagar
     public function getIndPagarAuto()
     {
         return $this->indPagarAuto;
+    }
+
+    /**
+     * Set sequencialNossoNumero
+     *
+     * @param integer $sequencialNossoNumero
+     * @return ZgfinContaPagar
+     */
+    public function setSequencialNossoNumero($sequencialNossoNumero)
+    {
+        $this->sequencialNossoNumero = $sequencialNossoNumero;
+
+        return $this;
+    }
+
+    /**
+     * Get sequencialNossoNumero
+     *
+     * @return integer 
+     */
+    public function getSequencialNossoNumero()
+    {
+        return $this->sequencialNossoNumero;
     }
 
     /**
