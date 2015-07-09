@@ -118,19 +118,19 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	## Verificar se a conta está atrasada
 	#################################################################################
 	$vencimento			= $contas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getcodOrganizacao()->getCodigo());
+	$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento);
 	
 	
 	#################################################################################
 	## Calcular o vencimento do boleto
 	#################################################################################
 	if ($numDias > 0) {
-		$vencBol		= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]),$contas[$i]->getcodOrganizacao()->getCodigo());
+		$vencBol		= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]));
 		
 		#################################################################################
 		## Calcular os dias em atraso com a data de referência o vencimento do boleto
 		#################################################################################
-		$numDias		= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getcodOrganizacao()->getCodigo(),$vencBol);
+		$numDias		= \Zage\Fin\Data::numDiasAtraso($vencimento,$vencBol);
 		$htmlAtraso		= $numDias;
 	}else{
 		$vencBol		= $vencimento;
@@ -147,10 +147,10 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	## Calcular o valor e o desconto
 	#################################################################################
 	if (!$contaRec->getValorJaRecebido($contas[$i]->getCodigo())) {
-		$valor				= \Zage\App\Util::toPHPNumber($contas[$i]->getValor());
-		$valorDesconto		= \Zage\App\Util::toPHPNumber($contas[$i]->getValorDesconto());
+		$valor				= \Zage\App\Util::to_float($contas[$i]->getValor());
+		$valorDesconto		= \Zage\App\Util::to_float($contas[$i]->getValorDesconto());
 	}else{
-		$valor				= \Zage\App\Util::toPHPNumber($contaRec->getSaldoAReceber($contas[$i]->getCodigo()));
+		$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($contas[$i]->getCodigo()));
 		$valorDesconto		= 0;
 	}
 	
@@ -188,8 +188,8 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	## Formatar os campos
 	#################################################################################
 	$parcela			= $contas[$i]->getParcela() . " / ".$contas[$i]->getNumParcelas();
-	$valorJuros			= \Zage\App\Util::toPHPNumber($valorJuros);
-	$valorMora			= \Zage\App\Util::toPHPNumber($valorMora);
+	$valorJuros			= \Zage\App\Util::to_float($valorJuros);
+	$valorMora			= \Zage\App\Util::to_float($valorMora);
 	
 	#################################################################################
 	## Selecionar a parcela que foi clicada
@@ -208,10 +208,10 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 		<td class="col-sm-1 center">'.$vencimento.'</td>
 		<td class="col-sm-1 center"><input class="form-control datepicker" id="vencimentoID" type="text" name="vencimento['.$contas[$i]->getCodigo().']" maxlength="10" value="'.$vencBol.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
 		<td class="col-sm-1 center">'.$htmlAtraso.'</td>
-		<td class="col-sm-2 center"><input type="text" name="valor['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.$valor.'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorJuros.'"	 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorMora['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorMora.'" 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.$valorDesconto.'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-2 center"><input type="text" name="valor['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.\Zage\App\Util::to_money($valor).'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.\Zage\App\Util::to_money($valorJuros).'"	 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorMora['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.\Zage\App\Util::to_money($valorMora).'" 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.\Zage\App\Util::to_money($valorDesconto).'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
 	</tr>
 	';	
 

@@ -58,13 +58,14 @@ $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GContaHis");
 $grid->setPagingType(\Zage\App\Grid\Tipo::PG_NONE);
 $grid->setFiltro(0);
 $grid->setMostraInfo(0);
-$grid->adicionaTexto($tr->trans('FORMA PAG'),			15, $grid::CENTER	,'codFormaPagamento:descricao');
+$grid->adicionaTexto($tr->trans('FORMA PAG'),			12, $grid::CENTER	,'codFormaPagamento:descricao');
 $grid->adicionaData($tr->trans('DATA PAG'),				8, $grid::CENTER	,'dataPagamento');
 $grid->adicionaMoeda($tr->trans('VALOR'),				10, $grid::CENTER	,'valorPago');
 $grid->adicionaMoeda($tr->trans('JUROS'),				10, $grid::CENTER	,'valorJuros');
 $grid->adicionaMoeda($tr->trans('MORA'),				10, $grid::CENTER	,'valorMora');
 $grid->adicionaMoeda($tr->trans('DESCONTO'),			10, $grid::CENTER	,'valorDesconto');
 $grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome');
+$grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
 $grid->importaDadosDoctrine($oHist);
 
 $gHtml	= $grid->getHtmlCode();

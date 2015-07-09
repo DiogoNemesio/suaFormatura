@@ -41,7 +41,7 @@ class Conta extends \Entidades\ZgfinConta {
 				$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao')
 			))
 			->orderBy('ca.nome', 'ASC')
-			->setParameter('codOrganizacao', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getCodOrganizacao());
 			$query 		= $qb->getQuery();
 			return($query->getResult());
 		} catch (\Exception $e) {

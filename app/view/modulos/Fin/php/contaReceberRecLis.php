@@ -65,6 +65,7 @@ $grid->adicionaMoeda($tr->trans('JUROS'),				10, $grid::CENTER	,'valorJuros');
 $grid->adicionaMoeda($tr->trans('MORA'),				10, $grid::CENTER	,'valorMora');
 $grid->adicionaMoeda($tr->trans('DESCONTO'),			10, $grid::CENTER	,'valorDesconto');
 $grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome');
+$grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
 $grid->importaDadosDoctrine($oHist);
 
 $gHtml	= $grid->getHtmlCode();

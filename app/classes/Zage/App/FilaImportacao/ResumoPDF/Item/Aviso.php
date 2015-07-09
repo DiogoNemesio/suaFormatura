@@ -6,7 +6,7 @@ namespace Zage\App\FilaImportacao\ResumoPDF\Item;
  * @Author: Daniel Henrique Cassela
  * @version: 1.0.1
  * 
- * Gerenciar os erros de fila de importação
+ * Gerenciar os avisos de fila de importação
  */
 
 class Aviso extends \Zage\App\FilaImportacao\ResumoPDF\Item {

@@ -348,8 +348,6 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 		$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) - (floatval($contas[$i]->getValorDesconto()) + floatval($contas[$i]->getValorCancelado())) ));
 	}
 	
-	
-	
 	#################################################################################
 	## Forma de Pagamento
 	#################################################################################

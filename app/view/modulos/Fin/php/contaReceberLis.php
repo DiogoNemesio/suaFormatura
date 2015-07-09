@@ -21,7 +21,6 @@ if (isset($_GET['id'])) {
 	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
 
-
 #################################################################################
 ## Descompacta o ID
 #################################################################################
@@ -243,7 +242,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	## Verifica se está vencida
 	#################################################################################
 	$vencimento			= $contas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$numDiasAtraso		= \Zage\Fin\Data::numDiasAtraso($vencimento,$contas[$i]->getcodOrganizacao());
+	$numDiasAtraso		= \Zage\Fin\Data::numDiasAtraso($vencimento);
 	if ($numDiasAtraso > 0) {
 	//if ($contas[$i]->getDataVencimento() < \DateTime::createFromFormat($system->config["data"]["dateFormat"].' H:i:s',date($system->config["data"]["dateFormat"].' H:i:s',mktime(0,0,0,date('m'),date('d'),date('Y'))))) {
 		$vencida 	= 1;

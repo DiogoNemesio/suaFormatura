@@ -68,7 +68,7 @@ class DT6 extends \Zage\Fin\Arquivos\TipoDado {
 	## Função de retornar o valor limpo de formatação
 	#################################################################################
 	public function getCleanVal() {
-		$data	= \DateTime::createFromFormat("dmy", (int) $this->getValor());
+		$data	= \DateTime::createFromFormat("dmy",$this->getValor());
 		return ($data);
 	}
 	

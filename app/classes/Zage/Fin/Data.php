@@ -26,11 +26,10 @@ class Data {
 	
 	/**
 	 * Verificar se uma determinada data é dia útil
-	 * @param number $filial
 	 * @param date $data
 	 */
 	public static function ehDiaUtil($data) {
-		global $em,$system;
+		global $em,$system,$log;
 		
 		$dateObj		= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $data);
 		$diaSemana		= $dateObj->format("N");  
@@ -71,16 +70,15 @@ class Data {
 	/**
 	 * Resgata o próximo dia útil, a partir de uma data base
 	 * @param date $data
-	 * @param number $filial
 	 */
-	public static function proximoDiaUtil($data,$filial = null) {
+	public static function proximoDiaUtil($data) {
 		global $system;
 		$dateObj	= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $data);
 		$dateObj->modify('+1 day');
 		$diaUtil	= $dateObj->format($system->config["data"]["dateFormat"]);
 		$maxLoop	= 30;
 		$i			= 0;
-		while (self::ehDiaUtil($diaUtil,$filial) == false) {
+		while (self::ehDiaUtil($diaUtil) == false) {
 			if ($i > $maxLoop) die('Número máximo de loops alcançada na função: '.__FUNCTION__);			
 			$dateObj	= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $diaUtil);
 			$dateObj->modify('+1 day');
@@ -95,16 +93,15 @@ class Data {
 	/**
 	 * Resgata o dia útil anterior a uma data base
 	 * @param date $data
-	 * @param number $filial
 	 */
-	public static function diaUtilAnterior($data,$filial = null) {
+	public static function diaUtilAnterior($data) {
 		global $system;
 		$dateObj	= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $data);
 		$dateObj->modify('-1 day');
 		$diaUtil	= $dateObj->format($system->config["data"]["dateFormat"]);
 		$maxLoop	= 30;
 		$i			= 0;
-		while (self::ehDiaUtil($diaUtil,$filial) == false) {
+		while (self::ehDiaUtil($diaUtil) == false) {
 			if ($i > $maxLoop) die('Número máximo de loops alcançada na função: '.__FUNCTION__);			
 			$dateObj	= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $diaUtil);
 			$dateObj->modify('-1 day');
@@ -120,9 +117,8 @@ class Data {
 	 * Soma a quantidade de dias úteis a uma data
 	 * @param date $data
 	 * @param number $dias
-	 * @param number $filial
 	 */
-	public static function somaDiasUteis($data,$dias,$filial = null) {
+	public static function somaDiasUteis($data,$dias) {
 		global $system;
 		
 		/**
@@ -149,14 +145,14 @@ class Data {
 			$dateObj->modify($somador.' day');
 			$dia		= $dateObj->format($system->config["data"]["dateFormat"]);
 			
-			if (self::ehDiaUtil($dia,$filial) == true) {
+			if (self::ehDiaUtil($dia) == true) {
 				$i++;
 			}
 			$n++;
 		}
 		
-		if (self::ehDiaUtil($dia,$filial) == false) {
-			return self::proximoDiaUtil($dia,$filial);
+		if (self::ehDiaUtil($dia) == false) {
+			return self::proximoDiaUtil($dia);
 		}else{
 			return ($dia);
 		}
@@ -165,9 +161,8 @@ class Data {
 	/**
 	 * Calcula a quantidade de dias entre o próximo dia útil de uma dataBase e hoje
 	 * @param date $data
-	 * @param number $filial
 	 */
-	public static function numDiasAtraso($vencimento,$filial = null,$dataReferencia = null) {
+	public static function numDiasAtraso($vencimento,$dataReferencia = null) {
 		global $system;
 	
 		
@@ -184,10 +179,10 @@ class Data {
 		/**
 		 * Verifica se a data base é um dia útil, senão busca o próximo dia útil
 		 */
-		if (self::ehDiaUtil($vencimento,$filial) == true) {
+		if (self::ehDiaUtil($vencimento) == true) {
 			$dataBase		= $vencimento;
 		}else{
-			$dataBase		= self::proximoDiaUtil($vencimento,$filial);
+			$dataBase		= self::proximoDiaUtil($vencimento);
 		}
 		
 		/**

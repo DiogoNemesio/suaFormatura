@@ -145,12 +145,12 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 		$url5	= "#";
 	}elseif ($fila[$i]->getCodStatus()->getCodigo() == "OK") {
 		$ic1	= $icReproc;
-		$ic2	= " ";
+		$ic2	= $icLog;
 		$ic3	= $icRemove;
 		$ic4	= " ";
 		$ic5	= " ";
 		$url1	= $urlReproc;
-		$url2	= "#";
+		$url2	= $urlLog;
 		$url3	= $urlRemove;
 		$url4	= "#";
 		$url5	= "#";

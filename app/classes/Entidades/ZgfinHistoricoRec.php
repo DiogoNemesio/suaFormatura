@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinHistoricoRec
  *
- * @ORM\Table(name="ZGFIN_HISTORICO_REC", indexes={@ORM\Index(name="fk_ZGFIN_HISTORICO_REC_1_idx", columns={"COD_CONTA_REC"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_2_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_3_idx", columns={"COD_CONTA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_4_idx", columns={"COD_FORMA_PAGAMENTO"})})
+ * @ORM\Table(name="ZGFIN_HISTORICO_REC", indexes={@ORM\Index(name="fk_ZGFIN_HISTORICO_REC_1_idx", columns={"COD_CONTA_REC"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_2_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_3_idx", columns={"COD_CONTA"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_HISTORICO_REC_5_idx", columns={"COD_TIPO_BAIXA"})})
  * @ORM\Entity
  */
 class ZgfinHistoricoRec
@@ -85,6 +85,13 @@ class ZgfinHistoricoRec
     private $documento;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="SEQ_RETORNO_BANCARIO", type="integer", nullable=true)
+     */
+    private $seqRetornoBancario;
+
+    /**
      * @var \Entidades\ZgfinContaReceber
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaReceber")
@@ -123,6 +130,16 @@ class ZgfinHistoricoRec
      * })
      */
     private $codFormaPagamento;
+
+    /**
+     * @var \Entidades\ZgfinBaixaTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinBaixaTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_BAIXA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoBaixa;
 
 
     /**
@@ -343,6 +360,29 @@ class ZgfinHistoricoRec
     }
 
     /**
+     * Set seqRetornoBancario
+     *
+     * @param integer $seqRetornoBancario
+     * @return ZgfinHistoricoRec
+     */
+    public function setSeqRetornoBancario($seqRetornoBancario)
+    {
+        $this->seqRetornoBancario = $seqRetornoBancario;
+
+        return $this;
+    }
+
+    /**
+     * Get seqRetornoBancario
+     *
+     * @return integer 
+     */
+    public function getSeqRetornoBancario()
+    {
+        return $this->seqRetornoBancario;
+    }
+
+    /**
      * Set codContaRec
      *
      * @param \Entidades\ZgfinContaReceber $codContaRec
@@ -432,5 +472,28 @@ class ZgfinHistoricoRec
     public function getCodFormaPagamento()
     {
         return $this->codFormaPagamento;
+    }
+
+    /**
+     * Set codTipoBaixa
+     *
+     * @param \Entidades\ZgfinBaixaTipo $codTipoBaixa
+     * @return ZgfinHistoricoRec
+     */
+    public function setCodTipoBaixa(\Entidades\ZgfinBaixaTipo $codTipoBaixa = null)
+    {
+        $this->codTipoBaixa = $codTipoBaixa;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoBaixa
+     *
+     * @return \Entidades\ZgfinBaixaTipo 
+     */
+    public function getCodTipoBaixa()
+    {
+        return $this->codTipoBaixa;
     }
 }

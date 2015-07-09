@@ -57,6 +57,7 @@ class ResumoPDF {
 		switch ($tipo) {
 			case \Zage\App\FilaImportacao\ResumoPDF\Item::TIPO_AVISO:
 			case \Zage\App\FilaImportacao\ResumoPDF\Item::TIPO_ERRO	:
+			case \Zage\App\FilaImportacao\ResumoPDF\Item::TIPO_MENSAGEM	:
 				break;
 			default:
 				throw new \Exception('Tipo de Item de Resumo desconhecido!!! ');
@@ -70,7 +71,7 @@ class ResumoPDF {
 		#################################################################################
 		## Verificar se é para agrupar os não as mensagens iguais
 		#################################################################################
-		if ($this->getIndAgruparItens()) {
+		if ($this->getIndAgruparItens() !== false) {
 			
 			#################################################################################
 			## o índice é a própria mensagem
@@ -129,6 +130,13 @@ class ResumoPDF {
 	#################################################################################
 	public function adicionaAviso($posicao,$linha,$tipoRegistro,$mensagem) {
 		$this->adicionaItem(\Zage\App\FilaImportacao\ResumoPDF\Item::TIPO_AVISO, $posicao, $linha, $tipoRegistro, $mensagem);
+	}
+	
+	#################################################################################
+	## Adiciona um Item do Tipo Mensagem
+	#################################################################################
+	public function adicionaMensagem($posicao,$linha,$tipoRegistro,$mensagem) {
+		$this->adicionaItem(\Zage\App\FilaImportacao\ResumoPDF\Item::TIPO_MENSAGEM, $posicao, $linha, $tipoRegistro, $mensagem);
 	}
 	
 	/**

@@ -256,6 +256,37 @@ abstract class Layout {
 		}
 	}
 
+
+	/**
+	 * Adicionar um registro de erro
+	 * @param string||\Zage\Fin\Arquivos\Erro $erro
+	 * @param integer $linha
+	 * @param string $tipoReg
+	 * @param integer $posicao
+	 */
+	
+	
+	/**
+	 * Adicionar uma mensagem de aviso
+	 * @param unknown $posicao
+	 * @param unknown $linha
+	 * @param unknown $tipoRegistro
+	 * @param unknown $mensagem
+	 */
+	public function adicionaAviso($posicao,$linha,$tipoRegistro,$mensagem) {
+		$this->_resumo->adicionaAviso($posicao,$linha,$tipoRegistro,$mensagem);
+	}
+	
+	/**
+	 * Adiciona um item do tipo mensagem
+	 * @param unknown $posicao
+	 * @param unknown $linha
+	 * @param unknown $tipoRegistro
+	 * @param unknown $mensagem
+	 */
+	public function adicionaMensagem($posicao,$linha,$tipoRegistro,$mensagem) {
+		$this->_resumo->adicionaMensagem($posicao,$linha,$tipoRegistro,$mensagem);
+	}
 	
 	/**
 	 *

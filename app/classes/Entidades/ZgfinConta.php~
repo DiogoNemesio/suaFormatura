@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinConta
  *
- * @ORM\Table(name="ZGFIN_CONTA", indexes={@ORM\Index(name="fk_ZGFIN_CONTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFIN_CONTA_3_idx", columns={"COD_AGENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_4_idx", columns={"COD_CARTEIRA"})})
+ * @ORM\Table(name="ZGFIN_CONTA", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_UK01", columns={"COD_ORGANIZACAO", "COD_AGENCIA", "CCORRENTE", "CCORRENTE_DV"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGFIN_CONTA_3_idx", columns={"COD_AGENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_4_idx", columns={"COD_CARTEIRA"})})
  * @ORM\Entity
  */
 class ZgfinConta
@@ -97,6 +97,13 @@ class ZgfinConta
      * @ORM\Column(name="INSTRUCAO", type="string", length=60, nullable=true)
      */
     private $instrucao;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ULTIMO_NOSSO_NUMERO", type="integer", nullable=true)
+     */
+    private $ultimoNossoNumero;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -400,6 +407,29 @@ class ZgfinConta
     public function getInstrucao()
     {
         return $this->instrucao;
+    }
+
+    /**
+     * Set ultimoNossoNumero
+     *
+     * @param integer $ultimoNossoNumero
+     * @return ZgfinConta
+     */
+    public function setUltimoNossoNumero($ultimoNossoNumero)
+    {
+        $this->ultimoNossoNumero = $ultimoNossoNumero;
+
+        return $this;
+    }
+
+    /**
+     * Get ultimoNossoNumero
+     *
+     * @return integer 
+     */
+    public function getUltimoNossoNumero()
+    {
+        return $this->ultimoNossoNumero;
     }
 
     /**

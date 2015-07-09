@@ -86,7 +86,7 @@ $em->getConnection()->beginTransaction();
 try {
 
 	$conta		= new \Zage\Fin\ContaReceber();
-	$erro		= $conta->recebe($oConta,$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$documento);
+	$erro		= $conta->recebe($oConta,$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$documento,"MAN",null);
 	
 	if ($erro != false) {
 		$em->getConnection()->rollback();

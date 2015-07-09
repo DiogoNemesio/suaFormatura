@@ -283,7 +283,7 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 		#################################################################################
 		## Verifica se a conta existe
 		#################################################################################
-		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+		$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
 		
 		if (!$oConta) {
 			return($tr->trans('Conta %s não encontrada !!!',array('%s' => $codConta)));

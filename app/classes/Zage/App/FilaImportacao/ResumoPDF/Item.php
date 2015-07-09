@@ -16,6 +16,7 @@ abstract class Item {
 	 */
 	const TIPO_ERRO		= "Erro";
 	const TIPO_AVISO	= "Aviso";
+	const TIPO_MENSAGEM	= "Mensagem";
 	
 	/**
 	 * Posição

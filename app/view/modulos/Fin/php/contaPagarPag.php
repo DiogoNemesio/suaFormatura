@@ -71,13 +71,13 @@ $dataPag			= ($oConta->getDataVencimento() != null) 	? $oConta->getDataVenciment
 $contaPag			= new \Zage\Fin\ContaPagar();
 
 if (!$contaPag->getValorJaPago($codConta)) {
-	$valor				= \Zage\App\Util::toPHPNumber($oConta->getValor());
-	$valorJuros			= \Zage\App\Util::toPHPNumber($oConta->getValorJuros());
-	$valorMora			= \Zage\App\Util::toPHPNumber($oConta->getValorMora());
-	$valorDesconto		= \Zage\App\Util::toPHPNumber($oConta->getValorDesconto());
+	$valor				= \Zage\App\Util::to_float($oConta->getValor());
+	$valorJuros			= \Zage\App\Util::to_float($oConta->getValorJuros());
+	$valorMora			= \Zage\App\Util::to_float($oConta->getValorMora());
+	$valorDesconto		= \Zage\App\Util::to_float($oConta->getValorDesconto());
 	
 }else{
-	$valor				= \Zage\App\Util::toPHPNumber($contaPag->getSaldoAPagar($codConta));
+	$valor				= \Zage\App\Util::to_float($contaPag->getSaldoAPagar($codConta));
 	$valorJuros			= 0;
 	$valorMora			= 0;
 	$valorDesconto		= 0;

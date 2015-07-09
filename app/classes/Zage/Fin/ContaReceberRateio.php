@@ -89,7 +89,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 			))
 			->orderBy('cp.codigo','ASC')
 			->setParameter('codConta', $codConta)
-			->setParameter('codOrganizacao', $system->getcodOrganizacao());
+			->setParameter('codOrganizacao', $system->getCodOrganizacao());
 			
 			$query 		= $qb->getQuery();
 			return($query->getResult());
@@ -107,7 +107,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 		#################################################################################
 		## Validações de campos 
 		#################################################################################
-		/*if (!$this->getcodContaRec()) {
+		/*if (!$this->getCodContaRec()) {
 			return $tr->trans('Código da conta não informado !!!');
 		}*/
 		
@@ -225,7 +225,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 		#################################################################################
 		## Apaga os rateios
 		#################################################################################
-		$erro	= $this->exclui($this->getcodContaRec());
+		$erro	= $this->exclui($this->getCodContaRec());
 			
 		if ($erro) {
 			return $erro;
@@ -247,7 +247,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 			## Copia os valores de um objeto para o outro
 			#################################################################################
 			$rateio	= new \Entidades\ZgfinContaReceberRateio();
-			$rateio->setcodContaRec($this->getcodContaRec());
+			$rateio->setCodContaRec($this->getCodContaRec());
 			$rateio->setCodCategoria($cats[$i]);
 			$rateio->setCodCentroCusto($centros[$i]);
 			$rateio->setPctValor($percs[$i]);
