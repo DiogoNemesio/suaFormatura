@@ -36,6 +36,20 @@ class ZgappNotificacao
     private $mensagem;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_VIA_EMAIL", type="integer", nullable=true)
+     */
+    private $indViaEmail;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_VIA_WA", type="integer", nullable=true)
+     */
+    private $indViaWa;
+
+    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -130,6 +144,52 @@ class ZgappNotificacao
     public function getMensagem()
     {
         return $this->mensagem;
+    }
+
+    /**
+     * Set indViaEmail
+     *
+     * @param integer $indViaEmail
+     * @return ZgappNotificacao
+     */
+    public function setIndViaEmail($indViaEmail)
+    {
+        $this->indViaEmail = $indViaEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get indViaEmail
+     *
+     * @return integer 
+     */
+    public function getIndViaEmail()
+    {
+        return $this->indViaEmail;
+    }
+
+    /**
+     * Set indViaWa
+     *
+     * @param integer $indViaWa
+     * @return ZgappNotificacao
+     */
+    public function setIndViaWa($indViaWa)
+    {
+        $this->indViaWa = $indViaWa;
+
+        return $this;
+    }
+
+    /**
+     * Get indViaWa
+     *
+     * @return integer 
+     */
+    public function getIndViaWa()
+    {
+        return $this->indViaWa;
     }
 
     /**

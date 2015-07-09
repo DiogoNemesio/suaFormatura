@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappNotificacao
  *
- * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"})})
+ * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"})})
  * @ORM\Entity
  */
 class ZgappNotificacao
@@ -22,18 +22,18 @@ class ZgappNotificacao
     private $codigo;
 
     /**
-     * @var \DateTime
+     * @var integer
      *
-     * @ORM\Column(name="DATA", type="datetime", nullable=false)
+     * @ORM\Column(name="IND_VIA_EMAIL", type="integer", nullable=true)
      */
-    private $data;
+    private $indViaEmail;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="MENSAGEM", type="string", length=1000, nullable=true)
+     * @ORM\Column(name="IND_VIA_WA", type="integer", nullable=true)
      */
-    private $mensagem;
+    private $indViaWa;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -87,49 +87,49 @@ class ZgappNotificacao
     }
 
     /**
-     * Set data
+     * Set indViaEmail
      *
-     * @param \DateTime $data
+     * @param integer $indViaEmail
      * @return ZgappNotificacao
      */
-    public function setData($data)
+    public function setIndViaEmail($indViaEmail)
     {
-        $this->data = $data;
+        $this->indViaEmail = $indViaEmail;
 
         return $this;
     }
 
     /**
-     * Get data
+     * Get indViaEmail
      *
-     * @return \DateTime 
+     * @return integer 
      */
-    public function getData()
+    public function getIndViaEmail()
     {
-        return $this->data;
+        return $this->indViaEmail;
     }
 
     /**
-     * Set mensagem
+     * Set indViaWa
      *
-     * @param string $mensagem
+     * @param integer $indViaWa
      * @return ZgappNotificacao
      */
-    public function setMensagem($mensagem)
+    public function setIndViaWa($indViaWa)
     {
-        $this->mensagem = $mensagem;
+        $this->indViaWa = $indViaWa;
 
         return $this;
     }
 
     /**
-     * Get mensagem
+     * Get indViaWa
      *
-     * @return string 
+     * @return integer 
      */
-    public function getMensagem()
+    public function getIndViaWa()
     {
-        return $this->mensagem;
+        return $this->indViaWa;
     }
 
     /**
