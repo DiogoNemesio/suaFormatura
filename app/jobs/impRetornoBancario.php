@@ -16,7 +16,8 @@ global $em,$system,$tr,$log,$db;
 
 /*$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
 $notificacao->setMensagem("Apenas Testando");
-$notificacao->setCodUsuario($fila[$i]->getCodUsuario());
+$notificacao->setAssunto("Teste 2");
+//$notificacao->setCodUsuario($);
 $notificacao->associaUsuario(1);
 $notificacao->associaUsuario(2);
 $notificacao->enviaWa();
@@ -24,10 +25,12 @@ $notificacao->salva();
 */
 
 $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO);
-$notificacao->setMensagem("Apenas Testando");
+$notificacao->setAssunto("Organização 4.1");
+$notificacao->setMensagem("Teste de notificação de organização");
 $notificacao->associaOrganizacao(1);
 $notificacao->enviaWa();
 $notificacao->salva();
+
 
 #################################################################################
 ## Busca os arquivos que ainda não foram importados

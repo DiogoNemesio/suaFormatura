@@ -86,6 +86,15 @@
 	
 	
 <script>
+
+	function atualizaNotificacoes() {
+		$('#zgNotificacoesID').load("%ROOT_URL%/App/notificacao.php");
+	}
+
+	function atualizaMensagens() {
+		$('#zgMensagensID').load("%ROOT_URL%/App/mensagem.php");
+	}
+
 	function zgWindowOpen(pUrl) {
 		window.open(pUrl,'_self');
 	}
@@ -98,6 +107,7 @@
 			});
 		}
 	}
+	
 	function zgLoadMenu(pUrl,pId) {
 		var $indTrocarSenha	= "%IND_TROCAR_SENHA%";
 		if ($indTrocarSenha == 1) {
@@ -124,6 +134,11 @@
 		}
 	}
 	
+	function lerNotificacao($lid) {
+		var $lUrl	= "%ROOT_URL%/App/lerNotificacao.php?id="+$lid;
+		zgAbreModal($lUrl);
+	}
+
 	function zgMostraAviso(pDescBT1,pDescBT2,pUrlBT2,pDescBT3,pUrlBT3,pDescBT4,pUrlBT4) {
 		/** Definir valor padrão para os parâmetros **/
 		
@@ -238,6 +253,7 @@
 	</div>
 </div>
 <iframe id="zgWindowDownID" src="" style="display:none; visibility:hidden;"></iframe>
+<div id="zgDivVoidID" style="display: none;"></div>
 <script>
 	zgLoadUrl('%URLINICIAL%');
 </script>

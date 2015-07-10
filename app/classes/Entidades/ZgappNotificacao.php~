@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappNotificacao
  *
- * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"})})
+ * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"})})
  * @ORM\Entity
  */
 class ZgappNotificacao
@@ -22,6 +22,20 @@ class ZgappNotificacao
     private $codigo;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA", type="datetime", nullable=false)
+     */
+    private $data;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="MENSAGEM", type="string", length=1000, nullable=true)
+     */
+    private $mensagem;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="IND_VIA_EMAIL", type="integer", nullable=true)
@@ -34,6 +48,13 @@ class ZgappNotificacao
      * @ORM\Column(name="IND_VIA_WA", type="integer", nullable=true)
      */
     private $indViaWa;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_PROCESSADA", type="integer", nullable=false)
+     */
+    private $indProcessada;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -87,6 +108,52 @@ class ZgappNotificacao
     }
 
     /**
+     * Set data
+     *
+     * @param \DateTime $data
+     * @return ZgappNotificacao
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Get data
+     *
+     * @return \DateTime 
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * Set mensagem
+     *
+     * @param string $mensagem
+     * @return ZgappNotificacao
+     */
+    public function setMensagem($mensagem)
+    {
+        $this->mensagem = $mensagem;
+
+        return $this;
+    }
+
+    /**
+     * Get mensagem
+     *
+     * @return string 
+     */
+    public function getMensagem()
+    {
+        return $this->mensagem;
+    }
+
+    /**
      * Set indViaEmail
      *
      * @param integer $indViaEmail
@@ -130,6 +197,29 @@ class ZgappNotificacao
     public function getIndViaWa()
     {
         return $this->indViaWa;
+    }
+
+    /**
+     * Set indProcessada
+     *
+     * @param integer $indProcessada
+     * @return ZgappNotificacao
+     */
+    public function setIndProcessada($indProcessada)
+    {
+        $this->indProcessada = $indProcessada;
+
+        return $this;
+    }
+
+    /**
+     * Get indProcessada
+     *
+     * @return integer 
+     */
+    public function getIndProcessada()
+    {
+        return $this->indProcessada;
     }
 
     /**

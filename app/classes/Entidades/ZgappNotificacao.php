@@ -31,6 +31,13 @@ class ZgappNotificacao
     /**
      * @var string
      *
+     * @ORM\Column(name="ASSUNTO", type="string", length=40, nullable=false)
+     */
+    private $assunto;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="MENSAGEM", type="string", length=1000, nullable=true)
      */
     private $mensagem;
@@ -48,6 +55,13 @@ class ZgappNotificacao
      * @ORM\Column(name="IND_VIA_WA", type="integer", nullable=true)
      */
     private $indViaWa;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_PROCESSADA", type="integer", nullable=false)
+     */
+    private $indProcessada;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -124,6 +138,29 @@ class ZgappNotificacao
     }
 
     /**
+     * Set assunto
+     *
+     * @param string $assunto
+     * @return ZgappNotificacao
+     */
+    public function setAssunto($assunto)
+    {
+        $this->assunto = $assunto;
+
+        return $this;
+    }
+
+    /**
+     * Get assunto
+     *
+     * @return string 
+     */
+    public function getAssunto()
+    {
+        return $this->assunto;
+    }
+
+    /**
      * Set mensagem
      *
      * @param string $mensagem
@@ -190,6 +227,29 @@ class ZgappNotificacao
     public function getIndViaWa()
     {
         return $this->indViaWa;
+    }
+
+    /**
+     * Set indProcessada
+     *
+     * @param integer $indProcessada
+     * @return ZgappNotificacao
+     */
+    public function setIndProcessada($indProcessada)
+    {
+        $this->indProcessada = $indProcessada;
+
+        return $this;
+    }
+
+    /**
+     * Get indProcessada
+     *
+     * @return integer 
+     */
+    public function getIndProcessada()
+    {
+        return $this->indProcessada;
     }
 
     /**

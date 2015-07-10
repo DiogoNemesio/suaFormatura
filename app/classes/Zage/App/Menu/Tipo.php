@@ -226,12 +226,12 @@ abstract class Tipo {
 		$this->html	.= \Zage\App\ZWS::TAB.'</div>'.\Zage\App\ZWS::NL;
 		$this->html	.= '</div><!-- /#ace-settings-container -->'.\Zage\App\ZWS::NL;
 		$this->html	.= '<script type="text/javascript">'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'$(\'#zgNotificacoesID\').load("'.ROOT_URL.'/App/notificacao.php");'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'$(\'#zgMensagensID\').load("'.ROOT_URL.'/App/mensagem.php");'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'atualizaNotificacoes();'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'atualizaMensagens();'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'var auto_refresh = setInterval('.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'function () {'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'$(\'#zgNotificacoesID\').load("'.ROOT_URL.'/App/notificacao.php");'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'$(\'#zgMensagensID\').load("'.ROOT_URL.'/App/mensagem.php");'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'atualizaNotificacoes();'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'atualizaMensagens();'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'}, '.$timeout.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).');'.\Zage\App\ZWS::NL;
 		$this->html	.= '</script>'.\Zage\App\ZWS::NL;

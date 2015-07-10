@@ -9,13 +9,17 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
-## Resgata as notificações 
+## Variáveis globais
 #################################################################################
-$notificacoes	= array();
-//$notificacoes	= array(0 => (object) array("MENSAGEM" => "Oi"));
+global $em,$system,$tr,$log,$db;
 
 #################################################################################
-## Gera o código da notificação
+## Resgata as notificações 
+#################################################################################
+$notificacoes		= \Zage\App\Notificacao::listaPendentes($system->getCodUsuario());
+
+#################################################################################
+## Gera o código html da notificação
 #################################################################################
 $numNot			= sizeof($notificacoes);
 $html			= "";
@@ -24,7 +28,30 @@ if ($numNot > 0) {
 	$html .= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="pull-right dropdown-navbar navbar-red dropdown-menu dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
 	$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-warning-sign"></i>Notificações</li>'.\Zage\App\ZWS::NL;
 	foreach ($notificacoes as $not) {
-		$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li><a href="#"><div class="clearfix"><span class="pull-left"><i class="btn btn-xs no-hover btn-pink fa fa-comment"></i>'.$not->MENSAGEM.'</span></div></a></li>'.\Zage\App\ZWS::NL;
+		if ($not->getCodUsuario()) {
+			$avatar	= ($not->getCodUsuario()->getAvatar()) ? $not->getCodUsuario()->getAvatar()->getLink() : IMG_URL."/avatars/usuarioGenerico.png";
+			$nome	= $not->getCodUsuario()->getApelido();
+		}else{
+			$avatar	= IMG_URL."/avatars/usuarioGenerico.png";
+			$nome	= "Anônimo";
+		}
+		$avatar	= str_replace("%IMG_URL%", IMG_URL, $avatar);
+		$lid	= \Zage\App\Util::encodeUrl('codUsuario='.$system->getCodUsuario().'&codNotificacao='.$not->getCodigo());
+		$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li>
+			<a href="javascript:lerNotificacao(\''.$lid.'\');" class="clearfix">
+			<img src="'.$avatar.'" class="msg-photo" alt="'.$nome.'" />
+			<span class="msg-body">
+			<span class="msg-title">
+			<span class="blue">'.$nome.'</span>
+			'.$not->getAssunto().'
+			</span>
+			<span class="msg-time">
+			<i class="ace-icon fa fa-clock-o"></i>
+			<span>'.$not->getData()->format($system->config["data"]["datetimeFormat"]).'</span>
+			</span>
+			</span>
+			</a>
+		</li>'.\Zage\App\ZWS::NL;
 	}
 	$html .= str_repeat(\Zage\App\ZWS::TAB,4).'</ul>'.\Zage\App\ZWS::NL;
 }

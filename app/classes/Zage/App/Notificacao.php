@@ -51,7 +51,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	 * @param string $tipoDestinatario
 	 */
 	public function __construct($tipoMensagem,$tipoDestinatario) {
-		global $em,$system,$log;
+		global $em;
 		
 		#################################################################################
 		## Valida o tipo de Mensagem
@@ -114,12 +114,13 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	 * @throws \Exception
 	 */
 	public function salva() {
-		global $em,$system,$log;
+		global $em;
 		
 		#################################################################################
 		## Valida se os campos obrigatórios foram informados
 		#################################################################################
 		if ($this->getCodTipoMensagem()->getCodigo() == \Zage\App\Notificacao::TIPO_MENSAGEM_HTML || $this->getCodTipoMensagem()->getCodigo() == \Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO) {
+			if (!$this->getAssunto())	throw new \Exception('Assunto deve ser definido !!!');
 			if (!$this->getMensagem())	throw new \Exception('Mensagem deve ser definida !!!');
 		}elseif ($this->getCodTipoMensagem()->getCodigo() == \Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE){
 			if (!$this->getCodTemplate())	throw new \Exception('Template deve ser definido para esse tipo de notificação !!!');
@@ -140,7 +141,9 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		$_not->setData(new \DateTime("now"));
 		$_not->setIndViaEmail($this->getIndViaEmail());
 		$_not->setIndViaWa($this->getIndViaWa());
+		$_not->setAssunto($this->getAssunto());
 		$_not->setMensagem($this->getMensagem());
+		$_not->setIndProcessada(0);
 		$em->persist($_not);
 		
 		#################################################################################
@@ -157,7 +160,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		}
 
 		#################################################################################
-		## Salva as associações
+		## Salva as associações de usuários
 		#################################################################################
 		if (sizeof($this->usuarios) > 0) {
 			foreach ($this->usuarios as $codUsuario => $oUsu) {
@@ -169,12 +172,27 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			}
 		}
 		
+		#################################################################################
+		## Salva as associações de organizações
+		#################################################################################
 		if (sizeof($this->organizacoes) > 0) {
 			foreach ($this->organizacoes as $codOrg => $oOrg) {
 				$oAssOrg	= new \Entidades\ZgappNotificacaoOrganizacao();
 				$oAssOrg->setCodNotificacao($_not);
 				$oAssOrg->setCodOrganizacao($oOrg);
 				$em->persist($oAssOrg);
+			}
+			
+			#################################################################################
+			## Salvar o registro de controle de leitura para cada usuário da organização
+			#################################################################################
+			$usuarios	= $em->getRepository('\Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codOrganizacao' => $codOrg,'codStatus' => array('A','B')));
+			for ($i = 0; $i < sizeof($usuarios); $i++) {
+				$oAssUsu	= new \Entidades\ZgappNotificacaoUsuario();
+				$oAssUsu->setCodNotificacao($_not);
+				$oAssUsu->setCodUsuario($usuarios[$i]->getCodUsuario());
+				$oAssUsu->setIndLida(0);
+				$em->persist($oAssUsu);
 			}
 		}
 		
@@ -219,7 +237,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	 * @param number $codUsuario
 	 */
 	public function associaUsuario($codUsuario) {
-		global $em,$system,$log;
+		global $em;
 		
 		#################################################################################
 		## Verifica se o tipo de destinatário da Notificação é Usuário
@@ -246,7 +264,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	 * @param number $codOrganizacao
 	 */
 	public function associaOrganizacao($codOrganizacao) {
-		global $em,$system,$log;
+		global $em;
 		
 		#################################################################################
 		## Verifica se o tipo de destinatário da Notificação é Organização
@@ -265,6 +283,80 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			if (!$oOrg)	throw new \Exception('Organização não encontrada !!!');
 			$this->organizacoes[$codOrganizacao]	= $oOrg;
 		}
+	}
+	
+	/**
+	 * Lista as notificações pendentes de um usuário
+	 * @param number $codUsuario
+	 */
+	public static function listaPendentes($codUsuario) {
+		global $em;
+	
+		$qb 	= $em->createQueryBuilder();
+		try {
+			$qb->select('n')
+			->from('\Entidades\ZgappNotificacao','n')
+			->leftJoin('\Entidades\ZgappNotificacaoUsuario', 'nu', \Doctrine\ORM\Query\Expr\Join::WITH, 'nu.codNotificacao = n.codigo')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('nu.codUsuario'	, ':codUsuario'),
+				$qb->expr()->eq('nu.indLida'	, ':lida')
+			))
+			->orderBy('n.data','ASC')
+			->setParameter('codUsuario'	, $codUsuario)
+			->setParameter('lida'		, 0);
+			
+			$query 		= $qb->getQuery();
+			return		($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	/**
+	 * Seta a flag de lida na notificação
+	 * @param number $codNotificacao
+	 * @param number $codUsuario
+	 */
+	public static function ler($codNotificacao,$codUsuario) {
+		global $em;
+		
+		#################################################################################
+		## Verifica se a notificação existe
+		#################################################################################
+		$oNot		= $em->getRepository('\Entidades\ZgappNotificacao')->findOneBy(array('codigo' => $codNotificacao));
+		if (!$oNot) exit;
+		
+		#################################################################################
+		## Resgata o objeto do usuário
+		#################################################################################
+		$oUsu		= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
+		if (!$oUsu) exit;
+		
+		#################################################################################
+		## Resgata o registro de leitura
+		#################################################################################
+		$oNotUsu	= $em->getRepository('\Entidades\ZgappNotificacaoUsuario')->findOneBy(array('codNotificacao' => $codNotificacao,'codUsuario' => $codUsuario));
+		if (!$oNotUsu)	$oNotUsu	= new \Entidades\ZgappNotificacaoUsuario();
+		
+		$oNotUsu->setCodNotificacao($oNot);
+		$oNotUsu->setCodUsuario($oUsu);
+		$oNotUsu->setDataLeitura(new \DateTime('now'));
+		$oNotUsu->setIndLida(1);
+		$em->persist($oNotUsu);
+		
+		#################################################################################
+		## Salva no banco
+		#################################################################################
+		$em->getConnection()->beginTransaction();
+		try {
+			$em->flush();
+			$em->clear();
+			$em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$em->getConnection()->rollback();
+			throw new \Exception($e->getMessage());
+		}
+		
 	}
 	
 	/**

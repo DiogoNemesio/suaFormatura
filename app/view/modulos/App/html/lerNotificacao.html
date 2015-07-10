@@ -1,0 +1,38 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h4 class="">%ASSUNTO%</h4>
+	</div>
+	<div class="modal-body" style="overflow-y: scroll; height: 420px;">
+		<div>
+			<img class="pull-left" alt="%NOME%" src="%AVATAR%" />
+			<a class="user" href="#">%NOME%</a>&nbsp;
+			<a href="#"><small>(%EMAIL%)</small></a>
+			<div class="time">
+				<i class="ace-icon fa fa-clock-o bigger-110"></i>
+				%DATA_NOT%
+			</div>
+		</div>
+		<br>
+		<br>
+		<br>
+		<br>
+		<div class="widget-body">
+			<div class="widget-main">
+				<div class="row">
+					<p>%MENSAGEM%</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" data-dismiss="modal" class="btn">fechar</button>
+	</div>
+</div>
+
+<script>
+$('#zgDivModalID').on('hidden.bs.modal', function () {
+	atualizaNotificacoes();
+	$('#zgDivModalID').off('hidden.bs.modal');
+});
+</script>
