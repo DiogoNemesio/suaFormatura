@@ -173,6 +173,10 @@
 		return '<span class="popover-error" title="Mensagem de erro" data-rel="zg-popover" data-placement="top" data-trigger="hover" data-content="'+pMsg+'"><i class="fa fa-exclamation-circle red bigger-150"></i></span><script> $("[data-rel=zg-popover]").popover({html:true,template: \\'<div class="popover" style="width: 240px;" role="tooltip"><div class="arrow"></div><div class="popover-title"></div><div class="popover-content small smaller"></div></div>\\' }).on("show.bs.popover", function () { $(this).data("bs.popover").tip().css("max-width", "600px"); });<\\/script>';
 	}
 	
+	function zgCriaSpanInfo(pMsg) {
+		return '<span class="popover-info" title="Aviso" data-rel="zg-popover" data-placement="top" data-trigger="hover" data-content="'+pMsg+'"><i class="fa fa-info-circle blue bigger-150"></i></span><script> $("[data-rel=zg-popover]").popover({html:true,template: \\'<div class="popover" style="width: 240px;" role="tooltip"><div class="arrow"></div><div class="popover-title"></div><div class="popover-content small smaller"></div></div>\\' }).on("show.bs.popover", function () { $(this).data("bs.popover").tip().css("max-width", "600px"); });<\\/script>';
+	}
+
 	function zgCriaSpanOK() {
 		return '<span><i class="fa fa-check-circle green bigger-150"></i></span>';
 	}
