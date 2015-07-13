@@ -14,23 +14,25 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 global $em,$system,$tr,$log,$db;
 
-/*$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+
+$daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
+$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
 $notificacao->setMensagem("Apenas Testando");
-$notificacao->setAssunto("Teste 2");
-//$notificacao->setCodUsuario($);
+$notificacao->setAssunto("Teste: ".date('d/m/Y h:i:s'));
+$notificacao->setCodUsuario($daniel);
 $notificacao->associaUsuario(1);
-$notificacao->associaUsuario(2);
 $notificacao->enviaWa();
 $notificacao->salva();
-*/
 
-$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO);
-$notificacao->setAssunto("Organização 4.1");
+/*$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO);
+$notificacao->setAssunto("Test");
 $notificacao->setMensagem("Teste de notificação de organização");
 $notificacao->associaOrganizacao(1);
 $notificacao->enviaWa();
 $notificacao->salva();
+*/
 
+exit;
 
 #################################################################################
 ## Busca os arquivos que ainda não foram importados

@@ -79,7 +79,7 @@ if ($codTipoMens	== "TX") {
 #################################################################################
 ## Seta a flag de leitura
 #################################################################################
-\Zage\App\Notificacao::ler($codNotificacao, $codUsuario);
+//\Zage\App\Notificacao::ler($codNotificacao, $codUsuario);
 
 #################################################################################
 ## Carregando o template html
