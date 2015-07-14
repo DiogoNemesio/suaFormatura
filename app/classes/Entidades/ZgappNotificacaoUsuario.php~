@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappNotificacaoUsuario
  *
- * @ORM\Table(name="ZGAPP_NOTIFICACAO_USUARIO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_USUARIO_1_idx", columns={"COD_NOTIFICACAO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_USUARIO_2_idx", columns={"COD_USUARIO"})})
+ * @ORM\Table(name="ZGAPP_NOTIFICACAO_USUARIO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGAPP_NOTIFICACAO_USUARIO_UK01", columns={"COD_NOTIFICACAO", "COD_USUARIO"})}, indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_USUARIO_1_idx", columns={"COD_NOTIFICACAO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_USUARIO_2_idx", columns={"COD_USUARIO"})})
  * @ORM\Entity
  */
 class ZgappNotificacaoUsuario

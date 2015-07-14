@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegUsuarioHistEmail
  *
- * @ORM\Table(name="ZGSEG_USUARIO_HIST_EMAIL", indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_HIST_EMAIL_1_idx", columns={"COD_USUARIO"})})
+ * @ORM\Table(name="ZGSEG_USUARIO_HIST_EMAIL", indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_HIST_EMAIL_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_HIST_EMAIL_2_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
 class ZgsegUsuarioHistEmail
@@ -100,6 +100,16 @@ class ZgsegUsuarioHistEmail
      * })
      */
     private $codUsuario;
+
+    /**
+     * @var \Entidades\ZgsegHistEmailStatus
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegHistEmailStatus")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codStatus;
 
 
     /**
@@ -363,5 +373,28 @@ class ZgsegUsuarioHistEmail
     public function getCodUsuario()
     {
         return $this->codUsuario;
+    }
+
+    /**
+     * Set codStatus
+     *
+     * @param \Entidades\ZgsegHistEmailStatus $codStatus
+     * @return ZgsegUsuarioHistEmail
+     */
+    public function setCodStatus(\Entidades\ZgsegHistEmailStatus $codStatus = null)
+    {
+        $this->codStatus = $codStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get codStatus
+     *
+     * @return \Entidades\ZgsegHistEmailStatus 
+     */
+    public function getCodStatus()
+    {
+        return $this->codStatus;
     }
 }
