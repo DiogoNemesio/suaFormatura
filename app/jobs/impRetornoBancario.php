@@ -15,7 +15,7 @@ if (defined('DOC_ROOT')) {
 global $em,$system,$tr,$log,$db;
 
 
-$daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
+/*$daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
 $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
 $notificacao->setMensagem("Apenas Testando");
 $notificacao->setAssunto("Teste: ".date('d/m/Y h:i:s'));
@@ -24,15 +24,15 @@ $notificacao->associaUsuario(1);
 $notificacao->enviaWa();
 $notificacao->salva();
 
-/*$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO);
-$notificacao->setAssunto("Test");
+$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO);
+$notificacao->setAssunto("Teste de notificação");
 $notificacao->setMensagem("Teste de notificação de organização");
 $notificacao->associaOrganizacao(1);
 $notificacao->enviaWa();
 $notificacao->salva();
-*/
-
+$notificacao->adicionaVariavel("NOME", "Daniel");
 exit;
+*/
 
 #################################################################################
 ## Busca os arquivos que ainda não foram importados
