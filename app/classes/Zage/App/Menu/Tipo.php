@@ -203,12 +203,13 @@ abstract class Tipo {
 		
 		
 		/** Carrega as informações do usuário **/
-		$msg	= ($_user->getSexo() == "F") ? "Bem Vinda" : "Bem Vindo"; 
-		$avatar	= ($_user->getAvatar()) ? $_user->getAvatar()->getLink() : IMG_URL."/avatars/usuarioGenerico.png";
+		$msg		= ($_user->getSexo() == "F") ? "Bem Vinda" : "Bem Vindo"; 
+		$avatar		= ($_user->getAvatar()) 	? $_user->getAvatar()->getLink() : IMG_URL."/avatars/usuarioGenerico.png";
+		$nomeUsu	= ($_user->getApelido())	? $_user->getApelido() : $_user->getNome();
 		
 		
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<li class="light-blue">'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" href="#" class="dropdown-toggle"><img class="nav-user-photo" src="'.$avatar.'" alt="'.$_user->getNome().'" /><span class="user-info"><small>'.$msg.',</small>'.$_user->getNome().'</span><i class="ace-icon fa fa-caret-down"></i></a>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" href="#" class="dropdown-toggle"><img class="nav-user-photo" src="'.$avatar.'" alt="'.$nomeUsu.'" /><span class="user-info"><small>'.$msg.',</small>'.$nomeUsu.'</span><i class="ace-icon fa fa-caret-down"></i></a>'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
 		
 		if ($this->fixedItens) {

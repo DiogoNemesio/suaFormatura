@@ -130,6 +130,16 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		## Criar o objeto do doctrine
 		#################################################################################
 		$_not		= new \Entidades\ZgappNotificacao();
+
+		#################################################################################
+		## Calcular se será necessário processar (enviar a notificação)
+		#################################################################################
+		if ($this->getIndViaEmail() || $this->getIndViaWa()) {
+			$this->setIndProcessada(0);
+		}else{
+			$this->setIndProcessada(1);
+		}
+		
 		
 		#################################################################################
 		## Salva os campos
@@ -143,7 +153,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		$_not->setIndViaWa($this->getIndViaWa());
 		$_not->setAssunto($this->getAssunto());
 		$_not->setMensagem($this->getMensagem());
-		$_not->setIndProcessada(0);
+		$_not->setIndProcessada($this->getIndProcessada());
 		$em->persist($_not);
 		
 		#################################################################################
@@ -311,6 +321,30 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
 	}
+	
+	/**
+	 * Lista as notificações ainda não enviadas
+	 */
+	public static function listaNaoEnviadas() {
+		global $em;
+	
+		$qb 	= $em->createQueryBuilder();
+		try {
+			$qb->select('n')
+			->from('\Entidades\ZgappNotificacao','n')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('n.indProcessada'	, ':processada')
+			))
+			->orderBy('n.data','ASC')
+			->setParameter('processada'	, 0);
+				
+			$query 		= $qb->getQuery();
+			return		($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 	
 	/**
 	 * Seta a flag de lida na notificação
