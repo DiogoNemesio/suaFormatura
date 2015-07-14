@@ -30,7 +30,6 @@ $notificacoes	= \Zage\App\Notificacao::listaNaoEnviadas();
 #################################################################################
 for ($i = 0; $i < sizeof($notificacoes); $i++) {
 
-
 	#################################################################################
 	## Monta a mensagem
 	#################################################################################
@@ -68,9 +67,9 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		#################################################################################
 		## Atribui as variáveis do template
 		#################################################################################
-		$variaveis		= $em->getRepository('\Entidades\ZgappNotificacaoVariavel')->findBy(array('codNotificacao' => $codNotificacao));
-		for ($i = 0; $i < sizeof($variaveis); $i++) {
-			$tpl->set($variaveis[$i]->getVariavel(), $variaveis[$i]->getValor());
+		$variaveis		= $em->getRepository('\Entidades\ZgappNotificacaoVariavel')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo()));
+		for ($v = 0; $v < sizeof($variaveis); $v++) {
+			$tpl->set($variaveis[$v]->getVariavel(), $variaveis[$v]->getValor());
 		}
 		
 		#################################################################################
@@ -93,7 +92,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		#################################################################################
 		## Verifica se é para enviar e-mail
 		#################################################################################
-		if ($notificacoes[$i]->indViaEmail())	{
+		if ($notificacoes[$i]->getIndViaEmail())	{
 			
 			#################################################################################
 			## Criar os objeto do email ,transporte e validador
@@ -115,7 +114,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			#################################################################################
 			## Definir os destinatários
 			#################################################################################
-			$mail->addBcc($usuarios[$j]->getUsuario());
+			$mail->addBcc($usuarios[$j]->getCodUsuario()->getUsuario());
 			
 			#################################################################################
 			## Salvar as informações e enviar o e-mail
@@ -125,25 +124,25 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 				## Cria o log de envio
 				#################################################################################
 				$mailLog		= new \Entidades\ZgappNotificacaoLog();
-				$formaEnvio		= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
-				$mailLog->setCodFormaEnvio($formaEnvio);
+				$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
+				$oUsuario		= $em->getReference('\Entidades\ZgsegUsuario', $usuarios[$j]->getCodUsuario()->getCodigo());
+				$mailLog->setCodFormaEnvio($oFormaEnvio);
 				$mailLog->setCodNotificacao($notificacoes[$i]);
-				$mailLog->setCodUsuario($usuarios[$j]);
+				$mailLog->setCodUsuario($oUsuario);
 				$mailLog->setDataEnvio(new \DateTime("now"));
 				$mailLog->setIndErro(0);
 				$transport->send($mail);
 				
 				$em->persist($mailLog);
 				$em->flush();
-				$em->clear();
+				$em->detach($mailLog);
 			} catch (Exception $e) {
+				$log->err("Erro ao enviar o e-mail:". $e->getTraceAsString());
 				$mailLog->setErro($e->getTraceAsString());
 				$mailLog->setIndErro(1);
-				$log->err("Erro ao enviar o e-mail:". $e->getTraceAsString());
 				$em->persist($mailLog);
 				$em->flush();
-				$em->clear();
-				continue;
+				$em->detach($mailLog);
 			}
 		}
 		
@@ -151,7 +150,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		#################################################################################
 		## Verifica se é para enviar via whatsapp
 		#################################################################################
-		if ($notificacoes[$i]->indViaWa())	{
+		if ($notificacoes[$i]->getIndViaWa())	{
 			
 			#################################################################################
 			## Não enviar templates via whatsapp
@@ -161,10 +160,15 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			}
 			
 		}
-		
-		
 	}
 	
+	#################################################################################
+	## Alterar a flag de processada
+	#################################################################################
+	$notificacoes[$i]->setIndProcessada(1);
+	$em->persist($notificacoes[$i]);
+	$em->flush();
+	$em->detach($notificacoes[$i]);
 	
 	
 }
