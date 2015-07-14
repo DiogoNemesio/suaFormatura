@@ -14,31 +14,25 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 global $em,$system,$tr,$log,$db;
 
-
 #################################################################################
 ## Lista as notificações não enviadas
 #################################################################################
-$notificacoes	= $em->getRepository('\Entidades\ZgappNotificao')->findBy(array('indTemWa' => 1));
+$notificacoes	= \Zage\App\Notificacao::listaNaoEnviadas();
+
+#################################################################################
+## Loop para envio das notificações
+#################################################################################
+for ($i = 0; $i < sizeof($notificacoes); $i++) {
 
 
+	#################################################################################
+	## Monta a mensagem
+	#################################################################################
+	
+	
+	$usuarios	= $em->getRepository('\Entidades\ZgappNotificacaoUsuario')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo()));
+	
+	
+	
+}
 
-$daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
-$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ASSINATURA_VENCIDA'));
-$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
-$notificacao->setAssunto("Assinatura vencida:".date('i:s'));
-$notificacao->setCodUsuario($daniel);
-$notificacao->associaUsuario(1);
-$notificacao->enviaWa();
-$notificacao->setCodTemplate($template);
-$notificacao->adicionaVariavel("DATA_VENCIMENTO", "13/06/2015");
-$notificacao->adicionaVariavel("VALOR_ASSINATURA", "R$ 1.000,00");
-$notificacao->salva();
-
-/*$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO);
-$notificacao->setAssunto("Teste de notificação");
-$notificacao->setMensagem("Teste de notificação de organização");
-$notificacao->associaOrganizacao(1);
-$notificacao->enviaWa();
-$notificacao->salva();
-$notificacao->adicionaVariavel("NOME", "Daniel");
-*/

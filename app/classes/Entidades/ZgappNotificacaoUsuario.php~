@@ -36,6 +36,20 @@ class ZgappNotificacaoUsuario
     private $dataLeitura;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ENVIO_EMAIL", type="datetime", nullable=true)
+     */
+    private $dataEnvioEmail;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ENVIA_WA", type="datetime", nullable=true)
+     */
+    private $dataEnviaWa;
+
+    /**
      * @var \Entidades\ZgappNotificacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgappNotificacao")
@@ -110,6 +124,52 @@ class ZgappNotificacaoUsuario
     public function getDataLeitura()
     {
         return $this->dataLeitura;
+    }
+
+    /**
+     * Set dataEnvioEmail
+     *
+     * @param \DateTime $dataEnvioEmail
+     * @return ZgappNotificacaoUsuario
+     */
+    public function setDataEnvioEmail($dataEnvioEmail)
+    {
+        $this->dataEnvioEmail = $dataEnvioEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get dataEnvioEmail
+     *
+     * @return \DateTime 
+     */
+    public function getDataEnvioEmail()
+    {
+        return $this->dataEnvioEmail;
+    }
+
+    /**
+     * Set dataEnviaWa
+     *
+     * @param \DateTime $dataEnviaWa
+     * @return ZgappNotificacaoUsuario
+     */
+    public function setDataEnviaWa($dataEnviaWa)
+    {
+        $this->dataEnviaWa = $dataEnviaWa;
+
+        return $this;
+    }
+
+    /**
+     * Get dataEnviaWa
+     *
+     * @return \DateTime 
+     */
+    public function getDataEnviaWa()
+    {
+        return $this->dataEnviaWa;
     }
 
     /**
