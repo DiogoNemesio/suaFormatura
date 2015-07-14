@@ -109,6 +109,12 @@ define ( 'XML_URL', ROOT_URL . 'xml/' );
 define ( 'JOB_PATH', DOC_ROOT . '/jobs/' );
 
 /**
+ * Caminho dos templates
+ */
+define ( 'TPL_PATH', DOC_ROOT . '/templates/' );
+
+
+/**
  * Caminho dos executáveis do sistema
  */
 define ( 'EXE_PATH', DOC_ROOT . '/bin/' );

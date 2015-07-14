@@ -4,7 +4,7 @@
 		<h4 class="">%ASSUNTO%</h4>
 	</div>
 	<div class="modal-body" style="overflow-y: scroll; height: 420px;">
-		<div>
+		<div class="pull-left">
 			<img class="pull-left" alt="%NOME%" src="%AVATAR%" />
 			<a class="user" href="#">%NOME%</a>&nbsp;
 			<a href="#"><small>(%EMAIL%)</small></a>
@@ -13,20 +13,24 @@
 				%DATA_NOT%
 			</div>
 		</div>
-		<br>
-		<br>
-		<br>
-		<br>
-		<div class="widget-body">
-			<div class="widget-main">
-				<div class="row">
-					<p>%MENSAGEM%</p>
-				</div>
-			</div>
+		<div class="pull-right">
+			<ul class="pager">
+				<li class="previous %DIS_ANT%">
+					<a class="%DIS_ANT%" href="%URL_ANT%"><i class="fa fa-arrow-left"></i>&nbsp;Anterior</a>
+				</li>
+				<li class="previous %DIS_DEP%">
+					<a class="%DIS_DEP%" href="%URL_DEP%"><i class="fa fa-arrow-right"></i>&nbsp;Próximo</a>
+				</li>
+			</ul>
 		</div>
+		<br>
+		<br>
+		<br>
+		<br>
+		%MENSAGEM%
 	</div>
 	<div class="modal-footer">
-		<button type="button" data-dismiss="modal" class="btn">fechar</button>
+		<button type="button" data-dismiss="modal" class="btn">Fechar</button>
 	</div>
 </div>
 

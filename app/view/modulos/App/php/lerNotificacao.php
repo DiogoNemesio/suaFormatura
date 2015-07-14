@@ -58,21 +58,67 @@ if ($notificacao->getCodUsuario()) {
 $codTipoMens		= $notificacao->getCodTipoMensagem()->getCodigo();
 $assunto			= $notificacao->getAssunto();
 $data				= $notificacao->getData()->format($system->config["data"]["datetimeFormat"]);
-$log->info("Data:".$data);
 
 if ($codTipoMens	== "TX") {
-	$mensagem		= $notificacao->getMensagem();
+	$mensagem		= '<div class="widget-body"><div class="widget-main"><div class="row"><p>'.$notificacao->getMensagem().'</p></div></div></div>';
 }elseif ($codTipoMens	== "H") {
-	$mensagem		= $notificacao->getMensagem();
+	$mensagem		= '<div class="widget-body"><div class="widget-main"><div class="row"><p>'.$notificacao->getMensagem().'</p></div></div></div>';
 }elseif ($codTipoMens	== "TP") {
 	
-	throw new \Exception('Tipo de notificação não implementada !!!');
 	#################################################################################
-	## Carrega o template
+	## Verificar se o template foi informado
 	#################################################################################
+	if (!$notificacao->getCodTemplate()) throw new \Exception('Template não informado !!!');
+	$tplId		= \Zage\App\Util::encodeUrl('codUsuario='.$system->getCodUsuario().'&codNotificacao='.$codNotificacao.'&codTemplate='.$notificacao->getCodTemplate()->getCodigo());
+	$mensagem 	= '<iframe style="width: 100%;height: 100%; overflow:hidden; border: 0px;" id="zgWindowLerNotID" src="'.ROOT_URL . '/App/lerNotificacaoTpl.php?id='.$tplId.'"></iframe>';
 	
 }else{
 	throw new \Exception('Tipo de notificação não implementada !!!');
+}
+
+#################################################################################
+## Montar o array que gerencia os botões de pŕoximo e anterior
+#################################################################################
+if (!isset($arrayLoaded)) {
+	unset($_SESSION['aNotProc']);
+	$_SESSION['aNotProc']	= array();
+	$notificacoes		= \Zage\App\Notificacao::listaPendentes($system->getCodUsuario());
+	for ($i = 0; $i < sizeof($notificacoes); $i++) {
+		$_SESSION['aNotProc'][$i]	= $notificacoes[$i]->getCodigo();
+	}
+}
+if (!isset($_SESSION['aNotProc']))	{
+	$_SESSION['aNotProc']	= array();
+}
+
+#################################################################################
+## Monta os botões de anterior e posterior
+#################################################################################
+$indice		= array_search($notificacao->getCodigo(), $_SESSION['aNotProc']);
+$log->info("Indice: ".$indice." Notificação: ".$notificacao->getCodigo());
+if ($indice === false) {
+	$urlAnt		= "#";
+	$urlDep		= "#";
+
+	$disAnt		= "disabled";
+	$disDep		= "disabled";
+}else{
+
+	$seqAnt		= isset($_SESSION['aNotProc'][$indice-1]) ? $_SESSION['aNotProc'][$indice-1] : null;
+	$seqDep		= isset($_SESSION['aNotProc'][$indice+1]) ? $_SESSION['aNotProc'][$indice+1] : null;
+
+	$antID		= \Zage\App\Util::encodeUrl('codUsuario='.$system->getCodUsuario().'&codNotificacao='.$seqAnt.'&arrayLoaded=1');
+	$depID		= \Zage\App\Util::encodeUrl('codUsuario='.$system->getCodUsuario().'&codNotificacao='.$seqDep.'&arrayLoaded=1');
+
+	$urlAnt		= ($seqAnt == null) ? "#" : "javascript:lerNotificacao('".$antID."');";
+	$urlDep		= ($seqDep == null) ? "#" : "javascript:lerNotificacao('".$depID."');";
+
+	$disAnt		= ($seqAnt == null) ? "disabled" : "";
+	$disDep		= ($seqDep == null) ? "disabled" : "";
+	
+	$log->info("seqAnt: ".$seqAnt. " antID:".$antID." urlAnt: ".$urlAnt." disAnt: ".$disAnt);
+	$log->info("seqDep: ".$seqDep. " depID:".$depID." urlDep: ".$urlDep." disDep: ".$disDep);
+
 }
 
 
@@ -97,6 +143,11 @@ $tpl->set('DATA_NOT'	,$data);
 $tpl->set('AVATAR'		,$avatar);
 $tpl->set('EMAIL'		,$email);
 $tpl->set('MENSAGEM'	,$mensagem);
+$tpl->set('DIS_ANT'		,$disAnt);
+$tpl->set('DIS_DEP'		,$disDep);
+$tpl->set('URL_ANT'		,$urlAnt);
+$tpl->set('URL_DEP'		,$urlDep);
+
 
 #################################################################################
 ## Por fim exibir a página HTML
