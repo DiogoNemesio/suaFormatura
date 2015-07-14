@@ -90,7 +90,7 @@ try {
  	## ORGANIZAÇÃO
  	#################################################################################
  	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => FMT));
- 	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => 1));
+ 	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => A));
  	
  	$oOrganizacao->setIdentificacao($ident);
  	$oOrganizacao->setNome($nome);

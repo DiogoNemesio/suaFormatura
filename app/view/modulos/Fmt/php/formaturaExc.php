@@ -66,10 +66,20 @@ $uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone
 $urlVoltar			= ROOT_URL . "/Fmt/formaturaLis.php?id=".$uid;
 
 #################################################################################
+## Select de Sexo
+#################################################################################
+try {
+	$aMotivo		= $em->getRepository('Entidades\ZgadmOrganizacaoMotivoCancelamento')->findBy(array(),array('descricao' => ASC));
+	$oMotivo		= $system->geraHtmlCombo($aMotivo,	'CODIGO', 'DESCRICAO',	null, null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . '/templateModalExc.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
@@ -79,6 +89,7 @@ $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('PODE_REMOVER'		,$podeRemover);
 $tpl->set('TITULO'				,$tr->trans('Excluir formatura'));
 $tpl->set('ID'					,$id);
+$tpl->set('MOTIVO'				,$oMotivo);
 $tpl->set('TEXTO'				,$mensagem);
 $tpl->set('OBSERVACAO'			,$observacao);
 $tpl->set('CLASSE'				,$classe);

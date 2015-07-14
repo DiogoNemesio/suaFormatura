@@ -31,6 +31,13 @@ class ZgappNotificacao
     /**
      * @var string
      *
+     * @ORM\Column(name="ASSUNTO", type="string", length=40, nullable=false)
+     */
+    private $assunto;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="MENSAGEM", type="string", length=1000, nullable=true)
      */
     private $mensagem;
@@ -128,6 +135,29 @@ class ZgappNotificacao
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * Set assunto
+     *
+     * @param string $assunto
+     * @return ZgappNotificacao
+     */
+    public function setAssunto($assunto)
+    {
+        $this->assunto = $assunto;
+
+        return $this;
+    }
+
+    /**
+     * Get assunto
+     *
+     * @return string 
+     */
+    public function getAssunto()
+    {
+        return $this->assunto;
     }
 
     /**

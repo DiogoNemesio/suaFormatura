@@ -12,6 +12,8 @@ if (defined('DOC_ROOT')) {
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['codOrganizacao'])) 		$codOrganizacao			= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
+if (isset($_POST['motivo']))	 			$motivo					= \Zage\App\Util::antiInjection($_POST['motivo']);
+if (isset($_POST['obs']))		 			$obs					= \Zage\App\Util::antiInjection($_POST['obs']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -76,13 +78,16 @@ try {
 
 	}	
 	/*** Cancelar Organizacao ***/
-	$oOrgStatus		= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => 3));
+	$oOrgStatus		= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => C));
+	$oMotivo		= $em->getRepository('Entidades\ZgadmOrganizacaoMotivoCancelamento')->findOneBy(array('codigo' => $motivo));
+	
 	$oOrg->setCodStatus($oOrgStatus);
+	$oOrg->setCodMotivoCancelamento($oMotivo);
+	$oOrg->setDataCancelamento(new DateTime(now));
+	$oOrg->setObservacaoCancelamento($obs);
 	$em->persist($oOrg);
 	
-	$em->flush();
-	$em->clear();
-	/***** Flush *
+	/***** Flush *****/
 	try {
 		$em->flush();
 		$em->clear();
@@ -90,7 +95,7 @@ try {
 		$log->debug("Erro ao excluir o formando:". $e->getTraceAsString());
 		throw new \Exception("Erro excluir o formando. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
 	}	
-****/
+
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	die('1'.\Zage\App\Util::encodeUrl('||'));
@@ -98,4 +103,4 @@ try {
 }
 
 
-echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Formatura excluída com sucesso!")));
+echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Formatura cancelada com sucesso!")));

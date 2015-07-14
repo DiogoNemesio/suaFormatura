@@ -1,0 +1,93 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-times red"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 250px;">
+	<input type="hidden" name="%VAR%" value="%VAR_VALUE%">
+	<input type="hidden" name="%VAR2%" value="%VAR_VALUE2%">
+	<input type="hidden" name="%VAR3%" value="%VAR_VALUE3%">
+	<input type="hidden" name="id" value="%ID%">
+	
+	<div id="divMsgCPPagID">
+    </div>
+    
+    <h4>%TEXTO%</h4>
+    <h6>%OBSERVACAO%</h6>
+    <br>
+    
+    <div class="row">
+    	<div class="col-sm-8">
+    		<div class="form-group col-sm-12" id="divMotivoID">
+				<label class="col-sm-3 control-label" for="motivoID">Motivo</label>
+    			<div class="input-group col-sm-8 pull-left">
+					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o motivo do cancelamento."></i></span>
+					<select class="select2" style="width:100%;" id="motivoID" name="motivo" data-rel="select2">
+						%MOTIVO%
+					</select>
+				</div>
+			</div>
+	    	<div class="form-group col-sm-12" id="divObsID">
+		    	<label class="col-xs-12 col-sm-3 control-label" for="obsID">Observação</label>
+	   			<div class="input-group col-sm-8 pull-left">
+	  					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe mais informações sobre o cancelamento."></i></span>
+	    			<input class="form-control" id="obsID" type="text" name="obs" maxlength="200" placeholder="Observações sobre o cancelamento" %READONLY% onblur="checkCpfUsuarioAlt();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+		    	</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
+			</div>
+			
+		</div>
+	</div>
+	
+    	
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-danger" id="submitModalExc"><i class="fa fa-times bigger-110"></i> Excluir</button>
+	<button type="button" data-dismiss="modal" class="btn" id="cancelModalExc">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[data-rel=popover]').popover({html:true});
+
+$('#motivoID').css('width','100%').select2({allowClear:true});
+
+$('#zgFormModalID').submit(function() {
+	
+	$('#submitModalExc').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#submitModalExc').attr("disabled","disabled");
+	$('#cancelModalExc').attr("disabled","disabled");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
+			
+		}else{
+			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
+			//zgLimpaModalAviso();
+			//zgMostraAviso("Fechar");
+		}
+		
+		$('#submitModalExc').html('<i class="fa fa-times bigger-110"></i> Excluir ');
+		$('#submitModalExc').attr("disabled",false);
+		$('#cancelModalExc').attr("disabled",false);
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URLVOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+</script>

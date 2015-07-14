@@ -31,7 +31,7 @@ class ZgappNotificacao
     /**
      * @var string
      *
-     * @ORM\Column(name="ASSUNTO", type="string", length=40, nullable=false)
+     * @ORM\Column(name="ASSUNTO", type="string", length=40, nullable=true)
      */
     private $assunto;
 
@@ -45,14 +45,14 @@ class ZgappNotificacao
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_VIA_EMAIL", type="integer", nullable=true)
+     * @ORM\Column(name="IND_VIA_EMAIL", type="integer", nullable=false)
      */
     private $indViaEmail;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_VIA_WA", type="integer", nullable=true)
+     * @ORM\Column(name="IND_VIA_WA", type="integer", nullable=false)
      */
     private $indViaWa;
 
