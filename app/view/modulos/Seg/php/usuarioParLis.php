@@ -88,6 +88,10 @@ for ($i = 0; $i < sizeof($usuario); $i++) {
 	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioParBlo.php?id=".$uid."');");
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Seg/usuarioParAlt.php?id='.$uid);
 	$grid->setUrlCelula($i,8,"javascript:zgAbreModal('".ROOT_URL."/Seg/usuarioParExc.php?id=".$uid."');");
+	
+	if ($usuario[$i]->getCodStatus()->getCodigo() == "B") {
+		$grid->setIconeCelula($i, 6, "fa fa-unlock green");
+	}
 }
 
 #################################################################################
