@@ -99,6 +99,7 @@ try {
 	$oChip->setCodStatus($oStatus);
 	$oChip->setSenha($senha);
 	$oChip->setCode($code);
+	$oChip->setDataRegistro(new \DateTime("now"));
 	
 	$em->persist($oChip);
 	$em->flush();
