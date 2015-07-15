@@ -1,0 +1,156 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Cadastro de Chips
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codChipID" name="codChip" value="%COD_CHIP%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divNumeroID">
+								<label for="codChipID" class="col-sm-3 control-label">Número</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da atividade"></i></span>
+									<input type="text" id="numeroID" name="numero" value="%NUMERO%" maxlength="15" class="width-100" placeholder="Número" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpNumeroID"></div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divIdentificacaoID">
+								<label for="codChipID" class="col-sm-3 control-label">Identificação</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação da atividade"></i></span>
+									<input type="text" id="identificacaoID" name="identificacao" value="%IDENTIFICACAO%" maxlength="40" class="width-100" onchange="validaIdentAtividadeAlt();" placeholder="Identificação" autocomplete="off" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpIdentificacaoID"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+
+/******************************************************
+MASCARA - Inserir as mascaras no campo
+/******************************************************/
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	var vOk 	= validaChipAlt();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codChipID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Chip', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});
+
+
+function validaChipAlt() {
+	var vCodChip			= $('#codChipID').val();
+	var vIdentificacao		= $('#identificacaoID').val();
+	var vNumero				= $('#numeroID').val();
+	var vOK					= true;
+	
+	// Identificação
+	if (!vIdentificacao){
+		$('#divIdentificacaoID').addClass('has-error');
+		$('#divHelpIdentificacaoID').html(zgCriaSpanErro('Identificação dever ser informada !!'));
+		vOK					= false;
+	}else{
+		$('#divIdentificacaoID').removeClass('has-error');
+		$('#divHelpIdentificacaoID').html('&nbsp;');
+	}
+	
+	// Número
+	if (!vNumero){
+		$('#divNumeroID').addClass('has-error');
+		$('#divHelpNumeroID').html(zgCriaSpanErro('Número dever ser informado !!'));
+		vOK					= false;
+	}else{
+		$('#divNumeroID').removeClass('has-error');
+		$('#divHelpNumeroID').html('&nbsp;');
+	}
+	
+	return vOK;
+}
+
+
+</script>
+

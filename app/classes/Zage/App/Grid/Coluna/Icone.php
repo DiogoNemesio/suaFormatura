@@ -46,9 +46,10 @@ class Icone extends \Zage\App\Grid\Coluna {
 	/**
 	 * Gerar o código Html da célula
 	 */
-	public function geraHtmlValor($valor, $url = null,$icone = null) {
-		if (empty ($url))	$url 	= (empty ( $valor ) ? "#" : $valor);
-		if (empty ($icone))	$icone 	= $this->getIcone ();
+	public function geraHtmlValor($valor, $url = null,$icone = null,$descricao = null) {
+		if (empty ($url))		$url 		= (empty ( $valor ) ? "#" : $valor);
+		if (empty ($icone))		$icone 		= $this->getIcone ();
+		if (empty ($descricao))	$descricao 	= $this->getDescricao();
 		
 			if (substr($url,0,10) == "javascript") {
 			$href	= $url;
@@ -56,7 +57,7 @@ class Icone extends \Zage\App\Grid\Coluna {
 			$href	= "javascript:zgLoadUrl('" . $url . "');";
 		}
 				
-		$html = '<a href="'.$href.'" data-toggle="tooltip" data-placement="top"  data-trigger="click hover" data-animation="true" data-title="' . $this->getDescricao () . '" title="' . $this->getDescricao () . '"><i class="' . $icone . ' bigger-130"></i></a>';
+		$html = '<a href="'.$href.'" data-toggle="tooltip" data-placement="top"  data-trigger="click hover" data-animation="true" data-title="' . $descricao . '" title="' . $descricao . '"><i class="' . $icone . ' bigger-130"></i></a>';
 		return ($html);
 	}
 	

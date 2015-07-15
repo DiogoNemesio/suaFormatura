@@ -863,6 +863,23 @@ abstract class Tipo {
 		}
 	}
 	
+
+	/**
+	 * Definir a descrição de uma célula
+	 */
+	public function setDescricaoCelula($linha, $coluna, $descricao) {
+		if (isset ( $this->celulas [$linha] [$coluna] )) {
+			switch ($this->colunas [$coluna]->getTipo ()) {
+				case self::TP_ICONE:
+					$this->celulas [$linha] [$coluna]->setDescricao($descricao);
+					break;
+				default:
+					\Zage\App\Erro::halt ( 'Descrição só pode ser definido para tipos de coluna: ICONE' );
+					break;
+			}
+		}
+	}
+	
 	/**
 	 * Resgatar o nome do campo de uma determinada coluna
 	 * @param unknown $coluna

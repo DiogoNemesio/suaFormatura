@@ -178,7 +178,7 @@ class Bootstrap extends \Zage\App\Grid\Tipo {
 							}elseif ($this->colunas [$j]->getTipo () == self::TP_BOTAO) {
 								$this->html .= $this->getTAB () . $this->getTAB () . "<td style=\"" . $alinhamento . "\">" . $this->colunas [$j]->geraHtmlValor ( $this->celulas [$i] [$j]->getValor (),$this->celulas [$i] [$j]->getUrl() ) . "</td>" . $this->getNL ();
 							}elseif ($this->colunas [$j]->getTipo () == self::TP_ICONE) {
-								$this->html .= $this->getTAB () . $this->getTAB () . "<td style=\"" . $alinhamento . "\">" . $this->colunas [$j]->geraHtmlValor ( $this->celulas [$i] [$j]->getValor (),$this->celulas [$i] [$j]->getUrl(), $this->celulas [$i] [$j]->getIcone() ) . "</td>" . $this->getNL ();
+								$this->html .= $this->getTAB () . $this->getTAB () . "<td style=\"" . $alinhamento . "\">" . $this->colunas [$j]->geraHtmlValor ( $this->celulas [$i] [$j]->getValor (),$this->celulas [$i] [$j]->getUrl(), $this->celulas [$i] [$j]->getIcone(), $this->celulas [$i] [$j]->getDescricao() ) . "</td>" . $this->getNL ();
 							}elseif ($this->colunas [$j]->getTipo () == self::TP_CHECKBOX) {
 								$this->html .= $this->getTAB () . $this->getTAB () . "<td style=\"" . $alinhamento . "\">" . $this->colunas [$j]->geraHtmlValor ($this->colunas [$j]->getNome () , $this->celulas [$i] [$j]->getValor ()) . "</td>" . $this->getNL ();
 							} else {

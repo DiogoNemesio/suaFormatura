@@ -54,11 +54,16 @@ class Celula {
 	private $url;
 	
 	/**
-	 * Url
+	 * Ícone
 	 * @var unknown
 	 */
 	private $icone;
 	
+	/**
+	 * Descrição
+	 * @var unknown
+	 */
+	private $descricao;
 	
 	/**
 	 * Construtor
@@ -182,6 +187,22 @@ class Celula {
 	 */
 	public function setIcone($icone) {
 		$this->icone = $icone;
+	}
+	
+	/**
+	 *
+	 * @return the unknown
+	 */
+	public function getDescricao() {
+		return $this->descricao;
+	}
+	
+	/**
+	 *
+	 * @param unknown $descricao        	
+	 */
+	public function setDescricao($descricao) {
+		$this->descricao = $descricao;
 	}
 
 }
