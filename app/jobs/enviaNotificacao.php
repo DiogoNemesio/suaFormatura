@@ -82,6 +82,29 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		continue;
 	}
 	
+
+	#################################################################################
+	## Criar os objeto do email ,transporte e validador
+	#################################################################################
+	$mail 			= \Zage\App\Mail::getMail();
+	$transport 		= \Zage\App\Mail::getTransport();
+	$validator 		= new \Zend\Validator\EmailAddress();
+	$htmlMail 		= new MimePart($mensagem);
+	$htmlMail->type = "text/html";
+	$body 			= new MimeMessage();
+		
+	#################################################################################
+	## Definir o conteúdo do e-mail
+	#################################################################################
+	$body->setParts(array($htmlMail));
+	$mail->setBody($body);
+	$mail->setSubject("<ZageNotificação> ".$assunto);
+	
+	#################################################################################
+	## Controlar a quantidade de emails a enviar
+	#################################################################################
+	$numEmails	= 0;
+	
 	#################################################################################
 	## Resgata a lista de usuários que receberão a notificação
 	#################################################################################
@@ -94,58 +117,14 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		#################################################################################
 		if ($notificacoes[$i]->getIndViaEmail())	{
 			
-			#################################################################################
-			## Criar os objeto do email ,transporte e validador
-			#################################################################################
-			$mail 			= \Zage\App\Mail::getMail();
-			$transport 		= \Zage\App\Mail::getTransport();
-			$validator 		= new \Zend\Validator\EmailAddress();
-			$htmlMail 		= new MimePart($mensagem);
-			$htmlMail->type = "text/html";
-			$body 			= new MimeMessage();
-			
-			#################################################################################
-			## Definir o conteúdo do e-mail
-			#################################################################################
-			$body->setParts(array($htmlMail));
-			$mail->setBody($body);
-			$mail->setSubject("<ZageNotificação> ".$assunto);
 			
 			#################################################################################
 			## Definir os destinatários
 			#################################################################################
 			$mail->addBcc($usuarios[$j]->getCodUsuario()->getUsuario());
+			$numEmails++;
 			
-			#################################################################################
-			## Salvar as informações e enviar o e-mail
-			#################################################################################
-			try {
-				#################################################################################
-				## Cria o log de envio
-				#################################################################################
-				$mailLog		= new \Entidades\ZgappNotificacaoLog();
-				$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
-				$oUsuario		= $em->getReference('\Entidades\ZgsegUsuario', $usuarios[$j]->getCodUsuario()->getCodigo());
-				$mailLog->setCodFormaEnvio($oFormaEnvio);
-				$mailLog->setCodNotificacao($notificacoes[$i]);
-				$mailLog->setCodUsuario($oUsuario);
-				$mailLog->setDataEnvio(new \DateTime("now"));
-				$mailLog->setIndErro(0);
-				$transport->send($mail);
-				
-				$em->persist($mailLog);
-				$em->flush();
-				$em->detach($mailLog);
-			} catch (Exception $e) {
-				$log->err("Erro ao enviar o e-mail:". $e->getTraceAsString());
-				$mailLog->setErro($e->getTraceAsString());
-				$mailLog->setIndErro(1);
-				$em->persist($mailLog);
-				$em->flush();
-				$em->detach($mailLog);
-			}
-		}
-		
+		}	
 		
 		#################################################################################
 		## Verifica se é para enviar via whatsapp
@@ -161,6 +140,41 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			
 		}
 	}
+	
+	
+	#################################################################################
+	## Salvar as informações e enviar o e-mail
+	#################################################################################
+	if ($numEmails > 0) {
+		try {
+
+			#################################################################################
+			## Cria o log de envio
+			#################################################################################
+			$mailLog		= new \Entidades\ZgappNotificacaoLog();
+			$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
+			$mailLog->setCodFormaEnvio($oFormaEnvio);
+			$mailLog->setCodNotificacao($notificacoes[$i]);
+			$mailLog->setDataEnvio(new \DateTime("now"));
+			$mailLog->setIndErro(0);
+			$transport->send($mail);
+		
+			$em->persist($mailLog);
+			$em->flush();
+			$em->detach($mailLog);
+		} catch (Exception $e) {
+			$log->err("Erro ao enviar o e-mail:". $e->getTraceAsString());
+			$mailLog->setErro($e->getTraceAsString());
+			$mailLog->setIndErro(1);
+			$em->persist($mailLog);
+			$em->flush();
+			$em->detach($mailLog);
+		}
+	}
+	
+	
+	
+	
 	
 	#################################################################################
 	## Alterar a flag de processada

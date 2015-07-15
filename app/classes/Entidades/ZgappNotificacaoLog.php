@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappNotificacaoLog
  *
- * @ORM\Table(name="ZGAPP_NOTIFICACAO_LOG", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_1_idx", columns={"COD_NOTIFICACAO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_2_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_3_idx", columns={"COD_FORMA_ENVIO"})})
+ * @ORM\Table(name="ZGAPP_NOTIFICACAO_LOG", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_1_idx", columns={"COD_NOTIFICACAO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_3_idx", columns={"COD_FORMA_ENVIO"})})
  * @ORM\Entity
  */
 class ZgappNotificacaoLog
@@ -51,16 +51,6 @@ class ZgappNotificacaoLog
      * })
      */
     private $codNotificacao;
-
-    /**
-     * @var \Entidades\ZgsegUsuario
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codUsuario;
 
     /**
      * @var \Entidades\ZgappNotificacaoFormaEnvio
@@ -173,29 +163,6 @@ class ZgappNotificacaoLog
     public function getCodNotificacao()
     {
         return $this->codNotificacao;
-    }
-
-    /**
-     * Set codUsuario
-     *
-     * @param \Entidades\ZgsegUsuario $codUsuario
-     * @return ZgappNotificacaoLog
-     */
-    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario = null)
-    {
-        $this->codUsuario = $codUsuario;
-
-        return $this;
-    }
-
-    /**
-     * Get codUsuario
-     *
-     * @return \Entidades\ZgsegUsuario 
-     */
-    public function getCodUsuario()
-    {
-        return $this->codUsuario;
     }
 
     /**
