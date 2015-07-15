@@ -104,6 +104,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	## Controlar a quantidade de emails a enviar
 	#################################################################################
 	$numEmails	= 0;
+	$logDest	= array();
 	
 	#################################################################################
 	## Resgata a lista de usuários que receberão a notificação
@@ -117,7 +118,23 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		#################################################################################
 		if ($notificacoes[$i]->getIndViaEmail())	{
 			
-			
+			#################################################################################
+			## Cria o log de envio
+			#################################################################################
+			$mailLog		= new \Entidades\ZgappNotificacaoLog();
+			$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
+			$mailLog->setCodFormaEnvio($oFormaEnvio);
+			$mailLog->setCodNotificacao($notificacoes[$i]);
+				
+			#################################################################################
+			## Associa os destinatários
+			#################################################################################
+			$mailLogDest	= new \Entidades\ZgappNotificacaoLogDest();
+			$oUsu			= $em->getReference('\Entidades\ZgsegUsuario', $usuarios[$j]->getCodUsuario()->getCodigo());
+			$mailLogDest->setCodLog($mailLog);
+			$mailLogDest->setCodDestinatario($oUsu);
+			$em->persist($mailLogDest);
+				
 			#################################################################################
 			## Definir os destinatários
 			#################################################################################
@@ -148,42 +165,37 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	if ($numEmails > 0) {
 		try {
 
-			#################################################################################
-			## Cria o log de envio
-			#################################################################################
-			$mailLog		= new \Entidades\ZgappNotificacaoLog();
-			$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
-			$mailLog->setCodFormaEnvio($oFormaEnvio);
-			$mailLog->setCodNotificacao($notificacoes[$i]);
 			$mailLog->setDataEnvio(new \DateTime("now"));
 			$mailLog->setIndErro(0);
-			$transport->send($mail);
-		
 			$em->persist($mailLog);
-			$em->flush();
-			$em->detach($mailLog);
+			
+			$transport->send($mail);
+			
 		} catch (Exception $e) {
 			$log->err("Erro ao enviar o e-mail:". $e->getTraceAsString());
 			$mailLog->setErro($e->getTraceAsString());
 			$mailLog->setIndErro(1);
 			$em->persist($mailLog);
-			$em->flush();
-			$em->detach($mailLog);
 		}
 	}
-	
-	
-	
-	
 	
 	#################################################################################
 	## Alterar a flag de processada
 	#################################################################################
 	$notificacoes[$i]->setIndProcessada(1);
 	$em->persist($notificacoes[$i]);
+	
+	
+}
+
+#################################################################################
+## Salva as modificações
+#################################################################################
+try {
 	$em->flush();
-	$em->detach($notificacoes[$i]);
+	$em->clear();
 	
-	
+} catch (Exception $e) {
+	$log->err("Erro ao salvar as modificações no envio das mensagens: ".$e->getMessage());
 }
 

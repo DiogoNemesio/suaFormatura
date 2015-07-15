@@ -58,7 +58,8 @@ $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GChips");
 $grid->adicionaTexto('#'							,2	,$grid::CENTER	,'codigo');
 $grid->adicionaTexto('Número'						,20	,$grid::CENTER	,'','fone');
 $grid->adicionaTexto('Identificação'				,30	,$grid::CENTER	,'identificacao');
-$grid->adicionaTexto('Status'						,20	,$grid::CENTER	,'codStatus:nome');
+$grid->adicionaTexto('Status'						,10	,$grid::CENTER	,'codStatus:nome');
+$grid->adicionaTexto('País'							,12	,$grid::CENTER	,'codPais:nome');
 $grid->adicionaIcone(null,'fa fa-unlock green',$tr->trans('Registrar'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -76,14 +77,14 @@ for ($i = 0; $i < sizeof($chips); $i++) {
 	## Definir o endereço da url e o ícone de acordo com o status
 	#################################################################################
 	$codStatus	= $chips[$i]->getCodStatus()->getCodigo();
-	$colAcao	= 4;
+	$colAcao	= 5;
 	if ($codStatus == "A") {
 		$grid->setIconeCelula($i,$colAcao,'fa fa-lock red');
 		$grid->setUrlCelula($i,$colAcao,ROOT_URL.'/Wap/chipBlo.php?id='.$uid);
 		$grid->setDescricaoCelula($i, $colAcao, $tr->trans('Bloquear'));
 	}elseif($codStatus	== "R") {
 		$grid->setIconeCelula($i,$colAcao,'fa fa-tag grey');
-		$grid->setUrlCelula($i,$colAcao,ROOT_URL.'/Wap/chipReg.php?id='.$uid);
+		$grid->setUrlCelula($i,$colAcao,"javascript:zgAbreModal('".ROOT_URL."/Wap/chipReg.php?id=".$uid."');");
 		$grid->setDescricaoCelula($i, $colAcao, $tr->trans('Registrar'));
 	}else{
 		$grid->setIconeCelula($i,$colAcao,'fa fa-unlock green');
@@ -91,8 +92,8 @@ for ($i = 0; $i < sizeof($chips); $i++) {
 		$grid->setDescricaoCelula($i, $colAcao, $tr->trans('Desbloquear'));
 	}
 	
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Wap/chipAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Wap/chipExc.php?id='.$uid);
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Wap/chipAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,7,ROOT_URL.'/Wap/chipExc.php?id='.$uid);
 }
 
 

@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 class ZgadmPais
 {
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="CODIGO", type="string", length=2, nullable=false)
+     * @ORM\Column(name="CODIGO", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -42,11 +42,25 @@ class ZgadmPais
      */
     private $nome;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="TIMEZONE", type="string", length=60, nullable=true)
+     */
+    private $timezone;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="CALLING_CODE", type="string", length=3, nullable=true)
+     */
+    private $callingCode;
+
 
     /**
      * Get codigo
      *
-     * @return string 
+     * @return integer 
      */
     public function getCodigo()
     {
@@ -120,5 +134,51 @@ class ZgadmPais
     public function getNome()
     {
         return $this->nome;
+    }
+
+    /**
+     * Set timezone
+     *
+     * @param string $timezone
+     * @return ZgadmPais
+     */
+    public function setTimezone($timezone)
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    /**
+     * Get timezone
+     *
+     * @return string 
+     */
+    public function getTimezone()
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * Set callingCode
+     *
+     * @param string $callingCode
+     * @return ZgadmPais
+     */
+    public function setCallingCode($callingCode)
+    {
+        $this->callingCode = $callingCode;
+
+        return $this;
+    }
+
+    /**
+     * Get callingCode
+     *
+     * @return string 
+     */
+    public function getCallingCode()
+    {
+        return $this->callingCode;
     }
 }

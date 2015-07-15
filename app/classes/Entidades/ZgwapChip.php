@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgwapChip
  *
- * @ORM\Table(name="ZGWAP_CHIP", indexes={@ORM\Index(name="fk_ZGWAP_CHIP_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGWAP_CHIP_2_idx", columns={"COD_STATUS"})})
+ * @ORM\Table(name="ZGWAP_CHIP", indexes={@ORM\Index(name="fk_ZGWAP_CHIP_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGWAP_CHIP_2_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGWAP_CHIP_3_idx", columns={"COD_PAIS"})})
  * @ORM\Entity
  */
 class ZgwapChip
@@ -64,6 +64,13 @@ class ZgwapChip
     private $dataCadastro;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_REGISTRO", type="datetime", nullable=true)
+     */
+    private $dataRegistro;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -82,6 +89,16 @@ class ZgwapChip
      * })
      */
     private $codStatus;
+
+    /**
+     * @var \Entidades\ZgadmPais
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmPais")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PAIS", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPais;
 
 
     /**
@@ -233,6 +250,29 @@ class ZgwapChip
     }
 
     /**
+     * Set dataRegistro
+     *
+     * @param \DateTime $dataRegistro
+     * @return ZgwapChip
+     */
+    public function setDataRegistro($dataRegistro)
+    {
+        $this->dataRegistro = $dataRegistro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataRegistro
+     *
+     * @return \DateTime 
+     */
+    public function getDataRegistro()
+    {
+        return $this->dataRegistro;
+    }
+
+    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -276,5 +316,28 @@ class ZgwapChip
     public function getCodStatus()
     {
         return $this->codStatus;
+    }
+
+    /**
+     * Set codPais
+     *
+     * @param \Entidades\ZgadmPais $codPais
+     * @return ZgwapChip
+     */
+    public function setCodPais(\Entidades\ZgadmPais $codPais = null)
+    {
+        $this->codPais = $codPais;
+
+        return $this;
+    }
+
+    /**
+     * Get codPais
+     *
+     * @return \Entidades\ZgadmPais 
+     */
+    public function getCodPais()
+    {
+        return $this->codPais;
     }
 }

@@ -16,6 +16,14 @@
 					<div class="vspace-xs"></div>
 					<div class="row">
 						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divIdentificacaoID">
+								<label for="codChipID" class="col-sm-3 control-label">Identificação</label>
+								<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação da atividade"></i></span>
+									<input type="text" id="identificacaoID" name="identificacao" value="%IDENTIFICACAO%" maxlength="40" class="width-100" onchange="validaIdentAtividadeAlt();" placeholder="Identificação" autocomplete="off" />
+								</div>
+								<div class="col-sm-1 pull-left" id="divHelpIdentificacaoID"></div>
+							</div>
 							<div class="form-group col-sm-12" id="divNumeroID">
 								<label for="codChipID" class="col-sm-3 control-label">Número</label>
 								<div class="input-group col-sm-8 pull-left">
@@ -25,16 +33,16 @@
 								<div class="col-sm-1 pull-left" id="divHelpNumeroID"></div>
 							</div>
 						</div>
-					</div>
-					<div class="row">
 				    	<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divIdentificacaoID">
-								<label for="codChipID" class="col-sm-3 control-label">Identificação</label>
+							<div class="form-group col-sm-12" id="divCodPaisID">
+								<label class="col-sm-3 control-label" for="codPaisID">País</label>
 								<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação da atividade"></i></span>
-									<input type="text" id="identificacaoID" name="identificacao" value="%IDENTIFICACAO%" maxlength="40" class="width-100" onchange="validaIdentAtividadeAlt();" placeholder="Identificação" autocomplete="off" />
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o País"></i></span>
+									<select class="select2" style="width:100%;" id="codPaisID" name="codPais" data-rel="select2">
+									%PAISES%
+									</select>
 								</div>
-								<div class="col-sm-1 pull-left" id="divHelpIdentificacaoID"></div>
+								<div class="col-sm-1 pull-left" id="divHelpCodPaisID"></div>
 							</div>
 						</div>
 					</div>
@@ -65,6 +73,8 @@ MASCARA - Inserir as mascaras no campo
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
+
+$('#codPaisID').css('width','100%').select2({allowClear:true});
 
 /************************* Submit Formulário *************************/
 //Verificar se a validação está OK
@@ -126,6 +136,7 @@ function validaChipAlt() {
 	var vCodChip			= $('#codChipID').val();
 	var vIdentificacao		= $('#identificacaoID').val();
 	var vNumero				= $('#numeroID').val();
+	var vCodPais			= $('#codPaisID').val();
 	var vOK					= true;
 	
 	// Identificação
@@ -147,6 +158,17 @@ function validaChipAlt() {
 		$('#divNumeroID').removeClass('has-error');
 		$('#divHelpNumeroID').html('&nbsp;');
 	}
+	
+	// País
+	if (!vCodPais){
+		$('#divCodPaisID').addClass('has-error');
+		$('#divHelpCodPaisID').html(zgCriaSpanErro('País dever ser selecionado !!'));
+		vOK					= false;
+	}else{
+		$('#divCodPaisID').removeClass('has-error');
+		$('#divHelpCodPaisID').html('&nbsp;');
+	}
+	
 	
 	return vOK;
 }

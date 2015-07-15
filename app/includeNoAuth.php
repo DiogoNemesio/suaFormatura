@@ -20,7 +20,8 @@ include_once ('autoLoad.php');
 /**
  * Inclusão de Packages externos
  */
-include_once (PKG_PATH . '/mpdf60/mpdf.php');
+include_once (PKG_PATH . '/mpdf60/mpdf.php'); // mPDF
+include_once (CLASS_PATH . '/Chat-API/whatsprot.class.php'); // CHat-APi
 
 /**
  * Checar se a configuração do Web Server está OK

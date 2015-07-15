@@ -39,53 +39,27 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Verificar parâmetro obrigatório
 #################################################################################
-if (!isset($codChip)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
+if (!isset($codChip) || empty($codChip)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-if (!empty($codChip)) {
-	try {
-		$info = $em->getRepository('\Entidades\ZgwapChip')->findOneBy(array('codigo' => $codChip));
-	} catch (\Exception $e) {
-		\Zage\App\Erro::halt($e->getMessage());
-	}
-
-	$identificacao	= $info->getIdentificacao();
-	$numero			= $info->getDdd() . $info->getNumero();
-	$status			= $info->getCodStatus()->getCodigo();
-	$codPais		= ($info->getCodPais()) ? $info->getCodPais()->getCodigo() : null;
-	
-
-}else{
-	$identificacao	= null;
-	$numero			= null;
-	$status			= null;
-	$codPais		= null;
-}
-
-
-#################################################################################
-## Select do País
-#################################################################################
 try {
-	$aPais		= $em->getRepository('\Entidades\ZgadmPais')->findAll();
-	$oPais		= $system->geraHtmlCombo($aPais,	'CODIGO', 'NOME',	$codPais, 		null);
+	$info = $em->getRepository('\Entidades\ZgwapChip')->findOneBy(array('codigo' => $codChip));
 } catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+	\Zage\App\Erro::halt($e->getMessage());
 }
 
+$identificacao	= $info->getIdentificacao();
+$numero			= $info->getDdd() . $info->getNumero();
+$status			= $info->getCodStatus()->getCodigo();
+$codPais		= ($info->getCodPais()) ? $info->getCodPais()->getCodigo() : null;
+	
 
 #################################################################################
 ## Url Voltar
 #################################################################################
 $urlVoltar			= ROOT_URL."/Wap/chipLis.php?id=".$id;
-
-#################################################################################
-## Url Novo
-#################################################################################
-$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codChip=');
-$urlNovo			= ROOT_URL."/Wap/chipAlt.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
@@ -96,18 +70,13 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
-$tpl->set('URLVOLTAR'			,$urlVoltar);
-$tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
+$tpl->set('TITULO'				,'Registro do Chip');
+$tpl->set('URL_VOLTAR'			,$urlVoltar);
+$tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('COD_CHIP'			,$codChip);
 $tpl->set('IDENTIFICACAO'		,$identificacao);
 $tpl->set('NUMERO'				,$numero);
-$tpl->set('PAISES'				,$oPais);
-$tpl->set('APP_BS_TA_MINLENGTH'	,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
-$tpl->set('APP_BS_TA_ITENS'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
-$tpl->set('APP_BS_TA_TIMEOUT'	,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
-$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML

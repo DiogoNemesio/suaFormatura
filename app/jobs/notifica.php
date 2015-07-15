@@ -17,7 +17,7 @@ global $em,$system,$tr,$log,$db;
 $daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
 $template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ASSINATURA_VENCIDA'));
 $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
-$notificacao->setAssunto("Assinatura vencida:".date('i:s'));
+$notificacao->setAssunto("Assinatura vencida (".date('d/m/Y h:i:s').")");
 $notificacao->setCodUsuario($daniel);
 $notificacao->associaUsuario(1);
 //$notificacao->enviaWa();
