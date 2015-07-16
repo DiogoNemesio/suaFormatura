@@ -17,7 +17,13 @@ class Chip extends \Entidades\ZgwapChip {
 	 * Código
 	 * @var unknown
 	 */
-	var $_codigo;
+	private $_codigo;
+	
+	/**
+	 * Conexão com o whatsapp
+	 * @var socket
+	 */
+	public $w;
 	
 	/**
      * Construtor
@@ -208,6 +214,140 @@ class Chip extends \Entidades\ZgwapChip {
 		}
 		
 	}
+	
+	
+	/**
+	 * Conectar com os servidores do whatsapp
+	 * @throws \Exception
+	 */
+	public function conectar() {
+
+		#################################################################################
+		## Verifica se o chip existe
+		#################################################################################
+		if (!$this->_getCodigo())	throw new \Exception($tr->trans("Código do chip deve ser informado !!"));
+		$oChip		= $em->getRepository('\Entidades\ZgwapChip')->findOneBy(array('codigo' => $this->_getCodigo()));
+		if (!$oChip)				throw new \Exception($tr->trans("Chip não encontrado !!"));
+		$codStatus		= $oChip->getCodStatus()->getCodigo();
+		if ($codStatus	!= "A")		throw new \Exception($tr->trans("Status do Chip não permite conexão!!"));
+		
+		#################################################################################
+		## Resgata as configurações do chip
+		#################################################################################
+		$numero			= $oChip->getCodPais()->getCallingCode() . $oChip->getDdd() . $oChip->getNumero();
+		$identificacao	= $oChip->getIdentificacao();
+		$senha			= $oChip->getSenha();
+		$debug			= false;
+		
+		try {
+			$this->w 	= new \WhatsProt($numero, $identificacao, $debug);
+			$this->w->connect(); 
+			$this->w->loginWithPassword($senha);
+			$this->w->sendGetServerProperties();
+			$this->w->sendClientConfig();
+			
+		} catch (\Exception $e) {
+			$log->err("Falha ao conectar com o whatsapp do chip: $numero -> ".$e->getMessage());
+			throw new \Exception("Falha ao conectar com o whatsapp do chip: $numero -> ".$e->getMessage());
+		}
+		
+	}
+	
+	public function sincronizarContatos() {
+		global $em,$tr,$log;
+		
+		#################################################################################
+		## Verifica se está conectado
+		#################################################################################
+		if (!$this->_getCodigo())	throw new \Exception($tr->trans("Código do chip deve ser informado !!"));
+		$oChip		= $em->getRepository('\Entidades\ZgwapChip')->findOneBy(array('codigo' => $this->_getCodigo()));
+		if (!$oChip)				throw new \Exception($tr->trans("Chip não encontrado !!"));
+		if (!$this->w || !$this->w->isConnected())		{
+			$this->conectar();
+		}
+		
+		#################################################################################
+		## Verifica se já atualizou alguma vez
+		#################################################################################
+		if (!$oChip->getUltimaSincronizacao()) {
+			$syncType		= 0; 
+		}else{
+			$syncType		= 2;
+			
+		}
+		
+		#################################################################################
+		## Resgata a lista de contatos
+		#################################################################################
+		$celulares		= _getContatosOrganizacao($oChip->getCodOrganizacao()->getCodigo());
+		$contatos		= array();
+		for ($i = 0; $i < sizeof($celulares); $i++) {
+			$numero		= "+".$oChip->getCodPais()->getCallingCode() . $celulares[$i]->getTelefone();
+			$contatos[]	= $numero;
+		}
+		
+		
+		$wa = new WhatsProt($username, "WhatsApp", false);
+		
+		//bind event handler
+		$wa->eventManager()->bind('onGetSyncResult', 'onSyncResult');
+		
+		$wa->connect();
+		$wa->loginWithPassword($password);
+		
+		//send dataset to server
+		$wa->sendSync($numbers);
+		
+		//wait for response
+		while (true) {
+			$wa->pollMessage();
+		}
+		
+		
+		function onSyncResult($result) {
+			foreach ($result->existing as $number) {
+				echo "$number exists<br />";
+			}
+			foreach ($result->nonExisting as $number) {
+				echo "$number does not exist<br />";
+			}
+			die(); //to break out of the while(true) loop
+		}
+		
+		
+		
+	}
+	
+	/**
+	 * Resgatar a lista de telefones da organização
+	 * @param number $codOrganizacao
+	 * @return multitype:
+	 */
+	private function _getCelularesOrganizacao($codOrganizacao) {
+		global $em;
+		
+		$qb 	= $em->createQueryBuilder();
+		try {
+			$qb->select('t')
+			->from('\Entidades\ZgsegUsuarioTelefone','t')
+			->leftJoin('\Entidades\ZgsegUsuario', 'u', \Doctrine\ORM\Query\Expr\Join::WITH, 't.codUsuario = u.codigo')
+			->leftJoin('\Entidades\ZgsegUsuarioOrganizacao', 'uo', \Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codUsuario = u.codigo')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('uo.codOrganizacao'	, ':codOrganizacao'),
+					$qb->expr()->eq('t.codTipoTelefone'	, ':codTipoTelefone')
+			))
+			->orderBy('u.nome','ASC')
+			->setParameter('codOrganizacao'		, $codOrganizacao)
+			->setParameter('codTipoTelefone'	, "C");
+				
+			$query 		= $qb->getQuery();
+			return		($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+	}
+
 	
 	
 	/**

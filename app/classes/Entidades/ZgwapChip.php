@@ -71,6 +71,20 @@ class ZgwapChip
     private $dataRegistro;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ULTIMA_SINCRONIZACAO", type="datetime", nullable=true)
+     */
+    private $dataUltimaSincronizacao;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_BLOQUEIO", type="datetime", nullable=true)
+     */
+    private $dataBloqueio;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -270,6 +284,52 @@ class ZgwapChip
     public function getDataRegistro()
     {
         return $this->dataRegistro;
+    }
+
+    /**
+     * Set dataUltimaSincronizacao
+     *
+     * @param \DateTime $dataUltimaSincronizacao
+     * @return ZgwapChip
+     */
+    public function setDataUltimaSincronizacao($dataUltimaSincronizacao)
+    {
+        $this->dataUltimaSincronizacao = $dataUltimaSincronizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get dataUltimaSincronizacao
+     *
+     * @return \DateTime 
+     */
+    public function getDataUltimaSincronizacao()
+    {
+        return $this->dataUltimaSincronizacao;
+    }
+
+    /**
+     * Set dataBloqueio
+     *
+     * @param \DateTime $dataBloqueio
+     * @return ZgwapChip
+     */
+    public function setDataBloqueio($dataBloqueio)
+    {
+        $this->dataBloqueio = $dataBloqueio;
+
+        return $this;
+    }
+
+    /**
+     * Get dataBloqueio
+     *
+     * @return \DateTime 
+     */
+    public function getDataBloqueio()
+    {
+        return $this->dataBloqueio;
     }
 
     /**

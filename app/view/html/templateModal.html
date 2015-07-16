@@ -9,7 +9,7 @@
 	<input type="hidden" name="%VAR3%" value="%VAR_VALUE3%">
 	<input type="hidden" name="id" value="%ID%">
 	
-	<div id="divMsgCPPagID">
+	<div id="divMsgTPLModalID">
     </div>
     
     <h4>%TEXTO%</h4>
@@ -38,11 +38,11 @@ $('#zgFormModalID').submit(function() {
 		data:	$('#zgFormModalID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			zgMostraMsg('divMsgCPPagID',zgGetMsgRetorno(data));
+			zgMostraMsg('divMsgTPLModalID',zgGetMsgRetorno(data));
 			//zgLoadUrl('%URLVOLTAR%');
 			
 		}else{
-			zgMostraErro('divMsgCPPagID',zgGetMsgRetorno(data));
+			zgMostraErro('divMsgTPLModalID',zgGetMsgRetorno(data));
 			//zgLimpaModalAviso();
 			//zgMostraAviso("Fechar");
 		}

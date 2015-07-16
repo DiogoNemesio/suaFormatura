@@ -82,7 +82,7 @@ for ($i = 0; $i < sizeof($chips); $i++) {
 	$colRegister	= 6;
 	if ($codStatus == "A") {
 		$grid->setIconeCelula($i,$colRegister,'fa fa-lock red');
-		$grid->setUrlCelula($i,$colRegister,ROOT_URL.'/Wap/chipBlo.php?id='.$uid);
+		$grid->setUrlCelula($i,$colRegister,"javascript:zgAbreModal('".ROOT_URL."/Wap/chipBlo.php?id=".$uid."');");
 		$grid->setDescricaoCelula($i, $colRegister, $tr->trans('Bloquear'));
 	}elseif($codStatus	== "R") {
 		if ($chips[$i]->getCode()) {
@@ -94,7 +94,7 @@ for ($i = 0; $i < sizeof($chips); $i++) {
 		}
 	}else{
 		$grid->setIconeCelula($i,$colRegister,'fa fa-unlock green');
-		$grid->setUrlCelula($i,$colRegister,ROOT_URL.'/Wap/chipDes.php?id='.$uid);
+		$grid->setUrlCelula($i,$colRegister,"javascript:zgAbreModal('".ROOT_URL."/Wap/chipBlo.php?id=".$uid."');");
 		$grid->setDescricaoCelula($i, $colRegister, $tr->trans('Desbloquear'));
 	}
 	

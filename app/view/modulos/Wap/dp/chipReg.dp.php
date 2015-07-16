@@ -68,7 +68,7 @@ try {
 
 } catch (\Exception $e) {
 	$log->err("Falha no registro do chip: $waUser -> ".$e->getMessage());
-	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Falha ao registrar o chip, entre em contato com os administradores do sistema através do email: contato@suaformatura.com"));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Falha ao registrar o chip, entre em contato com os administradores do sistema através do email: ".$system->config["mail"]["admin"]));
 	exit;
 }
 

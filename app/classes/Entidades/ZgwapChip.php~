@@ -64,6 +64,13 @@ class ZgwapChip
     private $dataCadastro;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_REGISTRO", type="datetime", nullable=true)
+     */
+    private $dataRegistro;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -240,6 +247,29 @@ class ZgwapChip
     public function getDataCadastro()
     {
         return $this->dataCadastro;
+    }
+
+    /**
+     * Set dataRegistro
+     *
+     * @param \DateTime $dataRegistro
+     * @return ZgwapChip
+     */
+    public function setDataRegistro($dataRegistro)
+    {
+        $this->dataRegistro = $dataRegistro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataRegistro
+     *
+     * @return \DateTime 
+     */
+    public function getDataRegistro()
+    {
+        return $this->dataRegistro;
     }
 
     /**
