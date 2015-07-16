@@ -724,7 +724,7 @@ class Util {
 	/**
 	 * Resgatar o ip do cliente
 	 */
-	public static function getClientIP() {
+	public static function getIPUsuario() {
 		$ipaddress = '';
 		if ($_SERVER['HTTP_CLIENT_IP'])
 			$ipaddress = $_SERVER['HTTP_CLIENT_IP'];
