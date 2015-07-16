@@ -16,10 +16,7 @@ global $em,$system,$tr;
 #################################################################################
 ## Resgata os parâmetros passados pelo formulário
 #################################################################################
-if (isset($_POST['codChip']))				$codChip		= \Zage\App\Util::antiInjection($_POST['codChip']);
-if (isset($_POST['identificacao']))			$identificacao	= \Zage\App\Util::antiInjection($_POST['identificacao']);
-if (isset($_POST['numero']))				$numero			= \Zage\App\Util::antiInjection($_POST['numero']);
-if (isset($_POST['codPais']))				$codPais		= \Zage\App\Util::antiInjection($_POST['codPais']);
+if (isset($_POST['codChip']))			$codChip		= \Zage\App\Util::antiInjection($_POST['codChip']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -31,51 +28,33 @@ $err	= false;
 #################################################################################
 /** Código **/
 if (!isset($codChip)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Falta de parâmetros !!"));
-	$err	= 1;
-}
-
-/** País **/
-if (!isset($codPais) || empty($codPais)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo País é obrigatório !!"));
-	$err	= 1;
+	$err	= $tr->trans("Falta de parâmetros !!");
 }else{
-	$oPais	= $em->getRepository('\Entidades\ZgadmPais')->findOneBy(array('codigo' => $codPais));
-	if (!$oPais) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("País não encontrado !!"));
-		$err	= 1;
+	#################################################################################
+	## Resgatar as informações do Chip
+	#################################################################################
+	$oChip	= $em->getRepository('\Entidades\ZgwapChip')->findOneBy(array('codigo' => $codChip));
+	if (!$oChip) {
+		$err	= $tr->trans("Chip não encontrado !!");
 	}
 }
-
-/** Organização **/
-$oOrg		= $em->getRepository('\Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  	exit;
 }
- 
+
 #################################################################################
-## Salvar no banco
+## Solicitar o código SMS
 #################################################################################
 try {
-	
 	$chip		= new \Zage\Wap\Chip();
-	
 	$chip->_setCodigo($codChip);
-	$chip->setCodOrganizacao($oOrg);
-	$chip->setCodPais($oPais);
-	$chip->setNumero($numero);
-	$chip->setIdentificacao($identificacao);
-	
-	$codigo	= $chip->salvar();
- 	
+	$return		= $chip->solicitaCodigoPorSms();
+
 } catch (\Exception $e) {
- 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
- 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
- 	exit;
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+	exit;
 }
  
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
-echo '0'.\Zage\App\Util::encodeUrl('|'.$codigo);
+echo '0'.\Zage\App\Util::encodeUrl('|'.$oChip->getCodigo().'|'.$tr->trans("Solicitação efetuada com sucesso"));

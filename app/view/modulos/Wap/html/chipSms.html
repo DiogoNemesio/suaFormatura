@@ -7,21 +7,17 @@
 	<input type="hidden" name="codChip" value="%COD_CHIP%">
 	<input type="hidden" name="id" value="%ID%">
 	<div class="row">
-    	<div class="col-sm-12">
+		<div class="col-sm-12">
 			<div class="form-group">
-		    	<label class="col-sm-3 control-label" for="codeID">Código SMS Recebido</label>
-    			<div class="input-group col-sm-4">
-	    			<span tabindex="99001" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Digite o código SMS recebido"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="codeID" type="text" name="code" maxlength="8" autocomplete="off" >
-		    	</div>
-		    </div>
+		    	<label class="col-sm-12 control-label center">%MENSAGEM%</label>
+    		</div>
     	</div>
     </div>
-    <div id="divMsgChipRegID">
+    <div id="divMsgChipSmsID">
     </div>
 </div>
 <div class="modal-footer">
-	<button type="submit" class="btn btn-primary" id="submit">Efetuar o registro</button>
+	<button type="submit" %PODE_SMS% class="btn btn-primary" id="btnSmsRequestID">Desejo enviar o código SMS</button>
 	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
 </div>
 </form>
@@ -35,16 +31,21 @@ $('#zgFormModalID').submit(function() {
 		data:	$('#zgFormModalID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			zgMostraMsg('divMsgChipRegID',zgGetMsgRetorno(data));
+			zgMostraMsg('divMsgChipSmsID',zgGetMsgRetorno(data));
+			$('#btnSmsRequestID').prop('disabled', true);
+			
+			$('#zgDivModalID').on('hidden.bs.modal', function () {
+				zgAbreModal('%URL_REG%');
+				$('#zgDivModalID').off('hidden.bs.modal');
+			});
 		}else{
-			zgMostraErro('divMsgChipRegID',zgGetMsgRetorno(data));
-		}
-		
-		$('#zgDivModalID').on('hidden.bs.modal', function () {
-			zgLoadUrl('%URL_VOLTAR%');
-			$('#zgDivModalID').off('hidden.bs.modal');
-		});
+			zgMostraErro('divMsgChipSmsID',zgGetMsgRetorno(data));
 
+			$('#zgDivModalID').on('hidden.bs.modal', function () {
+				zgLoadUrl('%URL_VOLTAR%');
+				$('#zgDivModalID').off('hidden.bs.modal');
+			});
+		}
 		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraErro('zgDivModalID',errorThrown);

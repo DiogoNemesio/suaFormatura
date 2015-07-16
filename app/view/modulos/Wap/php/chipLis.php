@@ -60,6 +60,7 @@ $grid->adicionaTexto('Número'						,20	,$grid::CENTER	,'','fone');
 $grid->adicionaTexto('Identificação'				,30	,$grid::CENTER	,'identificacao');
 $grid->adicionaTexto('Status'						,10	,$grid::CENTER	,'codStatus:nome');
 $grid->adicionaTexto('País'							,12	,$grid::CENTER	,'codPais:nome');
+$grid->adicionaIcone(null,'fa fa-mobile green',$tr->trans('Solicitar Código SMS'));
 $grid->adicionaIcone(null,'fa fa-unlock green',$tr->trans('Registrar'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -77,23 +78,34 @@ for ($i = 0; $i < sizeof($chips); $i++) {
 	## Definir o endereço da url e o ícone de acordo com o status
 	#################################################################################
 	$codStatus	= $chips[$i]->getCodStatus()->getCodigo();
-	$colAcao	= 5;
+	$colSms			= 5;
+	$colRegister	= 6;
 	if ($codStatus == "A") {
-		$grid->setIconeCelula($i,$colAcao,'fa fa-lock red');
-		$grid->setUrlCelula($i,$colAcao,ROOT_URL.'/Wap/chipBlo.php?id='.$uid);
-		$grid->setDescricaoCelula($i, $colAcao, $tr->trans('Bloquear'));
+		$grid->setIconeCelula($i,$colRegister,'fa fa-lock red');
+		$grid->setUrlCelula($i,$colRegister,ROOT_URL.'/Wap/chipBlo.php?id='.$uid);
+		$grid->setDescricaoCelula($i, $colRegister, $tr->trans('Bloquear'));
 	}elseif($codStatus	== "R") {
-		$grid->setIconeCelula($i,$colAcao,'fa fa-tag grey');
-		$grid->setUrlCelula($i,$colAcao,"javascript:zgAbreModal('".ROOT_URL."/Wap/chipReg.php?id=".$uid."');");
-		$grid->setDescricaoCelula($i, $colAcao, $tr->trans('Registrar'));
+		if ($chips[$i]->getCode()) {
+			$grid->desabilitaCelula($i, $colRegister);
+		}else{
+			$grid->setIconeCelula($i,$colRegister,'fa fa-tag grey');
+			$grid->setUrlCelula($i,$colRegister,"javascript:zgAbreModal('".ROOT_URL."/Wap/chipReg.php?id=".$uid."');");
+			$grid->setDescricaoCelula($i, $colRegister, $tr->trans('Registrar'));
+		}
 	}else{
-		$grid->setIconeCelula($i,$colAcao,'fa fa-unlock green');
-		$grid->setUrlCelula($i,$colAcao,ROOT_URL.'/Wap/chipDes.php?id='.$uid);
-		$grid->setDescricaoCelula($i, $colAcao, $tr->trans('Desbloquear'));
+		$grid->setIconeCelula($i,$colRegister,'fa fa-unlock green');
+		$grid->setUrlCelula($i,$colRegister,ROOT_URL.'/Wap/chipDes.php?id='.$uid);
+		$grid->setDescricaoCelula($i, $colRegister, $tr->trans('Desbloquear'));
 	}
 	
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Wap/chipAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/Wap/chipExc.php?id='.$uid);
+	if ($chips[$i]->getCode()) {
+		$grid->desabilitaCelula($i, $colSms);
+	}else{
+		$grid->setUrlCelula($i,$colSms,"javascript:zgAbreModal('".ROOT_URL."/Wap/chipSms.php?id=".$uid."');");
+	}
+	
+	$grid->setUrlCelula($i,7,ROOT_URL.'/Wap/chipAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,8,ROOT_URL.'/Wap/chipExc.php?id='.$uid);
 }
 
 

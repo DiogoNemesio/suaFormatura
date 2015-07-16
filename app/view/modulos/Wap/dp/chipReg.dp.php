@@ -56,29 +56,15 @@ if ($err != null) {
 }
 
 #################################################################################
-## Formatar os campos para efetuar o registro
-#################################################################################
-$debug 		= true;
-$waUser 	= $oChip->getCodPais()->getCallingCode() . $oChip->getDdd(). $oChip->getNumero();  	// Telephone number including the country code without '+' or '00'.
-$nickname 	= $oChip->getIdentificacao();    													// This is the username displayed by WhatsApp clients.
-
-#################################################################################
 ## Fazer o registro
 #################################################################################
 try {
-
-	$w 			= new WhatsProt($waUser, $nickname, $debug);
-	$log->info("Vou registrar o número: ".$waUser, "Nickname: ".$nickname);
-	$return		= $w->codeRegister($code);
-	$log->info(serialize($return));
-	$status		= $return->status;
-	$senha		= $return->pw;
 	
-	if ($status != "ok") {
-		$log->err("Falha no registro do chip: $waUser -> ".$e->getMessage());
-		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Falha ao registrar o chip: $waUser, retorno dos servidores whatsapp: ".$status));
-		exit;
-	}
+	$chip 	= new \Zage\Wap\Chip();
+	$chip->_setCodigo($codChip);
+	$chip->setCode($code);
+	
+	$chip->registrar();
 
 } catch (\Exception $e) {
 	$log->err("Falha no registro do chip: $waUser -> ".$e->getMessage());
@@ -86,28 +72,4 @@ try {
 	exit;
 }
 
-#################################################################################
-## Resgatar o status que será salvo
-#################################################################################
-$oStatus	= $em->getReference('\Entidades\ZgwapChipStatus', "A");
-
-
-#################################################################################
-## Salvar os dados de registro
-#################################################################################
-try {
-	$oChip->setCodStatus($oStatus);
-	$oChip->setSenha($senha);
-	$oChip->setCode($code);
-	$oChip->setDataRegistro(new \DateTime("now"));
-	
-	$em->persist($oChip);
-	$em->flush();
-	$em->detach($oChip);
- 	
-} catch (\Exception $e) {
- 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
- 	exit;
-}
- 
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oChip->getCodigo().'|'.$tr->trans("Registro efetuado com sucesso"));
+echo '0'.\Zage\App\Util::encodeUrl('|'.$oChip->getCodigo().'|'.htmlentities($tr->trans("Registro efetuado com sucesso")));
