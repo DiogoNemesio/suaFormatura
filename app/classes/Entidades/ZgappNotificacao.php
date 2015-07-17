@@ -31,7 +31,7 @@ class ZgappNotificacao
     /**
      * @var string
      *
-     * @ORM\Column(name="ASSUNTO", type="string", length=40, nullable=true)
+     * @ORM\Column(name="ASSUNTO", type="string", length=60, nullable=true)
      */
     private $assunto;
 

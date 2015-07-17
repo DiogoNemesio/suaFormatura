@@ -43,6 +43,13 @@ class ZgsegUsuarioTelefone
     private $dataUltVerificacao;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="WA_LOGIN", type="string", length=120, nullable=true)
+     */
+    private $waLogin;
+
+    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -140,6 +147,29 @@ class ZgsegUsuarioTelefone
     public function getDataUltVerificacao()
     {
         return $this->dataUltVerificacao;
+    }
+
+    /**
+     * Set waLogin
+     *
+     * @param string $waLogin
+     * @return ZgsegUsuarioTelefone
+     */
+    public function setWaLogin($waLogin)
+    {
+        $this->waLogin = $waLogin;
+
+        return $this;
+    }
+
+    /**
+     * Get waLogin
+     *
+     * @return string 
+     */
+    public function getWaLogin()
+    {
+        return $this->waLogin;
     }
 
     /**
