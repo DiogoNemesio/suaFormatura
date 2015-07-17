@@ -26,10 +26,17 @@ global $em,$system,$tr,$log,$db;
 $notificacoes	= \Zage\App\Notificacao::listaNaoEnviadas();
 
 #################################################################################
+## Inicializa o array de Chips, que serão usados para enviar as mensagens
+#################################################################################
+$chips 			= array();
+
+#################################################################################
 ## Loop para envio das notificações
 #################################################################################
 for ($i = 0; $i < sizeof($notificacoes); $i++) {
 
+	$log->info("Processar notificação: ".$notificacoes[$i]->getAssunto());
+	
 	#################################################################################
 	## Monta a mensagem
 	#################################################################################
@@ -106,12 +113,15 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	$numEmails	= 0;
 	$logDest	= array();
 	
+	$log->info("Listar usuarios da notificação: ".$notificacoes[$i]->getAssunto());
+	
 	#################################################################################
 	## Resgata a lista de usuários que receberão a notificação
 	#################################################################################
 	$usuarios	= $em->getRepository('\Entidades\ZgappNotificacaoUsuario')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo()));
 	for ($j = 0; $j < sizeof($usuarios); $j++) {
 		
+		$log->info("Usuario será notificado: ".$usuarios[$j]->getCodUsuario()->getNome());
 		
 		#################################################################################
 		## Verifica se é para enviar e-mail
@@ -148,12 +158,66 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		#################################################################################
 		if ($notificacoes[$i]->getIndViaWa())	{
 			
+			$log->info("Envia wa para notificacao: ".$notificacoes[$i]->getAssunto());
+			
 			#################################################################################
 			## Não enviar templates via whatsapp
 			#################################################################################
 			if ($notificacoes[$i]->getCodTipoMensagem()->getCodigo() == "TP") {
 				continue;
 			}
+			
+			
+			#################################################################################
+			## Busca o Chip que a mensagem será enviada
+			#################################################################################
+			$c	= \Zage\Wap\Chip::buscaChipUsuario($usuarios[$j]->getCodUsuario()->getCodigo());
+
+			#################################################################################
+			## Caso não tenha chips disponíveis, não tentar enviar a mensagem
+			#################################################################################
+			if (!$c) continue;
+			
+			$log->info("Chip selecionado: ".$c->getLogin());
+
+			#################################################################################
+			## Instancia a classe para envio
+			#################################################################################
+			$chip		= new \Zage\Wap\Chip();
+			$chip->_setCodigo($c->getCodigo());
+			
+			#################################################################################
+			## Converte o número do celular para o formato do whatsapp
+			#################################################################################
+			$celulares	= \Zage\Wap\Chip::buscaNumeroComWa($usuarios[$j]->getCodUsuario()->getCodigo());
+			if (!$celulares || sizeof($celulares) ==  0)	continue;
+			
+			try {
+				
+				if (!isset($chips[$c->getCodigo()])) {
+					$log->info("Tentando conexão com WA!!! ");
+					$chip->conectar();
+					$log->info("Conexão ao wa feita com sucesso !!! ");
+					
+					$chips[$c->getCodigo()]	= $chip;
+					
+				}
+				
+				for ($n = 0; $n < sizeof($celulares); $n++) {
+					$log->info("Concertendo o número : ".$celulares[$n]->getTelefone());
+					//$waNumber	= $chip->_convertCellToWaNumber($celulares[$n]->getTelefone());
+					$waNumber	= $celulares[$n]->getWaLogin();
+					$log->info("Enviando wa para o número: ".$waNumber);
+					$chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
+				}
+				
+					
+			} catch (Exception $e) {
+				$log->err("Mensagem wa não enviada, por problema no chip: ".$chip->getLogin()." -> ". $e->getMessage());
+				continue;
+			}
+				
+			
 			
 		}
 	}
