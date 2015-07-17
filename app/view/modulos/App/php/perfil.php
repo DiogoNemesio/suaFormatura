@@ -72,6 +72,21 @@ if($codLogradouro != null){
 
 }
 
+$infoEmail = $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(array('codUsuario' => $codUsuario, 'codStatus' => 'A'));
+
+if(!$infoEmail){
+	$readonlyEmail = '';
+	$indMudaEmail  = 0; #Pode mudar
+}elseif ($infoEmail->getIndConfirmadoAnterior() == 1){
+	$readonlyEmail = 'readonly'; 
+	$indMudaEmail  = 1; #Nao pode mudar
+	$usuario	   = $infoEmail->getEmailNovo();
+}elseif ($infoEmail->getIndConfirmadoAnterior() == 0){
+	$readonlyEmail = 'readonly';
+	$indMudaEmail  = 1; #Nao pode mudar
+}
+
+
 #################################################################################
 ## Select de Tipo de Telefone
 #################################################################################
@@ -165,6 +180,9 @@ $tpl->set('NUMERO' 			,$numero);
 $tpl->set('CEP'				,$cep);
 $tpl->set('READONLY'		,$readonly);
 $tpl->set('CPF_READONLY'	,$cpfReadonly);
+$tpl->set('EMAIL_READONLY'	,$readonlyEmail);
+$tpl->set('IND_MUDAUSER'	,$indMudaEmail);
+
 $tpl->set('DP'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'				,$_icone_);
 

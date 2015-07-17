@@ -45,8 +45,7 @@
 							</div>
 							<div class="clearfix form-actions">
 								<label class="col-sm-5 control-label" >&nbsp;</label>
-				   				<button type="button" class="btn btn-primary" id="btnSubmitLayRegID"><i class="fa fa-check bigger-110"></i> Salvar</button>
-								<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+				   				<button type="button" class="btn btn-primary" id="btnSubmitListaConvID"><i class="fa fa-check bigger-110"></i> Salvar</button>
 							</div>
 						</div>
 					</div>
@@ -70,7 +69,7 @@ $('.select2').css('width','100%').select2({allowClear:true});
 
 /************************* Submit Formulário *************************/
 //Verificar se a validação está OK
-$('#btnSubmitLayRegID').on("click", function(e) {
+$('#btnSubmitListaConvID').on("click", function(e) {
 	
 	var vOk 	= validaConvidado();
 	
@@ -93,6 +92,9 @@ $('#zgFormID').submit(function() {
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
 	});
+	
+	$('#btnSubmitListaConvID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitListaConvID').attr("disabled","disabled");
 
 	$.ajax({
 		type:	"POST", 
@@ -100,15 +102,14 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		$('#_precisaSalvarID').val(0);
-		if($('#_alterarGrupoID').val() == 0){
-			zgMostraAviso("Fechar");
-			$('#zgDivModalID').on('hidden.bs.modal', function () {
-				zgLimpaModalAviso();
-				$('#zgDivModalID').off('hidden.bs.modal');
-			});
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divAvisoLayoutConvidadoID', zgGetMsgRetorno(data));
 		}else{
-			$('#_alterarGrupoID').val(0);
+			zgMostraErro('divAvisoLayoutConvidadoID', zgGetMsgRetorno(data));
 		}
+		
+		$('#btnSubmitListaConvID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitListaConvID').attr("disabled",false);
 		
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
 		$('[zg-data-mask-retira="1"]').each(function( index ) {
@@ -128,10 +129,14 @@ function addRowConvidadoLayReg() {
 
 	if ($return == true) return $return;
 
-	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><input type="text" name="nome[]" value="%NOME%" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" onchange="verificaAlteracao($(this));"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
+	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><input type="text" name="nome[]" value="%NOME%" zg-data-toggle="nome" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" onchange="verificaAlteracao($(this));"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
+	$('#layRegTableConvidadoID > tbody > tr:last [zg-data-toggle="nome"]').each(function( index ) {
+		$( this ).focus();
+	});
 	$('#layRegTableConvidadoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
+		
 	});
 	$('#layRegTableConvidadoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
 }
@@ -163,7 +168,7 @@ function validaConvidado () {
 		
 		$nome		= $nomeObj.val();
 		if (!$nome) {
-			zgMostraErro('divAvisoLayoutConvidadoID','Campo NOME é obrigatório !!!');
+			zgMostraErro('divAvisoLayoutConvidadoID','Não pode haver uma linha sem um nome preenchido!');
 			$ok 	= false;
 			$(this).addClass('alert-danger');
 		}else{
@@ -195,6 +200,14 @@ function zgLoadUrlSeSalvouConv($url) {
 			$('#_alterarGrupoID').val(1);
 			$('#zgFormID').submit();
 			zgLoadUrl($url);
+			
+			$.gritter.add({
+				title: 'Lista atualizada!',
+				text: 'Sua lista de convidados foi atualizada com sucesso.',
+				class_name: 'gritter-info gritter-sticky',
+				time: '5000'
+			});
+			
 		}else{
 			zgLoadUrl($url);
 		}

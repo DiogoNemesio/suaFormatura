@@ -29,7 +29,7 @@ if (isset($_POST['descLogradouro'])) 	$descLogradouro		= \Zage\App\Util::antiInj
 if (isset($_POST['bairro'])) 			$bairro				= \Zage\App\Util::antiInjection($_POST['bairro']);
 if (isset($_POST['numero'])) 			$numero				= \Zage\App\Util::antiInjection($_POST['numero']);
 if (isset($_POST['complemento'])) 		$complemento		= \Zage\App\Util::antiInjection($_POST['complemento']);
-if (isset($_POST['endCorreto']))		$endCorreto		= \Zage\App\Util::antiInjection($_POST['endCorreto']);
+if (isset($_POST['endCorreto']))		$endCorreto			= \Zage\App\Util::antiInjection($_POST['endCorreto']);
 
 if (isset($_POST['codTipoTel']))		$codTipoTel			= $_POST['codTipoTel'];
 if (isset($_POST['codTelefone']))		$codTelefone		= $_POST['codTelefone'];
@@ -258,15 +258,16 @@ try {
 	## Salvar Cliente se necessário
 	#################################################################################
 	$oCliente = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf() , 'codOrganizacao' => $codOrganizacao));
-	
+	$log->debug('entrei');
 	if($oCliente){
 		
-		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => F));
+		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
 		
 		$oCliente->setCodOrganizacao($oOrg);
-		$oCliente->setNome($oUsuario->_getUsuario()->getNome());
-		$oCliente->setCgc($oUsuario->_getUsuario()->getCpf());
-		$oCliente->setEmail($oUsuario->_getUsuario()->getUsuario());
+		$oCliente->setNome($oUsuario->getNome());
+		$oCliente->setFantasia($oUsuario->getApelido());
+		$oCliente->setCgc($oUsuario->getCpf());
+		$oCliente->setEmail($oUsuario->getUsuario());
 		$oCliente->setCodTipoPessoa($clienteTipo);
 		$oCliente->setIndContribuinte(0);
 		$oCliente->setIndCliente(1);
@@ -288,7 +289,7 @@ try {
 		
 		$oClienteEnd->setCodPessoa($oCliente);
 		$oClienteEnd->setCodTipoEndereco($oEndTipo);
-		$oClienteEnd->setCodLogradouro($oCodLogradouro);
+		$oClienteEnd->setCodLogradouro($oLog);
 		$oClienteEnd->setCep($oUsuario->getCep());
 		$oClienteEnd->setEndereco($oUsuario->getEndereco());
 		$oClienteEnd->setBairro($oUsuario->getBairro());

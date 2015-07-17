@@ -41,7 +41,7 @@ $url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 #################################################################################
 try {
 	$evento		= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormatura' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$eventoTipo	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findBy(array(),array('descricao' => 'ASC'));
+	$eventoTipo	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findBy(array(),array('codigo' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

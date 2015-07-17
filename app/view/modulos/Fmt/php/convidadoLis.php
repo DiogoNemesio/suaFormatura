@@ -78,7 +78,7 @@ try {
 ## Buscar os convidados
 #################################################################################
 try {
-	$convidados			= $em->getRepository('Entidades\ZgfmtListaConvidado')->findBy(array('codUsuario' => $system->getCodUsuario(), 'codGrupo' => $codGrupo));
+	$convidados			= $em->getRepository('Entidades\ZgfmtListaConvidado')->findBy(array('codUsuario' => $system->getCodUsuario(), 'codGrupo' => $codGrupo), array('nome' => ASC));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }

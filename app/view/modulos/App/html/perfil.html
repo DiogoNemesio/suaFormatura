@@ -7,6 +7,7 @@
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" name="_mudarUser" id="_mudarUserID" value="%IND_MUDAUSER%">
 				<input type="hidden" name="codStatus" value="%COD_STATUS%">
 				<input type="hidden" name="codUsuario" value="%COD_USUARIO%">
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
@@ -39,21 +40,23 @@
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group">
-								    	<label class="col-sm-4 control-label " for="usuarioID">Usuário</label>
-						    			<div class="input-group col-sm-6">
+								    	<label class="col-sm-3 control-label " for="usuarioID">Usuário</label>
+						    			<div class="input-group col-sm-3 pull-left">
 						   					<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						   					<input class="input-large" id="usuarioID" type="text" name="usuario" value="%USUARIO%" readonly autocomplete="off">
+						   					<input class="input-large" id="usuarioID" type="text" name="usuario" value="%USUARIO%" autocomplete="off" %EMAIL_READONLY% onchange="verificaAlteracao($(this));" >
 						    			</div>
+						    			<div class="col-sm-1 pull-left" id="divHelpUsuarioID"></div>
+						    			<div id="divCancelarID" class="hidden"><button id="cancelarID" onclick="cancelarSolicitacao();">Cancelar</button></div>
 						    		</div>
 						    		<div class="form-group">
-								    	<label class="col-sm-4 control-label" for="cpfID">CPF</label>
+								    	<label class="col-sm-3 control-label" for="cpfID">CPF</label>
 						    			<div class="input-group col-sm-6">
 							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
 							    			<input class="input-large" id="cpfID" type="text" name="cpf" name="cpf" %CPF_READONLY% maxlength="14" value="%CPF%" placeholder="CPF" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
 								    	</div>
 								    </div>
 									<div class="form-group">
-								    	<label class="col-sm-4 control-label" for="nomeID">Nome</label>
+								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
 						    			<div class="input-group col-sm-6">
 							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
 							    			<input class="input-large" id="nomeID" type="text" name="nome" maxlength="60" value="%NOME%" autocomplete="off">
@@ -62,14 +65,14 @@
 						    	</div>
 						    	<div class="col-sm-6">
 									<div class="form-group">
-								    	<label class="col-sm-4 control-label" for="apelidoID">Apelido</label>
+								    	<label class="col-sm-3 control-label" for="apelidoID">Apelido</label>
 						    			<div class="input-group col-sm-6">
 							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
 							    			<input class="input-large" id="apelidoID" type="text" name="apelido" maxlength="60" value="%APELIDO%" autocomplete="off">
 								    	</div>
 								    </div>
 									<div class="form-group">
-										<label class="col-sm-4 control-label" for="sexoID">Sexo</label>
+										<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
 						    			<div class="input-group col-sm-6">
 						    				<span class="input-group-addon"><i class="fa fa-book"></i></span>
 											<select class="select2" style="width:75%;" id="sexoID" name="sexo" data-rel="select2">
@@ -203,11 +206,35 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 
+
 function zgAlteraAvatar(pCodigo,pUrl) {
 	$('#avatarID').val(pCodigo);
 	$("#avatarAtualID").attr("src",pUrl);
 }
 
+if($('#_mudarUserID').val() == 1){
+	$('#divCancelarID').removeClass("hidden");
+	$('#usuarioID').attr("readonly", true);
+	$('#divHelpUsuarioID').html(zgCriaSpanInfo('Aguardando confirmação !!!'));
+}
+
+function zgMudarEmail() {
+	$('#divCancelarID').removeClass("hidden");
+	$('#_mudarUserID').val(1);
+	$('#usuarioID').attr("readonly", true);
+	$('#divHelpUsuarioID').html(zgCriaSpanInfo('Aguardando confirmação !!!'));
+}
+
+function verificaAlteracao(pObj) {
+	$('#_mudarUserID').val(1);
+}
+
+function cancelarSolicitacao(){
+	$('#_mudarUserID').val(-1);
+	$('#divCancelarID').addClass("hidden");
+	$('#usuarioID').removeAttr("readonly");
+	$('#divHelpUsuarioID').html("");
+}
 
 /*********************************************************
 * Submit Formulário
@@ -234,6 +261,11 @@ $('#btnSubmitID').on("click", function(e) {
 
 //Submit formulário
 $('#zgFormID').submit(function() {
+
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
 	/** Retira a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
@@ -245,6 +277,17 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		zgMostraAviso("Fechar");
+		
+		if($('#_mudarUserID').val() == 1){
+			zgMudarEmail();
+		}else if($('#_mudarUserID').val() == -1){
+			$('#_mudarUserID').val(0);
+		}
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
 		
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
 		$('[zg-data-mask-retira="1"]').each(function( index ) {
@@ -450,4 +493,5 @@ function delRowTelefonePessoaAlt(pObj) {
 		$tr.remove();
 	});
 }
+
 </script>
