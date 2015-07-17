@@ -15,7 +15,7 @@
 			<div class="form-group col-sm-12" id="divIdentID">
 			    <label for="identID" class="col-sm-3 control-label">www.suaformatura.com/</label>
 	    		<div class="input-group col-sm-5 pull-left">
-    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Identificação para acesso ao sistema"></i></span>
+    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a turma no sistema. Essa identificação será utilizar para compor o link de acesso."></i></span>
 		    		<input class="form-control" id="identID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="Identificação" %READONLY% onblur="validaIdent();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="identificacao">
 			    </div>
 			    <div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
@@ -23,7 +23,7 @@
 			<div class="form-group col-sm-12" id="divNomeID">
 		    	<label for="nomeID" class="col-sm-3 control-label" >Nome da turma</label>
     			<div class="input-group col-sm-5 pull-left">
-   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="???."></i></span>
+   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome da turma."></i></span>
 	    			<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome da turma" maxlength="100" value="%NOME%" autocomplete="off">
 		    	</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
@@ -31,7 +31,7 @@
 		    <div class="form-group col-sm-12" id="divInstituicaoID">
 		    	<label class="col-sm-3 control-label" for="instituicaoID">Instituição</label>
 				<div class="input-group col-sm-5 pull-left">
-	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Instituição de ensino"></i></span>
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a instituição de ensino da turma."></i></span>
 					<input type="hidden" id="instituicaoID" name="instituicao" value="%INSTITUICAO%" class="width-100"  data-rel="select2Instituicao">								    	
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpInstituicaoID"></div>
@@ -39,15 +39,15 @@
 			<div class="form-group col-sm-12" id="divCursoID">
 		    	<label class="col-sm-3 control-label" for="cursoID">Curso</label>
 				<div class="input-group col-sm-5 pull-left">
-	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Curso"></i></span>
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o curso da turma."></i></span>
 					<input type="hidden" id="cursoID" name="curso" value="%CURSO%" class="width-100"  data-rel="select2Curso">								    	
 				</div>
-		    	<div class="col-sm-1 pull-left" id="divHelpInstituicaoID"></div>
+		    	<div class="col-sm-1 pull-left" id="divHelpCursoID"></div>
 			</div>
 			<div class="form-group col-sm-12" id="divCidadeID">
 		    	<label class="col-sm-3 control-label" for="instituicaoID">Cidade</label>
 				<div class="input-group col-sm-5 pull-left">
-	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade onde será realizado a formatura."></i></span>
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a cidade onde será realizado a formatura."></i></span>
 					<input type="hidden" id="cidadeID" name="cidade" value="%CIDADE%" class="width-100"  data-rel="select2Cidade">								    	
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpCidadeID"></div>
@@ -55,8 +55,8 @@
 			<div class="form-group col-sm-12" id="divDataConclusaoID">
 		    	<label for="dataConclusaoID" class="col-sm-3 control-label">Data da conclusão</label>
     			<div class="input-group col-sm-5 pull-left">
-   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data da conclusão do curso."></i></span>
-	    			<input class="form-control datepicker" id="dataConclusaoID" type="text" name="dataConclusao" placeholder="Nome da turma" maxlength="100" value="%DATA_CONCLUSAO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data prevista de conclusão do curso."></i></span>
+	    			<input class="form-control datepicker" id="dataConclusaoID" type="text" name="dataConclusao" placeholder="Data prevista de conclusão" maxlength="100" value="%DATA_CONCLUSAO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 		    	</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpDataConclusaoID"></div>
 		    </div>
@@ -226,8 +226,42 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
+			var $codOrg	= zgGetCodRetorno(data);
 			$('#codOrganizacaoID').val(zgGetCodRetorno(data));
-			zgMostraAviso("Fechar",'Nova Formatura', '%URLNOVO%', 'Entrar');
+			
+			bootbox.dialog({
+				message: "A formatura foi salva com sucesso !!", 
+				buttons: {
+					"novo" : {
+						"label" : "<i class='ace-icon fa fa-plus'></i>Cadastrar novo",
+						"className" : "btn-sm btn-primary",
+						"callback": function() {
+							zgLoadUrl('%URLNOVO%');
+						}
+					},
+					"abrir" : {
+						"label" : "<i class='ace-icon fa fa-sign-in'></i>Entrar",
+						"className" : "btn-sm btn-yellow",
+						"callback": function() {
+							//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
+							zgWindowOpen('%ROOT_URL%index.php?zid='+zgEncodeUrl('_codOrganizacao='+$codOrg));
+						}
+					},
+					"fechar" : {
+						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
+						"className" : "btn-sm btn-danger",
+						"callback": function() {
+							zgLoadUrl('');
+						}
+
+					},
+					
+				}
+			});
+			
+			
+			
+			//zgMostraAviso("Fechar",'Nova Formatura', '%URLNOVO%', "Entrar", zgWindowOpen('%ROOT_URL%index.php?zid='+zgEncodeUrl('_codOrganizacao='+$codOrg)));
 		}else{
 			zgMostraAviso("Fechar");
 		}
@@ -300,12 +334,16 @@ function validaIdent(){
 function validaFormaturaAlt() {
 	var vNome			= $('#nomeID').val();
 	var vInstituicao	= $('#instituicaoID').val();
+	var vCurso			= $('#cursoID').val();
+	var vCidade			= $('#cidadeID').val();dataConclusaoID
+	var vData			= $('#dataConclusaoID').val();
 	var vOK		= true;
 	
 	// NOME DA TURMA
 	if (!vNome){
 		$('#divNomeID').addClass('has-error');
 		$('#divHelpNomeID').html(zgCriaSpanErro('O nome da turma deve ser preenchido!'));
+		vOK = false;
 	}else{
 		$('#divNomeID').removeClass('has-error');
 		$('#divHelpNomeID').html('&nbsp;');
@@ -315,9 +353,40 @@ function validaFormaturaAlt() {
 	if (!vInstituicao){
 		$('#divInstituicaoID').addClass('has-error');
 		$('#divHelpInstituicaoID').html(zgCriaSpanErro('A instituição de ensino deve ser preenchida!'));
+		vOK = false;
 	}else{
 		$('#divInstituicaoID').removeClass('has-error');
 		$('#divHelpInstituicaoID').html('&nbsp;');
+	}
+	
+	// CURSO
+	if (!vCurso){
+		$('#divCursoID').addClass('has-error');
+		$('#divHelpCursoID').html(zgCriaSpanErro('O curso deve ser preenchido!'));
+		vOK = false;
+	}else{
+		$('#divCursoID').removeClass('has-error');
+		$('#divHelpCursoID').html('&nbsp;');
+	}
+	
+	// CIDADE
+	if (!vCidade){
+		$('#divCidadeID').addClass('has-error');
+		$('#divHelpCidadeID').html(zgCriaSpanErro('A cidade de realizacão da formatura deve ser preenchida!!'));
+		vOK = false;
+	}else{
+		$('#divCidadeID').removeClass('has-error');
+		$('#divHelpCidadeID').html('&nbsp;');
+	}
+	
+	// DATA CONCLUSÃO
+	if (!vData){
+		$('#divDataConclusaoID').addClass('has-error');
+		$('#divHelpDataConclusaoID').html(zgCriaSpanErro('A data prevista de conclusão deve ser preenchida!'));
+		vOK = false;
+	}else{
+		$('#divDataConclusaoID').removeClass('has-error');
+		$('#divHelpDataConclusaoID').html('&nbsp;');
 	}
 	
 	// IDENTIFICAÇÃO

@@ -129,9 +129,9 @@ $('#zgFormModalID').submit(function() {
 			//zgMostraMsg('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
 			zgMostraMsg('UsuEnvCondivMsgID','Usuário associado com sucesso!');
 		}else{
-			//zgMostraErro('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
-			zgLimpaModalAviso();
-			zgMostraAviso("Fechar");
+			zgMostraErro('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
+			//zgLimpaModalAviso();
+			//zgMostraAviso("Fechar");
 		}
 		
 		//Desbloquear botão quando terminar de salvar

@@ -53,8 +53,8 @@ $grid->adicionaTexto($tr->trans('NOME DA TURMA'),		20, $grid::CENTER	,'codOrgani
 $grid->adicionaTexto($tr->trans('IDENTIFICAÇÃO'),		15, $grid::CENTER	,'codOrganizacao:identificacao');
 $grid->adicionaTexto($tr->trans('INSTITUIÇÃO'),			20, $grid::CENTER	,'codInstituicao:sigla');
 $grid->adicionaTexto($tr->trans('CURSO'),				25, $grid::CENTER	,'codCurso:nome');
+$grid->adicionaData($tr->trans('CONCLUSÃO')	,		10, $grid::CENTER	,'dataConclusao');
 $grid->adicionaTexto($tr->trans('STATUS')	,			10, $grid::CENTER	,'codOrganizacao:codStatus:descricao');
-$grid->adicionaData($tr->trans('CADASTRO EM')	,		10, $grid::CENTER	,'codOrganizacao:dataCadastro');
 //$grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);

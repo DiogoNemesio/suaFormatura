@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Resgata os parâmetros passados pelo formulário
 #################################################################################
-if (isset($_POST['codConvidado']))			$codConvidado		= \Zage\App\Util::antiInjection($_POST['codConvidado']);
+if (isset($_POST['codConvidado']))			$codConvidado		= $_POST['codConvidado'];
 if (isset($_POST['codGrupo']))				$codGrupo			= \Zage\App\Util::antiInjection($_POST['codGrupo']);
 if (isset($_POST['nome']))					$nome				= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['telefone']))				$telefone			= \Zage\App\Util::antiInjection($_POST['telefone']);
@@ -28,6 +28,10 @@ if (!isset($sexo))				$sexo				= array();
 if (!isset($codFaixaEtaria))	$codFaixaEtaria		= array();
 if (!isset($email))				$email				= array();
 
+if ($codConvidado == null){
+	$codConvidado	= array();
+}
+
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -36,51 +40,29 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-/** Nome **/
-if ((empty($nome))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME é obrigatório"));
-	$err	= 1;
-}
-
-/** Grupo **/
-if (!isset($codGrupo) || (empty($codGrupo))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo GRUPO é obrigatório"));
-	$err	= 1;
-}
-
-/** Nome **/
-if (!is_array($nome)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME inválido !!!"));
-	$err 	= 1;
-}
-
-/** Telefone **/
-if (!is_array($telefone)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo TELEFONE inválido !!!"));
-	$err 	= 1;
-}
-
-/** Sexo **/
-if (!is_array($sexo)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo SEXO inválido !!!"));
-	$err 	= 1;
-}
-
-/** CodFaixaEtaria **/
-if (!is_array($codFaixaEtaria)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo COD_FAIXA_ETARIA inválido !!!"));
-	$err 	= 1;
-}
-
-/** EMAIL **/
-if (!is_array($email)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo EMAIL inválido !!!"));
-	$err 	= 1;
+/** CodGrupo **/
+if (empty($codGrupo)){
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("PARÂMETRO NÃO INFORMANDO : COD_GRUPO"))));
 }
 
 /** CodConvidado **/
 if (!is_array($codConvidado)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo COD_CONVIDADO inválido !!!"));
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("VARIÁVEL INVÁLIDA : COD_CONVIDADO"))));
+}
+
+/** Nome **/
+if (!empty($nome)){
+	for ($v = 0; $v < sizeof($nome); $v++) {
+		if ($nome[$v] == null){
+			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Não pode haver uma linha sem o nome preenchido!"))));
+			
+		}
+	}
+}
+
+/** Nome **/
+if (!is_array($nome)) {
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("djuhdsiuhdsiuh!"))));
 	$err 	= 1;
 }
 
@@ -89,41 +71,6 @@ if (!is_array($codConvidado)) {
 #################################################################################
 $numCon	= sizeof($codConvidado);
 
-/** Nome **/
-if (sizeof($nome) != $numCon) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME com tamanho inválido !!!"));
-	$err 	= 1;
-}
-
-/** Telefone **/
-if (sizeof($telefone) != $numCon) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo TELEFONE com tamanho inválido !!!"));
-	$err 	= 1;
-}
-
-/** Sexo **/
-if (sizeof($sexo) != $numCon) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo SEXO com tamanho inválido !!!"));
-	$err 	= 1;
-}
-
-/** CodFaixaEtaria **/
-if (sizeof($codFaixaEtaria) != $numCon) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo COD_FAIXA_ETARIA com tamanho inválido !!!"));
-	$err 	= 1;
-}
-
-/** Email **/
-if (sizeof($email) != $numCon) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo EMAIL com tamanho inválido !!!"));
-	$err 	= 1;
-}
-
-if ($err != null) {
-	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
- 	exit;
-}
-
 #################################################################################
 ## Salvar no banco
 #################################################################################
@@ -131,9 +78,10 @@ try {
 	#################################################################################
 	## Apagar os convidados
 	#################################################################################
-	$convidados			= $em->getRepository('Entidades\ZgfmtListaConvidado')->findBy(array('codigo' => $codConvidado));
+	$convidados			= $em->getRepository('Entidades\ZgfmtListaConvidado')->findBy(array('codUsuario' => $system->getCodUsuario(), 'codGrupo' => $codGrupo));
 
 	for ($i = 0; $i < sizeof($convidados); $i++) {
+		$log->debug($convidados[$i]->getCodigo());
 		if (!in_array($convidados[$i]->getCodigo(), $codConvidado)) {
 			try {
 				$em->remove($convidados[$i]);
@@ -149,17 +97,15 @@ try {
 	## Criar / Alterar
 	#################################################################################
 	for ($i = 0; $i < $numCon; $i++) {
-
+		//$log->debug($codConvidado[$i]);
 		#################################################################################
 		## Verifica se o registro já existe no banco
 		#################################################################################
-		if (!empty($codConvidado[$i])) {
-			$oConvidado		= $em->getRepository('Entidades\ZgfmtListaConvidado')->findOneBy(array('codigo' => $codConvidado[$i]));
-			if (!$oConvidado)	$oConvidado	= new \Entidades\ZgfmtListaConvidado();
-		}else{
+		$oConvidado		= $em->getRepository('Entidades\ZgfmtListaConvidado')->findOneBy(array('codigo' => $codConvidado[$i]));
+		
+		if (!$oConvidado) {
 			$oConvidado	= new \Entidades\ZgfmtListaConvidado();
 		}
-	
 		#################################################################################
 		## Constroi os objetos
 		#################################################################################
@@ -188,5 +134,4 @@ try {
 	exit;
 }
 
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
-echo '0'.\Zage\App\Util::encodeUrl('||');
+echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Lista de convidados atualizada com sucesso!')));

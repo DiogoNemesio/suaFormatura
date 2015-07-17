@@ -49,16 +49,32 @@ if($oOrganizacao != null && ($oOrganizacao->getCodigo() != $codOrganizacao)){
 if (!isset($nome) || (empty($nome))) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Nome Completo deve ser preenchido!"));
 	$err	= 1;
-}
-
-if ((!empty($nome)) && (strlen($nome) > 100)) {
+}elseif ((!empty($nome)) && (strlen($nome) > 100)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Nome não deve conter mais de 100 caracteres!"));
 	$err	= 1;
 }
 
 /******* INSTITUIÇÃO *********/
 if (!isset($instituicao) || (empty($instituicao))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A instituição deve ser preenchida!"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A instituição de ensino deve ser preenchida!"));
+	$err	= 1;
+}
+
+/******* CURSO *********/
+if (!isset($curso) || (empty($curso))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O curso deve ser preenchido!"));
+	$err	= 1;
+}
+
+/******* CIDADE *********/
+if (!isset($cidade) || (empty($cidade))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A cidade de realizacão da formatura deve ser preenchida!"));
+	$err	= 1;
+}
+
+/******* DATA DE CONCLUSAO *********/
+if (!isset($dataConclusao) || (empty($dataConclusao))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A data prevista de conclusão deve ser preenchida!"));
 	$err	= 1;
 }
 
@@ -187,5 +203,5 @@ try {
  	exit;
 }
  
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
+//$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oOrganizacao->getCodigo());
