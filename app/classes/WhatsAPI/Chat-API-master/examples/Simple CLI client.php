@@ -16,10 +16,10 @@ echo "====================================\n";
 
 ////////////////CONFIGURATION///////////////////////
 ////////////////////////////////////////////////////
-$username = "";
-$password = "";
-$nickname = "";
-$debug = false;
+$username 	= "558299609596";
+$password 	= "tom9NvgObHc1JXvmu5oLINHj96c=";
+$nickname 	= "Zage";
+$debug 		= true;
 /////////////////////////////////////////////////////
 if ($_SERVER['argv'][1] == null) {
     echo "USAGE: php ".$_SERVER['argv'][0]." <number> \n\nEj: php client.php 34123456789\n\n";

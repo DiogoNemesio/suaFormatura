@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgwapChip
  *
- * @ORM\Table(name="ZGWAP_CHIP", indexes={@ORM\Index(name="fk_ZGWAP_CHIP_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGWAP_CHIP_2_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGWAP_CHIP_3_idx", columns={"COD_PAIS"})})
+ * @ORM\Table(name="ZGWAP_CHIP", indexes={@ORM\Index(name="fk_ZGWAP_CHIP_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGWAP_CHIP_2_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGWAP_CHIP_3_idx", columns={"COD_PAIS"}), @ORM\Index(name="fk_ZGWAP_CHIP_4_idx", columns={"COD_TIPO_BLOQUEIO"})})
  * @ORM\Entity
  */
 class ZgwapChip
@@ -57,6 +57,13 @@ class ZgwapChip
     private $identificacao;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="LOGIN", type="string", length=60, nullable=true)
+     */
+    private $login;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=true)
@@ -69,6 +76,20 @@ class ZgwapChip
      * @ORM\Column(name="DATA_REGISTRO", type="datetime", nullable=true)
      */
     private $dataRegistro;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ULTIMA_SINCRONIZACAO", type="datetime", nullable=true)
+     */
+    private $dataUltimaSincronizacao;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_BLOQUEIO", type="datetime", nullable=true)
+     */
+    private $dataBloqueio;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -99,6 +120,16 @@ class ZgwapChip
      * })
      */
     private $codPais;
+
+    /**
+     * @var \Entidades\ZgwapChipBloqueioTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgwapChipBloqueioTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_BLOQUEIO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoBloqueio;
 
 
     /**
@@ -227,6 +258,29 @@ class ZgwapChip
     }
 
     /**
+     * Set login
+     *
+     * @param string $login
+     * @return ZgwapChip
+     */
+    public function setLogin($login)
+    {
+        $this->login = $login;
+
+        return $this;
+    }
+
+    /**
+     * Get login
+     *
+     * @return string 
+     */
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
      * Set dataCadastro
      *
      * @param \DateTime $dataCadastro
@@ -270,6 +324,52 @@ class ZgwapChip
     public function getDataRegistro()
     {
         return $this->dataRegistro;
+    }
+
+    /**
+     * Set dataUltimaSincronizacao
+     *
+     * @param \DateTime $dataUltimaSincronizacao
+     * @return ZgwapChip
+     */
+    public function setDataUltimaSincronizacao($dataUltimaSincronizacao)
+    {
+        $this->dataUltimaSincronizacao = $dataUltimaSincronizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get dataUltimaSincronizacao
+     *
+     * @return \DateTime 
+     */
+    public function getDataUltimaSincronizacao()
+    {
+        return $this->dataUltimaSincronizacao;
+    }
+
+    /**
+     * Set dataBloqueio
+     *
+     * @param \DateTime $dataBloqueio
+     * @return ZgwapChip
+     */
+    public function setDataBloqueio($dataBloqueio)
+    {
+        $this->dataBloqueio = $dataBloqueio;
+
+        return $this;
+    }
+
+    /**
+     * Get dataBloqueio
+     *
+     * @return \DateTime 
+     */
+    public function getDataBloqueio()
+    {
+        return $this->dataBloqueio;
     }
 
     /**
@@ -339,5 +439,28 @@ class ZgwapChip
     public function getCodPais()
     {
         return $this->codPais;
+    }
+
+    /**
+     * Set codTipoBloqueio
+     *
+     * @param \Entidades\ZgwapChipBloqueioTipo $codTipoBloqueio
+     * @return ZgwapChip
+     */
+    public function setCodTipoBloqueio(\Entidades\ZgwapChipBloqueioTipo $codTipoBloqueio = null)
+    {
+        $this->codTipoBloqueio = $codTipoBloqueio;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoBloqueio
+     *
+     * @return \Entidades\ZgwapChipBloqueioTipo 
+     */
+    public function getCodTipoBloqueio()
+    {
+        return $this->codTipoBloqueio;
     }
 }

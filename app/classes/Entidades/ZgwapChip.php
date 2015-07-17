@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgwapChip
  *
- * @ORM\Table(name="ZGWAP_CHIP", indexes={@ORM\Index(name="fk_ZGWAP_CHIP_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGWAP_CHIP_2_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGWAP_CHIP_3_idx", columns={"COD_PAIS"})})
+ * @ORM\Table(name="ZGWAP_CHIP", indexes={@ORM\Index(name="fk_ZGWAP_CHIP_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGWAP_CHIP_2_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGWAP_CHIP_3_idx", columns={"COD_PAIS"}), @ORM\Index(name="fk_ZGWAP_CHIP_4_idx", columns={"COD_TIPO_BLOQUEIO"})})
  * @ORM\Entity
  */
 class ZgwapChip
@@ -55,6 +55,13 @@ class ZgwapChip
      * @ORM\Column(name="IDENTIFICACAO", type="string", length=60, nullable=true)
      */
     private $identificacao;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="LOGIN", type="string", length=60, nullable=true)
+     */
+    private $login;
 
     /**
      * @var \DateTime
@@ -113,6 +120,16 @@ class ZgwapChip
      * })
      */
     private $codPais;
+
+    /**
+     * @var \Entidades\ZgwapChipBloqueioTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgwapChipBloqueioTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_BLOQUEIO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoBloqueio;
 
 
     /**
@@ -238,6 +255,29 @@ class ZgwapChip
     public function getIdentificacao()
     {
         return $this->identificacao;
+    }
+
+    /**
+     * Set login
+     *
+     * @param string $login
+     * @return ZgwapChip
+     */
+    public function setLogin($login)
+    {
+        $this->login = $login;
+
+        return $this;
+    }
+
+    /**
+     * Get login
+     *
+     * @return string 
+     */
+    public function getLogin()
+    {
+        return $this->login;
     }
 
     /**
@@ -399,5 +439,28 @@ class ZgwapChip
     public function getCodPais()
     {
         return $this->codPais;
+    }
+
+    /**
+     * Set codTipoBloqueio
+     *
+     * @param \Entidades\ZgwapChipBloqueioTipo $codTipoBloqueio
+     * @return ZgwapChip
+     */
+    public function setCodTipoBloqueio(\Entidades\ZgwapChipBloqueioTipo $codTipoBloqueio = null)
+    {
+        $this->codTipoBloqueio = $codTipoBloqueio;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoBloqueio
+     *
+     * @return \Entidades\ZgwapChipBloqueioTipo 
+     */
+    public function getCodTipoBloqueio()
+    {
+        return $this->codTipoBloqueio;
     }
 }

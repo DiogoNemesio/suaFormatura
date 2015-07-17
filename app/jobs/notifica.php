@@ -14,6 +14,15 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 global $em,$system,$tr,$log,$db;
 
+
+$chip 	= new \Zage\Wap\Chip();
+$chip->_setCodigo(1);
+$chip->conectar();
+
+exit;
+
+
+
 $daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
 $template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ASSINATURA_VENCIDA'));
 $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);

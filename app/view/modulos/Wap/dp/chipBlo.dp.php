@@ -17,6 +17,7 @@ global $em,$system,$tr;
 ## Resgata os parâmetros passados pelo formulário
 #################################################################################
 if (isset($_POST['codChip']))			$codChip		= \Zage\App\Util::antiInjection($_POST['codChip']);
+if (isset($_POST['code']))				$code			= \Zage\App\Util::antiInjection($_POST['code']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -37,7 +38,15 @@ if (!isset($codChip)) {
 	if (!$oChip) {
 		$err	= $tr->trans("Chip não encontrado !!");
 	}
+	
 }
+
+$codStatus	= $oChip->getCodStatus()->getCodigo(); 
+
+if ($codStatus != "A" && $codStatus != "B")	{
+	$err	= $tr->trans("Status não permite Bloqueio / Desbloqueio!!");
+}
+
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
@@ -45,16 +54,30 @@ if ($err != null) {
 }
 
 #################################################################################
-## Solicitar o código SMS
+## Fazer o bloqueio / desbloqueio
 #################################################################################
 try {
-	$chip		= new \Zage\Wap\Chip();
-	$chip->_setCodigo($codChip);
-	$return		= $chip->solicitaCodigoPorSms();
-
+	
+	if ($codStatus == "A") {
+		$oNovoStatus	= $em->getReference('\Entidades\ZgwapChipStatus', "B");
+		$dataBloqueio	= new \DateTime("now");
+		$acao			= "Bloqueio";
+	}else{
+		$oNovoStatus	= $em->getReference('\Entidades\ZgwapChipStatus', "A");
+		$dataBloqueio	= null;
+		$acao			= "Desbloqueio";
+	}
+	
+	$oChip->setCodStatus($oNovoStatus);
+	$oChip->setDataBloqueio($dataBloqueio);
+	$em ->persist($oChip);
+	$em->flush();
+	$em->detach($oChip);
+	
 } catch (\Exception $e) {
-	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+	$log->err("Falha ao bloquear/desbloquear o chip: ".$oChip->getCodigo()." -> ".$e->getMessage());
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Falha ao bloquear/desbloquear o chip, entre em contato com os administradores do sistema através do email: ".$system->config["mail"]["admin"]));
 	exit;
 }
- 
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oChip->getCodigo().'|'.htmlentities($tr->trans("Solicitação efetuada com sucesso")));
+
+echo '0'.\Zage\App\Util::encodeUrl('|'.$oChip->getCodigo().'|'.htmlentities($tr->trans("$acao efetuado com sucesso")));
