@@ -48,4 +48,11 @@ class Perfil extends \Entidades\ZgsegPerfil {
     	return($query->getResult());
     	
     }
+    
+    /**
+     * Gerar a senha aleatória do convite
+     */
+    public static function _geraSenha() {
+    	return md5(time() . rand());
+    }
 }
