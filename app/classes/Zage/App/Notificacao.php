@@ -127,6 +127,12 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		}
 		
 		#################################################################################
+		## Validar alguns campos
+		#################################################################################
+		if (strlen($this->getAssunto() > 60)) $this->setAssunto(substr($this->getAssunto(),0,60));
+		
+		
+		#################################################################################
 		## Criar o objeto do doctrine
 		#################################################################################
 		$_not		= new \Entidades\ZgappNotificacao();

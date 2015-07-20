@@ -133,16 +133,15 @@ class Chip extends \Entidades\ZgwapChip {
 				$w 			= new \WhatsProt($waUser, $nickname, $debug);
 				$return		= $w->codeRequest('sms');
 				$log->debug("Retorno SMS: ".serialize($return));
-				if ($return->status	!= "ok") {
-					throw new \Exception($tr->trans("Erro ao enviar a requisição, status do retorno: ".$return->status));
-				}else{
+				if ($return->status	== "ok") {
 					$login = $return->login;
+					$oChip->setLogin($login);
+					$em->persist($oChip);
+					$em->flush();
+					$em->detach($oChip);
+				}elseif ($return->status	!= "sent") {
+					throw new \Exception($tr->trans("Erro ao enviar a requisição, status do retorno: ".$return->status));
 				}
-				
-				$oChip->setLogin($login);
-				$em->persist($oChip);
-				$em->flush();
-				$em->detach($oChip);
 					
 			} catch (\Exception $e) {
 				$log->err('Erro ao solicitar código através do SMS do chip "'.$waUser.'" -> '.$e->getMessage());
@@ -191,7 +190,8 @@ class Chip extends \Entidades\ZgwapChip {
 			$log->info(serialize($return));
 			$status		= $return->status;
 			$senha		= $return->pw;
-		
+			$login 		= $return->login;
+
 			if ($status != "ok") {
 				$log->err("Falha no registro do chip: $waUser -> ".serialize($return));
 				throw new \Exception("Falha ao registrar o chip: $waUser, retorno dos servidores whatsapp: ".$status);
@@ -216,6 +216,7 @@ class Chip extends \Entidades\ZgwapChip {
 			$oChip->setCodStatus($oStatus);
 			$oChip->setSenha($senha);
 			$oChip->setCode($code);
+			$oChip->setLogin($login);
 			$oChip->setDataRegistro(new \DateTime("now"));
 		
 			$em->persist($oChip);
@@ -252,10 +253,10 @@ class Chip extends \Entidades\ZgwapChip {
 		$numero		 	= ($oChip->getLogin()) ?  $oChip->getLogin() : $oChip->getCodPais()->getCallingCode() . $oChip->getDdd(). $oChip->getNumero();  	// Telephone number including the country code without '+' or '00'.
 		$identificacao	= $oChip->getIdentificacao();
 		$senha			= $oChip->getSenha();
-		$debug			= true;
+		$debug			= false;
 		
 		try {
-			//$log->info("Tentando conexão ao whatsapp com o numero: $numero, senha: $senha, Ident: $identificacao");
+			$log->debug("Tentando conexão ao whatsapp com o numero: $numero, senha: $senha, Ident: $identificacao");
 			$this->w 	= new \WhatsProt($numero, $identificacao, $debug);
 			//$this->w->eventManager()->bind("onCredentialsBad", "onCredentialsBad");
 			//$this->w->checkCredentials();
@@ -264,16 +265,21 @@ class Chip extends \Entidades\ZgwapChip {
 			$this->w->sendGetServerProperties();
 			$this->w->sendClientConfig();
 			
+			$log->debug("Conexão WA estabelecida !!!");
+			
 		} catch (\Exception $e) {
 			$log->err("Falha ao conectar com o whatsapp do chip: $numero -> ".$e->getMessage());
 			throw new \Exception("Falha ao conectar com o whatsapp do chip: $numero -> ".$e->getMessage());
 		}
 		
+		$log->debug("Iniciar sincronização dos contatos !");
 		
 		#################################################################################
 		## Sincronizar os contatos
 		#################################################################################
 		$this->sincronizarContatos();
+		
+		$log->debug("Contatos sincronizados !");
 	}
 	
 	
@@ -300,7 +306,6 @@ class Chip extends \Entidades\ZgwapChip {
 			$syncType		= 0; 
 		}else{
 			$syncType		= 2;
-			
 		}
 		
 		#################################################################################
@@ -327,9 +332,10 @@ class Chip extends \Entidades\ZgwapChip {
 		#################################################################################
 		## wait for response
 		#################################################################################
-		while (true) {
+		/*while (true) {
 			$this->w->pollMessage();
-		}
+		}*/
+		
 		
 		
 		#################################################################################
@@ -456,14 +462,15 @@ class Chip extends \Entidades\ZgwapChip {
 	public static function onSyncResult($result) {
 		global $em,$tr,$log,$oChip;
 		foreach ($result->existing as $number) {
-			$cell	= self::_convertWaNumberToCell($number,$oChip->getCodPais()->getCallingCode());
-			\Zage\Wap\Chip::_addContact($oChip->getCodigo(),$cell,$number);
+			$cell	= self::_convertWaIDToCell($number,$oChip->getCodPais()->getCallingCode());
+			\Zage\Wap\Chip::_addContact($oChip->getCodigo(),$cell,self::_convertWaIdToWaLogin($number));
 		}
 		foreach ($result->nonExisting as $number) {
-			$cell	= self::_convertWaNumberToCell($number,$oChip->getCodPais()->getCallingCode());
-			\Zage\Wap\Chip::_delContact($oChip->getCodigo(),$cell,$number);
+			$cell	= self::_convertWaIDToCell($number,$oChip->getCodPais()->getCallingCode());
+			\Zage\Wap\Chip::_delContact($oChip->getCodigo(),$cell,self::_convertWaIdToWaLogin($number));
 		}
-		die(); //to break out of the while(true) loop
+		$log->debug("OnSynResult ends OK");
+		//die(); //to break out of the while(true) loop
 	}
 	
 
@@ -489,7 +496,7 @@ class Chip extends \Entidades\ZgwapChip {
 					$qb->expr()->eq('uo.codOrganizacao'	, ':codOrganizacao'),
 					$qb->expr()->orX(
 						$qb->expr()->in('t.telefone'	, ':telefone'),
-						$qb->expr()->in('t.waLogin'		, ':waLogin')
+						$qb->expr()->eq('t.waLogin'		, ':waLogin')
 					)
 			))
 			->setParameter('codOrganizacao'		, $codOrganizacao)
@@ -509,7 +516,7 @@ class Chip extends \Entidades\ZgwapChip {
 	 * @param string $number
 	 * @param number $callingCode
 	 */
-	public static function _convertWaNumberToCell($number,$callingCode) {
+	public static function _convertWaIDToCell($number,$callingCode) {
 		
 		#################################################################################
 		## Retirar o domínio (sufixo) 
@@ -522,6 +529,115 @@ class Chip extends \Entidades\ZgwapChip {
 		#################################################################################
 		$return = preg_replace ("/".$callingCode."/" ,"" ,$n , 1);
 		return ($return); 
+		
+	}
+	
+	/**
+	 * Converter o retorno do whatsapp em um número de login do Wa
+	 * @param string $number
+	 */
+	public static function _convertWaIdToWaLogin($number) {
+	
+		#################################################################################
+		## Retirar o domínio (sufixo)
+		#################################################################################
+		$temp		= split("\@",$number);
+		$n			= $temp[0];
+	
+		return ($n);
+	
+	}
+	
+	/**
+	 * Converter um celular para um número do Whatsapp
+	 * @param string $celular
+	 */
+	public function _convertCellToWaNumber($celular) {
+		global $em,$tr,$log;
+		
+		#################################################################################
+		## Verifica se o Chip foi informado
+		#################################################################################
+		if (!$this->_getCodigo())	throw new \Exception($tr->trans("Código do chip deve ser informado !!"));
+		$oChip		= $em->getRepository('\Entidades\ZgwapChip')->findOneBy(array('codigo' => $this->_getCodigo()));
+		if (!$oChip)				throw new \Exception($tr->trans("Chip não encontrado !!"));
+		
+		if (strlen($celular) < 8) 	throw new \Exception($tr->trans("Número do celular inválido !!"));
+
+		
+		#################################################################################
+		## Número já está completo, retornar o próprio 
+		#################################################################################
+		if (strlen($celular) > 11) 	return $celular;
+		
+		#################################################################################
+		## Número sem o DDD, colocar o DDD e o código do País do Chip 
+		#################################################################################
+		if (strlen($celular) < 10) 	{
+			$number		= $oChip->getCodPais()->getCallingCode() . $oChip->getDdd() . $celular;
+		}
+		
+		#################################################################################
+		## Número sem o Código do País
+		#################################################################################
+		$number		= $oChip->getCodPais()->getCallingCode() . $celular;
+		
+		return ($number);
+	
+	}
+	
+	
+	/**
+	 * Buscar os números com wa do usuário
+	 * @param number $codUsuario
+	 */
+	public static function buscaNumeroComWa($codUsuario) {
+		global $em,$tr,$log;
+		
+		$qb 	= $em->createQueryBuilder();
+		try {
+			$qb->select('t')
+			->from('\Entidades\ZgsegUsuarioTelefone','t')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('t.codProprietario'	, ':codUsuario'),
+				$qb->expr()->eq('t.indTemWa'		, ':temWa')
+			))
+			->setParameter('codUsuario'			, $codUsuario)
+			->setParameter('temWa'				, 1);
+		
+			$query 		= $qb->getQuery();
+			return		($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+	}
+	
+	
+	/**
+	 * Acha um CHIP para enviar mensagem whatsapp
+	 * @param number $codUsuario
+	 */
+	public static function buscaChipUsuario($codUsuario) {
+		global $em;
+		
+		$qb 	= $em->createQueryBuilder();
+		try {
+			$qb->select('c')
+			->from('\Entidades\ZgwapChip','c')
+			->leftJoin('\Entidades\ZgsegUsuarioOrganizacao', 'uo', \Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codOrganizacao = c.codOrganizacao')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('uo.codUsuario'	, ':codUsuario'),
+				$qb->expr()->in('c.codStatus'	, ':status')
+			))
+			->setParameter('codUsuario'			, $codUsuario)
+			->setParameter('status'				, array("A"));
+		
+			$query 		= $qb->getQuery();
+			return		($query->getOneOrNullResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
 		
 	}
 	
