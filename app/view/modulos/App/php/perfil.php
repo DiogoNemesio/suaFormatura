@@ -33,15 +33,15 @@ $usuario		= $_user->getUsuario();
 $nome			= $_user->getNome();
 $apelido		= $_user->getApelido();
 $cpf			= $_user->getCpf();
-$codStatus		= $_user->getCodStatus()->getCodigo();
-$sexo			= $_user->getSexo()->getCodigo();
+$codStatus		= ($_user->getCodStatus() != null) ? $_user->getCodStatus()->getCodigo() : null;
+$sexo			= ($_user->getSexo() != null) ? $_user->getSexo()->getCodigo() : null;
 $codLogradouro  = ($_user->getCodLogradouro() != null) ? $_user->getCodLogradouro()->getCodigo() : null;
 $endereco		= $_user->getEndereco();
 $bairro 		= $_user->getBairro();
 $complemento    = $_user->getcomplemento();
 $numero		    = $_user->getnumero();
-$avatar			= $_user->getAvatar()->getCodigo();
-$avatarLink		= $_user->getAvatar()->getLink();
+$avatar			= ($_user->getAvatar() != null) ? $_user->getAvatar()->getCodigo() : null;
+$avatarLink		= ($_user->getAvatar() != null) ? $_user->getAvatar()->getLink() : null;
 if (empty($avatarLink)) $avatarLink		= IMG_URL.'/avatars/usuarioGenerico.png';
 if (!empty($cpf)) $cpfReadonly = 'readonly';
 
@@ -74,7 +74,7 @@ if($codLogradouro != null){
 
 $infoEmail = $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(array('codUsuario' => $codUsuario, 'codStatus' => 'A'));
 
-if(!$infoEmail){
+if(!isset($infoEmail) && empty($infoEmail)){
 	$readonlyEmail = '';
 	$indMudaEmail  = 0; #Pode mudar
 }elseif ($infoEmail->getIndConfirmadoAnterior() == 1){
