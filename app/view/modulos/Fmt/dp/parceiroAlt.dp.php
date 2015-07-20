@@ -287,7 +287,7 @@ try {
  	$oTipoPessoa		= $em->getRepository('Entidades\ZgadmOrganizacaoPessoaTipo')->findOneBy(array('codigo' => $tipo));
  	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => $codSegmento));
  	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
- 	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => 1));
+ 	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => A));
  	
  	if (!empty($dataNascimento)) {
  		$dtNasc		= DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataNascimento);
