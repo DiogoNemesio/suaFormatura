@@ -226,8 +226,8 @@ SUBMIT FORMULÁRIO
 // Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
 	
-	//var vOk 	= validaUsuarioAlt();
-	var vOk 	= true;
+	var vOk 	= validaUsuarioAlt();
+	
 	if(vOk == false) 	{
 		$.gritter.add({
 			title: 'Está faltando alguma coisa !!!',
@@ -521,6 +521,9 @@ function validaUsuarioAlt() {
 		$('#divHelpApelidoID').html(zgCriaSpanErro('O apelido deve ser preenchido!'));
 		vOK		= false;
 		vTab 	= 0;
+	}else{
+		$('#divApelidoID').removeClass('has-error');
+		$('#divHelpApelidoID').html('&nbsp;');
 	}
 	
 	//SEXO

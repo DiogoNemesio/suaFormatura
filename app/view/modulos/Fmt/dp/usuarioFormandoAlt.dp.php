@@ -97,7 +97,8 @@ try {
 	$oUsuario->_setPerfil($codPerfil);
 	
 	//Endereço
-	$oUsuario->_setIndEndObrigatorio(true);
+	$oUsuario->_setIndEndObrigatorio(false);
+	$endObrigatorio = false;
 	
 	//Telefone
 	$oUsuario->_setEntidadeTel('Entidades\ZgsegUsuarioTelefone');
@@ -143,25 +144,26 @@ try {
 	
 	$em->persist($oCliente);
 	
-	//ENDEREÇO
-	$oClienteEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oCliente->getCodigo()));
-	$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => C));
-	
-	if (!$oClienteEnd){
-		$oClienteEnd = new \Entidades\ZgfinPessoaEndereco();
+	//ENDEREÇO CLIENTE
+	if ($endObrigatorio == true){
+		$oClienteEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oCliente->getCodigo()));
+		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => C));
+		
+		if (!$oClienteEnd){
+			$oClienteEnd = new \Entidades\ZgfinPessoaEndereco();
+		}
+		
+		$oClienteEnd->setCodPessoa($oCliente);
+		$oClienteEnd->setCodTipoEndereco($oEndTipo);
+		$oClienteEnd->setCodLogradouro($oCodLogradouro);
+		$oClienteEnd->setCep($oUsuario->_getUsuario()->getCep());
+		$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getEndereco());
+		$oClienteEnd->setBairro($oUsuario->_getUsuario()->getBairro());
+		$oClienteEnd->setNumero($oUsuario->_getUsuario()->getNumero());
+		$oClienteEnd->setComplemento($oUsuario->_getUsuario()->getComplemento());
+		
+		$em->persist($oClienteEnd);
 	}
-	
-	$oClienteEnd->setCodPessoa($oCliente);
-	$oClienteEnd->setCodTipoEndereco($oEndTipo);
-	$oClienteEnd->setCodLogradouro($oCodLogradouro);
-	$oClienteEnd->setCep($oUsuario->_getUsuario()->getCep());
-	$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getEndereco());
-	$oClienteEnd->setBairro($oUsuario->_getUsuario()->getBairro());
-	$oClienteEnd->setNumero($oUsuario->_getUsuario()->getNumero());
-	$oClienteEnd->setComplemento($oUsuario->_getUsuario()->getComplemento());
-	
-	$em->persist($oClienteEnd);
-	
 	//Telefone
 	$oCliTel			= new \Zage\App\Telefone();
 	$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
@@ -183,8 +185,9 @@ try {
 		$convite->setCodStatus($oConviteStatus);
 		$convite->salvar();
 	}
-	
-	/********** Salvar as informações *********/
+	$em->flush();
+	$em->clear();
+	/********** Salvar as informações ******
 	try {
 		$em->flush();
 		$em->clear();
@@ -192,7 +195,7 @@ try {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
 		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
 	}	
-
+***/
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
