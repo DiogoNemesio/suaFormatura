@@ -25,7 +25,7 @@ class Instituicao {
 	
 	/**
 	 *
-	 * Busca por Paises
+	 * Busca por instutições de ensino
 	 */
 	public static function busca ($nome = null) {
 		global $em,$system;

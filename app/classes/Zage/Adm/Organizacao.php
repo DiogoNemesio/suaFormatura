@@ -75,7 +75,36 @@ class Organizacao {
 		}
 	}
 	
+	/**
+	 *
+	 * Busca por Organizacao do tipo parceiro
+	 */
+	public static function buscaOrganizacaoParceiro ($nome = null) {
+		global $em,$system;
 	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('o')
+			->from('\Entidades\ZgadmOrganizacao','o')
+			->where(
+					$qb->expr()->like(
+							$qb->expr()->upper('o.nome'), ':nome'
+					)
+			)
+			->andWhere(
+					$qb->expr()->notIn('o.codTipo' , array('FMT','CAS','ADM'))
+			)
+			->orderBy('o.nome','ASC')
+			->addOrderBy('o.nome','ASC')
+			->setParameter('nome', '%'.strtoupper($nome).'%');
+	
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
 	/**
 	 * Listar tipo de organização excluindo os tipos MT (formatura), CAS (casamentos), ADM (admnistração)
 	 *
