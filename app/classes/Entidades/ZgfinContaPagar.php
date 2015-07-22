@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinContaPagar
  *
- * @ORM\Table(name="ZGFIN_CONTA_PAGAR", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_PAGAR_UK01", columns={"COD_ORGANIZACAO", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_2_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_4_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_5_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_6_idx", columns={"COD_TIPO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_7_idx", columns={"COD_PERIODO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_8_idx", columns={"COD_CONTA"}), @ORM\Index(name="IDX_96D3C4759F83D42B", columns={"COD_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGFIN_CONTA_PAGAR", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_PAGAR_UK01", columns={"COD_ORGANIZACAO", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_2_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_4_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_5_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_6_idx", columns={"COD_TIPO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_7_idx", columns={"COD_PERIODO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_8_idx", columns={"COD_CONTA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_9_idx", columns={"COD_TITULO_SUBSTITUTO"}), @ORM\Index(name="IDX_96D3C4759F83D42B", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfinContaPagar
@@ -268,6 +268,16 @@ class ZgfinContaPagar
      * })
      */
     private $codConta;
+
+    /**
+     * @var \Entidades\ZgfinContaPagar
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaPagar")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TITULO_SUBSTITUTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTituloSubstituto;
 
 
     /**
@@ -1014,5 +1024,28 @@ class ZgfinContaPagar
     public function getCodConta()
     {
         return $this->codConta;
+    }
+
+    /**
+     * Set codTituloSubstituto
+     *
+     * @param \Entidades\ZgfinContaPagar $codTituloSubstituto
+     * @return ZgfinContaPagar
+     */
+    public function setCodTituloSubstituto(\Entidades\ZgfinContaPagar $codTituloSubstituto = null)
+    {
+        $this->codTituloSubstituto = $codTituloSubstituto;
+
+        return $this;
+    }
+
+    /**
+     * Get codTituloSubstituto
+     *
+     * @return \Entidades\ZgfinContaPagar 
+     */
+    public function getCodTituloSubstituto()
+    {
+        return $this->codTituloSubstituto;
     }
 }

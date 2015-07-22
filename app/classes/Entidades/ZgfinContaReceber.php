@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinContaReceber
  *
- * @ORM\Table(name="ZGFIN_CONTA_RECEBER", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_RECEBER_UK01", columns={"COD_ORGANIZACAO", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_2_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_3_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_5_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_6_idx", columns={"COD_TIPO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_7_idx", columns={"COD_PERIODO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_8_idx", columns={"COD_CONTA"}), @ORM\Index(name="IDX_ED3945769F83D42B", columns={"COD_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGFIN_CONTA_RECEBER", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_RECEBER_UK01", columns={"COD_ORGANIZACAO", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_2_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_3_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_5_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_6_idx", columns={"COD_TIPO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_7_idx", columns={"COD_PERIODO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_8_idx", columns={"COD_CONTA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_9_idx", columns={"COD_TITULO_SUBSTITUTO"}), @ORM\Index(name="IDX_ED3945769F83D42B", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfinContaReceber
@@ -268,6 +268,16 @@ class ZgfinContaReceber
      * })
      */
     private $codConta;
+
+    /**
+     * @var \Entidades\ZgfinContaReceber
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaReceber")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TITULO_SUBSTITUTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTituloSubstituto;
 
 
     /**
@@ -1014,5 +1024,28 @@ class ZgfinContaReceber
     public function getCodConta()
     {
         return $this->codConta;
+    }
+
+    /**
+     * Set codTituloSubstituto
+     *
+     * @param \Entidades\ZgfinContaReceber $codTituloSubstituto
+     * @return ZgfinContaReceber
+     */
+    public function setCodTituloSubstituto(\Entidades\ZgfinContaReceber $codTituloSubstituto = null)
+    {
+        $this->codTituloSubstituto = $codTituloSubstituto;
+
+        return $this;
+    }
+
+    /**
+     * Get codTituloSubstituto
+     *
+     * @return \Entidades\ZgfinContaReceber 
+     */
+    public function getCodTituloSubstituto()
+    {
+        return $this->codTituloSubstituto;
     }
 }
