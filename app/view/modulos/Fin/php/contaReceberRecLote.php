@@ -55,7 +55,7 @@ $aSelContas		= explode(",",$aSelContas);
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$contas		= $em->getRepository('Entidades\ZgfinContaReceber')->findBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $aSelContas));
+$contas		= $em->getRepository('Entidades\ZgfinContaReceber')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $aSelContas));
 
 if (sizeof($contas) == 0) {
 	\Zage\App\Erro::halt($tr->trans('Conta[s] não encontrada !!!'));
@@ -180,7 +180,7 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
-	$aContaCre	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aContaCre	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
 	$oContaCre	= $system->geraHtmlCombo($aContaCre,	'CODIGO', 'NOME',	'', '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

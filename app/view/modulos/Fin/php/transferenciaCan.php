@@ -49,7 +49,7 @@ if (!isset($codTransf)) {
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$transferencias		= $em->getRepository('Entidades\ZgfinTransferencia')->findBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $aSelTransfs));
+$transferencias		= $em->getRepository('Entidades\ZgfinTransferencia')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $aSelTransfs));
 
 if (sizeof($transferencias) == 0) {
 	\Zage\App\Erro::halt($tr->trans('Transferência[s] não encontrada !!!'));

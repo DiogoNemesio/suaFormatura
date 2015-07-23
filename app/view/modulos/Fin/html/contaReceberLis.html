@@ -123,7 +123,7 @@ zgDesabilitaAcoesCRLis();
 function zgHabilitaAcoesCRLis() {
 	var $jCodigos = jQuery.parseJSON($aCodigos);
 	var $aStatus	= [];
-	var	$aFornec	= [];
+	var	$aCliente	= [];
 	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
 		var $codigo	= $(this).val();
 		if ($jCodigos[$codigo] != undefined) {
@@ -134,8 +134,8 @@ function zgHabilitaAcoesCRLis() {
 			}
 
 			/** Monta o array de Fornecedores únicos **/
-			if ( $aFornec.indexOf($jCodigos[$codigo]["FORNEC"]) == -1 ) {
-				$aFornec[$aFornec.length]	= $jCodigos[$codigo]["FORNEC"];
+			if ( $aCliente.indexOf($jCodigos[$codigo]["CLIENTE"]) == -1 ) {
+				$aCliente[$aCliente.length]	= $jCodigos[$codigo]["CLIENTE"];
 			}
 
 		}
@@ -160,6 +160,26 @@ function zgHabilitaAcoesCRLis() {
 		$('#zgDivAcoesCanID').html('&nbsp;');
 		$('#zgDivAcoesConID').html('&nbsp;');
 	}
+	
+	/** Calcular o botão de substituição a partir do STATUS e do FORNECEDOR / CLIENTE **/
+	if ($aCliente.length !== 1) {
+		$('#zgDivAcoesSubID').html('&nbsp;');
+	}else if($aStatus.length !== 1) {
+		if ($aStatus.length !== 2) {
+			$('#zgDivAcoesSubID').html('&nbsp;');
+		}else{
+			if ( ( ($aStatus[0] == "A") && ($aStatus[1] == "P") ) || ( ($aStatus[1] == "A") && ($aStatus[0] == "P") ) ) {
+				$('#zgDivAcoesSubID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoSubSelecionadosCRLis();" data-toggle="tooltip" data-placement="top" title="Substituir selecionados"><i class="ace-icon fa fa-exchange blue bigger-130"></i></div>');
+			}else{
+				$('#zgDivAcoesSubID').html('&nbsp;');
+			}
+		}
+	}else if ( ($aStatus[0] == "A") || ($aStatus[0] == "P") )	{
+		$('#zgDivAcoesSubID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoSubSelecionadosCRLis();" data-toggle="tooltip" data-placement="top" title="Substituir selecionados"><i class="ace-icon fa fa-exchange blue bigger-130"></i></div>');
+	}else{
+		$('#zgDivAcoesSubID').html('&nbsp;');
+	}
+
 	
 	/** Botão de impressão sempre ativo **/
 	$('#zgDivAcoesImpID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoImpSelecionadosCRLis();" data-toggle="tooltip" data-placement="top" title="Imprimir selecionados"><i class="ace-icon fa fa-print grey bigger-130"></i></div>');
@@ -206,6 +226,14 @@ function zgAcaoConSelecionadosCRLis() {
 		$aSelContas[$aSelContas.length]	= $(this).val();
 	});
 	zgAbreModal('%CON_URL%&cid='+zgEncodeUrl('aSelContas='+$aSelContas));
+}
+
+function zgAcaoSubSelecionadosCRLis() {
+	var $aSelContas	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelContas[$aSelContas.length]	= $(this).val();
+	});
+	zgLoadUrl('%SUB_URL%&cid='+zgEncodeUrl('aSelContas='+$aSelContas));
 }
 
 function zgAcaoImpSelecionadosCRLis() {

@@ -190,6 +190,13 @@ class ZgfinContaReceber
     private $sequencialNossoNumero;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="COD_GRUPO_SUBSTITUICAO", type="integer", nullable=true)
+     */
+    private $codGrupoSubstituicao;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -830,6 +837,29 @@ class ZgfinContaReceber
     public function getSequencialNossoNumero()
     {
         return $this->sequencialNossoNumero;
+    }
+
+    /**
+     * Set codGrupoSubstituicao
+     *
+     * @param integer $codGrupoSubstituicao
+     * @return ZgfinContaReceber
+     */
+    public function setCodGrupoSubstituicao($codGrupoSubstituicao)
+    {
+        $this->codGrupoSubstituicao = $codGrupoSubstituicao;
+
+        return $this;
+    }
+
+    /**
+     * Get codGrupoSubstituicao
+     *
+     * @return integer 
+     */
+    public function getCodGrupoSubstituicao()
+    {
+        return $this->codGrupoSubstituicao;
     }
 
     /**

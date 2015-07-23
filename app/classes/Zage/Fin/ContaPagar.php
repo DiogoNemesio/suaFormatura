@@ -95,6 +95,13 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 	 */
 	private $_pctRateio;
 	
+	
+	/**
+	 * Código do Grupo de Substituição
+	 * @var int
+	 */
+	protected $codGrupoSubstituicao;
+	
 	/**
 	 *
 	 * Lista
@@ -611,6 +618,12 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			}else{
 				$object->setValor($valores[$i]);
 			}
+
+			#################################################################################
+			## Guarda o código do grupo da conta caso a conta esteja sendo substituída
+			#################################################################################
+			$this->setCodGrupoSubstituicao($object->getCodGrupoConta());
+					
 			
 			try {
 				
@@ -1389,6 +1402,170 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		}
 	}
 	
+	/**
+	 * Substitui contas
+	 */
+	public function substitui () {
+		global $em,$system,$log,$tr;
+	
+		#################################################################################
+		## Validações de campos 
+		#################################################################################
+		if (!is_array($this->_getCodigo()))	return $tr->trans('COD_CONTA deve ser um array');
+		
+		#################################################################################
+		## Salva o array de contas a serem substituídas
+		#################################################################################
+		$_contas	= $this->_getCodigo();
+		
+		#################################################################################
+		## Gera a nova conta
+		#################################################################################
+		$this->_setCodConta(null);
+		$err	= $this->salva();
+		if ($err)	return $err;
+
+		#################################################################################
+		## Verifica se o código de grupo de substituição foi gerado
+		#################################################################################
+		if (!$this->getCodGrupoSubstituicao())	return $tr->trans('Código de grupo de substituição não gerado !!!');
+		
+		#################################################################################
+		## Seleciona as contas que serão substituídas
+		#################################################################################
+		$contas		= $em->getRepository('Entidades\ZgfinContaPagar')->findBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $_contas));
+		
+		#################################################################################
+		## Faz o loop nas contas para substituílas
+		#################################################################################
+		for ($i = 0; $i < sizeof($contas); $i++) {
+			$err = $this->_substitui($contas[$i], $this->getCodGrupoSubstituicao());
+			if ($err) return $err;
+		}
+		
+	
+		return null;
+	}
+	
+	
+	
+	/**
+	 * Faz a substituição de uma conta
+	 */
+	private function _substitui($oConta,$codGrupoSubstituicao) {
+		global $em,$_user,$log,$system,$tr;
+	
+		#################################################################################
+		## Valida o status da conta
+		#################################################################################
+		$status 	= $oConta->getCodStatus()->getCodigo();
+		switch ($status) {
+			case "A":
+			case "P":
+				$podeSub	= true;
+				break;
+			default:
+				$podeSub	= false;
+				break;
+		}
+	
+		if (!$podeSub) {
+			return($tr->trans('Conta não pode ser substituída, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
+		}
+	
+	
+		if ($status == "A") {
+	
+			#################################################################################
+			## Calcula o valor a substituir
+			#################################################################################
+			$valorSub	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+	
+			#################################################################################
+			## Resgata o objeto do novo status
+			#################################################################################
+			$oStatus		= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => 'S'));
+	
+			#################################################################################
+			## Faz a substituição total da conta
+			#################################################################################
+			$oConta->setValorCancelado($valorSub);
+			$oConta->setDataSubstituicao(new \DateTime("now"));
+			$oConta->setCodStatus($oStatus);
+			$oConta->setCodGrupoSubstituicao($codGrupoSubstituicao);
+				
+			#################################################################################
+			## Gera o histórico de substituição
+			#################################################################################
+			$hist		= new \Entidades\ZgfinContaPagHistSub();
+			$hist->setCodConta($oConta);
+			$hist->setCodUsuario($_user);
+			$hist->setValor($valorSub);
+			$hist->setData(new \DateTime("now"));
+				
+		}elseif ($status == "P") {
+				
+			#################################################################################
+			## Calcula o valor a substituir
+			#################################################################################
+			$valorSub	= $this::getSaldoAPagar($oConta->getCodigo());
+				
+			#################################################################################
+			## Remove o valor substituido da tabela de Rateio
+			#################################################################################
+			$rateios	= $em->getRepository('Entidades\ZgfinContaPagarRateio')->findBy(array('codContaPag' => $oConta->getCodigo()));
+			$numRateios	= sizeof($rateios);
+			$valorTotal	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$novoValor	= $valorTotal - $valorSub;
+			$somatorio	= 0;
+				
+			for ($i = 0; $i < $numRateios; $i++) {
+				$valorRateio	= round(($novoValor * $rateios[$i]->getPctValor()/100),2);
+				$somatorio		+= $valorRateio;
+				if ($i == ($numRateios - 1)) {
+					$diff			= ($novoValor - $somatorio);
+					$valorRateio	= $valorRateio + $diff;
+				}
+				$rateios[$i]->setValor($valorRateio);
+				$em->persist($rateios[$i]);
+			}
+	
+			#################################################################################
+			## Resgata o objeto do novo status
+			#################################################################################
+			$oStatus		= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => 'L'));
+				
+			#################################################################################
+			## Faz a substituição do Saldo
+			#################################################################################
+			$oConta->setValorCancelado($valorSub);
+			$oConta->setDataSubstituicao(new \DateTime("now"));
+			$oConta->setCodStatus($oStatus);
+			$oConta->setCodGrupoSubstituicao($codGrupoSubstituicao);
+	
+			#################################################################################
+			## Gera o histórico de substituição
+			#################################################################################
+			$hist		= new \Entidades\ZgfinContaPagHistSub();
+			$hist->setCodConta($oConta);
+			$hist->setCodUsuario($_user);
+			$hist->setValor($valorSub);
+			$hist->setData(new \DateTime("now"));
+				
+		}
+	
+		try {
+			$em->persist($oConta);
+			$em->persist($hist);
+	
+			return null;
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	
+	}
+	
+	
 	public static function geraNumero() {
 		return (date('Ymd').'/'.str_pad(mt_rand(0,999999), 6, "0", STR_PAD_LEFT));
 	}
@@ -1460,6 +1637,23 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 	public function _setArrayPctRateio($array) {
 		$this->_pctRateio	= $array;
 	}
+	
+	/**
+	 *
+	 * @return the int
+	 */
+	public function getCodGrupoSubstituicao() {
+		return $this->codGrupoSubstituicao;
+	}
+	
+	/**
+	 *
+	 * @param int $codGrupoSubstituicao        	
+	 */
+	public function setCodGrupoSubstituicao($codGrupoSubstituicao) {
+		$this->codGrupoSubstituicao = $codGrupoSubstituicao;
+	}
+	
 	
 	
 	

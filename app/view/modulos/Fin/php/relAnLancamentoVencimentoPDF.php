@@ -178,7 +178,7 @@ try {
 		$qb1->expr()->eq('p.codOrganizacao'	, ':codOrganizacao')
 	))
 	->orderBy('p.dataVencimento','ASC')
-	->setParameter('codOrganizacao', $system->getcodOrganizacao());
+	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 	
 	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.fantasia as PESSOA_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO')
 	->from('\Entidades\ZgfinContaReceberRateio'	,'cr')
@@ -189,7 +189,7 @@ try {
 		$qb2->expr()->eq('p.codOrganizacao'	, ':codOrganizacao')
 	))
 	->orderBy('p.dataVencimento','ASC')
-	->setParameter('codOrganizacao', $system->getcodOrganizacao());
+	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 	
 	
 	if (!empty($valorIni)) {
