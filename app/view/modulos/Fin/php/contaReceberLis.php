@@ -76,7 +76,7 @@ if (isset($codContaRec))	$_SESSION["_CRLIS_codContaRecFiltro"]		= $codContaRec;
 if (isset($valorIni))		$_SESSION["_CRLIS_valorIniFiltro"] 			= $valorIni;
 if (isset($valorFim))		$_SESSION["_CRLIS_valorFimFiltro"] 			= $valorFim;
 if (isset($descricao))		$_SESSION["_CRLIS_descricaoFiltro"] 		= $descricao;
-if (isset($fornecedor))		$_SESSION["_CRLIS_clienteFiltro"] 			= $cliente;
+if (isset($cliente))		$_SESSION["_CRLIS_clienteFiltro"] 			= $cliente;
 
 if (!isset($_SESSION["_CRLIS_codStatusFiltro"]))			$_SESSION["_CRLIS_codStatusFiltro"]			= null;
 if (!isset($_SESSION["_CRLIS_codFormaPagFiltro"]))			$_SESSION["_CRLIS_codFormaPagFiltro"]		= null;
