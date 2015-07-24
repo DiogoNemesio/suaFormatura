@@ -45,7 +45,7 @@ try {
 ## Select da Conta de Origem
 #################################################################################
 try {
-	$aConta			= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aConta			= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
 	$oContaOrig		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_TRLIS_codContaOrigFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

@@ -39,7 +39,7 @@ if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codConta));
+$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
 
 if (!$oConta) {
 	\Zage\App\Erro::halt('Conta não encontrada');
@@ -107,7 +107,7 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
-	$aContaCre	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aContaCre	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
 	$oContaCre	= $system->geraHtmlCombo($aContaCre,	'CODIGO', 'NOME',	$codContaPag, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

@@ -1,0 +1,1669 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Substituição de Contas a Receber</h1>
+	</div><!-- /.page-header -->
+	<br />
+
+	<!-- #section:plugins/fuelux.wizard -->
+	<div id="fuelux-wizard-container" class="col-sm-9 pull-left">
+		<div>
+			<!-- #section:plugins/fuelux.wizard.steps -->
+			<ul class="steps">
+				<li data-step="1" class="active">
+					<span class="step">1</span>
+					<span class="title">Recorrência</span>
+				</li>
+	
+				<li data-step="2">
+					<span class="step">2</span>
+					<span class="title">Identificação</span>
+				</li>
+				<li data-step="3">
+					<span class="step">3</span>
+					<span class="title">Valores</span>
+				</li>
+				<li data-step="4">
+					<span class="step">4</span>
+					<span class="title">Parcelas</span>
+				</li>
+				<li data-step="5">
+					<span class="step">5</span>
+					<span class="title">Configurações</span>
+				</li>
+				<li data-step="6">
+					<span class="step">6</span>
+					<span class="title">Rateio</span>
+				</li>
+			</ul>
+		</div>
+		<hr />
+		<form id="zgFormID" class="form-horizontal">
+			<input type="hidden" name="id" value="%ID%">
+			<input type="hidden" id="codContaID" name="codConta" value="%COD_CONTA%">
+			<input type="hidden" id="codTipoValorID" name="codTipoValor">
+			<input type="hidden" id="codTipoRecID" name="codTipoRec">
+			<input type="hidden" id="valorTotalID" name="valorTotal" value="%VALOR_TOTAL%">
+			
+			<div class="step-content pos-rel">
+				<div class="step-pane active" data-step="1">
+					<div class="row ">
+						<div class="form-group col-sm-12" id="divRecorrenciaID">
+							<label class="col-sm-3 control-label">Recorrência</label>
+							<div class="btn-group btn-corner col-sm-8 pull-left">
+								<span id='codTipoRecUID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaUnicaCRSub();">Única</span>
+								<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se a conta será única ou parcelada"></i></span>
+								<span id='codTipoRecPID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaParceladaCRSub();">Parcelada</span>
+							</div>
+							<div class="help-block col-sm-1 inline" id="divHelpRecorrenciaID"></div>
+						</div>
+					</div>
+					<div class="row " id="divRecParcelaID">
+						<div class="form-group col-sm-12" id="divNumParcelasID">
+							<label class="col-sm-3 control-label">Num. de Parcelas</label>
+			    			<div class="input-group col-sm-3 pull-left">
+			    				<div class="input-group col-sm-9 pull-left">
+				    				<span tabindex="99001" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de parcelas"></i></span>
+						    		<input class="form-control" id="numParcelasID" onchange="atualizaInfoValorCRSub()" type="text" name="numParcelas"  maxlength="2" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+						    	</div>
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpNumParcelasID"></div>
+				    	</div>
+						<div class="form-group col-sm-12" id="divParcelaInicialID">
+							<label class="col-sm-3 control-label">Parcela Inicial</label>
+			    			<div class="input-group col-sm-3 pull-left">
+			    				<div class="input-group col-sm-9 pull-left">
+				    				<span tabindex="99002" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Parcela inicial que será considerada (o número total de parcelas será: NUM_PARCELAS - PARCELA_INICIAL)"></i></span>
+						    		<input class="form-control" id="parcelaInicialID" onchange="atualizaInfoValorCRSub()" type="text" name="parcelaInicial" value="1" maxlength="2" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+						    	</div>
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpParcelaInicialID"></div>
+				    	</div>
+						<div class="form-group col-sm-12" id="divPeriodoRecID">
+							<label class="col-sm-3 control-label">Repete-se a cada</label>
+			    			<div class="input-group col-sm-3 pull-left">
+			    				<div class="input-group col-sm-10 pull-left">
+				    				<span tabindex="99003" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Intervalo de repetição"></i></span>
+				    				<input class="form-control" id="intervaloRecID" type="text" name="intervaloRec" maxlength="2" value="1" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    			</div>
+				    		</div>
+				    		<div class="input-group col-sm-2 pull-left">
+				    			<div class="input-group col-sm-10 pull-left">
+				    				<span tabindex="99004" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Período de Recorrência da Conta"></i></span>
+									<select class="select2" style="width:100%;" id="codPeriodoRecID" name="codPeriodoRec" data-rel="select2">
+									%PERIODOS_REC%
+									</select>
+								</div>
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpPeriodoRecID"></div>
+				    	</div>
+					</div>
+				
+				
+				</div>
+				
+				<div class="step-pane" data-step="2">
+					<div class="row">
+						<div class="form-group col-sm-12" id="divDescricaoID">
+							<label class="col-sm-3 control-label">Descrição</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99005" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da Conta a Receber"></i></span>
+				    			<input class="form-control" id="descricaoID" type="text" name="descricao" maxlength="60" autocomplete="off">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpDescricaoID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divDataVencID">
+							<label class="col-sm-3 control-label">Data de Vencimento</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99006" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de vencimento da conta"></i></span>
+				    			<input class="form-control datepicker" id="dataVencID" type="text" name="dataVenc" maxlength="10" value="%DATA_VENC%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpDataVencID"></div>
+				    	</div>
+					</div>
+				</div>
+
+				<div class="step-pane" data-step="3">
+					<div class="row ">
+						<div class="form-group col-sm-12" id="divIndValorParcelaID">
+							<label class="col-sm-3 control-label">Valor se refere</label>
+							<div class="btn-group btn-corner col-sm-8 pull-left">
+								<span id='CRSubValorParcelaID' style="width: 180px;" class="btn btn-sm btn-light">Valor da Parcela</span>
+								<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Parcela, ou o valor total da conta"></i></span>
+								<span id='CRSubValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalCRSub();">Valor Total</span>
+							</div>
+							
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divValorID">
+							<label class="col-sm-3 control-label">Valor</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99007" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor da conta"></i></span>
+				    			<input readonly class="form-control" id="valorID" type="text" name="valor" value="%VALOR_TOTAL%" maxlength="20"  autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpValorID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divJurosID">
+							<label class="col-sm-3 control-label">Júros</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99008" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor do Júros"></i></span>
+				    			<input onchange="atualizaInfoValorCRSub()" class="form-control" id="valorJurosID" type="text" name="valorJuros" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpJurosID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divMoraID">
+							<label class="col-sm-3 control-label">Mora</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99009" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Mora cobrada"></i></span>
+				    			<input onchange="atualizaInfoValorCRSub()" class="form-control" id="valorMoraID" type="text" name="valorMora" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpMoraID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divDescontoID">
+							<label class="col-sm-3 control-label">Desconto</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99010" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Desconto total"></i></span>
+				    			<input onchange="atualizaInfoValorCRSub()" class="form-control" id="valorDescontoID" type="text" name="valorDesconto" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpDescontoID"></div>
+				    	</div>
+					</div>
+				</div>
+				<div class="step-pane" data-step="4" id="divStepParcelasCRSubID">
+					<div class="row">
+						<table id="CRSubTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+							<thead>
+								<tr class="warning">
+									<th class="col-sm-1 center" id="thInfoHelpTableParcelasCRSubID"></th>
+									<th class="col-sm-2 center">Parcela</th>
+									<th class="col-sm-2 center">Valor</th>
+									<th class="col-sm-2 center">Data</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+							<tfoot>
+								<tr class="warning">
+									<th class="col-sm-1 center"></th>
+									<th class="col-sm-2 center" id="thInfoParcelaCRSubID"></th>
+									<th class="col-sm-2 center" id="thInfoValorTotalCRSubID"></th>
+									<th class="col-sm-2 center"></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="row center">
+						<ul class="pagination" id="pagerValoresCRSubID">
+						</ul>
+					</div>
+				</div>
+				<div class="step-pane" data-step="5">
+					<div class="row">
+						<div class="form-group col-sm-12" id="divFormaPagID">
+							<label class="col-sm-3 control-label">Forma de Pag.</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Conta"></i></span>
+								<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2" onchange="atualizaInfoFormaPagCRSub();">
+								%FORMAS_PAG%
+								</select>
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpFormaPagID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divContaRecID">
+							<label class="col-sm-3 control-label">Conta de Recebimento</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
+								<select class="select2" style="width:100%;" id="codContaRecID" name="codContaRec" data-rel="select2" onchange="atualizaInfoContaRecCRSub();">
+								%CONTAS%
+								</select>
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divFlagRecebidaID">
+						<div class="form-group col-sm-12" >
+		    				<label class="col-sm-3 control-label">
+		    					<input name="flagRecebida" id="flagRecebidaID" class="ace ace-switch " value="1" type="checkbox" />
+		    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+		    				</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para a conta já seja cadastrada no sistema com sua baixa (Confirmada)"></i></span>
+			    				<input readonly type="text" class="form-control" placeholder="Recebimento já realizado" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpFlagRecebidaID"></div>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divFlagReceberAutoID">
+						<div class="form-group col-sm-12" >
+		    				<label class="col-sm-3 control-label">
+		    					<input name="flagReceberAuto" id="flagReceberAutoID" class="ace ace-switch " value="1" type="checkbox" />
+		    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+		    				</label>
+							
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99014" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para que o sistema faça a baixa automática da conta na data de vencimento dela"></i></span>
+			    				<input readonly type="text" class="form-control" placeholder="Confirmar automaticamente na data" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpFlagRecebidaID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divCodPessoaID">
+							<label class="col-sm-3 control-label">Pessoa (Cliente)</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99017" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Pessoa que irá receber o pagamento"></i></span>
+				    			<input type="hidden" id="codPessoaID" name="codPessoa" value="%COD_PESSOA%" class="width-100" data-rel="select2Pessoa" />
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpCodPessoaID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divDocumentoID">
+							<label class="col-sm-3 control-label">Documento</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99018" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Documento (Você pode especificar algum documento relativo a conta)"></i></span>
+			    				<input class="form-control" id="documentoID" type="text" name="documento" maxlength="20" autocomplete="off">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpDocumentoID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divObsID">
+							<label class="col-sm-3 control-label">Observações</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99018" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Observações adicionais"></i></span>
+			    				<textarea class="form-control limited" id="obsID" maxlength="400" name="obs" autocomplete="off"></textarea>
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpObsID"></div>
+				    	</div>
+					</div>
+				</div>
+				<div class="step-pane" data-step="6">
+					<div>
+						<table id="CRSubTableRateioID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
+							<thead>
+								<tr class="warning">
+									<th class="col-sm-3 center">Categoria</th>
+									<th class="col-sm-3 center">Centro de Custo</th>
+									<th class="col-sm-2 center">Valor</th>
+									<th class="col-sm-2 center">Percentual</th>
+									<th class="col-sm-1 center"><span onclick="addRowRateioCRSub(0,0);"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+							<tfoot>
+								<tr>
+									<th colspan="2" style="text-align: right;">Total</th>
+									<th id="tableTotalCellID" class="center"></th>
+									<th id="tablePctCellID" class="center"></th>
+									<th></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="row">
+						<div class="col-sm-8" id="divCRSubRateioID"></div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-sm-3 pull-right">
+		<div class="widget-box">
+			<div class="widget-header widget-header-flat widget-header-small center">
+				<h5 class="widget-title">Resumo</h5>
+			</div>
+			<div class="widget-body">
+				<div class="widget-main small">
+					
+					<div class="row hidden" id="divInfoTipoContaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Tipo:</p>
+					    	<p id='lbInfoTipoContaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoRecorrenciaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Período:</p>
+					    	<p id='lbInfoRecorrenciaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoNumParcelasID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Parcelas:</p>
+					    	<p id='lbInfoNumParcelasID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoIdentID">
+						<h6 class="header blue bolder smaller">&nbsp;Identificação</h6>
+						<div class="vspace-xs"></div>
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Identificação:</p>
+					    	<p id='lbInfoIdentID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoDataVencID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Vencimento:</p>
+					    	<p id='lbInfoDataVencID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+
+					<div class="row hidden" id="divInfoValorID">
+						<h6 class="header blue bolder smaller">&nbsp;Valores</h6>
+						<div class="vspace-xs"></div>
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor Total:</p>
+					    	<p id='lbInfoValorID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoConfID">
+						<h6 class="header blue bolder smaller">&nbsp;Configurações</h6>
+						<div class="vspace-xs"></div>
+					</div>
+					<div class="row hidden" id="divInfoFormaPagID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Forma Pag:</p>
+					    	<p id='lbInfoFormaPagID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoContaRecID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Conta</p>
+					    	<p id='lbInfoContaRecID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoSaldoContaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo da Conta:</p>
+					    	<p id='lbInfoSaldoContaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoCategoriaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Categoria:</p>
+					    	<p id='lbInfoCategoriaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoCentroCustoID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">C. Custo:</p>
+					    	<p id='lbInfoCentroCustoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoPessoaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Cliente:</p>
+					    	<p id='lbInfoPessoaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="wizard-actions col-sm-9 pull-left" >
+		<hr />
+	
+		<!-- #section:plugins/fuelux.wizard.buttons -->
+		<button class="btn btn-prev">
+			<i class="ace-icon fa fa-arrow-left"></i>
+			Anterior
+		</button>
+		<button class="btn btn-success btn-next" data-last="Finalizar">
+			Próximo
+			<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+		</button>
+		<!-- /section:plugins/fuelux.wizard.buttons -->
+	</div>
+	
+	
+	
+</div>
+<script>
+
+mostraDivRecParcelaCRSub();
+selecionaValorTotalCRSub();
+selecionaContaUnicaCRSub();
+
+$(document).one('ajaxloadstart.page', function(e) {
+	//in ajax mode, remove remaining elements before leaving page
+	$('[class*=select2]').remove();
+});
+
+/*$('#zgDivModalID').on('hidden.bs.modal', function () {
+	zgLoadUrl('%URL_VOLTAR%');
+	$('#zgDivModalID').off('hidden.bs.modal');
+	$('#zgDivModalDialogID').css( "width", "");
+});*/
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2({allowClear: true});
+	}
+});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2({allowClear: true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+$('#fuelux-wizard-container')
+.ace_wizard({
+	//step: 2 //optional argument. wizard will jump to step "2" at first
+	//buttons: '.wizard-actions:eq(0)'
+})
+.on('actionclicked.fu.wizard' , function(e, info){
+	if(info.step == 1) {
+		var vOk 	= validaRecorrenciaCRSub();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			atualizaInfoRecorrenciaCRSub();
+		}
+		
+	}else if (info.step == 2) {
+		var vOk 	= validaIdentificacaoCRSub();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			atualizaInfoIdentCRSub();
+		}
+	}else if (info.step == 3) {
+		var vOk 	= validaValoresCRSub();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			criaTabelaValoresCRSub();
+		}
+	}else if (info.step == 4) {
+		var vOk 	= atualizaEValidaParcelasCRSub();
+		if(!vOk) 	{
+			e.preventDefault();
+		}
+		atualizaInfoValorCRSub();
+		atualizaDivRecebidaCRSub();
+	}else if (info.step == 5) {
+		var vOk 	= validaConfiguracoesCRSub();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			var $numRows = $("#CRSubTableRateioID > tbody").children().length;
+			if ($numRows == 0){
+				addRowRateioCRSub(getValorParcelaCRSub(),'100,00');
+			}
+		}
+	}
+	
+})
+.on('finished.fu.wizard', function(e) {
+	var vOk 	= atualizaEValidaTotalTabelaRateioCRSub();
+	if(!vOk) 	{
+		
+		$.gritter.add({
+			title: 'Valores de Rateio inconsistentes',
+			text: 'Ajuste os valores de rateio !!!!',
+			class_name: 'gritter-info gritter-center gritter-error'
+		});
+
+		e.preventDefault();
+		return false;
+	}else{
+		$('#zgFormID').submit();
+	}
+	
+}).on('stepclick.fu.wizard', function(e){
+	//e.preventDefault();//this will prevent clicking and selecting steps
+});
+
+$('#zgFormID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		});
+		
+		if (checaRetornoOK(data) == true) {
+			bootbox.dialog({
+				message: "Conta substituida com sucesso !!!", 
+				buttons: {
+					"fechar" : {
+						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
+						"className" : "btn-sm btn-danger",
+						"callback": function() {
+							zgLoadUrl('%URL_VOLTAR%');
+						}
+
+					},
+					
+				}
+			});
+		}else{
+			zgMostraAviso("Fechar");
+		}
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+
+/*********************************************************
+* Busca Select2 typehead Pessoa
+*********************************************************/
+$('[data-rel="select2Pessoa"]').select2({
+    readonly:	true,
+    allowClear: false,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fin/clienteLis.dp.php?codPessoa=%COD_PESSOA%",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fin/clienteLis.dp.php", {
+                data: {codPessoa: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+function delRowRateioCRSub(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(500, function(){
+		$tr.remove();
+		atualizaEValidaTotalTabelaRateioCRSub();
+	});
+	
+}
+
+function addRowRateioCRSub(pValor,pPct) {
+	var $valor,$indTriggerChange;
+	
+	/** Se o valor for zero, calcular o valor restante **/
+	if (pValor == 0) {
+		var $total		= getValorParcelaCRSub().replace(".", "").replace(",",".");
+		var $tValor 	= parseFloat(0);
+		
+		$('#CRSubTableRateioID > tbody > tr [name*="valorRateio[]"]').each(function( index ) {
+			$tValor += parseFloat($(this).val().replace(".", "").replace(",","."));
+		});
+		
+		var opt1 = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+		
+		$tValor				= parseFloat($tValor.toFixed(2));
+		$valor				= parseFloat(($total - $tValor).toFixed(2));
+		$valor				= accounting.formatMoney($valor, opt1);
+		
+		$indTriggerChange	= 1;
+	}else{
+		$valor				= pValor;
+		$indTriggerChange	= 0;
+	}
+	
+	$('#CRSubTableRateioID > tbody:last').append('<tr><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2">%CATEGORIAS%</select></td><td><select class="select2" style="width:100%;" name="codCentroCusto[]" data-rel="select2">%CENTROS_CUSTO%</select></td><td><input type="text" name="valorRateio[]" onchange="calculaPctCellRateioCRSub($(this));" value="'+$valor+'" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td><input type="text" name="pctRateio[]" value="'+pPct+'" onchange="calculaValorCellRateioCRSub($(this));" maxlength="7" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"></td><td class="center"><span class="center" zgdelete onclick="delRowRateioCRSub($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codRateio[]"></td></tr>');
+	$('#CRSubTableRateioID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	$('#CRSubTableRateioID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+
+	/** Atualizar o Percentual **/
+	if ($indTriggerChange	== 1) {
+		$('#CRSubTableRateioID > tbody > tr:last [name*="valorRateio[]"]').each(function( index ) {
+			$( this ).trigger('change');
+			$( this ).trigger('keyup');
+		});
+	}
+	
+	
+	atualizaEValidaTotalTabelaRateioCRSub();
+}
+
+function atualizaEValidaTotalTabelaRateioCRSub() {
+	var $tValor 	= parseFloat(0);
+	var $tPct 		= parseFloat(0);
+	var $total		= getValorParcelaCRSub().replace(".", "").replace(",",".");
+	var $cem		= (100+0).toFixed(2);
+	var $htmlOK,$htmlError,$htmlValor,$htmlPct,$vOK;
+	var $epsilon	= 0.00000001;
+	
+	$vOK			= true;
+
+	$('#CRSubTableRateioID > tbody > tr [name*="valorRateio[]"]').each(function( index ) {
+		$tValor += parseFloat($(this).val().replace(".", "").replace(",","."));
+	});
+	
+	$('#CRSubTableRateioID > tbody > tr [name*="pctRateio[]"]').each(function( index ) {
+		$tPct += parseFloat($(this).val().replace(".", "").replace(",","."));
+	});
+
+	$tValor		= parseFloat($tValor.toFixed(2));
+	$tPct		= parseFloat($tPct.toFixed(2));
+	
+	var opt = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	var opt1 = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	var opt2 = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	$htmlOK 		= "&nbsp;<span><i class='fa fa-check-circle green bigger-140'></i></span>";
+	$htmlError		= "&nbsp;<span><i class='fa fa-exclamation-circle red bigger-140'></i></span>";
+	
+	if ($tValor == $total) {
+		$htmlValor 	= $htmlOK;
+	}else{
+		
+		var $textoValor;
+		var	$diffValor	= ($total - $tValor);
+		
+		if ($diffValor > 0) {
+			$textoValor	= "Falta ratear ainda: "+accounting.formatMoney($diffValor, opt1);
+		}else{
+			$textoValor	= "Tem rateado um valor a maior de: "+accounting.formatMoney(($diffValor*-1), opt1);
+		}
+		
+		$htmlValor	= '&nbsp;<span class="" data-rel="zg-popover" data-trigger="hover" data-placement="bottom" title="Somatório dos valores inconsistente" data-content="'+$textoValor+'"><i class="fa fa-exclamation-circle red bigger-140"></i></span>';
+		$vOK		= false;
+	}
+	
+	if ($tPct == $cem) {
+		$htmlPct 	= $htmlOK;
+	}else{
+		var $textoPct;
+		var	$diffPct	= ($cem - $tPct);
+		
+		if ($diffPct > 0) {
+			$textoPct	= "Falta ratear ainda: "+accounting.formatMoney($diffPct, opt2)+ "%";
+		}else{
+			$textoPct	= "Tem rateado um percentual a maior de: "+accounting.formatMoney(($diffPct*-1), opt2);
+		}
+		
+		$htmlPct	= '&nbsp;<span class="" data-rel="zg-popover" data-trigger="hover" data-placement="bottom" title="Somatório dos Percentuais inconsistente" data-content="'+$textoPct+'"><i class="fa fa-exclamation-circle red bigger-140"></i></span>';
+		$vOK		= false;
+	}
+	
+	$tValor	= accounting.formatMoney($tValor, opt1);
+	$tPct	= accounting.formatMoney($tPct, opt2);
+	
+	$('#tableTotalCellID').html($tValor + $htmlValor);
+	$('#tablePctCellID').html($tPct + $htmlPct);
+	$('[data-rel=zg-popover]').popover({html:true});
+	
+	return $vOK;
+	
+}
+
+function calculaPctCellRateioCRSub(pObj) {
+	var	$td			= pObj.parent();
+	var $tr			= $td.parent();
+	var $total		= getValorParcelaCRSub().replace(".", "").replace(",",".");
+	var $valor		= parseFloat(pObj.val().replace(".", "").replace(",","."));
+	var $pct		= parseFloat(($valor * 100 / $total).toFixed(2));
+	var $pctTotal	= 0;
+
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+		
+	$pct	= accounting.formatMoney($pct, options);
+	
+	
+	$tr.find('[name*="pctRateio[]"]').each(function( index ) {
+		$(this).val($pct);
+		$( this ).trigger('keyup');
+	});
+	
+	$('#CRSubTableRateioID > tbody > tr [name*="pctRateio[]"]').each(function( index ) {
+		$pctTotal += parseFloat($(this).val().replace(".", "").replace(",","."));
+	});
+
+	/** Verifica se ficou uma diferença de arredondamento **/
+	$dif	= $pctTotal - 100;
+	
+	if (($dif > 0 && $dif < 0.02) || ($dif < 0 && $dif > -0.02) ) {
+
+		/** Atualiza o valor com a diferença **/
+		$pct	= parseFloat($pct.replace(".", "").replace(",",".")) - $dif;
+		$pct	= accounting.formatMoney($pct, options);
+		
+		$tr.find('[name*="pctRateio[]"]').each(function( index ) {
+			$(this).val($pct);
+			$( this ).trigger('keyup');
+		});
+	}
+
+	atualizaEValidaTotalTabelaRateioCRSub();
+}
+
+function calculaValorCellRateioCRSub(pObj) {
+	var	$td			= pObj.parent();
+	var $tr			= $td.parent();
+	var $total		= getValorParcelaCRSub().replace(".", "").replace(",",".");
+	var $pct		= parseFloat(pObj.val().replace(".", "").replace(",","."));
+	var $valor		= (parseFloat($total) * $pct / 100);
+	var $valTotal 	= 0;
+	var $dif		= 0;
+
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+		
+	
+	$valor	= accounting.formatMoney($valor, options);
+	
+	$tr.find('[name*="valorRateio[]"]').each(function( index ) {
+		$(this).val($valor);
+		$( this ).trigger('keyup');
+	});
+	
+
+	$('#CRSubTableRateioID > tbody > tr [name*="valorRateio[]"]').each(function( index ) {
+		$valTotal += parseFloat($(this).val().replace(".", "").replace(",","."));
+	});
+
+	/** Verifica se ficou uma diferença de arredondamento **/
+	$dif	= $valTotal - $total;
+	
+	if (($dif > 0 && $dif < 0.02) || ($dif < 0 && $dif > -0.02) ) {
+		/** Atualiza o valor com a diferença **/
+		$valor	= parseFloat($valor.replace(".", "").replace(",",".")) - $dif;
+		$valor	= accounting.formatMoney($valor, options);
+		
+		$tr.find('[name*="valorRateio[]"]').each(function( index ) {
+			$(this).val($valor);
+			$( this ).trigger('keyup');
+		});
+	}
+
+	atualizaEValidaTotalTabelaRateioCRSub();
+}
+
+
+function selecionaContaUnicaCRSub() {
+	$('#codTipoRecUID').addClass("btn-primary");
+	$('#codTipoRecUID').removeClass("btn-light");
+	$('#codTipoRecPID').addClass("btn-light");
+	$('#codTipoRecPID').removeClass("btn-primary");
+	$('#codTipoRecID').val("U");
+	mostraDivRecParcelaCRSub();
+}
+
+function selecionaContaParceladaCRSub() {
+	$('#codTipoRecPID').addClass("btn-primary");
+	$('#codTipoRecPID').removeClass("btn-light");
+	$('#codTipoRecUID').addClass("btn-light");
+	$('#codTipoRecUID').removeClass("btn-primary");
+	$('#codTipoRecID').val("P");
+	mostraDivRecParcelaCRSub();
+}
+
+function selecionaValorParcelaCRSub() {
+	$('#CRSubValorParcelaID').addClass("btn-primary");
+	$('#CRSubValorParcelaID').removeClass("btn-light");
+	$('#CRSubValorTotalID').addClass("btn-light");
+	$('#CRSubValorTotalID').removeClass("btn-primary");
+	$('#codTipoValorID').val("P");
+	atualizaInfoValorCRSub();
+}
+
+function selecionaValorTotalCRSub() {
+	$('#CRSubValorTotalID').addClass("btn-primary");
+	$('#CRSubValorTotalID').removeClass("btn-light");
+	$('#CRSubValorParcelaID').addClass("btn-light");
+	$('#CRSubValorParcelaID').removeClass("btn-primary");
+	$('#codTipoValorID').val("T");
+	atualizaInfoValorCRSub();
+}
+
+function mostraDivRecParcelaCRSub() {
+	var vTipoRec 		= $('#codTipoRecID').val();
+	
+	if (vTipoRec 	== 'U') {
+		$('#divRecParcelaID').hide();
+	}else if (vTipoRec 	== 'P') {
+		$('#divRecParcelaID').show();
+	}else{
+		$('#divRecParcelaID').hide();
+	}
+	
+}
+
+
+function validaRecorrenciaCRSub() {
+	var $tipoRecParc		= $('#codTipoRecID').val();
+	var $numParcelas		= parseInt($('#numParcelasID').val());
+	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
+	var $codPeriodoRec		= $('#codPeriodoRecID').val();
+	var $intervaloRec		= parseInt($('#intervaloRecID').val());
+	var vOK					= true;
+	
+	if ($tipoRecParc	== 'P') {
+		
+		$('#divNumParcelasID').removeClass('has-error');
+		$('#divParcelaInicialID').removeClass('has-error');
+		$('#divPeriodoRecID').removeClass('has-error');
+		
+		$('#divHelpNumParcelasID').html('');
+		$('#divHelpParcelaInicialID').html('');
+		$('#divHelpPeriodoRecID').html('');
+
+		
+		if ( (!$numParcelas) || ($numParcelas <= 1)) {
+			$('#divNumParcelasID').addClass('has-error');
+			$('#divHelpNumParcelasID').html(zgCriaSpanErro('Número de parcelas deve ser preenchido com um número maior que 1'));
+			vOK			= false;
+		}else if ( ($codPeriodoRec == "D") && ($numParcelas > 365) ) {
+			$('#divNumParcelasID').addClass('has-error');
+			$('#divHelpNumParcelasID').html(zgCriaSpanErro('Número de parcelas deve ser menor ou igual a 365 para o tipo de recorrência Diário'));
+			vOK			= false;
+		}else if ( ($codPeriodoRec == "S") && ($numParcelas > 54) ) {
+			$('#divNumParcelasID').addClass('has-error');
+			$('#divHelpNumParcelasID').html(zgCriaSpanErro('Número de parcelas deve ser menor ou igual a 38 para o tipo de recorrência Semanal'));
+			vOK			= false;
+		}else if ( ($codPeriodoRec == "M") && ($numParcelas > 120) ) {
+			$('#divNumParcelasID').addClass('has-error');
+			$('#divHelpNumParcelasID').html(zgCriaSpanErro('Número de parcelas deve ser menor ou igual a 120 para o tipo de recorrência Mensal'));
+			vOK			= false;
+		}else if ( ($codPeriodoRec == "A") && ($numParcelas > 10) ) {
+			$('#divNumParcelasID').addClass('has-error');
+			$('#divHelpNumParcelasID').html(zgCriaSpanErro('Número de parcelas deve ser menor ou igual a 10 para o tipo de recorrência Anual'));
+			vOK			= false;
+		}
+
+		if (!$parcelaInicial) {
+			$('#divParcelaInicialID').addClass('has-error');
+			$('#divHelpParcelaInicialID').html(zgCriaSpanErro('Parcela Inicial deve ser Preenchido com um número maior que 0'));
+			vOK			= false;
+		}else if ($parcelaInicial > $numParcelas) {
+			$('#divParcelaInicialID').addClass('has-error');
+			$('#divHelpParcelaInicialID').html(zgCriaSpanErro('Parcela Inicial deve ser menor que Número de parcelas'));
+			vOK			= false;
+		}
+		
+		if (!$intervaloRec) {
+			$('#divPeriodoRecID').addClass('has-error');
+			$('#divHelpPeriodoRecID').html(zgCriaSpanErro('Intervalo de repetição deve ser preenchido com um número maior que 0'));
+			vOK			= false;
+		}
+
+	}
+	
+	atualizaInfoValorCRSub();
+	
+	return vOK;
+
+}
+
+function validaIdentificacaoCRSub() {
+	var $descricao		= $('#descricaoID').val();
+	var $dataVenc		= $('#dataVencID').val();
+	var vOK				= true;
+	
+	$('#divDescricaoID').removeClass('has-error');
+	$('#divDataVencID').removeClass('has-error');
+		
+	$('#divHelpDescricaoID').html('');
+	$('#divHelpDataVencID').html('');
+
+	if (!$descricao) {
+		$('#divDescricaoID').addClass('has-error');
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('Descriçao deve ser preenchida !!'));
+		vOK			= false;
+	}else if ($descricao.length > 60) {
+		$('#divDescricaoID').addClass('has-error');
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve conter no máximo 60 caracteres'));
+		vOK			= false;
+	}else if ($descricao.length < 2) {
+		$('#divDescricaoID').addClass('has-error');
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve conter no mínimo 2 caracteres'));
+		vOK			= false;
+	}
+
+	
+	if (!$dataVenc) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento deve ser preenchida !!'));
+		vOK			= false;
+	}else if (isDataBR($dataVenc) == false) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento inválida !!'));
+		vOK			= false;
+	}
+
+	return vOK;
+
+}
+
+function validaValoresCRSub() {
+	var $valor			= $('#valorID').val();
+	var $juros			= $('#valorJurosID').val();
+	var $mora			= $('#valorMoraID').val();
+	var $desconto		= $('#valorDescontoID').val();
+	
+	
+	var vOK				= true;
+	
+	$('#divValorID').removeClass('has-error');
+	$('#divJurosID').removeClass('has-error');
+	$('#divMoraID').removeClass('has-error');
+	$('#divDescontoID').removeClass('has-error');
+		
+	$('#divHelpValorID').html('');
+	$('#divHelpJurosID').html('');
+	$('#divHelpMoraID').html('');
+	$('#divHelpDescontoID').html('');
+	
+	if (!$valor) {
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Valor deve ser preenchido !!'));
+		vOK			= false;
+	}else if ($valor == 0) {
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Valor deve ser maior que 0'));
+		vOK			= false;
+	}else if (isMoney($valor) == false) {
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Valor deve ser numérico'));
+		vOK			= false;
+	}
+
+	if (($juros) && (isMoney($juros) == false)) {
+		$('#divJurosID').addClass('has-error');
+		$('#divHelpJurosID').html(zgCriaSpanErro('Juros deve ser numérico !!'));
+		vOK			= false;
+	}
+
+	if (($mora) && (isMoney($mora) == false)) {
+		$('#divMoraID').addClass('has-error');
+		$('#divHelpMoraID').html(zgCriaSpanErro('Mora deve ser numérico !!'));
+		vOK			= false;
+	}
+
+	if (($desconto) && (isMoney($desconto) == false)) {
+		$('#divDescontoID').addClass('has-error');
+		$('#divHelpDescontoID').html(zgCriaSpanErro('Desconto deve ser numérico !!'));
+		vOK			= false;
+	}
+
+	return vOK;
+
+}
+
+function validaConfiguracoesCRSub() {
+	var $codFormaPag	= $("#codFormaPagID option:selected").val();
+	var $codConta		= $("#codContaRecID option:selected").val();
+	
+	var vOK				= true;
+	
+	$('#divFormaPagID').removeClass('has-error');
+	$('#divContaRecID').removeClass('has-error');
+		
+	$('#divHelpFormaPagID').html('');
+	$('#divHelpContaRecID').html('');
+	
+	if (!$codFormaPag) {
+		$('#divFormaPagID').addClass('has-error');
+		$('#divHelpFormaPagID').html(zgCriaSpanErro('Forma de pagamento deve ser selecionada !!'));
+		vOK			= false;
+	}
+
+	if (!$codConta) {
+		$('#divContaRecID').addClass('has-error');
+		$('#divHelpContaRecID').html(zgCriaSpanErro('Conta de Recebimento deve ser selecionada !!'));
+		vOK			= false;
+	}
+
+	return vOK;
+}
+
+
+
+function atualizaInfoRecorrenciaCRSub() {
+	var $tipoRecParc	= $('#codTipoRecID').val();
+	var $numParcelas	= parseInt($('#numParcelasID').val());
+	var $parcelaInicial	= parseInt($('#parcelaInicialID').val());
+	var $codPeriodoRec	= $("#codPeriodoRecID option:selected").text();
+	var $tipo,$parcelas;
+	
+	if ($tipoRecParc	== 'P') {
+		$tipo			= "Parcelada";
+		$parcelas		= $numParcelas - ($parcelaInicial - 1);
+		
+		$('#lbInfoRecorrenciaID').text($codPeriodoRec);
+		$('#lbInfoNumParcelasID').text($parcelas);
+		
+		
+		$('#divInfoRecorrenciaID').removeClass('hidden');
+		$('#divInfoNumParcelasID').removeClass('hidden');
+		
+	}else{
+		$tipo			= "Fixa";
+
+		$('#divInfoRecorrenciaID').addClass('hidden');
+		$('#divInfoNumParcelasID').addClass('hidden');
+
+	}
+	
+	$('#lbInfoTipoContaID').text($tipo);
+	$('#divInfoTipoContaID').removeClass('hidden');
+	
+}
+
+function atualizaInfoIdentCRSub() {
+	var $ident		= $('#descricaoID').val();
+	var $venc		= $('#dataVencID').val();
+	
+	$('#lbInfoIdentID').text($ident);
+	$('#lbInfoDataVencID').text($venc);
+
+	$('#divInfoIdentID').removeClass('hidden');
+	$('#divInfoDataVencID').removeClass('hidden');
+}
+
+function getValorTotalCRSub() {
+	var $tipoRecParc		= $('#codTipoRecID').val();
+	var $codTipoValor		= $('#codTipoValorID').val();
+	var $numParcelas		= parseInt($('#numParcelasID').val());
+	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
+	var $tipo,$parcelas;
+	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorParcela;
+	
+	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+	$valorJuros		= parseFloat($('#valorJurosID').val().replace(".", "").replace(",","."));
+	$valorMora		= parseFloat($('#valorMoraID').val().replace(".", "").replace(",","."));
+	$valorDesc		= parseFloat($('#valorDescontoID').val().replace(".", "").replace(",","."));
+	
+	if (isNaN($valor))		$valor		= 0;
+	if (isNaN($valorJuros))	$valorJuros	= 0;
+	if (isNaN($valorMora))	$valorMora 	= 0;
+	if (isNaN($valorDesc))	$valorDesc 	= 0;
+	
+	$nValor			= ($valor + $valorJuros + $valorMora - $valorDesc).toFixed(2);
+
+	if ($tipoRecParc	== 'P') {
+		var $parcelas	= $numParcelas - ($parcelaInicial -1);
+		
+		if ($codTipoValor == 'P') {
+			$nValor			= ($parcelas * $valor).toFixed(2);
+		}
+	}
+
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	$nValor			= accounting.formatMoney($nValor, options);
+	return ($nValor);
+	
+	
+}
+
+function getValorParcelaCRSub() {
+	var $tipoRecParc		= $('#codTipoRecID').val();
+	var $codTipoValor		= $('#codTipoValorID').val();
+	var $numParcelas		= parseInt($('#numParcelasID').val());
+	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
+	var $tipo,$parcelas;
+	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorParcela;
+	
+	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+	$valorJuros		= parseFloat($('#valorJurosID').val().replace(".", "").replace(",","."));
+	$valorMora		= parseFloat($('#valorMoraID').val().replace(".", "").replace(",","."));
+	$valorDesc		= parseFloat($('#valorDescontoID').val().replace(".", "").replace(",","."));
+	
+	if (isNaN($valor))		$valor		= 0;
+	if (isNaN($valorJuros))	$valorJuros	= 0;
+	if (isNaN($valorMora))	$valorMora 	= 0;
+	if (isNaN($valorDesc))	$valorDesc 	= 0;
+	
+	$nValor			= ($valor + $valorJuros + $valorMora - $valorDesc).toFixed(2);
+
+	if ($tipoRecParc	== 'P') {
+		var $parcelas	= $numParcelas - ($parcelaInicial -1);
+		
+		if ($codTipoValor == 'T') {
+			$nValor		= ($nValor / $parcelas).toFixed(2);
+		}
+	}
+
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	$nValor			= accounting.formatMoney($nValor, options);
+	return ($nValor);
+	
+	
+}
+
+
+function atualizaInfoValorCRSub() {
+	var $tipoRecParc		= $('#codTipoRecID').val();
+	var $codTipoValor		= $('#codTipoValorID').val();
+	var $numParcelas		= parseInt($('#numParcelasID').val());
+	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
+	var $codPeriodoRec		= $('#codPeriodoRecID').val();
+	var $tipo,$parcelas;
+	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorParcela;
+	
+	var options = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+	$valorJuros		= parseFloat($('#valorJurosID').val().replace(".", "").replace(",","."));
+	$valorMora		= parseFloat($('#valorMoraID').val().replace(".", "").replace(",","."));
+	$valorDesc		= parseFloat($('#valorDescontoID').val().replace(".", "").replace(",","."));
+	
+	if (isNaN($valor))		$valor		= 0;
+	if (isNaN($valorJuros))	$valorJuros	= 0;
+	if (isNaN($valorMora))	$valorMora 	= 0;
+	if (isNaN($valorDesc))	$valorDesc 	= 0;
+	
+	$nValor			= ($valor + $valorJuros + $valorMora - $valorDesc).toFixed(2);
+
+	if ($tipoRecParc	== 'P') {
+		$('#divJurosID').addClass('hidden');
+		$('#divMoraID').addClass('hidden');
+		$('#divDescontoID').addClass('hidden');
+		
+		$('#divIndValorParcelaID').removeClass('hidden');
+		$('#divSelValorParcelaID').removeClass('hidden');
+		
+		$('#valorJurosID').val(0);
+		$('#valorMoraID').val(0);
+		$('#valorDescontoID').val(0);
+		
+		if (!$valor) return null;
+		
+		var $parcelas	= $numParcelas - ($parcelaInicial -1);
+		
+		if ($codTipoValor == 'P') {
+			$nValor			= ($parcelas * $valor).toFixed(2);
+			$nValor			= accounting.formatMoney($nValor, options);
+		}else{
+			
+			$valorParcela	= ($nValor / $parcelas).toFixed(2);
+			$nValor			= accounting.formatMoney($nValor, options);
+		}
+	}else{
+		$('#divIndValorParcelaID').addClass('hidden');
+		$('#divJurosID').removeClass('hidden');
+		$('#divMoraID').removeClass('hidden');
+		$('#divDescontoID').removeClass('hidden');
+		
+		if (!$valor) return null;
+	}
+	
+	$('#valorTotalID').val(getValorTotalCRSub().replace(".", "").replace(",","."));
+	$('#lbInfoValorID').html($nValor);
+	$('#divInfoValorID').removeClass('hidden');
+
+}
+
+function atualizaDivRecebidaCRSub() {
+	var $venc			= $('#dataVencID').val();
+	var $tipoRecParc	= $('#codTipoRecID').val();
+	var $numParcelas	= parseInt($('#numParcelasID').val());
+	var $parcelaInicial	= parseInt($('#parcelaInicialID').val());
+	var $codPeriodoRec	= $('#codPeriodoRecID').val();
+	var $intervaloRec	= parseInt($('#intervaloRecID').val());
+	var $dia,$mes,$ano,$temp,$oHoje,$oVencIni,$oVencFim,$diff,$parcFuturas;
+	
+	$temp	= $venc.split('/');
+	$dia	= parseInt($temp[0]);
+	$mes	= parseInt($temp[1]) - 1;
+	$ano	= parseInt($temp[2]);
+
+	$oVencIni	= new Date($ano,$mes,$dia);
+	$oHoje		= new Date();
+	$oHoje.setHours(0,0,0,0);
+	
+	$('#divFlagReceberAutoID').addClass('hidden');
+	$('#divFlagRecebidaID').addClass('hidden');
+	
+	if ($tipoRecParc	== 'P') {
+		$parcFuturas		= $numParcelas - ($parcelaInicial - 1) -1;
+		
+		if ($codPeriodoRec == "D") {
+			$oVencFim	= new Date($ano,$mes,$dia + ($parcFuturas * $intervaloRec) );
+		}else if ($codPeriodoRec == "S") {
+			$oVencFim	= new Date($ano,$mes,$dia + ($parcFuturas * $intervaloRec * 7) );
+		}else if ($codPeriodoRec == "M") {
+			$oVencFim	= new Date($ano,$mes + ($parcFuturas * $intervaloRec),$dia );
+		}else if ($codPeriodoRec == "A") {
+			$oVencFim	= new Date($ano + ($parcFuturas * $intervaloRec),$mes,$dia );
+		}else{
+			alert('Erro: Período de Recorrência não tratado !!!');
+			$('#divFlagReceberAutoID').removeClass('hidden');
+			$('#divFlagRecebidaID').removeClass('hidden');
+			return null;
+		}
+		
+		if ($oVencIni <= $oHoje) {
+			$('#divFlagRecebidaID').removeClass('hidden');
+		}
+
+		if ($oVencFim > $oHoje) {
+			$('#divFlagReceberAutoID').removeClass('hidden');
+		}
+		
+	}else{
+		if ($oVencIni > $oHoje) {
+			$('#divFlagReceberAutoID').removeClass('hidden');
+		}else{
+			$('#divFlagRecebidaID').removeClass('hidden');
+		}
+	}
+}
+
+function atualizaInfoFormaPagCRSub() {
+	var $desc	= $("#codFormaPagID option:selected").text();
+	if ($desc)	{
+		$('#lbInfoFormaPagID').html($desc);
+		$('#divInfoConfID').removeClass('hidden');
+		$('#divInfoFormaPagID').removeClass('hidden');
+	}
+}
+
+function atualizaInfoContaRecCRSub() {
+	var $desc	= $("#codContaRecID option:selected").text();
+	
+	var options = {
+			symbol : "R$ ",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+	};
+	
+	if ($desc)	{
+		$('#lbInfoContaRecID').html($desc);
+		$('#divInfoConfID').removeClass('hidden');
+		$('#divInfoContaRecID').removeClass('hidden');
+		
+		
+		$.ajax({
+			url: "%ROOT_URL%/Fin/getSaldoConta.dp.php",
+			data:  { codConta: $('#codContaRecID').val()},
+			success: function(data) {
+				var $saldo	= data["saldo"];
+				var $desc;
+				
+				if ($saldo > 0) {
+					$desc	= "<span class='text-success'>"+accounting.formatMoney($saldo, options)+"</span>";
+				}else{
+					$desc	= "<strong>(&nbsp;<span class='text-danger'>"+accounting.formatMoney($saldo, options)+"</span>&nbsp;)</strong>";
+				}
+				
+				$('#lbInfoSaldoContaID').html($desc);
+				$('#divInfoSaldoContaID').removeClass('hidden');
+		    },
+			dataType: 'json'
+		});
+	}
+}
+
+function atualizaInfoCategoriaCRSub() {
+	var $desc	= $("#codCategoriaID option:selected").text();
+	if ($desc)	{
+		$('#lbInfoCategoriaID').html($desc);
+		$('#divInfoConfID').removeClass('hidden');
+		$('#divInfoCategoriaID').removeClass('hidden');
+	}
+}
+
+function atualizaInfoCentroCustoCRSub() {
+	var $desc	= $("#codCentroCustoID option:selected").text();
+	if ($desc)	{
+		$('#lbInfoCentroCustoID').html($desc);
+		$('#divInfoConfID').removeClass('hidden');
+		$('#divInfoCentroCustoID').removeClass('hidden');
+	}
+}
+
+function atualizaInfoClienteCRSub($desc) {
+	if ($desc)	{
+		$('#lbInfoPessoaID').html($desc);
+		$('#divInfoConfID').removeClass('hidden');
+		$('#divInfoPessoaID').removeClass('hidden');
+	}
+}
+
+function criaTabelaValoresCRSub() {
+	var $table				= $('#CRSubTableValorID');
+	var $tipoRecParc		= $('#codTipoRecID').val();
+	var $codPeriodoRec		= $('#codPeriodoRecID').val();
+	var $intervaloRec		= parseInt($('#intervaloRecID').val());
+	var $dataVenc			= $('#dataVencID').val();
+	var $parcelas;
+	var $nValor,$valor,$valorParcela,$valorTotal,$datas;
+
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+		
+	var optTotal = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+
+	$valorParcela	= getValorParcelaCRSub();
+	$parcelas		= getNumParcelasCRSub();
+	
+	if ($tipoRecParc == "U") {
+		$valorTotal		= accounting.formatMoney($('#valorID').val().replace(".", "").replace(",","."),options);
+	}else{
+		$valorTotal		= getValorTotalCRSub();
+	}
+	
+	/** Resgata as datas de vencimentos **/
+	jQuery.ajax({
+		url: "%ROOT_URL%/Fin/geraDatasVencimentoConta.dp.php",
+		data: { dataVenc: $dataVenc, codPeriodoRec: $codPeriodoRec, intervaloRec: $intervaloRec, numParcelas: $parcelas},
+		success: function(ret) {
+			$datas	= JSON.parse(ret);
+		},
+		method: 'get',
+		cache: false,
+		async:false
+	});
+
+	/** Remove os dados atuais **/
+	$('#CRSubTableValorID > tbody').find('tr').remove();
+	
+	for ($i = 0; $i < $parcelas; $i++) {
+		var $descParcela	= ($i+1) + " / " + $parcelas;
+		
+		if ($tipoRecParc == "U") {
+			$_parc	= $valorTotal;
+		}else{
+			if ($i == ($parcelas -1)) {
+				var $_parc	= accounting.formatMoney(getValorTotalCRSub().replace(".", "").replace(",",".") - (getValorParcelaCRSub().replace(".", "").replace(",",".") * ($parcelas -1) ),options);
+			}else{
+				var $_parc 	= $valorParcela;
+			}
+		}
+		
+		$('#CRSubTableValorID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 40px;">'+$descParcela+'</td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aValor[]" value="'+$_parc+'" onchange="atualizaEValidaParcelasCRSub();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm datepicker" name="aData[]" value="'+$datas[$i].dataVenc+'" onchange="atualizaEValidaParcelasCRSub();" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td></tr>');		
+
+		$('#CRSubTableValorID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+		$('#CRSubTableValorID > tbody > tr:last .datepicker').each(function( index ) {
+			$(this).datepicker({"autoclose": true});
+		});
+		
+	}
+
+	$('#thInfoValorTotalCRSubID').html($valorTotal);
+	$('#thInfoParcelaCRSubID').html($parcelas);
+	atualizaEValidaParcelasCRSub();
+	paginateTableValoresCRSub();
+}
+
+function atualizaEValidaParcelasCRSub() {
+	var $tipoRecParc		= $('#codTipoRecID').val();
+	var $tValor 			= parseFloat(0);
+	var $cem				= (100+0).toFixed(2);
+	var $htmlOK,$htmlError,$htmlValor,$htmlPct,$vOK;
+	var $epsilon			= 0.00000001;
+	var $vOK;
+	var $menorData;
+	
+	if ($tipoRecParc == "U") {
+		var $total		= $('#valorID').val().replace(".", "").replace(",",".");
+	}else{
+		var $total		= getValorTotalCRSub().replace(".", "").replace(",",".");
+	}
+
+	$vOK			= true;
+
+	$('#CRSubTableValorID > tbody > tr [name*="aValor[]"]').each(function( index ) {
+		$tValor += parseFloat($(this).val().replace(".", "").replace(",","."));
+	});
+	
+	$tValor		= parseFloat($tValor.toFixed(2));
+	
+	var opt = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	var opt1 = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	var opt2 = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	//alert("Valor informado: "+$total+" Valor calculado: "+$tValor);
+	/** Valida os valores **/
+	if ($tValor != $total) {
+		var $textoValor;
+		var	$diffValor	= ($total - $tValor);
+		
+		if ($diffValor > 0) {
+			$textoValor	= "Falta ainda: "+accounting.formatMoney($diffValor, opt1);
+		}else{
+			$textoValor	= "Valor está a maior: "+accounting.formatMoney(($diffValor*-1), opt1);
+		}
+		
+		$htmlError	= zgCriaSpanErro($textoValor);
+		$vOK		= false;
+	}
+	
+	
+	if (!$vOK) {
+		$('#thInfoHelpTableParcelasCRSubID').html($htmlError);
+		return $vOK;
+	}
+	
+
+	/** Valida Data **/
+	$('#CRSubTableValorID > tbody > tr [name*="aData[]"]').each(function( index ) {
+		var $td		= $(this).parent();
+		var $tr		= $td.parent();
+
+		if (index == 0) {
+			$menorData = moment($(this).val(), "%FORMATO_DATA%");
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+		}else{
+			var $data	= moment($(this).val(), "%FORMATO_DATA%");
+			var $dif	= $data - $menorData; 
+			
+			if ($dif < 0) {
+				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Data deve ser maior do que a parcela anterior"));
+				$tr.addClass("alert-danger");
+				$vOK	= false;
+			}else{
+				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+				$tr.removeClass("alert-danger");
+			}
+			$menorData = moment($(this).val(), "%FORMATO_DATA%");
+		}
+	});
+
+	if (!$vOK) {
+		$('#thInfoHelpTableParcelasCRSubID').html(zgCriaSpanErro("Verifique as datas dos registros marcados"));
+		return $vOK;
+	}else{
+		$('#thInfoHelpTableParcelasCRSubID').html(zgCriaSpanOK());
+		return $vOK; 
+	}
+	
+}
+
+function paginateTableValoresCRSub() {
+	$('#pagerValoresCRSubID li').remove();
+
+	$('table.paginated').each(function() {
+	    var currentPage = 0;
+	    var numPerPage 	= 5;
+	    var $table = $(this);
+	    $table.bind('repaginate', function() {
+	        $table.find('tbody tr').hide().slice(currentPage * numPerPage, (currentPage + 1) * numPerPage).show();
+	    });
+	    $table.trigger('repaginate');
+	    var numRows = $table.find('tbody tr').length;
+	    var numPages = Math.ceil(numRows / numPerPage);
+	    var $pager = $('#pagerValoresCRSubID');
+	    for (var page = 0; page < numPages; page++) {
+	    	$('<li><a href="#"><span class="page-number">'+(page + 1)+'</span></a></li>').bind('click', {
+	        //$('<span class="page-number"></span>').text(page + 1).bind('click', {
+	            newPage: page
+	        }, function(event) {
+	            currentPage = event.data['newPage'];
+	            $table.trigger('repaginate');
+	            $(this).addClass('active').siblings().removeClass('active');
+	        }).appendTo($pager).addClass('clickable');
+	    }
+	    $pager.insertBefore($table).find('span.page-number:first').addClass('active');
+	});
+}
+
+function getNumParcelasCRSub() {
+	var $tipoRecParc		= $('#codTipoRecID').val();
+	var $codTipoValor		= $('#codTipoValorID').val();
+	var $numParcelas		= parseInt($('#numParcelasID').val());
+	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
+	var $tipo,$parcelas;
+	
+	if ($tipoRecParc	== 'P') {
+		var $parcelas	= $numParcelas - ($parcelaInicial -1);
+	}else{
+		$parcelas	= 1;
+	}
+
+	return ($parcelas);
+}
+
+</script>

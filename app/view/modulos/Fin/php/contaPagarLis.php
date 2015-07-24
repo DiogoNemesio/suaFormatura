@@ -74,7 +74,7 @@ if (isset($codStatus))		$_SESSION["_CPLIS_codStatusFiltro"] 		= $codStatus;
 if (isset($codFormaPag))	$_SESSION["_CPLIS_codFormaPagFiltro"] 		= $codFormaPag;
 if (isset($codCategoria))	$_SESSION["_CPLIS_codCategoriaFiltro"] 		= $codCategoria;
 if (isset($codCentroCusto))	$_SESSION["_CPLIS_codCentroCustoFiltro"] 	= $codCentroCusto;
-if (isset($codContaPag))	$_SESSION["_CPLIS_codContapagFiltro"]		= $codContaPag;
+if (isset($codContaPag))	$_SESSION["_CPLIS_codContaPagFiltro"]		= $codContaPag;
 if (isset($valorIni))		$_SESSION["_CPLIS_valorIniFiltro"] 			= $valorIni;
 if (isset($valorFim))		$_SESSION["_CPLIS_valorFimFiltro"] 			= $valorFim;
 if (isset($descricao))		$_SESSION["_CPLIS_descricaoFiltro"] 		= $descricao;
@@ -229,6 +229,7 @@ $aCodigos	= array();
 for ($i = 0; $i < sizeof($contas); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$contas[$i]->getCodigo().'&url='.$url);
 	$vid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$contas[$i]->getCodigo().'&url='.$url.'&view=1');
+	$cid		= \Zage\App\Util::encodeUrl('aSelContas='.$contas[$i]->getCodigo());
 	
 	#################################################################################
 	## Definir o valor da Checkbox
@@ -272,6 +273,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeCan	= true;
 			$podeCon	= true;
 			$podePls	= false;
+			$podeSub	= true;
 			$podeImp	= true;
 			break;
 		case "C":
@@ -280,14 +282,17 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeCan	= false;
 			$podeCon	= false;
 			$podePls	= false;
+			$podeSub	= false;
 			$podeImp	= true;
 			break;
 		case "L":
+		case "EP":
 			$podeAlt	= false;
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
 			$podePls	= true;
+			$podeSub	= false;
 			$podeImp	= true;
 			break;
 		case "SC":
@@ -296,6 +301,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeCan	= false;
 			$podeCon	= false;
 			$podePls	= true;
+			$podeSub	= false;
 			$podeImp	= true;
 			break;
 		case "S":
@@ -304,6 +310,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeCan	= false;
 			$podeCon	= false;
 			$podePls	= false;
+			$podeSub	= false;
 			$podeImp	= true;
 			break;
 		case "SS":
@@ -312,6 +319,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeCan	= false;
 			$podeCon	= false;
 			$podePls	= true;
+			$podeSub	= false;
 			$podeImp	= true;
 			break;
 		case "P":
@@ -320,6 +328,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeCan	= true;
 			$podeCon	= true;
 			$podePls	= true;
+			$podeSub	= true;
 			$podeImp	= true;
 			break;
 		default:
@@ -328,6 +337,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeCan	= false;
 			$podeCon	= false;
 			$podePls	= false;
+			$podeSub	= false;
 			$podeImp	= false;
 			break;
 	}
@@ -439,6 +449,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$urlCan			= ($podeCan)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarCan.php?id=".$uid."');" : null;
 	$urlCon			= ($podeCon)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarPag.php?id=".$uid."');" : null;
 	$urlPls			= ($podePls)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarPagLis.php?id=".$uid."');" : null;
+	$urlSub			= ($podeSub)	? "javascript:zgLoadUrl('".ROOT_URL."/Fin/contaPagarSub.php?id=".$uid."&cid=".$cid."');" : null;
 	$urlImp			= ($podeImp)	? "javascript:zgAbreModalFull('".ROOT_URL."/Fin/contaPagarPreview.php?id=".$uid."');" : null;
 		
 	
@@ -447,13 +458,14 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$htmlExc		= str_replace("%M%","Excluir"					, str_replace("%U%",$urlExc, $htmlTplAcaoIni)) . (($podeExc)	?  '<i class="ace-icon fa fa-trash red bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
 	$htmlCan		= str_replace("%M%","Cancelar"					, str_replace("%U%",$urlCan, $htmlTplAcaoIni)) . (($podeCan)	?  '<i class="ace-icon fa fa-ban red bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
 	$htmlCon		= str_replace("%M%","Confirmar"					, str_replace("%U%",$urlCon, $htmlTplAcaoIni)) . (($podeCon)	?  '<i class="ace-icon fa fa-check green bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
-	$htmlPls		= str_replace("%M%","Pagamentos confirmados"	, str_replace("%U%",$urlPls, $htmlTplAcaoIni)) . (($podePls)	?  '<i class="ace-icon fa fa-usd grey bigger-140"></i>'		: null) . $htmlTplAcaoFim;
+	$htmlPls		= str_replace("%M%","Pagamentos confirmados"	, str_replace("%U%",$urlPls, $htmlTplAcaoIni)) . (($podePls)	?  '<i class="ace-icon fa fa-usd grey bigger-140"></i>'			: null) . $htmlTplAcaoFim;
+	$htmlSub		= str_replace("%M%","Substituir"				, str_replace("%U%",$urlSub, $htmlTplAcaoIni)) . (($podeSub)	?  '<i class="ace-icon fa fa-exchange blue bigger-140"></i>' 	: null) . $htmlTplAcaoFim;
 	$htmlImp		= str_replace("%M%","Imprimir"					, str_replace("%U%",$urlImp, $htmlTplAcaoIni)) . (($podeImp)	?  '<i class="ace-icon fa fa-print grey bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
 	
 	$htmlAcao	= '<div class="inline dropdown dropup"><a href="#" data-toggle="dropdown"><i class="ace-icon fa fa-cog icon-on-right bigger-140"></i></a>
 	<ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
 		<li class="active"><a href="#"><div class="center small bolder blue">Ações para: '.$contas[$i]->getDescricao().' ('.$contas[$i]->getParcela() . "/".$contas[$i]->getNumParcelas().')</div></a></li>
-		<li><a href="#">'.$htmlVis.$htmlAlt.$htmlExc.$htmlCan.$htmlCon.$htmlPls.$htmlImp.'</a></li>
+		<li><a href="#">'.$htmlVis.$htmlAlt.$htmlExc.$htmlCan.$htmlCon.$htmlPls.$htmlSub.$htmlImp.'</a></li>
 	</ul>
 	</div>';
 	$grid->setValorCelula($i,$colAcao,$htmlAcao);
@@ -483,7 +495,7 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
 	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codContaPag, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -559,6 +571,7 @@ $urlFiltro			= ROOT_URL . "/Fin/contaPagarLisFiltro.php?id=".\Zage\App\Util::enc
 $excUrl		= ROOT_URL . "/Fin/contaPagarExc.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 $canUrl		= ROOT_URL . "/Fin/contaPagarCan.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 $conUrl		= ROOT_URL . "/Fin/contaPagarPagLote.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+$subUrl		= ROOT_URL . "/Fin/contaPagarSub.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 $impUrl		= ROOT_URL . "/Fin/contaPagarImp.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 
 
@@ -595,6 +608,7 @@ $tpl->set('FORNECEDOR'		,$fornecedor);
 $tpl->set('EXC_URL'			,$excUrl);
 $tpl->set('CAN_URL'			,$canUrl);
 $tpl->set('CON_URL'			,$conUrl);
+$tpl->set('SUB_URL'			,$subUrl);
 $tpl->set('IMP_URL'			,$impUrl);
 
 $tpl->set('CATEGORIAS'		,$oCat);

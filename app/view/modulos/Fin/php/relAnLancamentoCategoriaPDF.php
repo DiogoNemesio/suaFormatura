@@ -182,7 +182,7 @@ try {
 	->orderBy('cap.descricao','ASC')
 	->addOrderBy('ca.descricao','ASC')
 	->addOrderBy('p.dataVencimento','ASC')
-	->setParameter('codOrganizacao', $system->getcodOrganizacao());
+	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 	
 	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.fantasia as PESSOA_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ca.codigo AS COD_CATEGORIA,ca.descricao AS CATEGORIA_DESCRICAO,cap.codigo AS COD_CATEGORIA_PAI,cap.descricao AS CATEGORIA_PAI_DESCRICAO')
 	->from('\Entidades\ZgfinContaReceberRateio'	,'cr')
@@ -197,7 +197,7 @@ try {
 	->orderBy('cap.descricao','ASC')
 	->addOrderBy('ca.descricao','ASC')
 	->addOrderBy('p.dataVencimento','ASC')
-	->setParameter('codOrganizacao', $system->getcodOrganizacao());
+	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 	
 	
 	if (!empty($valorIni)) {

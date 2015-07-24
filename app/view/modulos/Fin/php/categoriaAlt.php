@@ -62,14 +62,14 @@ if (!isset($codCategoria)) {
 try {
 
 	if (isset($codCategoriaPai) && $codCategoriaPai != null) {
-		$catPai		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoriaPai, 'codOrganizacao' => $system->getcodOrganizacao()));
+		$catPai		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoriaPai, 'codOrganizacao' => $system->getCodOrganizacao()));
 		if (!$catPai) $catPai			= new \Entidades\ZgfinCategoria();
 	}else{
 		$catPai		= new \Entidades\ZgfinCategoria();
 	}
 	
 	if (isset($codCategoria) && $codCategoria != null) {
-		$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria, 'codOrganizacao' => $system->getcodOrganizacao()));
+		$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria, 'codOrganizacao' => $system->getCodOrganizacao()));
 		if (!$cat) {
 			$cat	= new \Entidades\ZgfinCategoria();
 			$ativa			= "checked";

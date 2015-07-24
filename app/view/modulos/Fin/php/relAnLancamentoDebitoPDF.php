@@ -179,7 +179,7 @@ try {
 	))
 	->orderBy('p.dataVencimento','ASC')
 	->addOrderBy('p.codigo','ASC')
-	->setParameter('codOrganizacao', $system->getcodOrganizacao());
+	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 	
 	if (!empty($valorIni)) {
 		$qb1->andWhere($qb1->expr()->gte("p.valor", ':valorIni'));

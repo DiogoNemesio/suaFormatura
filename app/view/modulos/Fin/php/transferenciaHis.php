@@ -40,7 +40,7 @@ if (!isset($codTransf)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codTransf));
+$oTransf		= $em->getRepository('Entidades\ZgfinTransferencia')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codTransf));
 
 if (!$oTransf) {
 	\Zage\App\Erro::halt($tr->trans('Transferência %s não encontrada !!!',array('%s' => $codTransf)));

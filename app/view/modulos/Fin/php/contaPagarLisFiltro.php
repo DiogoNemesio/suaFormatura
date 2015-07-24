@@ -45,12 +45,11 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getcodOrganizacao()),array('nome' => 'ASC'));
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
 	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_CPLIS_codContaPagFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
-
 
 #################################################################################
 ## Select da Categoria

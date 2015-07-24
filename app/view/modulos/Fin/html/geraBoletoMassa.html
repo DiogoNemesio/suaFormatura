@@ -1,0 +1,121 @@
+<form id="zgFormGeraBoletoID" class="form-horizontal" method="post" action="%URL_MIDIA%" target="_blank">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-file-pdf-o blue"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 440px;">
+	<input type="hidden" name="id" value="%ID%">
+	<input type="hidden" name="tipoMidia" id="tipoMidiaID">
+	<div class="row">
+		<table id="cargoAltTableFuncaoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
+			<thead>
+				<tr class="warning">
+					<th class="col-sm-1 center"><label class="position-relative"><input type="checkbox" id="geraBoletoCheckallID" name="geraBoletoCheckall" checked class="ace" value="all" /><span class="lbl"></span></label></th>
+					<th class="col-sm-1 center">Parcela</th>
+					<th class="col-sm-1 center">Vencimento</th>
+					<th class="col-sm-1 center">Vencimento(Boleto)</th>
+					<th class="col-sm-1 center">Atraso</th>
+					<th class="col-sm-2 center">Valor</th>
+					<th class="col-sm-1 center">Júros</th>
+					<th class="col-sm-1 center">Mora</th>
+					<th class="col-sm-1 center">Desconto</th>
+				</tr>
+			</thead>
+			<tbody>
+			%TAB_PARCELAS%
+			</tbody>
+		</table>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="form-group col-sm-12" id="divInstrucaoID">
+				<label for="instrucaoID" class="col-sm-3 control-label">Instruções adicionais</label>
+				<div class="input-group col-sm-8 pull-left">
+					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Instruções adicionais para o boleto"></i></span>
+					<input type="text" id="instrucaoID" name="instrucao" maxlength="60" class="width-100" placeholder="Instruções adicionais" autocomplete="off"/>
+				</div>
+			<div class="help-block col-sm-1 inline" id="divHelpInstrucaoID"></div>
+			</div>
+		</div>
+	</div>
+    <div id="divMsgBOLMasID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-warning" id="geraBoletoEnviaEmailID">Enviar e-mail</button>
+	<button type="button" class="btn btn-primary" id="geraBoletoGeraPDFID">Gerar PDF</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('#geraBoletoEnviaEmailID').click(function() {
+	$('#tipoMidiaID').val('MAIL');
+	$('#geraBoletoEnviaEmailID').html("Enviando e-mail, aguarde ...");
+	$('#geraBoletoEnviaEmailID').attr("disabled","disabled");
+	$('#geraBoletoGeraPDFID').attr("disabled","disabled");
+	
+	$('#zgFormGeraBoletoID').submit(function(e) {
+		$.ajax({
+			type:	"POST", 
+			url:	"%URL_MIDIA%",
+			data:	$('#zgFormGeraBoletoID').serialize(),
+		}).done(function( data, textStatus, jqXHR) {
+			zgMostraAviso("Fechar");
+		}).fail(function( jqXHR, textStatus, errorThrown) {
+			zgMostraAviso(null);
+		});
+		return false; 
+	});
+	$('#zgFormGeraBoletoID').submit();
+	e.preventDefault();
+	return false; 
+});
+
+$('#geraBoletoGeraPDFID').click(function() {
+	$('#zgDivModalID').modal('hide');
+	
+	$('#tipoMidiaID').val('PDF');
+	$('#zgFormGeraBoletoID').submit();
+	e.preventDefault();
+	
+	return false; 
+});
+
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({
+	"autoclose": true,
+}).on('show', function() {
+    var $input		= $(this);
+    var modalZIndex = $input.closest('.modal').css('z-index');
+    var zIndex		= 9000;
+    if (modalZIndex) {
+        zIndex = parseInt(modalZIndex) + 1;
+    }
+    $('.datepicker').css("z-index", zIndex);
+});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+$("#geraBoletoCheckallID").change(function(){
+    if(this.checked){
+		$("input[name='codContaSel[]']").each(function(){
+			this.checked	= true;
+		});
+	}else{
+		$("input[name='codContaSel[]']").each(function(){
+			this.checked	= false;
+		});
+	}
+});
+
+</script>

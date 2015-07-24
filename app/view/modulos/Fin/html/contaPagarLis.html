@@ -161,6 +161,26 @@ function zgHabilitaAcoesCPLis() {
 		$('#zgDivAcoesConID').html('&nbsp;');
 	}
 	
+	/** Calcular o botão de substituição a partir do STATUS e do FORNECEDOR / CLIENTE **/
+	if ($aFornec.length !== 1) {
+		$('#zgDivAcoesSubID').html('&nbsp;');
+	}else if($aStatus.length !== 1) {
+		if ($aStatus.length !== 2) {
+			$('#zgDivAcoesSubID').html('&nbsp;');
+		}else{
+			if ( ( ($aStatus[0] == "A") && ($aStatus[1] == "P") ) || ( ($aStatus[1] == "A") && ($aStatus[0] == "P") ) ) {
+				$('#zgDivAcoesSubID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoSubSelecionadosCPLis();" data-toggle="tooltip" data-placement="top" title="Substituir selecionados"><i class="ace-icon fa fa-exchange blue bigger-130"></i></div>');
+			}else{
+				$('#zgDivAcoesSubID').html('&nbsp;');
+			}
+		}
+	}else if ( ($aStatus[0] == "A") || ($aStatus[0] == "P") )	{
+		$('#zgDivAcoesSubID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoSubSelecionadosCPLis();" data-toggle="tooltip" data-placement="top" title="Substituir selecionados"><i class="ace-icon fa fa-exchange blue bigger-130"></i></div>');
+	}else{
+		$('#zgDivAcoesSubID').html('&nbsp;');
+	}
+	
+	
 	/** Botão de impressão sempre ativo **/
 	$('#zgDivAcoesImpID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoImpSelecionadosCPLis();" data-toggle="tooltip" data-placement="top" title="Imprimir selecionados"><i class="ace-icon fa fa-print grey bigger-130"></i></div>');
 	
@@ -208,6 +228,14 @@ function zgAcaoConSelecionadosCPLis() {
 	zgAbreModal('%CON_URL%&cid='+zgEncodeUrl('aSelContas='+$aSelContas));
 }
 
+function zgAcaoSubSelecionadosCPLis() {
+	var $aSelContas	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelContas[$aSelContas.length]	= $(this).val();
+	});
+	zgLoadUrl('%SUB_URL%&cid='+zgEncodeUrl('aSelContas='+$aSelContas));
+}
+
 function zgAcaoImpSelecionadosCPLis() {
 	var $aSelContas	= [];
 	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
@@ -215,6 +243,7 @@ function zgAcaoImpSelecionadosCPLis() {
 	});
 	zgAbreModal('%IMP_URL%&cid='+zgEncodeUrl('aSelContas='+$aSelContas));
 }
+
 
 $(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
 	if ($(this).hasClass("disabled")) {
