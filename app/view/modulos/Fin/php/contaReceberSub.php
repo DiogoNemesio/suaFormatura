@@ -54,7 +54,6 @@ $cid			= \Zage\App\Util::antiInjection($_GET["cid"]);
 if (!isset($aSelContas)) \Zage\App\Erro::halt('Falta de Parâmetros 3');
 $aSelContas		= explode(",",$aSelContas);
 
-
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################

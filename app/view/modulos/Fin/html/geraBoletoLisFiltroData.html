@@ -1,0 +1,216 @@
+<form id="zgFormTempBOLLisFiltroID">
+<div class="btn-group btn-corner center">
+	<button type="button" class="btn btn-white btn-sm" title="Voltar" id="btnBOLListFiltroVoltarID" onclick="voltarDataBOLLisFiltro();">
+		<i class="fa fa-angle-double-left "></i>
+	</button>
+	<span id="BOLLisFiltroPopoverID" style="width: 250px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >%TEXTO_FILTRO%</span>
+	<button type="button" class="btn btn-white btn-sm tooltip-info" onclick="toogleFiltroBOLLis();" data-rel='tooltip' data-placement='top' title="Filtrar">
+		<i class="fa fa-filter"></i>
+	</button>
+	<div class="inline dropdown dropup btn btn-white btn-sm" id="BOLLisFiltroDivAcaoLoteID">
+		<a href="#" data-toggle="dropdown" class="disabled" id="BOLLisFiltroBtnAcaoLoteID">
+			<span class="fa">
+  				<i class="fa fa-file-pdf-o bigger-120 grey" id='BOLLisFiltroIco1AcaoLoteID'></i>
+  				<i class="fa fa-ban fa-stack-1x bigger-150 red" id='BOLLisFiltroIco2AcaoLoteID'></i>
+			</span>
+		</a>
+	</div>
+	<button type="button" class="btn btn-white btn-sm" title="Avançar" id="btnBOLListFiltroAvancarID" onclick="avancarDataBOLLisFiltro();">
+		<i class="fa fa-angle-double-right"></i>
+	</button>
+</div>
+
+<div id="divPopoverBOLLisFiltroContentID" class="hide">
+	<div class="col-sm-12 hide" id="divBOLLisFiltroContentDiarioID">
+		<label class="col-sm-3 control-label">Dia:</label>
+		<div class="col-xs-12 col-sm-9">
+    		<input class='form-control' id='tempDataFiltroID' type='text' maxlength='10' onchange="copiaValoresFormBOLLisFiltro();" value='%DATA_FILTRO%' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'>
+		</div>
+	</div>
+	<div class="col-sm-12 hide" id="divBOLLisFiltroContentMensalID">
+		<label class="col-sm-3 control-label">Mês:</label>
+		<div class="col-xs-12 col-sm-9">
+    		<input class='form-control datepicker col-md-12' id='tempMesFiltroID' onchange="copiaValoresFormBOLLisFiltro();" value='%MES_FILTRO%' type='text' maxlength='7' autocomplete='off'>
+		</div>
+	</div>
+	<div class="form-group col-sm-12 hide" id="divBOLLisFiltroContentPeriodoID">
+		<label class="col-sm-3 control-label">Período:</label>
+		<div class="col-xs-12 col-sm-9 input-daterange input-group">
+			<input type="text" class="input-sm form-control" id="tempDataIniFiltroID" onchange="copiaValoresFormBOLLisFiltro();" maxlength='10' value='%DATA_INI_FILTRO%' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+			<span class="input-group-addon"><i class="fa fa-exchange"></i></span>
+			<input type="text" class="input-sm form-control"  id="tempDataFimFiltroID" onchange="copiaValoresFormBOLLisFiltro();" maxlength='10' value='%DATA_FIM_FILTRO%' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+		</div>
+	</div>
+	<div class="form-group col-sm-12 center">
+	&nbsp;
+	</div>
+	
+	<div class="form-group col-sm-12 center">
+		<label class="col-sm-3 control-label">Filtrar Por:</label>
+		<div class="btn-group btn-corner col-sm-9 center">
+			<span id="BOLLisFiltroDataTipoEmiID" style="width: 100px;" class="btn btn-sm" onclick="selecionaEmissaoBOLLisFiltro();">Emissão</span>
+			<span id="BOLLisFiltroDataTipoVenID" style="width: 100px;" class="btn btn-sm" onclick="selecionaVencimentoBOLLisFiltro();">Vencimento</span>
+		</div>
+	</div>
+
+	<div class="form-group col-sm-12 center">
+	&nbsp;
+	</div>
+	<label class="col-sm-3 control-label">&nbsp;</label>
+	<div class="btn-group btn-corner col-sm-9 center">
+		<button type='button' class='btn btn-success btn-sm' onclick="BOLLisFilter();">Filtrar</button>
+		<button type='button' class='btn btn-danger btn-sm' onclick='fecharPopoverBOLLisFiltro();'>Fechar</button>
+	</div>
+</div>
+<div id="divPopoverBOLLisFiltroDataTitleID" class="hide">
+	<div class='btn-group btn-corner' style="width: 370px;">
+		<button type='button' class='btn btn-white btn-sm' style='width:120px;' onclick='mostraDiarioBOLLisFiltro();'>Diário</button>
+		<button type='button' class='btn btn-white btn-sm' style='width:120px;' onclick='mostraMensalBOLLisFiltro();'>Mensal</button>
+		<button type='button' class='btn btn-white btn-sm' style='width:120px;' onclick='mostraPeriodoBOLLisFiltro();'>Período</button>
+	</div>
+</div>
+</form>
+<script>
+
+$('[data-rel=tooltip]').tooltip();
+
+function BOLLisFilter() {
+	copiaValoresFormBOLLisFiltro();
+	$('#zgFormFiltroID').submit();
+}
+
+function copiaValoresFormBOLLisFiltro() {
+	var $data,$mes,$dataIni,$dataFim;
+	
+	$data		= $('#tempDataFiltroID').val();
+	$mes		= $('#tempMesFiltroID').val();
+	$dataIni	= $('#tempDataIniFiltroID').val();
+	$dataFim	= $('#tempDataFimFiltroID').val();
+	
+	if (!$data)		$data		= "all";
+	if (!$mes)		$mes		= "all";
+	if (!$dataIni)	$dataIni	= "all";
+	if (!$dataFim)	$dataFim	= "all";
+	
+	
+	/** Copiar valores para o outro form **/
+	$('#dataFiltroID').val( $data );
+	$('#mesFiltroID').val( $mes );
+	$('#dataIniFiltroID').val( $dataIni );
+	$('#dataFimFiltroID').val( $dataFim );
+
+}
+
+
+function selecionaEmissaoBOLLisFiltro() {
+	$('#BOLLisFiltroDataTipoEmiID').addClass("btn-primary");
+	$('#BOLLisFiltroDataTipoEmiID').removeClass("btn-light");
+	$('#BOLLisFiltroDataTipoVenID').addClass("btn-light");
+	$('#BOLLisFiltroDataTipoVenID').removeClass("btn-primary");
+	$('#dataTipoID').val("E");
+}
+
+function selecionaVencimentoBOLLisFiltro() {
+	$('#BOLLisFiltroDataTipoVenID').addClass("btn-primary");
+	$('#BOLLisFiltroDataTipoVenID').removeClass("btn-light");
+	$('#BOLLisFiltroDataTipoEmiID').addClass("btn-light");
+	$('#BOLLisFiltroDataTipoEmiID').removeClass("btn-primary");
+	$('#dataTipoID').val("V");
+}
+
+
+function avancarDataBOLLisFiltro() {
+	$('#dataAvancarID').val(1);
+	$('#dataVoltarID').val(0);
+	BOLLisFilter();
+}
+
+function voltarDataBOLLisFiltro() {
+	$('#dataAvancarID').val(0);
+	$('#dataVoltarID').val(1);
+	BOLLisFilter();
+}
+
+function fecharPopoverBOLLisFiltro() {
+	$("#BOLLisFiltroPopoverID").popover("hide");
+}
+function mostraDiarioBOLLisFiltro() {
+	$('#btnBOLListFiltroVoltarID').removeAttr('disabled');
+	$('#btnBOLListFiltroAvancarID').removeAttr('disabled');
+	$('#codTipoFiltroID').val("D");
+	$('#divBOLLisFiltroContentMensalID').addClass("hide");
+	$('#divBOLLisFiltroContentPeriodoID').addClass("hide");
+	$('#divBOLLisFiltroContentDiarioID').removeClass("hide");
+}
+
+function mostraMensalBOLLisFiltro() {
+	$('#btnBOLListFiltroVoltarID').removeAttr('disabled');
+	$('#btnBOLListFiltroAvancarID').removeAttr('disabled');
+	$('#codTipoFiltroID').val("M");
+	$('#divBOLLisFiltroContentDiarioID').addClass("hide");
+	$('#divBOLLisFiltroContentPeriodoID').addClass("hide");
+	$('#divBOLLisFiltroContentMensalID').removeClass("hide");
+}
+
+
+function mostraPeriodoBOLLisFiltro() {
+	$('#btnBOLListFiltroVoltarID').attr('disabled','disabled');
+	$('#btnBOLListFiltroAvancarID').attr('disabled','disabled');
+	$('#codTipoFiltroID').val("P");
+	$('#divBOLLisFiltroContentDiarioID').addClass("hide");
+	$('#divBOLLisFiltroContentMensalID').addClass("hide");
+	$('#divBOLLisFiltroContentPeriodoID').removeClass("hide");
+}
+
+
+
+$( document ).ready(function() {
+	
+	
+	var tmp = $.fn.popover.Constructor.prototype.show;
+	$.fn.popover.Constructor.prototype.show = function () {
+	tmp.call(this);
+		if (this.options.callback) {
+			this.options.callback();
+		}
+	}
+	
+	$('[data-rel=popover]').popover({ 
+		html:true,
+		content: function() {
+			return $('#divPopoverBOLLisFiltroContentID').html();
+		},
+		title: function() {
+			return $('#divPopoverBOLLisFiltroDataTitleID').html();
+		},
+		callback: function() {
+			$('#tempDataFiltroID').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+			$('#tempMesFiltroID').datepicker({autoclose: true,format: "mm/yyyy",viewMode: "months", minViewMode: "months"});
+			$('.input-daterange').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+		} 
+	}).on("show.bs.popover", function () {
+		var $tip	= $(this).data("bs.popover").tip();
+		$tip.css("max-width", "600px");
+	});
+	
+	var $tipoFiltro	= $('#codTipoFiltroID').val(); 
+	var $tipoData	= $('#dataTipoID').val();
+	
+	if ( $tipoFiltro == 'P') {
+		mostraPeriodoBOLLisFiltro();
+	}else if ($tipoFiltro == 'M') {
+		mostraMensalBOLLisFiltro();
+	}else{
+		mostraDiarioBOLLisFiltro();
+	}
+
+	if ( $tipoData == 'E') {
+		selecionaEmissaoBOLLisFiltro();
+	}else{
+		selecionaVencimentoBOLLisFiltro();
+	}
+	
+});
+
+
+</script>

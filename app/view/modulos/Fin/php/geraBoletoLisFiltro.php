@@ -36,7 +36,7 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 try {
 	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	$_SESSION["_CPLIS_codFormaPagFiltro"], null);
+	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLis_codFormaPagFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -46,16 +46,17 @@ try {
 #################################################################################
 try {
 	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_CPLIS_codContaPagFiltro"], null);
+	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_BOLLis_codContaRecFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
+
 
 #################################################################################
 ## Select da Categoria
 #################################################################################
 try {
-	$aCat	= \Zage\Fin\Categoria::listaCombo("D");
+	$aCat	= \Zage\Fin\Categoria::listaCombo("C");
 	$oCat   = "";
 	if ($aCat) {
 		$aCatTemp	= array();
@@ -70,8 +71,8 @@ try {
 		ksort($aCatTemp);
 
 		foreach ($aCatTemp as $cDesc => $cCod) {
-			if ($_SESSION["_CPLIS_codCategoriaFiltro"] !== null) {
-				(in_array($cCod, $_SESSION["_CPLIS_codCategoriaFiltro"])) ? $selected = "selected=\"selected\"" : $selected = "";
+			if ($_SESSION["_BOLLis_codCategoriaFiltro"] !== null) {
+				(in_array($cCod, $_SESSION["_BOLLis_codCategoriaFiltro"])) ? $selected = "selected=\"selected\"" : $selected = "";
 			}else{
 				$selected = "";
 			}
@@ -87,7 +88,7 @@ try {
 #################################################################################
 try {
 	$aCentroCusto	= $em->getRepository('Entidades\ZgfinCentroCusto')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(),'indDebito' => 1),array('descricao' => 'ASC'));
-	$oCentroCusto	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'DESCRICAO',	$_SESSION["_CPLIS_codCentroCustoFiltro"], null);
+	$oCentroCusto	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLis_codCentroCustoFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -97,7 +98,7 @@ try {
 #################################################################################
 try {
 	$aStatus	= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findAll(array('descricao' => 'ASC'));
-	$oStatus	= $system->geraHtmlCombo($aStatus,	'CODIGO', 'DESCRICAO',	$_SESSION["_CPLIS_codStatusFiltro"], null);
+	$oStatus	= $system->geraHtmlCombo($aStatus,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLis_codStatusFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -105,7 +106,7 @@ try {
 #################################################################################
 ## Definir a URL do filtro
 #################################################################################
-$urlFiltro		= ROOT_URL . "/Fin/contaPagarLis.php?id=".$id;
+$urlFiltro		= ROOT_URL . "/Fin/geraBoletoLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -117,7 +118,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('ID'				,$id);
-$tpl->set('TITULO'			,'Pesquisa de contas a pagar');
+$tpl->set('TITULO'			,'Pesquisa para geração de boletos');
 $tpl->set('FILTER_URL'		,$urlFiltro);
 $tpl->set('DIVCENTRAL'		,$system->getDivCentral());
 $tpl->set('DP_MODAL'		,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
@@ -126,10 +127,10 @@ $tpl->set('STATUS'			,$oStatus);
 $tpl->set('CENTRO_CUSTO'	,$oCentroCusto);
 $tpl->set('FORMAS_PAG'		,$oFormaPag);
 $tpl->set('CONTAS'			,$oConta);
-$tpl->set('VALOR_INI'		,$_SESSION["_CPLIS_valorIniFiltro"]);
-$tpl->set('VALOR_FIM'		,$_SESSION["_CPLIS_valorFimFiltro"]);
-$tpl->set('DESCRICAO'		,$_SESSION["_CPLIS_descricaoFiltro"]);
-$tpl->set('FORNECEDOR'		,$_SESSION["_CPLIS_fornecedorFiltro"]);
+$tpl->set('VALOR_INI'		,$_SESSION["_BOLLis_valorIniFiltro"]);
+$tpl->set('VALOR_FIM'		,$_SESSION["_BOLLis_valorFimFiltro"]);
+$tpl->set('DESCRICAO'		,$_SESSION["_BOLLis_descricaoFiltro"]);
+$tpl->set('CLIENTE'			,$_SESSION["_BOLLis_clienteFiltro"]);
 
 #################################################################################
 ## Por fim exibir a página HTML
