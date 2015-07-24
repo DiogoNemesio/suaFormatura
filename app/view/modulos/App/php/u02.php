@@ -36,7 +36,7 @@ if (!isset($_cdu04))		\Zage\App\Erro::externalHalt('Script só pode ser usado po
 $codHistEmail	= $_cdu01;
 $senhaAlteracao	= $_cdu02;
 $emailAlteracao	= $_cdu03;
-$indConfirmado  = $_cdu04;
+$codOrganizacao = $_cdu04;
 
 #################################################################################
 ## Verificar se os usuário já existe e se já está ativo
@@ -45,10 +45,8 @@ $oHistEmail	= $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(a
 
 if (!$oHistEmail) 																$texto = 'Não existem pendências de confirmação!!!';
 elseif ($oHistEmail->getSenhaAlteracao() != $senhaAlteracao)					$texto = 'Senha não corresponde!!!';
-elseif ($indConfirmado != ("A" || "N"))											$texto = 'Redefinição de email não estar mais disponivel!!!';
-elseif ($indConfirmado == "A" && $oHistEmail->getIndConfirmadoAnterior() == 1)  $texto = 'O email já foi confirmado!!!';
-elseif ($indConfirmado == "N" && $oHistEmail->getIndConfirmadoNovo() == 1) 		$texto = 'O email já foi confirmado!!!';
-elseif ($indConfirmado == "A" && $oHistEmail->getIndConfirmadoAnterior() == 0){
+elseif ($oHistEmail->getIndConfirmadoAnterior() == 1)  $texto = 'O email já foi confirmado!!!';
+elseif ($oHistEmail->getIndConfirmadoAnterior() == 0){
 	$oHistEmail->setIndConfirmadoAnterior(1);
 	$oHistEmail->setDataConfirmacaoAnterior(new \DateTime("now"));
 	$oHistEmail->setIpConfirmacaoAnterior(\Zage\App\Util::getIPUsuario());
@@ -58,7 +56,7 @@ elseif ($indConfirmado == "A" && $oHistEmail->getIndConfirmadoAnterior() == 0){
 	$em->detach($oHistEmail);
 	
 	$texto 		= 'O email: '.$emailAlteracao.' foi confirmado com sucesso, uma nova confirmação foi enviada para o novo email.';
-	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oHistEmail->getCodigo().'&_cdu02='.$oHistEmail->getSenhaAlteracao().'&_cdu03='.$oHistEmail->getEmailNovo().'&_cdu04=N');
+	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oHistEmail->getCodigo().'&_cdu02='.$oHistEmail->getSenhaAlteracao().'&_cdu03='.$oHistEmail->getEmailNovo().'&_cdu04='.$codOrganizacao);
 	$textoEmail	= "Seu email foi alterado, mas ainda precisa ser confirmado. Para isso, clique no link abaixo:";
 	
 	#################################################################################
@@ -69,7 +67,7 @@ elseif ($indConfirmado == "A" && $oHistEmail->getIndConfirmadoAnterior() == 0){
 	$tpl->load(MOD_PATH . "/App/html/perfilConfirmEmail.html");
 	$assunto			= "Alteração de email";
 	$nome				= $oHistEmail->getCodUsuario()->getNome();
-	$confirmUrl			= ROOT_URL . "/App/u02.php?cid=".$cid;
+	$confirmUrl			= ROOT_URL . "/App/u03.php?cid=".$cid;
 	
 	#################################################################################
 	## Define os valores das variáveis
@@ -110,38 +108,6 @@ elseif ($indConfirmado == "A" && $oHistEmail->getIndConfirmadoAnterior() == 0){
 		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
 		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
 	}
-}
-elseif ($indConfirmado == "N" && $oHistEmail->getIndConfirmadoNovo() == 0){
-	$oHistEmail	= $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(array('codigo' => $codHistEmail));
-	try {
-		$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $oHistEmail->getCodUsuario()->getCodigo()));
-	
-		$oUsuario->setUsuario($emailAlteracao);
-		
-		$em->persist($oUsuario);
-		
-	} catch (\Exception $e) {
-		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
-		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
-	}
-	
-	$oStatus	= $em->getRepository('Entidades\ZgsegHistEmailStatus')->findOneBy(array('codigo' => 'F'));
-	try {
-		$oHistEmail->setCodStatus($oStatus);
-		$oHistEmail->setIndConfirmadoNovo(1);
-		$oHistEmail->setDataConfirmacaoNovo(new \DateTime("now"));
-		$oHistEmail->setIpConfirmacaoNovo(\Zage\App\Util::getIPUsuario());
-	
-		$em->persist($oHistEmail);
-		$em->flush();
-		$em->detach($oHistEmail);
-		$em->detach($oUsuario);
-	
-	} catch (\Exception $e) {
-		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
-		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
-	}
-	$texto 	= 'O email: '.$oHistEmail->getEmailNovo().' foi confirmado com sucesso.';
 }
 
 #################################################################################

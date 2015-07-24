@@ -77,13 +77,9 @@ $infoEmail = $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(ar
 if(!isset($infoEmail) && empty($infoEmail)){
 	$readonlyEmail = '';
 	$indMudaEmail  = 0; #Pode mudar
-}elseif ($infoEmail->getIndConfirmadoAnterior() == 1){
+}else{
 	$readonlyEmail = 'readonly'; 
-	$indMudaEmail  = 1; #Nao pode mudar
-	$usuario	   = $infoEmail->getEmailNovo();
-}elseif ($infoEmail->getIndConfirmadoAnterior() == 0){
-	$readonlyEmail = 'readonly';
-	$indMudaEmail  = 1; #Nao pode mudar
+	$indMudaEmail  = 2; #Nao pode mudar
 }
 
 

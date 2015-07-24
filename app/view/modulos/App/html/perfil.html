@@ -6,10 +6,11 @@
 	<div id="user-profile-3" class="user-profile row">
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
+				<input type='hidden' id='valID'>
 				<input type="hidden" name="id" value="%ID%">
 				<input type="hidden" name="_mudarUser" id="_mudarUserID" value="%IND_MUDAUSER%">
 				<input type="hidden" name="codStatus" value="%COD_STATUS%">
-				<input type="hidden" name="codUsuario" value="%COD_USUARIO%">
+				<input type="hidden" name="codUsuario" id="codUsuarioID" value="%COD_USUARIO%">
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
 				<div class="tabbable">
 					<ul class="nav nav-tabs padding-16" id='tabID'>
@@ -46,7 +47,7 @@
 						   					<input class="input-large" id="usuarioID" type="text" name="usuario" value="%USUARIO%" autocomplete="off" %EMAIL_READONLY% onchange="verificaAlteracao($(this));" >
 						    			</div>
 						    			<div class="col-sm-1 pull-left" id="divHelpUsuarioID"></div>
-						    			<div id="divCancelarID" class="hidden"><button id="cancelarID" onclick="cancelarSolicitacao();">Cancelar</button></div>
+						    			<div id="divCancelarID" class="hidden"><button id="cancelarID" class="btn btn-danger btn-xs" onclick="cancelarSolicitacao();"><i class="fa fa-ban fa-fw"></i> Cancelar</a></button></div>
 						    		</div>
 						    		<div class="form-group">
 								    	<label class="col-sm-3 control-label" for="cpfID">CPF</label>
@@ -212,7 +213,7 @@ function zgAlteraAvatar(pCodigo,pUrl) {
 	$("#avatarAtualID").attr("src",pUrl);
 }
 
-if($('#_mudarUserID').val() == 1){
+if($('#_mudarUserID').val() == 2){
 	$('#divCancelarID').removeClass("hidden");
 	$('#usuarioID').attr("readonly", true);
 	$('#divHelpUsuarioID').html(zgCriaSpanInfo('Aguardando confirmação !!!'));
@@ -220,13 +221,57 @@ if($('#_mudarUserID').val() == 1){
 
 function zgMudarEmail() {
 	$('#divCancelarID').removeClass("hidden");
-	$('#_mudarUserID').val(1);
+	$('#_mudarUserID').val(2);
 	$('#usuarioID').attr("readonly", true);
 	$('#divHelpUsuarioID').html(zgCriaSpanInfo('Aguardando confirmação !!!'));
 }
 
 function verificaAlteracao(pObj) {
-	$('#_mudarUserID').val(1);
+	var vUsuario	= $('#usuarioID').val();
+	$('#valID').val(0);
+	
+	if (vUsuario.length == 0) {
+		$('#divUsuarioID').addClass('has-error');
+		$('#divHelpUsuarioID').html(zgCriaSpanErro('Usuario deve ser preenchido !!'));
+		return false;
+	}else{
+		
+		if (validarEmail(vUsuario) == false){
+			$('#divUsuarioID').addClass('has-error');
+			$('#divHelpUsuarioID').html(zgCriaSpanErro('Usuario inválido !!'));
+			return false;
+		}else{
+				
+			/** Verificar se o Usuario está disponível no banco **/
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/App/perfilValidaEmail.dp.php",
+		   		data: {  codUsuario: $('#codUsuarioID').val() , usuario: vUsuario},
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(0);
+		   	    	}else{
+		   	    		$('#valID').val(1);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+		}
+	}
+	
+	if ($('#valID').val() == 1) {
+		$('#divUsuarioID').addClass('has-error');
+		$('#divHelpUsuarioID').html(zgCriaSpanErro('Usuario já existe, escolha outro'));
+		$('#_mudarUserID').val(0);
+		return false;
+	}else{
+		$('#divUsuarioID').removeClass('has-error');
+		$('#divHelpUsuarioID').html('&nbsp;');
+		$('#_mudarUserID').val(1);
+		return true;
+	}
 }
 
 function cancelarSolicitacao(){
@@ -369,6 +414,11 @@ function validaPerfil(){
 		}
 		
 		$vCount = 0;
+	}
+	
+	if ($('#valID').val() == 1) {
+		vOK = false;
+		vTab = 0;
 	}
 
 	if (vOK == true) {

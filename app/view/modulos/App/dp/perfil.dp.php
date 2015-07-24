@@ -19,6 +19,7 @@ Use \Zend\Mime;
 #################################################################################
 if (isset($_POST['_mudarUser'])) 		$_mudarUser		= \Zage\App\Util::antiInjection($_POST['_mudarUser']);
 
+if (isset($_POST['codUsuario'])) 		$codUsuario		= \Zage\App\Util::antiInjection($_POST['codUsuario']);
 if (isset($_POST['usuario'])) 			$usuario		= \Zage\App\Util::antiInjection($_POST['usuario']);
 if (isset($_POST['nome'])) 				$nome			= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['apelido'])) 			$apelido		= \Zage\App\Util::antiInjection($_POST['apelido']);
@@ -68,6 +69,7 @@ if ($err != null) {
 ## Cancelar solicitacao de alteracao de email
 #################################################################################
 if($_mudarUser == -1){
+	$log->debug('entrou 1');
 	#################################################################################
 	## Verifica se o registro já existe no banco
 	#################################################################################
@@ -82,8 +84,132 @@ if($_mudarUser == -1){
 	
 	$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Solicitação cancelada com sucesso !!!"));
 	echo '0'.\Zage\App\Util::encodeUrl('|'.$oHistEmail->getCodigo());
-}
-else if($_mudarUser == 0){
+}else if($_mudarUser == 1){
+	$log->debug('entrou 3');
+	#################################################################################
+	## Salvar no banco
+	#################################################################################
+	try {
+		#################################################################################
+		## Verifica se o registro já existe no banco
+		#################################################################################
+		
+		/** Usuario **/
+		if (!empty($usuario)) {
+			$valEmail			= new \Zage\App\Validador\Email();
+			if ($valEmail->isValid($usuario) == false){
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("EMAIL inválido !!"));
+				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
+				exit;
+			}else{
+				$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $usuario));
+				if($oUsuario != null && ($oUsuario->getCodigo() != $codUsuario)){
+					$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Este USUARIO já foi cadastrado!"));
+					echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
+					exit;
+				}
+			}
+		}
+		
+		if (!$oHistEmail)	$oHistEmail	= new \Entidades\ZgsegUsuarioHistEmail();
+		
+		if (isset($codUsuario) && (!empty($codUsuario))) {
+			$oHistEmail	= $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(array('codUsuario' => $codUsuario, 'codStatus' => 'A'));
+			if (!$oHistEmail){
+				$oHistEmail	= new \Entidades\ZgsegUsuarioHistEmail();
+			}else{
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Existe confirmação de email pendende!"));
+				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
+				exit;
+			}
+		}else{
+			$oHistEmail	= new \Entidades\ZgsegUsuarioHistEmail();
+		}
+		
+		$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
+		$oStatus		= $em->getRepository('Entidades\ZgsegHistEmailStatus')->findOneBy(array('codigo' => 'A'));
+		
+		$oHistEmail->setCodUsuario($oUsuario);
+		$oHistEmail->setEmailAnterior($oUsuario->getUsuario());
+		$oHistEmail->setEmailNovo($usuario);
+		$oHistEmail->setDataAlteracao(new \DateTime("now"));
+		//$oHistEmail->setDataConfirmacaoAnterior(null);
+		//$oHistEmail->setDataConfirmacaoNovo(null);
+		$oHistEmail->setSenhaAlteracao(\Zage\Seg\Perfil::_geraSenha());
+		$oHistEmail->setIndConfirmadoAnterior(0);
+		$oHistEmail->setIndConfirmadoNovo(0);
+		//$oHistEmail->setIpConfirmacaoAnterior(null);
+		//$oHistEmail->setIpConfirmacaoNovo(null);
+		$oHistEmail->setCodStatus($oStatus);
+		
+		$em->persist($oHistEmail);
+		$em->flush();
+		$em->detach($oHistEmail);
+		
+	} catch (\Exception $e) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
+		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+		exit;
+	}
+	
+	#################################################################################
+	## Carregando o template html do email
+	#################################################################################
+	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+	$tpl		= new \Zage\App\Template();
+	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oHistEmail->getCodigo().'&_cdu02='.$oHistEmail->getSenhaAlteracao().'&_cdu03='.$oHistEmail->getEmailAnterior().'&_cdu04='.$oOrg->getCodigo());
+
+	$tpl->load(MOD_PATH . "/App/html/perfilConfirmEmail.html");
+	$assunto			= "Alteração de email";
+	$nome				= $oUsuario->getNome();
+	$texto				= "Seu email foi alterado, mas ainda precisa ser confirmado. Para isso, clique no link abaixo:";
+	$confirmUrl			= ROOT_URL . "/App/u02.php?cid=".$cid;
+
+	#################################################################################
+	## Define os valores das variáveis
+	#################################################################################
+	$tpl->set('ID'					,$id);
+	$tpl->set('CONFIRM_URL'			,$confirmUrl);
+	$tpl->set('ASSUNTO'				,$assunto);
+	$tpl->set('TEXTO'				,$texto);
+	$tpl->set('NOME'				,$nome);
+	$tpl->set('URL_ORG'				,$oOrg->getNome());
+	#################################################################################
+	## Criar os objeto do email ,transporte e validador
+	#################################################################################
+	$mail 			= \Zage\App\Mail::getMail();
+	$transport 		= \Zage\App\Mail::getTransport();
+	$validator 		= new \Zend\Validator\EmailAddress();
+	$htmlMail 		= new MimePart($tpl->getHtml());
+	$htmlMail->type = "text/html";
+	$body 			= new MimeMessage();
+	
+	#################################################################################
+	## Definir o conteúdo do e-mail
+	#################################################################################
+	$body->setParts(array($htmlMail));
+	$mail->setBody($body);
+	$mail->setSubject("<ZageMail> ".$assunto);
+	
+	#################################################################################
+	## Definir os destinatários
+	#################################################################################
+	$mail->addTo($oHistEmail->getEmailAnterior());
+	
+	#################################################################################
+	## Salvar as informações e enviar o e-mail
+	#################################################################################
+	try {
+		$transport->send($mail);
+	} catch (Exception $e) {
+		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
+		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
+	}
+	
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ALERTA,$tr->trans("Para que ocorra a mudança, foi enviado um email de confirmação para o antigo email !!!"));
+	echo '0'.\Zage\App\Util::encodeUrl('|'.$oHistEmail->getCodigo());
+}else{
+	$log->debug('entrou 2');
 	#################################################################################
 	## Salvar no banco
 	#################################################################################
@@ -187,102 +313,5 @@ else if($_mudarUser == 0){
 	
 	$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Informações salvas com sucesso"));
 	echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuario->getCodigo());
-}else{
-	#################################################################################
-	## Salvar no banco
-	#################################################################################
-	try {
-		#################################################################################
-		## Verifica se o registro já existe no banco
-		#################################################################################
-		if (!empty($codUsuario)) {
-			$oHistEmail		= $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(array('codUsuario' => $system->getCodUsuario()));
-			if (!$oHistEmail)	$oHistEmail	= new \Entidades\ZgsegUsuarioHistEmail();
-		}else{
-			$oHistEmail	= new \Entidades\ZgsegUsuarioHistEmail();
-		}
-		
-		$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
-		$oStatus		= $em->getRepository('Entidades\ZgsegHistEmailStatus')->findOneBy(array('codigo' => 'A'));
-		
-		$oHistEmail->setCodUsuario($oUsuario);
-		$oHistEmail->setEmailAnterior($oUsuario->getUsuario());
-		$oHistEmail->setEmailNovo($usuario);
-		$oHistEmail->setDataAlteracao(new \DateTime("now"));
-		//$oHistEmail->setDataConfirmacaoAnterior(null);
-		//$oHistEmail->setDataConfirmacaoNovo(null);
-		$oHistEmail->setSenhaAlteracao(\Zage\Seg\Perfil::_geraSenha());
-		$oHistEmail->setIndConfirmadoAnterior(0);
-		$oHistEmail->setIndConfirmadoNovo(0);
-		//$oHistEmail->setIpConfirmacaoAnterior(null);
-		//$oHistEmail->setIpConfirmacaoNovo(null);
-		$oHistEmail->setCodStatus($oStatus);
-		
-		$em->persist($oHistEmail);
-		$em->flush();
-		$em->detach($oHistEmail);
-		
-	} catch (\Exception $e) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
-		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
-		exit;
-	}
-	
-	#################################################################################
-	## Carregando o template html do email
-	#################################################################################
-	$tpl		= new \Zage\App\Template();
-	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oHistEmail->getCodigo().'&_cdu02='.$oHistEmail->getSenhaAlteracao().'&_cdu03='.$oHistEmail->getEmailAnterior().'&_cdu04=A');
-
-	$tpl->load(MOD_PATH . "/App/html/perfilConfirmEmail.html");
-	$assunto			= "Alteração de email";
-	$nome				= $oUsuario->getNome();
-	$texto				= "Seu email foi alterado, mas ainda precisa ser confirmado. Para isso, clique no link abaixo:";
-	$confirmUrl			= ROOT_URL . "/App/u02.php?cid=".$cid;
-
-	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-	#################################################################################
-	## Define os valores das variáveis
-	#################################################################################
-	$tpl->set('ID'					,$id);
-	$tpl->set('CONFIRM_URL'			,$confirmUrl);
-	$tpl->set('ASSUNTO'				,$assunto);
-	$tpl->set('TEXTO'				,$texto);
-	$tpl->set('NOME'				,$nome);
-	$tpl->set('URL_ORG'				,$oOrg->getNome());
-	#################################################################################
-	## Criar os objeto do email ,transporte e validador
-	#################################################################################
-	$mail 			= \Zage\App\Mail::getMail();
-	$transport 		= \Zage\App\Mail::getTransport();
-	$validator 		= new \Zend\Validator\EmailAddress();
-	$htmlMail 		= new MimePart($tpl->getHtml());
-	$htmlMail->type = "text/html";
-	$body 			= new MimeMessage();
-	
-	#################################################################################
-	## Definir o conteúdo do e-mail
-	#################################################################################
-	$body->setParts(array($htmlMail));
-	$mail->setBody($body);
-	$mail->setSubject("<ZageMail> ".$assunto);
-	
-	#################################################################################
-	## Definir os destinatários
-	#################################################################################
-	$mail->addTo($oHistEmail->getEmailAnterior());
-	
-	#################################################################################
-	## Salvar as informações e enviar o e-mail
-	#################################################################################
-	try {
-		$transport->send($mail);
-	} catch (Exception $e) {
-		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
-		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
-	}
-	
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ALERTA,$tr->trans("Para que ocorra a mudança, foi enviado um email de confirmação para o antigo email !!!"));
-	echo '0'.\Zage\App\Util::encodeUrl('|'.$oHistEmail->getCodigo());
 }
 
