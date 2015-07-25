@@ -45,6 +45,13 @@ class ZgappNotificacao
     /**
      * @var integer
      *
+     * @ORM\Column(name="IND_VIA_SISTEMA", type="integer", nullable=false)
+     */
+    private $indViaSistema;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="IND_VIA_EMAIL", type="integer", nullable=false)
      */
     private $indViaEmail;
@@ -181,6 +188,29 @@ class ZgappNotificacao
     public function getMensagem()
     {
         return $this->mensagem;
+    }
+
+    /**
+     * Set indViaSistema
+     *
+     * @param integer $indViaSistema
+     * @return ZgappNotificacao
+     */
+    public function setIndViaSistema($indViaSistema)
+    {
+        $this->indViaSistema = $indViaSistema;
+
+        return $this;
+    }
+
+    /**
+     * Get indViaSistema
+     *
+     * @return integer 
+     */
+    public function getIndViaSistema()
+    {
+        return $this->indViaSistema;
     }
 
     /**

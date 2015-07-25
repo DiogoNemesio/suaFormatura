@@ -197,6 +197,13 @@ class ZgfinContaPagar
     private $codGrupoSubstituicao;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_SUBSTITUICAO", type="datetime", nullable=true)
+     */
+    private $dataSubstituicao;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -860,6 +867,29 @@ class ZgfinContaPagar
     public function getCodGrupoSubstituicao()
     {
         return $this->codGrupoSubstituicao;
+    }
+
+    /**
+     * Set dataSubstituicao
+     *
+     * @param \DateTime $dataSubstituicao
+     * @return ZgfinContaPagar
+     */
+    public function setDataSubstituicao($dataSubstituicao)
+    {
+        $this->dataSubstituicao = $dataSubstituicao;
+
+        return $this;
+    }
+
+    /**
+     * Get dataSubstituicao
+     *
+     * @return \DateTime 
+     */
+    public function getDataSubstituicao()
+    {
+        return $this->dataSubstituicao;
     }
 
     /**
