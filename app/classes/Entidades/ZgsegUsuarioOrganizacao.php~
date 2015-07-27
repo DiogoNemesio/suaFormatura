@@ -36,16 +36,6 @@ class ZgsegUsuarioOrganizacao
     private $dataBloqueio;
 
     /**
-     * @var \Entidades\ZgsegUsuario
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codUsuario;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -74,6 +64,16 @@ class ZgsegUsuarioOrganizacao
      * })
      */
     private $codPerfil;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codUsuario;
 
 
     /**
@@ -130,29 +130,6 @@ class ZgsegUsuarioOrganizacao
     public function getDataBloqueio()
     {
         return $this->dataBloqueio;
-    }
-
-    /**
-     * Set codUsuario
-     *
-     * @param \Entidades\ZgsegUsuario $codUsuario
-     * @return ZgsegUsuarioOrganizacao
-     */
-    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario = null)
-    {
-        $this->codUsuario = $codUsuario;
-
-        return $this;
-    }
-
-    /**
-     * Get codUsuario
-     *
-     * @return \Entidades\ZgsegUsuario 
-     */
-    public function getCodUsuario()
-    {
-        return $this->codUsuario;
     }
 
     /**
@@ -222,5 +199,28 @@ class ZgsegUsuarioOrganizacao
     public function getCodPerfil()
     {
         return $this->codPerfil;
+    }
+
+    /**
+     * Set codUsuario
+     *
+     * @param \Entidades\ZgsegUsuario $codUsuario
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario = null)
+    {
+        $this->codUsuario = $codUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get codUsuario
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getCodUsuario()
+    {
+        return $this->codUsuario;
     }
 }

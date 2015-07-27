@@ -29,16 +29,6 @@ class ZgappMenuPerfil
     private $ordem;
 
     /**
-     * @var \Entidades\ZgappMenu
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgappMenu")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_MENU", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codMenu;
-
-    /**
      * @var \Entidades\ZgadmOrganizacaoTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoTipo")
@@ -57,6 +47,16 @@ class ZgappMenuPerfil
      * })
      */
     private $codPerfil;
+
+    /**
+     * @var \Entidades\ZgappMenu
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappMenu")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_MENU", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codMenu;
 
 
     /**
@@ -90,29 +90,6 @@ class ZgappMenuPerfil
     public function getOrdem()
     {
         return $this->ordem;
-    }
-
-    /**
-     * Set codMenu
-     *
-     * @param \Entidades\ZgappMenu $codMenu
-     * @return ZgappMenuPerfil
-     */
-    public function setCodMenu(\Entidades\ZgappMenu $codMenu = null)
-    {
-        $this->codMenu = $codMenu;
-
-        return $this;
-    }
-
-    /**
-     * Get codMenu
-     *
-     * @return \Entidades\ZgappMenu 
-     */
-    public function getCodMenu()
-    {
-        return $this->codMenu;
     }
 
     /**
@@ -159,5 +136,28 @@ class ZgappMenuPerfil
     public function getCodPerfil()
     {
         return $this->codPerfil;
+    }
+
+    /**
+     * Set codMenu
+     *
+     * @param \Entidades\ZgappMenu $codMenu
+     * @return ZgappMenuPerfil
+     */
+    public function setCodMenu(\Entidades\ZgappMenu $codMenu = null)
+    {
+        $this->codMenu = $codMenu;
+
+        return $this;
+    }
+
+    /**
+     * Get codMenu
+     *
+     * @return \Entidades\ZgappMenu 
+     */
+    public function getCodMenu()
+    {
+        return $this->codMenu;
     }
 }
