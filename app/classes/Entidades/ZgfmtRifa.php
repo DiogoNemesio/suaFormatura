@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtRifa
  *
- * @ORM\Table(name="ZGFMT_RIFA")
+ * @ORM\Table(name="ZGFMT_RIFA", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_1_idx", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfmtRifa
@@ -20,6 +20,13 @@ class ZgfmtRifa
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="NOME", type="string", length=100, nullable=false)
+     */
+    private $nome;
 
     /**
      * @var string
@@ -84,6 +91,16 @@ class ZgfmtRifa
      */
     private $numeroVencedor;
 
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrganizacao;
+
 
     /**
      * Get codigo
@@ -93,6 +110,29 @@ class ZgfmtRifa
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set nome
+     *
+     * @param string $nome
+     * @return ZgfmtRifa
+     */
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
+
+        return $this;
+    }
+
+    /**
+     * Get nome
+     *
+     * @return string 
+     */
+    public function getNome()
+    {
+        return $this->nome;
     }
 
     /**
@@ -300,5 +340,28 @@ class ZgfmtRifa
     public function getNumeroVencedor()
     {
         return $this->numeroVencedor;
+    }
+
+    /**
+     * Set codOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
+     * @return ZgfmtRifa
+     */
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
+    {
+        $this->codOrganizacao = $codOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodOrganizacao()
+    {
+        return $this->codOrganizacao;
     }
 }

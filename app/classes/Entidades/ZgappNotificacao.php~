@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappNotificacao
  *
- * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"})})
+ * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"})})
  * @ORM\Entity
  */
 class ZgappNotificacao
@@ -22,13 +22,6 @@ class ZgappNotificacao
     private $codigo;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="DATA", type="datetime", nullable=false)
-     */
-    private $data;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="ASSUNTO", type="string", length=60, nullable=true)
@@ -36,11 +29,11 @@ class ZgappNotificacao
     private $assunto;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="MENSAGEM", type="string", length=1000, nullable=true)
+     * @ORM\Column(name="IND_VIA_SISTEMA", type="integer", nullable=false)
      */
-    private $mensagem;
+    private $indViaSistema;
 
     /**
      * @var integer
@@ -115,29 +108,6 @@ class ZgappNotificacao
     }
 
     /**
-     * Set data
-     *
-     * @param \DateTime $data
-     * @return ZgappNotificacao
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-
-        return $this;
-    }
-
-    /**
-     * Get data
-     *
-     * @return \DateTime 
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
      * Set assunto
      *
      * @param string $assunto
@@ -161,26 +131,26 @@ class ZgappNotificacao
     }
 
     /**
-     * Set mensagem
+     * Set indViaSistema
      *
-     * @param string $mensagem
+     * @param integer $indViaSistema
      * @return ZgappNotificacao
      */
-    public function setMensagem($mensagem)
+    public function setIndViaSistema($indViaSistema)
     {
-        $this->mensagem = $mensagem;
+        $this->indViaSistema = $indViaSistema;
 
         return $this;
     }
 
     /**
-     * Get mensagem
+     * Get indViaSistema
      *
-     * @return string 
+     * @return integer 
      */
-    public function getMensagem()
+    public function getIndViaSistema()
     {
-        return $this->mensagem;
+        return $this->indViaSistema;
     }
 
     /**
