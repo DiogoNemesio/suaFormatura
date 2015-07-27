@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtRifa
  *
- * @ORM\Table(name="ZGFMT_RIFA", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_RIFA_2_idx", columns={"COD_CENTRO_CUSTO"}), @ORM\Index(name="fk_ZGFMT_RIFA_3_idx", columns={"USUARIO_CADASTRO"}), @ORM\Index(name="fk_ZGFMT_RIFA_4_idx", columns={"USUARIO_ULTIMA_ALTERACAO"})})
+ * @ORM\Table(name="ZGFMT_RIFA", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_RIFA_2_idx", columns={"COD_CENTRO_CUSTO"}), @ORM\Index(name="fk_ZGFMT_RIFA_3_idx", columns={"USUARIO_CADASTRO"}), @ORM\Index(name="fk_ZGFMT_RIFA_4_idx", columns={"USUARIO_ALTERACAO"})})
  * @ORM\Entity
  */
 class ZgfmtRifa
@@ -94,9 +94,29 @@ class ZgfmtRifa
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATA_ULTIMA_ALTERACAO", type="datetime", nullable=true)
+     * @ORM\Column(name="DATA_ALTERACAO", type="datetime", nullable=true)
      */
-    private $dataUltimaAlteracao;
+    private $dataAlteracao;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="USUARIO_ALTERACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $usuarioAlteracao;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrganizacao;
 
     /**
      * @var \Entidades\ZgfinCentroCusto
@@ -117,26 +137,6 @@ class ZgfmtRifa
      * })
      */
     private $usuarioCadastro;
-
-    /**
-     * @var \Entidades\ZgsegUsuario
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="USUARIO_ULTIMA_ALTERACAO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $usuarioUltimaAlteracao;
-
-    /**
-     * @var \Entidades\ZgadmOrganizacao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codOrganizacao;
 
 
     /**
@@ -380,26 +380,72 @@ class ZgfmtRifa
     }
 
     /**
-     * Set dataUltimaAlteracao
+     * Set dataAlteracao
      *
-     * @param \DateTime $dataUltimaAlteracao
+     * @param \DateTime $dataAlteracao
      * @return ZgfmtRifa
      */
-    public function setDataUltimaAlteracao($dataUltimaAlteracao)
+    public function setDataAlteracao($dataAlteracao)
     {
-        $this->dataUltimaAlteracao = $dataUltimaAlteracao;
+        $this->dataAlteracao = $dataAlteracao;
 
         return $this;
     }
 
     /**
-     * Get dataUltimaAlteracao
+     * Get dataAlteracao
      *
      * @return \DateTime 
      */
-    public function getDataUltimaAlteracao()
+    public function getDataAlteracao()
     {
-        return $this->dataUltimaAlteracao;
+        return $this->dataAlteracao;
+    }
+
+    /**
+     * Set usuarioAlteracao
+     *
+     * @param \Entidades\ZgsegUsuario $usuarioAlteracao
+     * @return ZgfmtRifa
+     */
+    public function setUsuarioAlteracao(\Entidades\ZgsegUsuario $usuarioAlteracao = null)
+    {
+        $this->usuarioAlteracao = $usuarioAlteracao;
+
+        return $this;
+    }
+
+    /**
+     * Get usuarioAlteracao
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getUsuarioAlteracao()
+    {
+        return $this->usuarioAlteracao;
+    }
+
+    /**
+     * Set codOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
+     * @return ZgfmtRifa
+     */
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
+    {
+        $this->codOrganizacao = $codOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodOrganizacao()
+    {
+        return $this->codOrganizacao;
     }
 
     /**
@@ -446,51 +492,5 @@ class ZgfmtRifa
     public function getUsuarioCadastro()
     {
         return $this->usuarioCadastro;
-    }
-
-    /**
-     * Set usuarioUltimaAlteracao
-     *
-     * @param \Entidades\ZgsegUsuario $usuarioUltimaAlteracao
-     * @return ZgfmtRifa
-     */
-    public function setUsuarioUltimaAlteracao(\Entidades\ZgsegUsuario $usuarioUltimaAlteracao = null)
-    {
-        $this->usuarioUltimaAlteracao = $usuarioUltimaAlteracao;
-
-        return $this;
-    }
-
-    /**
-     * Get usuarioUltimaAlteracao
-     *
-     * @return \Entidades\ZgsegUsuario 
-     */
-    public function getUsuarioUltimaAlteracao()
-    {
-        return $this->usuarioUltimaAlteracao;
-    }
-
-    /**
-     * Set codOrganizacao
-     *
-     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
-     * @return ZgfmtRifa
-     */
-    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
-    {
-        $this->codOrganizacao = $codOrganizacao;
-
-        return $this;
-    }
-
-    /**
-     * Get codOrganizacao
-     *
-     * @return \Entidades\ZgadmOrganizacao 
-     */
-    public function getCodOrganizacao()
-    {
-        return $this->codOrganizacao;
     }
 }

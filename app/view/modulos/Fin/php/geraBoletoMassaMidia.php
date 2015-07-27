@@ -73,6 +73,11 @@ $htmlBol	= '';
 $parcelas	= '';
 
 #################################################################################
+## Localiza o template do Boleto por e-mail
+#################################################################################
+$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ASSINATURA_VENCIDA'));
+
+#################################################################################
 ## Faz o loop nas parcelas das contas
 #################################################################################
 for ($i = 0; $i < sizeof($codContaSel); $i++) {
@@ -284,9 +289,13 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	## Emitir o boleto, ou seja gerar o código html do mesmo
 	#################################################################################
 	$boleto->emitir();
-	$htmlBol	.= $boleto->getHtml();
-	if ($i < sizeof($codContaSel) -1) $htmlBol	.= '<div style="page-break-after:always;">&nbsp;</div>';
-
+	if ($tipoMidia == "PDF") {
+		$htmlBol	.= $boleto->getHtml();
+		if ($i < sizeof($codContaSel) -1) $htmlBol	.= '<div style="page-break-after:always;">&nbsp;</div>';
+	}else{
+		$htmlBol	= $boleto->getHtml();
+	}
+	
 	#################################################################################
 	## Salvar a linha digitável e o nosso número
 	#################################################################################
@@ -319,111 +328,123 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$hist->setEmail($email);
 	$em->persist($hist);
 	$em->flush();
+	
+	if ($tipoMidia != "PDF") {
+	
+		$textoParcela	= "Boleto referente a parcela (".$parcela.")";
+		$textoParcela	.= " de ".$oConta->getNumParcelas()."";
+		$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+		$urlOrg			= ROOT_URL . $oOrg->getIdentificacao();
+		
+		$output		 	= new TempFile();
+		$input 			= new TempFile($htmlBol, 'html');
+		$converter 		= new PhantomJS();
+		$converter->addSearchPath(CLASS_PATH . "/H2P/bin/phantomjs");
+		$converter->convert($input, $output);
+		
+		
+		#################################################################################
+		## Carregando o template html do email
+		#################################################################################
+		$tpl	= new \Zage\App\Template();
+		$tpl->load(MOD_PATH . "/Fin/html/boletoMail.html");
+		
+		#################################################################################
+		## Define os valores das variáveis
+		#################################################################################
+		$tpl->set('ID'					,$id);
+		$tpl->set('TEXTO_PARCELA'		,$textoParcela);
+		$tpl->set('DESC_CONTA'			,$descConta);
+		$tpl->set('URL_ORG'				,$urlOrg);
+		
+		#################################################################################
+		## Criar os objeto do email ,transporte e validador
+		#################################################################################
+		$mail 			= \Zage\App\Mail::getMail();
+		$transport 		= \Zage\App\Mail::getTransport();
+		$validator 		= new \Zend\Validator\EmailAddress();
+		$htmlMail 		= new MimePart($tpl->getHtml());
+		$htmlMail->type = "text/html";
+		$body 			= new MimeMessage();
+		
+		
+		#################################################################################
+		## Cadastrar a notificação
+		#################################################################################
+		/*$daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
+		 $diogo			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 2));
+		 $template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ASSINATURA_VENCIDA'));
+		 $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+		 $notificacao->setAssunto("Teste de notificação ");
+		 $notificacao->setCodUsuario($daniel);
+		 $notificacao->associaUsuario(1);
+		 $notificacao->enviaWa();
+		 $notificacao->setMensagem("Teste de notificação SuaFormatura.com:  ". date("d/m/Y h:i:s"));
+		 //$notificacao->enviaEmail();
+		 //$notificacao->setCodTemplate($template);
+		 //$notificacao->adicionaVariavel("DATA_VENCIMENTO", "13/06/2015");
+		 //$notificacao->adicionaVariavel("VALOR_ASSINATURA", "R$ 1.000,00");
+		 $notificacao->salva();
+		*/
+		
+		#################################################################################
+		## Anexar o PDF
+		#################################################################################
+		$fileContent 				= $output->getContent();
+		$attachment 				= new Mime\Part($fileContent);
+		$attachment->type 			= 'application/pdf';
+		$attachment->filename 		= 'boleto.pdf';
+		$attachment->disposition 	= Mime\Mime::DISPOSITION_ATTACHMENT;
+		$attachment->encoding 		= Mime\Mime::ENCODING_BASE64;
+		
+		#################################################################################
+		## Definir o conteúdo do e-mail
+		#################################################################################
+		$body->setParts(array($htmlMail, $attachment));
+		$mail->setBody($body);
+		$mail->setSubject("<ZageMail> Boleto referente a fatura: ".$demonstrativo1);
+		
+		#################################################################################
+		## Definir os destinatários
+		#################################################################################
+		$emails		= explode(",",$email);
+		for ($j = 0; $j <sizeof($emails); $j++) {
+			$_to		= trim($emails[$j]);
+			if ($validator->isValid($_to)) {
+				$mail->addTo($_to);
+			}
+		}
+		
+		#################################################################################
+		## Enviar o e-mail
+		#################################################################################
+		try {
+			$transport->send($mail);
+		} catch (Exception $e) {
+			$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
+			throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
+		}
+		
+		
+		
+	}	
+	
 }
 
-$parcelas		= substr($parcelas,0 ,-1);
-$textoParcela	= "Boleto referente ";
-if (sizeof($codContaSel) > 1) {
-	$textoParcela .= "as parcelas (".$parcelas .") ";
-}else{
-	$textoParcela .= "a parcela ".$parcelas;
-}
 
-$textoParcela	.= " de ".$oConta->getNumParcelas()."";
-$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-$urlOrg			= ROOT_URL . $oOrg->getIdentificacao();
-
-$output		 	= new TempFile();
-$input 			= new TempFile($htmlBol, 'html');
-$converter 		= new PhantomJS();
-$converter->addSearchPath(CLASS_PATH . "/H2P/bin/phantomjs");
-$converter->convert($input, $output);
 
 if ($tipoMidia == "PDF") {
+
+	$output		 	= new TempFile();
+	$input 			= new TempFile($htmlBol, 'html');
+	$converter 		= new PhantomJS();
+	$converter->addSearchPath(CLASS_PATH . "/H2P/bin/phantomjs");
+	$converter->convert($input, $output);
+	
+	
 	\Zage\App\Util::sendHeaderPDF("boleto.pdf");
 	echo $output->getContent();
 }else{
-	#################################################################################
-	## Carregando o template html do email
-	#################################################################################
-	$tpl	= new \Zage\App\Template();
-	$tpl->load(MOD_PATH . "/Fin/html/boletoMail.html");
-	
-	#################################################################################
-	## Define os valores das variáveis
-	#################################################################################
-	$tpl->set('ID'					,$id);
-	$tpl->set('TEXTO_PARCELA'		,$textoParcela);
-	$tpl->set('DESC_CONTA'			,$descConta);
-	$tpl->set('URL_ORG'				,$urlOrg);
-	
-	#################################################################################
-	## Criar os objeto do email ,transporte e validador
-	#################################################################################
-	$mail 			= \Zage\App\Mail::getMail();
-	$transport 		= \Zage\App\Mail::getTransport();
-	$validator 		= new \Zend\Validator\EmailAddress();
-	$htmlMail 		= new MimePart($tpl->getHtml());
-	$htmlMail->type = "text/html";
-	$body 			= new MimeMessage();
-
-	
-	#################################################################################
-	## Cadastrar a notificação
-	#################################################################################
-	/*$daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
-	$diogo			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 2));
-	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ASSINATURA_VENCIDA'));
-	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
-	$notificacao->setAssunto("Teste de notificação ");
-	$notificacao->setCodUsuario($daniel);
-	$notificacao->associaUsuario(1);
-	$notificacao->enviaWa();
-	$notificacao->setMensagem("Teste de notificação SuaFormatura.com:  ". date("d/m/Y h:i:s"));
-	//$notificacao->enviaEmail();
-	//$notificacao->setCodTemplate($template);
-	//$notificacao->adicionaVariavel("DATA_VENCIMENTO", "13/06/2015");
-	//$notificacao->adicionaVariavel("VALOR_ASSINATURA", "R$ 1.000,00");
-	$notificacao->salva();
-	*/
-	
-	#################################################################################
-	## Anexar o PDF
-	#################################################################################
-	$fileContent 				= $output->getContent();
-	$attachment 				= new Mime\Part($fileContent);
-	$attachment->type 			= 'application/pdf';
-	$attachment->filename 		= 'boleto.pdf';
-	$attachment->disposition 	= Mime\Mime::DISPOSITION_ATTACHMENT;
-	$attachment->encoding 		= Mime\Mime::ENCODING_BASE64;
-	
-	#################################################################################
-	## Definir o conteúdo do e-mail
-	#################################################################################
-	$body->setParts(array($htmlMail, $attachment));
-	$mail->setBody($body);
-	$mail->setSubject("<ZageMail> Boleto referente a fatura: ".$demonstrativo1);
-	
-	#################################################################################
-	## Definir os destinatários
-	#################################################################################
-	$emails		= explode(",",$email);
-	for ($j = 0; $j <sizeof($emails); $j++) {
-		$_to		= trim($emails[$j]);
-		if ($validator->isValid($_to)) {
-			$mail->addTo($_to);
-		}
-	}
-	
-	#################################################################################
-	## Enviar o e-mail
-	#################################################################################
-	try {
-		$transport->send($mail);
-	} catch (Exception $e) {
-		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
- 		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
- 	}
 	
 	$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Email enviado com sucesso !!!"));
 }

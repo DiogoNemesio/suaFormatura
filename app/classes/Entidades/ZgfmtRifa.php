@@ -99,16 +99,6 @@ class ZgfmtRifa
     private $dataAlteracao;
 
     /**
-     * @var \Entidades\ZgsegUsuario
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="USUARIO_ALTERACAO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $usuarioAlteracao;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -137,6 +127,16 @@ class ZgfmtRifa
      * })
      */
     private $usuarioCadastro;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="USUARIO_ALTERACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $usuarioAlteracao;
 
 
     /**
@@ -403,29 +403,6 @@ class ZgfmtRifa
     }
 
     /**
-     * Set usuarioAlteracao
-     *
-     * @param \Entidades\ZgsegUsuario $usuarioAlteracao
-     * @return ZgfmtRifa
-     */
-    public function setUsuarioAlteracao(\Entidades\ZgsegUsuario $usuarioAlteracao = null)
-    {
-        $this->usuarioAlteracao = $usuarioAlteracao;
-
-        return $this;
-    }
-
-    /**
-     * Get usuarioAlteracao
-     *
-     * @return \Entidades\ZgsegUsuario 
-     */
-    public function getUsuarioAlteracao()
-    {
-        return $this->usuarioAlteracao;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -492,5 +469,28 @@ class ZgfmtRifa
     public function getUsuarioCadastro()
     {
         return $this->usuarioCadastro;
+    }
+
+    /**
+     * Set usuarioAlteracao
+     *
+     * @param \Entidades\ZgsegUsuario $usuarioAlteracao
+     * @return ZgfmtRifa
+     */
+    public function setUsuarioAlteracao(\Entidades\ZgsegUsuario $usuarioAlteracao = null)
+    {
+        $this->usuarioAlteracao = $usuarioAlteracao;
+
+        return $this;
+    }
+
+    /**
+     * Get usuarioAlteracao
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getUsuarioAlteracao()
+    {
+        return $this->usuarioAlteracao;
     }
 }
