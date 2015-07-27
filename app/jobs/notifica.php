@@ -39,7 +39,6 @@ $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TE
 $notificacao->setAssunto("Teste de notificação ");
 $notificacao->setCodUsuario($daniel);
 $notificacao->associaUsuario(1);
-$notificacao->associaUsuario(2);
 $notificacao->enviaWa();
 $notificacao->setMensagem("Teste de notificação SuaFormatura.com:  ". date("d/m/Y h:i:s"));
 //$notificacao->enviaEmail();

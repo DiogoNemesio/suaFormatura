@@ -130,7 +130,20 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		## Validar alguns campos
 		#################################################################################
 		if (strlen($this->getAssunto() > 60)) $this->setAssunto(substr($this->getAssunto(),0,60));
-		
+
+		#################################################################################
+		## Verificar se a notificação tem alguma via para o usuário
+		#################################################################################
+		if (!$this->getIndViaSistema() && !$this->getIndViaEmail() && !$this->getIndViaWa() ) {
+			throw new \Exception('Pelo menos uma via deve ser informada !!!');
+		}
+
+		#################################################################################
+		## Ajusta os campos da via de notificação
+		#################################################################################
+		if (!$this->getIndViaEmail())	$this->naoEnviaEmail();
+		if (!$this->getIndViaWa())		$this->naoEnviaWa();
+		if (!$this->getIndViaSistema())	$this->naoEnviaSistema();
 		
 		#################################################################################
 		## Criar o objeto do doctrine
@@ -146,7 +159,6 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			$this->setIndProcessada(1);
 		}
 		
-		
 		#################################################################################
 		## Salva os campos
 		#################################################################################
@@ -157,6 +169,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		$_not->setData(new \DateTime("now"));
 		$_not->setIndViaEmail($this->getIndViaEmail());
 		$_not->setIndViaWa($this->getIndViaWa());
+		$_not->setIndViaSistema($this->getIndViaSistema());
 		$_not->setAssunto($this->getAssunto());
 		$_not->setMensagem($this->getMensagem());
 		$_not->setIndProcessada($this->getIndProcessada());
@@ -314,12 +327,14 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			->from('\Entidades\ZgappNotificacao','n')
 			->leftJoin('\Entidades\ZgappNotificacaoUsuario', 'nu', \Doctrine\ORM\Query\Expr\Join::WITH, 'nu.codNotificacao = n.codigo')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('nu.codUsuario'	, ':codUsuario'),
-				$qb->expr()->eq('nu.indLida'	, ':lida')
+				$qb->expr()->eq('nu.codUsuario'		, ':codUsuario'),
+				$qb->expr()->eq('nu.indLida'		, ':lida'),
+				$qb->expr()->eq('n.indViaSistema'	, ':indSistema')
 			))
 			->orderBy('n.data','ASC')
 			->setParameter('codUsuario'	, $codUsuario)
-			->setParameter('lida'		, 0);
+			->setParameter('lida'		, 0)
+			->setParameter('indSistema'	, 1);
 			
 			$query 		= $qb->getQuery();
 			return		($query->getResult());
