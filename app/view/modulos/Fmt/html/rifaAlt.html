@@ -1,0 +1,679 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Cadastro de rifa
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" id="codRifaID" name="codRifa" value="%COD_RIFA%">
+				<input type='hidden' name="numUsuAtivo" id='numUsuAtivoID' value="%NUM_USUARIO%">
+				<div class="tabbable" id="tabID">
+					<ul class="nav nav-tabs padding-16">
+						<li class="active">
+							<a data-toggle="tab" href="#parceiro-principal">
+								<i class="green fa fa-edit bigger-125"></i>
+								Principal
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#parceiro-endereco">
+								<i class="black fa fa-road bigger-125"></i>
+								Endereço
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab"  href="#parceiro-telefone">
+								<i class="blue fa fa-phone bigger-125"></i>
+								Telefones
+							</a>
+						</li>
+					</ul>
+					<div class="tab-content profile-edit-tab-content">
+						<div id="parceiro-principal" class="tab-pane in active">
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-7">
+									<h5 class="header blue bolder smaller">Informações da rifa</h5>
+									<div class="form-group col-sm-12" id="divRifaEletronicaID">
+								    	<label class="col-xs-12 col-sm-6 control-label" for="indRifaEletronicaID">Rifa eletrônica
+								    		<span><i class="ace-icon fa fa-question-circle green" data-rel="popover" data-placement="left" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> O que é?" data-content="Na rifa eletrõnica os formandos irão realizar as vendas das rifas pelo portal e os compradores irão receber mensagem contento todas as informações da sua participação no sorteio. É a rifa ecologicamente correta, sem uso de papel!"></i></span>
+								    	</label>
+								    	<label>
+								    		<input name="indRifaEletronica" id="indRifaEletronicaID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_RIFA_ELETRONICA% />
+											<span class="lbl"></span>
+										</label>
+								    </div>
+									<div class="form-group col-sm-12" id="divNomeID">
+								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo."></i></span>
+							    			<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome da rifa" maxlength="100" value="%NOME%" onchange="atualizaResumo()" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divPremioID">
+								    	<label class="col-sm-3 control-label" for="premioID">Prêmio</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo."></i></span>
+							    			<input class="form-control" id="premioID" type="text" name="premio" placeholder="Prêmio" maxlength="100" value="%PREMIO%" onchange="atualizaResumo()" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpPremioID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divCustoID">
+								    	<label class="col-sm-3 control-label" for="custoID">Custo</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo."></i></span>
+							    			<input class="form-control" id="custoID" type="text" name="custo" placeholder="Custo do prêmio" maxlength="100" value="%CUSTO%" autocomplete="off" onchange="atualizaResumo()" zg-data-toggle="mask" zg-data-mask="dinheiro">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCustoID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divValorID">
+						    			<label class="col-sm-3 control-label" for="valorID">Valor da rifa</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um email para contato."></i></span>
+						   					<input class="form-control" id="valorID" name="valor" placeholder="Valor unitário da rifa" maxlength="200" onchange="atualizaResumo()" value="%VALOR%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+						    			</div>
+						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
+						    		</div>
+						    		<div class="form-group col-sm-12" id="divQtdeObrigatorioID">
+						    			<label class="col-sm-3 control-label" for="qtdeObrigatorioID">Qtde mínima</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um email para contato."></i></span>
+						   					<input class="form-control" id="qtdeObrigatorioID" name="qtdeObrigatorio" placeholder="Quantidade mínima obrigatória" value="%QTDE_OBRIGATORIO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="atualizaResumo()">
+						    			</div>
+						    			<div class="col-sm-1 pull-left" id="divHelpQtdeObrigatorioID"></div>
+						    		</div>
+								    
+								    <h5 class="header blue bolder smaller">Informações do sorteio</h5>
+						    		<div class="form-group col-sm-12" id="divDataSorteioID">
+								    	<label class="col-sm-3 control-label" for="dataSorteioID">Data sorteio</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de nascimento do parceiro."></i></span>
+							    			<input class="form-control datepicker" id="dataSorteioID" type="text" name="dataSorteio" maxlength="10" placeholder="Data do sorteio" value="%DATA_SORTEIO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpDataSorteioID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divLocalSorteioID">
+								    	<label class="col-sm-3 control-label" for="localSorteioID">Local</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo."></i></span>
+							    			<input class="form-control" id="localSorteioID" type="text" name="localSorteio" placeholder="Local do sorteio" maxlength="60" value="%LOCAL_SORTEIO%" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpLocalSorteioID"></div>
+								    </div>
+								    
+						    	</div>
+						    
+						    	<div class="col-sm-5">
+									<div class="widget-box">
+										<div class="widget-header widget-header-flat widget-header-small center">
+											<h5 class="widget-title">Resumo</h5>
+										</div>
+										<div class="widget-body">
+											<div class="widget-main small">
+												
+												<div class="row" id="divInfoNomeID">
+													<h6 class="header blue bolder smaller">&nbsp;Informações da RIFA:</h6>
+													<div class="vspace-xs"></div>
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Nome:</p>
+												    	<p id='lbInfoIdentID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+												<div class="row" id="divInfoPremioID">
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Prêmio:</p>
+												    	<p id='lbInfoPremioID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+												<div class="row" id="divInfoTurmaID">
+													<h6 class="header blue bolder smaller">&nbsp;Informações da turma:</h6>
+													<div class="vspace-xs"></div>
+												</div>
+												<div class="row" id="divInfoNumUsuID">
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos ativos:</p>
+												    	<p id='lbInfoNumUsuID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+												<div class="row" id="divInfoConfID">
+													<h6 class="header blue bolder smaller">&nbsp;Previsão financeira:</h6>
+													<div class="vspace-xs"></div>
+												</div>
+												<div class="row" id="divInfoCustoID">
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Custo com prêmio (R$):</p>
+												    	<p id='lbInfoCustoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+												<div class="row" id="divInfoValorID">
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da RIFA (R$):</p>
+												    	<p id='lbInfoValorID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+												<div class="row" id="divInfoQtdeObrigatorioID">
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Qtde obrigatória:</p>
+												    	<p id='lbInfoQtdeObrigatorioID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+												<div class="row" id="divInfoQtdeObrigatorioID">
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor por formando (R$):</p>
+												    	<p id='lbInfoValorObrigatorioID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+												<div class="row" id="divInfoCentroCustoID">
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>LUCRO (R$):</b></p>
+												    	<p id='lbInfoLucroID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+												<div class="row hidden" id="divInfoPessoaID">
+													<div class="col-sm-12">
+												    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Fornecedor:</p>
+												    	<p id='lbInfoPessoaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+											    	</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>			    	
+						    </div>
+						</div>
+						
+						<div id="parceiro-endereco" class="tab-pane">
+							<h5 class="header blue bolder smaller">Endereço</h5>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">CEP</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="As informações do endereço serão preenchidas de acordo com o CEP informado."></i></span>
+											<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+									</div>																	
+									<div class="form-group col-sm-12" id="divDescLogradouroID">
+										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro (endereço)"></i></span>
+											<input class="form-control" type="text" id="descLogradouroID" %READONLY_END% name="descLogradouro" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
+									</div>	
+									<div class="form-group col-sm-12" id="divBairroID">
+										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro"></i></span>
+											<input class="form-control" type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
+									</div>
+									<div class="form-group col-sm-12">
+										<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade"></i></span>
+											<input class="form-control" type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" placeholder="Cidade" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF)"></i></span>
+											<input class="form-control" type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" placeholder="Estado" />
+										</div>
+									</div>									
+									<div class="form-group col-sm-12" id="divNumeroID">
+										<label for="numeroID" class="col-sm-3 control-label">Número</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o número do endereço."></i></span>
+											<input class="form-control" type="text" id="numeroID" name="numero" value="%NUMERO%" autocomplete="off" placeholder="Número" maxlength="10" />
+										</div>
+									</div>							
+									<div class="form-group col-sm-12" id="divComplementoID">
+										<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o complemento do endereço."></i></span>
+											<input class="form-control" type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" autocomplete="off" placeholder="Complemento" maxlength="100" />
+										</div>
+									</div>																			
+								</div>
+								<div class="hidden" id="divEndCorretoID">
+									<div class="col-sm-12">
+										<div class="form-group col-sm-12">
+											<div class="alert alert-info">	
+												Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+												<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
+												<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+											</div>		
+										</div>	
+									</div>
+						    	</div>
+							</div>
+						</div>
+						
+						<div id="parceiro-telefone" class="tab-pane">
+							<h5 class="header blue bolder smaller">Lista de telefones</h5>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-8" align="center">
+									<table id="pessoaAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
+										<thead>
+											<tr class="warning">
+												<th class="col-sm-1 center"></th>
+												<th class="col-sm-3 center">Tipo</th>
+												<th class="col-sm-3 center">Telefone</th>
+												<th class="col-sm-1 center"><span onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										%TAB_TELEFONE%
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-5 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+/*********************************************************
+* Inicializações 
+*********************************************************/
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+
+//Popover
+$('[data-rel=popover]').popover({html:true});
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Atualizar MENU
+atualizaResumo();
+
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaRifaAlt();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codOrganizacaoID').val(zgGetCodRetorno(data));
+		}
+		zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Desabilitar os SELECTS **/
+		$( "select" ).each(function( index ) {
+			if ($(this).hasClass('readonly')) {
+				$(this).prop( "disabled", true );
+			}
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+
+/******************************************************
+VALIDA FORMULÁRIO
+/******************************************************/
+function validaRifaAlt() {
+	var vNome			= $('#nomeID').val();
+	var vPremio	    	= $('#premioID').val();
+	var vCusto			= $('#custoID').val();
+	var vDataSorteio	= $('#dataSorteioID').val();
+	var vLocalSorteio	= $('#localSorteioID').val();
+	var vQtdeObrigatorio = $('#qtdeObrigatorioID').val();
+	var vValor			= $('#valorID').val();
+	
+	var vOK				= true;
+	var vIdent;
+	var vTab			= 0;
+	
+	//---- ABA PRINCIPAL ----/
+		
+	/** NOME **/
+	if (!vNome){
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('O nome da rifa deve ser preenchido!'));
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');		
+	}
+	
+	/** PREMIO **/
+	if (!vPremio){
+		$('#divPremioID').addClass('has-error');
+		$('#divHelpPremioID').html(zgCriaSpanErro('O prêmio da rifa deve ser preenchido!'));
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divPremioID').removeClass('has-error');
+		$('#divHelpPremioID').html('&nbsp;');		
+	}
+	
+	/** DATA SORTEIO **/
+	if (!vDataSorteio){
+		$('#divDataSorteioID').addClass('has-error');
+		$('#divHelpDataSorteioID').html(zgCriaSpanErro('A data do sorteio deve ser preenchida!'));
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divDataSorteioID').removeClass('has-error');
+		$('#divHelpDataSorteioID').html('&nbsp;');		
+	}
+	
+	/** LOCAL SORTEIO **/
+	if (!vDataSorteio){
+		$('#divLocalSorteioID').addClass('has-error');
+		$('#divHelpLocalSorteioID').html(zgCriaSpanErro('A data do sorteio deve ser preenchida!'));
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divLocalSorteioID').removeClass('has-error');
+		$('#divHelpLocalSorteioID').html('&nbsp;');		
+	}
+	
+	/** QTDE OBRIGATORIO **/
+	if (!vQtdeObrigatorio){
+		$('#divQtdeObrigatorioID').addClass('has-error');
+		$('#divHelpQtdeObrigatorioID').html(zgCriaSpanErro('A quantidade mínida de rifas a serem vendida por formando deve ser preenchida!'));
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divQtdeObrigatorioID').removeClass('has-error');
+		$('#divHelpQtdeObrigatorioID').html('&nbsp;');		
+	}
+	
+	/** VALOR **/
+	if (!vValor){
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('O valor uniário da rifa deve ser preenchido!'));
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divValorID').removeClass('has-error');
+		$('#divHelpValorID').html('&nbsp;');		
+	}
+	
+	
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Abrir aba que tiver campos inválidos
+		$('#tabID li:eq('+ vTab +') a').tab('show');
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+}
+
+	
+function atualizaResumo() {
+	var $nome		= $('#nomeID').val();
+	var $premio		= $('#premioID').val();
+	var $custo		= $('#custoID').val();
+	var $valor		= $('#valorID').val();
+	var $numUsu		= $('#numUsuAtivoID').val();
+	var $qtdeObri	= $('#qtdeObrigatorioID').val();
+	
+	$('#lbInfoIdentID').text($nome);
+	$('#lbInfoPremioID').text($premio);
+	$('#lbInfoCustoID').text($custo);
+	$('#lbInfoValorID').text($valor);
+	$('#lbInfoNumUsuID').text($numUsu);
+	$('#lbInfoQtdeObrigatorioID').text($qtdeObri);
+	
+	// CALCULOS
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+	
+	
+	$nValor		= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+	$nCusto		= parseFloat($('#custoID').val().replace(".", "").replace(",","."));
+	
+	if (isNaN($nCusto))		$nCusto		= 0;
+	
+	// CUSTO POR FORMANDO E LUCRO
+	if ($nValor && $qtdeObri){
+		//CUSTO POR FORMANDO
+		$valorObri = $nValor * $qtdeObri;
+		$valorObri = accounting.formatMoney($valorObri, options);
+		
+		$('#lbInfoValorObrigatorioID').text($valorObri);
+		
+		//LUCRO
+		$nLucro = $nValor * $qtdeObri * $numUsu - $nCusto;
+		//$lucro = accounting.formatMoney($nlucro, options);
+		
+		if ($nLucro > 0) {
+			$desc	= "<span class='text-success'>"+accounting.formatMoney($nLucro, options)+"</span>";
+		}else{
+			$desc	= "<strong>&nbsp;<span class='text-danger'>"+accounting.formatMoney($nLucro, options)+"</span>&nbsp;</strong>";
+		}
+		
+		$('#lbInfoLucroID').html($desc);
+	}
+	
+}
+
+/******************************************************
+BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
+/******************************************************/
+//Busca ENDEREÇO
+function buscaRua() {
+	var vCep			= $('#cepID').cleanVal();
+	
+	if (vCep){
+		if (vCep.length != 8){
+			$('#divCepID').addClass('has-error');
+			$('#divEndCorretoID').addClass("hidden"); //Esconder o div de alterar endereço
+			$('#divHelpCepID').html(zgCriaSpanErro('CEP inválido!'));
+			limpaInfoLogradouro();
+			return false;
+		}else{
+			/** Buscar o cep no banco **/
+			jQuery.ajax({
+	    		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
+	    		data: { cep: vCep},
+	    		success: function(ret) {
+	    			var vData	= JSON.parse(ret);
+	    	    	if (vData.codLogradouro) {
+	    	    		$('#codLogradouroID').val(vData.codLogradouro);
+	    	    		$('#descLogradouroID').val(vData.descLogradouro);
+	    	    		$('#codCidadeID').val(vData.codCidade);
+	    	    		$('#descCidadeID').val(vData.descCidade);
+	    	    		$('#descEstadoID').val(vData.descUf);
+	    	    		$('#bairroID').val(vData.descBairro);
+	
+	    	    		$('#divHelpCepID').html('');
+	    	    		$('#divCepID').removeClass('has-error');
+	    	    		
+	    	    		$('#divLogradouroID').removeClass('has-error');
+	    	    		$('#divNumeroID').removeClass('has-error');
+	    	    		$('#divHelpLogradouroID').html('');
+	    	    		$('#divHelpNumeroID').html('');
+
+	    	    		$('#divEndID').removeClass('hidden');
+	    	    		
+	    	    		$('#descLogradouroID').attr("readonly", true);
+	    	    		$('#bairroID').attr("readonly", true);
+	    	    		
+	    	    		$("#endCorretoID").prop("checked", true);
+		    	    		
+	    	    		zgMostraDivsEndereco();
+	    	    		$('#numeroID').focus();
+	    	    		
+	    	    		vBusca = 1;
+	
+	    	    	}else{
+	    	    		
+	    	    		$('#divEndCorretoID').addClass("hidden"); //Esconder o div de alterar endereço
+	    	    		$('#divHelpCepID').html(zgCriaSpanErro('CEP não encontrado!'));
+	    	    		$('#divCepID').addClass('has-error');
+	    	    		$('#divEndID').addClass('hidden');
+	    	    		
+	    	    		limpaInfoLogradouro(); //Apagar o valor dos campos, caso estejam preenchidos
+	    	    		
+	    	    		vBusca = 0;
+	    	    	}
+	    		},
+	    		method: 'get',
+	    		cache: false,
+	    		async:false
+	  		});
+			
+			if (vBusca == 0){
+				return false;
+			}else{
+				return true;
+			}
+			
+		}
+	}else{
+		$('#divEndCorretoID').addClass("hidden"); //Esconder o div de alterar endereço
+		$('#divCepID').removeClass('has-error');
+		$('#divHelpCepID').html('&nbsp;');
+		
+		limpaInfoLogradouro(); //Apagar o valor dos campos, caso estejam preenchidos
+	}
+}
+
+//Limpar campos de endereço
+function limpaInfoLogradouro() {
+	
+	$('#codLogradouroID').val('');
+	$('#descLogradouroID').val('');
+	$('#codCidadeID').val('');
+	$('#descCidadeID').val('');
+	$('#descEstadoID').val('');
+	$('#bairroID').val('');
+			
+}
+//Div de endereço correto, mostrar em caso que esteja editando.
+zgMostraDivsEnderecoEdicao();
+function zgMostraDivsEnderecoEdicao() {
+	var vCodOrganizacao	= $('#codOrganizacaoID').val();
+	var vCep			= $('#cepID').val();
+	
+	if(vCodOrganizacao && vCep){
+		zgMostraDivsEndereco();
+	}
+	
+}
+
+//Div de endereço correto (SIM/NAO)
+function zgMostraDivsEndereco() {
+	$('#divEndCorretoID').removeClass("hidden");
+}
+//Alterar endereço padrão
+function mudaEndereco() {
+	var vEndCorreto		= $('#endCorretoID').is(':checked');
+	
+	if (vEndCorreto == false) {
+		$('#descLogradouroID').removeAttr("readonly");
+		$('#bairroID').removeAttr("readonly");
+
+	}else{
+		buscaRua();
+		$('#descLogradouroID').attr("readonly", true);
+		$('#bairroID').attr("readonly", true);
+	}
+}
+
+$('select[name="segMer[]"]').bootstrapDualListbox({
+	
+	infoTextFiltered: '<span class="label label-green label-lg">Filtrado</span>',
+	filterTextClear: 'Mostrar todos',
+	filterPlaceHolder: 'Buscar',
+	infoTextEmpty: 'Lista vazia',
+	infoText: '',
+	selectorMinimalHeight: '100'
+});
+	
+</script>

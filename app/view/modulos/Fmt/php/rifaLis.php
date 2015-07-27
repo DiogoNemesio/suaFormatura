@@ -49,11 +49,11 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
-$grid->adicionaTexto($tr->trans('NOME'),	 	15, $grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('PRÊMIO'),		15, $grid::CENTER	,'premio');
-$grid->adicionaTexto($tr->trans('DATA ')	,			15, $grid::CENTER	,'codTipo:descricao');
-$grid->adicionaTexto($tr->trans('PESSOA'),	 			15, $grid::CENTER	,'codTipoPessoa:descricao');
-$grid->adicionaTexto($tr->trans('STATUS')	,			15, $grid::CENTER	,'codStatus:descricao');
+$grid->adicionaTexto($tr->trans('NOME'),	 		15, $grid::CENTER	,'nome');
+$grid->adicionaTexto($tr->trans('PRÊMIO'),			15, $grid::CENTER	,'premio');
+$grid->adicionaTexto($tr->trans('DATA SORTEIO'),	15, $grid::CENTER	,'dataSorteio');
+$grid->adicionaTexto($tr->trans('QTD POR FORMANDO'),15, $grid::CENTER	,'qtdeObrigatorio');
+$grid->adicionaTexto($tr->trans('VALOR'),			15, $grid::CENTER	,'valor');
 $grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -83,7 +83,7 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fmt/parceiroAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao=');
+$urlAdd			= ROOT_URL.'/Fmt/rifaAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa=');
 
 #################################################################################
 ## Carregando o template html

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtRifa
  *
- * @ORM\Table(name="ZGFMT_RIFA", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_1_idx", columns={"COD_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGFMT_RIFA", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_RIFA_2_idx", columns={"COD_CENTRO_CUSTO"}), @ORM\Index(name="fk_ZGFMT_RIFA_3_idx", columns={"USUARIO_CADASTRO"}), @ORM\Index(name="fk_ZGFMT_RIFA_4_idx", columns={"USUARIO_ALTERACAO"})})
  * @ORM\Entity
  */
 class ZgfmtRifa
@@ -59,13 +59,6 @@ class ZgfmtRifa
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
-     */
-    private $dataCadastro;
-
-    /**
-     * @var \DateTime
-     *
      * @ORM\Column(name="DATA_SORTEIO", type="datetime", nullable=false)
      */
     private $dataSorteio;
@@ -92,6 +85,30 @@ class ZgfmtRifa
     private $numeroVencedor;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
+     */
+    private $dataCadastro;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ALTERACAO", type="datetime", nullable=true)
+     */
+    private $dataAlteracao;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="USUARIO_ALTERACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $usuarioAlteracao;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -100,6 +117,26 @@ class ZgfmtRifa
      * })
      */
     private $codOrganizacao;
+
+    /**
+     * @var \Entidades\ZgfinCentroCusto
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinCentroCusto")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_CENTRO_CUSTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codCentroCusto;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="USUARIO_CADASTRO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $usuarioCadastro;
 
 
     /**
@@ -228,29 +265,6 @@ class ZgfmtRifa
     }
 
     /**
-     * Set dataCadastro
-     *
-     * @param \DateTime $dataCadastro
-     * @return ZgfmtRifa
-     */
-    public function setDataCadastro($dataCadastro)
-    {
-        $this->dataCadastro = $dataCadastro;
-
-        return $this;
-    }
-
-    /**
-     * Get dataCadastro
-     *
-     * @return \DateTime 
-     */
-    public function getDataCadastro()
-    {
-        return $this->dataCadastro;
-    }
-
-    /**
      * Set dataSorteio
      *
      * @param \DateTime $dataSorteio
@@ -343,6 +357,75 @@ class ZgfmtRifa
     }
 
     /**
+     * Set dataCadastro
+     *
+     * @param \DateTime $dataCadastro
+     * @return ZgfmtRifa
+     */
+    public function setDataCadastro($dataCadastro)
+    {
+        $this->dataCadastro = $dataCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCadastro
+     *
+     * @return \DateTime 
+     */
+    public function getDataCadastro()
+    {
+        return $this->dataCadastro;
+    }
+
+    /**
+     * Set dataAlteracao
+     *
+     * @param \DateTime $dataAlteracao
+     * @return ZgfmtRifa
+     */
+    public function setDataAlteracao($dataAlteracao)
+    {
+        $this->dataAlteracao = $dataAlteracao;
+
+        return $this;
+    }
+
+    /**
+     * Get dataAlteracao
+     *
+     * @return \DateTime 
+     */
+    public function getDataAlteracao()
+    {
+        return $this->dataAlteracao;
+    }
+
+    /**
+     * Set usuarioAlteracao
+     *
+     * @param \Entidades\ZgsegUsuario $usuarioAlteracao
+     * @return ZgfmtRifa
+     */
+    public function setUsuarioAlteracao(\Entidades\ZgsegUsuario $usuarioAlteracao = null)
+    {
+        $this->usuarioAlteracao = $usuarioAlteracao;
+
+        return $this;
+    }
+
+    /**
+     * Get usuarioAlteracao
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getUsuarioAlteracao()
+    {
+        return $this->usuarioAlteracao;
+    }
+
+    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -363,5 +446,51 @@ class ZgfmtRifa
     public function getCodOrganizacao()
     {
         return $this->codOrganizacao;
+    }
+
+    /**
+     * Set codCentroCusto
+     *
+     * @param \Entidades\ZgfinCentroCusto $codCentroCusto
+     * @return ZgfmtRifa
+     */
+    public function setCodCentroCusto(\Entidades\ZgfinCentroCusto $codCentroCusto = null)
+    {
+        $this->codCentroCusto = $codCentroCusto;
+
+        return $this;
+    }
+
+    /**
+     * Get codCentroCusto
+     *
+     * @return \Entidades\ZgfinCentroCusto 
+     */
+    public function getCodCentroCusto()
+    {
+        return $this->codCentroCusto;
+    }
+
+    /**
+     * Set usuarioCadastro
+     *
+     * @param \Entidades\ZgsegUsuario $usuarioCadastro
+     * @return ZgfmtRifa
+     */
+    public function setUsuarioCadastro(\Entidades\ZgsegUsuario $usuarioCadastro = null)
+    {
+        $this->usuarioCadastro = $usuarioCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get usuarioCadastro
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getUsuarioCadastro()
+    {
+        return $this->usuarioCadastro;
     }
 }
