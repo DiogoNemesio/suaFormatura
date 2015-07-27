@@ -414,6 +414,13 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	}
 	
 	/**
+	 * Define a flag para enviar para o sistema
+	 */
+	public function enviaSistema() {
+		$this->setIndViaSistema(1);
+	}
+	
+	/**
 	 * Define a flag para não enviar e-mail
 	 */
 	public function naoEnviaEmail() {
@@ -426,5 +433,13 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	public function naoEnviaWa() {
 		$this->setIndViaWa(0);
 	}
+	
+	/**
+	 * Define a flag para não enviar para o sistema
+	 */
+	public function naoEnviaSistema() {
+		$this->setIndViaSistema(0);
+	}
+	
 	
 }

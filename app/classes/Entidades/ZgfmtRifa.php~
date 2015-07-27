@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtRifa
  *
- * @ORM\Table(name="ZGFMT_RIFA")
+ * @ORM\Table(name="ZGFMT_RIFA", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_1_idx", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfmtRifa
@@ -90,6 +90,16 @@ class ZgfmtRifa
      * @ORM\Column(name="NUMERO_VENCEDOR", type="integer", nullable=true)
      */
     private $numeroVencedor;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrganizacao;
 
 
     /**
@@ -330,5 +340,28 @@ class ZgfmtRifa
     public function getNumeroVencedor()
     {
         return $this->numeroVencedor;
+    }
+
+    /**
+     * Set codOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
+     * @return ZgfmtRifa
+     */
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
+    {
+        $this->codOrganizacao = $codOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodOrganizacao()
+    {
+        return $this->codOrganizacao;
     }
 }
