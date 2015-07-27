@@ -40,6 +40,12 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	private $organizacoes;
 	
 	/**
+	 * Array de Anexos
+	 * @var array
+	 */
+	private $anexos;
+	
+	/**
 	 * Construtor
 	 *
 	 * @return void
@@ -100,6 +106,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
     	$this->variaveis	= array();
     	$this->usuarios		= array();
     	$this->organizacoes	= array();
+    	$this->anexos		= array();
     	   
     	#################################################################################
     	## Por padrão a notificação é somente de sistema, ou seja, não envia e-mail nem wa
@@ -226,6 +233,19 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		}
 		
 		#################################################################################
+		## Salva os anexos
+		#################################################################################
+		if (sizeof($this->anexos) > 0) {
+			foreach ($this->anexos as $nome => $anexo) {
+				$_notAnexo		= new \Entidades\ZgappNotificacaoAnexo();
+				$_notAnexo->setCodNotificacao($_not);
+				$_notAnexo->setNome($nome);
+				$_notAnexo->setAnexo($anexo);
+				$em->persist($_notAnexo);
+			}
+		}
+		
+		#################################################################################
 		## Salva no banco
 		#################################################################################
 		$em->getConnection()->beginTransaction();
@@ -312,6 +332,21 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			if (!$oOrg)	throw new \Exception('Organização não encontrada !!!');
 			$this->organizacoes[$codOrganizacao]	= $oOrg;
 		}
+	}
+	
+	
+	public function anexarArquivo($nome,$conteudo) {
+		global $em;
+		
+		#################################################################################
+		## Adicionar o arquivo no array de anexos, verificar se o nome já foi anexado
+		#################################################################################
+		if (!array_key_exists($nome, $this->anexos)) {
+			$this->anexos[$nome]		= $conteudo;
+		}else{
+			throw new \Exception('Nome de anexo já utilizado !!');
+		}
+		
 	}
 	
 	/**

@@ -39,8 +39,10 @@ $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TE
 $notificacao->setAssunto("Teste de notificação ");
 $notificacao->setCodUsuario($daniel);
 $notificacao->associaUsuario(1);
-$notificacao->enviaWa();
-$notificacao->setMensagem("Teste de notificação SuaFormatura.com:  ". date("d/m/Y h:i:s"));
+$notificacao->enviaEmail();
+$notificacao->setMensagem("Teste de notificação com anexo:  ". date("d/m/Y h:i:s"));
+$notificacao->anexarArquivo("cpd40192.pdf", \Zage\App\Util::getConteudoArquivo("/home/cassela/cpd40192.pdf"));
+
 //$notificacao->enviaEmail();
 //$notificacao->setCodTemplate($template);
 //$notificacao->adicionaVariavel("DATA_VENCIMENTO", "13/06/2015");

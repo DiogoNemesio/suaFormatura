@@ -35,7 +35,7 @@ $chips 			= array();
 #################################################################################
 for ($i = 0; $i < sizeof($notificacoes); $i++) {
 
-	$log->info("Processar notificação: ".$notificacoes[$i]->getAssunto());
+	$log->debug("Processar notificação: ".$notificacoes[$i]->getAssunto());
 	
 	#################################################################################
 	## Monta a mensagem
@@ -88,7 +88,6 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	}else{
 		continue;
 	}
-	
 
 	#################################################################################
 	## Criar os objeto do email ,transporte e validador
@@ -99,13 +98,31 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	$htmlMail 		= new MimePart($mensagem);
 	$htmlMail->type = "text/html";
 	$body 			= new MimeMessage();
+	$bodyArray		= array();
+	$bodyArray[]	= $htmlMail;
 		
+	
+	#################################################################################
+	## Colocar os anexos, caso existam
+	#################################################################################
+	$anexos		= $em->getRepository('\Entidades\ZgappNotificacaoAnexo')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo()));
+	for ($a = 0; $a < sizeof($anexos); $a++) {
+		$log->debug("Anexando o arquivo: ".$anexos[$a]->getNome());
+		$attachment 				= new Mime\Part($anexos[$a]->getAnexo());
+		$attachment->type 			= 'application/octet-stream';
+		$attachment->filename 		= $anexos[$a]->getNome();
+		$attachment->disposition 	= Mime\Mime::DISPOSITION_ATTACHMENT;
+		$attachment->encoding 		= Mime\Mime::ENCODING_BASE64;
+		$bodyArray[]	= $attachment;
+	}
+	
 	#################################################################################
 	## Definir o conteúdo do e-mail
 	#################################################################################
-	$body->setParts(array($htmlMail));
+	$body->setParts($bodyArray);
 	$mail->setBody($body);
 	$mail->setSubject("<ZageNotificação> ".$assunto);
+	
 	
 	#################################################################################
 	## Controlar a quantidade de emails a enviar
@@ -113,7 +130,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	$numEmails	= 0;
 	$logDest	= array();
 	
-	$log->info("Listar usuarios da notificação: ".$notificacoes[$i]->getAssunto());
+	$log->debug("Listar usuarios da notificação: ".$notificacoes[$i]->getAssunto());
 	
 	#################################################################################
 	## Resgata a lista de usuários que receberão a notificação
@@ -121,7 +138,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	$usuarios	= $em->getRepository('\Entidades\ZgappNotificacaoUsuario')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo()));
 	for ($j = 0; $j < sizeof($usuarios); $j++) {
 		
-		$log->info("Usuario será notificado: ".$usuarios[$j]->getCodUsuario()->getNome());
+		$log->debug("Usuario será notificado: ".$usuarios[$j]->getCodUsuario()->getNome());
 		
 		#################################################################################
 		## Verifica se é para enviar e-mail
@@ -135,6 +152,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
 			$mailLog->setCodFormaEnvio($oFormaEnvio);
 			$mailLog->setCodNotificacao($notificacoes[$i]);
+			
 				
 			#################################################################################
 			## Associa os destinatários
@@ -158,7 +176,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		#################################################################################
 		if ($notificacoes[$i]->getIndViaWa())	{
 			
-			$log->info("Envia wa para notificacao: ".$notificacoes[$i]->getAssunto());
+			$log->debug("Envia wa para notificacao: ".$notificacoes[$i]->getAssunto());
 			
 			#################################################################################
 			## Não enviar templates via whatsapp
@@ -178,7 +196,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			#################################################################################
 			if (!$c) continue;
 			
-			$log->info("Chip selecionado: ".$c->getLogin());
+			$log->debug("Chip selecionado: ".$c->getLogin());
 
 			#################################################################################
 			## Instancia a classe para envio
@@ -195,19 +213,19 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			try {
 				
 				if (!isset($chips[$c->getCodigo()])) {
-					$log->info("Tentando conexão com WA!!! ");
+					$log->debug("Tentando conexão com WA!!! ");
 					$chip->conectar();
-					$log->info("Conexão ao wa feita com sucesso !!! ");
+					$log->debug("Conexão ao wa feita com sucesso !!! ");
 					
 					$chips[$c->getCodigo()]	= $chip;
 					
 				}
 				
 				for ($n = 0; $n < sizeof($celulares); $n++) {
-					$log->info("Concertendo o número : ".$celulares[$n]->getTelefone());
+					$log->debug("Concertendo o número : ".$celulares[$n]->getTelefone());
 					//$waNumber	= $chip->_convertCellToWaNumber($celulares[$n]->getTelefone());
 					$waNumber	= $celulares[$n]->getWaLogin();
-					$log->info("Enviando wa para o número: ".$waNumber);
+					$log->debug("Enviando wa para o número: ".$waNumber);
 					$chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
 				}
 				

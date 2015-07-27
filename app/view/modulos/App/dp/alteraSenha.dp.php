@@ -31,7 +31,7 @@ if ((!isset($senhaAtual))  || (!$senhaAtual)) {
 #################################################################################
 ## Checa se a senha atual está correta
 #################################################################################
-$senhaCrip	= \Zage\App\Crypt::crypt($_user->getUsuario(), $senhaAtual,$system->getCodOrganizacao());
+$senhaCrip	= \Zage\App\Crypt::crypt($_user->getUsuario(), $senhaAtual);
 $authAdap	= new \Zage\Seg\Auth($_user->getUsuario(),$senhaCrip,$system->getCodOrganizacao());
 $result		= $authAdap->authenticate();
 
@@ -46,7 +46,7 @@ if (($senhaNova) && (strlen($senhaNova) < 5)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Senha inválido"));
 	$err		= "1";
 }elseif ($senhaNova) {
-	$senhaCrypt	= \Zage\App\Crypt::crypt($_user->getUsuario(), $senhaNova,$system->getCodOrganizacao());
+	$senhaCrypt	= \Zage\App\Crypt::crypt($_user->getUsuario(), $senhaNova);
 }
 
 if ($senhaNova !== $confSenha) {
