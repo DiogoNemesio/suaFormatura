@@ -43,20 +43,6 @@ class ZgsegUsuarioRecSenha
     private $senhaAlteracao;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="DATA_ALTERACAO", type="datetime", nullable=true)
-     */
-    private $dataAlteracao;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="IP_ALTERACAO", type="string", length=60, nullable=true)
-     */
-    private $ipAlteracao;
-
-    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -154,52 +140,6 @@ class ZgsegUsuarioRecSenha
     public function getSenhaAlteracao()
     {
         return $this->senhaAlteracao;
-    }
-
-    /**
-     * Set dataAlteracao
-     *
-     * @param \DateTime $dataAlteracao
-     * @return ZgsegUsuarioRecSenha
-     */
-    public function setDataAlteracao($dataAlteracao)
-    {
-        $this->dataAlteracao = $dataAlteracao;
-
-        return $this;
-    }
-
-    /**
-     * Get dataAlteracao
-     *
-     * @return \DateTime 
-     */
-    public function getDataAlteracao()
-    {
-        return $this->dataAlteracao;
-    }
-
-    /**
-     * Set ipAlteracao
-     *
-     * @param string $ipAlteracao
-     * @return ZgsegUsuarioRecSenha
-     */
-    public function setIpAlteracao($ipAlteracao)
-    {
-        $this->ipAlteracao = $ipAlteracao;
-
-        return $this;
-    }
-
-    /**
-     * Get ipAlteracao
-     *
-     * @return string 
-     */
-    public function getIpAlteracao()
-    {
-        return $this->ipAlteracao;
     }
 
     /**
