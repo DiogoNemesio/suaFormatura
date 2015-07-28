@@ -166,7 +166,14 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			#################################################################################
 			## Definir os destinatários
 			#################################################################################
-			$mail->addBcc($usuarios[$j]->getCodUsuario()->getUsuario());
+			if (sizeof($usuarios) > 1) {
+				$mail->addBcc($usuarios[$j]->getCodUsuario()->getUsuario());
+				if ($notificacoes[$i]->getEmail()) $mail->addBcc($notificacoes[$i]->getEmail());
+			}else{
+				$mail->addTo($usuarios[$j]->getCodUsuario()->getUsuario());
+				if ($notificacoes[$i]->getEmail()) $mail->addCc($notificacoes[$i]->getEmail());
+			}
+			
 			$numEmails++;
 			
 		}	

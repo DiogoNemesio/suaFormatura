@@ -19,6 +19,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	
 	const TIPO_DEST_USUARIO 		= 'U';
 	const TIPO_DEST_ORGANIZACAO		= 'O';
+	const TIPO_DEST_PESSOA			= 'P';
 	
 	
 	/**
@@ -38,6 +39,12 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	 * @var array
 	 */
 	private $organizacoes;
+	
+	/**
+	 * Array de pessoas associadas a notificação
+	 * @var array
+	 */
+	private $pessoas;
 	
 	/**
 	 * Array de Anexos
@@ -79,6 +86,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		switch ($tipoDestinatario) {
 			case \Zage\App\Notificacao::TIPO_DEST_USUARIO:
 			case \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO:
+			case \Zage\App\Notificacao::TIPO_DEST_PESSOA:
 				break;
 			default:
 				throw new \Exception('Tipo de destinatário desconhecido');
@@ -107,6 +115,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
     	$this->usuarios		= array();
     	$this->organizacoes	= array();
     	$this->anexos		= array();
+    	$this->pessoas		= array();
     	   
     	#################################################################################
     	## Por padrão a notificação é somente de sistema, ou seja, não envia e-mail nem wa
@@ -146,6 +155,21 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		}
 
 		#################################################################################
+		## Verificar se a notificação tem a via de e-mail, se o campo email estiver definido
+		#################################################################################
+		if ($this->getEmail() && !$this->getIndViaEmail())	throw new \Exception('E-mail só pode ser definido caso a notificação tenha a via de e-mail definida');
+		
+		#################################################################################
+		## Verificar se a notificação tem um destinatário válido
+		#################################################################################
+		if (($this->getCodTipoDestinatario()->getCodigo() == \Zage\App\Notificacao::TIPO_DEST_USUARIO) && (sizeof($this->usuarios) == 0)) 
+			throw new \Exception('Notificação de usuário deve ter pelo menos 1 usuário associado !!');
+		if (($this->getCodTipoDestinatario()->getCodigo() == \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO) && (sizeof($this->organizacoes) == 0)) 
+			throw new \Exception('Notificação de Organização deve ter pelo menos 1 organização associada !!');
+		
+		
+		
+		#################################################################################
 		## Ajusta os campos da via de notificação
 		#################################################################################
 		if (!$this->getIndViaEmail())	$this->naoEnviaEmail();
@@ -180,6 +204,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		$_not->setAssunto($this->getAssunto());
 		$_not->setMensagem($this->getMensagem());
 		$_not->setIndProcessada($this->getIndProcessada());
+		$_not->setEmail($this->getEmail());
 		$em->persist($_not);
 		
 		#################################################################################
@@ -231,6 +256,19 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 				$em->persist($oAssUsu);
 			}
 		}
+
+		#################################################################################
+		## Salva as associações de pessoas
+		#################################################################################
+		if (sizeof($this->pessoas) > 0) {
+			foreach ($this->pessoas as $codPessoa => $oPessoa) {
+				$oAssPessoa	= new \Entidades\ZgappNotificacaoPessoa();
+				$oAssPessoa->setCodNotificacao($_not);
+				$oAssPessoa->setCodPessoa($oPessoa);
+				$em->persist($oAssPessoa);
+			}
+		}
+		
 		
 		#################################################################################
 		## Salva os anexos
@@ -334,7 +372,39 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		}
 	}
 	
+	/**
+	 * Associa a notificação a uma pessoa
+	 * @param number $codPessoa
+	 */
+	public function associaPessoa($codPessoa) {
+		global $em;
 	
+		#################################################################################
+		## Verifica se o tipo de destinatário da Notificação é Pessoa
+		#################################################################################
+		if (!$this->getCodTipoDestinatario() || !is_object($this->getCodTipoDestinatario())) {
+			throw new \Exception('Tipo de destinatário deve ser definido !!!');
+		}elseif ($this->getCodTipoDestinatario()->getCodigo() != \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+			throw new \Exception('Tipo de destinatário deve ser \Zage\App\Notificacao::TIPO_DEST_PESSOA !!!');
+		}
+	
+		#################################################################################
+		## Só associar a pessoa caso ainda não esteja
+		#################################################################################
+		if (!array_key_exists($codPessoa, $this->pessoas)) {
+			$oPessoa	= $em->getRepository('\Entidades\ZgfinPessoa')->findOneBy(array('codigo'=> $codPessoa));
+			if (!$oPessoa)	throw new \Exception('Pessoa não encontrada !!!');
+			$this->pessoas[$codPessoa]	= $oPessoa;
+		}
+	
+	}
+	
+	/**
+	 * Anexar um arquivo a notificação
+	 * @param string $nome
+	 * @param blob $conteudo
+	 * @throws \Exception
+	 */
 	public function anexarArquivo($nome,$conteudo) {
 		global $em;
 		

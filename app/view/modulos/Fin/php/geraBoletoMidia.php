@@ -20,7 +20,7 @@ use \Zend\Mime\Message as MimeMessage;
 use \Zend\Mime\Part as MimePart;
 Use \Zend\Mime;
 
-global $system,$log,$_user,$em;
+global $system,$log,$_user,$em,$tr;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -307,7 +307,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$hist				= new \Entidades\ZgfinBoletoHistorico();
 	$hist->setCodConta($oConta);
 	$hist->setCodUsuario($_user);
-	$hist->setData(new \Datetime());
+	$hist->setData(new \DateTime());
 	$hist->setDesconto($desconto);
 	$hist->setJuros($juros);
 	$hist->setLinhaDigitavel($linhaDigitavel);

@@ -40,6 +40,7 @@ $notificacao->setAssunto("Teste de notificação ");
 $notificacao->setCodUsuario($daniel);
 $notificacao->associaUsuario(1);
 $notificacao->enviaEmail();
+$notificacao->setEmail("daniel.cassela@usinacaete.com");
 $notificacao->setMensagem("Teste de notificação com anexo:  ". date("d/m/Y h:i:s"));
 $notificacao->anexarArquivo("cpd40192.pdf", \Zage\App\Util::getConteudoArquivo("/home/cassela/cpd40192.pdf"));
 
