@@ -16,10 +16,10 @@ if (isset($_POST['_cdu02'])) 			$_cdu02		= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['_cdu03'])) 			$_cdu03		= \Zage\App\Util::antiInjection($_POST['_cdu03']);
 if (isset($_POST['_cdu04'])) 			$_cdu04		= \Zage\App\Util::antiInjection($_POST['_cdu04']);
 
-$codHistEmail	= $_cdu01;
+$codRecSenha	= $_cdu01;
 $senhaAlteracao	= $_cdu02;
-$emailAlteracao	= $_cdu03;
-$codOrganizacao = $_cdu04;
+$email			= $_cdu03;
+$codUsuario		= $_cdu04;
 
 if (isset($_POST['novaSenha'])) 		$senhaNova	= \Zage\App\Util::antiInjection($_POST['novaSenha']);
 if (isset($_POST['senhaAtual'])) 		$senhaAtual	= \Zage\App\Util::antiInjection($_POST['senhaAtual']);
@@ -38,7 +38,7 @@ if (($senhaNova) && (strlen($senhaNova) < 5)) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo Senha inválido!"))));
 	$err		= "1";
 }elseif ($senhaNova) {
-	$senhaCrypt	= \Zage\App\Crypt::crypt($emailAlteracao, $senhaNova, $codOrganizacao);
+	$senhaCrypt	= \Zage\App\Crypt::crypt($email, $senhaNova);
 }
 
 if ($senhaNova !== $confSenha) {
@@ -55,26 +55,25 @@ if ($err != null) {
 ## Salvar no banco
 #################################################################################
 try {
-	$oHistEmail	= $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(array('codigo' => $codHistEmail));
-	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $oHistEmail->getCodUsuario()->getCodigo()));
+	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 	
 	$oUsuario->setSenha($senhaCrypt);
 	$oUsuario->setIndTrocarSenha(0);
-	$oUsuario->setUsuario($emailAlteracao);
 	$em->persist($oUsuario);
 	//$em->flush();
 	//$em->detach($oUsuario);
 	
 	$oStatus	= $em->getRepository('Entidades\ZgsegHistEmailStatus')->findOneBy(array('codigo' => 'F'));
 	try {
-		$oHistEmail->setCodStatus($oStatus);
-		$oHistEmail->setIndConfirmadoNovo(1);
-		$oHistEmail->setDataConfirmacaoNovo(new \DateTime("now"));
-		$oHistEmail->setIpConfirmacaoNovo(\Zage\App\Util::getIPUsuario());
+		$oRecEmail	= $em->getRepository('Entidades\ZgsegUsuarioRecSenha')->findOneBy(array('codigo' => $codRecSenha));
+		
+		$oRecEmail->setCodStatus($oStatus);
+		$oRecEmail->setDataAlteracao(new \DateTime("now"));
+		$oRecEmail->setIpAlteracao(\Zage\App\Util::getIPUsuario());
 	
-		$em->persist($oHistEmail);
+		$em->persist($oRecEmail);
 		$em->flush();
-		$em->detach($oHistEmail);
+		$em->detach($oRecEmail);
 		$em->detach($oUsuario);
 	
 	} catch (\Exception $e) {

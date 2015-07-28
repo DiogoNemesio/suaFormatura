@@ -8,7 +8,6 @@ if (defined('DOC_ROOT')) {
 	include_once('../../../include.php');
 }
 
-
 #################################################################################
 ## Resgata variáveis do formulário 
 #################################################################################
@@ -30,7 +29,6 @@ if (!isset($url) || empty($url)) {
 	$url = 	$_SERVER['REQUEST_URI'];
 }
 
-
 #################################################################################
 ## Carregando o template html
 #################################################################################
@@ -44,7 +42,7 @@ $tpl->set('MENSAGEM'		,$mensagem);
 $tpl->set('URL_FORM'		,$url);
 $tpl->set('USUARIO'			,$usuario);
 $tpl->set('HIDDEN'			,$hidden);
-
+$tpl->set('DP'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML

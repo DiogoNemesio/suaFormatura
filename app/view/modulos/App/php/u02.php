@@ -45,7 +45,7 @@ $oHistEmail	= $em->getRepository('Entidades\ZgsegUsuarioHistEmail')->findOneBy(a
 
 if (!$oHistEmail) 																$texto = 'Não existem pendências de confirmação!!!';
 elseif ($oHistEmail->getSenhaAlteracao() != $senhaAlteracao)					$texto = 'Senha não corresponde!!!';
-elseif ($oHistEmail->getIndConfirmadoAnterior() == 1)  $texto = 'O email já foi confirmado!!!';
+elseif ($oHistEmail->getIndConfirmadoAnterior() == 1)  							$texto = 'O email já foi confirmado!!!';
 elseif ($oHistEmail->getIndConfirmadoAnterior() == 0){
 	$oHistEmail->setIndConfirmadoAnterior(1);
 	$oHistEmail->setDataConfirmacaoAnterior(new \DateTime("now"));
