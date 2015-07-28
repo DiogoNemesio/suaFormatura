@@ -32,12 +32,12 @@ exit;
 */
 
 
-$daniel			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 1));
+$daniel			= $em->getReference('\Entidades\ZgsegUsuario',1);
 $diogo			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 2));
 $template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ASSINATURA_VENCIDA'));
 $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
 $notificacao->setAssunto("Teste de notificação ");
-$notificacao->setCodUsuario($daniel);
+$notificacao->setCodRemetente($daniel);
 $notificacao->associaUsuario(1);
 $notificacao->enviaEmail();
 $notificacao->setEmail("daniel.cassela@usinacaete.com");
@@ -58,3 +58,5 @@ $notificacao->enviaWa();
 $notificacao->salva();
 $notificacao->adicionaVariavel("NOME", "Daniel");
 */
+
+

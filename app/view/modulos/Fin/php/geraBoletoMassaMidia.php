@@ -71,8 +71,6 @@ if (!is_array($codContaSel)) \Zage\App\Erro::halt('Parâmetros incorretos');
 #################################################################################
 $htmlBol	= '';
 
-
-$log->err("MASSA 1.01");
 #################################################################################
 ## Faz o loop nas parcelas das contas
 #################################################################################
@@ -89,7 +87,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		\Zage\App\Erro::halt('Conta não encontrada');
 	}
 	
-	$log->err("MASSA 1.02");
 	#################################################################################
 	## Resgata as informaçoes da conta corrente
 	#################################################################################
@@ -114,7 +111,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		}
 	}
 	
-	$log->err("MASSA 1.03");
 	#################################################################################
 	## Instancia a classe do boleto
 	#################################################################################
@@ -137,7 +133,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		$sacadoNome			= $oConta->getCodPessoa()->getNome();
 		$sacadoCNPJ			= \Zage\App\Util::formatCGC($oConta->getCodPessoa()->getCgc());
 	
-		$log->err("MASSA 1.04");
 		#################################################################################
 		## Busca o Endereço
 		#################################################################################
@@ -156,7 +151,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		}
 	
 	}else{
-		$log->err("MASSA 1.05");
 		$sacadoNome			= null;
 		$sacadoCNPJ			= null;
 		$sacadoEndereco		= null;
@@ -166,7 +160,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	
 	}
 	
-	$log->err("MASSA 1.06");
 	#################################################################################
 	## Formata as informações de vencimento / Valor
 	#################################################################################
@@ -194,7 +187,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		$em->flush();
 	}
 	
-	$log->err("MASSA 1.07");
 	#################################################################################
 	## Resgata as informações da conta corrente
 	#################################################################################
@@ -226,7 +218,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$demonstrativo2		= "Parcela: ".$parcela;
 	$numeroDoc			= $oConta->getCodigo();
 
-	$log->err("MASSA 1.08");
 	#################################################################################
 	## Instruções
 	## Dar Prioridada aos valores, depois aos percentuais
@@ -285,7 +276,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$boleto->setInstrucao2($instrucao2);
 	$boleto->setInstrucao3($instrucao3);
 	$boleto->setInstrucao4($instrucao4);
-	$log->err("MASSA 1.09");
+
 	#################################################################################
 	## Emitir o boleto, ou seja gerar o código html do mesmo
 	#################################################################################
@@ -304,7 +295,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$nossoNumero		= $boleto->getNossoNumero();
 	$nossoNumeroLimpo	= str_replace(array('.', '/', ' ', '-'), '', $nossoNumero);
 
-	$log->err("MASSA 1.10");
 	#################################################################################
 	## Atualiza o nosso número
 	#################################################################################
@@ -312,13 +302,13 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$em->persist($oConta);
 	$em->flush();
 	
-	$log->err("MASSA 1.11");
 	#################################################################################
 	## Salvar o histórico do Boleto
 	#################################################################################
+	$oUser				= $em->getReference("\Entidades\ZgsegUsuario", $_user->getCodigo());
 	$hist				= new \Entidades\ZgfinBoletoHistorico();
 	$hist->setCodConta($oConta);
-	$hist->setCodUsuario($_user);
+	$hist->setCodUsuario($oUser);
 	$hist->setData(new \DateTime());
 	$hist->setDesconto($desconto);
 	$hist->setJuros($juros);
@@ -328,21 +318,18 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$hist->setValor($valor);
 	$hist->setVencimento(\DateTime::createFromFormat($system->config["data"]["dateFormat"], $vencimento));
 	$hist->setMidia($tipoMidia);
-	//$hist->setEmail($email);
+	$hist->setEmail($email);
 	$em->persist($hist);
 	$em->flush();
 	
-	$log->err("MASSA 1.12");
 	if ($tipoMidia != "PDF") {
 		
-		$log->err("MASSA 1.13");
 		#################################################################################
 		## Verifica se a conta tem um cliente associado
 		#################################################################################
 		$codPessoa		= ($oConta->getCodPessoa()) ? $oConta->getCodPessoa()->getCodigo() : null;
 		if ($codPessoa) {
 		
-			$log->err("MASSA 1.14");
 			#################################################################################
 			## Monta as variáveis para o envio da notificação
 			#################################################################################
@@ -376,7 +363,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 			$notificacao->adicionaVariavel("DESC_CONTA", $descConta);
 			$notificacao->adicionaVariavel("URL_ORG", $urlOrg);
 			
-			$log->err("MASSA 1.15");
 			#################################################################################
 			## Anexar o PDF
 			#################################################################################
@@ -390,28 +376,21 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 				$notificacao->setEmail($email);
 			}
 			
-			$log->err("MASSA 1.16");
 			#################################################################################
 			## Salva a notificação
 			#################################################################################
 			try {
-				$log->err("MASSA 1.17");
 				$notificacao->salva();
-				$log->err("MASSA 1.18");
 			} catch (Exception $e) {
 				$log->err("Erro ao salvar a notificação:". $e->getMessage());
 				throw new \Exception("Erro ao salvar a notificação, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
 			}
 		}
-		$log->err("MASSA 1.19");
 	}	
 }
 
-$log->err("MASSA 1.20");
 
 if ($tipoMidia == "PDF") {
-
-	$log->err("MASSA 1.21");
 	$output		 	= new TempFile();
 	$input 			= new TempFile($htmlBol, 'html');
 	$converter 		= new PhantomJS();
@@ -422,6 +401,5 @@ if ($tipoMidia == "PDF") {
 	echo $output->getContent();
 }else{
 	
-	$log->err("MASSA 1.22");
 	$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Email enviado com sucesso !!!"));
 }

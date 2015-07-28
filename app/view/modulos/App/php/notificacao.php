@@ -28,9 +28,9 @@ if ($numNot > 0) {
 	$html .= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="pull-right dropdown-navbar navbar-red dropdown-menu dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
 	$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-warning-sign"></i>Notificações</li>'.\Zage\App\ZWS::NL;
 	foreach ($notificacoes as $not) {
-		if ($not->getCodUsuario()) {
-			$avatar	= ($not->getCodUsuario()->getAvatar()) ? $not->getCodUsuario()->getAvatar()->getLink() : IMG_URL."/avatars/usuarioGenerico.png";
-			$nome	= $not->getCodUsuario()->getApelido();
+		if ($not->getCodRemetente()) {
+			$avatar	= ($not->getCodRemetente()->getAvatar()) ? $not->getCodRemetente()->getAvatar()->getLink() : IMG_URL."/avatars/usuarioGenerico.png";
+			$nome	= $not->getCodRemetente()->getApelido();
 		}else{
 			$avatar	= IMG_URL."/avatars/usuarioGenerico.png";
 			$nome	= "Anônimo";

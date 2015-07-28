@@ -166,9 +166,18 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			throw new \Exception('Notificação de usuário deve ter pelo menos 1 usuário associado !!');
 		if (($this->getCodTipoDestinatario()->getCodigo() == \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO) && (sizeof($this->organizacoes) == 0)) 
 			throw new \Exception('Notificação de Organização deve ter pelo menos 1 organização associada !!');
+		if (($this->getCodTipoDestinatario()->getCodigo() == \Zage\App\Notificacao::TIPO_DEST_PESSOA) && (sizeof($this->pessoas) == 0))
+			throw new \Exception('Notificação de Pessoa deve ter pelo menos 1 pessoa associada !!');
 		
+		#################################################################################
+		## Validar o tipo de destinatário com a via de envio
+		#################################################################################
+		if (($this->getCodTipoDestinatario()->getCodigo() == \Zage\App\Notificacao::TIPO_DEST_PESSOA) && ($this->getIndViaSistema()))
+			throw new \Exception('Notificação de Pessoa não pode ser via Sistema !!');		
 		
-		
+		if (($this->getCodTipoDestinatario()->getCodigo() == \Zage\App\Notificacao::TIPO_DEST_PESSOA) && ($this->getIndViaWa()))
+			throw new \Exception('Notificação de Pessoa não pode ser via WhatsApp!!');
+				
 		#################################################################################
 		## Ajusta os campos da via de notificação
 		#################################################################################
@@ -196,7 +205,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		$_not->setCodTipoDestinatario($this->getCodTipoDestinatario());
 		$_not->setCodTipoMensagem($this->getCodTipoMensagem());
 		$_not->setCodTemplate($this->getCodTemplate());
-		$_not->setCodUsuario($this->getCodUsuario());
+		$_not->setCodRemetente($this->getCodRemetente());
 		$_not->setData(new \DateTime("now"));
 		$_not->setIndViaEmail($this->getIndViaEmail());
 		$_not->setIndViaWa($this->getIndViaWa());

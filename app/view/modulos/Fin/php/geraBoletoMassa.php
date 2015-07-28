@@ -230,6 +230,7 @@ $tpl->set('ID'					,$id);
 $tpl->set('TITULO'				,'Geração de Boleto em massa');
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('URL_MIDIA'			,$urlMidia);
+$tpl->set('EMAIL'				,$_user->getUsuario());
 $tpl->set('TAB_PARCELAS'		,$htmlTab);
 $tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
