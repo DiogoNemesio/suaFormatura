@@ -53,8 +53,10 @@ if ((isset($codRifa) && ($codRifa))) {
 	
 	if ($info->getIndRifaGerada() == 1){
 		$readonly = 'readonly';
+		$disabled = 'disabled';
 	}else{
 		$readonly = null;
+		$disabled = null;
 	}
 	
 	$usuCadastro		= $info->getUsuarioCadastro()->getNome();
@@ -75,7 +77,7 @@ if ((isset($codRifa) && ($codRifa))) {
 	$valor				= null;
 	$readonly			= null;
 	$indRifaEletronica	= "checked";
-	
+	$disabled 			= null;
 }
 
 #################################################################################
@@ -122,6 +124,7 @@ $tpl->set('VALOR'					,$valor);
 $tpl->set('IND_RIFA_ELETRONICA'		,$indRifaEletronica);
 
 $tpl->set('READONLY'				,$readonly);
+$tpl->set('DISABLED'				,$disabled);
 
 $tpl->set('USUARIO_CADASTRO'		,$usuCadastro);
 $tpl->set('DATA_CADASTRO'			,$dataCadastro);

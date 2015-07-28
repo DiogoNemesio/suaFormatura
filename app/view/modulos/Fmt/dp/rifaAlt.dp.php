@@ -144,6 +144,28 @@ try {
 	
 	$em->persist($oRifa);
 	
+	
+	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'CADASTRO_RIFA'));
+	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+	$notificacao->setAssunto("Cadastro de notificação");
+	$notificacao->setCodUsuario($oRemetente);
+	
+	for ($i = 0; $i < sizeof($usuarios); $i++) {
+		$notificacao->associaUsuario($usuarios[$i]->getCodigo());
+	}
+	
+	$notificacao->enviaEmail();
+	$notificacao->enviaSistema();
+	//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
+	//$notificacao->setCodTemplate($template);
+	//$notificacao->adicionaVariavel("NOME_RIFA", "Rifa de um carro");
+	//$notificacao->adicionaVariavel("VALOR_RIFA", "R$ 2,00");
+	$notificacao->salva();
+	
+	
+	
+	
 	$em->flush();
 	$em->clear();
 	/********** Salvar as informações ******
