@@ -53,7 +53,7 @@ $grid->adicionaTexto($tr->trans('NOME'),	 		15, $grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('PRÊMIO'),			15, $grid::CENTER	,'premio');
 $grid->adicionaTexto($tr->trans('DATA SORTEIO'),	15, $grid::CENTER	,'dataSorteio');
 $grid->adicionaTexto($tr->trans('QTD POR FORMANDO'),15, $grid::CENTER	,'qtdeObrigatorio');
-$grid->adicionaTexto($tr->trans('VALOR'),			15, $grid::CENTER	,'valor');
+$grid->adicionaTexto($tr->trans('VALOR'),			15, $grid::CENTER	,'valorUnitario');
 $grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -64,10 +64,10 @@ $grid->importaDadosDoctrine($rifa);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($rifa); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$rifa[$i]->getCodigo().'&url='.$url);
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$rifa[$i]->getCodigo().'&url='.$url);
 	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Seg/usuarioAdmParLis.php?id='.$uid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/rifaAlt.php?id='.$uid);
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
 }
 

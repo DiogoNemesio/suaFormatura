@@ -23,15 +23,10 @@
 						<li>
 							<a data-toggle="tab" href="#parceiro-endereco">
 								<i class="black fa fa-road bigger-125"></i>
-								Endereço
+								Controle
 							</a>
 						</li>
-						<li>
-							<a data-toggle="tab"  href="#parceiro-telefone">
-								<i class="blue fa fa-phone bigger-125"></i>
-								Telefones
-							</a>
-						</li>
+
 					</ul>
 					<div class="tab-content profile-edit-tab-content">
 						<div id="parceiro-principal" class="tab-pane in active">
@@ -44,7 +39,7 @@
 								    		<span><i class="ace-icon fa fa-question-circle green" data-rel="popover" data-placement="left" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> O que é?" data-content="Na rifa eletrõnica os formandos irão realizar as vendas das rifas pelo portal e os compradores irão receber mensagem contento todas as informações da sua participação no sorteio. É a rifa ecologicamente correta, sem uso de papel!"></i></span>
 								    	</label>
 								    	<label>
-								    		<input name="indRifaEletronica" id="indRifaEletronicaID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_RIFA_ELETRONICA% />
+								    		<input name="indRifaEletronica" id="indRifaEletronicaID" class="ace ace-switch ace-switch-6" type="checkbox" onchange="mostraAviso();" %IND_RIFA_ELETRONICA% />
 											<span class="lbl"></span>
 										</label>
 								    </div>
@@ -52,7 +47,7 @@
 								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo."></i></span>
-							    			<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome da rifa" maxlength="100" value="%NOME%" onchange="atualizaResumo()" autocomplete="off">
+							    			<input class="form-control" id="nomeID" %READONLY% type="text" name="nome" placeholder="Nome da rifa" maxlength="100" value="%NOME%" onchange="atualizaResumo()" autocomplete="off">
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 								    </div>
@@ -60,7 +55,7 @@
 								    	<label class="col-sm-3 control-label" for="premioID">Prêmio</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo."></i></span>
-							    			<input class="form-control" id="premioID" type="text" name="premio" placeholder="Prêmio" maxlength="100" value="%PREMIO%" onchange="atualizaResumo()" autocomplete="off">
+							    			<input class="form-control" id="premioID" %READONLY% type="text" name="premio" placeholder="Prêmio" maxlength="100" value="%PREMIO%" onchange="atualizaResumo()" autocomplete="off">
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpPremioID"></div>
 								    </div>
@@ -76,7 +71,7 @@
 						    			<label class="col-sm-3 control-label" for="valorID">Valor da rifa</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um email para contato."></i></span>
-						   					<input class="form-control" id="valorID" name="valor" placeholder="Valor unitário da rifa" maxlength="200" onchange="atualizaResumo()" value="%VALOR%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+						   					<input class="form-control" id="valorID" %READONLY% name="valor" placeholder="Valor unitário da rifa" maxlength="200" onchange="atualizaResumo()" value="%VALOR%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 						    			</div>
 						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
 						    		</div>
@@ -84,17 +79,17 @@
 						    			<label class="col-sm-3 control-label" for="qtdeObrigatorioID">Qtde mínima</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um email para contato."></i></span>
-						   					<input class="form-control" id="qtdeObrigatorioID" name="qtdeObrigatorio" placeholder="Quantidade mínima obrigatória" value="%QTDE_OBRIGATORIO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="atualizaResumo()">
+						   					<input class="form-control" id="qtdeObrigatorioID" %READONLY% name="qtdeObrigatorio" placeholder="Quantidade mínima obrigatória" value="%QTDE_OBRIGATORIO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="atualizaResumo()">
 						    			</div>
 						    			<div class="col-sm-1 pull-left" id="divHelpQtdeObrigatorioID"></div>
 						    		</div>
 								    
 								    <h5 class="header blue bolder smaller">Informações do sorteio</h5>
 						    		<div class="form-group col-sm-12" id="divDataSorteioID">
-								    	<label class="col-sm-3 control-label" for="dataSorteioID">Data sorteio</label>
+								    	<label class="col-sm-3 control-label" for="dataSorteioID">Data/Hora</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de nascimento do parceiro."></i></span>
-							    			<input class="form-control datepicker" id="dataSorteioID" type="text" name="dataSorteio" maxlength="10" placeholder="Data do sorteio" value="%DATA_SORTEIO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+							    			<input class="form-control datepicker" id="dataSorteioID" %READONLY% type="text" name="dataSorteio" maxlength="16" placeholder="Data do sorteio" value="%DATA_SORTEIO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples">
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpDataSorteioID"></div>
 								    </div>
@@ -102,7 +97,7 @@
 								    	<label class="col-sm-3 control-label" for="localSorteioID">Local</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo."></i></span>
-							    			<input class="form-control" id="localSorteioID" type="text" name="localSorteio" placeholder="Local do sorteio" maxlength="60" value="%LOCAL_SORTEIO%" autocomplete="off">
+							    			<input class="form-control" id="localSorteioID" type="text" %READONLY% name="localSorteio" placeholder="Local do sorteio" maxlength="60" value="%LOCAL_SORTEIO%" autocomplete="off">
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpLocalSorteioID"></div>
 								    </div>
@@ -189,97 +184,44 @@
 						</div>
 						
 						<div id="parceiro-endereco" class="tab-pane">
-							<h5 class="header blue bolder smaller">Endereço</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divCepID">
-										<label for="cepID" class="col-sm-3 control-label">CEP</label>
+								<div class="col-sm-12">
+									<h5 class="header blue bolder smaller">Informações de controle</h5>
+									<div class="form-group col-sm-7" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">Cadastrado por:</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="As informações do endereço serão preenchidas de acordo com o CEP informado."></i></span>
-											<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+											<input type="text" value="%USUARIO_CADASTRO%" readonly maxlength="100" class="width-100" placeholder="Cadastrado por" autocomplete="off" />
 										</div>
 										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
-									</div>																	
-									<div class="form-group col-sm-12" id="divDescLogradouroID">
-										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro (endereço)"></i></span>
-											<input class="form-control" type="text" id="descLogradouroID" %READONLY_END% name="descLogradouro" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" />
-										</div>
-										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
-									</div>	
-									<div class="form-group col-sm-12" id="divBairroID">
-										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro"></i></span>
-											<input class="form-control" type="text" %READONLY_BAIRRO% id="bairroID" name="bairro" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
-										</div>
-										<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
 									</div>
-									<div class="form-group col-sm-12">
-										<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+									<div class="form-group col-sm-7" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">Data do cadastro:</label>
 										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade"></i></span>
-											<input class="form-control" type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" placeholder="Cidade" />
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="As informações do endereço serão preenchidas de acordo com o CEP informado."></i></span>
+											<input type="text" value="%DATA_CADASTRO%" readonly maxlength="100" class="width-100" placeholder="Data do cadastro" autocomplete="off" />
 										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
 									</div>
-								</div>
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12">
-										<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+									
+									<div class="form-group col-sm-7" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">Alterado por:</label>
 										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF)"></i></span>
-											<input class="form-control" type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" placeholder="Estado" />
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="As informações do endereço serão preenchidas de acordo com o CEP informado."></i></span>
+											<input type="text" value="%USUARIO_ALTERACAO%" readonly maxlength="100" class="width-100" placeholder="Alterado por" autocomplete="off" />
 										</div>
-									</div>									
-									<div class="form-group col-sm-12" id="divNumeroID">
-										<label for="numeroID" class="col-sm-3 control-label">Número</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o número do endereço."></i></span>
-											<input class="form-control" type="text" id="numeroID" name="numero" value="%NUMERO%" autocomplete="off" placeholder="Número" maxlength="10" />
-										</div>
-									</div>							
-									<div class="form-group col-sm-12" id="divComplementoID">
-										<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o complemento do endereço."></i></span>
-											<input class="form-control" type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" autocomplete="off" placeholder="Complemento" maxlength="100" />
-										</div>
-									</div>																			
-								</div>
-								<div class="hidden" id="divEndCorretoID">
-									<div class="col-sm-12">
-										<div class="form-group col-sm-12">
-											<div class="alert alert-info">	
-												Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
-												<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
-												<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
-											</div>		
-										</div>	
+										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
 									</div>
-						    	</div>
-							</div>
-						</div>
-						
-						<div id="parceiro-telefone" class="tab-pane">
-							<h5 class="header blue bolder smaller">Lista de telefones</h5>
-							<div class="vspace-xs"></div>
-							<div class="row">
-								<div class="col-sm-8" align="center">
-									<table id="pessoaAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
-										<thead>
-											<tr class="warning">
-												<th class="col-sm-1 center"></th>
-												<th class="col-sm-3 center">Tipo</th>
-												<th class="col-sm-3 center">Telefone</th>
-												<th class="col-sm-1 center"><span onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-											</tr>
-										</thead>
-										<tbody>
-										%TAB_TELEFONE%
-										</tbody>
-									</table>
+									<div class="form-group col-sm-7" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">Data da alteração:</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="As informações do endereço serão preenchidas de acordo com o CEP informado."></i></span>
+											<input type="text" value="%DATA_ALTERACAO%" readonly maxlength="100" class="width-100" placeholder="Data da última alteracao" autocomplete="off" />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+									</div>
+																												
 								</div>
 							</div>
 						</div>
@@ -306,15 +248,21 @@
 /*********************************************************
 * Inicializações 
 *********************************************************/
-//Datepicker - Calendário
-$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
-
 //Popover
 $('[data-rel=popover]').popover({html:true});
 //Máscaras
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
+
+// Datetime picker
+$('#dataSorteioID').datetimepicker({
+	format: 'DD/MM/YYYY HH:mm',
+    language: 'pt-BR'	
+}).next().on(ace.click_event, function(){
+	 
+});
+
 //Atualizar MENU
 atualizaResumo();
 
@@ -362,9 +310,11 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			$('#codOrganizacaoID').val(zgGetCodRetorno(data));
+			$('#codRifaID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
 		}
-		zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();
@@ -543,137 +493,15 @@ function atualizaResumo() {
 }
 
 /******************************************************
-BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
+MOSTRAR MODAL CASO SEJA DESMARCADO O RIFA ELETRÔNICA
 /******************************************************/
-//Busca ENDEREÇO
-function buscaRua() {
-	var vCep			= $('#cepID').cleanVal();
+function mostraAviso() {
+	var vRifaEletronica	= $('#indRifaEletronicaID').is(':checked');
 	
-	if (vCep){
-		if (vCep.length != 8){
-			$('#divCepID').addClass('has-error');
-			$('#divEndCorretoID').addClass("hidden"); //Esconder o div de alterar endereço
-			$('#divHelpCepID').html(zgCriaSpanErro('CEP inválido!'));
-			limpaInfoLogradouro();
-			return false;
-		}else{
-			/** Buscar o cep no banco **/
-			jQuery.ajax({
-	    		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
-	    		data: { cep: vCep},
-	    		success: function(ret) {
-	    			var vData	= JSON.parse(ret);
-	    	    	if (vData.codLogradouro) {
-	    	    		$('#codLogradouroID').val(vData.codLogradouro);
-	    	    		$('#descLogradouroID').val(vData.descLogradouro);
-	    	    		$('#codCidadeID').val(vData.codCidade);
-	    	    		$('#descCidadeID').val(vData.descCidade);
-	    	    		$('#descEstadoID').val(vData.descUf);
-	    	    		$('#bairroID').val(vData.descBairro);
-	
-	    	    		$('#divHelpCepID').html('');
-	    	    		$('#divCepID').removeClass('has-error');
-	    	    		
-	    	    		$('#divLogradouroID').removeClass('has-error');
-	    	    		$('#divNumeroID').removeClass('has-error');
-	    	    		$('#divHelpLogradouroID').html('');
-	    	    		$('#divHelpNumeroID').html('');
+	if (vRifaEletronica == false) {
+		zgAbreModal("%ROOT_URL%/Fmt/rifaAltAviso.php");
 
-	    	    		$('#divEndID').removeClass('hidden');
-	    	    		
-	    	    		$('#descLogradouroID').attr("readonly", true);
-	    	    		$('#bairroID').attr("readonly", true);
-	    	    		
-	    	    		$("#endCorretoID").prop("checked", true);
-		    	    		
-	    	    		zgMostraDivsEndereco();
-	    	    		$('#numeroID').focus();
-	    	    		
-	    	    		vBusca = 1;
-	
-	    	    	}else{
-	    	    		
-	    	    		$('#divEndCorretoID').addClass("hidden"); //Esconder o div de alterar endereço
-	    	    		$('#divHelpCepID').html(zgCriaSpanErro('CEP não encontrado!'));
-	    	    		$('#divCepID').addClass('has-error');
-	    	    		$('#divEndID').addClass('hidden');
-	    	    		
-	    	    		limpaInfoLogradouro(); //Apagar o valor dos campos, caso estejam preenchidos
-	    	    		
-	    	    		vBusca = 0;
-	    	    	}
-	    		},
-	    		method: 'get',
-	    		cache: false,
-	    		async:false
-	  		});
-			
-			if (vBusca == 0){
-				return false;
-			}else{
-				return true;
-			}
-			
-		}
-	}else{
-		$('#divEndCorretoID').addClass("hidden"); //Esconder o div de alterar endereço
-		$('#divCepID').removeClass('has-error');
-		$('#divHelpCepID').html('&nbsp;');
-		
-		limpaInfoLogradouro(); //Apagar o valor dos campos, caso estejam preenchidos
 	}
 }
-
-//Limpar campos de endereço
-function limpaInfoLogradouro() {
-	
-	$('#codLogradouroID').val('');
-	$('#descLogradouroID').val('');
-	$('#codCidadeID').val('');
-	$('#descCidadeID').val('');
-	$('#descEstadoID').val('');
-	$('#bairroID').val('');
-			
-}
-//Div de endereço correto, mostrar em caso que esteja editando.
-zgMostraDivsEnderecoEdicao();
-function zgMostraDivsEnderecoEdicao() {
-	var vCodOrganizacao	= $('#codOrganizacaoID').val();
-	var vCep			= $('#cepID').val();
-	
-	if(vCodOrganizacao && vCep){
-		zgMostraDivsEndereco();
-	}
-	
-}
-
-//Div de endereço correto (SIM/NAO)
-function zgMostraDivsEndereco() {
-	$('#divEndCorretoID').removeClass("hidden");
-}
-//Alterar endereço padrão
-function mudaEndereco() {
-	var vEndCorreto		= $('#endCorretoID').is(':checked');
-	
-	if (vEndCorreto == false) {
-		$('#descLogradouroID').removeAttr("readonly");
-		$('#bairroID').removeAttr("readonly");
-
-	}else{
-		buscaRua();
-		$('#descLogradouroID').attr("readonly", true);
-		$('#bairroID').attr("readonly", true);
-	}
-}
-
-$('select[name="segMer[]"]').bootstrapDualListbox({
-	
-	infoTextFiltered: '<span class="label label-green label-lg">Filtrado</span>',
-	filterTextClear: 'Mostrar todos',
-	filterPlaceHolder: 'Buscar',
-	infoTextEmpty: 'Lista vazia',
-	infoText: '',
-	selectorMinimalHeight: '100'
-});
 	
 </script>

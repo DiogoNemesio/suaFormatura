@@ -17,9 +17,10 @@ if (isset($_POST['premio']))			$premio			= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['custo']))				$custo			= \Zage\App\Util::antiInjection($_POST['custo']);
 if (isset($_POST['valor'])) 			$valor			= \Zage\App\Util::antiInjection($_POST['valor']);
 if (isset($_POST['qtdeObrigatorio']))	$qtdeObri		= \Zage\App\Util::antiInjection($_POST['qtdeObrigatorio']);
+if (isset($_POST['indRifaEletronica']))	$indRifaEletronica		= \Zage\App\Util::antiInjection($_POST['indRifaEletronica']);
 
 if (isset($_POST['localSorteio']))		$local			= \Zage\App\Util::antiInjection($_POST['localSorteio']);
-if (isset($_POST['dataSorteio']))		$data			= \Zage\App\Util::antiInjection($_POST['dataSorteio']);
+if (isset($_POST['dataSorteio']))		$dataHora			= \Zage\App\Util::antiInjection($_POST['dataSorteio']);
 
 if (isset($_POST['numUsuAtivo']))		$numUsuAtivo	= \Zage\App\Util::antiInjection($_POST['numUsuAtivo']);
 
@@ -46,6 +47,30 @@ if (!isset($nome) || (empty($nome))) {
 	$err	= 1;
 }
 
+/******* Data *********/
+if (!isset($dataHora) || (empty($dataHora))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A data/hora do sorteio deve ser preenchido!"));
+	$err	= 1;
+}elseif ((!empty($dataHora)) && (strlen($dataHora) > 16)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A data/hora do sorteio não deve conter mais de 12 caracteres!"));
+	$err	= 1;
+}
+
+$dataHora		= DateTime::createFromFormat($system->config["data"]["datetimeSimplesFormat"], $dataHora);
+
+if ($dataHora < new \DateTime("now")) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A data/hora do sorteio deve ser maior que a data atual!");
+	$err	= 1;
+}
+
+/******* Ind Rifa Eletronica *********/
+if (isset($indRifaEletronica) && (!empty($indRifaEletronica))) {
+	$indRifaEletronica	= 1;
+}else{
+	$indRifaEletronica	= 0;
+}
+
+
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
 	exit;
@@ -57,23 +82,45 @@ if ($err != null) {
 try {
 	
 	/***********************
+	 * Resgatar os objetos de relacionamento
+	 ***********************/
+	$oCodOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+	
+	/***********************
 	 * Verificar se a rifa já existe
 	 ***********************/
 	if (isset($codRifa) && (!empty($codRifa))){
  		$oRifa	= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+ 		
+ 		$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
+ 		//$oCentroCusto	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codigo' => $oRifa->getCodCentroCustro()->getCodigo()));
+ 		$oRifa->setDataAlteracao(new \DateTime("now"));
+ 		$oRifa->setUsuarioAlteracao($oUsuario);
+ 		
  		if (!$oRifa) {
- 			$oRifa	= new \Entidades\ZgadmOrganizacao();
+ 			$oRifa	= new \Entidades\ZgfmtRifa();
  			$oRifa->setDataCadastro(new \DateTime("now"));
+ 			$oRifa->setUsuarioCadastro($oUsuario);
  		}
+ 		
  	}else{
+ 		// Criar novo centro de custo
+ 		$oCC = new \Entidades\ZgfinCentroCusto();
+ 		$oCC->setCodOrganizacao($oCodOrg);
+ 		$oCC->setDescricao('RIFA:'.$nome);
+ 		$oCC->setIndCredito(1);
+ 		$oCC->setIndDebito(1);
+ 			
+ 		$em->persist($oCC);
+ 		
+ 		//Criar nova rifa
+ 		$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
  		$oRifa	= new \Entidades\ZgfmtRifa();
  		$oRifa->setDataCadastro(new \DateTime("now"));
+ 		$oRifa->setUsuarioCadastro($oUsuario);
+ 		$oRifa->setCodCentroCusto($oCC);
+ 		
  	}
-	
-	/*********************** 
-	 * Resgatar os objetos de relacionamento 
-	 ***********************/
-	$oCodOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 	
 	/*********************** 
 	 * Salvar os dados da rifa
@@ -81,15 +128,14 @@ try {
 	$oRifa->setCodOrganizacao($oCodOrg);
 	$oRifa->setNome($nome);
 	$oRifa->setPremio($premio);
-	$oRifa->setCpf($cpf);
+	$oRifa->setCusto($custo);
 	$oRifa->setQtdeObrigatorio($qtdeObri);
 	$oRifa->setValorUnitario($valor);
-	$oRifa->setCep($cep);
-	$oRifa->setDataSorteio($data);
-	$oRifa->setLocalSorteio($local);
-	$oRifa->setIndSorteioEletronico($indSorteioEletronico);
+	$oRifa->setDataSorteio($dataHora);
+	$oRifa->setLocalSorteio($local);	
+	$oRifa->setIndRifaEletronica($indRifaEletronica);
 	
-	
+	$em->persist($oRifa);
 	
 	$em->flush();
 	$em->clear();
@@ -108,65 +154,5 @@ try {
 	exit;
 }
 
-if ($oUsuario->_getEnviarEmail() == true) {
-	
-	#################################################################################
-	## Carregando o template html do email
-	#################################################################################
-	$tpl		= new \Zage\App\Template();
-	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuario->_getUsuOrg()->getCodigo().'&_cdu02='.$oUsuario->_getUsuario()->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
-	if ($oUsuario->_getUsuario()->getCodStatus()->getCodigo() == P) {
-	$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
-			$assunto			= "Cadatro de usuário";
-					$nome				= $oUsuario->getNome();
-					$texto				= "Sua conta já está criada, mas ainda precisa ser confirmada. Para isso, clique no link abaixo:";
-					$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
-	}else{
-		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
-		$assunto			= "Associação a empresa";
-		$confirmUrl			= ROOT_URL . "/Seg/u02.php?cid=".$cid;
-	}
-
-	#################################################################################
-	## Define os valores das variáveis
-	#################################################################################
-	$tpl->set('ID'					,$id);
-	$tpl->set('CONFIRM_URL'			,$confirmUrl);
-	$tpl->set('ASSUNTO'				,$assunto);
-	$tpl->set('NOME'				,$nome);
-	#################################################################################
-	## Criar os objeto do email ,transporte e validador
-	#################################################################################
-	$mail 			= \Zage\App\Mail::getMail();
-	$transport 		= \Zage\App\Mail::getTransport();
-	$validator 		= new \Zend\Validator\EmailAddress();
-	$htmlMail 		= new MimePart($tpl->getHtml());
-	$htmlMail->type = "text/html";
-	$body 			= new MimeMessage();
-
-	#################################################################################
-	## Definir o conteúdo do e-mail
-	#################################################################################
-	$body->setParts(array($htmlMail));
-	$mail->setBody($body);
-	$mail->setSubject("<ZageMail> ".$assunto);
-
-	#################################################################################
-	## Definir os destinatários
-	#################################################################################
-	$mail->addTo($usuario);
-
-	#################################################################################
-	## Salvar as informações e enviar o e-mail
-	#################################################################################
-	try {
-		$transport->send($mail);
-	} catch (Exception $e) {
-		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
-		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
-		}
-	}
-
-
 $system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Informações salvas com sucesso"));
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuario->_getCodigo());
+echo '0'.\Zage\App\Util::encodeUrl('|'.$oRifa->getCodigo());
