@@ -49,6 +49,7 @@
 		</script>
 
 		<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/bootstrap.js"></script>
+		<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/js/jquery.base64.min.js"></script>
 		<script type="text/javascript" charset="UTF-8" src="%JS_URL%/zgWeb.js"></script>
 		
 		<!--[if lte IE 8]>
@@ -153,17 +154,17 @@
 										Digite o e-mail para receber as instruções
 									</p>
 
-									<form>
+									<form id="zgFormAlteraSenhaID" class="form-horizontal">
 										<fieldset>
 											<label class="block clearfix">
 												<span class="block input-icon input-icon-right">
-													<input type="email" class="form-control" placeholder="Email" />
+													<input type="email" id="emailID" name="email" class="form-control" placeholder="Email" />
 													<i class="ace-icon fa fa-envelope"></i>
 												</span>
 											</label>
 
 											<div class="clearfix">
-												<button type="button" class="width-35 pull-right btn btn-sm btn-danger">
+												<button type="submit" id="btnSubmitID" class="width-35 pull-right btn btn-sm btn-danger">
 													<i class="ace-icon fa fa-lightbulb"></i>
 													Enviar
 												</button>
@@ -171,7 +172,8 @@
 										</fieldset>
 									</form>
 								</div><!-- /widget-main -->
-
+								<div id="divMsgID">
+	    						</div>
 								<div class="toolbar center">
 									<a href="#" onclick="show_box('login-box'); return false;" class="back-to-login-link">
 										Voltar para o login
@@ -187,7 +189,77 @@
 	</div>
 </div><!-- /.main-container -->
 
+<script>
+function zgMostraAviso(pDescBT1,pDescBT2,pUrlBT2,pDescBT3,pUrlBT3,pDescBT4,pUrlBT4) {
+	/** Definir valor padrão para os parâmetros **/
+	
+	if(typeof(pDescBT1)==='undefined')	pDescBT1	= '';
+	if(typeof(pDescBT2)==='undefined')	pDescBT2	= '';
+	if(typeof(pUrlBT2)==='undefined')	pUrlBT2		= '';
+	if(typeof(pDescBT3)==='undefined')	pDescBT3	= '';
+	if(typeof(pUrlBT3)==='undefined')	pUrlBT3		= '';
+	if(typeof(pDescBT4)==='undefined')	pDescBT4	= '';
+	if(typeof(pUrlBT4)==='undefined')	pUrlBT4		= '';
+	
+	var vUrl = '%ROOT_URL%/App/aviso.php?pDescBT1='+encodeURIComponent(pDescBT1)+'&pDescBT2='+encodeURIComponent(pDescBT2)+'&pDescBT3='+encodeURIComponent(pDescBT3)+'&pDescBT4='+encodeURIComponent(pDescBT4)+'&pUrlBT2='+pUrlBT2+'&pUrlBT3='+pUrlBT3+'&pUrlBT4='+pUrlBT4;
+	
+	$("#zgDivModalContentID").empty();
+	$("#zgDivModalContentID").load(vUrl);
+	$("#zgDivModalID").modal({
+		keyboard: true,
+		replace: true
+	});
+}
+
+function zgLimpaModalAviso() {
+	$("#zgDivModalContentID").empty();
+	$("#zgDivModalContentID").html('');
+}
+
+function zgCriaSpanErro(pMsg) {
+	return '<span class="popover-error" title="Mensagem de erro" data-rel="zg-popover" data-placement="top" data-trigger="hover" data-content="'+pMsg+'"><i class="fa fa-exclamation-circle red bigger-150"></i></span><script> $("[data-rel=zg-popover]").popover({html:true,template: \\'<div class="popover" style="width: 240px;" role="tooltip"><div class="arrow"></div><div class="popover-title"></div><div class="popover-content small smaller"></div></div>\\' }).on("show.bs.popover", function () { $(this).data("bs.popover").tip().css("max-width", "600px"); });<\\/script>';
+}
+
+function zgCriaSpanOK() {
+	return '<span><i class="fa fa-check-circle green bigger-150"></i></span>';
+}
+
+</script>
+
 	<script type="text/javascript">
+		// Submeter o formulário
+		$('#zgFormAlteraSenhaID').submit(function() {
+			
+			$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+			$('#btnSubmitID').attr("disabled","disabled");
+			
+			$.ajax({
+				type:	"POST", 
+				url:	"%DP%",
+				data:	$('#zgFormAlteraSenhaID').serialize(),
+			}).done(function( data, textStatus, jqXHR) {
+				if (checaRetornoOK(data) == true) {
+					//Mensagem de confirmação
+					zgMostraMsg('divMsgID',zgGetMsgRetorno(data));
+				}else{
+					//Mensagem de erro
+					zgMostraErro('divMsgID',zgGetMsgRetorno(data));
+				}
+				
+				//Voltar o botão de salvar
+				$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+				$('#btnSubmitID').attr("disabled",false);
+				
+				$('#zgDivModalID').on('hidden.bs.modal', function () {
+					zgLimpaModalAviso();
+					$('#zgDivModalID').off('hidden.bs.modal');
+				});
+			}).fail(function( jqXHR, textStatus, errorThrown) {
+				zgMostraAviso(null);
+			});
+			return false; 
+		});
+		
 		function show_box(id) {
 		 jQuery('.widget-box.visible').removeClass('visible');
 		 jQuery('#'+id).addClass('visible');
