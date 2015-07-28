@@ -43,11 +43,11 @@ if ($codUsuario != $system->getCodUsuario()) exit;
 $notificacao		= $em->getRepository('\Entidades\ZgappNotificacao')->findOneBy(array('codigo' => $codNotificacao));
 if (!$notificacao)	throw new \Exception('Notificação não encontrada !!!');
 
-if ($notificacao->getCodUsuario()) {
-	$avatar		= ($notificacao->getCodUsuario()->getAvatar()) ? $notificacao->getCodUsuario()->getAvatar()->getLink() : IMG_URL."/avatars/usuarioGenerico.png";
-	$nome		= $notificacao->getCodUsuario()->getNome();
-	$apelido	= $notificacao->getCodUsuario()->getApelido();
-	$email		= $notificacao->getCodUsuario()->getUsuario();
+if ($notificacao->getCodRemetente()) {
+	$avatar		= ($notificacao->getCodRemetente()->getAvatar()) ? $notificacao->getCodRemetente()->getAvatar()->getLink() : IMG_URL."/avatars/usuarioGenerico.png";
+	$nome		= $notificacao->getCodRemetente()->getNome();
+	$apelido	= $notificacao->getCodRemetente()->getApelido();
+	$email		= $notificacao->getCodRemetente()->getUsuario();
 }else{
 	$avatar		= IMG_URL."/avatars/usuarioGenerico.png";
 	$nome		= "Anônimo";
