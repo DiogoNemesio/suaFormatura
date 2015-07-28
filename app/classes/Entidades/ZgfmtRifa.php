@@ -73,9 +73,16 @@ class ZgfmtRifa
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_SORTEIO_ELETRONICO", type="integer", nullable=false)
+     * @ORM\Column(name="IND_RIFA_ELETRONICA", type="integer", nullable=false)
      */
-    private $indSorteioEletronico;
+    private $indRifaEletronica;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_RIFA_GERADA", type="integer", nullable=true)
+     */
+    private $indRifaGerada;
 
     /**
      * @var integer
@@ -311,26 +318,49 @@ class ZgfmtRifa
     }
 
     /**
-     * Set indSorteioEletronico
+     * Set indRifaEletronica
      *
-     * @param integer $indSorteioEletronico
+     * @param integer $indRifaEletronica
      * @return ZgfmtRifa
      */
-    public function setIndSorteioEletronico($indSorteioEletronico)
+    public function setIndRifaEletronica($indRifaEletronica)
     {
-        $this->indSorteioEletronico = $indSorteioEletronico;
+        $this->indRifaEletronica = $indRifaEletronica;
 
         return $this;
     }
 
     /**
-     * Get indSorteioEletronico
+     * Get indRifaEletronica
      *
      * @return integer 
      */
-    public function getIndSorteioEletronico()
+    public function getIndRifaEletronica()
     {
-        return $this->indSorteioEletronico;
+        return $this->indRifaEletronica;
+    }
+
+    /**
+     * Set indRifaGerada
+     *
+     * @param integer $indRifaGerada
+     * @return ZgfmtRifa
+     */
+    public function setIndRifaGerada($indRifaGerada)
+    {
+        $this->indRifaGerada = $indRifaGerada;
+
+        return $this;
+    }
+
+    /**
+     * Get indRifaGerada
+     *
+     * @return integer 
+     */
+    public function getIndRifaGerada()
+    {
+        return $this->indRifaGerada;
     }
 
     /**

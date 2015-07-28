@@ -135,6 +135,13 @@ try {
 	$oRifa->setLocalSorteio($local);	
 	$oRifa->setIndRifaEletronica($indRifaEletronica);
 	
+	if ($indRifaEletronica == 1){
+		$oRifa->setIndRifaGerada(1);
+		$mensagem = 'Rifa criada com sucesso! Os bilhetes eletrônicos já estão disponíveis para a venda no portal de todos os formandos.';
+	}else{
+		$mensagem = 'Rifa criada com sucesso! Gere os bilhetes para começar a vender.';
+	}
+	
 	$em->persist($oRifa);
 	
 	$em->flush();
@@ -154,5 +161,5 @@ try {
 	exit;
 }
 
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Informações salvas com sucesso"));
+$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans($mensagem));
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oRifa->getCodigo());
