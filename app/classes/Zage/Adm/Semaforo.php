@@ -29,24 +29,24 @@ class Semaforo {
     /**
      * Imcrementa o valor do semáforo e retorna o valor
      *
-     * @param integer $codEmpresa
+     * @param integer $codOrganizacao
      * @param string $semaforo
      * @return integer
      */
-    public static function proximoValor ($codEmpresa, $semaforo) {
-		global $em,$system;
+    public static function proximoValor ($codOrganizacao, $semaforo) {
+		global $em,$system,$log;
 		
 		$em->getConnection()->beginTransaction(); // suspend auto-commit
 		try {
 
-			$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codEmpresa' => $codEmpresa,'parametro' => $semaforo),array(),LockMode::PESSIMISTIC_WRITE);
+			$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codOrganizacao' => $codOrganizacao,'parametro' => $semaforo),array(),LockMode::PESSIMISTIC_WRITE);
 			
 			if (!$sem) {
-				return (self::criar($codEmpresa, $semaforo));
+				return (self::criar($codOrganizacao, $semaforo));
 			}else{
 				$valor		= (int) $sem->getValor() + 1;
 			}
-			
+
 			$sem->setValor($valor);
 			$em->persist($sem);
 			$em->flush();
@@ -64,27 +64,28 @@ class Semaforo {
     /**
      * Cria um semáforo
      *
-     * @param integer $codEmpresa
+     * @param integer $codOrganizacao
      * @param string $semaforo
      * @return integer
      */
-    public static function criar ($codEmpresa, $semaforo) {
-    	global $em,$system;
+    public static function criar ($codOrganizacao, $semaforo) {
+    	global $em,$system,$log;
     
     	try {
-    		$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codEmpresa' => $codEmpresa,'parametro' => $semaforo));
+    		
+    		$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codOrganizacao' => $codOrganizacao,'parametro' => $semaforo));
     			
     		if (!$sem) {
     			$sem		= new \Entidades\ZgadmSemaforo();
     
-    			/** Busca o obj da empresa **/
-    			$emp		= $em->getRepository('Entidades\ZgadmEmpresa')->findOneBy(array('codigo' => $codEmpresa));
-    
-    			if (!$emp) {
+    			/** Busca o obj da organização **/
+    			$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+
+    			if (!$oOrg) {
     				return null;
     			}else{
     				$valor = 1;
-    				$sem->setCodEmpresa($emp);
+    				$sem->setCodOrganizacao($oOrg);
     				$sem->setParametro($semaforo);
     				$sem->setValor($valor);
     				$em->persist($sem);
@@ -98,17 +99,16 @@ class Semaforo {
     
     }
     
-    
     /**
-     * Resgata o valor do parâmetro
-     *
-     * @param varchar $parametro
+     * Resgata o valor atual do parâmetro
+     * @param unknown $codOrganizacao
+     * @param unknown $semaforo
      * @return array
      */
-    public static function valorAtual ($codEmpresa, $semaforo) {
+    public static function valorAtual ($codOrganizacao, $semaforo) {
 		global $system,$em;
 		
-		$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codEmpresa' => $codEmpresa,'parametro' => $semaforo));
+		$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codOrganizacao' => $codOrganizacao,'parametro' => $semaforo));
 		
 		if (!$sem) return null;
 		
@@ -119,29 +119,28 @@ class Semaforo {
     /**
      * Definir um valor no semáforo
      *
-     * @param integer $codEmpresa
+     * @param integer $codOrganizacao
      * @param string $semaforo
      * @param number $valor
      */
-    public static function setValor ($codEmpresa, $semaforo, $valor) {
+    public static function setValor ($codOrganizacao, $semaforo, $valor) {
     	global $em,$system,$log;
     
     	try {
-    		$log->debug("Semáforo 1");
-    		$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codEmpresa' => $codEmpresa,'parametro' => $semaforo));
+    		$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codOrganizacao' => $codOrganizacao,'parametro' => $semaforo));
     		 
     		if (!$sem) {
     			$sem		= new \Entidades\ZgadmSemaforo();
     		}
     
-    		/** Busca o obj da empresa **/
-    		$emp		= $em->getRepository('Entidades\ZgadmEmpresa')->findOneBy(array('codigo' => $codEmpresa));
+    		/** Busca o obj da Organização **/
+    		$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 			
-			if (!$emp) {
+			if (!$oOrg) {
     			return null;
 			}else{
 				$log->debug("Definindo semáforo (".$semaforo."): ".$valor);
-				$sem->setCodEmpresa($emp);
+				$sem->setCodOrganizacao($oOrg);
 				$sem->setParametro($semaforo);
 				$sem->setValor($valor);
 				$em->persist($sem);

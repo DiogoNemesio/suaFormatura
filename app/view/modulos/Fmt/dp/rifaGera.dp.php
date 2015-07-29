@@ -53,7 +53,6 @@ if ($err != null) {
 #################################################################################
 ## Calcular os parâmetro de número de rifas
 #################################################################################
-$rifaAtual			= 0;
 $qtdePorFormando	= $oRifa->getQtdeObrigatorio();
 
 
@@ -68,14 +67,15 @@ try {
 	#################################################################################
 	for ($i = 0; $i < sizeof($formandos); $i++) {
 		for ($j = 0; $j < $qtdePorFormando; $j++) {
-			$rifaAtual++;
+			$log->info("Loop gera: J = ".$j." I = ".$i);
+			$rifaAtual	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$codRifa);
+			$log->info("Rifa Atual: ".$rifaAtual);
 			$oNumero	= new \Entidades\ZgfmtRifaNumero();
 			$oNumero->setCodRifa($oRifa);
 			$oNumero->setCodFormando($formandos[$i]);
 			$oNumero->setData(new \DateTime());
 			$oNumero->setNumero($rifaAtual);
 			$em->persist($oNumero);
-			
 		}
 	}
 	

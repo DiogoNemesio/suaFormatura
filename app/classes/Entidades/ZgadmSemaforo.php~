@@ -24,9 +24,9 @@ class ZgadmSemaforo
     /**
      * @var integer
      *
-     * @ORM\Column(name="COD_EMPRESA", type="integer", nullable=false)
+     * @ORM\Column(name="COD_ORGANIZACAO", type="integer", nullable=false)
      */
-    private $codEmpresa;
+    private $codOrganizacao;
 
     /**
      * @var string
@@ -54,26 +54,26 @@ class ZgadmSemaforo
     }
 
     /**
-     * Set codEmpresa
+     * Set codOrganizacao
      *
-     * @param integer $codEmpresa
+     * @param integer $codOrganizacao
      * @return ZgadmSemaforo
      */
-    public function setCodEmpresa($codEmpresa)
+    public function setCodOrganizacao($codOrganizacao)
     {
-        $this->codEmpresa = $codEmpresa;
+        $this->codOrganizacao = $codOrganizacao;
 
         return $this;
     }
 
     /**
-     * Get codEmpresa
+     * Get codOrganizacao
      *
      * @return integer 
      */
-    public function getCodEmpresa()
+    public function getCodOrganizacao()
     {
-        return $this->codEmpresa;
+        return $this->codOrganizacao;
     }
 
     /**
