@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappNotificacao
  *
- * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"})})
+ * @ORM\Table(name="ZGAPP_NOTIFICACAO", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_1_idx", columns={"COD_REMETENTE"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_2_idx", columns={"COD_TIPO_MENSAGEM"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_3_idx", columns={"COD_TIPO_DESTINATARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_4_idx", columns={"COD_TEMPLATE"})})
  * @ORM\Entity
  */
 class ZgappNotificacao
@@ -82,10 +82,10 @@ class ZgappNotificacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_REMETENTE", referencedColumnName="CODIGO")
      * })
      */
-    private $codUsuario;
+    private $codRemetente;
 
     /**
      * @var \Entidades\ZgappNotificacaoMensTipo
@@ -313,26 +313,26 @@ class ZgappNotificacao
     }
 
     /**
-     * Set codUsuario
+     * Set codRemetente
      *
-     * @param \Entidades\ZgsegUsuario $codUsuario
+     * @param \Entidades\ZgsegUsuario $codRemetente
      * @return ZgappNotificacao
      */
-    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario = null)
+    public function setCodRemetente(\Entidades\ZgsegUsuario $codRemetente = null)
     {
-        $this->codUsuario = $codUsuario;
+        $this->codRemetente = $codRemetente;
 
         return $this;
     }
 
     /**
-     * Get codUsuario
+     * Get codRemetente
      *
      * @return \Entidades\ZgsegUsuario 
      */
-    public function getCodUsuario()
+    public function getCodRemetente()
     {
-        return $this->codUsuario;
+        return $this->codRemetente;
     }
 
     /**

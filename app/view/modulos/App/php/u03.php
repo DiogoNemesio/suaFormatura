@@ -37,7 +37,7 @@ $codHistEmail	= $_cdu01;
 $senhaAlteracao	= $_cdu02;
 $emailAlteracao	= $_cdu03;
 $codOrganizacao = $_cdu04;
-$disabled 		= "disabled";
+$hidden 		= "hidden";
 
 #################################################################################
 ## Verificar se os usuário já existe e se já está ativo
@@ -49,7 +49,7 @@ elseif ($oHistEmail->getSenhaAlteracao() != $senhaAlteracao)		$texto = 'Senha n�
 elseif ($oHistEmail->getIndConfirmadoNovo() == 1) 					$texto = 'O email já foi confirmado!!!';
 else{
 	$texto 		= "";
-	$disabled 	= "";
+	$hidden  	= "";
 }
 
 #################################################################################
@@ -63,7 +63,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('TEXTO'				,$texto);
-$tpl->set('DISABLED'			,$disabled);
+$tpl->set('HIDDEN'				,$hidden);
 $tpl->set('CD01'				,$_cdu01);
 $tpl->set('CD02'				,$_cdu02);
 $tpl->set('CD03'				,$_cdu03);
