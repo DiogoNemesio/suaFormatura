@@ -1,0 +1,89 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-cog orange"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 350px;">
+	<input type="hidden" name="id" value="%ID%">
+	<input type="hidden" name="codRifa" value="%COD_RIFA%">
+	
+    <h4>Deseja realmente gerar os números da rifa ?</h4>
+    <div class="col-sm-12">
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Número de Rifas:</label>
+			<label class="col-sm-2 control-label">%NUM_RIFAS%</label>
+		</div>
+	</div>
+    
+    <div class="col-sm-12">
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Número de Formandos:</label>
+			<label class="col-sm-2 control-label">%NUM_FORMANDO%</label>
+		</div>
+	</div>
+	<div>&nbsp;</div>
+	<div>&nbsp;</div>
+    <h6><i class="fa fa-warning"></i> Ao gerar os números, você não poderá mais alterar, nem excluir a rifa !!!</h6>
+
+
+	<div id="divMsgRifaModalID"></div>
+    
+</div>
+<div class="modal-footer">
+	<div class="">
+		<label class="col-sm-5 control-label">&nbsp;</label>
+		<button type="button" class="btn btn-primary" id="btnSubmitID">
+			<i class="fa fa-check bigger-110"></i> Gerar
+		</button>
+		<button type="button" data-dismiss="modal" class="btn btn-warning" id="cancelModalBlo">Fechar</button>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+//Submit formulário
+
+$('#btnSubmitID').on("click", function(e) {
+	$('#zgFormModalID').submit();
+});
+
+$('#zgFormModalID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgRifaModalID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divMsgRifaModalID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+
+</script>

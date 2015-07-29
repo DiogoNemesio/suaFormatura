@@ -8,8 +8,6 @@ if (defined('DOC_ROOT')) {
 	include_once('../include.php');
 }
 
-//use \OpenBoleto\Banco\Itau;
-//use \OpenBoleto\Agente;
 use \H2P\Converter\PhantomJS;
 use \H2P\TempFile;
 use \H2P\Request;
@@ -320,7 +318,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$hist->setMidia($tipoMidia);
 	$hist->setEmail($email);
 	$em->persist($hist);
-	$em->flush();
 	
 	if ($tipoMidia != "PDF") {
 		
@@ -376,18 +373,21 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 			}
 			
 			#################################################################################
-			## Salva a notificação
+			## Salva os dados
 			#################################################################################
 			try {
 				$notificacao->salva();
+				$em->flush();
+				
 			} catch (Exception $e) {
 				$log->err("Erro ao salvar a notificação:". $e->getMessage());
 				throw new \Exception("Erro ao salvar a notificação, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
 			}
 		}
-	}	
+	}
 }
 
+$em->clear();
 
 if ($tipoMidia == "PDF") {
 	$output		 	= new TempFile();

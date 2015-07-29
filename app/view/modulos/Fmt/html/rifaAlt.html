@@ -63,7 +63,7 @@
 								    	<label class="col-sm-3 control-label" for="custoID">Custo</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo."></i></span>
-							    			<input class="form-control" id="custoID" type="text" name="custo" placeholder="Custo do prêmio" maxlength="100" value="%CUSTO%" autocomplete="off" onchange="atualizaResumo()" zg-data-toggle="mask" zg-data-mask="dinheiro">
+							    			<input class="form-control" id="custoID" type="text" name="custo" placeholder="Custo do prêmio" maxlength="14" value="%CUSTO%" autocomplete="off" onchange="atualizaResumo()" zg-data-toggle="mask" zg-data-mask="dinheiro">
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpCustoID"></div>
 								    </div>
@@ -71,7 +71,7 @@
 						    			<label class="col-sm-3 control-label" for="valorID">Valor da rifa</label>
 						    			<div class="input-group col-sm-8 pull-left">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um email para contato."></i></span>
-						   					<input class="form-control" id="valorID" %READONLY% name="valor" placeholder="Valor unitário da rifa" maxlength="200" onchange="atualizaResumo()" value="%VALOR%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+						   					<input class="form-control" id="valorID" %READONLY% name="valor" placeholder="Valor unitário da rifa" maxlength="14" onchange="atualizaResumo()" value="%VALOR%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 						    			</div>
 						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
 						    		</div>
@@ -311,7 +311,7 @@ $('#zgFormID').submit(function() {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			$('#codRifaID').val(zgGetCodRetorno(data));
-			zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
+			zgMostraAviso("Fechar",'Nova Rifa', '%URLNOVO%');
 		}else{
 			zgMostraAviso("Fechar");
 		}

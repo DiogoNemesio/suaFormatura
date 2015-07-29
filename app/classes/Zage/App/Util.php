@@ -235,6 +235,18 @@ class Util {
 	}
 	
 	/**
+	 * Retornar um número formatado
+	 *
+	 * @param number
+	 * @return float
+	 */
+	public static function formataDinheiro($n) {
+		$valor		= self::to_float($n);
+		return(number_format($valor,2,',',''));
+	}
+	
+	
+	/**
 	 * Retornar um número transformado em float
 	 *
 	 * @param number

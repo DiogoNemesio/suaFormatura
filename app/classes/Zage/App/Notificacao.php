@@ -295,7 +295,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		#################################################################################
 		## Salva no banco
 		#################################################################################
-		$em->getConnection()->beginTransaction();
+		/*$em->getConnection()->beginTransaction();
 		try {
 			$em->flush();
 			$em->clear();
@@ -303,7 +303,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		} catch (\Exception $e) {
 			$em->getConnection()->rollback();
 			throw new \Exception($e->getMessage());
-		}
+		}*/
 		
 	}
 	

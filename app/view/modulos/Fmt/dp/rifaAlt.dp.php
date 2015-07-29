@@ -70,6 +70,39 @@ if (isset($indRifaEletronica) && (!empty($indRifaEletronica))) {
 	$indRifaEletronica	= 0;
 }
 
+/******* Custo *********/
+if (!isset($custo) || (empty($custo))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O custo deve ser preenchido!"));
+	$err	= 1;
+}elseif (!empty($custo)) {
+	$custo		= \Zage\App\Util::to_float($custo);
+	if (!$custo) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Custo inválido!"));
+		$err	= 1;
+	}
+}
+
+/******* Valor *********/
+if (!isset($valor) || (empty($valor))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O valor deve ser preenchido!"));
+	$err	= 1;
+}elseif (!empty($valor)) {
+	$valor		= \Zage\App\Util::to_float($valor);
+	if (!$valor) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Valor inválido!"));
+		$err	= 1;
+	}
+}
+
+
+#################################################################################
+## Resgatar os formandos ativos dessa organização para enviar a notificação
+#################################################################################
+$formandos		= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
+if (sizeof($formandos) == 0)	{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Não existes formandos ativos nessa formatura !!!"));
+	$err	= 1;
+}
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
@@ -79,6 +112,8 @@ if ($err != null) {
 #################################################################################
 ## Salvar no banco
 #################################################################################
+$em->getConnection()->beginTransaction();
+
 try {
 	
 	/***********************
@@ -145,39 +180,33 @@ try {
 	$em->persist($oRifa);
 	
 	
+	#################################################################################
+	## Gerar a notificação
+	#################################################################################
 	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
 	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'CADASTRO_RIFA'));
 	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
 	$notificacao->setAssunto("Cadastro de notificação");
-	$notificacao->setCodUsuario($oRemetente);
+	$notificacao->setCodRemetente($oRemetente);
 	
-	for ($i = 0; $i < sizeof($usuarios); $i++) {
-		$notificacao->associaUsuario($usuarios[$i]->getCodigo());
+	for ($i = 0; $i < sizeof($formandos); $i++) {
+		$notificacao->associaUsuario($formandos[$i]->getCodigo());
 	}
 	
 	$notificacao->enviaEmail();
 	$notificacao->enviaSistema();
 	//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
-	//$notificacao->setCodTemplate($template);
-	//$notificacao->adicionaVariavel("NOME_RIFA", "Rifa de um carro");
-	//$notificacao->adicionaVariavel("VALOR_RIFA", "R$ 2,00");
+	$notificacao->setCodTemplate($template);
+	$notificacao->adicionaVariavel("NOME_RIFA", $nome);
+	$notificacao->adicionaVariavel("VALOR_RIFA", $valor);
 	$notificacao->salva();
-	
-	
-	
 	
 	$em->flush();
 	$em->clear();
-	/********** Salvar as informações ******
-	try {
-		$em->flush();
-		$em->clear();
-	} catch (Exception $e) {
-		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
-		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
-	}	
-***/
+	$em->getConnection()->commit();
+
 } catch (\Exception $e) {
+	$em->getConnection()->rollback();
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
