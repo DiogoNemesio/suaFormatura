@@ -143,5 +143,4 @@ try {
  	exit;
 }
  
-die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Email enviado com sucesso!"))));
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oRecSenha->getCodigo());
+die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Email enviado com sucesso!"))));

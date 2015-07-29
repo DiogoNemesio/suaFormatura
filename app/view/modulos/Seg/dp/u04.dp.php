@@ -87,5 +87,4 @@ try {
 	exit;
 }
 
-die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Senha alterada com sucesso!"))));
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuario->getCodigo());
+die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Senha alterada com sucesso!"))));
