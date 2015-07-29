@@ -144,22 +144,25 @@ try {
 	
 	$em->persist($oRifa);
 	
-	
+	$usuarios		= \Zage\Seg\Usuario::listaUsuarioOrganizacaoAtivo($system->getCodOrganizacao(), F);
 	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
-	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'CADASTRO_RIFA'));
+	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'CRIACAO_RIFA'));
 	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
-	$notificacao->setAssunto("Cadastro de notificação");
-	$notificacao->setCodUsuario($oRemetente);
+	$notificacao->setAssunto("Vamos vender rifas?");
+	$notificacao->setCodRemetente($oRemetente);
 	
 	for ($i = 0; $i < sizeof($usuarios); $i++) {
-		$notificacao->associaUsuario($usuarios[$i]->getCodigo());
+		$notificacao->associaUsuario($usuarios[$i]->getCodUsuario()->getCodigo());
 	}
 	
 	$notificacao->enviaEmail();
 	$notificacao->enviaSistema();
 	//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
-	//$notificacao->setCodTemplate($template);
-	//$notificacao->adicionaVariavel("NOME_RIFA", "Rifa de um carro");
+	$notificacao->setCodTemplate($template);
+	$notificacao->adicionaVariavel("NOME", $nome);
+	$notificacao->adicionaVariavel("PREMIO", $premio);
+	$notificacao->adicionaVariavel("VALOR", $valor);
+	$notificacao->adicionaVariavel("QTDE", $qtdeObri);
 	//$notificacao->adicionaVariavel("VALOR_RIFA", "R$ 2,00");
 	$notificacao->salva();
 	
