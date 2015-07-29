@@ -61,3 +61,14 @@ $notificacao->adicionaVariavel("NOME", "Daniel");
 */
 
 
+
+$diogo			= $em->getReference('\Entidades\ZgsegUsuario',2);
+$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_HTML, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+$notificacao->setAssunto("Teste de notificação com anexo");
+$notificacao->setCodRemetente($diogo);
+$notificacao->associaUsuario(1);
+$notificacao->enviaSistema();
+$notificacao->anexarArquivo("cpd40192.pdf", \Zage\App\Util::getConteudoArquivo("/home/cassela/cpd40192.pdf"));
+$notificacao->setMensagem("Segue em anexo o PDF para visualização");
+$notificacao->salva();
+

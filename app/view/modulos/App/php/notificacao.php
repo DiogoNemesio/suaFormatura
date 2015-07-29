@@ -35,6 +35,14 @@ if ($numNot > 0) {
 			$avatar	= IMG_URL."/avatars/usuarioGenerico.png";
 			$nome	= "Anônimo";
 		}
+		$temAnexo		= \Zage\App\Notificacao::temAnexo($not->getCodigo());
+		
+		if ($temAnexo)	{
+			$data		= $not->getData()->format($system->config["data"]["datetimeFormat"]) . "&nbsp;<i class='fa fa-paperclip blue fa-lg'></i>";
+		}else{
+			$data		= $not->getData()->format($system->config["data"]["datetimeFormat"]);
+		}
+		
 		$avatar	= str_replace("%IMG_URL%", IMG_URL, $avatar);
 		$lid	= \Zage\App\Util::encodeUrl('codUsuario='.$system->getCodUsuario().'&codNotificacao='.$not->getCodigo());
 		$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li>
@@ -47,7 +55,7 @@ if ($numNot > 0) {
 			</span>
 			<span class="msg-time">
 			<i class="ace-icon fa fa-clock-o"></i>
-			<span>'.$not->getData()->format($system->config["data"]["datetimeFormat"]).'</span>
+			<span>'.$data.'</span>
 			</span>
 			</span>
 			</a>

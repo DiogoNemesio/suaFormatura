@@ -529,6 +529,36 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	}
 	
 	/**
+	 * Verifica se uma notificação tem anexo
+	 * @param number $codNotificacao
+	 */
+	public static function temAnexo($codNotificacao) {
+		global $em;
+	
+		$qb 	= $em->createQueryBuilder();
+		try {
+			$qb->select('count(n.codigo)')
+			->from('\Entidades\ZgappNotificacaoAnexo','n')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('n.codNotificacao'	, ':codNotificacao')
+			))
+			->setParameter('codNotificacao'	, $codNotificacao);
+				
+			$query 		= $qb->getQuery();
+			$num		= $query->getSingleScalarResult();
+			
+			if ($num > 0)	{
+				return true;
+			}else{
+				return false;
+			}
+			
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	/**
 	 * Define a flag para enviar e-mail
 	 */
 	public function enviaEmail() {

@@ -334,7 +334,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 			## Monta as variáveis para o envio da notificação
 			#################################################################################
 			$textoParcela	= "Boleto referente a parcela (".$parcela.")";
-			$textoParcela	.= " de ".$oConta->getNumParcelas()."";
 			$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 			$urlOrg			= ROOT_URL . $oOrg->getIdentificacao();
 			

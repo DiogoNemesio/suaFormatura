@@ -36,7 +36,7 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 try {
 	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLis_codFormaPagFiltro"], null);
+	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLIS_codFormaPagFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -45,8 +45,8 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_BOLLis_codContaRecFiltro"], null);
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codTipo' => array('CC')),array('nome' => 'ASC'));
+	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_BOLLIS_codContaRecFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -71,8 +71,8 @@ try {
 		ksort($aCatTemp);
 
 		foreach ($aCatTemp as $cDesc => $cCod) {
-			if ($_SESSION["_BOLLis_codCategoriaFiltro"] !== null) {
-				(in_array($cCod, $_SESSION["_BOLLis_codCategoriaFiltro"])) ? $selected = "selected=\"selected\"" : $selected = "";
+			if ($_SESSION["_BOLLIS_codCategoriaFiltro"] !== null) {
+				(in_array($cCod, $_SESSION["_BOLLIS_codCategoriaFiltro"])) ? $selected = "selected=\"selected\"" : $selected = "";
 			}else{
 				$selected = "";
 			}
@@ -88,7 +88,7 @@ try {
 #################################################################################
 try {
 	$aCentroCusto	= $em->getRepository('Entidades\ZgfinCentroCusto')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(),'indDebito' => 1),array('descricao' => 'ASC'));
-	$oCentroCusto	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLis_codCentroCustoFiltro"], null);
+	$oCentroCusto	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLIS_codCentroCustoFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -98,7 +98,7 @@ try {
 #################################################################################
 try {
 	$aStatus	= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findAll(array('descricao' => 'ASC'));
-	$oStatus	= $system->geraHtmlCombo($aStatus,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLis_codStatusFiltro"], null);
+	$oStatus	= $system->geraHtmlCombo($aStatus,	'CODIGO', 'DESCRICAO',	$_SESSION["_BOLLIS_codStatusFiltro"], null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -127,10 +127,10 @@ $tpl->set('STATUS'			,$oStatus);
 $tpl->set('CENTRO_CUSTO'	,$oCentroCusto);
 $tpl->set('FORMAS_PAG'		,$oFormaPag);
 $tpl->set('CONTAS'			,$oConta);
-$tpl->set('VALOR_INI'		,$_SESSION["_BOLLis_valorIniFiltro"]);
-$tpl->set('VALOR_FIM'		,$_SESSION["_BOLLis_valorFimFiltro"]);
-$tpl->set('DESCRICAO'		,$_SESSION["_BOLLis_descricaoFiltro"]);
-$tpl->set('CLIENTE'			,$_SESSION["_BOLLis_clienteFiltro"]);
+$tpl->set('VALOR_INI'		,$_SESSION["_BOLLIS_valorIniFiltro"]);
+$tpl->set('VALOR_FIM'		,$_SESSION["_BOLLIS_valorFimFiltro"]);
+$tpl->set('DESCRICAO'		,$_SESSION["_BOLLIS_descricaoFiltro"]);
+$tpl->set('CLIENTE'			,$_SESSION["_BOLLIS_clienteFiltro"]);
 
 #################################################################################
 ## Por fim exibir a página HTML

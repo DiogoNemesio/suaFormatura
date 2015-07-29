@@ -8,6 +8,12 @@ if (defined ( 'DOC_ROOT' )) {
 	include_once ('../include.php');
 }
 
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr,$log,$db;
+
+
 ################################################################################
 # Resgata a variável ID que está criptografada
 ################################################################################
@@ -55,6 +61,7 @@ if ($notificacao->getCodRemetente()) {
 	$email		= "contato@suaformatura.com";
 }
 
+$temAnexo			= \Zage\App\Notificacao::temAnexo($notificacao->getCodigo());
 $codTipoMens		= $notificacao->getCodTipoMensagem()->getCodigo();
 $assunto			= $notificacao->getAssunto();
 $data				= $notificacao->getData()->format($system->config["data"]["datetimeFormat"]);
@@ -95,7 +102,6 @@ if (!isset($_SESSION['aNotProc']))	{
 ## Monta os botões de anterior e posterior
 #################################################################################
 $indice		= array_search($notificacao->getCodigo(), $_SESSION['aNotProc']);
-$log->info("Indice: ".$indice." Notificação: ".$notificacao->getCodigo());
 if ($indice === false) {
 	$urlAnt		= "#";
 	$urlDep		= "#";
@@ -115,12 +121,38 @@ if ($indice === false) {
 
 	$disAnt		= ($seqAnt == null) ? "disabled" : "";
 	$disDep		= ($seqDep == null) ? "disabled" : "";
-	
-	$log->info("seqAnt: ".$seqAnt. " antID:".$antID." urlAnt: ".$urlAnt." disAnt: ".$disAnt);
-	$log->info("seqDep: ".$seqDep. " depID:".$depID." urlDep: ".$urlDep." disDep: ".$disDep);
 
 }
 
+#################################################################################
+## Monta o div de anexos
+#################################################################################
+if ($temAnexo) {
+	$mostraAnexo	= "";
+	$anexos			= $em->getRepository('\Entidades\ZgappNotificacaoAnexo')->findBy(array('codNotificacao' => $codNotificacao));
+	$numAnexos		= sizeof($anexos);
+	$htmlAnexos		= "";
+	if ($numAnexos == 1) {
+		$textoAnexos	= "Anexo";
+	}else{
+		$textoAnexos	= "Anexos";
+	}
+	for ($i = 0 ; $i < $numAnexos; $i++) {
+		$did		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotificacao='.$codNotificacao.'&codAnexo='.$anexos[$i]->getCodigo());
+		$urlDown	= ROOT_URL . "/App/notificacaoAnexoDown.php?id=".$did;;
+		$htmlAnexos	.= '<li>
+		<a href="javascript:zgDownloadUrl(\''.$urlDown.'\');" class="">
+			<i class="ace-icon fa fa-download bigger-125 blue"></i>
+			<span class="">'.$anexos[$i]->getNome().'</span>
+		</a>
+		</li>';
+	}
+}else{
+	$mostraAnexo	= "hidden";
+	$numAnexos		= 0;
+	$htmlAnexos		= "";
+	$textoAnexos	= "";
+}
 
 #################################################################################
 ## Seta a flag de leitura
@@ -136,17 +168,22 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('ASSUNTO'		,$assunto);
-$tpl->set('NOME'		,$nome);
-$tpl->set('APELIDO'		,$apelido);
-$tpl->set('DATA_NOT'	,$data);
-$tpl->set('AVATAR'		,$avatar);
-$tpl->set('EMAIL'		,$email);
-$tpl->set('MENSAGEM'	,$mensagem);
-$tpl->set('DIS_ANT'		,$disAnt);
-$tpl->set('DIS_DEP'		,$disDep);
-$tpl->set('URL_ANT'		,$urlAnt);
-$tpl->set('URL_DEP'		,$urlDep);
+$tpl->set('ASSUNTO'			,$assunto);
+$tpl->set('NOME'			,$nome);
+$tpl->set('APELIDO'			,$apelido);
+$tpl->set('DATA_NOT'		,$data);
+$tpl->set('AVATAR'			,$avatar);
+$tpl->set('EMAIL'			,$email);
+$tpl->set('MENSAGEM'		,$mensagem);
+$tpl->set('DIS_ANT'			,$disAnt);
+$tpl->set('DIS_DEP'			,$disDep);
+$tpl->set('URL_ANT'			,$urlAnt);
+$tpl->set('URL_DEP'			,$urlDep);
+$tpl->set('MOSTRA_ANEXO'	,$mostraAnexo);
+$tpl->set('HTML_ANEXOS'		,$htmlAnexos);
+$tpl->set('NUM_ANEXOS'		,$numAnexos);
+$tpl->set('TEXTO_ANEXOS'	,$textoAnexos);
+
 
 
 #################################################################################
