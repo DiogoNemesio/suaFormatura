@@ -177,9 +177,11 @@ try {
 	
 	if ($indRifaEletronica == 1){
 		$oRifa->setIndRifaGerada(1);
-		$mensagem = 'Rifa criada com sucesso! Os bilhetes eletrônicos já estão disponíveis para a venda no portal de todos os formandos.';
+		$menConf 	 = 'Rifa criada com sucesso! Agora falta pouco, gere os bilhetes eletônico para inciar as vendas.';
+		$tipo 		 = 'Rifa eletrônica - Suas vendas serão realizadas com o bilhete eletrônico.';
 	}else{
-		$mensagem = 'Rifa criada com sucesso! Gere os bilhetes para começar a vender.';
+		$menConf	 = 'Rifa criada com sucesso! Agora falta pouco, gere e imprima os bilhetes para inciar as vendas.';
+		$tipo 		 = 'Rifa convêncial - Suas vendas serão realizas com os bilhetes de papel.';
 	}
 	
 	$em->persist($oRifa);
@@ -188,7 +190,7 @@ try {
 	## Gerar a notificação
 	#################################################################################
 	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
-	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'CRIACAO_RIFA'));
+	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_CADASTRO'));
 	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
 	$notificacao->setAssunto("Vamos vender rifas?");
 	$notificacao->setCodRemetente($oRemetente);
@@ -205,6 +207,7 @@ try {
 	$notificacao->adicionaVariavel("PREMIO", $premio);
 	$notificacao->adicionaVariavel("VALOR", $valor);
 	$notificacao->adicionaVariavel("QTDE", $qtdeObri);
+	$notificacao->adicionaVariavel("TIPO", $tipo);
 	$notificacao->salva();
 	
 	$em->flush();
@@ -218,5 +221,5 @@ try {
 	exit;
 }
 
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans($mensagem));
+$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans($menConf));
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oRifa->getCodigo());

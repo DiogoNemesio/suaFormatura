@@ -13,11 +13,12 @@
 				<input type='hidden' name="nomeRifa" id='nomeRifaID' value="%NOME_RIFA%">
 				<input type='hidden' name="valorRifa" id='valorRifaID' value="%VALOR_RIFA%">
 					
-				<div id="parceiro-principal" class="tab-pane in active">
+				<div id="divPrincipal" class="tab-pane in active">
 					<div class="vspace-xs"></div>
 					<div class="row">
 						<div id="divMsg"></div>
-						<div class="col-sm-7">
+						%MSG%
+						<div id="divFormularioID" class="col-sm-7">
 							<h5 class="header blue bolder smaller">Informações do comprador</h5>
 							
 							<div class="form-group col-sm-12" id="divRifaID">
@@ -64,7 +65,7 @@
 						    
 				    	</div>
 				    	
-				    	<div class="col-sm-5">
+				    	<div id="divResumoID" class="col-sm-5">
 							<div class="widget-box">
 								<div class="widget-header widget-header-flat widget-header-small center">
 									<h5 class="widget-title">Resumo da venda</h5>
@@ -129,7 +130,7 @@
 				    </div>
 				</div>
 		
-				<div class="clearfix form-actions">
+				<div id="divSubmitID" class="clearfix form-actions">
 					<label class="col-sm-5 control-label">&nbsp;</label>
 					<button type="button" class="btn btn-primary" id="btnSubmitID">
 						<i class="fa fa-check bigger-110"></i> Vender
@@ -153,7 +154,9 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 });
 // Atualizat resumo
 atualizaResumo();
-
+//Validar codRifa (se não existir esconder o formulário)
+verificaCodRifa();
+//Select2
 $(".select2").select2();
 
 /******************************************************
@@ -240,16 +243,11 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			//$('#codRifaID').val(zgGetCodRetorno(data));
-			//alert($('#rifaID').val());
 			zgLoadUrl('%ROOT_URL%Fmt/rifaVendaConf.php?id='+zgEncodeUrl('&codVenda='+zgGetCodRetorno(data)));
 			
 		}else{
 			zgMostraErro('divMsg',zgGetMsgRetorno(data));
-			//zgMostraAviso("Fechar");
 		}
-		
-		
 		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
@@ -331,6 +329,9 @@ function validaRifaVendeAlt() {
 
 }
 
+/******************************************************
+ATUALIZA RESUMO
+/******************************************************/
 function atualizaResumo() {
 	
 	// CALCULOS
@@ -371,10 +372,24 @@ function atualizaResumo() {
 	
 }
 
+/******************************************************
+ATUALIZAR TELA DE ACORDO COM A RIFA
+/******************************************************/
 function buscaRifa() {
 	zgLoadUrl('%URL%&codRifa='+$('#rifaID').val()+'&busca='+$('#nav-search-input').val());
 	return false;
 }
 
+/******************************************************
+ESCONDER TELA CASO COD_RIFA SEJA NULO
+/******************************************************/
+function verificaCodRifa(){
+	var $codRifa = $('#codRifaID').val();
+	if (!$codRifa){
+		$('#divFormularioID').addClass("hidden");//Esconder o div do formulário
+		$('#divResumoID').addClass("hidden");//Esconder o div do Resumo
+		$('#divSubmitID').addClass("hidden");//Esconder o div do Resumo
+	}
+}
 
 </script>

@@ -26,6 +26,11 @@ $err	= false;
 ## Fazer validação dos campos
 #################################################################################
 /******* Nome *********/
+if (!isset($rifa) || (empty($rifa))) {
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Você não possui nenhuma rifa para efetuar venda!"))));
+}
+
+/******* Nome *********/
 if (!isset($nome) || (empty($nome))) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("O nome do comprador deve ser preenchido!"))));
 }elseif ((!empty($nome)) && (strlen($nome) > 100)) {

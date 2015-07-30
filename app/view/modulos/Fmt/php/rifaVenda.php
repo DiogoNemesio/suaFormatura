@@ -34,15 +34,13 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['busca'])) 			$busca		= \Zage\App\Util::antiInjection($_GET['busca']);
 if (isset($_GET['codRifa'])) 		$codRifa	= \Zage\App\Util::antiInjection($_GET['codRifa']);
 
 #################################################################################
 ## Select dos rifas
 #################################################################################
 try {
-	$rifas	= $em->getRepository('Entidades\ZgfmtRifa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'indRifaEletronica' => 1));
-	
+	$rifas	= $em->getRepository('Entidades\ZgfmtRifa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'indRifaEletronica' => 1, 'indRifaGerada' => 1));
 	$oRifas	= $system->geraHtmlCombo($rifas,	'CODIGO', 'NOME', $codRifa, null);
 
 } catch (\Exception $e) {
@@ -52,10 +50,24 @@ try {
 #################################################################################
 ## Resgatar informações da RIFA 
 #################################################################################
-if ($codRifa != null){
-	$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codRifa));
+$msg = null;
+if ($rifas){
+	if ($codRifa != null){
+		$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codRifa));
+	}else{
+		if($rifas){
+			$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $rifas[0]->getCodigo()));
+			$codRifa  = $rifas[0]->getCodigo(); 
+		}
+	}
+	if ($infoRifa){
+		$nome 	= $infoRifa->getNome();
+		$valor 	= $infoRifa->getValorUnitario();
+	}	
 }else{
-	$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $rifas[0]->getCodigo()));
+	$msg .= '<div class="alert alert-warning">';
+	$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Você não possui nenhuma rifa eletrônica para vender. Repasse a sugestão de criação de uma rifa a sua comissão!';
+	$msg .= '</div>';
 }
 
 #################################################################################
@@ -63,7 +75,6 @@ if ($codRifa != null){
 #################################################################################
 $pid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codModulo='.$codRifa);
 $url			= ROOT_URL."/Fmt/".basename(__FILE__)."?id=".$id;
-$menuPerfilUrl	= ROOT_URL."/Seg/menuPerfilLis.php?id=".$pid;
 
 #################################################################################
 ## Carregando o template html
@@ -74,23 +85,19 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('ID'					,$id);
-$tpl->set('IC'					,$_icone_);
+$tpl->set('ID'				,$id);
+$tpl->set('IC'				,$_icone_);
+$tpl->set('URL'				,$url);
+$tpl->set('COD_RIFA'		,$codRifa);
+$tpl->set('MSG'				,$msg);
 
-$tpl->set('URL'					,$url);
+$tpl->set('RIFAS'			,$oRifas);
+$tpl->set('NOME_RIFA'		,$nome);
+$tpl->set('VALOR_RIFA'		,$valor);
 
-$tpl->set('RIFAS'				,$oRifas);
-$tpl->set('NOME_RIFA'			,$infoRifa->getNome());
-$tpl->set('VALOR_RIFA'			,$infoRifa->getValorUnitario());
-
-
-$tpl->set('COD_RIFA'			,$codRifa);
-$tpl->set('FILTRO'				,$filtro);
-$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-
+$tpl->set('DP'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
-
