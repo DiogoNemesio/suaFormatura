@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtRifaNumero
  *
- * @ORM\Table(name="ZGFMT_RIFA_NUMERO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_RIFA_NUMERO_UK01", columns={"COD_RIFA", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFMT_RIFA_NUMERO_2_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="IDX_90F282C9E74EE774", columns={"COD_RIFA"})})
+ * @ORM\Table(name="ZGFMT_RIFA_NUMERO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_RIFA_NUMERO_UK01", columns={"COD_RIFA", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFMT_RIFA_NUMERO_2_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_RIFA_NUMERO_3_idx", columns={"COD_VENDA"}), @ORM\Index(name="IDX_90F282C9E74EE774", columns={"COD_RIFA"})})
  * @ORM\Entity
  */
 class ZgfmtRifaNumero
@@ -55,6 +55,16 @@ class ZgfmtRifaNumero
      * @ORM\Column(name="TELEFONE", type="string", length=11, nullable=true)
      */
     private $telefone;
+
+    /**
+     * @var \Entidades\ZgfmtRifaVendaSequencial
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaVendaSequencial")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_VENDA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codVenda;
 
     /**
      * @var \Entidades\ZgfmtRifa
@@ -200,6 +210,29 @@ class ZgfmtRifaNumero
     public function getTelefone()
     {
         return $this->telefone;
+    }
+
+    /**
+     * Set codVenda
+     *
+     * @param \Entidades\ZgfmtRifaVendaSequencial $codVenda
+     * @return ZgfmtRifaNumero
+     */
+    public function setCodVenda(\Entidades\ZgfmtRifaVendaSequencial $codVenda = null)
+    {
+        $this->codVenda = $codVenda;
+
+        return $this;
+    }
+
+    /**
+     * Get codVenda
+     *
+     * @return \Entidades\ZgfmtRifaVendaSequencial 
+     */
+    public function getCodVenda()
+    {
+        return $this->codVenda;
     }
 
     /**

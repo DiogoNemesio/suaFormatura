@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmSemaforo
  *
- * @ORM\Table(name="ZGADM_SEMAFORO")
+ * @ORM\Table(name="ZGADM_SEMAFORO", indexes={@ORM\Index(name="fk_ZGADM_SEMAFORO_1_idx", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgadmSemaforo
@@ -20,13 +20,6 @@ class ZgadmSemaforo
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $codigo;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="COD_ORGANIZACAO", type="integer", nullable=false)
-     */
-    private $codOrganizacao;
 
     /**
      * @var string
@@ -42,6 +35,16 @@ class ZgadmSemaforo
      */
     private $valor;
 
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrganizacao;
+
 
     /**
      * Get codigo
@@ -51,29 +54,6 @@ class ZgadmSemaforo
     public function getCodigo()
     {
         return $this->codigo;
-    }
-
-    /**
-     * Set codOrganizacao
-     *
-     * @param integer $codOrganizacao
-     * @return ZgadmSemaforo
-     */
-    public function setCodOrganizacao($codOrganizacao)
-    {
-        $this->codOrganizacao = $codOrganizacao;
-
-        return $this;
-    }
-
-    /**
-     * Get codOrganizacao
-     *
-     * @return integer 
-     */
-    public function getCodOrganizacao()
-    {
-        return $this->codOrganizacao;
     }
 
     /**
@@ -120,5 +100,28 @@ class ZgadmSemaforo
     public function getValor()
     {
         return $this->valor;
+    }
+
+    /**
+     * Set codOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
+     * @return ZgadmSemaforo
+     */
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
+    {
+        $this->codOrganizacao = $codOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodOrganizacao()
+    {
+        return $this->codOrganizacao;
     }
 }

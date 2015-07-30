@@ -1,0 +1,380 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Venda de rifa
+	
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" id="codRifaID" name="codRifa" value="%COD_RIFA%">
+				<input type='hidden' name="nomeRifa" id='nomeRifaID' value="%NOME_RIFA%">
+				<input type='hidden' name="valorRifa" id='valorRifaID' value="%VALOR_RIFA%">
+					
+				<div id="parceiro-principal" class="tab-pane in active">
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div id="divMsg"></div>
+						<div class="col-sm-7">
+							<h5 class="header blue bolder smaller">Informações do comprador</h5>
+							
+							<div class="form-group col-sm-12" id="divRifaID">
+							<label class="col-sm-2 control-label" for="rifaID">Rifa</label>
+								<div class="input-group col-sm-6 pull-left">
+									<select onchange="buscaRifa();" class="select2" style="width:100%;" id="rifaID" name="rifa" data-rel="select2">
+									%RIFAS%
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group col-sm-12" id="divQuantidadeID">
+						    	<label class="col-sm-2 control-label" for="quantidadeID">Quantidade</label>
+				    			<div class="input-group col-sm-6 pull-left">
+			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de rifas que serão vendidas."></i></span>
+					    			<input class="form-control" id="quantidadeID" %READONLY% type="text" onchange="atualizaResumo()" name="quantidade" placeholder="Quantidade comprada" maxlength="100"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpQuantidadeID"></div>
+						    </div>
+							<div class="form-group col-sm-12" id="divNomeID">
+						    	<label class="col-sm-2 control-label" for="nomeID">Nome</label>
+				    			<div class="input-group col-sm-6 pull-left">
+			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo do comprador."></i></span>
+					    			<input class="form-control" id="nomeID" %READONLY% type="text" name="nome" onchange="atualizaResumo()" placeholder="Nome do comprador" maxlength="100" autocomplete="off">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+						    </div>
+						    <div class="form-group col-sm-12" id="divEmailID">
+						    	<label class="col-sm-2 control-label" for="emailID">Email</label>
+				    			<div class="input-group col-sm-6 pull-left">
+			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe corretamente o email do comprador, pois será utilizado para enviar a mesansagem de confirmação."></i></span>
+					    			<input class="form-control" id="emailID" %READONLY% type="text" name="email" onchange="atualizaResumo()" placeholder="Email do comprador" maxlength="200" autocomplete="off">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
+						    </div>
+						    <div class="form-group col-sm-12" id="divTelefoneID">
+						    	<label class="col-sm-2 control-label" for="telefoneID">Telefone</label>
+				    			<div class="input-group col-sm-6 pull-left">
+			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Infome o número do telefone do comprador. Dê preferêcnia para número que possua whatsapp, pois será utilizado para enviar a mensagem de confirmação."></i></span>
+					    			<input class="form-control" id="telefoneID" %READONLY% type="text" onchange="atualizaResumo()" name="telefone" placeholder="Telefone do comprador" maxlength="15"  autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpTelefoneID"></div>
+						    </div>
+						    
+				    	</div>
+				    	
+				    	<div class="col-sm-5">
+							<div class="widget-box">
+								<div class="widget-header widget-header-flat widget-header-small center">
+									<h5 class="widget-title">Resumo da venda</h5>
+								</div>
+								<div class="widget-body">
+									<div class="widget-main small">
+										
+										<div class="row" id="divInfoNomeID">
+											<h6 class="header blue bolder smaller">&nbsp;Informações da comprador:</h6>
+											<div class="vspace-xs"></div>
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Nome:</p>
+										    	<p id='lbInfoNomeID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoEmailID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Email:</p>
+										    	<p id='lbInfoEmailID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoTelefoneID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Telefone:</p>
+										    	<p id='lbInfoTelefoneID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoConfID">
+											<h6 class="header blue bolder smaller">&nbsp;Valor:</h6>
+											<div class="vspace-xs"></div>
+										</div>
+										<div class="row" id="divInfoNomeRifaID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Rifa:</p>
+										    	<p id='lbInfoNomeRifaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoValorRifaID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor unitário (R$):</p>
+										    	<p id='lbInfoValorRifaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoQuantidadeID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Quantidade:</p>
+										    	<p id='lbInfoQuantidadeID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoTotalID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>TOTAL (R$):</b></p>
+										    	<p id='lbInfoTotalID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	
+				    
+    	
+				    </div>
+				</div>
+		
+				<div class="clearfix form-actions">
+					<label class="col-sm-5 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Vender
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+/*********************************************************
+* Inicializações 
+*********************************************************/
+//Popover
+$('[data-rel=popover]').popover({html:true});
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+// Atualizat resumo
+atualizaResumo();
+
+$(".select2").select2();
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK = validaRifaVendeAlt();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{
+		
+		var options = {
+				symbol : "",
+				decimal : ",",
+				thousand: ".",
+				precision : 2,
+				format: "%s%v"
+			};
+		
+		var $nome		= $('#nomeID').val();
+		var $email		= $('#emailID').val();
+		var $telefone	= $('#telefoneID').val();
+		var $quantidade	= $('#quantidadeID').val();
+		var $valorRifa	= $('#valorRifaID').val();
+		var $nomeRifa	= $('#nomeRifaID').val();
+		var $total = $valorRifa * $quantidade;
+		$total = "<span class='text-success'><b>"+accounting.formatMoney($total, options)+"</b></span>";
+	
+		bootbox.dialog({
+			title: "Tem certeza que deseja confirmar a venda?",
+			message: "Após está confirmação não será mais possível cancelar ou alterar a operação.<br><br><b>RIFA:</b> "+$nomeRifa+"<b><br>NOME:</b> "+$nome+"<br><b>EMAIL:</b> "+$email+"<br><b>TEL:</b> "+$telefone+"<br><b>TOTAL(R$):</b> "+$total,
+			
+			buttons: {
+				"Confirmar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+					"className" : "btn-sm btn-primary",
+					"callback": function() {
+						//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
+						$('#zgFormID').submit();
+					}
+				},
+				"Cancelar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-down'></i>Cancelar",
+					"className" : "btn-sm btn-danger",
+					"callback": function() {
+						zgLoadUrl('');
+					}
+	
+				},
+				
+			}
+		});
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			//$('#codRifaID').val(zgGetCodRetorno(data));
+			//alert($('#rifaID').val());
+			zgLoadUrl('%ROOT_URL%Fmt/rifaVendaConf.php?id='+zgEncodeUrl('&codVenda='+zgGetCodRetorno(data)));
+			
+		}else{
+			zgMostraErro('divMsg',zgGetMsgRetorno(data));
+			//zgMostraAviso("Fechar");
+		}
+		
+		
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+
+/******************************************************
+VALIDA FORMULÁRIO
+/******************************************************/
+function validaRifaVendeAlt() {
+	var $nome		= $('#nomeID').val();
+	var $email		= $('#emailID').val();
+	var $telefone	= $('#telefoneID').val();
+	var $quantidade	= $('#quantidadeID').val();
+	
+	var vOK				= true;
+	
+	/** Quantidade **/
+	if(!$quantidade){	
+		$('#divQuantidadeID').addClass('has-error');
+		$('#divHelpQuantidadeID').html(zgCriaSpanErro('A quantidade de rifas deve ser preenchida!'));
+		vOK		= false;
+	}else if (isNumeric($quantidade) == false) {
+		$('#divQuantidadeID').addClass('has-error');
+		$('#divHelpQuantidadeID').html(zgCriaSpanErro('A quantidade de rifas deve conter apenas números!'));
+		vOK		= false;
+	}else{
+		$('#divQuantidadeID').removeClass('has-error');
+		$('#divHelpQuantidadeID').html('&nbsp;');		
+	}
+		
+	/** Nome**/
+	if(!$nome){
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('O nome do comprador deve ser preenchido!'));
+		vOK		= false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+	
+	/** Email **/
+	if($email){	
+		if (validarEmail($email) == false) {
+			$('#divEmailID').addClass('has-error');
+			$('#divHelpEmailID').html(zgCriaSpanErro('O email do comprador é inválido! Por favor, verifique.'));
+			vOK		= false;
+		}else{
+			$('#divEmailID').removeClass('has-error');
+			$('#divHelpEmailID').html('&nbsp;');		
+		}
+	}
+	
+	/** Telefone **/
+	if($telefone){	
+		if ($telefone.length < 14) {
+			$('#divTelefoneID').addClass('has-error');
+			$('#divHelpTelefoneID').html(zgCriaSpanErro('O número do telefone do comprador é inválido! Por favor, verifique.'));
+			vOK		= false;
+		}else if($telefone.length > 15){
+			$('#divTelefoneID').addClass('has-error');
+			$('#divHelpTelefoneID').html(zgCriaSpanErro('O número do telefone do comprador é inválido! Por favor, verifique.'));
+			vOK		= false;
+		}else{
+			$('#divTelefoneID').removeClass('has-error');
+			$('#divHelpTelefoneID').html('&nbsp;');		
+		}
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{		
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+
+}
+
+function atualizaResumo() {
+	
+	// CALCULOS
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+	
+	
+	var $nome		= $('#nomeID').val();
+	var $email		= $('#emailID').val();
+	var $telefone	= $('#telefoneID').val();
+	var $quantidade	= $('#quantidadeID').val();
+	var $valorRifa	= $('#valorRifaID').val();
+	var $nomeRifa	= $('#nomeRifaID').val();
+	
+	var $nValorRifa	= accounting.formatMoney($valorRifa, options);
+	
+	$('#lbInfoNomeID').text($nome);
+	$('#lbInfoEmailID').text($email);
+	$('#lbInfoTelefoneID').text($telefone);
+	$('#lbInfoValorID').text($valorRifa);
+	$('#lbInfoQuantidadeID').text($quantidade);
+	$('#lbInfoNomeRifaID').text($nomeRifa);
+	$('#lbInfoValorRifaID').text($nValorRifa);
+	
+	// TOTAL DA VENDA
+	if ($quantidade){
+		//CUSTO POR FORMANDO
+		$total = $valorRifa * $quantidade;
+		$total = "<span class='text-success'><b>"+accounting.formatMoney($total, options)+"</b></span>";
+		
+		$('#lbInfoTotalID').html($total);
+	}
+	
+}
+
+function buscaRifa() {
+	zgLoadUrl('%URL%&codRifa='+$('#rifaID').val()+'&busca='+$('#nav-search-input').val());
+	return false;
+}
+
+
+</script>
