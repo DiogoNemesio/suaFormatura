@@ -57,16 +57,6 @@ class ZgfmtRifaNumero
     private $telefone;
 
     /**
-     * @var \Entidades\ZgfmtRifaVendaSequencial
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaVendaSequencial")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_VENDA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codVenda;
-
-    /**
      * @var \Entidades\ZgfmtRifa
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifa")
@@ -85,6 +75,16 @@ class ZgfmtRifaNumero
      * })
      */
     private $codFormando;
+
+    /**
+     * @var \Entidades\ZgfmtRifaVendaSequencial
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaVendaSequencial")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_VENDA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codVenda;
 
 
     /**
@@ -213,29 +213,6 @@ class ZgfmtRifaNumero
     }
 
     /**
-     * Set codVenda
-     *
-     * @param \Entidades\ZgfmtRifaVendaSequencial $codVenda
-     * @return ZgfmtRifaNumero
-     */
-    public function setCodVenda(\Entidades\ZgfmtRifaVendaSequencial $codVenda = null)
-    {
-        $this->codVenda = $codVenda;
-
-        return $this;
-    }
-
-    /**
-     * Get codVenda
-     *
-     * @return \Entidades\ZgfmtRifaVendaSequencial 
-     */
-    public function getCodVenda()
-    {
-        return $this->codVenda;
-    }
-
-    /**
      * Set codRifa
      *
      * @param \Entidades\ZgfmtRifa $codRifa
@@ -279,5 +256,28 @@ class ZgfmtRifaNumero
     public function getCodFormando()
     {
         return $this->codFormando;
+    }
+
+    /**
+     * Set codVenda
+     *
+     * @param \Entidades\ZgfmtRifaVendaSequencial $codVenda
+     * @return ZgfmtRifaNumero
+     */
+    public function setCodVenda(\Entidades\ZgfmtRifaVendaSequencial $codVenda = null)
+    {
+        $this->codVenda = $codVenda;
+
+        return $this;
+    }
+
+    /**
+     * Get codVenda
+     *
+     * @return \Entidades\ZgfmtRifaVendaSequencial 
+     */
+    public function getCodVenda()
+    {
+        return $this->codVenda;
     }
 }
