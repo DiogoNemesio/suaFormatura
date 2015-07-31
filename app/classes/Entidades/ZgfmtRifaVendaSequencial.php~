@@ -15,7 +15,7 @@ class ZgfmtRifaVendaSequencial
     /**
      * @var integer
      *
-     * @ORM\Column(name="CODIGO", type="integer", nullable=false)
+     * @ORM\Column(name="CODIGO", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */

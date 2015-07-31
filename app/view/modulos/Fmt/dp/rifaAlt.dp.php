@@ -198,7 +198,7 @@ try {
 	for ($i = 0; $i < sizeof($formandos); $i++) {
 		$notificacao->associaUsuario($formandos[$i]->getCodigo());
 	}
-	
+
 	$notificacao->enviaEmail();
 	$notificacao->enviaSistema();
 	//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia

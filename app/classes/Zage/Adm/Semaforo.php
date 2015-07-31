@@ -84,6 +84,7 @@ class Semaforo {
     			if (!$oOrg) {
     				return null;
     			}else{
+    				$log->debug('entrei no flush');
     				$valor = 1;
     				$sem->setCodOrganizacao($oOrg);
     				$sem->setParametro($semaforo);

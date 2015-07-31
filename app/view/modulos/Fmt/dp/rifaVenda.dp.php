@@ -73,7 +73,7 @@ if ($err != null) {
 #################################################################################
 try {
 	
-	
+	$em->getConnection()->beginTransaction();
 	/***********************
 	 * Salvar no banco
 	 ***********************/
@@ -87,8 +87,11 @@ try {
 	$oCodVenda		= $em->getRepository('Entidades\ZgfmtRifaVendaSequencial')->findOneBy(array('codigo' => $codVenda));
 	
 	for ($i = 0; $i < $quantidade; $i++) {
-		$oRifaNum	= new \Entidades\ZgfmtRifaNumero();
+		$oRifaNum		= new \Entidades\ZgfmtRifaNumero();
+		$rifaSemaforo	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$codRifa);
 		
+		//$log->debug($rifaSemaforo);
+		$log->debug('entrei1');
 		$oRifaNum->setCodFormando($oUsuario);
 		$oRifaNum->setCodRifa($oRifa);
 		$oRifaNum->setCodVenda($oCodVenda);
@@ -97,21 +100,23 @@ try {
 		$oRifaNum->setEmail($email);
 		$oRifaNum->setTelefone($telefone);
 		$oRifaNum->setNumero($i);
+		$log->debug('entrei2');
 		
 		$em->persist($oRifaNum);
 	}
 		
-	$em->flush();
-	$em->clear();
-	/********** Salvar as informações ******
+	/********** Salvar as informações *********/
 	try {
+		
 		$em->flush();
 		$em->clear();
+		$em->getConnection()->commit();
+		
 	} catch (Exception $e) {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
-		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
+		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
 	}	
-***/
+
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));

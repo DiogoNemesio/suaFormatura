@@ -76,7 +76,7 @@ if (!empty($codEnquete)) {
 ## Select de Tipo Pergunta
 #################################################################################
 try {
-	$aTipo		= $em->getRepository('Entidades\ZgappEnquetePerguntaTipo')->findAll(array('indAtivo' => 1));
+	$aTipo		= $em->getRepository('Entidades\ZgappEnquetePerguntaTipo')->findBy(array('indAtivo' => 1));
 	$oTipo		= $system->geraHtmlCombo($aTipo,'CODIGO', 'DESCRICAO',	$codTipo, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -113,6 +113,7 @@ $tpl->set('PERGUNTA'			,$pergunta);
 $tpl->set('TAMANHO'				,$tamanho);
 $tpl->set('VALORES'				,$valores);
 
+$tpl->set('IC'					,$_icone_);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################

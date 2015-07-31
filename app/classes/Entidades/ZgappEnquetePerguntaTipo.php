@@ -31,9 +31,9 @@ class ZgappEnquetePerguntaTipo
     /**
      * @var integer
      *
-     * @ORM\Column(name="INT_ATIVO", type="integer", nullable=false)
+     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=false)
      */
-    private $intAtivo;
+    private $indAtivo;
 
 
     /**
@@ -70,25 +70,25 @@ class ZgappEnquetePerguntaTipo
     }
 
     /**
-     * Set intAtivo
+     * Set indAtivo
      *
-     * @param integer $intAtivo
+     * @param integer $indAtivo
      * @return ZgappEnquetePerguntaTipo
      */
-    public function setIntAtivo($intAtivo)
+    public function setIndAtivo($indAtivo)
     {
-        $this->intAtivo = $intAtivo;
+        $this->indAtivo = $indAtivo;
 
         return $this;
     }
 
     /**
-     * Get intAtivo
+     * Get indAtivo
      *
      * @return integer 
      */
-    public function getIntAtivo()
+    public function getIndAtivo()
     {
-        return $this->intAtivo;
+        return $this->indAtivo;
     }
 }
