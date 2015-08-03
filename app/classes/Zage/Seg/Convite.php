@@ -68,7 +68,6 @@ class Convite extends \Entidades\ZgsegConvite {
 			$log->err($e->getTraceAsString());
 			die($e->getMessage());
 		}
-		
 	}
 	
 	/**
