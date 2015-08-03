@@ -43,7 +43,7 @@ try {
 	//$info	= $em->getRepository('Entidades\ZgappEnquetePergunta')->findBy(array('codStatus' => 'A'));
 	$info	= \Zage\App\Enquete::listaEnqueteAtivo();
 	if(empty($info)){
-		$texto 	  = "Não existem Enquetes cadastradas para sua formatura.";
+		$texto 	  = '<p class="alert alert-success">Não existem Enquetes cadastradas para sua formatura.</p>';
 		$disabled = "disabled";
 	}else{
 		for ($i = 0; $i < sizeof($info); $i++) {
@@ -55,7 +55,7 @@ try {
 				$infoVal = $em->getRepository('Entidades\ZgappEnquetePerguntaValor')->findBy(array('codPergunta' => $info->getCodigo()));
 				/** Pergunta **/
 				$codPergunta	= ($info->getCodigo()) ? $info->getCodigo() : null;
-				$descricao		= ($info->getDescricao()) ? $info->getDescricao() : null;
+				$descricao		= ($info->getDescricao()) ? "(".$info->getDescricao().")" : null;
 				$dataPrazo		= ($info->getDataPrazo() != null) ? $info->getDataPrazo()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
 				$codTipo		= ($info->getCodTipo()) ? $info->getCodTipo()->getCodigo() : null;
 				$pergunta		= ($info->getPergunta()) ? $info->getPergunta() : null;
@@ -83,16 +83,19 @@ try {
 					$reposta = '<div class="input-group col-sm-3 pull-left"><span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Responder enquente."></i></span>
 						<input class="form-control" id="numeroID" type="text" name="numero" placeholder="Resposta" maxlength="200" required autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></div>';
 				}elseif ($codTipo == 'SN'){
-					$reposta = '<div class="input-group col-sm-8 pull-left">
-						<label class="col-sm-4 control-label">Sim <input id="simNaoID" name="simNao" type="radio" class="ace" value="sim"><span class="lbl">&nbsp;</span></label>
-						<label class="col-sm-4 control-label">Não <input id="simNaoID" name="simNao" type="radio" class="ace" value="nao"><span class="lbl">&nbsp;</span></label>
+					$reposta = '<div class="input-group col-sm-12 pull-left">
+						<input id="simNaoID" name="simNao" type="radio" class="ace" value="sim"><span class="lbl">&nbsp;</span>Sim
+						</div><div class="input-group col-sm-12 pull-left">
+						<input id="simNaoID" name="simNao" type="radio" class="ace" value="nao"><span class="lbl">&nbsp;</span>Não
 						</div>';
 				}
-				
 				break;
 			}else{
 				$ii = $i + 1;
-				if($ii >= sizeof($info)) $texto = 'Não existem Enquetes pendentes no momento.';
+				if($ii >= sizeof($info)) {
+					$texto = '<p class="alert alert-success">Não existem Enquetes pendentes no momento.</p>';
+					$disabled = "disabled";
+				}
 				continue;
 			}
 		}

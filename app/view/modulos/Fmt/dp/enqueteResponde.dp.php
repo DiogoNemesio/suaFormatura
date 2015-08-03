@@ -41,7 +41,7 @@ if ((empty($resposta))) {
 	$err	= 1;
 }
 
-if ((!empty($resposta)) && (strlen($resposta) > 60)) {
+if ((!empty($resposta)) && (strlen($resposta) > 200)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo RESPOSTA não deve conter mais de 200 caracteres");
 	$err	= 1;
 }
