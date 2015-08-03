@@ -15,6 +15,23 @@ if (defined('DOC_ROOT')) {
 global $em,$system,$tr,$log,$db;
 
 
+
+$codRifa = 2;
+
+//\Zage\Adm\Semaforo::criar(3, "RIFA_".$codRifa);
+
+//exit;
+
+$rifaAtual	= \Zage\Adm\Semaforo::proximoValor(3, "RIFA_".$codRifa);
+$rifaAtual	= \Zage\Adm\Semaforo::proximoValor(3, "RIFA_".$codRifa);
+$rifaAtual	= \Zage\Adm\Semaforo::proximoValor(3, "RIFA_".$codRifa);
+
+echo "RifaAtual: ".$rifaAtual."\n";
+exit;
+
+
+
+
 #################################################################################
 ## Solicitar o código SMS
 #################################################################################

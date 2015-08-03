@@ -36,20 +36,23 @@ class Semaforo {
     public static function proximoValor ($codOrganizacao, $semaforo) {
 		global $em,$system,$log;
 		
-		$em->getConnection()->beginTransaction(); // suspend auto-commit
 		try {
 
 			$sem	= $em->getRepository('Entidades\ZgadmSemaforo')->findOneBy(array('codOrganizacao' => $codOrganizacao,'parametro' => $semaforo),array(),LockMode::PESSIMISTIC_WRITE);
 			
 			if (!$sem) {
-				return (self::criar($codOrganizacao, $semaforo));
+				$return = self::criar($codOrganizacao, $semaforo);
+				return ($return);
 			}else{
 				$valor		= (int) $sem->getValor() + 1;
 			}
 
+			
+			$em->getConnection()->beginTransaction(); // suspend auto-commit
 			$sem->setValor($valor);
 			$em->persist($sem);
 			$em->flush();
+			$em->clear();
 			$em->getConnection()->commit();
 			
 			return ($valor);
@@ -79,22 +82,27 @@ class Semaforo {
     			$sem		= new \Entidades\ZgadmSemaforo();
     
     			/** Busca o obj da organização **/
-    			$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+    			$oOrg		= $em->getRepository('\Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 
     			if (!$oOrg) {
     				return null;
     			}else{
-    				$log->debug('entrei no flush');
+    				
+    				$em->getConnection()->beginTransaction(); // suspend auto-commit
     				$valor = 1;
     				$sem->setCodOrganizacao($oOrg);
     				$sem->setParametro($semaforo);
     				$sem->setValor($valor);
     				$em->persist($sem);
     				$em->flush();
+    				$em->clear();
+    				$em->getConnection()->commit();
     				return $valor;
     			}
     		}
     	} catch (\Exception $e) {
+    		$em->getConnection()->rollback();
+    		$em->close();
     		throw $e;
     	}
     
