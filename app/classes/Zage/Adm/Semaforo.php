@@ -52,7 +52,6 @@ class Semaforo {
 			$sem->setValor($valor);
 			$em->persist($sem);
 			$em->flush();
-			$em->clear();
 			$em->getConnection()->commit();
 			
 			return ($valor);
@@ -95,7 +94,6 @@ class Semaforo {
     				$sem->setValor($valor);
     				$em->persist($sem);
     				$em->flush();
-    				$em->clear();
     				$em->getConnection()->commit();
     				return $valor;
     			}
