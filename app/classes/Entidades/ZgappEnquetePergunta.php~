@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappEnquetePergunta
  *
- * @ORM\Table(name="ZGAPP_ENQUETE_PERGUNTA", indexes={@ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_3_idx", columns={"COD_STATUS"})})
+ * @ORM\Table(name="ZGAPP_ENQUETE_PERGUNTA", indexes={@ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGAPP_ENQUETE_PERGUNTA_2_idx", columns={"COD_TIPO"})})
  * @ORM\Entity
  */
 class ZgappEnquetePergunta
@@ -75,16 +75,6 @@ class ZgappEnquetePergunta
      * })
      */
     private $codTipo;
-
-    /**
-     * @var \Entidades\ZgappEnqueteStatus
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgappEnqueteStatus")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codStatus;
 
 
     /**
@@ -256,28 +246,5 @@ class ZgappEnquetePergunta
     public function getCodTipo()
     {
         return $this->codTipo;
-    }
-
-    /**
-     * Set codStatus
-     *
-     * @param \Entidades\ZgappEnqueteStatus $codStatus
-     * @return ZgappEnquetePergunta
-     */
-    public function setCodStatus(\Entidades\ZgappEnqueteStatus $codStatus = null)
-    {
-        $this->codStatus = $codStatus;
-
-        return $this;
-    }
-
-    /**
-     * Get codStatus
-     *
-     * @return \Entidades\ZgappEnqueteStatus 
-     */
-    public function getCodStatus()
-    {
-        return $this->codStatus;
     }
 }

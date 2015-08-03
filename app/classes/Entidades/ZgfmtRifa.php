@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtRifa
  *
- * @ORM\Table(name="ZGFMT_RIFA", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_RIFA_2_idx", columns={"COD_CENTRO_CUSTO"}), @ORM\Index(name="fk_ZGFMT_RIFA_3_idx", columns={"USUARIO_CADASTRO"}), @ORM\Index(name="fk_ZGFMT_RIFA_4_idx", columns={"USUARIO_ALTERACAO"})})
+ * @ORM\Table(name="ZGFMT_RIFA", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_RIFA_2_idx", columns={"COD_CENTRO_CUSTO"}), @ORM\Index(name="fk_ZGFMT_RIFA_3_idx", columns={"USUARIO_CADASTRO"}), @ORM\Index(name="fk_ZGFMT_RIFA_4_idx", columns={"USUARIO_ALTERACAO"}), @ORM\Index(name="fk_ZGFMT_RIFA_5_idx", columns={"NUMERO_VENCEDOR"})})
  * @ORM\Entity
  */
 class ZgfmtRifa
@@ -85,13 +85,6 @@ class ZgfmtRifa
     private $indRifaGerada;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="NUMERO_VENCEDOR", type="integer", nullable=true)
-     */
-    private $numeroVencedor;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
@@ -104,6 +97,16 @@ class ZgfmtRifa
      * @ORM\Column(name="DATA_ALTERACAO", type="datetime", nullable=true)
      */
     private $dataAlteracao;
+
+    /**
+     * @var \Entidades\ZgfmtRifaNumero
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaNumero")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="NUMERO_VENCEDOR", referencedColumnName="COD_RIFA")
+     * })
+     */
+    private $numeroVencedor;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -364,29 +367,6 @@ class ZgfmtRifa
     }
 
     /**
-     * Set numeroVencedor
-     *
-     * @param integer $numeroVencedor
-     * @return ZgfmtRifa
-     */
-    public function setNumeroVencedor($numeroVencedor)
-    {
-        $this->numeroVencedor = $numeroVencedor;
-
-        return $this;
-    }
-
-    /**
-     * Get numeroVencedor
-     *
-     * @return integer 
-     */
-    public function getNumeroVencedor()
-    {
-        return $this->numeroVencedor;
-    }
-
-    /**
      * Set dataCadastro
      *
      * @param \DateTime $dataCadastro
@@ -430,6 +410,29 @@ class ZgfmtRifa
     public function getDataAlteracao()
     {
         return $this->dataAlteracao;
+    }
+
+    /**
+     * Set numeroVencedor
+     *
+     * @param \Entidades\ZgfmtRifaNumero $numeroVencedor
+     * @return ZgfmtRifa
+     */
+    public function setNumeroVencedor(\Entidades\ZgfmtRifaNumero $numeroVencedor = null)
+    {
+        $this->numeroVencedor = $numeroVencedor;
+
+        return $this;
+    }
+
+    /**
+     * Get numeroVencedor
+     *
+     * @return \Entidades\ZgfmtRifaNumero 
+     */
+    public function getNumeroVencedor()
+    {
+        return $this->numeroVencedor;
     }
 
     /**
