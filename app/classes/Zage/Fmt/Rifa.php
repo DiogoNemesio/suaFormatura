@@ -26,10 +26,60 @@ class Rifa {
 		$log->debug(__CLASS__.": nova Instância");
 	}
 	
+	
 	/**
+	 * Lista todas as formaturas aptas para o sorteio
 	 *
-	 * Busca por Paises
+	 * @param integer $codOrganizacao
+	 * @return array
 	 */
+	public static function listaRifaAptaSorteio() {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+		
+		$data = new \DateTime("+10 day");
+		$data = $data->format($system->config["data"]["datetimeSimplesFormat"]);
+		
+		//$log->debug($data);
+		
+		try {
+			$qb->select('r')
+			->from('\Entidades\ZgfmtRifa','r')
+			->leftJoin('\Entidades\ZgadmOrganizacao'	,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= r.codOrganizacao')			
+			->where($qb->expr()->orx(
+					$qb->expr()->andx(
+							$qb->expr()->eq('o.codigo'				, ':codOrganizacao'),
+							$qb->expr()->eq('r.indRifaEletronica'	, ':indRifaEletronica'),
+							$qb->expr()->lte('r.dataSorteio'		, ':now'),
+							$qb->expr()->isNull('r.numeroVencedor')
+							),
+							
+					 $qb->expr()->andx(
+								$qb->expr()->eq('o.codigo'				, ':codOrganizacao'),
+								$qb->expr()->eq('r.indRifaEletronica'	, ':indRifaEletronica'),								
+								$qb->expr()->gte('r.dataSorteio'		, ':limite'),
+					 			$qb->expr()->isNotNull('r.numeroVencedor')
+								)
+					)
+			)
+
+			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('indRifaEletronica', 1)
+			->setParameter('now', new \DateTime("now"))
+			->setParameter('limite', new \DateTime("-5 day"))
+			
+			->orderBy('r.dataSorteio', 'DESC');
+	
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	
+	
 	
 	/**
 	 * Retorna o próximo número da Rifa

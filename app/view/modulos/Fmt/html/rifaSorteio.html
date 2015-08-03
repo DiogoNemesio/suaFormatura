@@ -1,0 +1,480 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Sorteio Eletrônico
+	
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" id="codRifaID" name="codRifa" value="%COD_RIFA%">
+				<input type='hidden' name="nomeRifa" id='nomeRifaID' value="%NOME_RIFA%">
+				<input type='hidden' name="premioRifa" id='premioRifaID' value="%PREMIO_RIFA%">
+				<input type='hidden' name="dataRifa" id='dataRifaID' value="%DATA_RIFA%">
+				
+				<input type='hidden' name="numVencedor" id='numVencedorID' value="%NUM_VENCEDOR%">
+				<input type='hidden' name="vencedorNome" id='vencedorNomeID' value="%VENCEDOR_NOME%">
+				<input type='hidden' name="vencedorEmail" id='vencedorEmailID' value="%VENCEDOR_EMAIL%">
+				<input type='hidden' name="vencedorTelefone" id='vencedorTelefoneID' value="%VENCEDOR_TELEFONE%">
+				<input type='hidden' name="dataCompra" id='dataCompraID' value="%DATA_COMPRA%">
+				<input type='hidden' name="vendedorNome" id='vendedorNomeID' value="%VENDEDOR_NOME%">
+				<input type='hidden' name="vendedorEmail" id='vendedorEmailID' value="%VENDEDOR_EMAIL%">
+		
+				<div id="divPrincipal" class="tab-pane in active">
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div id="divMsg"></div>
+						%MSG%
+						<div id="divFormularioID" class="col-sm-7">
+							<h5 class="header blue bolder smaller">Informações da rifa</h5>
+							
+							<div class="form-group col-sm-12" id="divRifaID">
+							<label class="col-sm-2 control-label" for="rifaID">Rifa</label>
+								<div class="input-group col-sm-6 pull-left">
+									<select onchange="buscaRifa();" class="select2" style="width:100%;" id="rifaID" name="rifa" data-rel="select2">
+									%RIFAS%
+									</select>
+								</div>
+							</div>
+							
+							
+							<div class="row" id="divInfoNomeRifaID">
+								<div class="col-sm-12">
+							    	<p class="col-sm-2 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Rifa:</p>
+							    	<p id='lbInfoNomeRifaID' class="col-sm-10 pull-left align-left" style="padding: 2px; margin:0;"></p>
+						    	</div>
+						    </div>
+						    <div class="row" id="divInfoPremioRifaID">
+						    	<div class="col-sm-12">
+							    	<p class="col-sm-2 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Prêmio:</p>
+							    	<p id='lbInfoPremioRifaID' class="col-sm-10 pull-left align-left" style="padding: 2px; margin:0;"></p>
+						    	</div>
+					    	</div>
+					    	<div class="row" id="divInfoDataRifaID">
+						    	<div class="col-sm-12">
+							    	<p class="col-sm-2 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Data:</p>
+							    	<p id='lbInfoDataRifaID' class="col-sm-10 pull-left align-left" style="padding: 2px; margin:0;"></p>
+						    	</div>
+					    	</div>
+					    	
+					    	<div class="space-12"></div>
+				    		
+				    		<div id="numSorteadoID" class="col-sm-12 hidden">
+					    	<div class="col-sm-4 col-sm-offset-2 well">
+								<h4 class="green smaller lighter" align="center">Número sorteado</h4>
+								<h4 id='lbInfoNumSorteadoID' class="smaller lighter" align="center"></h4>
+							</div>
+							</div>
+							
+							
+							
+						 	 <div id="divSubmitID" class="col-sm-12">
+								<label class="col-sm-4">&nbsp;</label>
+								<button type="button" class="btn btn-primary" id="btnSubmitID">
+									<i class="fa fa-check bigger-110"></i> Sortear
+								</button>
+							</div>
+						   
+				    	</div>
+
+				    	<div id="divResumoID" class="col-sm-5">
+							<div class="widget-box">
+								<div class="widget-header widget-header-flat widget-header-small center">
+									<h5 class="widget-title">Resumo da sorteio</h5>
+								</div>
+								<div class="widget-body">
+									<div class="widget-main small">
+										
+										<div class="row" id="divInfoNomeID">
+											<h6 class="header blue bolder smaller">&nbsp;Informações do ganhador:</h6>
+											<div class="vspace-xs"></div>
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Nome:</p>
+										    	<p id='lbInfoNomeID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoEmailID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Email:</p>
+										    	<p id='lbInfoEmailID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoTelefoneID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Telefone:</p>
+										    	<p id='lbInfoTelefoneID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoDataID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Data da compra:</p>
+										    	<p id='lbInfoDataID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoConfID">
+											<h6 class="header blue bolder smaller">&nbsp;Informações do vendedor:</h6>
+											<div class="vspace-xs"></div>
+										</div>
+										<div class="row" id="divInfoNomeVendedorID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Nome:</p>
+										    	<p id='lbInfoNomeVendedorID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" id="divInfoEmailVendedorID">
+											<div class="col-sm-12">
+										    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Email:</p>
+										    	<p id='lbInfoEmailVendedorID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	
+				    
+    	
+				    </div>
+				</div>
+		
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+/*********************************************************
+* Inicializações 
+*********************************************************/
+//Popover
+$('[data-rel=popover]').popover({html:true});
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+// Atualizat resumo
+atualizaResumo();
+//Validar codRifa (se não existir esconder o formulário)
+verificaCodRifa();
+//Select2
+$(".select2").select2();
+
+//Carregar informações caso já tenha sorteado	
+verificaVencedor();
+function verificaVencedor(){
+
+	if ($('#numVencedorID').val()){
+		
+		$('#lbInfoNomeID').text($('#vencedorNomeID').val());
+   		$('#lbInfoEmailID').text($('#vencedorEmailID').val());
+   		$('#lbInfoTelefoneID').text($('#vencedorTelefoneID').val());
+   		$('#lbInfoDataID').text($('#dataCompraID').val());
+   		$('#lbInfoNomeVendedorID').text($('#vendedorNomeID').val());
+   		$('#lbInfoEmailVendedorID').text($('#vendedorEmailID').val());
+   		
+   		//Mostrar número sorteado	   	    		
+   		$('#numSorteadoID').removeClass('hidden');
+   		$('#lbInfoNumSorteadoID').text($('#numVencedorID').val());
+   		
+   		//Hidden do botão de sortear
+   		$('#divSubmitID').addClass("hidden");
+   		
+	}
+}
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	
+	$('#btnSubmitID').html('Sorteando...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");	
+	
+	var vOK = true;
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{
+		
+		var options = {
+				symbol : "",
+				decimal : ",",
+				thousand: ".",
+				precision : 2,
+				format: "%s%v"
+			};
+		
+		var $nome		= $('#nomeID').val();
+		var $email		= $('#emailID').val();
+		var $telefone	= $('#telefoneID').val();
+		var $quantidade	= $('#quantidadeID').val();
+		var $valorRifa	= $('#valorRifaID').val();
+		var $nomeRifa	= $('#nomeRifaID').val();
+		var $total = $valorRifa * $quantidade;
+		$total = "<span class='text-success'><b>"+accounting.formatMoney($total, options)+"</b></span>";
+	
+		bootbox.dialog({
+			title: "Tem certeza que deseja sortear a rifa?",
+			message: "Após está confirmação não será mais possível cancelar ou alterar a operação.<br><br><b>RIFA:</b> "+$nomeRifa,
+			
+			buttons: {
+				"Confirmar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+					"className" : "btn-sm btn-primary",
+					"callback": function() {
+						//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
+						$('#zgFormID').submit();
+					}
+				},
+				"Cancelar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-down'></i>Cancelar",
+					"className" : "btn-sm btn-danger",
+					"callback": function() {
+						
+						$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Sortear');
+						$('#btnSubmitID').attr("disabled",false);
+						zgLoadUrl('');
+					}
+	
+				},
+				
+			}
+		});
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			//zgLoadUrl('%URL%&codVencedor='+zgGetCodRetorno(data)+'&codRifa='+$('#codRifaID').val());
+			buscaVencedor();
+			
+		}else{
+			zgMostraErro('divMsg',zgGetMsgRetorno(data));
+			$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Sortear');
+			$('#btnSubmitID').attr("disabled",false);
+		}
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+
+/******************************************************
+VALIDA FORMULÁRIO
+/******************************************************/
+function validaRifaVendeAlt() {
+	var $nome		= $('#nomeID').val();
+	var $email		= $('#emailID').val();
+	var $telefone	= $('#telefoneID').val();
+	var $quantidade	= $('#quantidadeID').val();
+	
+	var vOK				= true;
+	
+	/** Quantidade **/
+	if(!$quantidade){	
+		$('#divQuantidadeID').addClass('has-error');
+		$('#divHelpQuantidadeID').html(zgCriaSpanErro('A quantidade de rifas deve ser preenchida!'));
+		vOK		= false;
+	}else if (isNumeric($quantidade) == false) {
+		$('#divQuantidadeID').addClass('has-error');
+		$('#divHelpQuantidadeID').html(zgCriaSpanErro('A quantidade de rifas deve conter apenas números!'));
+		vOK		= false;
+	}else{
+		$('#divQuantidadeID').removeClass('has-error');
+		$('#divHelpQuantidadeID').html('&nbsp;');		
+	}
+		
+	/** Nome**/
+	if(!$nome){
+		$('#divNomeID').addClass('has-error');
+		$('#divHelpNomeID').html(zgCriaSpanErro('O nome do comprador deve ser preenchido!'));
+		vOK		= false;
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+	
+	/** Email **/
+	if($email){	
+		if (validarEmail($email) == false) {
+			$('#divEmailID').addClass('has-error');
+			$('#divHelpEmailID').html(zgCriaSpanErro('O email do comprador é inválido! Por favor, verifique.'));
+			vOK		= false;
+		}else{
+			$('#divEmailID').removeClass('has-error');
+			$('#divHelpEmailID').html('&nbsp;');		
+		}
+	}
+	
+	/** Telefone **/
+	if($telefone){	
+		if ($telefone.length < 14) {
+			$('#divTelefoneID').addClass('has-error');
+			$('#divHelpTelefoneID').html(zgCriaSpanErro('O número do telefone do comprador é inválido! Por favor, verifique.'));
+			vOK		= false;
+		}else if($telefone.length > 15){
+			$('#divTelefoneID').addClass('has-error');
+			$('#divHelpTelefoneID').html(zgCriaSpanErro('O número do telefone do comprador é inválido! Por favor, verifique.'));
+			vOK		= false;
+		}else{
+			$('#divTelefoneID').removeClass('has-error');
+			$('#divHelpTelefoneID').html('&nbsp;');		
+		}
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{		
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+
+}
+
+/******************************************************
+BUSCAR VENCEDOR
+/******************************************************/
+function buscaVencedor() {
+	var vCodRifa = $('#codRifaID').val();
+	
+	if (vCodRifa){
+		/** Buscar o vencedor no banco **/
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Fmt/rifaBuscaVencedor.dp.php",
+	   		data: { codRifa: vCodRifa},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.vencedorNumero) {
+	   	    		
+	   	    		$('#vencedorNomeID').val(vData.vencedorNome);
+	   	    		$('#vencedorEmailID').val(vData.vencedorEmail);
+	   	    		$('#vencedorTelefoneID').val(vData.vencedorTelefone);
+	   	    		$('#vendedorNumeroID').val(vData.vencedorNumero);
+	   	    		$('#dataCompraID').val(vData.vencedorData);
+	   	    		$('#vendedorNomeID').val(vData.vendedorNome);
+	   	    		$('#vendedorEmailID').val(vData.vendedorUsuario);
+	   	    		
+	   	    		$('#lbInfoNomeID').text(vData.vencedorNome);
+	   	    		$('#lbInfoEmailID').text(vData.vencedorEmail);
+	   	    		$('#lbInfoTelefoneID').text(vData.vencedorTelefone);
+	   	    		$('#lbInfoDataID').text(vData.vencedorData);
+	   	    		$('#lbInfoNomeVendedorID').text(vData.vendedorNome);
+	   	    		$('#lbInfoEmailVendedorID').text(vData.vendedorUsuario);
+	   	    		
+	   	    		//Mostrar número sorteado	   	    		
+	   	    		$('#numSorteadoID').removeClass('hidden');
+	   	    		$('#lbInfoNumSorteadoID').text(vData.vencedorNumero);
+	   	    		
+	   	    		//Hidden do botão de sortear
+	   	    		$('#divSubmitID').addClass("hidden");
+	   	    	}
+	   		},
+	   		
+   		method: 'get',
+   		cache: false,
+   		async:false
+ 		});
+	}
+}
+
+
+/******************************************************
+ATUALIZA RESUMO
+/******************************************************/
+function atualizaResumo() {
+	
+	// CALCULOS
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+	
+	
+	var $nome		= $('#nomeID').val();
+	var $email		= $('#emailID').val();
+	var $telefone	= $('#telefoneID').val();
+	var $quantidade	= $('#quantidadeID').val();
+	var $valorRifa	= $('#valorRifaID').val();
+	var $nomeRifa	= $('#nomeRifaID').val();
+	var $premioRifa	= $('#premioRifaID').val();
+	var $dataRifa	= $('#dataRifaID').val();
+	
+	var $nValorRifa	= accounting.formatMoney($valorRifa, options);
+	
+	$('#lbInfoNomeID').text($nome);
+	$('#lbInfoEmailID').text($email);
+	$('#lbInfoTelefoneID').text($telefone);
+	$('#lbInfoValorID').text($valorRifa);
+	$('#lbInfoQuantidadeID').text($quantidade);
+	$('#lbInfoNomeRifaID').text($nomeRifa);
+	$('#lbInfoValorRifaID').text($nValorRifa);
+	$('#lbInfoPremioRifaID').text($premioRifa);
+	$('#lbInfoDataRifaID').text($dataRifa);
+	
+	// TOTAL DA VENDA
+	if ($quantidade){
+		//CUSTO POR FORMANDO
+		$total = $valorRifa * $quantidade;
+		$total = "<span class='text-success'><b>"+accounting.formatMoney($total, options)+"</b></span>";
+		
+		$('#lbInfoTotalID').html($total);
+	}
+	
+}
+
+/******************************************************
+ATUALIZAR TELA DE ACORDO COM A RIFA
+/******************************************************/
+function buscaRifa() {
+	zgLoadUrl('%URL%&codRifa='+$('#rifaID').val()+'&busca='+$('#nav-search-input').val());
+	return false;
+}
+
+/******************************************************
+ESCONDER TELA CASO COD_RIFA SEJA NULO
+/******************************************************/
+function verificaCodRifa(){
+	var $codRifa = $('#codRifaID').val();
+	if (!$codRifa){
+		$('#divFormularioID').addClass("hidden");//Esconder o div do formulário
+		$('#divResumoID').addClass("hidden");//Esconder o div do Resumo
+		$('#divSubmitID').addClass("hidden");//Esconder o div do Resumo
+	}
+}
+
+</script>
