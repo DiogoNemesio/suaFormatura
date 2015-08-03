@@ -67,7 +67,7 @@ try {
 				}elseif ($codTipo == 'L'){
 					$reposta = '<div class="input-group col-sm-8 pull-left"><span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Responder enquente."></i></span>
 								<input class="form-control" id="livreID" type="text" name="livre" placeholder="Resposta" maxlength="200" required autocomplete="off"></div>';
-				}elseif ($codTipo == 'DT'){
+				}elseif ($codTipo == 'LI'){
 						
 					if ($infoVal) {
 						$reposta = null;
