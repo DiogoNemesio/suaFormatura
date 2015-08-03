@@ -197,7 +197,7 @@ function validaEnqueteAlt() {
 	// Descricao
 	if (vDescricao.length > 100 ) {
 		$('#divDescricaoID').addClass('has-error');
-		$('#divHelpDescricaoID').html(zgCriaSpanErro('A descrição deve ter no máximo 100 caracteres!'));
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('O objetivo deve ter no máximo 100 caracteres!'));
 		vOK		= false;
 	}else{
 		$('#divDescricaoID').removeClass('has-error');
@@ -223,7 +223,7 @@ function validaEnqueteAlt() {
 	// Data prazo
 	if (!vData) {
 		$('#divDataPrazoID').addClass('has-error');
-		$('#divHelpDataPrazoID').html(zgCriaSpanErro('A data para conclusão da enquete deve ser preenchido!'));
+		$('#divHelpDataPrazoID').html(zgCriaSpanErro('A data para conclusão da enquete deve ser preenchida!'));
 		vOK		= false;
 	}else{
 		$('#divDataPrazoID').removeClass('has-error');
@@ -233,7 +233,7 @@ function validaEnqueteAlt() {
 	// Tipo
 	if (!vCodTipo) {
 		$('#divCodTipoID').addClass('has-error');
-		$('#divHelpCodTipoID').html(zgCriaSpanErro('O tipo da pergunta deve ser preenchido!'));
+		$('#divHelpCodTipoID').html(zgCriaSpanErro('O tipo da resposta deve ser preenchido!'));
 		vOK		= false;
 	}else{
 		$('#divCodTipoID').removeClass('has-error');
@@ -243,7 +243,7 @@ function validaEnqueteAlt() {
 	//Para o tipo Lista de valores o valor não pode estar nulo
 	if ((vCodTipo == 'LI') && (!vValores)) {
 		$('#divValoresID').addClass('has-error');
-		$('#divHelpValoresID').html(zgCriaSpanErro('Para o tipo LISTA PREDEFINIDA o campo VALORES deve ser preenchido!'));
+		$('#divHelpValoresID').html(zgCriaSpanErro('Para o tipo LISTA DE OPÇÕES o campo VALORES deve ser preenchido!'));
 		vOK		= false;
 	}else{
 		$('#divValoresID').removeClass('has-error');
@@ -253,7 +253,7 @@ function validaEnqueteAlt() {
 	// Para o tipo Numero o tamanho não pode estar nulo
 	if (((vCodTipo == 'N') || (vCodTipo == 'L')) && (!vTamanho)) {	
 		$('#divTamanhoID').addClass('has-error');
-		$('#divHelpTamanhoID').html(zgCriaSpanErro('Para o tipo selecionado o campo TAMANHO deve ser preenchido !!!'));
+		$('#divHelpTamanhoID').html(zgCriaSpanErro('Para o tipo selecionado o campo TAMANHO deve ser preenchido!'));
 		vOK		= false;
 	}else{
 		$('#divTamanhoID').removeClass('has-error');

@@ -88,9 +88,8 @@ try {
 	
 	for ($i = 0; $i < $quantidade; $i++) {
 		$oRifaNum		= new \Entidades\ZgfmtRifaNumero();
-		$rifaSemaforo	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$codRifa);
+		//$rifaSemaforo	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$codRifa);
 		
-		//$log->debug($rifaSemaforo);
 		$log->debug('entrei1');
 		$oRifaNum->setCodFormando($oUsuario);
 		$oRifaNum->setCodRifa($oRifa);
@@ -100,7 +99,6 @@ try {
 		$oRifaNum->setEmail($email);
 		$oRifaNum->setTelefone($telefone);
 		$oRifaNum->setNumero($i);
-		$log->debug('entrei2');
 		
 		$em->persist($oRifaNum);
 	}
