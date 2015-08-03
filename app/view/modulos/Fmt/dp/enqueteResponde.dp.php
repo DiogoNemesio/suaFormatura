@@ -37,12 +37,12 @@ $err	= false;
 #################################################################################
 /** Cargo **/
 if ((empty($resposta))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo RESPOSTA é obrigatório"));
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo RESPOSTA é obrigatório!"))));
 	$err	= 1;
 }
 
 if ((!empty($resposta)) && (strlen($resposta) > 200)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo RESPOSTA não deve conter mais de 200 caracteres");
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo RESPOSTA não deve conter mais de 200 caracteres!"))));
 	$err	= 1;
 }
 
@@ -83,5 +83,5 @@ try {
  	exit;
 }
  
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
+die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Enquete respondida com sucesso."))));
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oResposta->getCodigo());
