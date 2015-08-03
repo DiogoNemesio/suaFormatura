@@ -38,8 +38,8 @@ class Enquete {
 			$qb->select('e')
 			->from('\Entidades\ZgappEnquetePergunta','e')
 			->where($qb->expr()->andX(
-				$qb->expr()->eq('e.codOrganizacaoPai'	, ':codOrganizacao'),
-				$qb->expr()->lte('e.dataPrazo', ':now')
+				$qb->expr()->eq('e.codOrganizacao'	, ':codOrganizacao'),
+				$qb->expr()->gte('e.dataPrazo', ':now')
 			))
 			->setParameter('codOrganizacao', $system->getCodOrganizacao())
 			->setParameter('now', new \DateTime("now"));

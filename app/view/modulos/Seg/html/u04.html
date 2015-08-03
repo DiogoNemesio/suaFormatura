@@ -268,14 +268,15 @@ $('#zgFormAlteraSenhaID').submit(function() {
 		if (checaRetornoOK(data) == true) {
 			//Mensagem de confirmação
 			zgMostraMsg('divMsgID',zgGetMsgRetorno(data));
+			$('#btnSubmitID').attr("disabled","disabled");
 		}else{
 			//Mensagem de erro
 			zgMostraErro('divMsgID',zgGetMsgRetorno(data));
+			$('#btnSubmitID').attr("disabled",false);
 		}
 		
 		//Voltar o botão de salvar
 		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
-		$('#btnSubmitID').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();
