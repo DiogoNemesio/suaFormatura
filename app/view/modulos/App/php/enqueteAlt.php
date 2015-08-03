@@ -42,7 +42,7 @@ if (!isset($codEnquete)) \Zage\App\Erro::halt('Falta de Parâmetros');
 if (!empty($codEnquete)) {
 	try {
 		$info 	 = $em->getRepository('Entidades\ZgappEnquetePergunta')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codEnquete));
-		$infoVal = $em->getRepository('Entidades\ZgappEnquetePerguntaValor')->findBy(array('codPergunta' => $codEnquete));
+		$infoVal = $em->getRepository('Entidades\ZgappEnquetePerguntaValor')->findBy(array('codPergunta' => $codEnquete),array('valor' => ASC));
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
@@ -52,6 +52,7 @@ if (!empty($codEnquete)) {
 	$codTipo		= ($info->getCodTipo()) ? $info->getCodTipo()->getCodigo() : null;
 	$pergunta		= ($info->getPergunta()) ? $info->getPergunta() : null;	
 	$tamanho		= $info->getTamanho();
+	//Resgatar valores (para o tipo lista de valores)
 	if ($infoVal) {
 		$valores = null;
 		foreach ($infoVal as $val) {
@@ -60,6 +61,30 @@ if (!empty($codEnquete)) {
 		$valores	= substr($valores,0,-1);
 	}else{
 		$valores = null;
+	}
+	
+	// Verificar se a enquete já esta finalizada
+	if ($info->getDataPrazo() < new \DateTime("now")){
+	
+		$msgAviso .= '<div class="alert alert-warning">';
+		$msgAviso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Não é possível realizar alterações em enquente finalizada ! ';
+		$msgAviso .= '</div>';
+		
+		$readonly 		= 'readonly';
+		$disabled 		= 'disabled';
+		$indFinalizado 	= '1';
+	
+	}
+	
+	$oResposta	= $em->getRepository('Entidades\ZgappEnqueteResposta')->findBy(array('codPergunta' => $codEnquete));
+	if ($oResposta){
+		$msgAviso .= '<div class="alert alert-warning">';
+		$msgAviso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Não é possível realizar alterações em enquete em andamento ! ';
+		$msgAviso .= '</div>';
+		
+		$readonly 		= 'readonly';
+		$disabled 		= 'disabled';
+		$indFinalizado 	= '1';
 	}
 	
 }else{
@@ -113,6 +138,10 @@ $tpl->set('PERGUNTA'			,$pergunta);
 $tpl->set('TAMANHO'				,$tamanho);
 $tpl->set('VALORES'				,$valores);
 
+$tpl->set('IND_FINALIZADO'		,$indFinalizado);
+$tpl->set('MSG'					,$msgAviso);
+$tpl->set('READONLY'			,$readonly);
+$tpl->set('DISABLED'			,$disabled);
 $tpl->set('IC'					,$_icone_);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 

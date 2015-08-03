@@ -59,10 +59,11 @@ if (!empty($codEnquete)) {
 $urlVoltar			= ROOT_URL."/App/enqueteLis.php?id=".$id;
 
 #################################################################################
-## Url Novo
+## Url Atualizar
 #################################################################################
-$uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete=');
-$urlNovo			= ROOT_URL."/App/enqueteRes.php?id=".$uid;
+$uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete='.$codEnquete);
+$urlAtualizar		= ROOT_URL."/App/enqueteRes.php?id=".$uid;
+
 $urlResposta		= ROOT_URL."/App/respostaLis.php?id=".$uid;
 $urlGraphEnquete    = ROOT_URL."/App/enqueteGraph.php?id=".$uid;
 $urlGraphEnquetePerc= ROOT_URL."/App/enquetePercGraph.php?id=".$uid;
@@ -78,7 +79,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('URL_FORM'				,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'				,$urlVoltar);
-$tpl->set('URLNOVO'					,$urlNovo);
+$tpl->set('URLATUALIZAR'			,$urlAtualizar);
 $tpl->set('RESPOSTA'				,$urlResposta);
 $tpl->set('ID'						,$id);
 $tpl->set('COD_ENQUETE'				,$codEnquete);

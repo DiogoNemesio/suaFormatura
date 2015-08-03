@@ -7,40 +7,43 @@
 	</div><!-- /.page-header -->
 
 	<div id="user-profile-3" class="user-profile row">
+		%MSG%
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codEnqueteID" name="codEnquete" value="%COD_ENQUETE%">
+				<input type="hidden" id="indFinalizadoID" name="indFinalizado" value="%IND_FINALIZADO%">
 				<input type='hidden' id='valID'>
+				<div id="divMsg"></div>
 				<div id="indice" class="tab-pane in active">
-					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<h5 class="header blue bolder smaller">Informações Gerais</h5>
 					<div class="vspace-xs"></div>
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group col-sm-12" id="divPerguntaID">
 						    	<label class="col-sm-3 control-label" for="perguntaID">Pergunta</label>
 									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Pergunta da enquete."></i></span>
-				   					<input class="form-control" id="perguntaID" type="text" name="pergunta" placeholder="Pergunta da enquete" maxlength="200" value="%PERGUNTA%" required autocomplete="off">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a pergunta."></i></span>
+				   					<input class="form-control" %READONLY% id="perguntaID" type="text" name="pergunta" placeholder="Qual a pergunta?" maxlength="200" value="%PERGUNTA%" required autocomplete="off">
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpPerguntaID"></div>
 				    		</div>
 				    	</div>
 				    	<div class="col-sm-6">
 				    		<div class="form-group col-sm-12" id="divDescricaoID">
-						    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+						    	<label class="col-sm-3 control-label" for="descricaoID">Objetivo</label>
 									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da enquete."></i></span>
-				   					<input class="form-control" id="descricaoID" type="text" name="descricao" placeholder="Descrição da enquete" maxlength="100" value="%DESCRICAO%" required autocomplete="off">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o objetivo principal da pergunta."></i></span>
+				   					<input class="form-control" %READONLY% id="descricaoID" type="text" name="descricao" placeholder="Objetivo da enquete" maxlength="100" value="%DESCRICAO%" required autocomplete="off">
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
 				    		</div>
 				    	</div>
 				    	<div class="col-sm-6">
 							<div class="form-group col-sm-12" id="divCodTipoID">
-								<label class="col-sm-3 control-label" for="codTipoID">Tipo Pergunta</label>
+								<label class="col-sm-3 control-label" for="codTipoID">Tipo</label>
 				    			<div class="input-group col-sm-8 pull-left">
-			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Tipo da pergunta."></i></span>
-									<select class="select2" onchange="zgMostraDivs();" style="width:100%;" id="codTipoID" name="codTipo" data-placeholder="Tipo da pergunta" data-rel="select2">
+			    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o tipo de resposta para a pergunta."></i></span>
+									<select class="select2" %DISABLED% onchange="zgMostraDivs();" style="width:100%;" id="codTipoID" name="codTipo" data-placeholder="Tipo da resposta" data-rel="select2">
 									%COD_TIPO%
 									</select>
 								</div>
@@ -49,25 +52,25 @@
 				    		<div class="form-group col-sm-12" id="divValoresID">
 				    			<label for="CodContratoID" class="col-sm-3 control-label">Valores</label>
 				    			<div class="input-group col-sm-8 pull-left">
-				    				<textarea class="width-100" tabindex="7" id="valoresID" class="autosize limited form-control" placeholder="Digite e aperte enter" name="valores" maxlength="200" autocomplete="off">%VALORES%</textarea>
+				    				<input id="valoresID" %READONLY% class="autosize limited form-control" placeholder="Digite e aperte enter" value="%VALORES%" name="valores" maxlength="200" autocomplete="off">
 				    			</div>
 				    		<div class="col-sm-1 pull-left" id="divHelpValoresID"></div>
 							</div>
 				    		<div class="form-group col-sm-12" id="divTamanhoID">
 				    			<label for="tamanhoID" class="col-sm-3 control-label">Tamanho</label>
 			    				<div class="input-group col-sm-8 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Tamanho máximo de caracteres que o parâmetro poderá ter na configuração do sistema"></i></span>
-				   					<input class="width-100" id="tamanhoID" type="text" name="tamanho" maxlength="60" value="%TAMANHO%" placeholder="Tamanho máximo" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0"autocomplete="off">	
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o tamanho máximo de caractres para as respostas dos formandos."></i></span>
+				   					<input class="width-100" id="tamanhoID" %READONLY% type="text" name="tamanho" maxlength="60" value="%TAMANHO%" placeholder="Tamanho máximo" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0"autocomplete="off">	
 				    			</div>
 				    			<div class="col-sm-1 pull-left" id="divHelpTamanhoID"></div>
 							</div>
 				    	</div>
 						<div class="col-sm-6">
 							<div class="form-group col-sm-12" id="divDataPrazoID">
-						    	<label class="col-sm-3 control-label" for="dataPrazoID">Data Término</label>
+						    	<label class="col-sm-3 control-label" for="date-timepicker">Data término</label>
 									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data do Prazo."></i></span>
-					    			<input class="form-control datepicker" id="date-timepicker" type="text" name="dataPrazo" placeholder="Data do Prazo" maxlength="16" value="%DATA_PRAZO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data e hora limite para que todos os formandos respondam a pergunta."></i></span>
+					    			<input class="form-control datepicker" %READONLY% id="date-timepicker" type="text" name="dataPrazo" placeholder="Data do Prazo" maxlength="16" value="%DATA_PRAZO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples">
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpDataPrazoID"></div>
 						    </div>
@@ -123,7 +126,35 @@ $('#btnSubmitID').on("click", function(e) {
 		e.preventDefault();
 		return false;
 	}else{;
-		$('#zgFormID').submit();
+			
+	var $pergunta		= $('#perguntaID').val();
+	var $data			= $('#date-timepicker').val();
+
+	bootbox.dialog({
+		title: "Tem certeza que salvar a enquete?",
+		message: "Após está confirmação todos os formandos serão avisados por email ou mensagem.<br><br><b>PERGUNTA:</b> "+$pergunta+"<b><br>RESPONDER ATÉ:</b> "+$data,
+		
+		buttons: {
+			"Confirmar" : {
+				"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+				"className" : "btn-sm btn-primary",
+				"callback": function() {
+					//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
+					$('#zgFormID').submit();
+				}
+			},
+			"Cancelar" : {
+				"label" : "<i class='ace-icon fa fa-thumbs-o-down'></i>Cancelar",
+				"className" : "btn-sm btn-danger",
+				"callback": function() {
+					zgLoadUrl('');
+				}
+
+			},
+			
+		}
+	});
+	
 	}
 });
 
@@ -135,9 +166,10 @@ $('#zgFormID').submit(function(e) {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			$('#codEnqueteID').val(zgGetCodRetorno(data));
-			zgMostraAviso("Fechar",'Nova Enquete', '%URLNOVO%');
+			//zgMostraAviso("Fechar",'Nova Enquete', '%URLNOVO%');
+			zgMostraMsg('divMsg', 'Informações salvas com sucesso!');
 		}else{
-			zgMostraAviso("Fechar");
+			zgMostraErro('divMsg',zgGetMsgRetorno(data));
 		}
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
@@ -158,13 +190,14 @@ function validaEnqueteAlt() {
 	var vCodTipo		= $('#codTipoID').val();
 	var vValores		= $('#valoresID').val();
 	var vTamanho    	= $('#tamanhoID').val();
+	var vData	    	= $('#date-timepicker').val();
 	var vOK				= true;
 	var vIdent;
 	
 	// Descricao
 	if (vDescricao.length > 100 ) {
 		$('#divDescricaoID').addClass('has-error');
-		$('#divHelpDescricaoID').html(zgCriaSpanErro('A Descrição deve ter no máximo 100 caracteres !!!'));
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('A descrição deve ter no máximo 100 caracteres!'));
 		vOK		= false;
 	}else{
 		$('#divDescricaoID').removeClass('has-error');
@@ -175,11 +208,11 @@ function validaEnqueteAlt() {
 	if (vPergunta.length == 0 || vPergunta.length > 200 ) {
 		if (vPergunta.length == 0){
 			$('#divPerguntaID').addClass('has-error');
-			$('#divHelpPerguntaID').html(zgCriaSpanErro('A Pergunta deve ser preenchida !!'));
+			$('#divHelpPerguntaID').html(zgCriaSpanErro('A pergunta deve ser preenchida!'));
 			vOK		= false;
 		}else if (vPergunta.length > 200){
 			$('#divPerguntaID').addClass('has-error');
-			$('#divHelpPerguntaID').html(zgCriaSpanErro('A Pergunta deve ter no máximo 200 caracteres !!!'));
+			$('#divHelpPerguntaID').html(zgCriaSpanErro('A pergunta deve ter no máximo 200 caracteres!'));
 			vOK		= false;
 		}
 	}else{
@@ -187,10 +220,20 @@ function validaEnqueteAlt() {
 		$('#divHelpPerguntaID').html('&nbsp;');
 	}
 	
+	// Data prazo
+	if (!vData) {
+		$('#divDataPrazoID').addClass('has-error');
+		$('#divHelpDataPrazoID').html(zgCriaSpanErro('A data para conclusão da enquete deve ser preenchido!'));
+		vOK		= false;
+	}else{
+		$('#divDataPrazoID').removeClass('has-error');
+		$('#divHelpDataPrazoID').html('&nbsp;');
+	}
+	
 	// Tipo
 	if (!vCodTipo) {
 		$('#divCodTipoID').addClass('has-error');
-		$('#divHelpCodTipoID').html(zgCriaSpanErro('O tipo da pergunta deve ser preenchido !!'));
+		$('#divHelpCodTipoID').html(zgCriaSpanErro('O tipo da pergunta deve ser preenchido!'));
 		vOK		= false;
 	}else{
 		$('#divCodTipoID').removeClass('has-error');
@@ -200,7 +243,7 @@ function validaEnqueteAlt() {
 	//Para o tipo Lista de valores o valor não pode estar nulo
 	if ((vCodTipo == 'LI') && (!vValores)) {
 		$('#divValoresID').addClass('has-error');
-		$('#divHelpValoresID').html(zgCriaSpanErro('Para o tipo LISTA PREDEFINIDA o campo VALORES deve ser preenchido !!!'));
+		$('#divHelpValoresID').html(zgCriaSpanErro('Para o tipo LISTA PREDEFINIDA o campo VALORES deve ser preenchido!'));
 		vOK		= false;
 	}else{
 		$('#divValoresID').removeClass('has-error');
@@ -247,21 +290,21 @@ function zgMostraDivs() {
 	}
 }
 
-
-/********************* TAG *********************/
-var tag_input = $('#valoresID');
-if(! ( /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase())) ) {
-	tag_input.tag({
-		placeholder:tag_input.attr('placeholder')
-	});
-} else {
-	tag_input.after('<textarea id="'+tag_input.attr('id')+'" name="'+tag_input.attr('name')+'" rows="3">'+tag_input.val()+'</textarea>').remove();
+/********************* TAG **********************/
+tag();
+function tag(){
+	var tag_input 		= $('#valoresID');
+	var indFinalizado	= $('#indFinalizadoID').val();
+	
+	if (indFinalizado != 1){
+		if(! ( /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase())) ) {
+			tag_input.tag({
+				placeholder:tag_input.attr('placeholder'),
+			});
+		} else {
+			tag_input.after('<textarea id="'+tag_input.attr('id')+'" name="'+tag_input.attr('name')+'" rows="3">'+tag_input.val()+'</textarea>').remove();
+		}
+	}
 }
-
-$('textarea[class*=autosize]').autosize({append: "\n"});
-$('textarea.limited').inputlimiter({
-	remText: 'Restando: %n character%s ...',
-	limitText: 'Max: %n.'
-});
 </script>
 

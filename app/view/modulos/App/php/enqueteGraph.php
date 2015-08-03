@@ -37,7 +37,7 @@ if (isset($_POST['codEnquete']))		$codEnquete		= \Zage\App\Util::antiInjection($
 ## Verificar os parâmetros
 #################################################################################
 if (!isset($codEnquete) || (!$codEnquete)) {
-	die('parâmetro não informado !!!');
+	die('Parâmentro não informando : COD_ENQUENTE');
 }
 
 #################################################################################

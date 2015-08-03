@@ -37,7 +37,7 @@ if (isset($_POST['codEnquete']))		$codEnquete		= \Zage\App\Util::antiInjection($
 ## Verificar os parâmetros
 #################################################################################
 if (!isset($codEnquete) || (!$codEnquete)) {
-	die('parâmetro não informado !!!');
+	die('Parâmentro não informando : COD_ENQUETE');
 }
 
 #################################################################################
@@ -46,20 +46,8 @@ if (!isset($codEnquete) || (!$codEnquete)) {
 $qb1 	= $em->createQueryBuilder();
 $qb2 	= $em->createQueryBuilder();
 
-try {
-	$qb1->select('count(uc.codigo) as qtde')
-	->from('\Entidades\ZgsegUsuarioOrganizacao','uc')
-	->where($qb1->expr()->andX(
-			$qb1->expr()->eq('uc.codOrganizacao', ':codOrganizacao')
-	))
-	->setParameter('codOrganizacao'	,$system->getCodOrganizacao());
-
-	$query 			= $qb1->getQuery();
-	$numUsuarios	= $query->getSingleScalarResult();
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
+$usuAtivos 		= \Zage\Seg\Usuario::listaUsuarioOrganizacaoAtivo($system->getCodOrganizacao(), F);
+$usuAtivosNum 	= sizeof($usuAtivos);
 
 try {
 	$qb2->select('count(er.resposta) as qtde')
@@ -80,15 +68,16 @@ try {
 ## Monta os dados do Gráfico
 #################################################################################
 $data			= array();
-$numNaoResp		= ($numUsuarios - $numRespostas);
+$numNaoResp		= ($usuAtivosNum - $numRespostas);
 if ($numNaoResp < 0) $numNaoResp = 0; 
-$data[0]["label"]	= htmlentities("Não Respondidas");
-$data[0]["data"]	= $numNaoResp;
-$data[0]["color"]	= \Zage\App\Util::geraCorAleatoria();
 
-$data[1]["label"]	= htmlentities("Respondidas");
+$data[0]["label"]	= htmlentities("Faltam responder");
+$data[0]["data"]	= $numNaoResp;
+$data[0]["color"]	= 'grey';
+
+$data[1]["label"]	= htmlentities("Formandos que respoderam");
 $data[1]["data"]	= $numRespostas;
-$data[1]["color"]	= \Zage\App\Util::geraCorAleatoria();
+$data[1]["color"]	= 'green';
 
 #################################################################################
 ## Carregando o template html

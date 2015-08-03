@@ -40,7 +40,7 @@ $url		= ROOT_URL . "/App/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$enquetes	= $em->getRepository('Entidades\ZgappEnquetePergunta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$enquetes	= $em->getRepository('Entidades\ZgappEnquetePergunta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('dataCadastro' => DESC));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 } 
@@ -49,13 +49,12 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GEnquetes");
-$grid->adicionaTexto($tr->trans('CÓDIGO'),			5, $grid::CENTER	,'codigo');
-$grid->adicionaTexto($tr->trans('PERGUNTA'),		30, $grid::CENTER	,'pergunta');
-$grid->adicionaDataHora($tr->trans('DATA CADASTRO'),	10, $grid::CENTER	,'dataCadastro');
+$grid->adicionaTexto($tr->trans('CÓDIGO'),				5, $grid::CENTER	,'codigo');
+$grid->adicionaTexto($tr->trans('PERGUNTA'),			30, $grid::CENTER	,'pergunta');
 $grid->adicionaDataHora($tr->trans('DATA PRAZO'),		10, $grid::CENTER	,'dataPrazo');
-$grid->adicionaTexto($tr->trans('STATUS'),			10, $grid::CENTER	,'codStatus:descricao');
+$grid->adicionaTexto($tr->trans('STATUS'),				10, $grid::CENTER	,'');
+$grid->adicionaDataHora($tr->trans('DATA CADASTRO'),	10, $grid::CENTER	,'dataCadastro');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaIcone(null,'fa fa-level-up',$tr->trans('Finalizar'));
 $grid->adicionaIcone(null,'fa fa-list',$tr->trans('Respostas'));
 $grid->adicionaIcone(null,'fa fa-pie-chart',$tr->trans('Resultados'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -66,11 +65,19 @@ $grid->importaDadosDoctrine($enquetes);
 #################################################################################
 for ($i = 0; $i < sizeof($enquetes); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEnquete='.$enquetes[$i]->getCodigo().'&url='.$url);
+	
+	if ($enquetes[$i]->getDataPrazo() > new \DateTime("now")){
+		$valor	= 'ABERTA';
+	}else{
+		$valor = 'FINALIZADA';
+	}
+	
+	$grid->setValorCelula($i,3,$valor);	
+	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/App/enqueteAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/App/enqueteFin.php?id='.$uid);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/App/respostaLis.php?id='.$uid);
-	$grid->setUrlCelula($i,8,ROOT_URL.'/App/enqueteRes.php?id='.$uid);
-	$grid->setUrlCelula($i,9,ROOT_URL.'/App/enqueteExc.php?id='.$uid);
+	$grid->setUrlCelula($i,6,ROOT_URL.'/App/respostaLis.php?id='.$uid);
+	$grid->setUrlCelula($i,7,ROOT_URL.'/App/enqueteRes.php?id='.$uid);
+	$grid->setUrlCelula($i,8,"javascript:zgAbreModal('".ROOT_URL.'/App/enqueteExc.php?id='.$uid."');");
 }
 
 #################################################################################
