@@ -78,6 +78,38 @@ class Rifa {
 		}
 	}
 	
+	/**
+	 * Lista todos os formandos ATIVOS e o número de rifas geradas
+	 */
+	public static function listaUsuarioAtivo ($codRifa) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		$qb->select('rn')
+		->from('\Entidades\ZgsegUsuario','us')
+		->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',		'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 		= uo.codUsuario')
+		->leftJoin('\Entidades\ZgsegPerfil',					'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil		= p.codigo')
+		->leftJoin('\Entidades\ZgfmtRifaNumero',				'rn',	\Doctrine\ORM\Query\Expr\Join::WITH, 'rn.codFormando	= us.codigo')
+		->where($qb->expr()->andX(
+				$qb->expr()->eq('uo.codOrganizacao'		, ':codOrganizacao'),
+				$qb->expr()->eq('p.codTipoUsuario'		, ':codTipoUsuario'),
+				$qb->expr()->eq('uo.codStatus'			, ':codStatusAtivo'),
+				$qb->expr()->eq('rn.codRifa'			, ':codRifa'))
+		)
+		
+		
+		//->groupBy('rn.codFormando')
+		->orderBy('us.nome', 'ASC')
+		->setParameter('codOrganizacao', $system->getCodOrganizacao())
+		->setParameter('codStatusAtivo', A)
+		->setParameter('codTipoUsuario', F)
+		->setParameter('codRifa'	   , $codRifa);
+		
+		$query 		= $qb->getQuery();
+		return($query->getResult());
+	
+	}
 	
 	
 	

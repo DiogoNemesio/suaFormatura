@@ -127,7 +127,7 @@ try {
 		$oCliente->setObservacao('Importado do cadastro de formando.');
 	}
 	
-	$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => F));
+	$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
 	
 	$oCliente->setCodOrganizacao($oOrg);
 	$oCliente->setNome($oUsuario->_getUsuario()->getNome());

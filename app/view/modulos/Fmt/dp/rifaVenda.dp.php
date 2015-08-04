@@ -80,15 +80,13 @@ try {
 	//RESGATAR SEQUENCIAL DA VENDA
 	$codVenda = \Zage\Adm\Sequencial::proximoValor(ZgfmtRifaVendaSequencial);
 	
-	//$rifaSeq	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$rifa);
-	
 	$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
 	$oRifa			= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $rifa));
 	$oCodVenda		= $em->getRepository('Entidades\ZgfmtRifaVendaSequencial')->findOneBy(array('codigo' => $codVenda));
 	
 	for ($i = 0; $i < $quantidade; $i++) {
 		$oRifaNum		= new \Entidades\ZgfmtRifaNumero();
-		//$rifaSemaforo	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$codRifa);
+		$rifaSemaforo	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$rifa);
 		
 		$log->debug('entrei1');
 		$oRifaNum->setCodFormando($oUsuario);
@@ -98,7 +96,7 @@ try {
 		$oRifaNum->setNome($nome);
 		$oRifaNum->setEmail($email);
 		$oRifaNum->setTelefone($telefone);
-		$oRifaNum->setNumero($i);
+		$oRifaNum->setNumero($rifaSemaforo);
 		
 		$em->persist($oRifaNum);
 	}

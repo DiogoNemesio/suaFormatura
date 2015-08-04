@@ -70,7 +70,7 @@ if ($rifas){
 		
 		//Verificar se já foi sorteado
 		if ($infoRifa->getNumeroVencedor() != null){
-			$numVencedor = $infoRifa->getNumeroVencedor()->getCodigo();
+			$numVencedor = $infoRifa->getNumeroVencedor()->getNumero();
 			
 			$vencedorNome		= $infoRifa->getNumeroVencedor()->getNome();
 			$vencedorEmail		= $infoRifa->getNumeroVencedor()->getEmail();
