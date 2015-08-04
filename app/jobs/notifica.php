@@ -15,12 +15,18 @@ if (defined('DOC_ROOT')) {
 global $em,$system,$tr,$log,$db;
 
 
+$codOrganizacao	= 3;
+$codRifa 		= 1;
 
-$codRifa = 2;
+$retorno	= \Zage\Fmt\Rifa::listaNumRifasPorFormando($codOrganizacao,$codRifa);
 
-//\Zage\Adm\Semaforo::criar(3, "RIFA_".$codRifa);
+//\Doctrine\Common\Util\Debug::dump($retorno);
 
-//exit;
+for ($i =0 ; $i < sizeof($retorno); $i++) {
+	echo "Formando (".$retorno[$i]["codigo"].") ".$retorno[$i]["nome"]." vendeu: ".$retorno[$i]["num"]." rifas\n";
+}
+
+exit;
 
 $rifaAtual	= \Zage\Adm\Semaforo::proximoValor(3, "RIFA_".$codRifa);
 $rifaAtual	= \Zage\Adm\Semaforo::proximoValor(3, "RIFA_".$codRifa);

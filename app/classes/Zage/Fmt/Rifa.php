@@ -81,83 +81,32 @@ class Rifa {
 	/**
 	 * Lista todos os formandos ATIVOS e o número de rifas geradas
 	 */
-	public static function listaUsuarioAtivo ($codRifa) {
+	public static function listaNumRifasPorFormando ($codOrganizacao,$codRifa) {
 		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
 	
-		$qb->select('rn')
+		$qb->select('us.codigo,us.nome, '.$qb->expr()->count('rn.codigo'). " as num")
 		->from('\Entidades\ZgsegUsuario','us')
 		->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',		'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 		= uo.codUsuario')
 		->leftJoin('\Entidades\ZgsegPerfil',					'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil		= p.codigo')
 		->leftJoin('\Entidades\ZgfmtRifaNumero',				'rn',	\Doctrine\ORM\Query\Expr\Join::WITH, 'rn.codFormando	= us.codigo')
 		->where($qb->expr()->andX(
-				$qb->expr()->eq('uo.codOrganizacao'		, ':codOrganizacao'),
-				$qb->expr()->eq('p.codTipoUsuario'		, ':codTipoUsuario'),
-				$qb->expr()->eq('uo.codStatus'			, ':codStatusAtivo'),
-				$qb->expr()->eq('rn.codRifa'			, ':codRifa'))
+			$qb->expr()->eq('uo.codOrganizacao'		, ':codOrganizacao'),
+			$qb->expr()->eq('p.codTipoUsuario'		, ':codTipoUsuario'),
+			$qb->expr()->eq('uo.codStatus'			, ':codStatusAtivo'),
+			$qb->expr()->eq('rn.codRifa'			, ':codRifa'))
 		)
 		
-		
-		//->groupBy('rn.codFormando')
+		->addGroupBy("us.codigo,us.nome")
 		->orderBy('us.nome', 'ASC')
-		->setParameter('codOrganizacao', $system->getCodOrganizacao())
-		->setParameter('codStatusAtivo', A)
-		->setParameter('codTipoUsuario', F)
+		->setParameter('codOrganizacao', $codOrganizacao)
+		->setParameter('codStatusAtivo', 'A')
+		->setParameter('codTipoUsuario', 'F')
 		->setParameter('codRifa'	   , $codRifa);
 		
 		$query 		= $qb->getQuery();
 		return($query->getResult());
 	
 	}
-	
-	
-	
-	/**
-	 * Retorna o próximo número da Rifa
-	 *
-	 * @param integer $codRifa
-	 * @return integer
-	 */
-	public static function numeroAtual ($codRifa) {
-		global $em;
-
-		$qb 	= $em->createQueryBuilder();
-		
-		try {
-			$qb->select('max(n.numero)')
-			->from('\Entidades\ZgfmtRifaNumero','n')
-			->where($qb->expr()->andX(
-				$qb->expr()->eq('n.codRifa'	, ':codRifa')
-			))
-			->setParameter('codRifa', $codRifa);
-		
-			$query 		= $qb->getQuery();
-			$query->setLockMode(LockMode::PESSIMISTIC_WRITE);
-
-			$numeroAtual = $query->getSingleScalarResult();
-			
-			if (!$numeroAtual)	$numeroAtual = 0;
-			return($numeroAtual);
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
-		}
-	}
-	
-	
-	
-	/**
-	 * Retorna o próximo número da Rifa
-	 *
-	 * @param integer $codRifa
-	 * @return integer
-	 */
-	public static function proximoNumero ($codRifa) {
-		$numeroAtual  	= self::numeroAtual($codRifa);
-		$proximo		= $numeroAtual + 1;
-			
-		return($proximo);
-	}
-	
-
 }
