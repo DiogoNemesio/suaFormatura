@@ -126,7 +126,7 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('NOME'			,$tr->trans("Responda as perguntas"));
+$tpl->set('NOME'			,$tr->trans("Responda as enquetes"));
 $tpl->set('URLATUALIZAR'	,$urlAtualizar);
 $tpl->set('URLRESULT'		,$urlResult);
 $tpl->set('COD_PERGUNTA'	,$codPergunta);
