@@ -19,14 +19,12 @@ if (isset($_POST['lista']))					$lista				= \Zage\App\Util::antiInjection($_POST
 if (isset($_POST['numero']))				$numero				= \Zage\App\Util::antiInjection($_POST['numero']);
 if (isset($_POST['simNao']))				$simNao				= \Zage\App\Util::antiInjection($_POST['simNao']);
 
-if (isset($data)) $resposta = $data;
-if (isset($livre)) $resposta = $livre;
-if (isset($lista)) $resposta = $lista;
+if (isset($data))   $resposta = $data;
+if (isset($livre))  $resposta = $livre;
+if (isset($lista))  $resposta = $lista;
 if (isset($numero)) $resposta = $numero;
 if (isset($simNao)) $resposta = $simNao;
 
-$log->debug($lista);
-$log->debug($resposta);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -58,13 +56,6 @@ try {
 	
  	if (!$oResposta) $oResposta	= new \Entidades\ZgappEnqueteResposta();
  	
- 	#################################################################################
- 	## Configurações da data
- 	#################################################################################
- 	if ((isset($data) && !empty($data))) {
- 		$resposta		= DateTime::createFromFormat($system->config["data"]["datetimeSimplesFormat"], $resposta);
- 	}
- 	
  	$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
  	$oPergunta	= $em->getRepository('Entidades\ZgappEnquetePergunta')->findOneBy(array('codigo' => $codPergunta));
  	
@@ -83,5 +74,5 @@ try {
  	exit;
 }
  
-die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Enquete respondida com sucesso."))));
+die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Pergunta respondida com sucesso."))));
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oResposta->getCodigo());

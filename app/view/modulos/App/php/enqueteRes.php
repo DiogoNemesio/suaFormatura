@@ -54,6 +54,29 @@ if (!empty($codEnquete)) {
 }
 
 #################################################################################
+## Resgatar os dados de contato
+#################################################################################
+$aTipoLivre		= $em->getRepository('Entidades\ZgappEnqueteResposta')->findBy(array('codPergunta' => $codEnquete));
+$tabLivre		= "";
+$ord = 1;
+for ($i = 0; $i < sizeof($aTipoLivre); $i++) {
+
+	#################################################################################
+	## Monta a combo de Tipo
+	#################################################################################
+	$codTipo	 = ($aTipoLivre[$i]->getCodPergunta()->getCodTipo()) ? $aTipoLivre[$i]->getCodPergunta()->getCodTipo()->getCodigo() : null;
+	$reposta	 = ($aTipoLivre[$i]->getResposta()) ? $aTipoLivre[$i]->getResposta() : null;
+	
+	if ($codTipo == 'L'){
+		$tabLivre	.= '<tr><td class="center" style="width: 20px;">'.$ord++.'</td><td>'.$reposta.'</td></tr>';
+	}elseif ($codTipo == 'DT'){
+		$tabLivre	.= '<tr><td class="center" style="width: 20px;">'.$ord++.'</td><td>'.$reposta.'</td></tr>';
+	}elseif ($codTipo == 'N'){
+		$tabLivre	.= '<tr><td class="center" style="width: 20px;">'.$ord++.'</td><td>'.$reposta.'</td></tr>';
+	}
+}
+
+#################################################################################
 ## Url Voltar
 #################################################################################
 $urlVoltar			= ROOT_URL."/App/enqueteLis.php?id=".$id;
@@ -84,9 +107,9 @@ $tpl->set('RESPOSTA'				,$urlResposta);
 $tpl->set('ID'						,$id);
 $tpl->set('COD_ENQUETE'				,$codEnquete);
 $tpl->set('PERGUNTA'				,$pergunta);
-$tpl->set('TIPO'					,$oTipo);
 $tpl->set('URL_GRAPH_ENQUETE'		,$urlGraphEnquete);
 $tpl->set('URL_GRAPH_ENQUETE_PERC'	,$urlGraphEnquetePerc);
+$tpl->set('TAB_RES'					,$tabLivre);
 
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 

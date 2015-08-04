@@ -43,7 +43,7 @@ try {
 	//$info	= $em->getRepository('Entidades\ZgappEnquetePergunta')->findBy(array('codStatus' => 'A'));
 	$info	= \Zage\App\Enquete::listaEnqueteAtivo();
 	if(empty($info)){
-		$texto 	  = '<p class="alert alert-success">Não existem Enquetes cadastradas para sua formatura.</p>';
+		$texto 	  = '<p class="alert alert-success">Não existem perguntas cadastradas para sua formatura.</p>';
 		$disabled = "disabled";
 	}else{
 		for ($i = 0; $i < sizeof($info); $i++) {
@@ -63,7 +63,7 @@ try {
 				
 				if ($codTipo == 'DT'){
 					$reposta = '<div class="input-group col-sm-3 pull-left"><span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Responder enquente."></i></span>
-									<input class="form-control datepicker" id="date-timepicker" type="text" name="data" placeholder="Data" maxlength="16" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples"></div>';
+									<input class="form-control datepicker" id="date-timepicker" type="text" name="data" placeholder="Data" maxlength="16" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></div>';
 				}elseif ($codTipo == 'L'){
 					$reposta = '<div class="input-group col-sm-8 pull-left"><span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Responder enquente."></i></span>
 								<input class="form-control" id="livreID" type="text" name="livre" placeholder="Resposta" maxlength="200" required autocomplete="off"></div>';
@@ -93,7 +93,7 @@ try {
 			}else{
 				$ii = $i + 1;
 				if($ii >= sizeof($info)) {
-					$texto = '<p class="alert alert-success">Não existem Enquetes pendentes no momento.</p>';
+					$texto = '<p class="alert alert-success">Não existem perguntas pendentes no momento.</p>';
 					$disabled = "disabled";
 				}
 				continue;
@@ -126,7 +126,7 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('NOME'			,$tr->trans("Responda as Enquetes"));
+$tpl->set('NOME'			,$tr->trans("Responda as perguntas"));
 $tpl->set('URLNOVO'			,$urlNovo);
 $tpl->set('URLRESULT'		,$urlResult);
 $tpl->set('COD_PERGUNTA'	,$codPergunta);
