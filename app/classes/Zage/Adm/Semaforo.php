@@ -52,6 +52,7 @@ class Semaforo {
 			$sem->setValor($valor);
 			$em->persist($sem);
 			$em->flush();
+			$em->detach($sem);
 			$em->getConnection()->commit();
 			
 			return ($valor);
@@ -94,6 +95,7 @@ class Semaforo {
     				$sem->setValor($valor);
     				$em->persist($sem);
     				$em->flush();
+    				$em->detach($sem);
     				$em->getConnection()->commit();
     				return $valor;
     			}
@@ -152,6 +154,7 @@ class Semaforo {
 				$sem->setValor($valor);
 				$em->persist($sem);
 				$em->flush();
+				$em->detach($sem);
 			}
     	} catch (\Exception $e) {
     		throw $e;
