@@ -1,6 +1,6 @@
 <div id="content">
 	<div class="page-header">
-	<h1><i class="fa fa-pencil">&nbsp;</i>Perguntas 
+	<h1><i class="fa fa-pencil">&nbsp;</i>Enquete 
 		<a id='a01ID' class='btn btn-white ' title="Atualizar" href="javascript:zgLoadUrl('%URLATUALIZAR%');"><i class="fa fa-undo bigger-130"></i></a>
 	</h1>
 	</div><!-- /.page-header -->
@@ -107,7 +107,7 @@ $('#zgFormID').submit(function(e) {
 		if (checaRetornoOK(data) == true) {
 			$('#codPerguntaID').val(zgGetCodRetorno(data));
 			//zgMostraAviso("Fechar",'Nova Resposta', '%URLNOVO%','Resultado', '%URLRESULT%');
-			zgLoadUrl('%URLNOVO%');
+			zgLoadUrl('%%URLATUALIZAR%%');
 			
 			$.gritter.add({
 				title: 'Respondida!',
