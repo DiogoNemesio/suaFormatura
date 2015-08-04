@@ -73,6 +73,8 @@ for ($i = 0; $i < sizeof($aTipoLivre); $i++) {
 		$tabLivre	.= '<tr><td class="center" style="width: 20px;">'.$ord++.'</td><td>'.$reposta.'</td></tr>';
 	}elseif ($codTipo == 'N'){
 		$tabLivre	.= '<tr><td class="center" style="width: 20px;">'.$ord++.'</td><td>'.$reposta.'</td></tr>';
+	}else{
+		$hidden = "hidden";
 	}
 }
 
@@ -110,6 +112,7 @@ $tpl->set('PERGUNTA'				,$pergunta);
 $tpl->set('URL_GRAPH_ENQUETE'		,$urlGraphEnquete);
 $tpl->set('URL_GRAPH_ENQUETE_PERC'	,$urlGraphEnquetePerc);
 $tpl->set('TAB_RES'					,$tabLivre);
+$tpl->set('HIDDEN'					,$hidden);
 
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 

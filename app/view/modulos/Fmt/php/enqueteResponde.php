@@ -109,7 +109,7 @@ try {
 # Url Novo
 ################################################################################
 $uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ . '&codPergunta=' );
-$urlNovo = ROOT_URL . "/Fmt/enqueteResponde.php?id=" . $uid;
+$urlAtualizar = ROOT_URL . "/Fmt/enqueteResponde.php?id=" . $uid;
 
 ################################################################################
 # Url Resultado
@@ -127,7 +127,7 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('NOME'			,$tr->trans("Responda as perguntas"));
-$tpl->set('URLNOVO'			,$urlNovo);
+$tpl->set('URLATUALIZAR'	,$urlAtualizar);
 $tpl->set('URLRESULT'		,$urlResult);
 $tpl->set('COD_PERGUNTA'	,$codPergunta);
 $tpl->set('TEXTO'			,$texto);
