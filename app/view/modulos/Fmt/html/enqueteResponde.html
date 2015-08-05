@@ -106,8 +106,7 @@ $('#zgFormID').submit(function(e) {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			$('#codPerguntaID').val(zgGetCodRetorno(data));
-			//zgMostraAviso("Fechar",'Nova Resposta', '%URLNOVO%','Resultado', '%URLRESULT%');
-			zgLoadUrl('%%URLATUALIZAR%%');
+			zgLoadUrl('%URLATUALIZAR%');
 			
 			$.gritter.add({
 				title: 'Respondida!',
@@ -116,8 +115,6 @@ $('#zgFormID').submit(function(e) {
 				time: '5000'
 			});
 		}else{
-			//zgMostraAviso("Fechar");
-			
 			$.gritter.add({
 				title: 'Está faltando alguma coisa !!!',
 				text: zgGetMsgRetorno(data),
@@ -136,78 +133,5 @@ $('#zgFormID').submit(function(e) {
 	});
 	return false; 
 });
-
-/*********************** Verificar o formulário ***********************
-function validaEnqueteAlt() {
-	var vDescricao		= $('#descricaoID').val();
-	var vPergunta		= $('#perguntaID').val();
-	var vCodTipo		= $('#codTipoID').val();
-	var vValores		= $('#valoresID').val();
-	var vTamanho    	= $('#tamanhoID').val();
-	var vOK				= true;
-	var vIdent;
-	
-	// Descricao
-	if (vDescricao.length > 100 ) {
-		$('#divDescricaoID').addClass('has-error');
-		$('#divHelpDescricaoID').html(zgCriaSpanErro('A Descrição deve ter no máximo 100 caracteres !!!'));
-		vOK		= false;
-	}else{
-		$('#divDescricaoID').removeClass('has-error');
-		$('#divHelpDescricaoID').html('&nbsp;');
-	}
-	
-	// Pergunta
-	if (vPergunta.length == 0 || vPergunta.length > 200 ) {
-		if (vPergunta.length == 0){
-			$('#divPerguntaID').addClass('has-error');
-			$('#divHelpPerguntaID').html(zgCriaSpanErro('A Pergunta deve ser preenchida !!'));
-			vOK		= false;
-		}else if (vPergunta.length > 200){
-			$('#divPerguntaID').addClass('has-error');
-			$('#divHelpPerguntaID').html(zgCriaSpanErro('A Pergunta deve ter no máximo 200 caracteres !!!'));
-			vOK		= false;
-		}
-	}else{
-		$('#divPerguntaID').removeClass('has-error');
-		$('#divHelpPerguntaID').html('&nbsp;');
-	}
-	
-	// Tipo
-	if (!vCodTipo) {
-		$('#divCodTipoID').addClass('has-error');
-		$('#divHelpCodTipoID').html(zgCriaSpanErro('O tipo da pergunta deve ser preenchido !!'));
-		vOK		= false;
-	}else{
-		$('#divCodTipoID').removeClass('has-error');
-		$('#divHelpCodTipoID').html('&nbsp;');
-	}
-	
-	//Para o tipo Lista de valores o valor não pode estar nulo
-	if ((vCodTipo == 'LI') && (!vValores)) {
-		$('#divValoresID').addClass('has-error');
-		$('#divHelpValoresID').html(zgCriaSpanErro('Para o tipo LISTA PREDEFINIDA o campo VALORES deve ser preenchido !!!'));
-		vOK		= false;
-	}else{
-		$('#divValoresID').removeClass('has-error');
-		$('#divHelpValoresID').html('&nbsp;');		
-	}
-
-	// Para o tipo Numero o tamanho não pode estar nulo
-	if (((vCodTipo == 'N') || (vCodTipo == 'L')) && (!vTamanho)) {	
-		$('#divTamanhoID').addClass('has-error');
-		$('#divHelpTamanhoID').html(zgCriaSpanErro('Para o tipo selecionado o campo TAMANHO deve ser preenchido !!!'));
-		vOK		= false;
-	}else{
-		$('#divTamanhoID').removeClass('has-error');
-		$('#divHelpTamanhoID').html('&nbsp;');
-	}
-	
-	if (vOK == true) {
-		return true ;
-	}else{
-		return false;
-	}
-}*/
 </script>
 
