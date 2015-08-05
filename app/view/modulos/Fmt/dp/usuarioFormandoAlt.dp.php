@@ -21,6 +21,8 @@ $codOrganizacao	= $system->getCodOrganizacao();
 if (isset($_POST['codUsuario'])) 		$codUsuario		= \Zage\App\Util::antiInjection($_POST['codUsuario']);
 if (isset($_POST['email'])) 			$usuario		= \Zage\App\Util::antiInjection($_POST['email']);
 if (isset($_POST['nome'])) 				$nome			= \Zage\App\Util::antiInjection($_POST['nome']);
+if (isset($_POST['dataNasc'])) 			$dataNasc		= \Zage\App\Util::antiInjection($_POST['dataNasc']);
+if (isset($_POST['rg']))	 			$rg				= \Zage\App\Util::antiInjection($_POST['rg']);
 if (isset($_POST['apelido']))			$apelido		= \Zage\App\Util::antiInjection($_POST['apelido']);
 if (isset($_POST['sexo'])) 				$sexo			= \Zage\App\Util::antiInjection($_POST['sexo']);
 if (isset($_POST['cpf'])) 				$cpf			= \Zage\App\Util::antiInjection($_POST['cpf']);
@@ -78,6 +80,8 @@ try {
 	 ***********************/
 	$oUsuario->setUsuario($usuario);
 	$oUsuario->setNome($nome);
+	$oUsuario->setRg($rg);
+	$oUsuario->setDataNascimento($dataNasc);
 	$oUsuario->setApelido($apelido);
 	$oUsuario->setCpf($cpf);
 	$oUsuario->setSexo($oSexo);
@@ -158,6 +162,8 @@ try {
 		$oClienteEnd->setCodLogradouro($oCodLogradouro);
 		$oClienteEnd->setCep($oUsuario->_getUsuario()->getCep());
 		$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getEndereco());
+		$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getRg());
+		$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getDataNascimento());
 		$oClienteEnd->setBairro($oUsuario->_getUsuario()->getBairro());
 		$oClienteEnd->setNumero($oUsuario->_getUsuario()->getNumero());
 		$oClienteEnd->setComplemento($oUsuario->_getUsuario()->getComplemento());

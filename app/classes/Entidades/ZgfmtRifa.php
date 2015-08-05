@@ -99,16 +99,6 @@ class ZgfmtRifa
     private $dataAlteracao;
 
     /**
-     * @var \Entidades\ZgfmtRifaNumero
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaNumero")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="NUMERO_VENCEDOR", referencedColumnName="COD_RIFA")
-     * })
-     */
-    private $numeroVencedor;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -147,6 +137,16 @@ class ZgfmtRifa
      * })
      */
     private $usuarioAlteracao;
+
+    /**
+     * @var \Entidades\ZgfmtRifaNumero
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaNumero")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="NUMERO_VENCEDOR", referencedColumnName="CODIGO")
+     * })
+     */
+    private $numeroVencedor;
 
 
     /**
@@ -413,29 +413,6 @@ class ZgfmtRifa
     }
 
     /**
-     * Set numeroVencedor
-     *
-     * @param \Entidades\ZgfmtRifaNumero $numeroVencedor
-     * @return ZgfmtRifa
-     */
-    public function setNumeroVencedor(\Entidades\ZgfmtRifaNumero $numeroVencedor = null)
-    {
-        $this->numeroVencedor = $numeroVencedor;
-
-        return $this;
-    }
-
-    /**
-     * Get numeroVencedor
-     *
-     * @return \Entidades\ZgfmtRifaNumero 
-     */
-    public function getNumeroVencedor()
-    {
-        return $this->numeroVencedor;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -525,5 +502,28 @@ class ZgfmtRifa
     public function getUsuarioAlteracao()
     {
         return $this->usuarioAlteracao;
+    }
+
+    /**
+     * Set numeroVencedor
+     *
+     * @param \Entidades\ZgfmtRifaNumero $numeroVencedor
+     * @return ZgfmtRifa
+     */
+    public function setNumeroVencedor(\Entidades\ZgfmtRifaNumero $numeroVencedor = null)
+    {
+        $this->numeroVencedor = $numeroVencedor;
+
+        return $this;
+    }
+
+    /**
+     * Get numeroVencedor
+     *
+     * @return \Entidades\ZgfmtRifaNumero 
+     */
+    public function getNumeroVencedor()
+    {
+        return $this->numeroVencedor;
     }
 }

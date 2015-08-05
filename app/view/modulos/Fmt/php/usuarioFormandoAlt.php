@@ -54,6 +54,8 @@ if ($codUsuario) {
 	$nome			= $info->getNome();
 	$apelido		= $info->getApelido();
 	$cpf			= $info->getCpf();
+	$rg				= $info->getRg();
+	$dataNasc		= $info->getDataNascimento()->format($system->config["data"]["dateFormat"]);
 	$perfil			= $oPerfil->getCodPerfil()->getCodigo();
 	$codStatus		= $info->getCodStatus()->getCodigo();
 	$sexo			= ($info->getSexo()) ? $info->getSexo()->getCodigo() : null;
@@ -105,6 +107,8 @@ if ($codUsuario) {
 	$podeAlterar	= null;
 	$usuario		= null;
 	$nome			= null;
+	$dataNasc		= null;
+	$rg				= null;
 	$apelido		= null;
 	$cpf			= null;
 	$perfil			= null;
@@ -195,6 +199,8 @@ $tpl->set('COD_USUARIO'			,$codUsuario);
 $tpl->set('COD_ORGANIZACAO'		,$codOrganizacao);
 $tpl->set('USUARIO'				,$usuario);
 $tpl->set('NOME'				,$nome);
+$tpl->set('RG'					,$rg);
+$tpl->set('DATA_NASC'			,$dataNasc);
 $tpl->set('APELIDO'				,$apelido);
 $tpl->set('EMAIL'				,$email);
 $tpl->set('CPF'					,$cpf);

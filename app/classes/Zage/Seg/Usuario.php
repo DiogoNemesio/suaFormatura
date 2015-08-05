@@ -438,7 +438,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		//APELIDO
 		if (empty($this->getApelido())) {
 			return $tr->trans('O apelido deve ser preenchido!');
-		}elseif (strlen($apelido) > 60){
+		}elseif (strlen($this->getApelido()) > 60){
 			return $tr->trans('O apelido não deve conter mais de 60 caracteres!');
 		}
 		
@@ -457,6 +457,20 @@ class Usuario extends \Entidades\ZgsegUsuario {
 			}
 		}
 		
+		//RG
+		if (strlen($this->getRg()) > 14){
+			return $tr->trans('O RG não deve conter mais de 14 caracteres!');
+		}
+		
+		// Data Nascimento
+		if (empty($this->getDataNascimento())) {
+			return $tr->trans('A data de nascimento deve ser preenchida!');
+		}else {
+			if (\Zage\App\Util::validaData($this->getDataNascimento(), $system->config["data"]["dateFormat"]) == false) {
+				return $tr->trans('A data de nascimento está inválida!');
+			}
+		}
+
 		//SEXO
 		if (empty($this->getSexo())) {
 			return $tr->trans('O sexo deve ser preenchido!');
@@ -567,10 +581,14 @@ class Usuario extends \Entidades\ZgsegUsuario {
 				$this->_setEnviarEmail($enviarEmail);
 			}
 		}
+		
+		$dataNasc	= DateTime::createFromFormat($system->config["data"]["dateFormat"], $this->getDataNascimento());
 						
 		$this->_usuario->setUsuario($this->getUsuario());
 		$this->_usuario->setCodStatus($oStatus);
 		$this->_usuario->setNome($this->getNome());
+		$this->_usuario->setRg($this->getRg());
+		$this->_usuario->setDataNascimento($dataNasc);
 		$this->_usuario->setApelido($this->getApelido());
 		$this->_usuario->setCpf($this->getCpf());
 		$this->_usuario->setSexo($this->getSexo());

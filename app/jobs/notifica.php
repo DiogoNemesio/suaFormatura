@@ -18,7 +18,7 @@ global $em,$system,$tr,$log,$db;
 $codOrganizacao	= 3;
 $codRifa 		= 1;
 
-$retorno	= \Zage\Fmt\Rifa::listaNumRifasPorFormando($codOrganizacao,$codRifa);
+$retorno	= \Zage\Fmt\Rifa::listaNumRifasPorFormando(3,2);
 
 //\Doctrine\Common\Util\Debug::dump($retorno);
 

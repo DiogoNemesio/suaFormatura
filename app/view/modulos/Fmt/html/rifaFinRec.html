@@ -1,0 +1,359 @@
+<form id="zgFormModalID" class="form-horizontal">
+<input type="hidden" name="codUsuario" value="%COD_USUARIO%">
+<input type="hidden" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+<input type="hidden" name="id" value="%ID%">
+<input type="hidden" id="nomeID" value="%NOME_RIFA%">
+<input type="hidden" id="valorUnitarioID" value="%VALOR_RIFA%">
+<input type="hidden" id="qtdeObrigatorioID" value="%QTDE_OBRI%">
+<input type="hidden" id="indEletronicaID" value="%IND_ELETRONICA%">
+<input type="hidden" id="qtdeVendaID" value="%QTDE_VENDA%">
+
+<div id="content">
+	<div class="modal-header">
+		<button type="button" class="close" onclick='zgLimpaModal()' data-dismiss="modal" aria-hidden="true">×</button>
+		<h4 class=""><i class="fa fa-money green"></i>&nbsp;%TITULO%</h4>
+	</div>
+	<div class="modal-body" style="height: 420px;">
+		<div id='UsuEnvCondivMsgID'>
+		</div>
+		
+		<div class="col-sm-12">
+			<div class="row">
+  					<div class="col-xs-12 col-sm-12">
+    			<div class="widget-body">
+					<div class="widget-main">
+						<p>
+						%TEXTO%
+						</p>
+					</div>
+				</div>
+ 						</div> 
+  				</div>
+			<div class="row">
+				<div class="col-sm-7">
+					<div class="widget-box transparent">
+						<div class="widget-header widget-header-small">
+							<h5 class="widget-title smaller">
+							<i class="ace-icon fa fa-check-square-o bigger-110"></i>
+								Receber
+							</h5>
+						</div>
+					</div>
+					<div class="form-group col-sm-12" id="divQtdePagarID">
+				    	<label class="col-sm-4 control-label" for="qtdePagarID">Qtde de rifas</label>
+		    			<div class="input-group col-sm-6 pull-left">
+	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o título da rifa."></i></span>
+			    			<input class="form-control" id="qtdePagarID" %READONLY% type="text" name="qtdePagar" placeholder="Quantidade de rifas a pagar" maxlength="100" value="%QTDE_PAGAR%" onchange="atualizaResumo()" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    	</div>
+				    	<div class="col-sm-1 pull-left" id="divHelpQtdePagarID"></div>
+					</div>
+					<div class="form-group col-sm-12" id="divValorRecebidoID">
+				    	<label class="col-sm-4 control-label" for="valorRecebidoID">Valor a receber</label>
+		    			<div class="input-group col-sm-6 pull-left">
+	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor pago pelo formando."></i></span>
+			    			<input class="form-control" id="valorRecebidoID" type="text" name="valorRecebido" placeholder="Valor (R$) a receber" maxlength="100" value="" onchange="atualizaResumo()" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+				    	</div>
+				    	<div class="col-sm-1 pull-left" id="divHelpalorRecebidoID"></div>
+					</div>
+					
+					<div class="form-group col-sm-12" id="divFormaPagID">
+						<label class="col-sm-4 control-label">Forma de Pag.</label>
+		    			<div class="input-group col-sm-6 pull-left">
+		    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Conta"></i></span>
+							<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
+							%FORMAS_PAG%
+							</select>
+					    </div>
+						<div class="help-block col-sm-1 inline" id="divHelpFormaPagID"></div>
+			    	</div>
+			    	<div class="form-group col-sm-12" id="divContaRecID">
+						<label class="col-sm-4 control-label">Conta de Recebimento</label>
+		    			<div class="input-group col-sm-6 pull-left">
+		    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
+							<select class="select2" style="width:100%;" id="codContaRecID" name="codContaRec" data-rel="select2">
+							%CONTAS%
+							</select>
+					    </div>
+						<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
+			    	</div>
+		    	</div>
+		    	<div class="col-sm-5">
+		    		<div class="widget-box transparent">
+						<div class="widget-header widget-header-small">
+							<h5 class="widget-title smaller">
+							<i class="ace-icon fa fa-check-square-o bigger-110"></i>
+								Resumo
+							</h5>
+						</div>
+					</div>
+					
+					<div class="row" id="divInfoNomeID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Nome:</p>
+					    	<p id='lbInfoNomeID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row" id="divInfoTipoID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Tipo:</p>
+					    	<p id='lbInfoTipoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row" id="divInfoValorID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da RIFA:</p>
+					    	<p id='lbInfoValorID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row" id="divInfoQtdeObrigatorioID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Qtde obrigatória:</p>
+					    	<p id='lbInfoQtdeObrigatorioID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row" id="divInfoQtdeVendaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Qtde vendida:</p>
+					    	<p id='lbInfoQtdeVendaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row" id="divInfoTotalID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>TOTAL (R$):</b></p>
+					    	<p id='lbInfoTotalID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoDebitoID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">DÉBITO (R$):</p>
+					    	<p id='lbInfoDebitoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					
+					
+			    </div>
+		    </div>
+		</div>
+		
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-success" %DISABLED% id="rifaFinRecSubmitID"><i class="fa fa-check bigger-110"></i>Confirmar</button>
+		<button type="button" data-dismiss="modal" class="btn" id="rifaFinRecCancelID" >Fechar</button>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+//Popover
+$('[data-rel=popover]').popover({html:true});
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Atualizar MENU
+atualizaResumo();
+
+function atualizaResumo() {
+	var $nome			= $('#nomeID').val();
+	var $nValor			= $('#valorUnitarioID').val();
+	var $qtdeObri		= $('#qtdeObrigatorioID').val();
+	var $indEletro		= $('#indEletronicaID').val();
+	var $qtdeVenda		= $('#qtdeVendaID').val();
+	var $qtdePagar		= $('#qtdePagarID').val();
+	
+	$('#lbInfoNomeID').text($nome);
+	$('#lbInfoValorID').text($nome);
+	$('#lbInfoQtdeObrigatorioID').text($qtdeObri);
+	$('#lbInfoQtdeVendaID').text($qtdeVenda);
+	
+	//Verificar se eletrônica
+	
+	if ($indEletro == 1){
+		$('#lbInfoTipoID').text('ELETRÔNICA');
+	}else{
+		$('#lbInfoTipoID').text('PAPEL');
+	}
+	
+	
+	// MASCARA MOEDA
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+	
+	$valor	= accounting.formatMoney($nValor, options);
+	$('#lbInfoValorID').text($valor);
+	
+	// TOTAL A PAGAR	
+	$total = $nValor * $qtdePagar;
+	
+	$totalMin = $nValor * $qtdeObri;
+
+	
+	if ($total >= $totalMin) {
+		$desc	= "<strong>&nbsp;<span class='text-success'>"+accounting.formatMoney($total, options)+"</span>&nbsp;</strong>";
+	}else{
+		$desc	= "<strong>&nbsp;<span class='text-danger'>"+accounting.formatMoney($total, options)+"</span>&nbsp;</strong>";
+	}
+	
+	$('#lbInfoTotalID').html($desc);
+	
+	// TOTAL DE DÉBITO
+	$nValorRecebido		= parseFloat($('#valorRecebidoID').val().replace(".", "").replace(",","."));
+	$debito = $total - $nValorRecebido;
+	
+	if ($debito > 0){
+		$('#divInfoDebitoID').removeClass('hidden');
+		$('#lbInfoDebitoID').html("<strong>&nbsp;<span class='text-danger'>"+accounting.formatMoney($debito, options)+"</span>&nbsp;</strong>");
+	}else if ($debito == 0){
+		$('#divInfoDebitoID').addClass('hidden');
+	}
+	
+}
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#rifaFinRecSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaRifaFinRec();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormModalID').submit();
+	}
+});
+
+
+$('#zgFormModalID').submit(function() {
+	
+	//Bloquear botão enquanto estiver salvando
+	$('#rifaFinRecSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#rifaFinRecSubmitID').attr("disabled","disabled");
+	$('#rifaFinRecCancelID').attr("disabled","disabled");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			//zgMostraMsg('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
+			zgMostraMsg('UsuEnvCondivMsgID','Usuário associado com sucesso!');
+		}else{
+			zgMostraErro('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
+			//zgLimpaModalAviso();
+			//zgMostraAviso("Fechar");
+		}
+
+		//Desbloquear botão quando terminar de salvar
+		$('#rifaFinRecSubmitID').html('<i class="fa fa-check bigger-110"></i> Receber ');
+		$('#rifaFinRecSubmitID').attr("disabled",false);
+		$('#rifaFinRecCancelID').attr("disabled",false);
+
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			zgLimpaModal();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+
+/******************************************************
+VALIDA FORMULÁRIO
+/******************************************************/
+function validaRifaFinRec() {
+	var vQtdePagar		= $('#qtdePagarID').val();
+	var vValorRecebido  = $('#valorRecebidoID').val();
+	var vCodForma		= $('#codFormaPagID').val();
+	var vCodConta		= $('#codContaRecID').val();
+	var vQtdeObri		= $('#qtdeObrigatorioID').val();
+	
+	var vOK				= true;
+		
+	/** QUANTIDADE DE RIFAS **/
+	if (!vQtdePagar){
+		$('#divQtdePagarID').addClass('has-error');
+		$('#divHelpQtdePagarID').html(zgCriaSpanErro('A quantidade de rifas vendidas pelo formando deve ser preenchida!'));
+		vOK		= false;
+	}else if (vQtdePagar < vQtdeObri){
+		$('#divQtdePagarID').addClass('has-error');
+		$('#divHelpQtdePagarID').html(zgCriaSpanErro('A quantidade de rifas vendidas não pode ser inferior a quantidade obrigatória de vendas ('+vQtdeObri+' bilhetes).'));
+		vOK		= false;
+	}else{
+		$('#divQtdePagarID').removeClass('has-error');
+		$('#divHelpQtdePagarID').html('&nbsp;');		
+	}
+	
+	/** VALOR A RECEBER **/
+	if (!vValorRecebido){
+		$('#divValorRecebidoID').addClass('has-error');
+		$('#divHelpalorRecebidoID').html(zgCriaSpanErro('Preencha o valor recebido do formando!'));
+		vOK		= false;
+	}else{
+		$('#divValorRecebidoID').removeClass('has-error');
+		$('#divHelpalorRecebidoID').html('&nbsp;');		
+	}
+	
+	/** VALOR A RECEBER **/
+	if (!vValorRecebido){
+		$('#divValorRecebidoID').addClass('has-error');
+		$('#divHelpalorRecebidoID').html(zgCriaSpanErro('Preencha o valor recebido do formando!'));
+		vOK		= false;
+	}else{
+		$('#divValorRecebidoID').removeClass('has-error');
+		$('#divHelpalorRecebidoID').html('&nbsp;');		
+	}
+	
+	/** FORMA DE PAGAMENTO **/
+	if (!vCodForma){
+		$('#divFormaPagID').addClass('has-error');
+		$('#divHelpFormaPagID').html(zgCriaSpanErro('A forma de pagamento deve ser preenchida!'));
+		vOK		= false;
+	}else{
+		$('#divFormaPagID').removeClass('has-error');
+		$('#divHelpFormaPagID').html('&nbsp;');		
+	}
+	
+	/** CONTA DE RECEBIMENTO **/
+	if (!vCodConta){
+		$('#divContaRecID').addClass('has-error');
+		$('#divHelpContaRecID').html(zgCriaSpanErro('A conta de recebimento deve ser preenchida! Caso não exista nenhuma conta, deve-se cadastrar um conta no MENU Financeiro->cadastro->bancário'));
+		vOK		= false;
+	}else{
+		$('#divContaRecID').removeClass('has-error');
+		$('#divHelpContaRecID').html('&nbsp;');		
+	}
+	
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+}
+
+
+</script>
+

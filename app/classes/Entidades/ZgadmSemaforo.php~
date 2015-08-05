@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmSemaforo
  *
- * @ORM\Table(name="ZGADM_SEMAFORO", indexes={@ORM\Index(name="fk_ZGADM_SEMAFORO_1_idx", columns={"COD_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGADM_SEMAFORO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGADM_SEMAFORO_UK01", columns={"COD_ORGANIZACAO", "PARAMETRO"})}, indexes={@ORM\Index(name="fk_ZGADM_SEMAFORO_1_idx", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgadmSemaforo

@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
 }elseif (isset($id)) 	{
 	$id = \Zage\App\Util::antiInjection($id);
 }else{
-	\Zage\App\Erro::halt('FALTA PARÂMENTRO : ID');
+	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
 
 #################################################################################
@@ -32,80 +32,54 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata a url desse script
+## Verificar parâmetro obrigatório
 #################################################################################
-$url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
+if (!isset($codUsuario)) 		{
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_USUARIO)');
+}
 
+if (!isset($codRifa)) 		{
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_RIFA)');
+}
 #################################################################################
-## Resgata informações da rifa
+## Resgata as informações do banco
 #################################################################################
-if (!isset($codRifa)) \Zage\App\Erro::halt('FALTA PARÂMENTRO : COD_RIFA');
-
 $info 		= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
 
 if (!$info){
 	\Zage\App\Erro::halt($tr->trans('Rifa não encontrada').' (COD_RIFA)');
 }
 
+$infoVendas 	= $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codRifa' => $codRifa, 'codFormando' => $codUsuario));
+$infoVendasNum = sizeof($infoVendas);
 
 #################################################################################
-## Resgata os dados do grid
+## Verificar as informações da rifa
 #################################################################################
-try {
-	$rifas	= \Zage\Fmt\Rifa::listaNumRifasPorFormando($system->getCodOrganizacao(),$codRifa);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
+if ($infoVendasNum < $info->getQtdeObrigatorio()){
+	$qtdePagar = $info->getQtdeObrigatorio();
+}else{
+	$qtdePagar = $infoVendasNum; 
 }
 
-#################################################################################
-## Cria o objeto do Grid (bootstrap)
-#################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GFin");
-$grid->adicionaTexto($tr->trans('FORMANDO'),			20, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('QTDE OBRIGATÓRIA'),	10, $grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('VALOR DA RIFA (R$)'),	10, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('QTDE VENDIDA'),		10, $grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('A PAGAR (R$)'),		10, $grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('TOTAL PAGO(R$)'),		10, $grid::CENTER	,'');
-$grid->adicionaIcone(null,'fa fa-money green',$tr->trans('Receber'));
-$grid->importaDadosDoctrine($rifas);
-
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($rifas); $i++) {
-	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa.'&codUsuario='.$rifas[$i]["codigo"].'&url='.$url);
-	$grid->setValorCelula($i,0,$rifas[$i]["nome"]);
-	$grid->setValorCelula($i,1,$rifas[$i]["qtdeObrigatorio"]);
-	$grid->setValorCelula($i,2,$rifas[$i]["valorUnitario"]);
-	$grid->setValorCelula($i,3,$rifas[$i]["num"]);
-	
-	if ($rifas[$i]["num"] >= $rifas[$i]["qtdeObrigatorio"]){
-		$total = $rifas[$i]["num"] * $rifas[$i]["valorUnitario"];
-	}else{
-		$total = $rifas[$i]["qtdeObrigatorio"] * $rifas[$i]["valorUnitario"];
-	}
-	
-	$grid->setValorCelula($i,4,$total);
-	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Fmt/rifaFinRec.php?id=".$uid."');");
-	
-	
+if ($info->getIndRifaEletronica() == 1){
+	$readonly = 'readonly';
+}else{
+	$readonly = '';
 }
 
-#################################################################################
-## Gerar o código html do grid
-#################################################################################
-try {
-	$htmlGrid	= $grid->getHtmlCode();
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
 
 #################################################################################
-## Gerar a url de adicão
+## Verificar Associação
 #################################################################################
-$urlVoltar			= ROOT_URL.'/Fmt/rifaLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
-$urlAtualizar		= ROOT_URL.'/Fmt/rifaFin.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa);
+
+
+#################################################################################
+## Urls
+#################################################################################
+$vid				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa.'&url='.$url);
+$urlVoltar			= ROOT_URL . "/Fmt/rifaFin.php?id=".$vid;
+
 #################################################################################
 ## Carregando o template html
 #################################################################################
@@ -113,16 +87,53 @@ $tpl	= new \Zage\App\Template();
 $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
+## Select da Forma de Pagamento
+#################################################################################
+try {
+	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
+	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	null, '');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
+## Select da Conta
+#################################################################################
+try {
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
+	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+
+#################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Receber pagamentos"));
-$tpl->set('URLVOLTAR'		,$urlVoltar);
-$tpl->set('URLATUALIZAR'	,$urlAtualizar);
-$tpl->set('NOME_RIFA'		,$info->getNome());
-$tpl->set('IC'				,$_icone_);
+$tpl->set('ID'					,$id);
+$tpl->set('TITULO'				,'Receber pagamento');
+
+$tpl->set('COD_USUARIO'			,$codUsuario);
+
+$tpl->set('NOME_RIFA'			,$info->getNome());
+$tpl->set('VALOR_RIFA'			,$info->getValorUnitario());
+$tpl->set('QTDE_OBRI'			,$info->getQtdeObrigatorio());
+$tpl->set('IND_ELETRONICA'		,$info->getIndRifaEletronica());
+$tpl->set('QTDE_PAGAR'			,$qtdePagar);
+
+$tpl->set('QTDE_VENDA'			,$infoVendasNum);
+$tpl->set('DISABLED'			,$podeEnviar);
+$tpl->set('READONLY'			,$readonly);
+$tpl->set('TEXTO'				,$texto);
+
+$tpl->set('FORMAS_PAG'			,$oFormaPag);
+$tpl->set('CONTAS'				,$oConta);
+
+$tpl->set('URL_VOLTAR'			,$urlVoltar);
+$tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
+

@@ -19,7 +19,7 @@
 						<li class="active">
 							<a data-toggle="tab" href="#usuario-basico">
 								<i class="green fa fa-edit bigger-125"></i>
-								Informações básicas
+								Principal
 							</a>
 						</li>
 						<li>
@@ -44,7 +44,7 @@
 									<div class="form-group col-sm-12" id="divEmailID">
 								    	<label class="col-sm-3 control-label" for="emailID">Email</label>
 						    			<div class="input-group col-sm-8 pull-left">
-						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o email que será utilizado como usuário para acesso ao sistema."></i></span>
+						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o email que será utilizado como usuário para acesso ao portal. Lembrando que não pode existir 2 (dois) EMAILs iguais em uma mesma formatura."></i></span>
 						   					<input class="width-100" id="emailID" type="text" %PODE_ALTERAR% maxlength="200" name="email" value="%USUARIO%" placeholder="Email" onblur="checkEmailUsuarioAlt();" autocomplete="off">
 						    			</div>
 						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
@@ -52,7 +52,7 @@
 									<div class="form-group col-sm-12" id="divNomeID">
 								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
 						    			<div class="input-group col-sm-8 pull-left">
-							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo do usuário"></i></span>
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome completo do formando."></i></span>
 							    			<input class="width-100" id="nomeID" type="text" name="nome" maxlength="100" value="%NOME%" placeholder="Nome completo" autocomplete="off">
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
@@ -60,25 +60,41 @@
 								    <div class="form-group col-sm-12" id="divApelidoID">
 								    	<label class="col-sm-3 control-label" for="apelidoID">Apelido</label>
 						    			<div class="input-group col-sm-8 pull-left">
-							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe como o sistema chamará o usuário."></i></span>
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe como o sistema chamará o formando. Ex. João, Maria."></i></span>
 							    			<input class="width-100" id="apelidoID" type="text" name="apelido" maxlength="60" value="%APELIDO%" placeholder="Apelido" autocomplete="off">
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divDataNascID">
+								    	<label class="col-sm-3 control-label" for="dataNascID">Nascimento</label>
+						    			<div class="input-group col-sm-8 pull-left">
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de nascimento do formando."></i></span>
+							    			<input class="width-100" id="dataNascID" type="text" name="dataNasc" maxlength="10" value="%DATA_NASC%" placeholder="Data de nascimento" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data" zg-data-mask-retira="1">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpDataNascID"></div>
 								    </div>
 						    	</div>
 						    	<div class="col-sm-6">
 							    	<div class="form-group col-sm-12" id="divCpfID">
 									    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
 							    			<div class="input-group col-sm-8 pull-left">
-						    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Infome o número do CPF."></i></span>
+						    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Infome o número do CPF do formando. Lembrando que não pode existir 2 (dois) CPFs iguais em uma mesma formatura."></i></span>
 								    			<input class="form-control" id="cpfID" type="text" %PODE_ALTERAR% name="cpf" maxlength="14" value="%CPF%" placeholder="CPF" %READONLY% onblur="checkCpfUsuarioAlt();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
 									    	</div>
 									    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
 									</div>
+									<div class="form-group col-sm-12" id="divRgID">
+								    	<label class="col-sm-3 control-label" for="rgID">RG</label>
+						    			<div class="input-group col-sm-8 pull-left">
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o RG do formando."></i></span>
+							    			<input class="width-100" id="rgID" type="text" name="rg" maxlength="14" value="%RG%" placeholder="RG" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpRgID"></div>
+								    </div>
 									<div class="form-group col-sm-12" id="divSexoID">
 										<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
 						    			<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo"></i></span>
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do formando."></i></span>
 											<select class="select2" style="width:100%;" id="sexoID" name="sexo" data-rel="select2">
 												%SEXO%
 											</select>
@@ -87,7 +103,7 @@
 									<div class="form-group col-sm-12" id="divPerfilID">
 										<label class="col-sm-3 control-label" for="perfilID">Perfil</label>
 						    			<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o perfil do usuário"></i></span>
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o perfil de acesso ao sistema. O perfil define quais funcionalidades o formando poderá acessar."></i></span>
 											<select class="select2" style="width:100%;" id="perfilID" name="perfil" data-rel="select2">
 												%PERFIL%
 											</select>

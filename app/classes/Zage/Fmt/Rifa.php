@@ -86,11 +86,12 @@ class Rifa {
 	
 		$qb 	= $em->createQueryBuilder();
 	
-		$qb->select('us.codigo,us.nome, '.$qb->expr()->count('rn.codigo'). " as num")
+		$qb->select('us.codigo,us.nome,r.qtdeObrigatorio,r.valorUnitario, '.$qb->expr()->count('rn.codigo'). " as num")
 		->from('\Entidades\ZgsegUsuario','us')
 		->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',		'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 		= uo.codUsuario')
 		->leftJoin('\Entidades\ZgsegPerfil',					'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil		= p.codigo')
 		->leftJoin('\Entidades\ZgfmtRifaNumero',				'rn',	\Doctrine\ORM\Query\Expr\Join::WITH, 'rn.codFormando	= us.codigo')
+		->leftJoin('\Entidades\ZgfmtRifa',						'r',	\Doctrine\ORM\Query\Expr\Join::WITH, 'r.codigo			= rn.codRifa')
 		->where($qb->expr()->andX(
 			$qb->expr()->eq('uo.codOrganizacao'		, ':codOrganizacao'),
 			$qb->expr()->eq('p.codTipoUsuario'		, ':codTipoUsuario'),
