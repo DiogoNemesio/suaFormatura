@@ -567,22 +567,11 @@ class Usuario extends \Entidades\ZgsegUsuario {
 			$oStatus			= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => $this->_usuario->getCodStatus()));
 			$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $this->_getCodigo(), 'codOrganizacao' => $this->_getCodOrganizacao()));
 			$novoUsuario 		= false;
-			
-			if ($oUsuarioOrg){
-				if ($oUsuario->getCodStatus()->getCodigo() == "A" && $oUsuarioOrg->getCodStatus()->getCodigo() != "P" ) {
-					$enviarEmail	= false;
-					$this->_setEnviarEmail($enviarEmail);
-				}else{
-					$enviarEmail 	= true;
-					$this->_setEnviarEmail($enviarEmail);
-				}
-			}else{
-				$enviarEmail 	= true;
-				$this->_setEnviarEmail($enviarEmail);
-			}
+			$enviarEmail	= false;
+			$this->_setEnviarEmail($enviarEmail);
 		}
 		
-		$dataNasc	= DateTime::createFromFormat($system->config["data"]["dateFormat"], $this->getDataNascimento());
+		$dataNasc	= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $this->getDataNascimento());
 						
 		$this->_usuario->setUsuario($this->getUsuario());
 		$this->_usuario->setCodStatus($oStatus);

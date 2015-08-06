@@ -74,7 +74,6 @@ try {
 	 ***********************/
 	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
 	$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
-	
 	/*********************** 
 	 * Salvar os dados do usuário 
 	 ***********************/
@@ -136,6 +135,8 @@ try {
 	$oCliente->setCodOrganizacao($oOrg);
 	$oCliente->setNome($oUsuario->_getUsuario()->getNome());
 	$oCliente->setCgc($oUsuario->_getUsuario()->getCpf());
+	$oCliente->setRg($oUsuario->_getUsuario()->getRg());
+	$oCliente->setDataNascimento($oUsuario->_getUsuario()->getDataNascimento());
 	$oCliente->setEmail($oUsuario->_getUsuario()->getUsuario());
 	$oCliente->setCodTipoPessoa($clienteTipo);
 	$oCliente->setIndContribuinte(0);
@@ -181,7 +182,7 @@ try {
 	$retorno	= $oCliTel->salvar();
 	
 	/*********************** 
-	 * Cria o convite 
+	 * Cria convite
 	 ***********************/
 	if ($oUsuario->_getEnviarEmail() == true) {
 		$oConviteStatus = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => A));
@@ -191,82 +192,77 @@ try {
 		$convite->setCodStatus($oConviteStatus);
 		$convite->salvar();
 	}
-	$em->flush();
-	$em->clear();
-	/********** Salvar as informações ******
+	
+	/*********************** 
+	 * Commit (salvar)
+	 ***********************/
 	try {
 		$em->flush();
 		$em->clear();
 	} catch (Exception $e) {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
-		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
-	}	
-***/
+		throw new \Exception("Ops!! Não conseguimos realizar a operaçao. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+	}
+
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
 }
-
-if ($oUsuario->_getEnviarEmail() == true) {
 	
-	#################################################################################
-	## Carregando o template html do email
-	#################################################################################
-	$tpl		= new \Zage\App\Template();
+#################################################################################
+## Enviar notificação
+#################################################################################
+//Verificar se é pra enviar notificacao
+if ($oUsuario->_getEnviarEmail() == true && $oUsuario->_getCodigo()) {
+
 	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuario->_getUsuOrg()->getCodigo().'&_cdu02='.$oUsuario->_getUsuario()->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
 	if ($oUsuario->_getUsuario()->getCodStatus()->getCodigo() == P) {
-	$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
-			$assunto			= "Cadatro de usuário";
-					$nome				= $oUsuario->getNome();
-					$texto				= "Sua conta já está criada, mas ainda precisa ser confirmada. Para isso, clique no link abaixo:";
-					$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
+		//$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
+		$assunto			= "Confirmação de cadastro";
+		$nome				= $oUsuario->getNome();
+		$texto				= "Sua conta já está criada, mas ainda precisa ser confirmada. Para isso, clique no link abaixo:";
+		$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
 	}else{
-		$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
-		$assunto			= "Associação a empresa";
+		//$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
+		$assunto			= "Associação a uma nova formatura";
 		$confirmUrl			= ROOT_URL . "/Seg/u02.php?cid=".$cid;
 	}
+	
+	//$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'USUARIO_CADASTRO'));
+	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+	$notificacao->setAssunto($assunto);
+	//$notificacao->setCodRemetente($oRemetente);
 
-	#################################################################################
-	## Define os valores das variáveis
-	#################################################################################
-	$tpl->set('ID'					,$id);
-	$tpl->set('CONFIRM_URL'			,$confirmUrl);
-	$tpl->set('ASSUNTO'				,$assunto);
-	$tpl->set('NOME'				,$nome);
-	#################################################################################
-	## Criar os objeto do email ,transporte e validador
-	#################################################################################
-	$mail 			= \Zage\App\Mail::getMail();
-	$transport 		= \Zage\App\Mail::getTransport();
-	$validator 		= new \Zend\Validator\EmailAddress();
-	$htmlMail 		= new MimePart($tpl->getHtml());
-	$htmlMail->type = "text/html";
-	$body 			= new MimeMessage();
+	$notificacao->associaUsuario($oUsuario->_getCodigo());
 
-	#################################################################################
-	## Definir o conteúdo do e-mail
-	#################################################################################
-	$body->setParts(array($htmlMail));
-	$mail->setBody($body);
-	$mail->setSubject("<ZageMail> ".$assunto);
+	$notificacao->enviaEmail();
+	//$notificacao->enviaSistema();
+	//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
+	$notificacao->setCodTemplate($template);
+	$notificacao->adicionaVariavel('ID', $id);
+	$notificacao->adicionaVariavel("CONFIRM_URL", $confirmUrl);
+	$notificacao->adicionaVariavel("ASSUNTO", $assunto);
+	$notificacao->adicionaVariavel("NOME", $nome);
+	$notificacao->adicionaVariavel("FORMATURA", $oOrg->getNome());
+	$notificacao->salva();
+	/**
+	//NOTIFICAÇÃO POR WHATSAPP
+	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+	$notificacao->setAssunto($assunto);
+	//$notificacao->setCodUsuario($oRemetente);
+	$notificacao->associaUsuario($oUsuario->_getCodigo());
+	
+	$notificacao->enviaWa();
+	$notificacao->setMensagem("Olá".$nome.", você foi adiconar a formatura".$oOrg->getNome()." Para acessar o portal da sua formatura é necessário que confirme o recebimento de confirmação de cadastro no seu email.
 
-	#################################################################################
-	## Definir os destinatários
-	#################################################################################
-	$mail->addTo($usuario);
+	www.suaformatura.com/".$oOrg->getIdentificacao()."");
+	$notificacao->salva();
+	**/
+	$em->flush();
 
-	#################################################################################
-	## Salvar as informações e enviar o e-mail
-	#################################################################################
-	try {
-		$transport->send($mail);
-	} catch (Exception $e) {
-		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
-		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
-		}
-	}
+}
 
-
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Informações salvas com sucesso"));
+$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Formando salvo com sucesso."));
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oUsuario->_getCodigo());

@@ -114,7 +114,6 @@ if ($tipo == 'J'){
 		$err	= 1;
 	}
 	
-	
 	/******** Início de Atividade ***********/
 	if (!empty($dataNascimento)) {
 		if (\Zage\App\Util::validaData($dataNascimento, $system->config["data"]["dateFormat"]) == false) {
@@ -148,7 +147,7 @@ if ($tipo == 'F'){
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Campo RG não deve conter mais de 14 caracteres");
 		$err	= 1;
 	}
-
+	
 	if (!empty($dataNascimento)) {
 		if (\Zage\App\Util::validaData($dataNascimento, $system->config["data"]["dateFormat"]) == false) {
 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Data de Nascimento inválido"));

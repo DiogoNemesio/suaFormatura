@@ -143,7 +143,7 @@ class Telefone {
 				$infoTel->setCodProprietario($oProp);
 				$infoTel->setCodTipoTelefone($oTipoTel);
 				$infoTel->setTelefone($telefone[$i]);
-		
+				
 				$em->persist($infoTel);
 			}
 		}
