@@ -1,0 +1,190 @@
+<?php
+
+namespace Entidades;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ZgadmContrato
+ *
+ * @ORM\Table(name="ZGADM_CONTRATO", indexes={@ORM\Index(name="fk_ZGADM_CONTRATO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGADM_CONTRATO_2_idx", columns={"COD_PLANO"})})
+ * @ORM\Entity
+ */
+class ZgadmContrato
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="CODIGO", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $codigo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_INICIO", type="date", nullable=false)
+     */
+    private $dataInicio;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_FIM", type="date", nullable=false)
+     */
+    private $dataFim;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
+     */
+    private $dataCadastro;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrganizacao;
+
+    /**
+     * @var \Entidades\ZgadmPlano
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmPlano")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PLANO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPlano;
+
+
+    /**
+     * Get codigo
+     *
+     * @return integer 
+     */
+    public function getCodigo()
+    {
+        return $this->codigo;
+    }
+
+    /**
+     * Set dataInicio
+     *
+     * @param \DateTime $dataInicio
+     * @return ZgadmContrato
+     */
+    public function setDataInicio($dataInicio)
+    {
+        $this->dataInicio = $dataInicio;
+
+        return $this;
+    }
+
+    /**
+     * Get dataInicio
+     *
+     * @return \DateTime 
+     */
+    public function getDataInicio()
+    {
+        return $this->dataInicio;
+    }
+
+    /**
+     * Set dataFim
+     *
+     * @param \DateTime $dataFim
+     * @return ZgadmContrato
+     */
+    public function setDataFim($dataFim)
+    {
+        $this->dataFim = $dataFim;
+
+        return $this;
+    }
+
+    /**
+     * Get dataFim
+     *
+     * @return \DateTime 
+     */
+    public function getDataFim()
+    {
+        return $this->dataFim;
+    }
+
+    /**
+     * Set dataCadastro
+     *
+     * @param \DateTime $dataCadastro
+     * @return ZgadmContrato
+     */
+    public function setDataCadastro($dataCadastro)
+    {
+        $this->dataCadastro = $dataCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCadastro
+     *
+     * @return \DateTime 
+     */
+    public function getDataCadastro()
+    {
+        return $this->dataCadastro;
+    }
+
+    /**
+     * Set codOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
+     * @return ZgadmContrato
+     */
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
+    {
+        $this->codOrganizacao = $codOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodOrganizacao()
+    {
+        return $this->codOrganizacao;
+    }
+
+    /**
+     * Set codPlano
+     *
+     * @param \Entidades\ZgadmPlano $codPlano
+     * @return ZgadmContrato
+     */
+    public function setCodPlano(\Entidades\ZgadmPlano $codPlano = null)
+    {
+        $this->codPlano = $codPlano;
+
+        return $this;
+    }
+
+    /**
+     * Get codPlano
+     *
+     * @return \Entidades\ZgadmPlano 
+     */
+    public function getCodPlano()
+    {
+        return $this->codPlano;
+    }
+}

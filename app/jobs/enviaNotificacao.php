@@ -45,11 +45,11 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	$assunto			= $notificacoes[$i]->getAssunto();
 	$data				= $notificacoes[$i]->getData()->format($system->config["data"]["datetimeFormat"]);
 	
-	if ($codTipoMens	== "TX") {
+	if ($codTipoMens	== \Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO) {
 		$mensagem		= $notificacoes[$i]->getMensagem();
-	}elseif ($codTipoMens	== "H") {
+	}elseif ($codTipoMens	== \Zage\App\Notificacao::TIPO_MENSAGEM_HTML) {
 		$mensagem		= $notificacoes[$i]->getMensagem();
-	}elseif ($codTipoMens	== "TP") {
+	}elseif ($codTipoMens	== \Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE) {
 	
 		#################################################################################
 		## Verificar se o template foi informado
@@ -143,10 +143,13 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	#################################################################################
 	if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
 		$destinatarios	= $em->getRepository('\Entidades\ZgappNotificacaoPessoa')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo()));
+	}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_ANONIMO) {
+		$destinatarios	= array();
+		$destinatarios[0]["NOME"]	= $notificacoes[$i]->getNome();
+		$destinatarios[0]["EMAIL"]	= $notificacoes[$i]->getEmail();
 	}else{
 		$destinatarios	= $em->getRepository('\Entidades\ZgappNotificacaoUsuario')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo()));		
 	}
-	
 	#################################################################################
 	## Resgata a lista de usuários/Pessoas que receberão a notificação
 	#################################################################################
@@ -155,7 +158,11 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
 			$nomeDest		= $destinatarios[$j]->getCodPessoa()->getNome();
 			$codDest		= $destinatarios[$j]->getCodPessoa()->getCodigo();
-			$emailDest		= $destinatarios[$j]->getCodPessoa()->getEmail(); 
+			$emailDest		= $destinatarios[$j]->getCodPessoa()->getEmail();
+		}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_ANONIMO) {
+			$nomeDest		= $destinatarios[$j]["NOME"];
+			$codDest		= null;
+			$emailDest		= $destinatarios[$j]["EMAIL"];
 		}else{
 			$nomeDest		= $destinatarios[$j]->getCodUsuario()->getNome();
 			$codDest		= $destinatarios[$j]->getCodUsuario()->getCodigo();
@@ -189,9 +196,18 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			## Associa os destinatários
 			#################################################################################
 			$mailLogDest	= new \Entidades\ZgappNotificacaoLogDest();
-			$oUsu			= $em->getReference('\Entidades\ZgsegUsuario', $codDest);
+			
+			if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+				$oPessoa			= $em->getReference('\Entidades\ZgfinPessoa', $codDest);
+				$mailLogDest->setCodPessoa($oPessoa);
+			}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_USUARIO) {
+				$oUsu			= $em->getReference('\Entidades\ZgsegUsuario', $codDest);
+				$mailLogDest->setCodUsuario($oUsu);
+			}else{
+				$mailLogDest->setEmail($emailDest);
+			}
+			
 			$mailLogDest->setCodLog($mailLog);
-			$mailLogDest->setCodDestinatario($oUsu);
 			$em->persist($mailLogDest);
 				
 			#################################################################################

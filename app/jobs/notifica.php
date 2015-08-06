@@ -15,7 +15,7 @@ if (defined('DOC_ROOT')) {
 global $em,$system,$tr,$log,$db;
 
 
-$codOrganizacao	= 3;
+/*$codOrganizacao	= 3;
 $codRifa 		= 1;
 
 $retorno	= \Zage\Fmt\Rifa::listaNumRifasPorFormando(3,2);
@@ -35,7 +35,7 @@ $rifaAtual	= \Zage\Adm\Semaforo::proximoValor(3, "RIFA_".$codRifa);
 echo "RifaAtual: ".$rifaAtual."\n";
 exit;
 
-
+*/
 
 
 #################################################################################
@@ -58,15 +58,14 @@ exit;
 $daniel			= $em->getReference('\Entidades\ZgsegUsuario',1);
 $diogo			= $em->getRepository('\Entidades\ZgsegUsuario')->findOneBy(array('codigo' => 2));
 $template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ASSINATURA_VENCIDA'));
-$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
 $notificacao->setAssunto("Teste de notificação ");
 $notificacao->setCodRemetente($daniel);
-$notificacao->associaUsuario(1);
 $notificacao->enviaEmail();
 $notificacao->enviaSistema();
-//$notificacao->setEmail("daniel.cassela@usinacaete.com");
+$notificacao->setEmail("daniel.cassela@usinacaete.com");
 $notificacao->setCodTemplate($template);
-//$notificacao->anexarArquivo("cpd40192.pdf", \Zage\App\Util::getConteudoArquivo("/home/cassela/cpd40192.pdf"));
+$notificacao->anexarArquivo("cpd40192.pdf", \Zage\App\Util::getConteudoArquivo("/home/cassela/cpd40192.pdf"));
 
 //$notificacao->enviaEmail();
 //$notificacao->setCodTemplate($template);
@@ -82,9 +81,11 @@ $notificacao->enviaWa();
 $notificacao->salva();
 $notificacao->adicionaVariavel("NOME", "Daniel");
 */
+$em->flush();
+$em->clear();
 
 
-
+/*
 $diogo			= $em->getReference('\Entidades\ZgsegUsuario',2);
 $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_HTML, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
 $notificacao->setAssunto("Teste de notificação com anexo");
@@ -95,3 +96,4 @@ $notificacao->anexarArquivo("cpd40192.pdf", \Zage\App\Util::getConteudoArquivo("
 $notificacao->setMensagem("Segue em anexo o PDF para visualização");
 $notificacao->salva();
 
+*/
