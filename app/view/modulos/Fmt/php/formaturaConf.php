@@ -34,8 +34,10 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 try {
 		
-	$org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-	$orgFmt		= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$oOrg 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	
+	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $oOrg->getCodigo()));
 	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
@@ -43,7 +45,7 @@ try {
 	
 $valorPorFormando		= \Zage\Adm\Parametro::getValorOrganizacao("VALOR_POR_FORMANDO",true);
 $valorPorBoleto			= \Zage\Adm\Parametro::getValorOrganizacao("CUSTO_POR_BOLETO",true);
-$taxaPorFormando		= \Zage\Adm\Parametro::getValorOrganizacao("CUSTO_POR_BOLETO",true);
+$taxaPorFormando		= \Zage\Adm\Parametro::getValorOrganizacao("TAXO_POR_FORMANDO",true);
 
 $dataConclusao			= ($orgFmt->getDataConclusao() != null) ? $orgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
 
