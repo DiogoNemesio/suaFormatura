@@ -20,6 +20,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	const TIPO_DEST_USUARIO 		= 'U';
 	const TIPO_DEST_ORGANIZACAO		= 'O';
 	const TIPO_DEST_PESSOA			= 'P';
+	const TIPO_DEST_ANONIMO			= 'A';
 	
 	
 	/**
@@ -87,6 +88,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			case \Zage\App\Notificacao::TIPO_DEST_USUARIO:
 			case \Zage\App\Notificacao::TIPO_DEST_ORGANIZACAO:
 			case \Zage\App\Notificacao::TIPO_DEST_PESSOA:
+			case \Zage\App\Notificacao::TIPO_DEST_ANONIMO:
 				break;
 			default:
 				throw new \Exception('Tipo de destinatário desconhecido');
@@ -168,6 +170,8 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			throw new \Exception('Notificação de Organização deve ter pelo menos 1 organização associada !!');
 		if (($this->getCodTipoDestinatario()->getCodigo() == \Zage\App\Notificacao::TIPO_DEST_PESSOA) && (sizeof($this->pessoas) == 0))
 			throw new \Exception('Notificação de Pessoa deve ter pelo menos 1 pessoa associada !!');
+		if (($this->getCodTipoDestinatario()->getCodigo() == \Zage\App\Notificacao::TIPO_DEST_ANONIMO) && (!$this->getEmail()))
+			throw new \Exception('Notificação Anônima deve ter o e-mail definido !!');
 		
 		#################################################################################
 		## Validar o tipo de destinatário com a via de envio

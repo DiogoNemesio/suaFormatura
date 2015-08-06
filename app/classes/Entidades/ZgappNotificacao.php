@@ -78,6 +78,13 @@ class ZgappNotificacao
     private $email;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="NOME", type="string", length=100, nullable=true)
+     */
+    private $nome;
+
+    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -310,6 +317,29 @@ class ZgappNotificacao
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set nome
+     *
+     * @param string $nome
+     * @return ZgappNotificacao
+     */
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
+
+        return $this;
+    }
+
+    /**
+     * Get nome
+     *
+     * @return string 
+     */
+    public function getNome()
+    {
+        return $this->nome;
     }
 
     /**
