@@ -38,6 +38,13 @@ class ZgsegUsuario
     /**
      * @var string
      *
+     * @ORM\Column(name="RG", type="string", length=14, nullable=true)
+     */
+    private $rg;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="NOME", type="string", length=100, nullable=false)
      */
     private $nome;
@@ -48,6 +55,13 @@ class ZgsegUsuario
      * @ORM\Column(name="APELIDO", type="string", length=60, nullable=true)
      */
     private $apelido;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_NASCIMENTO", type="date", nullable=true)
+     */
+    private $dataNascimento;
 
     /**
      * @var string
@@ -217,6 +231,29 @@ class ZgsegUsuario
     }
 
     /**
+     * Set rg
+     *
+     * @param string $rg
+     * @return ZgsegUsuario
+     */
+    public function setRg($rg)
+    {
+        $this->rg = $rg;
+
+        return $this;
+    }
+
+    /**
+     * Get rg
+     *
+     * @return string 
+     */
+    public function getRg()
+    {
+        return $this->rg;
+    }
+
+    /**
      * Set nome
      *
      * @param string $nome
@@ -260,6 +297,29 @@ class ZgsegUsuario
     public function getApelido()
     {
         return $this->apelido;
+    }
+
+    /**
+     * Set dataNascimento
+     *
+     * @param \DateTime $dataNascimento
+     * @return ZgsegUsuario
+     */
+    public function setDataNascimento($dataNascimento)
+    {
+        $this->dataNascimento = $dataNascimento;
+
+        return $this;
+    }
+
+    /**
+     * Get dataNascimento
+     *
+     * @return \DateTime 
+     */
+    public function getDataNascimento()
+    {
+        return $this->dataNascimento;
     }
 
     /**
