@@ -150,7 +150,7 @@ try {
 	$em->persist($oCliente);
 	
 	//ENDEREÇO CLIENTE
-	if ($endObrigatorio == true){
+	if ($codLogradouro){
 		$oClienteEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oCliente->getCodigo()));
 		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => C));
 		
@@ -163,14 +163,13 @@ try {
 		$oClienteEnd->setCodLogradouro($oCodLogradouro);
 		$oClienteEnd->setCep($oUsuario->_getUsuario()->getCep());
 		$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getEndereco());
-		$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getRg());
-		$oClienteEnd->setEndereco($oUsuario->_getUsuario()->getDataNascimento());
 		$oClienteEnd->setBairro($oUsuario->_getUsuario()->getBairro());
 		$oClienteEnd->setNumero($oUsuario->_getUsuario()->getNumero());
 		$oClienteEnd->setComplemento($oUsuario->_getUsuario()->getComplemento());
 		
 		$em->persist($oClienteEnd);
 	}
+	
 	//Telefone
 	$oCliTel			= new \Zage\App\Telefone();
 	$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
@@ -221,7 +220,7 @@ if ($oUsuario->_getEnviarEmail() == true && $oUsuario->_getCodigo()) {
 		//$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
 		$assunto			= "Confirmação de cadastro";
 		$nome				= $oUsuario->getNome();
-		$texto				= "Sua conta já está criada, mas ainda precisa ser confirmada. Para isso, clique no link abaixo:";
+		$texto = 'Você foi adionado a formatura <b>'.$oOrg->getNome().'</b>. Confirme seu cadastro para acessar tudo sobre sua formatura.';
 		$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
 	}else{
 		//$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
@@ -245,7 +244,7 @@ if ($oUsuario->_getEnviarEmail() == true && $oUsuario->_getCodigo()) {
 	$notificacao->adicionaVariavel("CONFIRM_URL", $confirmUrl);
 	$notificacao->adicionaVariavel("ASSUNTO", $assunto);
 	$notificacao->adicionaVariavel("NOME", $nome);
-	$notificacao->adicionaVariavel("FORMATURA", $oOrg->getNome());
+	$notificacao->adicionaVariavel("TEXTO", $texto);
 	$notificacao->salva();
 	/**
 	//NOTIFICAÇÃO POR WHATSAPP

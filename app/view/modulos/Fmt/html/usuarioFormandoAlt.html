@@ -415,6 +415,7 @@ function validaUsuarioAlt() {
 	var vPerfil	 	 = $('#perfilID').val();
 	var vSexo	 	 = $('#sexoID').val();
 	var vApelido 	 = $('#apelidoID').val();
+	var vDataNasc 	 = $('#dataNascID').val();
 		
 	var vOK				= true;
 	var vIdent;
@@ -540,6 +541,17 @@ function validaUsuarioAlt() {
 	}else{
 		$('#divApelidoID').removeClass('has-error');
 		$('#divHelpApelidoID').html('&nbsp;');
+	}
+	
+	//DATA NASCIMENTO
+	if (!vDataNasc) {
+		$('#divDataNascID').addClass('has-error');
+		$('#divHelpDataNascID').html(zgCriaSpanErro('A data de nascimento deve ser preenchida!'));
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divDataNascID').removeClass('has-error');
+		$('#divHelpDataNascID').html('&nbsp;');
 	}
 	
 	//SEXO

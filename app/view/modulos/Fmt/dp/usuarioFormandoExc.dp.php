@@ -57,85 +57,31 @@ try {
 #################################################################################
 ## Excluir usuario(formando) e cliente
 #################################################################################
-
-	$oUsuario			= new \Zage\Seg\Usuario();	
 	
 	/***********************
 	* Excluir/Cancelar
-	***********************/
-	$oCli = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsu->getCpf(),'codOrganizacao' => $codOrganizacao));
+	**********************/
+	$oUsuario		= new \Zage\Seg\Usuario();
+	$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario));
 	
-	if ($oCli){
-		$oCliPagar 		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codPessoa' => $oCli->getCodigo()));
-		$oCliReceber 	= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codPessoa' => $oCli->getCodigo()));
-	}	
-
-	if ($oCliPagar || $oCliReceber){
-		//Cancelar o usuário
-		$oUsuario->cancelar($oUsu, $oUsuOrg);
-		//Inativar a Pessoa do cliente
-		\Zage\Fin\Pessoa::inativa($oCli->getCodigo());			
-	}else{
-		$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario));
-		if ($oUsu->getCodStatus()->getCodigo() == P){
-			if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $codOrganizacao && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
-				/*** Excluir usuario ***/
-				$oUsuario->excluirCompleto($oUsu, $oUsuOrg);
-				/*** Excluir cliente ***/
-				\Zage\Fin\Pessoa::exclui($oCli->getCodigo());
-				/*** Exclusão do convite ***/
-				$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario));
-				for ($i = 0; $i < sizeof($oConvite); $i++) {
-					$em->remove($oConvite[$i]);
-				}
-			}else{
-				/*** Cancelar usuario ***/
-				$oUsuario->cancelar($oUsu, $oUsuOrg);
-				/*** Cancelar cliente ***/
-				\Zage\Fin\Pessoa::inativa($oCli->getCodigo());	
-				/*** Cancelar convite ***/
-				$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
-				if($oConvite){
-					$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
-						
-					for ($i = 0; $i < sizeof($oConvite); $i++) {
-						$oConvite[$i]->setCodStatus($oConviteStatus);
-						$oConvite[$i]->setDataCancelamento(new \DateTime());
-						$em->persist($oConvite[$i]);
-					}
-				}
-			}
-		}else{
-			/*** Cancelar usuario ***/
-			$oUsuario->cancelar($oUsu, $oUsuOrg);
-			/*** Cancelar cliente ***/
-			\Zage\Fin\Pessoa::inativa($oCli->getCodigo());
-			/*** Cancelar convite ***/
-			$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
-			if($oConvite){
-				$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
-			
-				for ($i = 0; $i < sizeof($oConvite); $i++) {
-					$oConvite[$i]->setCodStatus($oConviteStatus);
-					$oConvite[$i]->setDataCancelamento(new \DateTime());
-					$em->persist($oConvite[$i]);
-				}
-			}
-		}
-	}
+	$oUsuario->_setCodOrganizacao($codOrganizacao);
+	$oUsuario->_setCodUsuario($codUsuario);
+	$oUsuario->excluir();
 	
-	/***** Flush *****/
+	$em->flush();
+	$em->clear();
+	
+	/***** Flush ***
 	try {
 		$em->flush();
 		$em->clear();
 	} catch (Exception $e) {
 		$log->debug("Erro ao excluir o formando:". $e->getTraceAsString());
 		throw new \Exception("Erro excluir o formando. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
-	}	
+	}	**/
 
 } catch (\Exception $e) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
-	die('1'.\Zage\App\Util::encodeUrl('||'));
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage())));
 	exit;
 }
 

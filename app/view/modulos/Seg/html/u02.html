@@ -186,24 +186,6 @@
 								</select>
 							</div>
 						</div>
-						<h5 class="header blue bolder smaller">Senha</h5>
-						<div class="vspace-xs"></div>
-						<div class="form-group col-sm-12" id="divSenhaID">
-					    	<label class="col-sm-3 control-label" for="senhaID">Senha</label>
-			    			<div class="input-group col-sm-5 pull-left">
-				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Crie uma senha para acessar o sistema."></i></span>
-				    			<input class="form-control" id="senhaID" type="password" name="senhaCad" maxlength="16" placeholder="Senha" autocomplete="off">
-					    	</div>
-					    	<div class="col-sm-1 pull-left" id="divHelpSenhaID"></div>
-					    </div>
-					    <div class="form-group col-sm-12" id="divConfSenhaID">
-					    	<label class="col-sm-3 control-label" for="confSenhaID">Confirmação</label>
-			    			<div class="input-group col-sm-5 pull-left">
-				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Confirme sua senha."></i></span>
-				    			<input class="form-control" id="confSenhaID" type="password" name="confSenhaCad" maxlength="16" placeholder="Confirmação da senha" autocomplete="off">
-					    	</div>
-					    	<div class="col-sm-1 pull-left" id="divHelpConfSenhaID"></div>
-					    </div>
 						<h5 class="header blue bolder smaller">Endereço</h5>
 						<div class="vspace-xs"></div>
 						<div class="form-group col-sm-12" id="divCepID">
@@ -593,10 +575,7 @@ $('#zgFormID').submit(function(e) {
 function validaUsuarioAlt() {
 	var vNome		 = $('#nomeID').val();
 	var vApelido	 = $('#apelidoID').val();
-	var vDataNasc	 = $('#dataNascID').val();
 	var vSexo	 	 = $('#sexoID').val();
-	var vSenha		 = $('#senhaID').val();
-	var vConfSenha	 = $('#confSenhaID').val();
 	var vStatus		 = $('#codStatusID').val();
 	var vCep		 = $('#cepID').val();
 		
@@ -637,42 +616,6 @@ function validaUsuarioAlt() {
 	}else{
 		$('#divSexoID').removeClass('has-error');
 		$('#divHelpSexoID').html('&nbsp;');	
-	}
-	
-	//SEXO
-	if (!vDataNasc) {
-		$('#divDataNascID').addClass('has-error');
-		$('#divHelpDataNascID').html(zgCriaSpanErro('O Sexo deve ser preenchido!'));
-		vOK		= false;
-	}else{
-		$('#divDataNascID').removeClass('has-error');
-		$('#divHelpDataNascID').html('&nbsp;');	
-	}
-	
-	//SENHA
-	if (vSenha) {
-		if (vSenha.length < 4){			
-			$('#divSenhaID').addClass('has-error');
-			$('#divHelpSenhaID').html(zgCriaSpanErro('Insira uma senha com mais caracteres!'));
-			vOK		= false;
-		}else{
-			$('#divSenhaID').removeClass('has-error');
-			$('#divHelpSenhaID').html('&nbsp;');		
-		}
-	}else{
-		$('#divSenhaID').addClass('has-error');
-		$('#divHelpSenhaID').html(zgCriaSpanErro('A senha deve ser preenchida!'));
-		vOK		= false;
-	}
-	
-	//CONF SENHA
-	if (vSenha != vConfSenha) {
-		$('#divConfSenhaID').addClass('has-error');
-		$('#divHelpConfSenhaID').html(zgCriaSpanErro('As senhas estão diferentes!'));
-		vOK		= false;
-	}else{
-		$('#divConfSenhaID').removeClass('has-error');
-		$('#divHelpConfSenhaID').html('&nbsp;');		
 	}
 	
 	//---- ENDEREÇO ----//

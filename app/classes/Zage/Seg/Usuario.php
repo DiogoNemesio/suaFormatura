@@ -680,8 +680,11 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		#################################################################################
 		## Excluir ou Cancelar usuário
 		#################################################################################
-		$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $this->_getCodUsuario()));
 		
+		\Zage\Seg\Usuario::cancelar($this->_usuario, $oUsuOrg);
+		
+		/**
+		$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $this->_getCodUsuario()));
 		if ($this->_usuario->getCodStatus()->getCodigo() == P){
 			if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $this->_getCodOrganizacao() && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
 					
@@ -696,10 +699,12 @@ class Usuario extends \Entidades\ZgsegUsuario {
 			
 			\Zage\Seg\Usuario::cancelar($this->_usuario, $oUsuOrg);
 		}
+		**/
+		
 	}
 	
 	/**
-	 * Exclusão completa do usuário
+	 * Excluir completo
 	 */
 	public function excluirCompleto($oUsuario,$oUsuOrg) {
 		global $em,$system,$log,$tr;
@@ -712,13 +717,14 @@ class Usuario extends \Entidades\ZgsegUsuario {
 			
 		/*** Exclusão da associação ***/
 		$em->remove($oUsuOrg);
-		
+	
 		/*** Exclusão do convite ***/
 		$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codOrganizacaoOrigem' => $oUsuOrg->getCodOrganizacao(),'codUsuarioDestino' => $oUsuario->getCodigo()));
 		for ($i = 0; $i < sizeof($oConvite); $i++) {
 			$em->remove($oConvite[$i]);
 		}
-		
+
+		$log->debug($oUsuario->getNome());
 		/*** Exclusão do usuário ***/
 		$em->remove($oUsuario);
 	}

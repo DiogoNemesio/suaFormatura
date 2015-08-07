@@ -21,9 +21,8 @@ if (isset($_POST['apelido']))			$apelido			= \Zage\App\Util::antiInjection($_POS
 if (isset($_POST['rg'])) 				$rg					= \Zage\App\Util::antiInjection($_POST['rg']);
 if (isset($_POST['dataNasc']))			$dataNasc			= \Zage\App\Util::antiInjection($_POST['dataNasc']);
 if (isset($_POST['cpf'])) 				$cpf				= \Zage\App\Util::antiInjection($_POST['cpf']);
-if (isset($_POST['sexo'])) 				$sexo				= \Zage\App\Util::antiInjection($_POST['sexo']);
-if (isset($_POST['senhaCad'])) 			$senha				= \Zage\App\Util::antiInjection($_POST['senhaCad']);
 if (isset($_POST['confSenhaCad'])) 		$confSenha			= \Zage\App\Util::antiInjection($_POST['confSenhaCad']);
+if (isset($_POST['sexo'])) 				$sexo				= \Zage\App\Util::antiInjection($_POST['sexo']);
 
 if (isset($_POST['codLogradouro'])) 	$codLogradouro		= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
 if (isset($_POST['cep'])) 				$cep				= \Zage\App\Util::antiInjection($_POST['cep']);
@@ -73,12 +72,6 @@ if (!isset($apelido) || empty($apelido)) {
 	$err	= 1;
 }
 
-/** Sexo **/
-if (!isset($sexo) || empty($sexo)) {
-	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("O sexo deve ser preenchido!"))));
-	$err	= 1;
-}
-
 /** RG **/
 if (strlen($rg) > 14){
 	return $tr->trans('O seu RG não deve conter mais de 14 caracteres!');
@@ -94,18 +87,6 @@ if (empty($dataNasc)) {
 	if (\Zage\App\Util::validaData($dataNasc, $system->config["data"]["dateFormat"]) == false) {
 		return $tr->trans('A sua data de nascimento está inválida!');
 	}
-}
-
-/** Senha **/
-if (!isset($senha) || empty($senha)) {
-	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("A senha deve ser preenchida!"))));
-	$err	= 1;
-}elseif (strlen($senha) < 4){
-	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Para sua segurança a senha deve ser no mínimo 4 caracteres!"))));
-	$err	= 1;
-}elseif ($senha !== $confSenha){
-	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("A senha está diferente da confirmação!"))));
-	$err	= 1;
 }
 
 /** ENDEREÇO **/
@@ -175,7 +156,7 @@ if (isset($codLogradouro) && (!empty($codLogradouro))){
 $oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 if (!$oUsuario) 											\Zage\App\Erro::halt('Convite não está mais disponível, COD_ERRO: 06');
 if (!$oUsuario) 											\Zage\App\Erro::halt('Convite não está mais disponível, COD_ERRO: 06');
-if ($oUsuario->getCodStatus()->getCodigo() != "P")			\Zage\App\Erro::halt('Convite não está mais disponível, COD_ERRO: 07');
+if ($oUsuario->getCodStatus()->getCodigo() != "A")			\Zage\App\Erro::halt('Convite não está mais disponível, COD_ERRO: 07');
 
 #################################################################################
 ## Verificar a associação do usuário a Organização
@@ -206,7 +187,7 @@ try {
 	## Resgatar as chaves estrangeiras
 	#################################################################################
 	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
-	$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'A'));
+	//$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'A'));
 	$oSexo		= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
 	$oLog		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
 	$oUsuOrgSt	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'A'));
@@ -226,11 +207,8 @@ try {
 	$oUsuario->setCep($cep);
 	$oUsuario->setComplemento($complemento);
 	$oUsuario->setIndEndCorreto($endCorreto);
-	$oUsuario->setCodStatus($oStatus);
+	//$oUsuario->setCodStatus($oStatus);
 	$oUsuario->setSexo($oSexo);
-	
-	$senhaCrip	= \Zage\App\Crypt::crypt($oUsuario->getUsuario(), $senha);
-	$oUsuario->setSenha($senhaCrip);
 	
 	$em->persist($oUsuario);
 	
@@ -252,18 +230,6 @@ try {
 	$oUsuOrg->setCodStatus($oUsuOrgSt);
 	
 	$em->persist($oUsuOrg);
-	#################################################################################
-	## Mudar o status da associação com as formaturas
-	#################################################################################
-	$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($codUsuario);
-	
-	for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
-		if ($fmtUsuOrg[$i]->getCodStatus()->getCodigo() == P){
-			$fmtUsuOrg[$i]->setCodStatus($oUsuOrgSt);
-			
-			$em->persist($fmtUsuOrg[$i]);
-		}
-	}
 	
 	#################################################################################
 	## Mudar o Status do convite
@@ -289,8 +255,6 @@ try {
 		$oCliente->setNome($oUsuario->getNome());
 		$oCliente->setFantasia($oUsuario->getApelido());
 		$oCliente->setCgc($oUsuario->getCpf());
-		$oCliente->setRg($oUsuario->getRg());
-		$oCliente->setDataNascimento($oUsuario->getDataNascimento());
 		$oCliente->setEmail($oUsuario->getUsuario());
 		$oCliente->setCodTipoPessoa($clienteTipo);
 		$oCliente->setIndContribuinte(0);
