@@ -49,7 +49,7 @@ if (!isset($nome) || (empty($nome))) {
 	$err	= 1;
 }elseif ((!empty($nome)) && (strlen($nome) > 100)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome da rifa não deve conter mais de 100 caracteres!"));
-	$err	= 1;
+	$err = 1;
 }
 
 /******* Data *********/

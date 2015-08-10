@@ -102,18 +102,19 @@ $oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOne
 
 if($oUsuarioOrg){
 	if ($oUsuarioOrg->getCodStatus()->getCodigo() == A){
-		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este email já está associado a formatura.';
+		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este formando já está associado a formatura.';
 		$podeEnviar = 'disabled';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == B){
-		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este formando já está associado a formatura, porém está bloqueado. Apenas desbloquei para liberar o acesso do usuário.';
+		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este formando já está associado a formatura, porém está bloqueado. Basta desbloquear para liberar o acesso.';
 		$podeEnviar = 'disabled';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == P){
-		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este usuário já está associado a organização, porém a confirmação do cadastrado ainda está pendente. Clique em associar para enviar um novo convite ao usuário.';
+		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este formando já está associado a organização, porém a confirmação do cadastrado ainda está pendente.';
+		$podeEnviar = 'disabled';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == C){
-		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este usuário já foi cadastro nesta organização. Clique em associar para enviar um novo convite ao usuário.';
+		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este formando já foi associado esta formatura e no momento está cancelado. Caso queria adicioná-lo novamente basta confirmar a associação.';
 	}
 }else{
-	$texto = '<i class="fa fa-exclamation-triangle orange"></i> Indentificamos em nosso sistema um usuário cadastrado com este '.$campo.'. Certifique-se que esteja informando os dados corretamente e clique em associar para cadastrá-lo na organização.';
+	$texto = '<i class="fa fa-exclamation-triangle orange"></i> Indentificamos em nosso sistema um usuário cadastrado com este '.$campo.'. Certifique-se que esteja informando os dados corretamente e clique em associar para cadastrá-lo na formatura.';
 }
 
 #################################################################################

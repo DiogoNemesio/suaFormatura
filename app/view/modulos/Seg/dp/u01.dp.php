@@ -280,7 +280,7 @@ try {
 	## Salvar Cliente se necessário
 	#################################################################################
 	$oCliente = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf() , 'codOrganizacao' => $codOrganizacao));
-	$log->debug('entrei');
+	
 	if($oCliente){
 		
 		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));

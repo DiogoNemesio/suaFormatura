@@ -62,23 +62,27 @@ try {
 	* Excluir/Cancelar
 	**********************/
 	$oUsuario		= new \Zage\Seg\Usuario();
-	$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario));
 	
+	/**** Cancelar usuario ****/
 	$oUsuario->_setCodOrganizacao($codOrganizacao);
 	$oUsuario->_setCodUsuario($codUsuario);
 	$oUsuario->excluir();
 	
-	$em->flush();
-	$em->clear();
+	/**** Cancelar usuario ****/
+	$oCli = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsu->getCpf() , 'codOrganizacao' => $codOrganizacao));
 	
-	/***** Flush ***
+	if ($oCli){
+		\Zage\Fin\Pessoa::inativa($oCli->getCodigo());
+	}
+	
+	/***** Flush *****/
 	try {
 		$em->flush();
 		$em->clear();
 	} catch (Exception $e) {
 		$log->debug("Erro ao excluir o formando:". $e->getTraceAsString());
 		throw new \Exception("Erro excluir o formando. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
-	}	**/
+	}	
 
 } catch (\Exception $e) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage())));
