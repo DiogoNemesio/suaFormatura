@@ -63,7 +63,7 @@ try {
 ## Resgata as informaões dos planos
 #################################################################################
 try {
-	$aPlanos	= $em->getRepository('Entidades\ZgadmPlano')->findBy(array('codTipoLicenca' => array('U','I')),array('nome' => 'ASC'));
+	$aPlanos	= $em->getRepository('Entidades\ZgadmPlano')->findBy(array('codTipoLicenca' => array('F')),array('nome' => 'ASC'));
 	$oPlanos	= $system->geraHtmlCombo($aPlanos,'CODIGO', 'NOME', $codPlano, '');
 
 } catch (\Exception $e) {

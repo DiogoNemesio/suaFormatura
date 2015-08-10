@@ -39,8 +39,8 @@ if (!isset($codPlano) || empty($codPlano)) {
 	if (!$oPlano) {
 		$err = $tr->trans("Plano (%s) não encontrado !!",array('%s' => $codPlano));
 	}else{
-		if (($oPlano->getCodTipoLicenca()->getCodigo() != "U") && ($oPlano->getCodTipoLicenca()->getCodigo() != "I")) {
-			$err = $tr->trans("Plano (%s) não é para CERIMONIAL!!",array('%s' => $codPlano));
+		if ($oPlano->getCodTipoLicenca()->getCodigo() != "F") {
+			$err = $tr->trans("Plano (%s) não é para FORMATURA!!",array('%s' => $codPlano));
 		}
 	}
 }

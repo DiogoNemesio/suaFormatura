@@ -43,6 +43,13 @@ class ZgadmContrato
     private $dataCadastro;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="COD_STATUS", type="string", length=1, nullable=false)
+     */
+    private $codStatus;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="PCT_DESCONTO", type="float", precision=10, scale=0, nullable=true)
@@ -154,6 +161,29 @@ class ZgadmContrato
     public function getDataCadastro()
     {
         return $this->dataCadastro;
+    }
+
+    /**
+     * Set codStatus
+     *
+     * @param string $codStatus
+     * @return ZgadmContrato
+     */
+    public function setCodStatus($codStatus)
+    {
+        $this->codStatus = $codStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get codStatus
+     *
+     * @return string 
+     */
+    public function getCodStatus()
+    {
+        return $this->codStatus;
     }
 
     /**
