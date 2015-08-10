@@ -40,7 +40,7 @@ $url		= ROOT_URL . '/Rhu/'. basename(__FILE__);
 ## Resgata os dados do grid
 #################################################################################
 try {	
-	$organizacao	= \Zage\Adm\Organizacao::listaOrganizacaoParceiro();
+	$organizacoes	= \Zage\Adm\Organizacao::listaOrganizacaoParceiro();
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -55,20 +55,26 @@ $grid->adicionaTexto($tr->trans('SEGMENTO')	,			15, $grid::CENTER	,'codTipo:desc
 $grid->adicionaTexto($tr->trans('PESSOA'),	 			15, $grid::CENTER	,'codTipoPessoa:descricao');
 $grid->adicionaTexto($tr->trans('STATUS')	,			15, $grid::CENTER	,'codStatus:descricao');
 $grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
+$grid->adicionaIcone(null,'fa fa-cog yellow',$tr->trans('Configurações do Cerimonial'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($organizacao);
+$grid->importaDadosDoctrine($organizacoes);
 
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($organizacao); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$organizacao[$i]->getCodigo().'&url='.$url);
+for ($i = 0; $i < sizeof($organizacoes); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$organizacoes[$i]->getCodigo().'&url='.$url);
+	
+	if ($organizacoes[$i]->getCodTipo()->getCodigo() !== "CER") {
+		$grid->desabilitaCelula($i, 6);
+	}
 	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Seg/usuarioAdmParLis.php?id='.$uid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
+	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Fmt/cerimonialConf.php?id=".$uid."');");
+	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
 }
 
 #################################################################################

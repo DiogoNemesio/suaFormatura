@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrganizacaoFormatura
  *
- * @ORM\Table(name="ZGFMT_ORGANIZACAO_FORMATURA", indexes={@ORM\Index(name="fk_ZGFMT_ORGANIZACAO_FORMATURA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_FORMATURA_2_idx", columns={"COD_INSTITUICAO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_FORMATURA_3_idx", columns={"COD_CURSO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_FORMATURA_4_idx", columns={"COD_CIDADE"})})
+ * @ORM\Table(name="ZGFMT_ORGANIZACAO_FORMATURA", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_ORGANIZACAO_FORMATURA_UK01", columns={"COD_ORGANIZACAO"})}, indexes={@ORM\Index(name="fk_ZGFMT_ORGANIZACAO_FORMATURA_2_idx", columns={"COD_INSTITUICAO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_FORMATURA_3_idx", columns={"COD_CURSO"}), @ORM\Index(name="fk_ZGFMT_ORGANIZACAO_FORMATURA_4_idx", columns={"COD_CIDADE"})})
  * @ORM\Entity
  */
 class ZgfmtOrganizacaoFormatura

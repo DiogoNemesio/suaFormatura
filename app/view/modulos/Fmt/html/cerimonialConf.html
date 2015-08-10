@@ -1,0 +1,63 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-cog blue"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 320px;">
+	<input type="hidden" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+	<input type="hidden" name="id" value="%ID%">
+	<div class="row">
+		<div class="col-sm-12 form-group">
+			<label class="col-sm-5 control-label" for="codPlanoID">Selecione o Plano para as formaturas</label>
+   			<div class="input-group col-sm-5 pull-left">
+   				<span tabindex="99001" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione o plano que as formaturas deste cerimonial irão ter"><i class="fa fa-question-circle"></i></span>
+				<select class="select2" style="width:100%;" id="codPlanoID" name="codPlano" data-rel="select2">
+				%PLANOS%
+				</select>
+			</div>
+    	</div>
+	</div>		    
+    <div id="divMsgCerConfID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" id="submit">Salvar</button>
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	$(this).select2({allowClear: true});
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}
+});
+
+$('#zgFormModalID').submit(function() {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgCerConfID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divMsgCerConfID',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+</script>

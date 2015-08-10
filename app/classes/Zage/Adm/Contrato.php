@@ -24,10 +24,10 @@ class Contrato {
 	}
 	
 	/**
-	 * Calcular o valor final do contrato, já aplicado os descontos
+	 * Calcular o valor por licença do contrato, já aplicado os descontos
 	 * @param int $codOrganizacao
 	 */
-	public static function getValor ($codOrganizacao) {
+	public static function getValorLicenca ($codOrganizacao) {
 		global $em,$system;
 		
 		#################################################################################
@@ -37,16 +37,27 @@ class Contrato {
 		if (!$contrato)	throw new \Exception($tr->trans("Contrato não localizado para a organização: ".$codOrganizacao));
 		
 		#################################################################################
+		## Resgata o valor do Plano
+		#################################################################################
+		$planoValor		= $em->getRepository('\Entidades\ZgadmPlanoValor')->findOneBy(array('codPlano' => $contrato->getCodPlano()->getCodigo()),array('dataBase' => 'DESC'));
+		if (!$planoValor)	throw new \Exception($tr->trans("Configurações do plano não localizadas para o plano ".$contrato->getCodPlano()->getCodigo()));
+		
+		#################################################################################
 		## Calcula o valor
 		#################################################################################
+		$valorDoPlano		= $planoValor->getValor();
+		$valorDesconto		= $contrato->getValorDesconto();
+		$pctDesconto		= $contrato->getPctDesconto();
 		
-		
-		
-		try {
-			return($query->getResult());
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
+		if ($pctDesconto)	{
+			return ($valorDoPlano * (100 - $pctDesconto));
 		}
+		
+		if ($valorDesconto)	{
+			return ($valorDoPlano - $valorDesconto);
+		}
+		
+		return ($valorDoPlano);
 	}
 
 }

@@ -35,29 +35,45 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
+## Verifica os parâmetros
+#################################################################################
+if (!isset($codOrganizacao)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
+
+
+#################################################################################
 ## Resgata as informações do banco
 #################################################################################
 try {
-		
-	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$oOrgCer	= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $codOrganizacao));
+	
+	if ($oOrgCer)	{
+		$codPlano	= ($oOrgCer->getCodPlanoFormatura()) ? $oOrgCer->getCodPlanoFormatura()->getCodigo() : null;
+	}else{
+		$codPlano	= null;
+	}
+
 	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
+
+
 #################################################################################
-## Verificar se existe contrato 
+## Resgata as informaões dos planos
 #################################################################################
-if (!$contrato)	\Zage\App\Erro::halt('Não foi localizado o contrato !!!');
+try {
+	$aPlanos	= $em->getRepository('Entidades\ZgadmPlano')->findBy(array('codTipoLicenca' => array('U','I')),array('nome' => 'ASC'));
+	$oPlanos	= $system->geraHtmlCombo($aPlanos,'CODIGO', 'NOME', $codPlano, '');
 
-	
-$valorPorFormando		= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorFormando());
-$valorPorBoleto			= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorBoleto());
-$taxaPorFormando		= \Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao());
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
 
-$dataConclusao			= ($orgFmt->getDataConclusao() != null) ? $orgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
-
+#################################################################################
+## Urls
+#################################################################################
+$urlVoltar			= ROOT_URL . "/Fmt/parceiroLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -68,16 +84,14 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
+$tpl->set('TITULO'					,"Configuração do Cerimonial");
 $tpl->set('ID'						,$id);
 $tpl->set('COD_ORGANIZACAO'			,$codOrganizacao);
-$tpl->set('DATA_CONCLUSAO'			,$dataConclusao);
+$tpl->set('COD_PLANO'				,$codPlano);
+$tpl->set('PLANOS'					,$oPlanos);
+$tpl->set('URL_VOLTAR'				,$urlVoltar);
+$tpl->set('DP_MODAL'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
-$tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
-$tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
-$tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
-$tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-$tpl->set('IC'						,$_icone_);
-$tpl->set('COD_MENU'				,$_codMenu_);
 
 #################################################################################
 ## Por fim exibir a página HTML
