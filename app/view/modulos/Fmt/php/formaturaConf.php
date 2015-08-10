@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$_codMenu_;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -34,17 +39,21 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 try {
 		
-	$oOrg 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	
-	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $oOrg->getCodigo()));
+	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
+
+#################################################################################
+## Verificar se existe contrato 
+#################################################################################
+if (!$contrato)	\Zage\App\Erro::halt('Não foi localizado o contrato !!!');
+
 	
-$valorPorFormando		= \Zage\Adm\Parametro::getValorOrganizacao("VALOR_POR_FORMANDO",true);
-$valorPorBoleto			= \Zage\Adm\Parametro::getValorOrganizacao("CUSTO_POR_BOLETO",true);
+$valorPorFormando		= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorFormando());
+$valorPorBoleto			= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorBoleto());
 $taxaPorFormando		= \Zage\Adm\Parametro::getValorOrganizacao("TAXO_POR_FORMANDO",true);
 
 $dataConclusao			= ($orgFmt->getDataConclusao() != null) ? $orgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
