@@ -43,6 +43,20 @@ class ZgadmContrato
     private $dataCadastro;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_DESCONTO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctDesconto;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_DESCONTO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorDesconto;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -140,6 +154,52 @@ class ZgadmContrato
     public function getDataCadastro()
     {
         return $this->dataCadastro;
+    }
+
+    /**
+     * Set pctDesconto
+     *
+     * @param float $pctDesconto
+     * @return ZgadmContrato
+     */
+    public function setPctDesconto($pctDesconto)
+    {
+        $this->pctDesconto = $pctDesconto;
+
+        return $this;
+    }
+
+    /**
+     * Get pctDesconto
+     *
+     * @return float 
+     */
+    public function getPctDesconto()
+    {
+        return $this->pctDesconto;
+    }
+
+    /**
+     * Set valorDesconto
+     *
+     * @param float $valorDesconto
+     * @return ZgadmContrato
+     */
+    public function setValorDesconto($valorDesconto)
+    {
+        $this->valorDesconto = $valorDesconto;
+
+        return $this;
+    }
+
+    /**
+     * Get valorDesconto
+     *
+     * @return float 
+     */
+    public function getValorDesconto()
+    {
+        return $this->valorDesconto;
     }
 
     /**

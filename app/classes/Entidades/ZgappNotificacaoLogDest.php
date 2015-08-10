@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgappNotificacaoLogDest
  *
- * @ORM\Table(name="ZGAPP_NOTIFICACAO_LOG_DEST", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_DEST_1_idx", columns={"COD_LOG"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_DEST_2_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_DEST_3_idx", columns={"COD_PESSOA"})})
+ * @ORM\Table(name="ZGAPP_NOTIFICACAO_LOG_DEST", indexes={@ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_DEST_1_idx", columns={"COD_LOG"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_DEST_3_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGAPP_NOTIFICACAO_LOG_DEST_2_idx", columns={"COD_USUARIO"})})
  * @ORM\Entity
  */
 class ZgappNotificacaoLogDest
