@@ -81,7 +81,7 @@ try {
 		$em->clear();
 	} catch (Exception $e) {
 		$log->debug("Erro ao excluir o formando:". $e->getTraceAsString());
-		throw new \Exception("Erro excluir o formando. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
+		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
 	}	
 
 } catch (\Exception $e) {

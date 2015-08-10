@@ -102,18 +102,19 @@ $oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOne
 
 if($oUsuarioOrg){
 	if ($oUsuarioOrg->getCodStatus()->getCodigo() == A){
-		$texto = 'Esté usuário já está associado a organizacao.';
+		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Esté usuário já está associado a sua empresa.';
 		$podeEnviar = 'disabled';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == B){
-		$texto = 'Este usuário está associado a organização, porém está bloqueado. Apenas desbloquei para liberar o acesso do usuário.';
+		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este usuário está associado a organização, porém está bloqueado. Apenas desbloquei para liberar o acesso do usuário.';
 		$podeEnviar = 'disabled';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == P){
-		$texto = 'Este usuário já está associado a organização, porém a confirmação do usuário ainda está pendente. Clique em associar para enviar um novo convite ao usuário.';
+		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este usuário já está associado a organização, porém a confirmação do usuário ainda está pendente.';
+		$podeEnviar = 'disabled';
 	}elseif ($oUsuarioOrg->getCodStatus()->getCodigo() == C){
-		$texto = 'Este usuário já foi cadastro nesta organização. Clique em associar para enviar um novo convite ao usuário.';
+		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este usuário já foi cadastro nesta organização. Caso queria adicioná-lo novamente basta confirmar a associação.';
 	}
 }else{
-	$texto = 'Indentificamos em nosso sistema um usuário cadastrado com este '.$campo.'. Certifique-se que esteja informando os dados corretamente e clique em associar para cadastrá-lo na organização.';
+	$texto = '<i class="fa fa-exclamation-triangle orange"></i> Indentificamos em nosso sistema um usuário cadastrado com este '.$campo.'. Certifique-se que esteja informando os dados corretamente e clique em associar para cadastrá-lo nesta empresa.';
 }
 
 #################################################################################

@@ -57,10 +57,10 @@ try {
 	#################################################################################
 	## ASSOCIAR ORGANIZACAO - USUÁRIO
 	#################################################################################
-	$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
+	$oUsuOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
 
-	if ($oUsuarioOrg){
-		if ($oUsuario->getCodStatus()->getCodigo() == A && $oUsuarioOrg->getCodStatus()->getCodigo() == A){
+	if ($oUsuOrg){
+		if ($oUsuario->getCodStatus()->getCodigo() == A && $oUsuOrg->getCodStatus()->getCodigo() == A){
 			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Este usuário já está associado a organização!"))));
 			$err	= 1;
 		}elseif ($oUsuOrg->getCodStatus()->getCodigo() == P){
@@ -71,26 +71,26 @@ try {
 		} 
 	}
 	
-	if (!$oUsuarioOrg){
+	if (!$oUsuOrg){
 		$enviarEmail		= true;
 		$associado 			= false;
-		$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
+		$oUsuOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 	}else{
-		if ($oUsuarioOrg->getCodStatus()->getCodigo() == P || $oUsuarioOrg->getCodStatus()->getCodigo() == C){
+		if ($oUsuOrg->getCodStatus()->getCodigo() == P || $oUsuOrg->getCodStatus()->getCodigo() == C){
 			$enviarEmail		= true;
 		}
 	}
 	
 	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
-	$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
+	$oUsuOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
 	
-	$oUsuarioOrg->setCodUsuario($oUsuario);
-	$oUsuarioOrg->setCodOrganizacao($oOrg);
-	$oUsuarioOrg->setCodPerfil($oPerfil);
-	$oUsuarioOrg->setCodStatus($oUsuarioOrgStatus);
+	$oUsuOrg->setCodUsuario($oUsuario);
+	$oUsuOrg->setCodOrganizacao($oOrg);
+	$oUsuOrg->setCodPerfil($oPerfil);
+	$oUsuOrg->setCodStatus($oUsuOrgStatus);
 	
-	$em->persist($oUsuarioOrg);
+	$em->persist($oUsuOrg);
 	
 	#################################################################################
 	## CRIAR CONVITE
@@ -126,12 +126,12 @@ try {
 			$assunto			= "Confirmação de cadastro";
 			$template			= 'USUARIO_CADASTRO';
 			$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
-			$texto = 'Você foi adionado a formatura <b>'.$oOrg->getNome().'</b>. Confirme seu cadastro para acessar tudo sobre sua formatura.'; 
+			$texto = 'Você foi adionado a empresa <b>'.$oOrg->getNome().'</b>. Para concluir o seu cadastro é necessário confimar seus dados.';
 		}else{
-			$assunto			= "Associação a uma nova formatura";
+			$assunto			= "Associação a uma nova empresa";
 			$template			= 'USUARIO_CADASTRO';
 			$confirmUrl			= ROOT_URL . "/Seg/u02.php?cid=".$cid;
-			$texto = 'Identificamos que você já é usuário do portal SUAFORMATURA.COM. Confirme seu cadastro para acessar tudo sobre sua nova formatura <b>'.$oOrg->getNome().'</b>.';
+			$texto = 'Identificamos que você já é usuário do portal SUAFORMATURA.COM. Confirme seu cadastro para acessar tudo sobre sua nova empresa <b>'.$oOrg->getNome().'</b>.';
 		}
 		
 		//$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());

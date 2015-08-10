@@ -58,88 +58,28 @@ try {
 	## Remover usuario
 	#################################################################################
 	
-	$oUsuario			= new \Zage\Seg\Usuario();
-	$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario));
+	/***********************
+	* Excluir/Cancelar
+	**********************/
+	$oUsuario		= new \Zage\Seg\Usuario();
 	
-	if ($oUsu->getCodStatus()->getCodigo() == P){
-		if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $codOrganizacao && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
-			/*** Excluir usuario ***/
-			$oUsuario->excluirCompleto($oUsu, $oUsuOrg);
-			
-			/*** Exclusão do convite ***/
-			$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario));
-			for ($i = 0; $i < sizeof($oConvite); $i++) {
-				$em->remove($oConvite[$i]);
-			}
-			
-		}else{
-			/*** Cancelar usuario ***/
-			$oUsuario->cancelar($oUsu, $oUsuOrg);
-			
-			/*** Cancelar associação formatura ***/
-			$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
-			$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsu->getCodigo());
-			
-			for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
-				try {
-					$fmtUsuOrg[$i]->setCodStatus($oStatus);
-					$fmtUsuOrg[$i]->setDataCancelamento(new \DateTime());
-					$em->persist($fmtUsuOrg[$i]);
-				} catch (\Exception $e) {
-					echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
-					exit;
-				}
-			}
-			
-			/*** Cancelar convite ***/
-			$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
-			
-			if($oConvite){
-				$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
-			
-				for ($i = 0; $i < sizeof($oConvite); $i++) {
-					$oConvite[$i]->setCodStatus($oConviteStatus);
-					$oConvite[$i]->setDataCancelamento(new \DateTime());
-					$em->persist($oConvite[$i]);
-				}
-			}
-		}
-	}else{
-		/*** Cancelar usuario ***/
-		$oUsuario->cancelar($oUsu, $oUsuOrg);
-		
-		/*** Cancelar associação formatura ***/
-		$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
-		$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsu->getCodigo());
-		for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
-			try {
-				$fmtUsuOrg[$i]->setCodStatus($oStatus);
-				$fmtUsuOrg[$i]->setDataCancelamento(new \DateTime());
-				$em->persist($fmtUsuOrg[$i]);
-			} catch (\Exception $e) {
-				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
-				exit;
-			}
-		}
+	/**** Cancelar usuario ****/
+	$oUsuario->_setCodOrganizacao($codOrganizacao);
+	$oUsuario->_setCodUsuario($codUsuario);
+	$oUsuario->excluir();
+	
 
-		/*** Cancelar convite ***/
-		$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $codUsuario , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
-		if($oConvite){
-			$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
-		
-			for ($i = 0; $i < sizeof($oConvite); $i++) {
-				$oConvite[$i]->setCodStatus($oConviteStatus);
-				$oConvite[$i]->setDataCancelamento(new \DateTime());
-				$em->persist($oConvite[$i]);
-			}
-		}
-	}
-
-	$em->flush();
+	/***** Flush *****/
+	try {
+		$em->flush();
+		$em->clear();
+	} catch (Exception $e) {
+		$log->debug("Erro ao excluir o formando:". $e->getTraceAsString());
+		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+	}	
 
 } catch (\Exception $e) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
-	die('1'.\Zage\App\Util::encodeUrl('||'));
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage())));
 	exit;
 }
 

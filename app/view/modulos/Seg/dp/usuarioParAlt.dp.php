@@ -178,7 +178,7 @@ try {
 		$em->clear();
 	} catch (Exception $e) {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
-		throw new \Exception("Erro ao salvar o usuário, uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
+		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
 	}
 	
 	
@@ -196,9 +196,10 @@ try {
 			$texto = 'Você foi adionado a empresa <b>'.$oOrg->getNome().'</b>. Para concluir o seu cadastro é necessário confimar seus dados.';
 			$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
 		}else{
-			//$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
 			$assunto			= "Associação a uma nova empresa";
+			$template			= 'USUARIO_CADASTRO';
 			$confirmUrl			= ROOT_URL . "/Seg/u02.php?cid=".$cid;
+			$texto = 'Identificamos que você já é usuário do portal SUAFORMATURA.COM. Confirme seu cadastro para acessar tudo sobre sua nova formatura <b>'.$oOrg->getNome().'</b>.';
 		}
 	
 		//$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());

@@ -114,7 +114,7 @@ if($oUsuarioOrg){
 		$texto = '<i class="fa fa-exclamation-triangle orange"></i> Este formando já foi associado esta formatura e no momento está cancelado. Caso queria adicioná-lo novamente basta confirmar a associação.';
 	}
 }else{
-	$texto = '<i class="fa fa-exclamation-triangle orange"></i> Indentificamos em nosso sistema um usuário cadastrado com este '.$campo.'. Certifique-se que esteja informando os dados corretamente e clique em associar para cadastrá-lo na formatura.';
+	$texto = '<i class="fa fa-exclamation-triangle orange"></i> Indentificamos em nosso sistema um usuário cadastrado com este '.$campo.'. Certifique-se que esteja informando os dados corretamente e clique em associar para cadastrá-lo nesta formatura.';
 }
 
 #################################################################################
