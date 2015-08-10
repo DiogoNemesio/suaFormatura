@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmPlanoValor
  *
- * @ORM\Table(name="ZGADM_PLANO_VALOR", uniqueConstraints={@ORM\UniqueConstraint(name="ZGADM_PLANO_VALOR_UK01", columns={"COD_PLANO", "DATA_BASE"})}, indexes={@ORM\Index(name="fk_ZGADM_PLANO_VALOR_2_idx", columns={"COD_TIPO_LICENCA"}), @ORM\Index(name="IDX_A4AA6093AC27E156", columns={"COD_PLANO"})})
+ * @ORM\Table(name="ZGADM_PLANO_VALOR", uniqueConstraints={@ORM\UniqueConstraint(name="ZGADM_PLANO_VALOR_UK01", columns={"COD_PLANO", "DATA_BASE"})}, indexes={@ORM\Index(name="IDX_A4AA6093AC27E156", columns={"COD_PLANO"})})
  * @ORM\Entity
  */
 class ZgadmPlanoValor
@@ -51,16 +51,6 @@ class ZgadmPlanoValor
      * })
      */
     private $codPlano;
-
-    /**
-     * @var \Entidades\ZgadmPlanoLicencaTipo
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmPlanoLicencaTipo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TIPO_LICENCA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codTipoLicenca;
 
 
     /**
@@ -163,28 +153,5 @@ class ZgadmPlanoValor
     public function getCodPlano()
     {
         return $this->codPlano;
-    }
-
-    /**
-     * Set codTipoLicenca
-     *
-     * @param \Entidades\ZgadmPlanoLicencaTipo $codTipoLicenca
-     * @return ZgadmPlanoValor
-     */
-    public function setCodTipoLicenca(\Entidades\ZgadmPlanoLicencaTipo $codTipoLicenca = null)
-    {
-        $this->codTipoLicenca = $codTipoLicenca;
-
-        return $this;
-    }
-
-    /**
-     * Get codTipoLicenca
-     *
-     * @return \Entidades\ZgadmPlanoLicencaTipo 
-     */
-    public function getCodTipoLicenca()
-    {
-        return $this->codTipoLicenca;
     }
 }

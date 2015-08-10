@@ -29,6 +29,20 @@ class ZgfmtOrganizacaoFormatura
     private $dataConclusao;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_POR_FORMANDO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorPorFormando;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_POR_BOLETO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorPorBoleto;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -100,6 +114,52 @@ class ZgfmtOrganizacaoFormatura
     public function getDataConclusao()
     {
         return $this->dataConclusao;
+    }
+
+    /**
+     * Set valorPorFormando
+     *
+     * @param float $valorPorFormando
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setValorPorFormando($valorPorFormando)
+    {
+        $this->valorPorFormando = $valorPorFormando;
+
+        return $this;
+    }
+
+    /**
+     * Get valorPorFormando
+     *
+     * @return float 
+     */
+    public function getValorPorFormando()
+    {
+        return $this->valorPorFormando;
+    }
+
+    /**
+     * Set valorPorBoleto
+     *
+     * @param float $valorPorBoleto
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setValorPorBoleto($valorPorBoleto)
+    {
+        $this->valorPorBoleto = $valorPorBoleto;
+
+        return $this;
+    }
+
+    /**
+     * Get valorPorBoleto
+     *
+     * @return float 
+     */
+    public function getValorPorBoleto()
+    {
+        return $this->valorPorBoleto;
     }
 
     /**
