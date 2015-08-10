@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmPlano
  *
- * @ORM\Table(name="ZGADM_PLANO")
+ * @ORM\Table(name="ZGADM_PLANO", indexes={@ORM\Index(name="fk_ZGADM_PLANO_1_idx", columns={"COD_TIPO_LICENCA"})})
  * @ORM\Entity
  */
 class ZgadmPlano
@@ -34,6 +34,16 @@ class ZgadmPlano
      * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
      */
     private $dataCadastro;
+
+    /**
+     * @var \Entidades\ZgadmPlanoLicencaTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmPlanoLicencaTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_LICENCA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoLicenca;
 
 
     /**
@@ -90,5 +100,28 @@ class ZgadmPlano
     public function getDataCadastro()
     {
         return $this->dataCadastro;
+    }
+
+    /**
+     * Set codTipoLicenca
+     *
+     * @param \Entidades\ZgadmPlanoLicencaTipo $codTipoLicenca
+     * @return ZgadmPlano
+     */
+    public function setCodTipoLicenca(\Entidades\ZgadmPlanoLicencaTipo $codTipoLicenca = null)
+    {
+        $this->codTipoLicenca = $codTipoLicenca;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoLicenca
+     *
+     * @return \Entidades\ZgadmPlanoLicencaTipo 
+     */
+    public function getCodTipoLicenca()
+    {
+        return $this->codTipoLicenca;
     }
 }

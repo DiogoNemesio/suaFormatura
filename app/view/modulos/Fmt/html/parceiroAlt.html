@@ -33,6 +33,12 @@
 								Telefones
 							</a>
 						</li>
+						<li>
+							<a data-toggle="tab"  href="#parceiro-contrato">
+								<i class="green fa fa-file-text bigger-125"></i>
+								Contrato
+							</a>
+						</li>
 					</ul>
 					<div class="tab-content profile-edit-tab-content">
 						<div id="parceiro-principal" class="tab-pane in active">
@@ -282,6 +288,40 @@
 										</tbody>
 									</table>
 								</div>
+							</div>
+						</div>
+						<div id="parceiro-contrato" class="tab-pane">
+							<h5 class="header blue bolder smaller">Contrato</h5>
+							<div class="vspace-xs"></div>
+							<div class="row">
+						    	<div class="col-sm-12">
+									<div class="form-group col-sm-12" id="divCodPlanoID">
+										<label class="col-sm-3 control-label" for="codPlanoID">Plano</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Plano"></i></span>
+											<select class="select2" style="width:100%;" id="codPlanoID" name="codPlano" data-rel="select2">
+											%PLANOS%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCodPlanoID"></div>
+									</div>
+									<div class="form-group col-sm-12" id="divIdentID">
+								    	<label for="identID" class="col-xs-12 col-sm-3 control-label">Idenficação</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar o parceiro no sistema. Essa identifcação será utilizada para montar o LINK de acesso."></i></span>
+							    			<input class="form-control" id="identID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="www.suaformatura.com/" %READONLY% onblur="validaIdent();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="identificacao">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divEmailID">
+						    			<label class="col-sm-3 control-label" for="emailID">Email</label>
+						    			<div class="input-group col-sm-8 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um email para contato."></i></span>
+						   					<input class="form-control" id="emailID" type="email" name="email" placeholder="Email" maxlength="200" value="%EMAIL%" autocomplete="off">
+						    			</div>
+						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
+						    		</div>
+						    	</div>
 							</div>
 						</div>
 						<!--
