@@ -54,7 +54,7 @@ if ($codUsuario) {
 	$nome			= $info->getNome();
 	$apelido		= $info->getApelido();
 	$cpf			= $info->getCpf();
-	$rg				= $info->getRg();
+	$rg				= ($info->getRg()) ? $info->getRg() : null;
 	$dataNasc		= $info->getDataNascimento()->format($system->config["data"]["dateFormat"]);
 	$perfil			= $oPerfil->getCodPerfil()->getCodigo();
 	$codStatus		= $info->getCodStatus()->getCodigo();

@@ -19,7 +19,7 @@
 						<li class="active">
 							<a data-toggle="tab" href="#usuario-basico">
 								<i class="green fa fa-edit bigger-125"></i>
-								Informações básicas
+								Principal
 							</a>
 						</li>
 						<li>
@@ -71,6 +71,14 @@
 								    	</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
 								    </div>
+								    <div class="form-group col-sm-12" id="divDataNascID">
+								    	<label class="col-sm-3 control-label" for="dataNascID">Nascimento</label>
+						    			<div class="input-group col-sm-8 pull-left">
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de nascimento do formando."></i></span>
+							    			<input class="width-100" id="dataNascID" type="text" name="dataNasc" maxlength="10" value="%DATA_NASC%" placeholder="Data de nascimento" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data" zg-data-mask-retira="0">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpDataNascID"></div>
+								    </div>
 						    	</div>
 						    	<div class="col-sm-6">
 							    	<div class="form-group col-sm-12" id="divCpfID">
@@ -81,6 +89,14 @@
 									    	</div>
 									    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
 									</div>
+									<div class="form-group col-sm-12" id="divRgID">
+								    	<label class="col-sm-3 control-label" for="rgID">RG</label>
+						    			<div class="input-group col-sm-8 pull-left">
+							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o RG do formando."></i></span>
+							    			<input class="width-100" id="rgID" type="text" name="rg" maxlength="14" value="%RG%" placeholder="RG" autocomplete="off">
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpRgID"></div>
+								    </div>
 									<div class="form-group col-sm-12" id="divSexoID">
 										<label class="col-sm-3 control-label" for="sexoID">Sexo</label>
 						    			<div class="input-group col-sm-8 pull-left">
@@ -445,6 +461,7 @@ function validaUsuarioAlt() {
 	var vPerfil	 	 = $('#perfilID').val();
 	var vSexo	 	 = $('#sexoID').val();
 	var vApelido 	 = $('#apelidoID').val();
+	var vDataNasc 	 = $('#dataNascID').val();
 		
 	var vOK				= true;
 	var vIdent;
@@ -567,6 +584,17 @@ function validaUsuarioAlt() {
 		$('#divHelpApelidoID').html(zgCriaSpanErro('O apelido deve ser preenchido!'));
 		vOK		= false;
 		vTab 	= 0;
+	}
+	
+	//DATA NASCIMENTO
+	if (!vDataNasc) {
+		$('#divDataNascID').addClass('has-error');
+		$('#divHelpDataNascID').html(zgCriaSpanErro('A data de nascimento deve ser preenchida!'));
+		vOK		= false;
+		vTab 	= 0;
+	}else{
+		$('#divDataNascID').removeClass('has-error');
+		$('#divHelpDataNascID').html('&nbsp;');
 	}
 	
 	//SEXO

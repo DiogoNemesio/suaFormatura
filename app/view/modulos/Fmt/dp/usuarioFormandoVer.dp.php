@@ -63,9 +63,11 @@ try {
 		if ($oUsuario->getCodStatus()->getCodigo() == A && $oUsuOrg->getCodStatus()->getCodigo() == A){
 			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Este usuário já está associado a organização!"))));
 			$err	= 1;
-		}elseif ($oUsuario->getCodStatus()->getCodigo() == A && $oUsuOrg->getCodStatus()->getCodigo() == P){
+		}elseif ($oUsuOrg->getCodStatus()->getCodigo() == P){
 			die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Estamos aguardando a confirmação de cadastro deste usuário!"))));
 			$err	= 1;
+		}elseif($oUsuOrg->getCodStatus()->getCodigo() == C){
+			$oUsuOrg->setDataCancelamento(null);
 		} 
 	}
 	
@@ -81,7 +83,7 @@ try {
 	
 	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
-	$oUsuOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
+	$oUsuOrgStatus  	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
 	
 	$oUsuOrg->setCodUsuario($oUsuario);
 	$oUsuOrg->setCodOrganizacao($oOrg);
