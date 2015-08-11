@@ -64,6 +64,22 @@ try {
 		$oUsuOrg->setDataBloqueio(new \DateTime());
 		$em->persist($oUsuOrg);
 		
+		//Associação - Formaturas
+		$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->getCodigo(), $codOrganizacao);
+		for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
+			$log->debug('Entrei');
+			if ($fmtUsuOrg[$i]->getCodStatus()->getCodigo() == A) {
+				try {
+					$fmtUsuOrg[$i]->setCodStatus($oStatus);
+					$fmtUsuOrg[$i]->setDataBloqueio(new \DateTime());
+					$em->persist($fmtUsuOrg[$i]);
+				} catch (\Exception $e) {
+					echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
+					exit;
+				}
+			}
+		}
+		
 		$mensagem = 'Usuário bloqueado com sucesso!';
 		
 	}elseif ($oUsuOrg->getCodStatus()->getCodigo() == B){
@@ -72,6 +88,21 @@ try {
 		$oUsuOrg->setCodStatus($oStatus);
 		$oUsuOrg->setDataBloqueio(null);
 		$em->persist($oUsuOrg);
+		
+		//Associação - Formaturas
+		$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->getCodigo(),$codOrganizacao);
+		for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
+			if ($fmtUsuOrg[$i]->getCodStatus()->getCodigo() == B) {
+				try {
+					$fmtUsuOrg[$i]->setCodStatus($oStatus);
+					$fmtUsuOrg[$i]->setDataBloqueio(null);
+					$em->persist($fmtUsuOrg[$i]);
+				} catch (\Exception $e) {
+					echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
+					exit;
+				}
+			}
+		}
 		
 		$mensagem = 'Usuário desbloqueado com sucesso!';
 	}

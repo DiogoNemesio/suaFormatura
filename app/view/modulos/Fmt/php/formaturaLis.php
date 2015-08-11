@@ -40,7 +40,7 @@ $url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 ## Resgata os dados do grid
 #################################################################################
 try {	
-	$formatura	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
+	$formatura	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($system->getCodOrganizacao());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

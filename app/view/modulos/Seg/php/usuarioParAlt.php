@@ -55,7 +55,7 @@ if ($codUsuario) {
 	$apelido		= $info->getApelido();
 	$cpf			= $info->getCpf();
 	$rg				= ($info->getRg()) ? $info->getRg() : null;
-	$dataNasc		= $info->getDataNascimento()->format($system->config["data"]["dateFormat"]);
+	$dataNasc		= ($info->getDataNascimento()) ? $info->getDataNascimento()->format($system->config["data"]["dateFormat"]) : null; 
 	$perfil			= $oPerfil->getCodPerfil()->getCodigo();
 	$codStatus		= $info->getCodStatus()->getCodigo();
 	$sexo			= ($info->getSexo()) ? $info->getSexo()->getCodigo() : null;
@@ -201,7 +201,7 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 #################################################################################
 ## Lista de acessos (formaturas)
 #################################################################################
-$orgAcesso		= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
+$orgAcesso		= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($codOrganizacao);
 $usuOrg			= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario , 'codStatus' => A));
 
 $arrayUsuOrg 	= array();

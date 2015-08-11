@@ -56,7 +56,7 @@ class Organizacao {
 	 * @param integer $codOrganizacao
 	 * @return array
 	 */
-	public static function listaFormaturaOrganizacao() {
+	public static function listaFormaturaOrganizacao($codOrganizacao) {
 		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
@@ -69,11 +69,14 @@ class Organizacao {
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
 					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
+					$qb->expr()->eq('o.codStatus'			, ':codStatus'),
 					$qb->expr()->isNull('oa.dataValidade')
+					
 	
 			))
-			->setParameter('codOrganizacao', $system->getCodOrganizacao())
-			->setParameter('codTipo', 'FMT');
+			->setParameter('codOrganizacao', $codOrganizacao)
+			->setParameter('codTipo', 'FMT')
+			->setParameter('codStatus', 'A');
 	
 			$query 		= $qb->getQuery();
 			return($query->getResult());
@@ -88,7 +91,7 @@ class Organizacao {
 	 * @param integer $codOrganizacao
 	 * @return array
 	 */
-	public static function listaFmtUsuOrg($codUsuario) {
+	public static function listaFmtUsuOrg($codUsuario,$codOrganizacao) {
 		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
@@ -101,12 +104,14 @@ class Organizacao {
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('uo.codUsuario'			, ':codUsuario'),
 					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
-					$qb->expr()->eq('o.codTipo'				, ':codTipo')
+					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
+					$qb->expr()->eq('o.codStatus'			, ':codStatus')
 	
 			))
-			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('codOrganizacao', $codOrganizacao)
 			->setParameter('codUsuario'	   , $codUsuario)
-			->setParameter('codTipo'	   , 'FMT');
+			->setParameter('codTipo'	   , 'FMT')
+			->setParameter('codStatus'	   , 'A');
 	
 			$query 		= $qb->getQuery();
 			return($query->getResult());

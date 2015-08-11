@@ -59,22 +59,22 @@ try {
 	if ($oUsuOrg->getCodStatus()->getCodigo() == P || $info->getCodStatus()->getCodigo() == P){
 		$submit			= null;
 		$titulo			= 'Envio de convite';
-		$icone			= '<i class="fa fa-envelope blue"></i>';
-		$mensagem		= $tr->trans('Deseja enviar um novo convite para o usuário').': <b>'.$info->getNome().'</b> ?';
-		$observacao		= $tr->trans('Está operação enviará um email com um novo convite para o usuário.');
+		$icone			= '<i class="fa fa-envelope orange"></i>';
+		$mensagem		= 'Deseja enviar um novo convite para o usuário: <b>'.$info->getNome().'</b> ?';
+		$observacao		= '<i class="fa fa-arrow-right orange"></i> Está operação enviará um email com um novo convite para o usuário.';
 		$classe			= "text-warning";
 		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';
-		$botaoClasse	= 'btn btn-success';
+		$botaoClasse	= 'btn btn-warning';
 	} else{
 		$submit			= 'disabled';
-		$icone			= '<i class="fa fa-envelope blue"></i>';
+		$icone			= '<i class="fa fa-envelope orange"></i>';
 		$titulo			= 'Envio de convite';
 		$enviar			= 'disabled';
-		$mensagem		= 'Usuario de <b>'.$info->getNome().'</b> já associado!';
-		$observacao		= 'Este usuário já possui o cadastro e a associação ativada.';
+		$mensagem		= 'Usuário de <b>'.$info->getNome().'</b> já está associado!';
+		$observacao		= '<i class="fa fa-arrow-right orange"></i> Este usuário já possui o cadastro e a associação ativada.';
 		$classe			= "text-warning";
 		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';
-		$botaoClasse	= 'btn btn-success';
+		$botaoClasse	= 'btn btn-warning';
 	}
 	
 

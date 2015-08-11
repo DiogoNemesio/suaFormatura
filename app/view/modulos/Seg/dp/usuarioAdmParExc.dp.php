@@ -12,7 +12,7 @@ if (defined('DOC_ROOT')) {
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['codUsuario'])) 		$codUsuario			= \Zage\App\Util::antiInjection($_POST['codUsuario']);
-$codOrganizacao		= $system->getCodOrganizacao();
+if (isset($_POST['codOrganizacao']))	$codOrganizacao		= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################

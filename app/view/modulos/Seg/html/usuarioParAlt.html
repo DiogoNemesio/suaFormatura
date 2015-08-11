@@ -325,8 +325,7 @@ $('#zgFormID').submit(function(e) {
 		if (checaRetornoOK(data) == true) {
 			$('#codUsuarioID').val(zgGetCodRetorno(data));
 			zgMostraAviso('Fechar','Novo', '%URLNOVO%');
-			
-			
+		
 			//Tornar os campos readonly
 			$('#emailID').attr("readonly", true);
 			$('#cpfID').attr("readonly", true);

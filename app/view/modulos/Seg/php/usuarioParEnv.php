@@ -70,7 +70,7 @@ try {
 		$icone			= '<i class="fa fa-envelope orange"></i>';
 		$titulo			= 'Envio de convite';
 		$enviar			= 'disabled';
-		$mensagem		= 'Usuario de <b>'.$info->getNome().'</b> já associado!';
+		$mensagem		= 'Usuario de <b>'.$info->getNome().'</b> já está associado!';
 		$observacao		= '<i class="fa fa-arrow-right orange"></i> Este usuário já possui o cadastro e a associação ativada.';
 		$classe			= "text-warning";
 		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';

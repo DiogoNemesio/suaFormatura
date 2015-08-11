@@ -645,7 +645,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 	/**
 	 * Excluir um usuário
 	 */
-	public function excluir() {
+	public function cancelar() {
 		global $em,$system,$log,$tr;
 		
 		#################################################################################
@@ -678,61 +678,22 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		}
 		
 		#################################################################################
-		## Excluir ou Cancelar usuário
+		## Cancelar usuário
 		#################################################################################
+		//Cancelar usuário principal
+		Usuario::cancelarUsuOrg($this->_usuario, $oUsuOrg);
 		
-		\Zage\Seg\Usuario::cancelar($this->_usuario, $oUsuOrg);
+		//Cancelar acesso as formaturas ativas
+		Usuario::cancelarAceUsuFmt($this->_getCodUsuario(), $this->_getCodOrganizacao());
 		
-		/**
-		$oUsuAdm		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $this->_getCodUsuario()));
-		if ($this->_usuario->getCodStatus()->getCodigo() == P){
-			if (sizeof($oUsuAdm) == 1 && $oUsuAdm[0]->getCodOrganizacao()->getCodigo() == $this->_getCodOrganizacao() && $oUsuAdm[0]->getCodStatus()->getCodigo() == P){
-					
-				\Zage\Seg\Usuario::excluirCompleto($this->_usuario, $oUsuOrg);
-				
-			}else{
-				
-				\Zage\Seg\Usuario::cancelar($this->_usuario, $oUsuOrg);
-			}
-			
-		}else{
-			
-			\Zage\Seg\Usuario::cancelar($this->_usuario, $oUsuOrg);
-		}
-		**/
 		
 	}
 	
-	/**
-	 * Excluir completo
-	 */
-	public function excluirCompleto($oUsuario,$oUsuOrg) {
-		global $em,$system,$log,$tr;
-	
-		/*** Exclusão dos telefone ***/
-		$oTel = new \Zage\App\Telefone();
-		$oTel->_setEntidadeTel('Entidades\ZgsegUsuarioTelefone');
-		$oTel->_setCodProp($oUsuario);
-		$oTel->excluir();
-			
-		/*** Exclusão da associação ***/
-		$em->remove($oUsuOrg);
-	
-		/*** Exclusão do convite ***/
-		$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codOrganizacaoOrigem' => $oUsuOrg->getCodOrganizacao(),'codUsuarioDestino' => $oUsuario->getCodigo()));
-		for ($i = 0; $i < sizeof($oConvite); $i++) {
-			$em->remove($oConvite[$i]);
-		}
-
-		$log->debug($oUsuario->getNome());
-		/*** Exclusão do usuário ***/
-		$em->remove($oUsuario);
-	}
 	
 	/**
-	 * Cancelar
+	 * Cancelar acesso a do usuário a organizacao
 	 */
-	public function cancelar($oUsuario,$oUsuOrg) {
+	public function cancelarUsuOrg($oUsuario,$oUsuOrg) {
 		global $em,$system,$log,$tr;
 		
 		#################################################################################
@@ -768,6 +729,37 @@ class Usuario extends \Entidades\ZgsegUsuario {
 			}
 		}
 	}
+	
+	/**
+	 * Cancelar acesso de um usuário para todas as formaturas administrada por uma organizacao
+	 */
+	public function cancelarAceUsuFmt($codUsuario,$codOrganizacao) {
+		global $em,$system,$log,$tr;
+	
+		#################################################################################
+		## Validações
+		#################################################################################
+		if (!$codUsuario) {
+			return $tr->trans('Parâmetro não informado : COD_USUARIO.');
+		}elseif (!$codOrganizacao){
+			return $tr->trans('Parâmetro não informado : COD_USUARIO.');
+		}
+	
+		#################################################################################
+		## Cancelar acesso a todas as formaturas administradas por uma organização
+		#################################################################################
+		$oStatus 	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
+		
+		// Listar todos as organizações do tipo formatura ativas e vinculada a uma organizacão
+		$usuFmt = \Zage\Fmt\Organizacao::listaFmtUsuOrg($codUsuario, $codOrganizacao);
+		for ($i = 0; $i < sizeof($usuFmt); $i++){
+			$usuFmt[$i]->setCodStatus($oStatus);
+			$usuFmt[$i]->setDataCancelamento(new \DateTime());
+			$em->persist($usuFmt[$i]);
+		}
+	
+	}
+	
 	
 	public function _getCodigo() {
 		return $this->_usuario->getCodigo();
