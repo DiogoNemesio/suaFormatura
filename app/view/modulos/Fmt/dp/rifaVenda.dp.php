@@ -84,6 +84,12 @@ try {
 	$oRifa			= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $rifa));
 	$oCodVenda		= $em->getRepository('Entidades\ZgfmtRifaVendaSequencial')->findOneBy(array('codigo' => $codVenda));
 	
+	//Validar data
+	if ($oRifa->getDataSorteio() <  new \DateTime("now")){
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("O período de venda desta rifa já foi encerrado."))));
+	}
+	
+	
 	for ($i = 0; $i < $quantidade; $i++) {
 		$oRifaNum		= new \Entidades\ZgfmtRifaNumero();
 		$rifaSemaforo	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$rifa);

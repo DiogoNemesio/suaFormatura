@@ -45,6 +45,8 @@ if (!isset($codTipoTel))				$codTipoTel			= array();
 if (!isset($codTelefone))				$codTelefone		= array();
 if (!isset($telefone))					$telefone			= array();
 
+if (isset($_POST['acesso'])) 			$acesso			= \Zage\App\Util::antiInjection($_POST['acesso']);
+if (!isset($acesso))					$acesso			= array();
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -130,6 +132,7 @@ try {
 			try {
 				$fmtUsuOrg[$i]->setCodStatus($oUsuOrgStatusCan);
 				$fmtUsuOrg[$i]->setCodPerfil($oPerfil);
+				$fmtUsuOrg[$i]->setDataCancelamento(new \DateTime());
 				$em->persist($fmtUsuOrg[$i]);
 			} catch (\Exception $e) {
 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
@@ -148,6 +151,7 @@ try {
 		$oValor->setCodUsuario($oUsuario->_getUsuario());
 		$oValor->setCodOrganizacao($oFmt);
 		$oValor->setCodPerfil($oPerfil);
+		$oValor->setDataCancelamento(null);
 		$oValor->setCodStatus($oUsuario->_getUsuOrg()->getCodStatus());
 		
 		try {
