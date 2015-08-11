@@ -541,9 +541,27 @@ $('#zgFormID').submit(function(e) {
 		if (checaRetornoOK(data) == true) {
 			$('#codUsuarioID').val(zgGetCodRetorno(data));
 			//Mensagem de confirmação
-			zgMostraMsg('divMsgID',zgGetMsgRetorno(data));
+			//zgMostraMsg('divMsgID',zgGetMsgRetorno(data));
 			//Rolar pagina para o topo
-			$('html, body').animate({scrollTop:0}, 'slow');
+			//$('html, body').animate({scrollTop:0}, 'slow');
+			
+			bootbox.dialog({
+			title: "Seu usuário foi associado com sucesso.",
+			message: "Em até 5 segundos você irá ser redirecionado.",
+			
+				buttons: {
+					"Acessar" : {
+						"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+						"className" : "btn-sm btn-primary",
+						"callback": function() {
+							//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
+							zgWindowOpen('%REDIRECIONAR%');
+						}
+					},
+					
+				}
+			});
+			
 			//Redirecionar tela
 			setTimeout("location.href='%REDIRECIONAR%'",4000);
 		}else{

@@ -255,7 +255,7 @@ try {
 	#################################################################################
 	## Mudar o status da associação com as formaturas
 	#################################################################################
-	$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($codUsuario);
+	$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($codUsuario,$codOrganizacao);
 	
 	for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
 		if ($fmtUsuOrg[$i]->getCodStatus()->getCodigo() == P){
@@ -342,6 +342,5 @@ try {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
 }
-
 
 echo '0'.\Zage\App\Util::encodeUrl('||'. htmlentities('Seu usuário foi ativado!! Você vai ser redirecionado em 4 segundos'));

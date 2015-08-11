@@ -123,7 +123,7 @@ try {
 	
 	//Retirar acesso
 	$oUsuOrgStatusCan  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'C'));
-	$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->_getUsuario()->getCodigo());
+	$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->_getUsuario()->getCodigo(),$codOrganizacao);
 	for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
 		if (!in_array($fmtUsuOrg[$i]->getCodOrganizacao()->getCodigo(), $acesso)) {
 			try {
@@ -233,8 +233,17 @@ try {
 		 www.suaformatura.com/".$oOrg->getIdentificacao()."");
 		 $notificacao->salva();
 		**/
-		$em->flush();
-	
+		#################################################################################
+		## Salvar as informações
+		#################################################################################
+		try {
+			$em->flush();
+			$em->clear();
+		} catch (Exception $e) {
+			$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+			throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+		}
+		
 	}
 	
 	
