@@ -37,6 +37,7 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	try {
 		
 		$info 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+		$oContrato	= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $codOrganizacao));
 		
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
@@ -120,6 +121,17 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		$readOnlyEnd 	= 'readonly';
 	}
 	
+	if ($oContrato) {
+		$codPlano			= ($oContrato->getCodPlano()) ? $oContrato->getCodPlano()->getCodigo() : null;
+		$valorDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getValorDesconto());
+		$pctDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getPctDesconto());
+	}else{
+		$codPlano			= null;
+		$formaDesc			= "V";
+		$valorDesconto		= 0;
+		$pctDesconto		= 0;
+	}
+	
 }else{
 	
 	$codOrganizacao	= null;
@@ -150,8 +162,12 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$numero		    = '';
 	$readOnlyBairro	= 'readonly';
 	$readOnlyEnd	= 'readonly';
-	$endCorreto  = '';
-
+	$endCorreto  	= '';
+	$codPlano		= null;
+	$formaDesc		= "V";
+	$valorDesconto	= 0;
+	$pctDesconto	= 0;
+	
 }
 
 #################################################################################
@@ -224,6 +240,17 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
 }
 
+#################################################################################
+## Select dos planos (contrato)
+#################################################################################
+try {
+	$aPlanos		= $em->getRepository('Entidades\ZgadmPlano')->findBy(array('codTipoLicenca' => array('I','U')),array('nome' => 'ASC'));
+	$oPlanos		= $system->geraHtmlCombo($aPlanos,	'CODIGO', 'NOME',	$codPlano, 		null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+
 /**
 #################################################################################
 ## Lista de segmentos de mercado
@@ -286,6 +313,11 @@ $tpl->set('LINK'					,$link);
 $tpl->set('TIPO_TEL'				,$oTipoTel);
 $tpl->set('SEGMENTO'				,$oSegmento);
 $tpl->set('TAB_TELEFONE'			,$tabTel);
+$tpl->set('PLANOS'					,$oPlanos);
+$tpl->set('COD_PLANO'				,$codPlano);
+$tpl->set('VALOR_DESCONTO'			,$valorDesconto);
+$tpl->set('PCT_DESCONTO'			,$pctDesconto);
+$tpl->set('FORMA_DESCONTO'			,$formaDesc);
 
 $tpl->set ( 'COD_LOGRADOURO' , $codLogradouro);
 $tpl->set ( 'CEP' 			 , $cep);
