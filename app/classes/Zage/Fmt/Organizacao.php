@@ -85,6 +85,35 @@ class Organizacao {
 		}
 	}
 	
+
+	/**
+	 * Lista todas as formatura vinculadas (vínculo sem data de validade preenchida) a uma organizacao
+	 *
+	 * @param integer $codOrganizacao
+	 * @return array
+	 */
+	public static function listaFormaturas() {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+			
+		try {
+			$qb->select('ofmt')
+			->from('\Entidades\ZgadmOrganizacao','o')
+			->leftJoin('\Entidades\ZgfmtOrganizacaoFormatura'	,'ofmt',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= ofmt.codOrganizacao')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('o.codTipo'				, ':codTipo')
+			))
+			->setParameter('codTipo', 'FMT');
+	
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	
 	/**
 	 * Lista as formaturas que um usuario está vinculado em uma organizacao
 	 *

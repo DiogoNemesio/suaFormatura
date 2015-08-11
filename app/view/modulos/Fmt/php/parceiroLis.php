@@ -69,7 +69,19 @@ for ($i = 0; $i < sizeof($organizacoes); $i++) {
 	
 	if ($organizacoes[$i]->getCodTipo()->getCodigo() !== "CER") {
 		$grid->desabilitaCelula($i, 6);
+	}else{
+		
+		#################################################################################
+		## Verifica se o cerimonial já está configurado 
+		#################################################################################
+		$ok		= \Zage\Adm\Organizacao::cerimonialEstaConfigurado($organizacoes[$i]->getCodigo());
+		if (!$ok)	{
+			$grid->setIconeCelula($i, 6, "fa fa-exclamation-circle red");
+		}
+		
 	}
+	
+	
 	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Seg/usuarioAdmParLis.php?id='.$uid);
 	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Fmt/cerimonialConf.php?id=".$uid."');");

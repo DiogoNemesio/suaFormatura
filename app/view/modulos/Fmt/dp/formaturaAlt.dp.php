@@ -7,7 +7,12 @@ if (defined('DOC_ROOT')) {
 }else{
  	include_once('../include.php');
 }
- 
+
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr,$log;
+
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
@@ -18,6 +23,10 @@ if (isset($_POST['instituicao']))		$instituicao		= \Zage\App\Util::antiInjection
 if (isset($_POST['curso']))				$curso				= \Zage\App\Util::antiInjection($_POST['curso']);
 if (isset($_POST['cidade']))			$cidade				= \Zage\App\Util::antiInjection($_POST['cidade']);
 if (isset($_POST['dataConclusao']))		$dataConclusao		= \Zage\App\Util::antiInjection($_POST['dataConclusao']);
+
+if (isset($_POST['codPlano']))	 		$codPlano			= \Zage\App\Util::antiInjection($_POST['codPlano']);
+if (isset($_POST['valorDesconto']))	 	$valorDesconto		= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
+if (isset($_POST['pctDesconto']))	 	$pctDesconto		= \Zage\App\Util::antiInjection($_POST['pctDesconto']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -77,6 +86,22 @@ if (!isset($dataConclusao) || (empty($dataConclusao))) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A data prevista de conclusão deve ser preenchida!"));
 	$err	= 1;
 }
+
+/******* CONTRATO *********/
+if (!isset($codPlano) || (empty($codPlano))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Plano deve ser selecionado!"));
+	$err	= 1;
+}else{
+	$oPlano		= $em->getRepository('\Entidades\ZgadmPlano')->findOneBy(array('codigo' => $codPlano));
+	if (!$oPlano) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Plano não encontrado!"));
+		$err	= 1;
+	}
+}
+
+$valorDesconto	= \Zage\App\Util::toMysqlNumber($valorDesconto);
+$pctDesconto	= \Zage\App\Util::toMysqlNumber($pctDesconto/100);
+
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
@@ -139,7 +164,7 @@ try {
  	#################################################################################
  	## ORGANIZACAO - ADM
  	#################################################################################
- 	$orgAdm		= $em->getRepository('Entidades\ZgadmOrganizacaoAdm')->findOneBy(array('codOrganizacao' => $oOrganizacao->getCodigo(), 'codOrganizacaoPai' => $system->getCodOrganizacao()));
+ 	$oOrgAdm		= $em->getRepository('Entidades\ZgadmOrganizacaoAdm')->findOneBy(array('codOrganizacao' => $oOrganizacao->getCodigo(), 'codOrganizacaoPai' => $system->getCodOrganizacao()));
  	
  	if (!$codOrganizacao){
  		$oOrgAdm = new \Entidades\ZgadmOrganizacaoAdm();
@@ -185,6 +210,26 @@ try {
 
 	}
 
+	
+	#################################################################################
+	## Contrato
+	#################################################################################
+	$oContrato		= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $oOrganizacao->getCodigo()));
+	if (!$oContrato)	{
+		$oStatusContrato	= $em->getReference('\Entidades\ZgadmContratoStatusTipo','A');
+		$oContrato			= new \Entidades\ZgadmContrato();
+		$oContrato->setDataCadastro(new \DateTime());
+		$oContrato->setDataInicio(new \DateTime());
+		$oContrato->setCodStatus($oStatusContrato);
+	}
+	
+	$oContrato->setCodOrganizacao($oOrganizacao);
+	$oContrato->setCodPlano($oPlano);
+	$oContrato->setPctDesconto($pctDesconto);
+	$oContrato->setValorDesconto($valorDesconto);
+	$em->persist($oContrato);
+	
+	
 	#################################################################################
  	## Salvar as informações
  	#################################################################################
