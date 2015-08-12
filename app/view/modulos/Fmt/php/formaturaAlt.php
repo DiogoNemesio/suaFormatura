@@ -77,6 +77,7 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		$codPlano			= ($oContrato->getCodPlano()) ? $oContrato->getCodPlano()->getCodigo() : null;
 		$valorDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getValorDesconto());
 		$pctDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getPctDesconto());
+		$formaDesc			= ($valorDesconto > 0) ? "V" : "P";
 	}else{
 		$codPlano			= null;
 		$formaDesc			= "V";

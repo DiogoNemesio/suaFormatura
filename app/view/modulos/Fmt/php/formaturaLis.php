@@ -55,7 +55,7 @@ try {
 	if ($orgCad->getCodTipo()->getCodigo() == "ADM") {
 		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturas();
 	}else{
-		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
+		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($system->getCodOrganizacao());
 	}
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());

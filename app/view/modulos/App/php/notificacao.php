@@ -44,6 +44,7 @@ if ($numNot > 0) {
 		}
 		
 		$avatar	= str_replace("%IMG_URL%", IMG_URL, $avatar);
+		$avatar	= str_replace("%PKG_URL%", PKG_URL, $avatar);
 		$lid	= \Zage\App\Util::encodeUrl('codUsuario='.$system->getCodUsuario().'&codNotificacao='.$not->getCodigo());
 		$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li>
 			<a href="javascript:lerNotificacao(\''.$lid.'\');" class="clearfix">

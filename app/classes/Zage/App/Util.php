@@ -626,8 +626,7 @@ class Util {
 	 * @param string $valor
 	 */
 	public static function toMysqlNumber($valor) {
-		//if (empty($valor)) return 0;
-		
+		if (empty($valor)) return 0;
 		
 		$temp		= self::to_float($valor);
 		return(self::fnumber_format($temp, 2, '.', ''));

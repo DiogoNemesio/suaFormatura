@@ -54,10 +54,11 @@ if (!$contrato)	\Zage\App\Erro::halt('Não foi localizado o contrato !!!');
 	
 $valorPorFormando		= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorFormando());
 $valorPorBoleto			= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorBoleto());
-$taxaPorFormando		= \Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao());
+$taxaPorFormando		= \Zage\App\Util::formataDinheiro(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 
-$dataConclusao			= ($orgFmt->getDataConclusao() != null) ? $orgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
-
+if ($valorPorFormando	< 0) 	$valorPorFormando	= 0;
+if ($valorPorBoleto		< 0)	$valorPorBoleto		= 0;
+if ($taxaPorFormando	< 0)	$taxaPorFormando	= 0;
 
 #################################################################################
 ## Carregando o template html
@@ -69,8 +70,10 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('ID'						,$id);
-$tpl->set('COD_ORGANIZACAO'			,$codOrganizacao);
-$tpl->set('DATA_CONCLUSAO'			,$dataConclusao);
+$tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());
+$tpl->set('VALOR_FORMANDO'			,$valorPorFormando);
+$tpl->set('VALOR_BOLETO'			,$valorPorBoleto);
+$tpl->set('TAXA_FORMANDO'			,$taxaPorFormando);
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));

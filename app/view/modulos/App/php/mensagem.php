@@ -49,7 +49,7 @@ if ($numMen > 0) {
 	$html .= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
 	$html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-envelope-alt"></i>Mensagens</li>'.\Zage\App\ZWS::NL;
 	foreach ($mensagens as $men) {
-		$html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<a href="#"><img src="%PKG_URL%/ace/assets/avatars/avatar.png" class="msg-photo" alt="'.$men["REMETENTE"].'" /><span class="msg-body"><span class="msg-title"><span class="blue">'.$men["REMETENTE"].':</span>'.$men["MENSAGEM"].'</span><span class="msg-time"><i class="fa fa-time"></i><span>'.$men["DATA"].'</span></span></span></a>'.\Zage\App\ZWS::NL;
+		$html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<a href="#"><img src="'.PKG_URL.'/ace/assets/avatars/avatar.png" class="msg-photo" alt="'.$men["REMETENTE"].'" /><span class="msg-body"><span class="msg-title"><span class="blue">'.$men["REMETENTE"].':</span>'.$men["MENSAGEM"].'</span><span class="msg-time"><i class="fa fa-time"></i><span>'.$men["DATA"].'</span></span></span></a>'.\Zage\App\ZWS::NL;
 	}
 	$html .= str_repeat(\Zage\App\ZWS::TAB,4).'</ul>'.\Zage\App\ZWS::NL;
 }

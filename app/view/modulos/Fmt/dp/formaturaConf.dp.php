@@ -11,16 +11,21 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$log,$system;
+global $em,$log,$system,$tr;
 
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['codOrganizacao']))		$codOrganizacao			= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
-if (isset($_POST['codPlano']))				$codPlano				= \Zage\App\Util::antiInjection($_POST['codPlano']);
+if (isset($_POST['valorPorFormando']))		$valorPorFormando		= \Zage\App\Util::antiInjection($_POST['valorPorFormando']);
+if (isset($_POST['valorPorBoleto']))		$valorPorBoleto			= \Zage\App\Util::antiInjection($_POST['valorPorBoleto']);
+
 
 $err	= null;
 
+#################################################################################
+## Validação dos campos
+#################################################################################
 if (!isset($codOrganizacao) || empty($codOrganizacao)) {
 	$err = $tr->trans("Falta de parâmetros (COD_ORGANIZACAO)");
 }else{
@@ -28,23 +33,18 @@ if (!isset($codOrganizacao) || empty($codOrganizacao)) {
 	if (!$oOrg) {
 		$err = $tr->trans("Organização (%s) não encontrada !!",array('%s' => $codOrganizacao));
 	}else{
-		if ($oOrg->getCodTipo()->getCodigo() !== "CER") {
-			$err = $tr->trans("Organização (%s) não é um CERIMONIAL!!",array('%s' => $codOrganizacao));
+		if ($oOrg->getCodTipo()->getCodigo() !== "FMT") {
+			$err = $tr->trans("Organização (%s) não é uma FORMATURA!!",array('%s' => $codOrganizacao));
 		}
 	}
 }
 
-if (!isset($codPlano) || empty($codPlano)) {
-	$err = $tr->trans("Falta de parâmetros (COD_PLANO)");
-}else{
-	$oPlano		= $em->getRepository('Entidades\ZgadmPlano')->findOneBy(array('codigo' => $codPlano));
-	if (!$oPlano) {
-		$err = $tr->trans("Plano (%s) não encontrado !!",array('%s' => $codPlano));
-	}else{
-		if ($oPlano->getCodTipoLicenca()->getCodigo() != "F") {
-			$err = $tr->trans("Plano (%s) não é para FORMATURA!!",array('%s' => $codPlano));
-		}
-	}
+#################################################################################
+## Resgata as informações do banco
+#################################################################################
+$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $codOrganizacao));
+if (!$oOrgFmt) {
+	$err = $tr->trans("Formatura (%s) sem configuração!!",array('%s' => $codOrganizacao));
 }
 
 if ($err) {
@@ -52,22 +52,21 @@ if ($err) {
 	exit;
 }
 
+
 #################################################################################
-## Resgata as informações do banco
+## Ajuste dos valores
 #################################################################################
-$oOrgCer	= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $codOrganizacao));
-if (!$oOrgCer) {
-	$oOrgCer	= new \Entidades\ZgfmtOrganizacaoCerimonial();
-}
+$valorPorFormando	= \Zage\App\Util::toMysqlNumber($valorPorFormando);
+$valorPorBoleto		= \Zage\App\Util::toMysqlNumber($valorPorBoleto);
 
 
 #################################################################################
 ## Salvar no banco
 #################################################################################
 try {
-	$oOrgCer->setCodOrganizacao($oOrg);
-	$oOrgCer->setCodPlanoFormatura($oPlano);
-	$em->persist($oOrgCer);
+	$oOrgFmt->setValorPorFormando($valorPorFormando);
+	$oOrgFmt->setValorPorBoleto($valorPorBoleto);
+	$em->persist($oOrgFmt);
 	
 	$em->flush();
 	$em->clear();
@@ -75,7 +74,6 @@ try {
 	$mensagem	= $tr->trans("Configurações salvas com sucesso");
 	
 } catch (\Exception $e) {
-	$em->getConnection()->rollback();
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;
 }

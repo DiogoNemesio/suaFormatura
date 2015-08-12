@@ -11,7 +11,7 @@
 
 		<div class="row">
 			<div class="form-group col-sm-12" id="divValorPorFormandoID">
-			    <label for="identID" class="col-sm-3 control-label">Valor Por Formando/</label>
+			    <label for="identID" class="col-sm-3 control-label">Valor Por Formando</label>
 	    		<div class="input-group col-sm-5 pull-left">
     				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
 		    		<input class="form-control" id="valorPorFormandoID" type="text" name="valorPorFormando" maxlength="60" value="%VALOR_FORMANDO%" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
@@ -30,11 +30,13 @@
 		    	<label class="col-sm-3 control-label" for="instituicaoID">Taxa de Uso do sistema (por Formando)</label>
 				<div class="input-group col-sm-5 pull-left">
 	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Taxa cobrada pelo (suaFormatura) para uso do sistema."></i></span>
-					<input class="form-control" id="taxaPorFormandoID" readonly type="text" name="taxaPorFormando" placeholder="Valor Por Boleto" maxlength="100" value="%TAXA_FORMANDO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+					<input class="form-control" id="taxaPorFormandoID" disabled readonly type="text" name="taxaPorFormando" placeholder="Valor Por Boleto" maxlength="100" value="%TAXA_FORMANDO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpTaxaPorFormandoID"></div>
 			</div>
 	    </div>
+		<div id="divMsgFmtConfID"></div>
+	    
 	</form>
 
 	<hr />
@@ -60,6 +62,7 @@ $('[data-rel=popover]').popover({html:true});
 
 
 $('#btnSalvarFormaturaConfID').on("click", function(e) {
+	$('#zgFormID').submit();
 });
 
 $('#zgFormID').submit(function(e) {
@@ -73,9 +76,13 @@ $('#zgFormID').submit(function(e) {
 		url:	"%DP%",
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
-		zgMostraAviso("Fechar");
+		if (checaRetornoOK(data) == true) {
+			zgMostraMsg('divMsgFmtConfID',zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divMsgFmtConfID',zgGetMsgRetorno(data));
+		}
+		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
-			zgLimpaModalAviso();
 			$('#zgDivModalID').off('hidden.bs.modal');
 		});
 		
