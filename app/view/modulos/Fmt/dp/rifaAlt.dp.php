@@ -77,12 +77,11 @@ if (isset($indRifaEletronica) && (!empty($indRifaEletronica))) {
 
 /******* Custo *********/
 if (!isset($custo) || (empty($custo))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O custo deve ser preenchido!"));
-	$err	= 1;
+	$custo = 0;
 }elseif (!empty($custo)) {
 	$custo		= \Zage\App\Util::to_float($custo);
 	if (!$custo) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Custo inválido!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O custo tem em um formato inválido!"));
 		$err	= 1;
 	}
 }
@@ -94,7 +93,7 @@ if (!isset($valor) || (empty($valor))) {
 }elseif (!empty($valor)) {
 	$valor		= \Zage\App\Util::to_float($valor);
 	if (!$valor) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Valor inválido!"));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O valor da rifa tem um formato inválido!"));
 		$err	= 1;
 	}
 }
