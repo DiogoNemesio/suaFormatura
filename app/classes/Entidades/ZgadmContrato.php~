@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmContrato
  *
- * @ORM\Table(name="ZGADM_CONTRATO", indexes={@ORM\Index(name="fk_ZGADM_CONTRATO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGADM_CONTRATO_2_idx", columns={"COD_PLANO"})})
+ * @ORM\Table(name="ZGADM_CONTRATO", indexes={@ORM\Index(name="fk_ZGADM_CONTRATO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGADM_CONTRATO_2_idx", columns={"COD_PLANO"}), @ORM\Index(name="fk_ZGADM_CONTRATO_3_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
 class ZgadmContrato
@@ -31,7 +31,7 @@ class ZgadmContrato
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATA_FIM", type="date", nullable=false)
+     * @ORM\Column(name="DATA_FIM", type="date", nullable=true)
      */
     private $dataFim;
 
@@ -41,13 +41,6 @@ class ZgadmContrato
      * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
      */
     private $dataCadastro;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="COD_STATUS", type="string", length=1, nullable=false)
-     */
-    private $codStatus;
 
     /**
      * @var float
@@ -82,6 +75,16 @@ class ZgadmContrato
      * })
      */
     private $codPlano;
+
+    /**
+     * @var \Entidades\ZgadmContratoStatusTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmContratoStatusTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codStatus;
 
 
     /**
@@ -161,29 +164,6 @@ class ZgadmContrato
     public function getDataCadastro()
     {
         return $this->dataCadastro;
-    }
-
-    /**
-     * Set codStatus
-     *
-     * @param string $codStatus
-     * @return ZgadmContrato
-     */
-    public function setCodStatus($codStatus)
-    {
-        $this->codStatus = $codStatus;
-
-        return $this;
-    }
-
-    /**
-     * Get codStatus
-     *
-     * @return string 
-     */
-    public function getCodStatus()
-    {
-        return $this->codStatus;
     }
 
     /**
@@ -276,5 +256,28 @@ class ZgadmContrato
     public function getCodPlano()
     {
         return $this->codPlano;
+    }
+
+    /**
+     * Set codStatus
+     *
+     * @param \Entidades\ZgadmContratoStatusTipo $codStatus
+     * @return ZgadmContrato
+     */
+    public function setCodStatus(\Entidades\ZgadmContratoStatusTipo $codStatus = null)
+    {
+        $this->codStatus = $codStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get codStatus
+     *
+     * @return \Entidades\ZgadmContratoStatusTipo 
+     */
+    public function getCodStatus()
+    {
+        return $this->codStatus;
     }
 }
