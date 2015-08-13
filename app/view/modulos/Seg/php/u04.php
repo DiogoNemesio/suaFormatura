@@ -23,6 +23,7 @@ if (!isset($_cdu01))	\Zage\App\Erro::externalHalt('Script só pode ser usado por
 if (!isset($_cdu02))	\Zage\App\Erro::externalHalt('Script só pode ser usado por pessoas autorizadas, COD_ERRO: 02');
 if (!isset($_cdu03))	\Zage\App\Erro::externalHalt('Script só pode ser usado por pessoas autorizadas, COD_ERRO: 03');
 if (!isset($_cdu04))	\Zage\App\Erro::externalHalt('Script só pode ser usado por pessoas autorizadas, COD_ERRO: 04');
+if (!isset($_cdu05))	\Zage\App\Erro::externalHalt('Script só pode ser usado por pessoas autorizadas, COD_ERRO: 05');
 
 #################################################################################
 ## Ajusta os nomes das variáveis
@@ -31,17 +32,25 @@ $codRecSenha	= $_cdu01;
 $senhaAlteracao	= $_cdu02;
 $email			= $_cdu03;
 $codUsuario		= $_cdu04;
-
+$codOrganizacao = $_cdu05;
+$log->debug($codOrganizacao);
 #################################################################################
 ## Verificar se os usuário já existe e se já está ativo
 #################################################################################
 $oRecSenha	= $em->getRepository('Entidades\ZgsegUsuarioRecSenha')->findOneBy(array('codigo' => $codRecSenha));
-if (!$oRecSenha) 											\Zage\App\Erro::externalHalt('Recuperação de senha não está mais disponível, COD_ERRO: 05');
-if ($oRecSenha->getCodStatus()->getCodigo() != "A")			\Zage\App\Erro::externalHalt('Recuperação de senha não está mais disponível, COD_ERRO: 06');
-if ($oRecSenha->getSenhaAlteracao() != $senhaAlteracao)		\Zage\App\Erro::externalHalt('Senha não correspondente, COD_ERRO: 07');
+if (!$oRecSenha) 											\Zage\App\Erro::externalHalt('Recuperação de senha não está mais disponível, COD_ERRO: 06');
+if ($oRecSenha->getCodStatus()->getCodigo() != "A")			\Zage\App\Erro::externalHalt('Recuperação de senha não está mais disponível, COD_ERRO: 07');
+if ($oRecSenha->getSenhaAlteracao() != $senhaAlteracao)		\Zage\App\Erro::externalHalt('Senha não correspondente, COD_ERRO: 08');
 
 $oEmail	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
-if (!$oEmail) 												\Zage\App\Erro::externalHalt('Usuario não existe, COD_ERRO: 08');
+if (!$oEmail) 												\Zage\App\Erro::externalHalt('Usuario não existe, COD_ERRO: 09');
+
+#################################################################################
+## Urls
+#################################################################################
+$org = $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+$urlRedirecionar	= ROOT_URL . "/".$org->getIdentificacao();
+
 #################################################################################
 ## Carregando o template html
 #################################################################################
@@ -52,6 +61,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('REDIRECIONAR'		,$urlRedirecionar);
 $tpl->set('CD01'				,$_cdu01);
 $tpl->set('CD02'				,$_cdu02);
 $tpl->set('CD03'				,$_cdu03);

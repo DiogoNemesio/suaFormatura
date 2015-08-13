@@ -14,12 +14,10 @@ if (defined('DOC_ROOT')) {
 if (isset($_POST['_cdu01'])) 			$_cdu01		= \Zage\App\Util::antiInjection($_POST['_cdu01']);
 if (isset($_POST['_cdu02'])) 			$_cdu02		= \Zage\App\Util::antiInjection($_POST['_cdu02']);
 if (isset($_POST['_cdu03'])) 			$_cdu03		= \Zage\App\Util::antiInjection($_POST['_cdu03']);
-if (isset($_POST['_cdu04'])) 			$_cdu04		= \Zage\App\Util::antiInjection($_POST['_cdu04']);
 
 $codHistEmail	= $_cdu01;
 $senhaAlteracao	= $_cdu02;
 $emailAlteracao	= $_cdu03;
-$codOrganizacao = $_cdu04;
 
 if (isset($_POST['novaSenha'])) 		$senhaNova	= \Zage\App\Util::antiInjection($_POST['novaSenha']);
 if (isset($_POST['senhaAtual'])) 		$senhaAtual	= \Zage\App\Util::antiInjection($_POST['senhaAtual']);
@@ -38,7 +36,7 @@ if (($senhaNova) && (strlen($senhaNova) < 5)) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo Senha inválido!"))));
 	$err		= "1";
 }elseif ($senhaNova) {
-	$senhaCrypt	= \Zage\App\Crypt::crypt($emailAlteracao, $senhaNova, $codOrganizacao);
+	$senhaCrypt	= \Zage\App\Crypt::crypt($emailAlteracao, $senhaNova);
 }
 
 if ($senhaNova !== $confSenha) {
@@ -88,4 +86,4 @@ try {
 	exit;
 }
 
-die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Novo email confirmado,e senha alterada com sucesso!"))));
+die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Novo email confirmado,e senha alterada com sucesso. Aguarde que você será redirecionado!"))));

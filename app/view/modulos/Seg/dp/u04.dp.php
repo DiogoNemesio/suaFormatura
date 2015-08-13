@@ -87,4 +87,4 @@ try {
 	exit;
 }
 
-die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Senha alterada com sucesso!"))));
+die ('0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Senha alterada com sucesso, aguarde que você será redirecionado!"))));

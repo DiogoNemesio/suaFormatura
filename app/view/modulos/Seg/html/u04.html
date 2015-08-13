@@ -269,6 +269,8 @@ $('#zgFormAlteraSenhaID').submit(function() {
 			//Mensagem de confirmação
 			zgMostraMsg('divMsgID',zgGetMsgRetorno(data));
 			$('#btnSubmitID').attr("disabled","disabled");
+			//Redirecionar tela
+			setTimeout("location.href='%REDIRECIONAR%'",4000);
 		}else{
 			//Mensagem de erro
 			zgMostraErro('divMsgID',zgGetMsgRetorno(data));

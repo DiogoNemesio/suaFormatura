@@ -36,7 +36,7 @@ if (!isset($_cdu04))		\Zage\App\Erro::externalHalt('Script só pode ser usado po
 $codHistEmail	= $_cdu01;
 $senhaAlteracao	= $_cdu02;
 $emailAlteracao	= $_cdu03;
-$codOrganizacao = $_cdu04;
+$codOrganizacao	= $_cdu04;
 $hidden 		= "hidden";
 
 #################################################################################
@@ -53,6 +53,12 @@ else{
 }
 
 #################################################################################
+## Urls
+#################################################################################
+$org = $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+$urlRedirecionar	= ROOT_URL . "/".$org->getIdentificacao();
+
+#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
@@ -62,12 +68,12 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('REDIRECIONAR'		,$urlRedirecionar);
 $tpl->set('TEXTO'				,$texto);
 $tpl->set('HIDDEN'				,$hidden);
 $tpl->set('CD01'				,$_cdu01);
 $tpl->set('CD02'				,$_cdu02);
 $tpl->set('CD03'				,$_cdu03);
-$tpl->set('CD04'				,$_cdu04);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################

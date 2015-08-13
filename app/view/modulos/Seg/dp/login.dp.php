@@ -43,9 +43,7 @@ $oEmail	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario
 
 if (($oEmail != null) && ($oEmail->getUsuario() == $email)){
 	$codUsuario = $oEmail;
-	$log->debug('email existe');
 }else{
-	$log->debug('email nao existe');
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Email não existe!"))));
 	$err 	= 1;
 }
@@ -82,60 +80,35 @@ try {
  	$em->flush();
  	$em->detach($oRecSenha);
  	
- 	//$texto 		= 'O email: '.$email.' foi confirmado com sucesso, uma nova confirmação foi enviada para o novo email.';
- 	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oRecSenha->getCodigo().'&_cdu02='.$oRecSenha->getSenhaAlteracao().'&_cdu03='.$oEmail->getUsuario().'&_cdu04='.$oRecSenha->getCodUsuario()->getCodigo());
- 	$textoEmail	= "Seu email foi confirmado, mas ainda precisa alterar a senha. Para isso, clique no link abaixo:";
-
  	#################################################################################
- 	## Carregando o template html do email
+ 	## Gerar a notificação
  	#################################################################################
- 	$tpl		= new \Zage\App\Template();
+ 	$cid 			= \Zage\App\Util::encodeUrl('_cdu01='.$oRecSenha->getCodigo().'&_cdu02='.$oRecSenha->getSenhaAlteracao().'&_cdu03='.$oEmail->getUsuario().'&_cdu04='.$oRecSenha->getCodUsuario()->getCodigo().'&_cdu05='.$system->getCodOrganizacao());
+ 	$assunto		= "Redefinição da senha.";
+ 	$textoEmail		= "Seu email foi confirmado, mas ainda precisa alterar a senha. Para isso, clique no link abaixo:";
+ 	$nome			= $oRecSenha->getCodUsuario()->getNome();
+ 	$confirmUrl		= ROOT_URL . "/Seg/u04.php?cid=".$cid;
  	
- 	$tpl->load(MOD_PATH . "/App/html/perfilConfirmEmail.html");
- 	$assunto			= "Alteração de email";
- 	$nome				= $oRecSenha->getCodUsuario()->getNome();
- 	$confirmUrl			= ROOT_URL . "/Seg/u04.php?cid=".$cid;
- 	 	
- 	#################################################################################
- 	## Define os valores das variáveis
- 	#################################################################################
- 	$tpl->set('ID'					,$id);
- 	$tpl->set('CONFIRM_URL'			,$confirmUrl);
- 	$tpl->set('ASSUNTO'				,$assunto);
- 	$tpl->set('TEXTO'				,$textoEmail);
- 	$tpl->set('NOME'				,$nome);
+ 	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+ 	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'USUARIO_CADASTRO'));
+ 	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+ 	$notificacao->setAssunto("Redefinição da senha.");
+ 	$notificacao->setCodRemetente($oRemetente);
  	
- 	#################################################################################
- 	## Criar os objeto do email ,transporte e validador
- 	#################################################################################
- 	$mail 			= \Zage\App\Mail::getMail();
- 	$transport 		= \Zage\App\Mail::getTransport();
- 	$validator 		= new \Zend\Validator\EmailAddress();
- 	$htmlMail 		= new MimePart($tpl->getHtml());
- 	$htmlMail->type = "text/html";
- 	$body 			= new MimeMessage();
+ 	$notificacao->associaUsuario($oRecSenha->getCodUsuario()->getCodigo());
+ 	$notificacao->enviaEmail();
+ 	//$notificacao->enviaSistema();
+ 	//$notificacao->setEmail($oHistEmail->getEmailNovo()); # Se quiser mandar com cópia
+ 	$notificacao->setCodTemplate($template);
+ 	$notificacao->adicionaVariavel("NOME"		, $nome);
+ 	$notificacao->adicionaVariavel("ASSUNTO"	, "Redefinição da senha.");
+ 	$notificacao->adicionaVariavel("TEXTO"		, $textoEmail);
+ 	$notificacao->adicionaVariavel("CONFIRM_URL", $confirmUrl);
  	
- 	#################################################################################
- 	## Definir o conteúdo do e-mail
- 	#################################################################################
- 	$body->setParts(array($htmlMail));
- 	$mail->setBody($body);
- 	$mail->setSubject("<ZageMail> ".$assunto);
+ 	$notificacao->salva();
  	
- 	#################################################################################
- 	## Definir os destinatários
- 	#################################################################################
- 	$mail->addTo($email);
- 	$tpl = null;
- 	#################################################################################
- 	## Salvar as informações e enviar o e-mail
- 	#################################################################################
- 	try {
- 		$transport->send($mail);
- 	} catch (Exception $e) {
- 		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
- 		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
-	}
+ 	$em->flush();
+ 	$em->clear();
 	
 } catch (\Exception $e) {
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
