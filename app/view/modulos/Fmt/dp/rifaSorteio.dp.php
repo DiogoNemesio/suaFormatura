@@ -51,6 +51,7 @@ if ($err != null) {
 #################################################################################
 try {
 	
+	$em->getConnection()->beginTransaction();
 	/***********************
 	 * Sortear
 	 ***********************/
@@ -70,46 +71,55 @@ try {
 
 	/********** Salvar as informações *********/
 	try {
-		
-		if (!empty($oRifa->getNumeroVencedor()->getEmail())) {
-			### Gerar notificacao enviar email ###
-			$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
-			$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_SORTEIO'));
-			$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
-			$notificacao->setAssunto("Sorteio da Rifa ".$oRifa->getNome());
-			$notificacao->setCodRemetente($oRemetente);
-			
-			//$notificacao->associaUsuario($oHistEmail->getCodUsuario()->getCodigo());
-			//$notificacao->enviaSistema();
-			$notificacao->enviaEmail();
-			$notificacao->setEmail($oRifa->getNumeroVencedor()->getEmail());
-			$notificacao->setCodTemplate($template);
-			
-			### Gerar confirmacao rifa ###
-			$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
-			$html .= '<td style="padding: 10px;">'.$oRifa->getNumeroVencedor()->getNome().'</td>';
-			$html .= '<td style="padding: 10px;">'.$oRifa->getNumeroVencedor()->getCodigo().'</td>';
-			$html .= '<td style="padding: 10px;">'.$oRifa->getPremio().'</td>';
-			$html .= '</tr>';
-			
-			$notificacao->adicionaVariavel('NOME_RIFA'		,$oRifa->getNome());
-			$notificacao->adicionaVariavel('PREMIO'			,$oRifa->getPremio());
-			$notificacao->adicionaVariavel('NOME'			,$oRifa->getNumeroVencedor()->getNome());
-			$notificacao->adicionaVariavel('EMAIL'			,$oRifa->getNumeroVencedor()->getEmail());
-			$notificacao->adicionaVariavel('TELEFONE'		,$oRifa->getNumeroVencedor()->getTelefone());
-			$notificacao->adicionaVariavel('HTML_TABLE'		,$html);
-	
-			$notificacao->salva();
-			
-			$em->flush();
-			$em->clear();
-		}
-			
+		$em->flush();
+		$em->clear();	
 	} catch (Exception $e) {
 		$log->debug("Erro ao gerar o vencedor:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
-	}	
-
+	}
+	$log->debug('entrei');
+	/********** Criar notificação *********/	
+	if (!empty($oRifa->getNumeroVencedor()->getEmail())) {
+		### Gerar notificacao enviar email ###
+		$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+		$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_SORTEIO'));
+		$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
+		$notificacao->setAssunto("Sorteio da rifa ".$oRifa->getNome());
+		$notificacao->setCodRemetente($oRemetente);
+			
+		//$notificacao->associaUsuario($oHistEmail->getCodUsuario()->getCodigo());
+		//$notificacao->enviaSistema();
+		$notificacao->enviaEmail();
+		$notificacao->setEmail($oRifa->getNumeroVencedor()->getEmail());
+		$notificacao->setCodTemplate($template);
+			
+		### Gerar confirmacao rifa ###
+		$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
+		$html .= '<td style="padding: 10px;">'.$oRifa->getNumeroVencedor()->getNome().'</td>';
+		$html .= '<td style="padding: 10px;">'.$oRifa->getNumeroVencedor()->getCodigo().'</td>';
+		$html .= '<td style="padding: 10px;">'.$oRifa->getPremio().'</td>';
+		$html .= '</tr>';
+			
+		$notificacao->adicionaVariavel('NOME_RIFA'		,$oRifa->getNome());
+		$notificacao->adicionaVariavel('PREMIO'			,$oRifa->getPremio());
+		$notificacao->adicionaVariavel('NOME'			,$oRifa->getNumeroVencedor()->getNome());
+		$notificacao->adicionaVariavel('EMAIL'			,$oRifa->getNumeroVencedor()->getEmail());
+		$notificacao->adicionaVariavel('TELEFONE'		,$oRifa->getNumeroVencedor()->getTelefone());
+		$notificacao->adicionaVariavel('HTML_TABLE'		,$html);
+	
+		$notificacao->salva();
+	}
+	
+	/********** Salvar notificação *********/
+	try {
+		$em->flush();
+		$em->getConnection()->commit();
+		$em->clear();
+	} catch (Exception $e) {
+		$log->debug("Erro ao gerar o vencedor:". $e->getTraceAsString());
+		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
+	}
+	
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
