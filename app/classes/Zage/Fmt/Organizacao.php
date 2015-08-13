@@ -56,7 +56,7 @@ class Organizacao {
 	 * @param integer $codOrganizacao
 	 * @return array
 	 */
-	public static function listaFormaturaOrganizacao() {
+	public static function listaFormaturaOrganizacao($codOrganizacao) {
 		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
@@ -69,10 +69,41 @@ class Organizacao {
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
 					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
+					$qb->expr()->eq('o.codStatus'			, ':codStatus'),
 					$qb->expr()->isNull('oa.dataValidade')
+					
 	
 			))
-			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('codOrganizacao', $codOrganizacao)
+			->setParameter('codTipo', 'FMT')
+			->setParameter('codStatus', 'A');
+	
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+
+	/**
+	 * Lista todas as formatura vinculadas (vínculo sem data de validade preenchida) a uma organizacao
+	 *
+	 * @param integer $codOrganizacao
+	 * @return array
+	 */
+	public static function listaFormaturas() {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+			
+		try {
+			$qb->select('ofmt')
+			->from('\Entidades\ZgadmOrganizacao','o')
+			->leftJoin('\Entidades\ZgfmtOrganizacaoFormatura'	,'ofmt',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= ofmt.codOrganizacao')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('o.codTipo'				, ':codTipo')
+			))
 			->setParameter('codTipo', 'FMT');
 	
 			$query 		= $qb->getQuery();
@@ -82,13 +113,14 @@ class Organizacao {
 		}
 	}
 	
+	
 	/**
 	 * Lista as formaturas que um usuario está vinculado em uma organizacao
 	 *
 	 * @param integer $codOrganizacao
 	 * @return array
 	 */
-	public static function listaFmtUsuOrg($codUsuario) {
+	public static function listaFmtUsuOrg($codUsuario,$codOrganizacao) {
 		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
@@ -101,12 +133,14 @@ class Organizacao {
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('uo.codUsuario'			, ':codUsuario'),
 					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
-					$qb->expr()->eq('o.codTipo'				, ':codTipo')
+					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
+					$qb->expr()->eq('o.codStatus'			, ':codStatus')
 	
 			))
-			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('codOrganizacao', $codOrganizacao)
 			->setParameter('codUsuario'	   , $codUsuario)
-			->setParameter('codTipo'	   , 'FMT');
+			->setParameter('codTipo'	   , 'FMT')
+			->setParameter('codStatus'	   , 'A');
 	
 			$query 		= $qb->getQuery();
 			return($query->getResult());

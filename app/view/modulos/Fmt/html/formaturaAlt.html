@@ -9,6 +9,7 @@
 		
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
@@ -61,6 +62,52 @@
 		    	<div class="col-sm-1 pull-left" id="divHelpDataConclusaoID"></div>
 		    </div>
 	    </div>
+	    
+	    <div class="row %HIDDEN%" id="divInfoContratoID">
+			<h5 class="header blue bolder smaller">Informações do Contrato</h5>
+			<div class="vspace-xs"></div>
+			<div class="row">
+		    	<div class="col-sm-12">
+					<div class="form-group col-sm-12" id="divCodPlanoID">
+						<label class="col-sm-3 control-label" for="codPlanoID">Plano</label>
+		    			<div class="input-group col-sm-8 pull-left">
+	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Plano"></i></span>
+							<select class="select2" style="width:100%;" id="codPlanoID" name="codPlano" data-rel="select2">
+							%PLANOS%
+							</select>
+						</div>
+						<div class="col-sm-1 pull-left" id="divHelpCodPlanoID"></div>
+					</div>
+					<div class="form-group col-sm-12" id="divFormaDescontoID">
+						<label class="col-sm-3 control-label">Forma de Desconto: </label>
+						<div class="btn-group btn-corner col-sm-8 pull-left">
+							<span id='codFormaDescontoVID' style="width: 180px;" class="btn btn-sm" onclick="selecionaFormaDescontoValorFmtAlt();">Por Valor</span>
+							<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a forma que deseja dar o desconto"></i></span>
+							<span id='codFormaDescontoPID' style="width: 180px;" class="btn btn-sm" onclick="selecionaFormaDescontoPctFmtAlt();">Porcentagem</span>
+						</div>
+					</div>
+					
+					<div class="form-group col-sm-12" id="divValorDescontoID">
+						<label class="col-sm-3 control-label">Valor do Desconto</label>
+    					<div class="input-group col-sm-4 pull-left">
+    						<span tabindex="99008" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor do Desconto no contrato"></i></span>
+	    					<input class="form-control" id="valorDescontoID" type="text" name="valorDesconto" maxlength="20" value="%VALOR_DESCONTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+			    		</div>
+						<div class="help-block col-sm-5 inline" id="divHelpValorDescontoID"></div>
+	    			</div>
+					<div class="form-group col-sm-12" id="divPctDescontoID">
+						<label class="col-sm-3 control-label">Porcentagem de Desconto</label>
+    					<div class="input-group col-sm-4 pull-left">
+    						<span tabindex="99008" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de desconto no contrato"></i></span>
+	    					<input class="form-control" id="pctDescontoID" type="text" name="pctDesconto" maxlength="20" value="%PCT_DESCONTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="1">
+			    		</div>
+						<div class="help-block col-sm-5 inline" id="divHelpPctDescontoID"></div>
+	    			</div>
+		    	</div>
+			</div>
+		</div>
+	    
+	    
 	</form>
 
 	<hr />
@@ -86,6 +133,17 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 //Mensagens
 $('[data-rel=tooltip]').tooltip();
 $('[data-rel=popover]').popover({html:true});
+
+// SELECT2
+$('#codPlanoID').css('width','100%').select2({allowClear:true});
+
+/**Verifica a forma de desconto do contrato **/
+var vFormaDesc 		= $('#codFormaDescontoID').val();
+if (vFormaDesc == "V") {
+	selecionaFormaDescontoValorFmtAlt();
+}else{
+	selecionaFormaDescontoPctFmtAlt();
+}
 
 
 /*********************************************************
@@ -399,6 +457,39 @@ function validaFormaturaAlt() {
 		return true;
 	}else{
 		return vOK;
+	}
+}
+
+
+function selecionaFormaDescontoValorFmtAlt() {
+	$('#codFormaDescontoVID').addClass("btn-primary");
+	$('#codFormaDescontoVID').removeClass("btn-light");
+	$('#codFormaDescontoPID').addClass("btn-light");
+	$('#codFormaDescontoPID').removeClass("btn-primary");
+	$('#pctDescontoID').val(0);
+	$('#codFormaDescontoID').val("V");
+	mostraDivFormaDescontoFmtAlt();
+}
+
+function selecionaFormaDescontoPctFmtAlt() {
+	$('#codFormaDescontoPID').addClass("btn-primary");
+	$('#codFormaDescontoPID').removeClass("btn-light");
+	$('#codFormaDescontoVID').addClass("btn-light");
+	$('#codFormaDescontoVID').removeClass("btn-primary");
+	$('#valorDescontoID').val(0);
+	$('#codFormaDescontoID').val("P");
+	mostraDivFormaDescontoFmtAlt();
+}
+
+function mostraDivFormaDescontoFmtAlt() {
+	var vFormaDesc 		= $('#codFormaDescontoID').val();
+	
+	if (vFormaDesc 	== 'V') {
+		$('#divPctDescontoID').hide();
+		$('#divValorDescontoID').show();
+	}else{
+		$('#divValorDescontoID').hide();
+		$('#divPctDescontoID').show();
 	}
 }
 

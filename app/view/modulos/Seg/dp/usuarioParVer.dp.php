@@ -8,19 +8,13 @@ if (defined('DOC_ROOT')) {
 	include_once('../include.php');
 }
 
-use \Zend\Mail;
-use \Zend\Mail\Message;
-use \Zend\Mime\Message as MimeMessage;
-use \Zend\Mime\Part as MimePart;
-Use \Zend\Mime;
-
-
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['codUsuario'])) 		$codUsuario			= \Zage\App\Util::antiInjection($_POST['codUsuario']);
 $codOrganizacao		= $system->getCodOrganizacao();
 if (isset($_POST['perfil']))			$codPerfil			= \Zage\App\Util::antiInjection($_POST['perfil']);
+
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -153,14 +147,21 @@ try {
 		$notificacao->adicionaVariavel("TEXTO", $texto);
 		$notificacao->salva();
 		
-		$em->flush();
+		#################################################################################
+		## Salvar notificação
+		#################################################################################
+		try {
+			$em->flush();
+			$em->clear();
+		} catch (Exception $e) {
+			$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+			throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+		}
 	}
 
 } catch (\Exception $e) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
-	die('1'.\Zage\App\Util::encodeUrl('||'));
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage())));
 	exit;
 }
-
 
 echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Usuário associado com sucesso!')));

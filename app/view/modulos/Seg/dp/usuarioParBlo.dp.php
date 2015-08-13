@@ -66,11 +66,12 @@ try {
 		$em->persist($oUsuOrg);
 		
 		//Associação - Formaturas
-		$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->getCodigo());
+		$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->getCodigo(),$codOrganizacao);
 		for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
 			if ($fmtUsuOrg[$i]->getCodStatus()->getCodigo() == A) {
 				try {
 					$fmtUsuOrg[$i]->setCodStatus($oStatus);
+					$fmtUsuOrg[$i]->setDataBloqueio(new \DateTime());
 					$em->persist($fmtUsuOrg[$i]);
 				} catch (\Exception $e) {
 					echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
@@ -78,7 +79,6 @@ try {
 				}
 			}
 		}
-		
 		
 		$mensagem = 'Usuário bloqueado com sucesso!';
 		
@@ -91,11 +91,12 @@ try {
 		$em->persist($oUsuOrg);
 		
 		//Associação - Formaturas
-		$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->getCodigo());
+		$fmtUsuOrg		= \Zage\Fmt\Organizacao::listaFmtUsuOrg($oUsuario->getCodigo(),$codOrganizacao);
 		for ($i = 0; $i < sizeof($fmtUsuOrg); $i++) {
 			if ($fmtUsuOrg[$i]->getCodStatus()->getCodigo() == B) {
 				try {
 					$fmtUsuOrg[$i]->setCodStatus($oStatus);
+					$fmtUsuOrg[$i]->setDataBloqueio(null);
 					$em->persist($fmtUsuOrg[$i]);
 				} catch (\Exception $e) {
 					echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir da lista de carteiras o valor: ".$infoCarteiras[$i]->getCodCarteira()->getCodigo()." Erro: ".$e->getMessage()));
@@ -104,15 +105,22 @@ try {
 			}
 		}
 		
-		
 		$mensagem = 'Usuário desbloqueado com sucesso!';
 	}
 	
-	$em->flush();
+	#################################################################################
+	## Salvar alterações
+	#################################################################################
+	try {
+		$em->flush();
+		$em->clear();
+	} catch (Exception $e) {
+		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+	}
 
 } catch (\Exception $e) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
-	die('1'.\Zage\App\Util::encodeUrl('||'));
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage())));
 	exit;
 }
 

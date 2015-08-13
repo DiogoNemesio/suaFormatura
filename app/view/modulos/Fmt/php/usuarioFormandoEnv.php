@@ -60,7 +60,7 @@ try {
 		$submit			= null;
 		$titulo			= 'Envio de convite';
 		$icone			= '<i class="fa fa-envelope orange"></i>';
-		$mensagem		= $tr->trans('Deseja enviar um novo convite para o formando').': <b>'.$info->getNome().'</b> ?';
+		$mensagem		= 'Deseja enviar um novo convite para o formando: <b>'.$info->getNome().'</b> ?';
 		$observacao		= '<i class="fa fa-arrow-right orange"></i> Está operação enviará um email com um novo convite para o formando acessar o sistema.';
 		$classe			= "text-warning";
 		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';
@@ -70,7 +70,7 @@ try {
 		$icone			= '<i class="fa fa-envelope orange"></i>';
 		$titulo			= 'Envio de convite';
 		$enviar			= 'disabled';
-		$mensagem		= 'Formando de <b>'.$info->getNome().'</b> já associado!';
+		$mensagem		= 'Formando de <b>'.$info->getNome().'</b> já está associado!';
 		$observacao		= '<i class="fa fa-arrow-right orange"></i> Este formando já possui o cadastro e a associação ativada.';
 		$classe			= "text-warning";
 		$botao			= '<i class="fa fa-envelope bigger-110"></i> Enviar ';

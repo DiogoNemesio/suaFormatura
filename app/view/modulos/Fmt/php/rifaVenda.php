@@ -40,7 +40,7 @@ if (isset($_GET['codRifa'])) 		$codRifa	= \Zage\App\Util::antiInjection($_GET['c
 ## Select dos rifas
 #################################################################################
 try {
-	$rifas	= $em->getRepository('Entidades\ZgfmtRifa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'indRifaEletronica' => 1, 'indRifaGerada' => 1));
+	$rifas	= \Zage\Fmt\Rifa::listaRifaAptaVenda();
 	$oRifas	= $system->geraHtmlCombo($rifas,	'CODIGO', 'NOME', $codRifa, null);
 
 } catch (\Exception $e) {

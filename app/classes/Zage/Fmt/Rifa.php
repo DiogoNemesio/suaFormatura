@@ -28,7 +28,7 @@ class Rifa {
 	
 	
 	/**
-	 * Lista todas as formaturas aptas para o sorteio
+	 * Lista todas as rifas aptas para o sorteio
 	 *
 	 * @param integer $codOrganizacao
 	 * @return array
@@ -77,6 +77,44 @@ class Rifa {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
 	}
+	
+	/**
+	 * Lista de rifas aptas para venda
+	 *
+	 * @param integer $codOrganizacao
+	 * @return array
+	 */
+	public static function listaRifaAptaVenda() {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('r')
+			->from('\Entidades\ZgfmtRifa','r')
+			->leftJoin('\Entidades\ZgadmOrganizacao'	,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= r.codOrganizacao')
+			->where($qb->expr()->andx(
+							$qb->expr()->eq('o.codigo'				, ':codOrganizacao'),
+							$qb->expr()->eq('r.indRifaEletronica'	, ':indRifaEletronica'),
+							$qb->expr()->eq('r.indRifaGerada'		, ':indRifaEletronica'),
+							$qb->expr()->gte('r.dataSorteio'		, ':now')
+					)
+			)
+	
+			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('indRifaEletronica', '1')
+			
+			->setParameter('now', new \DateTime("now"))
+				
+			->orderBy('r.dataSorteio', 'DESC');
+	
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 	
 	/**
 	 * Lista todos os formandos ATIVOS e o número de rifas geradas

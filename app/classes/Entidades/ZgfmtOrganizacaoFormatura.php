@@ -43,6 +43,13 @@ class ZgfmtOrganizacaoFormatura
     private $valorPorBoleto;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="DIA_VENCIMENTO", type="integer", nullable=true)
+     */
+    private $diaVencimento;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -160,6 +167,29 @@ class ZgfmtOrganizacaoFormatura
     public function getValorPorBoleto()
     {
         return $this->valorPorBoleto;
+    }
+
+    /**
+     * Set diaVencimento
+     *
+     * @param integer $diaVencimento
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setDiaVencimento($diaVencimento)
+    {
+        $this->diaVencimento = $diaVencimento;
+
+        return $this;
+    }
+
+    /**
+     * Get diaVencimento
+     *
+     * @return integer 
+     */
+    public function getDiaVencimento()
+    {
+        return $this->diaVencimento;
     }
 
     /**

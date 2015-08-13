@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -30,6 +35,23 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
+## Resgata as informações da organização que está cadastrando a Formatura
+#################################################################################
+$orgCad 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+
+#################################################################################
+## Verifica se as configurações do cerimonial estão OK
+#################################################################################
+if ($orgCad->getCodTipo()->getCodigo() == "CER") {
+	$orgCer		= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	if (!$orgCer) \Zage\App\Erro::halt('Sua Organização, não está configurada para cadastrar Formaturas, entre em contato com o SuaFormatura.com através do e-mail: '.$system->config["mail"]["admin"]);
+	$hidden		= "hidden";
+}else{
+	$hidden		= "";
+}
+
+
+#################################################################################
 ## Resgata as informações do banco
 #################################################################################
 if ((isset($codOrganizacao) && ($codOrganizacao))) {
@@ -38,6 +60,7 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		
 		$org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 		$orgFmt		= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $codOrganizacao));
+		$oContrato	= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $codOrganizacao));
 		
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
@@ -50,6 +73,20 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$cidade			= $orgFmt->getCodCidade()->getCodigo();
 	$dataConclusao	= ($orgFmt->getDataConclusao() != null) ? $orgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
 
+	if ($oContrato) {
+		$codPlano			= ($oContrato->getCodPlano()) ? $oContrato->getCodPlano()->getCodigo() : null;
+		$valorDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getValorDesconto());
+		$pctDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getPctDesconto());
+		$formaDesc			= ($valorDesconto > 0) ? "V" : "P";
+	}else{
+		$codPlano			= null;
+		$formaDesc			= "V";
+		$valorDesconto		= 0;
+		$pctDesconto		= 0;
+	}
+	
+	
+	
 }else{
 	
 	$ident			= null;
@@ -58,7 +95,24 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$curso			= null;
 	$cidade			= null;
 	$dataConclusao  = null;
+
+	$codPlano		= null;
+	$formaDesc		= "V";
+	$valorDesconto	= 0;
+	$pctDesconto	= 0;
+	
 }
+
+#################################################################################
+## Select dos planos (contrato)
+#################################################################################
+try {
+	$aPlanos		= $em->getRepository('Entidades\ZgadmPlano')->findBy(array('codTipoLicenca' => array('F')),array('nome' => 'ASC'));
+	$oPlanos		= $system->geraHtmlCombo($aPlanos,	'CODIGO', 'NOME',	$codPlano, 		null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
 
 #################################################################################
 ## Url Voltar
@@ -93,7 +147,12 @@ $tpl->set('CURSO'					,$curso);
 $tpl->set('CIDADE'					,$cidade);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao);
 
-$tpl->set('DUAL_LIST'				,$htmlLis);
+$tpl->set('PLANOS'					,$oPlanos);
+$tpl->set('COD_PLANO'				,$codPlano);
+$tpl->set('VALOR_DESCONTO'			,$valorDesconto);
+$tpl->set('PCT_DESCONTO'			,$pctDesconto);
+$tpl->set('FORMA_DESCONTO'			,$formaDesc);
+$tpl->set('HIDDEN'					,$hidden);
 
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));

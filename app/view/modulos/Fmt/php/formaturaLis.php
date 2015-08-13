@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -36,15 +41,26 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 $url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 
+
+#################################################################################
+## Resgata as informações da organização que está cadastrando a Formatura
+#################################################################################
+$orgCad 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+
+
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
-try {	
-	$formatura	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
+try {
+	if ($orgCad->getCodTipo()->getCodigo() == "ADM") {
+		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturas();
+	}else{
+		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($system->getCodOrganizacao());
+	}
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-	
+
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
@@ -52,20 +68,20 @@ $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GFormatura");
 $grid->adicionaTexto($tr->trans('NOME DA TURMA'),		20, $grid::CENTER	,'codOrganizacao:nome');
 $grid->adicionaTexto($tr->trans('IDENTIFICAÇÃO'),		15, $grid::CENTER	,'codOrganizacao:identificacao');
 $grid->adicionaTexto($tr->trans('INSTITUIÇÃO'),			20, $grid::CENTER	,'codInstituicao:sigla');
-$grid->adicionaTexto($tr->trans('CURSO'),				25, $grid::CENTER	,'codCurso:nome');
-$grid->adicionaData($tr->trans('CONCLUSÃO')	,		10, $grid::CENTER	,'dataConclusao');
-$grid->adicionaTexto($tr->trans('STATUS')	,			10, $grid::CENTER	,'codOrganizacao:codStatus:descricao');
+$grid->adicionaTexto($tr->trans('CURSO'),				20, $grid::CENTER	,'codCurso:nome');
+$grid->adicionaData($tr->trans('CONCLUSÃO')	,			8, $grid::CENTER	,'dataConclusao');
+$grid->adicionaTexto($tr->trans('STATUS')	,			8, $grid::CENTER	,'codOrganizacao:codStatus:descricao');
 //$grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($formatura);
+$grid->importaDadosDoctrine($formaturas);
 
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($formatura); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$formatura[$i]->getCodOrganizacao()->getCodigo().'&url='.$url);
+for ($i = 0; $i < sizeof($formaturas); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$formaturas[$i]->getCodOrganizacao()->getCodigo().'&url='.$url);
 	
 	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/formaturaAlt.php?id='.$uid);
 	$grid->setUrlCelula($i,7,"javascript:zgAbreModal('".ROOT_URL."/Fmt/formaturaExc.php?id=".$uid."');");

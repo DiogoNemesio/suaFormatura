@@ -252,6 +252,13 @@ $('#zgFormID').submit(function() {
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
 	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
 	return false; 
 });
 
@@ -348,8 +355,9 @@ function atualizaResumo() {
 	var $email		= $('#emailID').val();
 	var $telefone	= $('#telefoneID').val();
 	var $quantidade	= $('#quantidadeID').val();
-	var $valorRifa	= $('#valorRifaID').val();
+	var $valorRifa	= $('#valorRifaID').val().replace(".", "").replace(",",".");
 	var $nomeRifa	= $('#nomeRifaID').val();
+	var $total	 	= parseFloat(0);
 	
 	var $nValorRifa	= accounting.formatMoney($valorRifa, options);
 	
@@ -365,9 +373,10 @@ function atualizaResumo() {
 	if ($quantidade){
 		//CUSTO POR FORMANDO
 		$total = $valorRifa * $quantidade;
-		$total = "<span class='text-success'><b>"+accounting.formatMoney($total, options)+"</b></span>";
+		//$total = "<span class='text-success'><b>"+accounting.formatMoney($total, options)+"</b></span>";
+		$nTotal = "<span class='text-success'><b>"+accounting.formatMoney($total,options);+"</b></span>";
 		
-		$('#lbInfoTotalID').html($total);
+		$('#lbInfoTotalID').html($nTotal);
 	}
 	
 }

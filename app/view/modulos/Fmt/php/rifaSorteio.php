@@ -87,6 +87,9 @@ if ($rifas){
 	
 	
 }else{
+	
+	$codRifa = null;
+	
 	$msg .= '<div class="alert alert-warning">';
 	$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> No momento não existe nenhuma rifa para realizar o sorteio. Observe a data e hora de sorteio das rifas eletrônicas!';
 	$msg .= '</div>';
@@ -95,7 +98,7 @@ if ($rifas){
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$pid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codModulo='.$codRifa);
+$pid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa);
 $url			= ROOT_URL."/Fmt/".basename(__FILE__)."?id=".$id;
 
 #################################################################################

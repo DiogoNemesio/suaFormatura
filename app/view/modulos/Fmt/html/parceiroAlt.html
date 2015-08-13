@@ -13,6 +13,7 @@
 				<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
 				<input type='hidden' id='valID'>
+				<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
 				<div class="tabbable" id="tabID">
 					<ul class="nav nav-tabs padding-16">
 						<li class="active">
@@ -305,22 +306,31 @@
 										</div>
 										<div class="col-sm-1 pull-left" id="divHelpCodPlanoID"></div>
 									</div>
-									<div class="form-group col-sm-12" id="divIdentID">
-								    	<label for="identID" class="col-xs-12 col-sm-3 control-label">Idenficação</label>
-						    			<div class="input-group col-sm-8 pull-left">
-					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar o parceiro no sistema. Essa identifcação será utilizada para montar o LINK de acesso."></i></span>
-							    			<input class="form-control" id="identID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="www.suaformatura.com/" %READONLY% onblur="validaIdent();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="identificacao">
-								    	</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
-								    </div>
-								    <div class="form-group col-sm-12" id="divEmailID">
-						    			<label class="col-sm-3 control-label" for="emailID">Email</label>
-						    			<div class="input-group col-sm-8 pull-left">
-					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um email para contato."></i></span>
-						   					<input class="form-control" id="emailID" type="email" name="email" placeholder="Email" maxlength="200" value="%EMAIL%" autocomplete="off">
-						    			</div>
-						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
-						    		</div>
+									<div class="form-group col-sm-12" id="divFormaDescontoID">
+										<label class="col-sm-3 control-label">Forma de Desconto: </label>
+										<div class="btn-group btn-corner col-sm-8 pull-left">
+											<span id='codFormaDescontoVID' style="width: 180px;" class="btn btn-sm" onclick="selecionaFormaDescontoValorParcAlt();">Por Valor</span>
+											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a forma que deseja dar o desconto"></i></span>
+											<span id='codFormaDescontoPID' style="width: 180px;" class="btn btn-sm" onclick="selecionaFormaDescontoPctParcAlt();">Porcentagem</span>
+										</div>
+									</div>
+									
+									<div class="form-group col-sm-12" id="divValorDescontoID">
+										<label class="col-sm-3 control-label">Valor do Desconto</label>
+				    					<div class="input-group col-sm-4 pull-left">
+				    						<span tabindex="99008" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor do Desconto no contrato"></i></span>
+					    					<input class="form-control" id="valorDescontoID" type="text" name="valorDesconto" maxlength="20" value="%VALOR_DESCONTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+							    		</div>
+										<div class="help-block col-sm-5 inline" id="divHelpValorDescontoID"></div>
+					    			</div>
+									<div class="form-group col-sm-12" id="divPctDescontoID">
+										<label class="col-sm-3 control-label">Porcentagem de Desconto</label>
+				    					<div class="input-group col-sm-4 pull-left">
+				    						<span tabindex="99008" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de desconto no contrato"></i></span>
+					    					<input class="form-control" id="pctDescontoID" type="text" name="pctDesconto" maxlength="20" value="%PCT_DESCONTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="1">
+							    		</div>
+										<div class="help-block col-sm-5 inline" id="divHelpPctDescontoID"></div>
+					    			</div>
 						    	</div>
 							</div>
 						</div>
@@ -381,6 +391,7 @@ $('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true
 $('#tipoID').css('width','100%').select2({allowClear:true});
 $('#sexoID').css('width','100%').select2({allowClear:true});
 $('#segmentoID').css('width','100%').select2({allowClear:true});
+$('#codPlanoID').css('width','100%').select2({allowClear:true});
 //Popover
 $('[data-rel=popover]').popover({html:true});
 //Máscaras
@@ -389,6 +400,15 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 });
 //Mostrar div de acordo com o tipo de pessoa
 zgMostraDivs();
+
+var vFormaDesc 		= $('#codFormaDescontoID').val();
+if (vFormaDesc == "V") {
+	selecionaFormaDescontoValorParcAlt();
+}else{
+	selecionaFormaDescontoPctParcAlt();
+}
+
+
 function zgMostraDivs() {
 	var vTipo			= $('#tipoID').val();
 	
@@ -640,6 +660,23 @@ function validaParceiroAlt() {
 	var vIdent;
 	var vTab			= 0;
 
+	
+	//---- ABA CONTRATO ----//
+	var vCodPlano	= $('#codPlanoID').val();
+	
+	/** Plano **/
+	if(!vCodPlano){	
+		$('#divCodPlanoID').addClass('has-error');
+		$('#divHelpCodPlanoID').html(zgCriaSpanErro('Plano deve ser selecionado!'));
+		vOK		= false;
+		vTab 	= 3;
+	}else{
+		$('#divCodPlanoID').removeClass('has-error');
+		$('#divHelpCodPlanoID').html('&nbsp;');		
+	}
+
+	
+	
 	//---- ABA TELEFONE ----//
 	/** Valida os Telefones **/
 	var $codTelefone 	= $("input[name='codTelefone\\[\\]']");
@@ -964,5 +1001,36 @@ $('select[name="segMer[]"]').bootstrapDualListbox({
 	infoText: '',
 	selectorMinimalHeight: '100'
 });
+
+function selecionaFormaDescontoValorParcAlt() {
+	$('#codFormaDescontoVID').addClass("btn-primary");
+	$('#codFormaDescontoVID').removeClass("btn-light");
+	$('#codFormaDescontoPID').addClass("btn-light");
+	$('#codFormaDescontoPID').removeClass("btn-primary");
+	$('#pctDescontoID').val(0);
+	$('#codFormaDescontoID').val("V");
+	mostraDivFormaDescontoParcAlt();
+}
+
+function selecionaFormaDescontoPctParcAlt() {
+	$('#codFormaDescontoPID').addClass("btn-primary");
+	$('#codFormaDescontoPID').removeClass("btn-light");
+	$('#codFormaDescontoVID').addClass("btn-light");
+	$('#codFormaDescontoVID').removeClass("btn-primary");
+	$('#valorDescontoID').val(0);
+	$('#codFormaDescontoID').val("P");
+	mostraDivFormaDescontoParcAlt();
+}
+
+function mostraDivFormaDescontoParcAlt() {
+	var vFormaDesc 		= $('#codFormaDescontoID').val();
 	
+	if (vFormaDesc 	== 'V') {
+		$('#divPctDescontoID').hide();
+		$('#divValorDescontoID').show();
+	}else{
+		$('#divValorDescontoID').hide();
+		$('#divPctDescontoID').show();
+	}
+}
 </script>

@@ -49,14 +49,14 @@ if (!isset($codOrganizacao)) 		{
 try {
 
 	$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
-	
+
 	if (!$info) 	{
 		\Zage\App\Erro::halt($tr->trans('Usuário não existe'));
 	}
-	
+
 	$podeRemover	= null;
 	$mensagem		= $tr->trans('Deseja realmente excluir o usuário').': <b>'.$info->getNome().'</b> ?';
-	$observacao		= $tr->trans('Está operação excluirá definitivamente o usuário do sistema. Caso queria apenas suspender temporariamente, faça uso do botão de bloqueio.');
+	$observacao		= $tr->trans('<i class="fa fa-exclamation-triangle red"></i> Está operação excluirá definitivamente o usuário do portal.');
 	$classe			= "text-warning";
 
 } catch (\Exception $e) {
@@ -81,7 +81,7 @@ $tpl->load(HTML_PATH . '/templateModalExc.html');
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('PODE_REMOVER'		,$podeRemover);
-$tpl->set('TITULO'				,$tr->trans('Exclusão de Usuário'));
+$tpl->set('TITULO'				,$tr->trans('Excluir Formando'));
 $tpl->set('ID'					,$id);
 $tpl->set('TEXTO'				,$mensagem);
 $tpl->set('OBSERVACAO'			,$observacao);

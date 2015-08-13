@@ -90,23 +90,17 @@ try {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
 	}
-
-} catch (\Exception $e) {
-	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage())));
-	exit;
-}
-
-#################################################################################
-## Criar notificação
-#################################################################################
-try {
+	
+	#################################################################################
+	## Criar notificação
+	#################################################################################
 	
 	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuOrg->getCodigo().'&_cdu02='.$oUsuario->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
 	if ($oUsuario->getCodStatus()->getCodigo() == P) {
 		$assunto			= "Confirmação de cadastro";
 		$template			= 'USUARIO_CADASTRO';
 		$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
-		$texto = 'Você foi adionado a formatura <b>'.$oOrg->getNome().'</b>. Confirme seu cadastro para acessar tudo sobre sua formatura.'; 
+		$texto = 'Você foi adionado a formatura <b>'.$oOrg->getNome().'</b>. Confirme seu cadastro para acessar tudo sobre sua formatura.';
 	}else{
 		$assunto			= "Associação a uma nova formatura";
 		$template			= 'USUARIO_CADASTRO';
@@ -133,10 +127,20 @@ try {
 	$notificacao->adicionaVariavel("TEXTO", $texto);
 	$notificacao->salva();
 	
-	$em->flush();
+	#################################################################################
+	## Salvar notificação
+	#################################################################################
+	try {
+		$em->flush();
+		$em->clear();
+	} catch (Exception $e) {
+		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+	}
+	
 
 } catch (\Exception $e) {
-	die('1'.\Zage\App\Util::encodeUrl('||'));
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage())));
 	exit;
 }
 

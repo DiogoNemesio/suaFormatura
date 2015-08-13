@@ -203,64 +203,69 @@ try {
 		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
 	}
 
+	#################################################################################
+	## Enviar notificação
+	#################################################################################
+	//Verificar se é pra enviar notificacao
+	if ($oUsuario->_getEnviarEmail() == true && $oUsuario->_getCodigo()) {
+	
+		$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuario->_getUsuOrg()->getCodigo().'&_cdu02='.$oUsuario->_getUsuario()->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
+		if ($oUsuario->_getUsuario()->getCodStatus()->getCodigo() == P) {
+			$assunto			= "Confirmação de cadastro";
+			$nome				= $oUsuario->getNome();
+			$texto = 'Você foi adionado a formatura <b>'.$oOrg->getNome().'</b>. Confirme seu cadastro para acessar tudo sobre sua formatura.';
+			$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
+		}
+	
+		//$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+		$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'USUARIO_CADASTRO'));
+		$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+		$notificacao->setAssunto($assunto);
+		//$notificacao->setCodRemetente($oRemetente);
+	
+		$notificacao->associaUsuario($oUsuario->_getCodigo());
+	
+		$notificacao->enviaEmail();
+		//$notificacao->enviaSistema();
+		//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
+		$notificacao->setCodTemplate($template);
+		$notificacao->adicionaVariavel('ID', $id);
+		$notificacao->adicionaVariavel("CONFIRM_URL", $confirmUrl);
+		$notificacao->adicionaVariavel("ASSUNTO", $assunto);
+		$notificacao->adicionaVariavel("NOME", $nome);
+		$notificacao->adicionaVariavel("TEXTO", $texto);
+		$notificacao->salva();
+		/**
+		 //NOTIFICAÇÃO POR WHATSAPP
+		 $notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+		 $notificacao->setAssunto($assunto);
+		 //$notificacao->setCodUsuario($oRemetente);
+		 $notificacao->associaUsuario($oUsuario->_getCodigo());
+	
+		 $notificacao->enviaWa();
+		 $notificacao->setMensagem("Olá".$nome.", você foi adiconar a formatura".$oOrg->getNome()." Para acessar o portal da sua formatura é necessário que confirme o recebimento de confirmação de cadastro no seu email.
+	
+		 www.suaformatura.com/".$oOrg->getIdentificacao()."");
+		 $notificacao->salva();
+		**/
+		#################################################################################
+		## Salvar notificação
+		#################################################################################
+		try {
+			$em->flush();
+			$em->clear();
+		} catch (Exception $e) {
+			$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+			throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+		}
+	
+	}
+	
+	
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
-}
-	
-#################################################################################
-## Enviar notificação
-#################################################################################
-//Verificar se é pra enviar notificacao
-if ($oUsuario->_getEnviarEmail() == true && $oUsuario->_getCodigo()) {
-
-	$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuario->_getUsuOrg()->getCodigo().'&_cdu02='.$oUsuario->_getUsuario()->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());
-	if ($oUsuario->_getUsuario()->getCodStatus()->getCodigo() == P) {
-		//$tpl->load(MOD_PATH . "/Seg/html/usuarioCadEmail.html");
-		$assunto			= "Confirmação de cadastro";
-		$nome				= $oUsuario->getNome();
-		$texto = 'Você foi adionado a formatura <b>'.$oOrg->getNome().'</b>. Confirme seu cadastro para acessar tudo sobre sua formatura.';
-		$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
-	}else{
-		//$tpl->load(MOD_PATH . "/Seg/html/usuarioCadAssocEmail.html");
-		$assunto			= "Associação a uma nova formatura";
-		$confirmUrl			= ROOT_URL . "/Seg/u02.php?cid=".$cid;
-	}
-	
-	//$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
-	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'USUARIO_CADASTRO'));
-	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
-	$notificacao->setAssunto($assunto);
-	//$notificacao->setCodRemetente($oRemetente);
-
-	$notificacao->associaUsuario($oUsuario->_getCodigo());
-
-	$notificacao->enviaEmail();
-	//$notificacao->enviaSistema();
-	//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
-	$notificacao->setCodTemplate($template);
-	$notificacao->adicionaVariavel('ID', $id);
-	$notificacao->adicionaVariavel("CONFIRM_URL", $confirmUrl);
-	$notificacao->adicionaVariavel("ASSUNTO", $assunto);
-	$notificacao->adicionaVariavel("NOME", $nome);
-	$notificacao->adicionaVariavel("TEXTO", $texto);
-	$notificacao->salva();
-	/**
-	//NOTIFICAÇÃO POR WHATSAPP
-	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
-	$notificacao->setAssunto($assunto);
-	//$notificacao->setCodUsuario($oRemetente);
-	$notificacao->associaUsuario($oUsuario->_getCodigo());
-	
-	$notificacao->enviaWa();
-	$notificacao->setMensagem("Olá".$nome.", você foi adiconar a formatura".$oOrg->getNome()." Para acessar o portal da sua formatura é necessário que confirme o recebimento de confirmação de cadastro no seu email.
-
-	www.suaformatura.com/".$oOrg->getIdentificacao()."");
-	$notificacao->salva();
-	**/
-	$em->flush();
-
 }
 
 $system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Formando salvo com sucesso."));

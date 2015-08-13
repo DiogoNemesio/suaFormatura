@@ -105,6 +105,7 @@ class Organizacao {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
 	}
+
 	/**
 	 * Listar tipo de organização excluindo os tipos MT (formatura), CAS (casamentos), ADM (admnistração)
 	 *
@@ -131,4 +132,32 @@ class Organizacao {
 	}
 	
 
+	/**
+	 * Verifica se o cerimonial já foi configurado
+	 *
+	 * @return boolean
+	 */
+	public static function cerimonialEstaConfigurado($codOrganizacao) {
+		global $em;
+	
+		$qb 	= $em->createQueryBuilder();
+			
+		try {
+			$qb->select('count(oc.codigo) as num')
+			->from('\Entidades\ZgfmtOrganizacaoCerimonial','oc')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('oc.codOrganizacao'	, ':codOrganizacao')
+			))
+			->setParameter('codOrganizacao',$codOrganizacao);
+	
+			$query 		= $qb->getQuery();
+			$tem		= $query->getSingleScalarResult(); 
+			
+			if ($tem > 0) 	return true;
+			else			return false;
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 }

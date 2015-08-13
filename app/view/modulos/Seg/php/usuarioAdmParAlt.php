@@ -52,6 +52,8 @@ if ($codUsuario) {
 	$usuario		= $info->getUsuario();
 	$nome			= $info->getNome();
 	$apelido		= $info->getApelido();
+	$rg				= ($info->getRg()) ? $info->getRg() : null;
+	$dataNasc		= ($info->getDataNascimento()) ? $info->getDataNascimento()->format($system->config["data"]["dateFormat"]) : null;
 	$cpf			= $info->getCpf();
 	$perfil			= $oPerfil->getCodPerfil()->getCodigo();
 	$codStatus		= $info->getCodStatus()->getCodigo();
@@ -105,6 +107,8 @@ if ($codUsuario) {
 	$usuario		= null;
 	$nome			= null;
 	$apelido		= null;
+	$dataNasc		= null;
+	$rg				= null;
 	$cpf			= null;
 	$perfil			= null;
 	$codStatus		= null;
@@ -120,6 +124,23 @@ if ($codUsuario) {
 	$readOnlyBairro = 'readonly';
 	$readOnlyEnd 	= 'readonly';
 	
+}
+
+#################################################################################
+## Mensagem de acesso
+#################################################################################
+if ($oPerfil){
+	if ($oPerfil->getCodStatus()->getCodigo() == B){
+		$msgAcesso .= '<div class="alert alert-warning">';
+		$msgAcesso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> As alterações de acesso não serão realizadas, pois o usuário está bloqueado.';
+		$msgAcesso .= '</div>';
+	}elseif ($oPerfil->getCodStatus()->getCodigo() == P){
+		$msgAcesso .= '<div class="alert alert-warning">';
+		$msgAcesso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> As informações de acesso ainda não foram efetivadas, pois o usuário está pendente.';
+		$msgAcesso .= '</div>';
+	}else{
+		$msgAcesso = null;
+	}
 }
 
 #################################################################################
@@ -180,7 +201,7 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 #################################################################################
 ## Lista de acessos (formaturas)
 #################################################################################
-$orgAcesso		= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao();
+$orgAcesso		= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($codOrganizacao);
 $usuOrg			= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $codUsuario , 'codStatus' => A));
 
 $arrayUsuOrg 	= array();
@@ -198,25 +219,15 @@ for ($i = 0; $i < sizeof($orgAcesso); $i++) {
 	}else{
 		$selected = '';
 	}
-
-	$htmlLis .= '<option value="'.$orgAcesso[$i]->getCodOrganizacao()->getCodigo().'" '.$selected.'>'.$orgAcesso[$i]->getCodOrganizacao()->getNome().'</option>';
-}
-
-#################################################################################
-## Mensagem de acesso
-#################################################################################
-if ($oPerfil){
-	if ($oPerfil->getCodStatus()->getCodigo() == B){
-		$msgAcesso .= '<div class="alert alert-warning">';
-		$msgAcesso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> As alterações de acesso não serão realizadas, pois o usuário está bloqueado.';
-		$msgAcesso .= '</div>';
-	}elseif ($oPerfil->getCodStatus()->getCodigo() == P){
-		$msgAcesso .= '<div class="alert alert-warning">';
-		$msgAcesso .= '<i class="fa fa-exclamation-triangle bigger-125"></i> As informações de acesso ainda não foram efetivadas, pois o usuário está pendente.';
-		$msgAcesso .= '</div>';
+	
+	$usuOrgInfo		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario , 'codOrganizacao' => $orgAcesso[$i]->getCodOrganizacao()->getCodigo() ));
+	if ($usuOrgInfo){
+		$status = ' ('.$usuOrgInfo->getCodStatus()->getDescricao().')';
 	}else{
-		$msgAcesso = null;
+		$status = null;
 	}
+	
+	$htmlLis .= '<option value="'.$orgAcesso[$i]->getCodOrganizacao()->getCodigo().'" '.$selected.'>'.$orgAcesso[$i]->getCodOrganizacao()->getNome().$status.'</option>';
 }
 
 #################################################################################
@@ -240,6 +251,8 @@ $tpl->set('NOME'				,$nome);
 $tpl->set('APELIDO'				,$apelido);
 $tpl->set('EMAIL'				,$email);
 $tpl->set('CPF'					,$cpf);
+$tpl->set('RG'					,$rg);
+$tpl->set('DATA_NASC'			,$dataNasc);
 $tpl->set('PERFIL'				,$perfil);
 $tpl->set('SEXO'				,$oSexo);
 
