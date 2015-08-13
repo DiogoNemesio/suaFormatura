@@ -77,7 +77,7 @@ try {
 		$log->debug("Erro ao gerar o vencedor:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
 	}
-	$log->debug('entrei');
+	
 	/********** Criar notificação *********/	
 	if (!empty($oRifa->getNumeroVencedor()->getEmail())) {
 		### Gerar notificacao enviar email ###
@@ -121,7 +121,6 @@ try {
 	}
 	
 } catch (\Exception $e) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
 }

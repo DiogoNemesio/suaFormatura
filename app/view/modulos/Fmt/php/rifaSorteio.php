@@ -1,4 +1,5 @@
 <?php
+use Zage\Fmt\Rifa;
 #################################################################################
 ## Includes
 #################################################################################
@@ -52,17 +53,28 @@ try {
 #################################################################################
 $msg = null;
 if ($rifas){
+	$verifica = false;
 	if ($codRifa != null){
-		$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codRifa));
-	}else{
-		if($rifas){
-			$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $rifas[0]->getCodigo()));
-			$codRifa  = $rifas[0]->getCodigo(); 
+		for ($i = 0 ; $i < sizeof($rifas) ; $i++){
+			if ($codRifa == $rifas[$i]->getCodigo()){
+				$verfica = true;
+			}
 		}
+		if ($verifica == true){
+			$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codRifa));
+		}else{
+			$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $rifas[0]->getCodigo()));
+			$codRifa  = $rifas[0]->getCodigo();
+		}
+		
+	}else{
+		$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $rifas[0]->getCodigo()));
+		$codRifa  = $rifas[0]->getCodigo(); 	
 	}
 	//Resgatar informações da rifa
 	if ($infoRifa){
-		//Informações 
+		//Informações
+		
 		$nome 	= $infoRifa->getNome();
 		$premio	= $infoRifa->getPremio();
 		$valor 	= $infoRifa->getValorUnitario();
@@ -70,8 +82,8 @@ if ($rifas){
 		
 		//Verificar se já foi sorteado
 		if ($infoRifa->getNumeroVencedor() != null){
-			$numVencedor = $infoRifa->getNumeroVencedor()->getNumero();
 			
+			$numVencedor 		= $infoRifa->getNumeroVencedor()->getNumero();
 			$vencedorNome		= $infoRifa->getNumeroVencedor()->getNome();
 			$vencedorEmail		= $infoRifa->getNumeroVencedor()->getEmail();
 			$vencedorTelefone	= $infoRifa->getNumeroVencedor()->getTelefone();
