@@ -44,7 +44,7 @@ if ((isset($codRifa) && ($codRifa))) {
 	
 	$nome 				= $info->getNome();
 	$premio				= $info->getPremio();
-	$custo				= \Zage\App\Util::formataDinheiro($info->getCusto());
+	$custo				= ($info->getCusto() != 0) ? \Zage\App\Util::formataDinheiro($info->getCusto()) : null;
 	$dataSorteio		= $info->getDataSorteio()->format($system->config["data"]["datetimeSimplesFormat"]);
 	$localSorteio 		= $info->getLocalSorteio();
 	$qtdeObrigatorio	= $info->getQtdeObrigatorio();

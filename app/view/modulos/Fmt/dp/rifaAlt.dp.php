@@ -44,6 +44,15 @@ if ($numUsuAtivo == 0){
 }
 
 /******* Nome *********/
+if (isset($codRifa) && (!empty($codRifa))){
+	$oRifa	= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+	if ($oRifa->getIndRifaGerada() == 1){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Não podemos alterar um rifa em andamento."));
+		$err	= 1;
+	}
+}
+
+/******* Nome *********/
 if (!isset($nome) || (empty($nome))) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome da rifa deve ser preenchido!"));
 	$err	= 1;
