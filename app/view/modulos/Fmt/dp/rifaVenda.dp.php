@@ -135,15 +135,15 @@ try {
 		$infoVenda = $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codVenda' => $codVenda));
 		$total = 0;
 		for ($i = 0; $i < sizeof($infoVenda); $i++) {
-			$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
-			$linha = $i + 1;
-				
-			$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
-			$html .= '<td style="padding: 10px;">'.$linha.'</td>';
-			$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getCodRifa()->getNome().'</td>';
-			$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getNumero().'</td>';
-			$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getCodRifa()->getValorUnitario().'</td>';
-			$html .= '</tr>';
+		$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
+		$linha = $i + 1;
+			
+		$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
+				$html .= '<td style="padding: 10px;">'.$linha.'</td>';
+					$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getCodRifa()->getNome().'</td>';
+					$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getNumero().'</td>';
+					$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getCodRifa()->getValorUnitario().'</td>';
+					$html .= '</tr>';
 		}
 			
 		$notificacao->adicionaVariavel('COD_RIFA'		,$rifa);
@@ -163,19 +163,17 @@ try {
 		$notificacao->salva();
 	}
 	
-	$em->flush();
-	$em->getConnection()->commit();
-	
-	/********** Salvar as informações *******
+	/********** Salvar as informações *********/
 	try {
 		$em->flush();
 		$em->getConnection()->commit();
+		$em->clear();
 	
 	} catch (Exception $e) {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
 	}
-**/
+
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
