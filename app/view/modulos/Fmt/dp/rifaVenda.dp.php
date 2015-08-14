@@ -105,15 +105,10 @@ try {
 		
 		$em->persist($oRifaNum);
 	}
-	
-	$em->flush();
-	$em->getConnection()->commit();
-	$em->clear();
-	
-	/********** Salvar as informações ******
+		
+	/********** Salvar as informações *********/
 	try {		
 		$em->flush();
-		$em->getConnection()->commit();
 		$em->clear();
 		
 	} catch (Exception $e) {
@@ -121,7 +116,62 @@ try {
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
 	}
 
-	***/
+	/********** Enviar notificação *********/
+	if (!empty($email)) {
+		### Gerar notificacao enviar email ###
+		$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+		$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_CONF_COMPRA'));
+		$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
+		$notificacao->setAssunto("Compra da Rifa com sucesso.");
+		$notificacao->setCodRemetente($oRemetente);
+			
+		//$notificacao->associaUsuario($oHistEmail->getCodUsuario()->getCodigo());
+		//$notificacao->enviaSistema();
+		$notificacao->enviaEmail();
+		$notificacao->setEmail($email);
+		$notificacao->setCodTemplate($template);
+			
+		### Gerar confirmacao rifa ###
+		$infoVenda = $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codVenda' => $codVenda));
+		$total = 0;
+		for ($i = 0; $i < sizeof($infoVenda); $i++) {
+			$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
+			$linha = $i + 1;
+				
+			$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
+			$html .= '<td style="padding: 10px;">'.$linha.'</td>';
+			$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getCodRifa()->getNome().'</td>';
+			$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getNumero().'</td>';
+			$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getCodRifa()->getValorUnitario().'</td>';
+			$html .= '</tr>';
+		}
+			
+		$notificacao->adicionaVariavel('COD_RIFA'		,$rifa);
+		$notificacao->adicionaVariavel('NOME_RIFA'		,$infoVenda[0]->getCodRifa()->getNome());
+		$notificacao->adicionaVariavel('PREMIO'			,$infoVenda[0]->getCodRifa()->getPremio());
+		$notificacao->adicionaVariavel('DATA_SORTEIO'	,$infoVenda[0]->getCodRifa()->getDataSorteio()->format($system->config["data"]["datetimeSimplesFormat"]));
+		$notificacao->adicionaVariavel('LOCAL_SORTEIO'	,$infoVenda[0]->getCodRifa()->getLocalSorteio());
+		$notificacao->adicionaVariavel('ORGANIZACAO'	,$infoVenda[0]->getCodRifa()->getCodOrganizacao()->getNome());
+		$notificacao->adicionaVariavel('COD_VENDA'		,$codVenda);
+		$notificacao->adicionaVariavel('TOTAL'			,$total);
+		$notificacao->adicionaVariavel('DATA_VENDA'		,$infoVenda[0]->getData()->format($system->config["data"]["datetimeSimplesFormat"]));
+		$notificacao->adicionaVariavel('NOME'			,$infoVenda[0]->getNome());
+		$notificacao->adicionaVariavel('EMAIL'			,$infoVenda[0]->getEmail());
+		$notificacao->adicionaVariavel('TELEFONE'		,$infoVenda[0]->getTelefone());
+		$notificacao->adicionaVariavel('HTML_TABLE'		,$html);
+			
+		$notificacao->salva();
+	}
+	
+	/********** Salvar as informações *********/
+	try {
+		$em->flush();
+		$em->getConnection()->commit();
+	
+	} catch (Exception $e) {
+		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
+	}
 
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
