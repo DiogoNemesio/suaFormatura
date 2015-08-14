@@ -35,7 +35,7 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codRifa'])) 		$codRifa	= \Zage\App\Util::antiInjection($_GET['codRifa']);
+if (isset($_GET['codRifaCombo'])) 		$codRifa	= \Zage\App\Util::antiInjection($_GET['codRifaCombo']);
 
 #################################################################################
 ## Select dos rifas
@@ -53,20 +53,9 @@ try {
 #################################################################################
 $msg = null;
 if ($rifas){
-	$verifica = false;
 	if ($codRifa != null){
-		for ($i = 0 ; $i < sizeof($rifas) ; $i++){
-			if ($codRifa == $rifas[$i]->getCodigo()){
-				$verfica = true;
-			}
-		}
-		if ($verifica == true){
-			$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codRifa));
-		}else{
-			$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $rifas[0]->getCodigo()));
-			$codRifa  = $rifas[0]->getCodigo();
-		}
-		
+		$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codRifa));
+			$em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codRifa));
 	}else{
 		$infoRifa = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $rifas[0]->getCodigo()));
 		$codRifa  = $rifas[0]->getCodigo(); 	

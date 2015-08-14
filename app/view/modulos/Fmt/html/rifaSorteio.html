@@ -160,9 +160,9 @@ atualizaResumo();
 verificaCodRifa();
 //Select2
 $(".select2").select2();
-
 //Carregar informações caso já tenha sorteado	
 verificaVencedor();
+
 function verificaVencedor(){
 
 	if ($('#numVencedorID').val()){
@@ -461,7 +461,7 @@ function atualizaResumo() {
 ATUALIZAR TELA DE ACORDO COM A RIFA
 /******************************************************/
 function buscaRifa() {
-	zgLoadUrl('%URL%&codRifa='+$('#rifaID').val()+'&busca='+$('#nav-search-input').val());
+	zgLoadUrl('%URL%&codRifaCombo='+$('#rifaID').val()+'&busca='+$('#nav-search-input').val());
 	return false;
 }
 
