@@ -163,7 +163,10 @@ try {
 		$notificacao->salva();
 	}
 	
-	/********** Salvar as informações *********/
+	$em->flush();
+	$em->getConnection()->commit();
+	
+	/********** Salvar as informações *******
 	try {
 		$em->flush();
 		$em->getConnection()->commit();
@@ -172,7 +175,7 @@ try {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
 	}
-
+**/
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
