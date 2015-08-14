@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$system,$_codMenu_;
+global $em,$tr,$system;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -20,6 +20,8 @@ if (isset($_GET['id'])) {
 	$id = \Zage\App\Util::antiInjection($_GET["id"]);
 }elseif (isset($_POST['id'])) {
 	$id = \Zage\App\Util::antiInjection($_POST["id"]);
+}elseif (isset($id)) 	{
+	$id = \Zage\App\Util::antiInjection($id);
 }else{
 	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
@@ -35,46 +37,45 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
+## Verificar parâmetro obrigatório
+#################################################################################
+if (!isset($_GET["cid"])) \Zage\App\Erro::halt('Falta de Parâmetros 2');
+
+#################################################################################
+## Descompacta o CID
+#################################################################################
+$cid			= \Zage\App\Util::antiInjection($_GET["cid"]);
+\Zage\App\Util::descompactaId($cid);
+
+#################################################################################
+## Monta o array
+#################################################################################
+if (!isset($aSelFormandos)) \Zage\App\Erro::halt('Falta de Parâmetros 3');
+$aSelFormandos		= explode(",",$aSelFormandos);
+
+#################################################################################
 ## Resgata as informações do banco
 #################################################################################
-try {
-		
-	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
+$formandos		= $em->getRepository('Entidades\ZgsegUsuario')->findBy(array('codigo' => $aSelFormandos));
+
+if (sizeof($formandos) == 0) 	\Zage\App\Erro::halt($tr->trans('Formando[s] não encontrado !!!'));
+
+#################################################################################
+## Inicia o html da tabela
+#################################################################################
+$htmlTab	= '';
+
+#################################################################################
+## Faz o loop nas parcelas para montar a tabela
+#################################################################################
+for ($i = 0 ;$i < sizeof($formandos); $i++) {
+
 }
 
 #################################################################################
-## Verificar se existe contrato 
+## Urls
 #################################################################################
-if (!$contrato)	\Zage\App\Erro::halt('Não foi localizado o contrato !!!');
-
-	
-$valorPorFormando		= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorFormando());
-$valorPorBoleto			= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorBoleto());
-$taxaPorFormando		= \Zage\App\Util::formataDinheiro(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
-$diaVencimento			= $oOrgFmt->getDiaVencimento();
-
-if ($valorPorFormando	< 0) 	$valorPorFormando	= 0;
-if ($valorPorBoleto		< 0)	$valorPorBoleto		= 0;
-if ($taxaPorFormando	< 0)	$taxaPorFormando	= 0;
-if (!$diaVencimento)			$diaVencimento		= 5;
-
-#################################################################################
-## Montar o select do dia de vencimento
-#################################################################################
-$oDiaVenc	= "";
-for ($i = 1; $i <= 31; $i++) {
-	$selected = ($i == $diaVencimento) ? " selected " : "";
-	$dia	= str_pad($i, 2, "0",STR_PAD_LEFT);
-	if ($i > 28) {
-		$dia	.= " * (ou o último dia do mês)"; 
-	}
-	
-	$oDiaVenc	.= "<option value='".$i."' $selected>".$dia."</option>"; 
-}
+$urlVoltar			= ROOT_URL . "/Fin/geraContaLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -85,21 +86,13 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('ID'						,$id);
-$tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());
-$tpl->set('VALOR_FORMANDO'			,$valorPorFormando);
-$tpl->set('VALOR_BOLETO'			,$valorPorBoleto);
-$tpl->set('TAXA_FORMANDO'			,$taxaPorFormando);
-$tpl->set('DIAS_VENC'				,$oDiaVenc);
-
-$tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
-$tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
-$tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
-$tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-$tpl->set('IC'						,$_icone_);
-$tpl->set('COD_MENU'				,$_codMenu_);
+$tpl->set('ID'					,$id);
+$tpl->set('TITULO'				,'Geração de Contas');
+$tpl->set('URL_VOLTAR'			,$urlVoltar);
+$tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
+

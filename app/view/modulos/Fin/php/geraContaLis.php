@@ -5,13 +5,14 @@
 if (defined('DOC_ROOT')) {
 	include_once(DOC_ROOT . 'include.php');
 }else{
-	include_once('../include.php');
+	include_once('./include.php');
 }
 
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$system,$_codMenu_;
+global $system,$em,$tr;
+
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -20,6 +21,8 @@ if (isset($_GET['id'])) {
 	$id = \Zage\App\Util::antiInjection($_GET["id"]);
 }elseif (isset($_POST['id'])) {
 	$id = \Zage\App\Util::antiInjection($_POST["id"]);
+}elseif (isset($id)) 	{
+	$id = \Zage\App\Util::antiInjection($id);
 }else{
 	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
@@ -35,46 +38,59 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata as informações do banco
+## Resgata a url desse script
+#################################################################################
+$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
+
+#################################################################################
+## Resgata os dados do grid
 #################################################################################
 try {
-		
-	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	
+	$formandos	= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
 #################################################################################
-## Verificar se existe contrato 
+## Cria o objeto do Grid (bootstrap)
 #################################################################################
-if (!$contrato)	\Zage\App\Erro::halt('Não foi localizado o contrato !!!');
-
-	
-$valorPorFormando		= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorFormando());
-$valorPorBoleto			= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorBoleto());
-$taxaPorFormando		= \Zage\App\Util::formataDinheiro(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
-$diaVencimento			= $oOrgFmt->getDiaVencimento();
-
-if ($valorPorFormando	< 0) 	$valorPorFormando	= 0;
-if ($valorPorBoleto		< 0)	$valorPorBoleto		= 0;
-if ($taxaPorFormando	< 0)	$taxaPorFormando	= 0;
-if (!$diaVencimento)			$diaVencimento		= 5;
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GContaLis");
+$checkboxName	= "selItemGeracaoConta";
+$grid->adicionaCheckBox($checkboxName);
+$grid->adicionaTexto($tr->trans('USUÁRIO'),				15	,$grid::CENTER	,'usuario');
+$grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
+$grid->adicionaTexto($tr->trans('CPF'),					12	,$grid::CENTER	,'cpf','cpf');
+$grid->adicionaTexto($tr->trans('RG'),					12	,$grid::CENTER	,'rg');
+$grid->adicionaData($tr->trans('NASCIMENTO'),			12	,$grid::CENTER	,'dataNascimento');
+$grid->adicionaTexto($tr->trans('STATUS'),				10	,$grid::CENTER	,'codStatus:descricao');
+$grid->adicionaTexto($tr->trans('SEXO'),				10	,$grid::CENTER	,'sexo:descricao');
+$grid->importaDadosDoctrine($formandos);
 
 #################################################################################
-## Montar o select do dia de vencimento
+## Popula os valores dos botões
 #################################################################################
-$oDiaVenc	= "";
-for ($i = 1; $i <= 31; $i++) {
-	$selected = ($i == $diaVencimento) ? " selected " : "";
-	$dia	= str_pad($i, 2, "0",STR_PAD_LEFT);
-	if ($i > 28) {
-		$dia	.= " * (ou o último dia do mês)"; 
-	}
-	
-	$oDiaVenc	.= "<option value='".$i."' $selected>".$dia."</option>"; 
+for ($i = 0; $i < sizeof($formandos); $i++) {
+
+	#################################################################################
+	## Definir o valor da Checkbox
+	#################################################################################
+	$grid->setValorCelula($i,0,$formandos[$i]->getCodigo());
+
 }
+
+#################################################################################
+## Gerar o código html do grid
+#################################################################################
+try {
+	$htmlGrid	= $grid->getHtmlCode();
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+#################################################################################
+## Gerar a url de geração de Contas
+#################################################################################
+$urlGeracao				= ROOT_URL."/Fin/geraContaMassa.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -85,19 +101,13 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('ID'						,$id);
-$tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());
-$tpl->set('VALOR_FORMANDO'			,$valorPorFormando);
-$tpl->set('VALOR_BOLETO'			,$valorPorBoleto);
-$tpl->set('TAXA_FORMANDO'			,$taxaPorFormando);
-$tpl->set('DIAS_VENC'				,$oDiaVenc);
-
-$tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
-$tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
-$tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
-$tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-$tpl->set('IC'						,$_icone_);
-$tpl->set('COD_MENU'				,$_codMenu_);
+$tpl->set('GRID'			,$htmlGrid);
+$tpl->set('NOME'			,$tr->trans("Geração de Contas"));
+$tpl->set('IC'				,$_icone_);
+$tpl->set('FILTER_URL'		,$url);
+$tpl->set('DIVCENTRAL'		,$system->getDivCentral());
+$tpl->set('CHECK_NAME'		,$checkboxName);
+$tpl->set('URL_GERACAO'		,$urlGeracao);
 
 #################################################################################
 ## Por fim exibir a página HTML

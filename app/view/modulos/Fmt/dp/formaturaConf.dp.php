@@ -19,6 +19,7 @@ global $em,$log,$system,$tr;
 if (isset($_POST['codOrganizacao']))		$codOrganizacao			= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
 if (isset($_POST['valorPorFormando']))		$valorPorFormando		= \Zage\App\Util::antiInjection($_POST['valorPorFormando']);
 if (isset($_POST['valorPorBoleto']))		$valorPorBoleto			= \Zage\App\Util::antiInjection($_POST['valorPorBoleto']);
+if (isset($_POST['diaVencimento']))			$diaVencimento			= \Zage\App\Util::antiInjection($_POST['diaVencimento']);
 
 
 $err	= null;
@@ -66,6 +67,7 @@ $valorPorBoleto		= \Zage\App\Util::toMysqlNumber($valorPorBoleto);
 try {
 	$oOrgFmt->setValorPorFormando($valorPorFormando);
 	$oOrgFmt->setValorPorBoleto($valorPorBoleto);
+	$oOrgFmt->setDiaVencimento($diaVencimento);
 	$em->persist($oOrgFmt);
 	
 	$em->flush();

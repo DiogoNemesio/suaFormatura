@@ -10,6 +10,16 @@
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
+			<div class="form-group col-sm-12" id="divDiaVencimentoID">
+			    <label for="identID" class="col-sm-3 control-label">Dia do Vencimento das Mensalidades</label>
+	    		<div class="input-group col-sm-5 pull-left">
+    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
+					<select class="select2" style="width:100%;" id="diaVencimentoID" name="diaVencimento" data-rel="select2">
+					%DIAS_VENC%
+					</select>
+			    </div>
+			    <div class="col-sm-1 pull-left" id="divHelpValorPorFormandoID"></div>
+			</div>
 			<div class="form-group col-sm-12" id="divValorPorFormandoID">
 			    <label for="identID" class="col-sm-3 control-label">Valor Por Formando</label>
 	    		<div class="input-group col-sm-5 pull-left">
@@ -59,6 +69,12 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 $('[data-rel=tooltip]').tooltip();
 $('[data-rel=popover]').popover({html:true});
 
+$('[data-rel="select2"]').each(function( index ) {
+	$(this).select2({allowClear: true});
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}
+});
 
 
 $('#btnSalvarFormaturaConfID').on("click", function(e) {

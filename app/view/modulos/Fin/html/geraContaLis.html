@@ -1,0 +1,100 @@
+<div class="row">
+	<div class="col-sm-12 widget-container-span">
+		<div class="widget-body">
+			<div class="box-content">
+				%GRID%
+			</div><!--/span-->
+		</div>
+	</div>
+</div>
+
+<script>
+
+var oTable		= $('#GContaLisID').dataTable();
+
+$( document ).ready(function() {
+	$('#zgGridCustomHeaderID').html('<div class="btn-group btn-corner center"><button id="btnAcaoGeraContaID" type="button" class="btn btn-white btn-sm tooltip-info" onclick="zgAcaoGeraSelecionados();" data-rel="tooltip" data-placement="top" title="Gerar as contas"><i class="fa fa-cog"></i>&nbsp; Gerar as contas</button></div>');
+
+	oTable.on( 'change', 'input[name="%CHECK_NAME%[]"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+
+		if ($count == 0) {
+			zgDesabilitaAcaoGeraContaLis();
+		}else{
+			zgHabilitaAcaoGeraContaLis();
+		}
+	} );
+	
+	oTable.on( 'change', 'input[name="%CHECK_NAME%_all"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+		var $api 		= oTable.api();
+		var $info 		= $api.page.info();
+		
+		if ($count == 0) {
+			zgDesabilitaAcaoGeraContaLis();
+		}else{
+			zgHabilitaAcaoGeraContaLis();
+			
+			if ($info.pages > 1) {
+				$.gritter.add({
+					title: 'Aviso',
+					text: 'Os Formandos de todas as páginas, foram selecionados !!!!',
+					class_name: 'gritter-info',
+					time: '5000',
+				});
+			}
+		}
+	} );
+	
+	//oTable.$('input[name="%CHECK_NAME%_all"]').prop('checked', true);
+	
+});
+
+zgDesabilitaAcaoGeraContaLis();
+
+function zgHabilitaAcaoGeraContaLis() {
+
+	$('#btnAcaoGeraContaID').attr("onclick","zgAcaoGeraSelecionados();");
+	
+	$('#btnAcaoGeraContaID').attr("disabled",false);
+	$('#btnAcaoGeraContaID').removeClass("disabled");
+}
+
+function zgDesabilitaAcaoGeraContaLis() {
+	
+	$('#btnAcaoGeraContaID').attr("onclick","return false;");
+	
+	$('#btnAcaoGeraContaID').attr("disabled","disabled");
+	$('#btnAcaoGeraContaID').addClass("disabled");
+}
+
+function zgAcaoGeraSelecionados() {
+	var $aSelFormandos	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelFormandos[$aSelFormandos.length]	= $(this).val();
+	});
+	zgLoadUrl('%URL_GERACAO%&cid='+zgEncodeUrl('aSelFormandos='+$aSelFormandos));
+}
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+$('[data-rel=tooltip]').tooltip({html:true});
+$('[data-rel=popover]').popover({html:true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$(document).one('ajaxloadstart.page', function(e) {
+	$('[class*=select2]').remove();
+	$('.rating').raty('destroy');
+	$('.multiselect').multiselect('destroy');
+});
+
+</script>

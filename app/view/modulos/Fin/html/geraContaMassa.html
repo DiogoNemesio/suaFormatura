@@ -1,0 +1,430 @@
+<div id="content">
+	<div class="page-header">
+	<h1>%TITULO%</h1>
+	</div><!-- /.page-header -->
+	<br />
+
+	<!-- #section:plugins/fuelux.wizard -->
+	<div id="fuelux-wizard-container" class="col-sm-9 pull-left">
+		<div>
+			<!-- #section:plugins/fuelux.wizard.steps -->
+			<ul class="steps">
+				<li data-step="1" class="active">
+					<span class="step">1</span>
+					<span class="title">Recorrência</span>
+				</li>
+	
+				<li data-step="2">
+					<span class="step">2</span>
+					<span class="title">Identificação</span>
+				</li>
+				<li data-step="3">
+					<span class="step">3</span>
+					<span class="title">Valores</span>
+				</li>
+			</ul>
+		</div>
+		<hr />
+		<form id="zgFormID" class="form-horizontal">
+			<input type="hidden" name="id" value="%ID%">
+			<div class="step-content pos-rel">
+				<div class="step-pane active" data-step="1">
+					<div class="row ">
+						<div class="form-group col-sm-12" id="divRecorrenciaID">
+							<label class="col-sm-3 control-label">Recorrência</label>
+							<div class="btn-group btn-corner col-sm-8 pull-left">
+								<span id='codTipoRecUID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaUnicaCPCad();">Única</span>
+								<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se a conta será única ou parcelada"></i></span>
+								<span id='codTipoRecPID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaParceladaCPCad();">Parcelada</span>
+							</div>
+							<div class="help-block col-sm-1 inline" id="divHelpRecorrenciaID"></div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="step-pane" data-step="2">
+					<div class="row">
+						<div class="form-group col-sm-12" id="divDescricaoID">
+							<label class="col-sm-3 control-label">Descrição</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99005" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da Conta a Pagar"></i></span>
+				    			<input class="form-control" id="descricaoID" type="text" name="descricao" maxlength="60" autocomplete="off">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpDescricaoID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divDataVencID">
+							<label class="col-sm-3 control-label">Data de Vencimento</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99006" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de vencimento da conta"></i></span>
+				    			<input class="form-control datepicker" id="dataVencID" type="text" name="dataVenc" maxlength="10" value="%DATA_VENC%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpDataVencID"></div>
+				    	</div>
+					</div>
+				</div>
+
+				<div class="step-pane" data-step="3">
+					<div class="row ">
+						<div class="form-group col-sm-12" id="divIndValorParcelaID">
+							<label class="col-sm-3 control-label">Valor se refere</label>
+							<div class="btn-group btn-corner col-sm-8 pull-left">
+								<span id='CPCadValorParcelaID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorParcelaCPCad();">Valor da Parcela</span>
+								<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Parcela, ou o valor total da conta"></i></span>
+								<span id='CPCadValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalCPCad();">Valor Total</span>
+							</div>
+							
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divValorID">
+							<label class="col-sm-3 control-label">Valor</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99007" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor da conta"></i></span>
+				    			<input onchange="atualizaInfoValorCPCad()" class="form-control" id="valorID" type="text" name="valor" maxlength="20"  autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpValorID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divJurosID">
+							<label class="col-sm-3 control-label">Júros</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99008" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor do Júros"></i></span>
+				    			<input onchange="atualizaInfoValorCPCad()" class="form-control" id="valorJurosID" type="text" name="valorJuros" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpJurosID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divMoraID">
+							<label class="col-sm-3 control-label">Mora</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99009" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Mora cobrada"></i></span>
+				    			<input onchange="atualizaInfoValorCPCad()" class="form-control" id="valorMoraID" type="text" name="valorMora" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpMoraID"></div>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-12" id="divDescontoID">
+							<label class="col-sm-3 control-label">Desconto</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99010" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Desconto total"></i></span>
+				    			<input onchange="atualizaInfoValorCPCad()" class="form-control" id="valorDescontoID" type="text" name="valorDesconto" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpDescontoID"></div>
+				    	</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-sm-3 pull-right">
+		<div class="widget-box">
+			<div class="widget-header widget-header-flat widget-header-small center">
+				<h5 class="widget-title">Resumo</h5>
+			</div>
+			<div class="widget-body">
+				<div class="widget-main small">
+					
+					<div class="row hidden" id="divInfoTipoContaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Tipo:</p>
+					    	<p id='lbInfoTipoContaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoRecorrenciaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Período:</p>
+					    	<p id='lbInfoRecorrenciaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoNumParcelasID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Parcelas:</p>
+					    	<p id='lbInfoNumParcelasID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoIdentID">
+						<h6 class="header blue bolder smaller">&nbsp;Identificação</h6>
+						<div class="vspace-xs"></div>
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Identificação:</p>
+					    	<p id='lbInfoIdentID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoDataVencID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Vencimento:</p>
+					    	<p id='lbInfoDataVencID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+
+					<div class="row hidden" id="divInfoValorID">
+						<h6 class="header blue bolder smaller">&nbsp;Valores</h6>
+						<div class="vspace-xs"></div>
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor Total:</p>
+					    	<p id='lbInfoValorID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoConfID">
+						<h6 class="header blue bolder smaller">&nbsp;Configurações</h6>
+						<div class="vspace-xs"></div>
+					</div>
+					<div class="row hidden" id="divInfoFormaPagID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Forma Pag:</p>
+					    	<p id='lbInfoFormaPagID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoContaPagID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Conta</p>
+					    	<p id='lbInfoContaPagID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoSaldoContaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo da Conta:</p>
+					    	<p id='lbInfoSaldoContaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoCategoriaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Categoria:</p>
+					    	<p id='lbInfoCategoriaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoCentroCustoID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">C. Custo:</p>
+					    	<p id='lbInfoCentroCustoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+					<div class="row hidden" id="divInfoPessoaID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Fornecedor:</p>
+					    	<p id='lbInfoPessoaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="wizard-actions col-sm-9 pull-left" >
+		<hr />
+	
+		<!-- #section:plugins/fuelux.wizard.buttons -->
+		<button class="btn btn-prev">
+			<i class="ace-icon fa fa-arrow-left"></i>
+			Anterior
+		</button>
+		<button class="btn btn-success btn-next" data-last="Finalizar">
+			Próximo
+			<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+		</button>
+		<!-- /section:plugins/fuelux.wizard.buttons -->
+	</div>
+	
+	
+	
+</div>
+<script>
+
+$(document).one('ajaxloadstart.page', function(e) {
+	//in ajax mode, remove remaining elements before leaving page
+	$('[class*=select2]').remove();
+});
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2({allowClear: true});
+	}
+});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2({allowClear: true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+$('#fuelux-wizard-container')
+.ace_wizard({
+	//step: 2 //optional argument. wizard will jump to step "2" at first
+	//buttons: '.wizard-actions:eq(0)'
+})
+.on('actionclicked.fu.wizard' , function(e, info){
+	if(info.step == 1) {
+		var vOk 	= validaRecorrenciaCPCad();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			atualizaInfoRecorrenciaCPCad();
+		}
+		
+	}else if (info.step == 2) {
+		var vOk 	= validaIdentificacaoCPCad();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			atualizaInfoIdentCPCad();
+		}
+	}else if (info.step == 3) {
+		var vOk 	= validaValoresCPCad();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			criaTabelaValoresCPCad();
+		}
+	}else if (info.step == 4) {
+		var vOk 	= atualizaEValidaParcelasCPCad();
+		if(!vOk) 	{
+			e.preventDefault();
+		}
+		atualizaInfoValorCPCad();
+		atualizaDivPagaCPCad();
+	}else if (info.step == 5) {
+		var vOk 	= validaConfiguracoesCPCad();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			var $numRows = $("#CPCadTableRateioID > tbody").children().length;
+			if ($numRows == 0){
+				addRowRateioCPCad(getValorParcelaCPCad(),'100,00');
+			}
+		}
+	}
+	
+})
+.on('finished.fu.wizard', function(e) {
+	var vOk 	= atualizaEValidaTotalTabelaRateioCPCad();
+	if(!vOk) 	{
+		
+		$.gritter.add({
+			title: 'Valores de Rateio inconsistentes',
+			text: 'Ajuste os valores de rateio !!!!',
+			class_name: 'gritter-info gritter-center gritter-error'
+		});
+
+		e.preventDefault();
+		return false;
+	}else{
+		$('#zgFormID').submit();
+	}
+	
+}).on('stepclick.fu.wizard', function(e){
+	//e.preventDefault();//this will prevent clicking and selecting steps
+});
+
+$('#zgFormID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		});
+		
+		if (checaRetornoOK(data) == true) {
+			bootbox.dialog({
+				message: "Conta salva com sucesso !!!", 
+				buttons: {
+					"novo" : {
+						"label" : "<i class='ace-icon fa fa-plus'></i>Cadastrar nova conta",
+						"className" : "btn-sm btn-primary",
+						"callback": function() {
+							zgLoadUrl('%URL_ADD%');
+						}
+					},
+					"fechar" : {
+						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
+						"className" : "btn-sm btn-danger",
+						"callback": function() {
+							zgLoadUrl('%URL_VOLTAR%');
+						}
+
+					},
+					
+				}
+			});
+		}else{
+			zgMostraAviso("Fechar");
+		}
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+
+/*********************************************************
+* Busca Select2 typehead Pessoa
+*********************************************************/
+$('[data-rel="select2Pessoa"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar Pessoa',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fin/fornecedorLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fin/fornecedorLis.dp.php", {
+                data: {codPessoa: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+</script>
