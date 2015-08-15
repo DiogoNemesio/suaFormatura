@@ -115,10 +115,9 @@ class Formatura {
 			
 	}
 	
-	
 	/**
-	 *
 	 * Calcula o valor total da Formatura
+	 * @param unknown $codFormatura
 	 */
 	public static function getValorTotal ($codFormatura) {
 		global $em,$system;
@@ -131,13 +130,69 @@ class Formatura {
 				$qb->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
 				$qb->expr()->notIn('cp.codStatus'	, ':codStatus')
 			))
-			->orderBy('cp.codStatus','ASC')
-			->addOrderBy('cp.dataEmissao'	,'DESC')
 			->setParameter('codStatus'		, array('C','S'))
-			->setParameter('codOrganizacao'	, $system->getCodOrganizacao());
+			->setParameter('codOrganizacao'	, $codFormatura);
 				
 			$query 		= $qb->getQuery();
 			return($query->getSingleScalarResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	/**
+	 * Resgata o valor já arrecadado para a Formatura
+	 * @param int $codFormatura
+	 */
+	public static function getValorAReceber ($codFormatura) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+		try {
+			$qb->select('sum(cr.valor + cr.valorJuros + cr.valorMora - (cr.valorDesconto + cr.valorCancelado))')
+			->from('\Entidades\ZgfinContaReceber','cr')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
+					$qb->expr()->notIn('cr.codStatus'	, ':codStatus')
+			))
+			->setParameter('codStatus'		, array('C','S'))
+			->setParameter('codOrganizacao'	, $codFormatura);
+	
+			$query 		= $qb->getQuery();
+			return($query->getSingleScalarResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	/**
+	 * Resgata as informações do Cerimonial que está administrando a formatura
+	 * @param int $codFormatura
+	 */
+	public static function getCerimonalAdm ($codFormatura) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+		$hoje	= new \DateTime('now');
+		try {
+			$qb->select('o')
+			->from('\Entidades\ZgadmOrganizacaoAdm','ao')
+			->leftJoin('\Entidades\ZgadmOrganizacao'	,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'ao.codOrganizacaoPai 	= o.codigo')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('ao.codOrganizacao'	, ':codOrganizacao'),
+					$qb->expr()->orX(
+						$qb->expr()->andX(
+							$qb->expr()->isNotNull('ao.dataValidade'),
+							$qb->expr()->lte('ao.dataValidade'	, ':hoje')
+						),
+						$qb->expr()->isNull('ao.dataValidade')
+					)
+			))
+			->setParameter('hoje'			, $hoje)
+			->setParameter('codOrganizacao'	, $codFormatura);
+	
+			$query 		= $qb->getQuery();
+			return($query->getOneOrNullResult());
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
