@@ -257,9 +257,9 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	## Valor Total
 	#################################################################################
 	if ($status == "C") {
-		$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) - (floatval($contas[$i]->getValorDesconto())) ));
+		$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) + floatval($contas[$i]->getValorOutros()) - (floatval($contas[$i]->getValorDesconto())) ));
 	}else{
-		$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) - (floatval($contas[$i]->getValorDesconto()) + floatval($contas[$i]->getValorCancelado())) ));
+		$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) + floatval($contas[$i]->getValorOutros()) - (floatval($contas[$i]->getValorDesconto()) + floatval($contas[$i]->getValorCancelado())) ));
 	}
 	
 	#################################################################################

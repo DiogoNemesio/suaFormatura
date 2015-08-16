@@ -61,6 +61,7 @@ $valorJuros		= \Zage\App\Util::toPHPNumber($info->getValorJuros());
 $valorMora		= \Zage\App\Util::toPHPNumber($info->getValorMora());
 $valorDesconto	= \Zage\App\Util::toPHPNumber($info->getValorDesconto());
 $valorCancelado	= \Zage\App\Util::toPHPNumber($info->getValorCancelado());
+$valorOutros	= \Zage\App\Util::toPHPNumber($info->getValorOutros());
 $dataEmissao	= ($info->getDataEmissao() != null) 		? $info->getDataEmissao()->format($system->config["data"]["dateFormat"]) : null;
 $dataLiq		= ($info->getDataLiquidacao() != null) 		? $info->getDataLiquidacao()->format($system->config["data"]["dateFormat"]) : null;
 $dataVenc		= ($info->getDataVencimento() != null) 		? $info->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
@@ -120,7 +121,7 @@ if ($hist) {
 }
 
 
-$valorTotal			= \Zage\App\Util::to_money($info->getValor() + $info->getValorJuros() + $info->getValorMora() - ($info->getValorCancelado() + $info->getValorDesconto()));
+$valorTotal			= \Zage\App\Util::to_money($info->getValor() + $info->getValorJuros() + $info->getValorMora() + $info->getValorOutros() - ($info->getValorCancelado() + $info->getValorDesconto()));
 
 switch ($codStatus) {
 	case "L":
@@ -307,6 +308,7 @@ $tpl->set('VALOR_JUROS'			,$valorJuros);
 $tpl->set('VALOR_MORA'			,$valorMora);
 $tpl->set('VALOR_DESCONTO'		,$valorDesconto);
 $tpl->set('VALOR_CANCELADO'		,$valorCancelado);
+$tpl->set('VALOR_OUTROS'		,$valorOutros);
 $tpl->set('VALOR_TOTAL'			,$valorTotal);
 $tpl->set('DATA_EMISSAO'		,$dataEmissao);
 $tpl->set('DATA_LIQ'			,$dataLiq);

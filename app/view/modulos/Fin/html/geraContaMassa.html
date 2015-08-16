@@ -6,9 +6,10 @@
 
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" name="id" value="%ID%">
-		<input type="hidden" name="codTipoValor" id='codTipoValorID'>
-		<input type="hidden" name="valorTotalFormatura" id='valorTotalFormaturaID' value="%VALOR_TOTAL_FORMATURA%">
-		<input type="hidden" name="totalPorFormando" id='totalPorFormandoID' value="%TOTAL_POR_FORMANDO%">
+		<input type="hidden" name="codTipoValor" id="codTipoValorID">
+		<input type="hidden" name="valorTotalFormatura" id="valorTotalFormaturaID" value="%VALOR_TOTAL_FORMATURA%">
+		<input type="hidden" name="totalPorFormando" id="totalPorFormandoID" value="%TOTAL_POR_FORMANDO%">
+		<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
 
 		<div class="col-sm-8 pull-left">
 			<div class="row">
@@ -44,9 +45,7 @@
 				    <label for="identID" class="col-sm-4 control-label">Número de Mensalidades a gerar</label>
 		    		<div class="input-group col-sm-7 pull-left">
 	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de Mensalidades a serem geradas"></i></span>
-						<select class="select2" style="width:100%;" id="numMesesID" name="numMeses" data-rel="select2">
-						%NUMERO_MESES%
-						</select>
+						<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" value="%NUM_MESES%" placeholder="Valor por Formando" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 				    </div>
 				    <div class="col-sm-1 pull-left" id="divHelpNumMesesID"></div>
 				</div>

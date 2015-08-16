@@ -170,6 +170,16 @@
 				    	</div>
 					</div>
 					<div class="row">
+						<div class="form-group col-sm-12" id="divOutrosID">
+							<label class="col-sm-3 control-label">Outros Valores</label>
+			    			<div class="input-group col-sm-4 pull-left">
+			    				<span tabindex="99010" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Outros Valores"></i></span>
+				    			<input onchange="atualizaInfoValorCRCad()" class="form-control" id="valorOutrosID" type="text" name="valorOutros" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpOutrosID"></div>
+				    	</div>
+					</div>
+					<div class="row">
 						<div class="form-group col-sm-12" id="divDescontoID">
 							<label class="col-sm-3 control-label">Desconto</label>
 			    			<div class="input-group col-sm-4 pull-left">
@@ -1044,6 +1054,7 @@ function validaValoresCRCad() {
 	var $juros			= $('#valorJurosID').val();
 	var $mora			= $('#valorMoraID').val();
 	var $desconto		= $('#valorDescontoID').val();
+	var $outros			= $('#valorOutrosID').val();
 	
 	
 	var vOK				= true;
@@ -1052,11 +1063,13 @@ function validaValoresCRCad() {
 	$('#divJurosID').removeClass('has-error');
 	$('#divMoraID').removeClass('has-error');
 	$('#divDescontoID').removeClass('has-error');
+	$('#divOutrosID').removeClass('has-error');
 		
 	$('#divHelpValorID').html('');
 	$('#divHelpJurosID').html('');
 	$('#divHelpMoraID').html('');
 	$('#divHelpDescontoID').html('');
+	$('#divHelpOutrosID').html('');
 	
 	if (!$valor) {
 		$('#divValorID').addClass('has-error');
@@ -1087,6 +1100,12 @@ function validaValoresCRCad() {
 	if (($desconto) && (isMoney($desconto) == false)) {
 		$('#divDescontoID').addClass('has-error');
 		$('#divHelpDescontoID').html(zgCriaSpanErro('Desconto deve ser numérico !!'));
+		vOK			= false;
+	}
+
+	if (($outros) && (isMoney($outros) == false)) {
+		$('#divOutrosID').addClass('has-error');
+		$('#divHelpOutrosID').html(zgCriaSpanErro('Outros Valores deve ser numérico !!'));
 		vOK			= false;
 	}
 
@@ -1174,19 +1193,21 @@ function getValorTotalCRCad() {
 	var $numParcelas		= parseInt($('#numParcelasID').val());
 	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
 	var $tipo,$parcelas;
-	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorParcela;
+	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorOutros,$valorParcela;
 	
 	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
 	$valorJuros		= parseFloat($('#valorJurosID').val().replace(".", "").replace(",","."));
 	$valorMora		= parseFloat($('#valorMoraID').val().replace(".", "").replace(",","."));
 	$valorDesc		= parseFloat($('#valorDescontoID').val().replace(".", "").replace(",","."));
+	$valorOutros	= parseFloat($('#valorOutrosID').val().replace(".", "").replace(",","."));
 	
-	if (isNaN($valor))		$valor		= 0;
-	if (isNaN($valorJuros))	$valorJuros	= 0;
-	if (isNaN($valorMora))	$valorMora 	= 0;
-	if (isNaN($valorDesc))	$valorDesc 	= 0;
+	if (isNaN($valor))			$valor			= 0;
+	if (isNaN($valorJuros))		$valorJuros		= 0;
+	if (isNaN($valorMora))		$valorMora 		= 0;
+	if (isNaN($valorDesc))		$valorDesc 		= 0;
+	if (isNaN($valorOutros))	$valorOutros	= 0;
 	
-	$nValor			= ($valor + $valorJuros + $valorMora - $valorDesc).toFixed(2);
+	$nValor			= ($valor + $valorJuros + $valorMora + $valorOutros - $valorDesc).toFixed(2);
 
 	if ($tipoRecParc	== 'P') {
 		var $parcelas	= $numParcelas - ($parcelaInicial -1);
@@ -1216,19 +1237,21 @@ function getValorParcelaCRCad() {
 	var $numParcelas		= parseInt($('#numParcelasID').val());
 	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
 	var $tipo,$parcelas;
-	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorParcela;
+	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorOutros,$valorParcela;
 	
 	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
 	$valorJuros		= parseFloat($('#valorJurosID').val().replace(".", "").replace(",","."));
 	$valorMora		= parseFloat($('#valorMoraID').val().replace(".", "").replace(",","."));
 	$valorDesc		= parseFloat($('#valorDescontoID').val().replace(".", "").replace(",","."));
+	$valorOutros	= parseFloat($('#valorOutrosID').val().replace(".", "").replace(",","."));
 	
-	if (isNaN($valor))		$valor		= 0;
-	if (isNaN($valorJuros))	$valorJuros	= 0;
-	if (isNaN($valorMora))	$valorMora 	= 0;
-	if (isNaN($valorDesc))	$valorDesc 	= 0;
+	if (isNaN($valor))			$valor			= 0;
+	if (isNaN($valorJuros))		$valorJuros		= 0;
+	if (isNaN($valorMora))		$valorMora 		= 0;
+	if (isNaN($valorDesc))		$valorDesc 		= 0;
+	if (isNaN($valorOutros))	$valorOutros	= 0;
 	
-	$nValor			= ($valor + $valorJuros + $valorMora - $valorDesc).toFixed(2);
+	$nValor			= ($valor + $valorJuros + $valorMora + $valorOutros - $valorDesc).toFixed(2);
 
 	if ($tipoRecParc	== 'P') {
 		var $parcelas	= $numParcelas - ($parcelaInicial -1);
@@ -1260,7 +1283,7 @@ function atualizaInfoValorCRCad() {
 	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
 	var $codPeriodoRec		= $('#codPeriodoRecID').val();
 	var $tipo,$parcelas;
-	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorParcela;
+	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorOutros,$valorParcela;
 	
 	var options = {
 		symbol : "R$ ",
@@ -1274,18 +1297,21 @@ function atualizaInfoValorCRCad() {
 	$valorJuros		= parseFloat($('#valorJurosID').val().replace(".", "").replace(",","."));
 	$valorMora		= parseFloat($('#valorMoraID').val().replace(".", "").replace(",","."));
 	$valorDesc		= parseFloat($('#valorDescontoID').val().replace(".", "").replace(",","."));
+	$valorOutros	= parseFloat($('#valorOutrosID').val().replace(".", "").replace(",","."));
 	
-	if (isNaN($valor))		$valor		= 0;
-	if (isNaN($valorJuros))	$valorJuros	= 0;
-	if (isNaN($valorMora))	$valorMora 	= 0;
-	if (isNaN($valorDesc))	$valorDesc 	= 0;
+	if (isNaN($valor))			$valor			= 0;
+	if (isNaN($valorJuros))		$valorJuros		= 0;
+	if (isNaN($valorMora))		$valorMora 		= 0;
+	if (isNaN($valorDesc))		$valorDesc 		= 0;
+	if (isNaN($valorOutros))	$valorOutros	= 0;
 	
-	$nValor			= ($valor + $valorJuros + $valorMora - $valorDesc).toFixed(2);
+	$nValor			= ($valor + $valorJuros + $valorMora + $valorOutros - $valorDesc).toFixed(2);
 
 	if ($tipoRecParc	== 'P') {
 		$('#divJurosID').addClass('hidden');
 		$('#divMoraID').addClass('hidden');
 		$('#divDescontoID').addClass('hidden');
+		$('#divOutrosID').addClass('hidden');
 		
 		$('#divIndValorParcelaID').removeClass('hidden');
 		$('#divSelValorParcelaID').removeClass('hidden');
@@ -1293,6 +1319,7 @@ function atualizaInfoValorCRCad() {
 		$('#valorJurosID').val(0);
 		$('#valorMoraID').val(0);
 		$('#valorDescontoID').val(0);
+		$('#valorOutrosID').val(0);
 		
 		if (!$valor) return null;
 		
@@ -1311,6 +1338,7 @@ function atualizaInfoValorCRCad() {
 		$('#divJurosID').removeClass('hidden');
 		$('#divMoraID').removeClass('hidden');
 		$('#divDescontoID').removeClass('hidden');
+		$('#divOutrosID').removeClass('hidden');
 		
 		if (!$valor) return null;
 	}

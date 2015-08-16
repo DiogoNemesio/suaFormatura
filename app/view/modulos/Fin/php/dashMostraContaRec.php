@@ -103,9 +103,9 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	## Valor Total
 	#################################################################################
 	if ($status == "C") {
-		$valTotal	= ( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) - (floatval($contas[$i]->getValorDesconto())) );
+		$valTotal	= ( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) + floatval($contas[$i]->getValorOutros()) - (floatval($contas[$i]->getValorDesconto())) );
 	}else{
-		$valTotal	= ( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) - (floatval($contas[$i]->getValorDesconto()) + floatval($contas[$i]->getValorCancelado())) );
+		$valTotal	= ( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) + floatval($contas[$i]->getValorOutros()) - (floatval($contas[$i]->getValorDesconto()) + floatval($contas[$i]->getValorCancelado())) );
 	}
 	$valorTotalMes	+= $valTotal;
 	

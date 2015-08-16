@@ -174,6 +174,16 @@
 					    	</div>
 						</div>
 						<div class="row">
+							<div class="form-group col-sm-12" id="divOutrosID">
+								<label class="col-sm-3 control-label">Outros Valores</label>
+				    			<div class="input-group col-sm-4 pull-left">
+				    				<span tabindex="99010" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Outros Valores"></i></span>
+					    			<input onchange="atualizaInfoValorCRAlt()" class="form-control" id="valorOutrosID" type="text" name="valorOutros" maxlength="20" value="%VALOR_OUTROS%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" %TEXT_VIEW%>
+							    </div>
+								<div class="help-block col-sm-5 inline" id="divHelpOutrosID"></div>
+					    	</div>
+						</div>
+						<div class="row">
 							<div class="form-group col-sm-12" id="divDescontoID">
 								<label class="col-sm-3 control-label">Desconto</label>
 				    			<div class="input-group col-sm-4 pull-left">
@@ -863,20 +873,22 @@ function getValorTotalCRAlt() {
 	var $numParcelas		= parseInt($('#numParcelasID').val());
 	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
 	var $tipo,$parcelas;
-	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorParcela,$valorCancelado;
+	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorJuros,$valorParcela,$valorCancelado;
 	
 	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
 	$valorJuros		= parseFloat($('#valorJurosID').val().replace(".", "").replace(",","."));
 	$valorMora		= parseFloat($('#valorMoraID').val().replace(".", "").replace(",","."));
 	$valorDesc		= parseFloat($('#valorDescontoID').val().replace(".", "").replace(",","."));
 	$valorCancelado	= parseFloat($('#valorCanceladoID').val().replace(".", "").replace(",","."));
+	$valorOutros	= parseFloat($('#valorOutrosID').val().replace(".", "").replace(",","."));
 	
-	if (isNaN($valor))		$valor		= 0;
-	if (isNaN($valorJuros))	$valorJuros	= 0;
-	if (isNaN($valorMora))	$valorMora 	= 0;
-	if (isNaN($valorDesc))	$valorDesc 	= 0;
+	if (isNaN($valor))			$valor			= 0;
+	if (isNaN($valorJuros))		$valorJuros		= 0;
+	if (isNaN($valorMora))		$valorMora 		= 0;
+	if (isNaN($valorDesc))		$valorDesc 		= 0;
+	if (isNaN($valorOutros))	$valorOutros 	= 0;
 	
-	$nValor			= ($valor + $valorJuros + $valorMora - ($valorDesc+$valorCancelado) ).toFixed(2);
+	$nValor			= ($valor + $valorJuros + $valorMora + $valorOutros - ($valorDesc+$valorCancelado) ).toFixed(2);
 
 	if ($tipoRecParc	== 'P') {
 		var $parcelas	= $numParcelas - ($parcelaInicial -1);
@@ -906,20 +918,22 @@ function getValorParcelaCRAlt() {
 	var $numParcelas		= parseInt($('#numParcelasID').val());
 	var $parcelaInicial		= parseInt($('#parcelaInicialID').val());
 	var $tipo,$parcelas;
-	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorParcela,$valorCancelado;
+	var $nValor,$valor,$valorJuros,$valorMora,$valorDesc,$valorOutros,$valorParcela,$valorCancelado;
 	
 	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
 	$valorJuros		= parseFloat($('#valorJurosID').val().replace(".", "").replace(",","."));
 	$valorMora		= parseFloat($('#valorMoraID').val().replace(".", "").replace(",","."));
 	$valorDesc		= parseFloat($('#valorDescontoID').val().replace(".", "").replace(",","."));
 	$valorCancelado	= parseFloat($('#valorCanceladoID').val().replace(".", "").replace(",","."));
+	$valorOutros	= parseFloat($('#valorOutrosID').val().replace(".", "").replace(",","."));
 	
-	if (isNaN($valor))		$valor		= 0;
-	if (isNaN($valorJuros))	$valorJuros	= 0;
-	if (isNaN($valorMora))	$valorMora 	= 0;
-	if (isNaN($valorDesc))	$valorDesc 	= 0;
+	if (isNaN($valor))			$valor			= 0;
+	if (isNaN($valorJuros))		$valorJuros		= 0;
+	if (isNaN($valorMora))		$valorMora 		= 0;
+	if (isNaN($valorDesc))		$valorDesc 		= 0;
+	if (isNaN($valorOutros))	$valorOutros 	= 0;
 	
-	$nValor			= ($valor + $valorJuros + $valorMora - ($valorDesc + $valorCancelado)).toFixed(2);
+	$nValor			= ($valor + $valorJuros + $valorMora + $valorOutros - ($valorDesc + $valorCancelado)).toFixed(2);
 
 	if ($tipoRecParc	== 'P') {
 		var $parcelas	= $numParcelas - ($parcelaInicial -1);
@@ -1119,6 +1133,7 @@ function validaValoresCRAlt() {
 	var $juros			= $('#valorJurosID').val();
 	var $mora			= $('#valorMoraID').val();
 	var $desconto		= $('#valorDescontoID').val();
+	var $outros			= $('#valorOutrosID').val();
 	
 	
 	var vOK				= true;
@@ -1127,11 +1142,13 @@ function validaValoresCRAlt() {
 	$('#divJurosID').removeClass('has-error');
 	$('#divMoraID').removeClass('has-error');
 	$('#divDescontoID').removeClass('has-error');
+	$('#divOutrosID').removeClass('has-error');
 		
 	$('#divHelpValorID').html('');
 	$('#divHelpJurosID').html('');
 	$('#divHelpMoraID').html('');
 	$('#divHelpDescontoID').html('');
+	$('#divHelpOutrosID').html('');
 	
 	if (!$valor) {
 		$('#divValorID').addClass('has-error');
@@ -1162,6 +1179,12 @@ function validaValoresCRAlt() {
 	if (($desconto) && (isMoney($desconto) == false)) {
 		$('#divDescontoID').addClass('has-error');
 		$('#divHelpDescontoID').html('"Desconto" deve ser numérico !!');
+		vOK			= false;
+	}
+
+	if (($outros) && (isMoney($outros) == false)) {
+		$('#divOutrosID').addClass('has-error');
+		$('#divHelpOutrosID').html('"Outros Valores" deve ser numérico !!');
 		vOK			= false;
 	}
 

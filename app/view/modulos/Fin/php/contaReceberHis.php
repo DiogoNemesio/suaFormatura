@@ -64,6 +64,7 @@ $grid->adicionaMoeda($tr->trans('VALOR'),				10, $grid::CENTER	,'valorRecebido')
 $grid->adicionaMoeda($tr->trans('JUROS'),				10, $grid::CENTER	,'valorJuros');
 $grid->adicionaMoeda($tr->trans('MORA'),				10, $grid::CENTER	,'valorMora');
 $grid->adicionaMoeda($tr->trans('DESCONTO'),			10, $grid::CENTER	,'valorDesconto');
+$grid->adicionaMoeda($tr->trans('OUTROS'),				10, $grid::CENTER	,'valorOutros');
 $grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome');
 $grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
 $grid->importaDadosDoctrine($oHist);
@@ -80,7 +81,7 @@ if (!isset($urlVoltar) || (!$urlVoltar)) {
 #################################################################################
 ## Calculo dos valores
 #################################################################################
-$valorTotal			= \Zage\App\Util::to_money($oConta->getValor() + $oConta->getValorJuros() + $oConta->getValorMora() - ($oConta->getValorCancelado() + $oConta->getValorDesconto()));
+$valorTotal			= \Zage\App\Util::to_money($oConta->getValor() + $oConta->getValorJuros() + $oConta->getValorMora() + $oConta->getValorOutros() - ($oConta->getValorCancelado() + $oConta->getValorDesconto()));
 $valorRecebido		= \Zage\App\Util::to_money((new \Zage\Fin\ContaReceber())->getValorJaRecebido($codConta)); 
 
 #################################################################################

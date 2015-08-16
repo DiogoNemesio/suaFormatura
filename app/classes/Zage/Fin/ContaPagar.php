@@ -301,7 +301,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
-				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]) + \Zage\App\Util::toMysqlNumber($this->getValorJuros()) + \Zage\App\Util::toMysqlNumber($this->getValorMora()) - \Zage\App\Util::toMysqlNumber($this->getValorDesconto());
+				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]) + \Zage\App\Util::toMysqlNumber($this->getValorJuros()) + \Zage\App\Util::toMysqlNumber($this->getValorMora()) + \Zage\App\Util::toMysqlNumber($this->getValorOutros()) - \Zage\App\Util::toMysqlNumber($this->getValorDesconto());
 				$_valorTotal	+= $valores[$i];
 			}
 		}
@@ -400,6 +400,10 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			return $tr->trans('"Desconto" deve ser numérico');
 		}
 		
+		if (($this->getValorOutros()) && (!\Zage\App\Util::ehNumero($this->getValorOutros()))) {
+			return $tr->trans('"Outros Valores" deve ser numérico');
+		}
+		
 		#################################################################################
 		## Validações das configurações
 		#################################################################################
@@ -486,6 +490,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		$this->setValor(\Zage\App\Util::toMysqlNumber($this->getValor()));
 		$this->setValorJuros(\Zage\App\Util::toMysqlNumber($this->getValorJuros()));
 		$this->setValorMora(\Zage\App\Util::toMysqlNumber($this->getValorMora()));
+		$this->setValorOutros(\Zage\App\Util::toMysqlNumber($this->getValorOutros()));
 		$this->setValorDesconto(\Zage\App\Util::toMysqlNumber($this->getValorDesconto()));
 		
 		#################################################################################
@@ -573,6 +578,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			$object->setValorDesconto($this->getValorDesconto());
 			$object->setValorJuros($this->getValorJuros());
 			$object->setValorMora($this->getValorMora());
+			$object->setValorOutros($this->getValorOutros());
 			$object->setCodPeriodoRecorrencia($this->getCodPeriodoRecorrencia());
 			$object->setIntervaloRecorrencia($this->getIntervaloRecorrencia());
 			$object->setCodTipoRecorrencia($this->getCodTipoRecorrencia());
@@ -662,7 +668,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 				#################################################################################
 				if ($this->_getFlagPaga()) {
 					if ($object->getDataVencimento() <= \DateTime::createFromFormat($system->config["data"]["dateFormat"],date($system->config["data"]["dateFormat"]))) {
-						$erro = $this->paga($object, $object->getCodConta(), $object->getCodFormaPagamento(), $object->getDataVencimento()->format($system->config["data"]["dateFormat"]), \Zage\App\Util::toPHPNumber($object->getValor()), \Zage\App\Util::toPHPNumber($object->getValorJuros()), \Zage\App\Util::toPHPNumber($object->getValorMora()), \Zage\App\Util::toPHPNumber($object->getValorDesconto()), $object->getDocumento());
+						$erro = $this->paga($object, $object->getCodConta(), $object->getCodFormaPagamento(), $object->getDataVencimento()->format($system->config["data"]["dateFormat"]), \Zage\App\Util::toPHPNumber($object->getValor()), \Zage\App\Util::toPHPNumber($object->getValorJuros()), \Zage\App\Util::toPHPNumber($object->getValorMora()), \Zage\App\Util::toPHPNumber($object->getValorDesconto()), \Zage\App\Util::toPHPNumber($object->getValorOutros()), $object->getDocumento());
 						if ($erro) {
 							$log->debug("Erro ao salvar: ".$erro);
 							return $erro;
@@ -719,7 +725,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			#################################################################################
 			## Calcula o valor a cancelar
 			#################################################################################
-			$valorCancelar	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$valorCancelar	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
 
 			#################################################################################
 			## Resgata o objeto do novo status
@@ -755,7 +761,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			#################################################################################
 			$rateios	= $em->getRepository('Entidades\ZgfinContaPagarRateio')->findBy(array('codContaPag' => $oConta->getCodigo()));
 			$numRateios	= sizeof($rateios);
-			$valorTotal	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$valorTotal	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
 			$novoValor	= $valorTotal - $valorCancelar;
 			$somatorio	= 0;
 			
@@ -819,7 +825,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 	 * @param number $codTipoBaixa
 	 * @param number $seqRetorno
 	 */
-	public function paga (\Entidades\ZgfinContaPagar $oConta,$codContaDeb,$codFormaPag,$dataPag,$valor,$valorJuros,$valorMora,$valorDesconto,$documento,$codTipoBaixa,$seqRetorno = null) {
+	public function paga (\Entidades\ZgfinContaPagar $oConta,$codContaDeb,$codFormaPag,$dataPag,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$documento,$codTipoBaixa,$seqRetorno = null) {
 		global $em,$system,$tr,$log;
 		
 		#################################################################################
@@ -885,13 +891,14 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		$valor			= \Zage\App\Util::toMysqlNumber($valor);
 		$valorJuros		= \Zage\App\Util::toMysqlNumber($valorJuros);
 		$valorMora		= \Zage\App\Util::toMysqlNumber($valorMora);
+		$valorOutros	= \Zage\App\Util::toMysqlNumber($valorOutros);
 		$valorDesconto	= \Zage\App\Util::toMysqlNumber($valorDesconto);
 		
 		
 		#################################################################################
 		## Calcular o valor total pago
 		#################################################################################
-		$valorTotal	= $valor + $valorJuros + $valorMora - $valorDesconto;
+		$valorTotal	= $valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto;
 
 		#################################################################################
 		## Resgatar o saldo da conta
@@ -978,6 +985,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		$oHist->setValorDesconto($valorDesconto);
 		$oHist->setValorJuros($valorJuros);
 		$oHist->setValorMora($valorMora);
+		$oHist->setValorOutros($valorOutros);
 		$oHist->setValorPago($valor);
 		$oHist->setCodGrupoMov($grupoMov);
 		$oHist->setCodTipoBaixa($oBaixa);
@@ -1042,10 +1050,10 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		$valorPag		= 0;
 			
 		for ($i = 0; $i < sizeof($histPag); $i++) {
-			$valorPag += floatval($histPag[$i]->getValorPago()) + floatval($histPag[$i]->getValorJuros()) + floatval($histPag[$i]->getValorMora()) - floatval($histPag[$i]->getValorDesconto());
+			$valorPag += floatval($histPag[$i]->getValorPago()) + floatval($histPag[$i]->getValorJuros()) + floatval($histPag[$i]->getValorMora()) + floatval($histPag[$i]->getValorOutros()) - floatval($histPag[$i]->getValorDesconto());
 		}
 		
-		$valorTotal		= round( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) - floatval($oConta->getValorDesconto()),2);
+		$valorTotal		= round( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado()),2);
 		
 		return round($valorTotal - $valorPag,2);
 		
@@ -1073,7 +1081,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		$valorPag		= 0;
 			
 		for ($i = 0; $i < sizeof($histPag); $i++) {
-			$valorPag += floatval($histPag[$i]->getValorPago()) + floatval($histPag[$i]->getValorJuros()) + floatval($histPag[$i]->getValorMora()) - floatval($histPag[$i]->getValorDesconto());
+			$valorPag += floatval($histPag[$i]->getValorPago()) + floatval($histPag[$i]->getValorJuros()) + floatval($histPag[$i]->getValorMora()) + floatval($histPag[$i]->getValorOutros()) - floatval($histPag[$i]->getValorDesconto());
 		}
 	
 		return round($valorPag,2);
@@ -1479,7 +1487,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			#################################################################################
 			## Calcula o valor a substituir
 			#################################################################################
-			$valorSub	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$valorSub	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
 	
 			#################################################################################
 			## Resgata o objeto do novo status
@@ -1515,7 +1523,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			#################################################################################
 			$rateios	= $em->getRepository('Entidades\ZgfinContaPagarRateio')->findBy(array('codContaPag' => $oConta->getCodigo()));
 			$numRateios	= sizeof($rateios);
-			$valorTotal	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$valorTotal	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
 			$novoValor	= $valorTotal - $valorSub;
 			$somatorio	= 0;
 				

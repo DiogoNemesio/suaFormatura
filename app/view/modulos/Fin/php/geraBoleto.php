@@ -149,9 +149,11 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	if (!$contaRec->getValorJaRecebido($contas[$i]->getCodigo())) {
 		$valor				= \Zage\App\Util::to_float($contas[$i]->getValor());
 		$valorDesconto		= \Zage\App\Util::to_float($contas[$i]->getValorDesconto());
+		$valorOutros		= \Zage\App\Util::to_float($contas[$i]->getValorOutros());
 	}else{
 		$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($contas[$i]->getCodigo()));
 		$valorDesconto		= 0;
+		$valorOutros		= 0;
 	}
 	
 	#################################################################################
@@ -212,6 +214,7 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 		<td class="col-sm-1 center"><input type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorJuros.'"	 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
 		<td class="col-sm-1 center"><input type="text" name="valorMora['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorMora.'" 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
 		<td class="col-sm-1 center"><input type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.$valorDesconto.'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorOutros['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.$valorOutros.'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
 	</tr>
 	';	
 

@@ -49,6 +49,12 @@ class Boleto {
 	private $desconto;
 	
 	/**
+	 * Outros Valores
+	 * @var float
+	 */
+	private $outrosValores;
+	
+	/**
 	 * Sequencial do Nosso Número do Boleto
 	 * @var number
 	 */
@@ -320,7 +326,8 @@ class Boleto {
 		$juros					= $this->getJuros();
 		$mora					= $this->getMora();
 		$desconto				= $this->getDesconto();
-		$valorTotal				= ($valor + $juros + $mora - $desconto);
+		$outros					= $this->getOutrosValores();
+		$valorTotal				= ($valor + $juros + $mora + $outros - $desconto);
 		$valorJuros				= ($juros + $mora);
 		
 		#################################################################################
@@ -550,6 +557,23 @@ class Boleto {
 	 */
 	public function setDesconto($desconto) {
 		$this->desconto = $desconto;
+		return $this;
+	}
+	
+	/**
+	 *
+	 * @return the float
+	 */
+	public function getOutrosValores() {
+		return $this->outrosValores;
+	}
+	
+	/**
+	 *
+	 * @param float $outrosValores
+	 */
+	public function setOutrosValores($outrosValores) {
+		$this->outrosValores = $outrosValores;
 		return $this;
 	}
 	

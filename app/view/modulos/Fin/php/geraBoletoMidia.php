@@ -55,6 +55,7 @@ if (isset($_POST['valor'])) 			$aValor				= \Zage\App\Util::antiInjection($_POST
 if (isset($_POST['valorJuros'])) 		$aValorJuros		= \Zage\App\Util::antiInjection($_POST['valorJuros']);
 if (isset($_POST['valorMora'])) 		$aValorMora			= \Zage\App\Util::antiInjection($_POST['valorMora']);
 if (isset($_POST['valorDesconto'])) 	$aValorDesconto		= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
+if (isset($_POST['valorOutros'])) 		$aValorOutros		= \Zage\App\Util::antiInjection($_POST['valorOutros']);
 if (isset($_POST['tipoMidia'])) 		$tipoMidia			= \Zage\App\Util::antiInjection($_POST['tipoMidia']);
 if (isset($_POST['instrucao'])) 		$instrucao			= \Zage\App\Util::antiInjection($_POST['instrucao']);
 if (isset($_POST['email'])) 			$email				= \Zage\App\Util::antiInjection($_POST['email']);
@@ -170,6 +171,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$juros					= \Zage\App\Util::to_float($aValorJuros[$codConta]);
 	$mora					= \Zage\App\Util::to_float($aValorMora[$codConta]);
 	$desconto				= \Zage\App\Util::to_float($aValorDesconto[$codConta]);
+	$outros					= \Zage\App\Util::to_float($aValorOutros[$codConta]);
 	$especie				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getCodInternacional() : null;
 	//$especieDoc				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getSimbolo() 	: null;
 	$especieDoc				= "DM"; # Duplicata Mercantil
@@ -177,6 +179,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	if (!$juros)			$juros		= 0;
 	if (!$mora)				$mora		= 0;
 	if (!$desconto)			$desconto	= 0;
+	if (!$outros)			$outros		= 0;
 	
 	#################################################################################
 	## Verifica se a conta já gerou o Sequencial do nosso número
@@ -274,6 +277,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$boleto->setJuros($juros);
 	$boleto->setMora($mora);
 	$boleto->setDesconto($desconto);
+	$boleto->setOutrosValores($outros);
 	$boleto->setVencimento($vencimento);
 	$boleto->setInstrucao1($instrucao1);
 	$boleto->setInstrucao2($instrucao2);
@@ -314,6 +318,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$hist->setNossoNumero($nossoNumero);
 	$hist->setMora($mora);
 	$hist->setValor($valor);
+	$hist->setOutros($outros);
 	$hist->setVencimento(\DateTime::createFromFormat($system->config["data"]["dateFormat"], $vencimento));
 	$hist->setMidia($tipoMidia);
 	$hist->setEmail($email);

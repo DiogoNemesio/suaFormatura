@@ -78,6 +78,13 @@ class ZgfinHistoricoPag
     private $valorMora;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_OUTROS", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $valorOutros;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="DOCUMENTO", type="string", length=14, nullable=true)
@@ -358,6 +365,29 @@ class ZgfinHistoricoPag
     public function getValorMora()
     {
         return $this->valorMora;
+    }
+
+    /**
+     * Set valorOutros
+     *
+     * @param float $valorOutros
+     * @return ZgfinHistoricoPag
+     */
+    public function setValorOutros($valorOutros)
+    {
+        $this->valorOutros = $valorOutros;
+
+        return $this;
+    }
+
+    /**
+     * Get valorOutros
+     *
+     * @return float 
+     */
+    public function getValorOutros()
+    {
+        return $this->valorOutros;
     }
 
     /**

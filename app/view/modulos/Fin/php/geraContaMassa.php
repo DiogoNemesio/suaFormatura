@@ -78,7 +78,7 @@ if (!$dataConclusao)		\Zage\App\Erro::halt($tr->trans('Data de conclusão da for
 
 $hoje					= new DateTime('now');
 $interval				= $dataConclusao->diff($hoje);
-$numMesesConc			= $interval->format('%m');
+$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
 $diaVencimento			= $oOrgFmt->getDiaVencimento();
 $valorPorFormando		= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
 $valorPorBoleto			= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
@@ -128,27 +128,6 @@ for ($i = 1; $i <= 31; $i++) {
 	}
 
 	$oDiaVenc	.= "<option value='".$i."' $selected>".$dia."</option>";
-}
-
-#################################################################################
-## Montar o select do número de meses
-#################################################################################
-$oNumMeses	= "";
-for ($i = 1; $i <= $numMesesConc; $i++) {
-	if ($i == 1) {
-		$selected 	= null;
-		$meses		= $i . " Mês";
-	}else{
-		$meses		= $i . " Meses";
-		if ($i == $numMesesConc) {
-			$meses 		.= " (todos)";
-			$selected 	= "selected";
-		}else{
-			$selected 	= null;
-		}
-		
-	}
-	$oNumMeses	.= "<option value='".$i."' $selected>".$meses."</option>";
 }
 
 #################################################################################
@@ -220,7 +199,8 @@ $tpl->set('ID'						,$id);
 $tpl->set('TITULO'					,'Geração de Contas');
 $tpl->set('URL_VOLTAR'				,$urlVoltar);
 $tpl->set('DIAS_VENC'				,$oDiaVenc);
-$tpl->set('NUMERO_MESES'			,$oNumMeses);
+$tpl->set('NUM_MESES'				,$numMesesConc);
+$tpl->set('NUM_MESES_MAX'			,$numMesesConc);
 $tpl->set('NUM_FORMANDOS'			,$numFormandos);
 $tpl->set('TOTAL_FORMANDOS'			,$totalformandos);
 $tpl->set('NUM_MESES_CONCLUSAO'		,$numMesesConc);

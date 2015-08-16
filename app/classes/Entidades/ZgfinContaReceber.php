@@ -85,6 +85,13 @@ class ZgfinContaReceber
     private $valorCancelado;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_OUTROS", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorOutros;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="DATA_EMISSAO", type="datetime", nullable=false)
@@ -499,6 +506,29 @@ class ZgfinContaReceber
     public function getValorCancelado()
     {
         return $this->valorCancelado;
+    }
+
+    /**
+     * Set valorOutros
+     *
+     * @param float $valorOutros
+     * @return ZgfinContaReceber
+     */
+    public function setValorOutros($valorOutros)
+    {
+        $this->valorOutros = $valorOutros;
+
+        return $this;
+    }
+
+    /**
+     * Get valorOutros
+     *
+     * @return float 
+     */
+    public function getValorOutros()
+    {
+        return $this->valorOutros;
     }
 
     /**

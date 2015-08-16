@@ -75,12 +75,14 @@ if (!$contaPag->getValorJaRecebido($codConta)) {
 	$valorJuros			= \Zage\App\Util::toPHPNumber($oConta->getValorJuros());
 	$valorMora			= \Zage\App\Util::toPHPNumber($oConta->getValorMora());
 	$valorDesconto		= \Zage\App\Util::toPHPNumber($oConta->getValorDesconto());
+	$valorOutros		= \Zage\App\Util::toPHPNumber($oConta->getValorOutros());
 	
 }else{
 	$valor				= \Zage\App\Util::toPHPNumber($contaPag->getSaldoAReceber($codConta));
 	$valorJuros			= 0;
 	$valorMora			= 0;
 	$valorDesconto		= 0;
+	$valorOutros		= 0;
 }
 
 $documento				= "";
@@ -134,6 +136,7 @@ $tpl->set('VALOR'				,$valor);
 $tpl->set('VALOR_JUROS'			,$valorJuros);
 $tpl->set('VALOR_MORA'			,$valorMora);
 $tpl->set('VALOR_DESCONTO'		,$valorDesconto);
+$tpl->set('VALOR_OUTROS'		,$valorOutros);
 $tpl->set('DOCUMENTO'			,$documento);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
