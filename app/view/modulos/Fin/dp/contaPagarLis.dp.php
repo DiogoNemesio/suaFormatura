@@ -48,7 +48,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$grid->setValorCelula($i,$colParcela,$contas[$i]->getParcela() . " / ".$contas[$i]->getNumParcelas());
 	
 	/** Valor Total **/
-	$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) - floatval($contas[$i]->getValorDesconto()) ));
+	$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) + floatval($contas[$i]->getValorOutros()) - floatval($contas[$i]->getValorDesconto()) ));
 	
 	/** Resgatar o status para controlar as ações **/
 	$status		= $contas[$i]->getCodStatus()->getCodigo();

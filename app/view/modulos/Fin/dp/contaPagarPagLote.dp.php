@@ -97,7 +97,7 @@ try {
 		#################################################################################
 		## Efetiva o pagamento
 		#################################################################################
-		$erro		= $conta->paga($contas[$i],$codContaDeb,$codFormaPag,$dataPag,$valor,0,0,0,$documento,"MAN",null);
+		$erro		= $conta->paga($contas[$i],$codContaDeb,$codFormaPag,$dataPag,$valor,0,0,0,0,$documento,"MAN",null);
 		
 		if ($erro != false) {
 			$em->getConnection()->rollback();

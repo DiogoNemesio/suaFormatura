@@ -22,6 +22,7 @@ if (isset($_POST['valor']))				$valor				= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['valorJuros']))		$valorJuros			= \Zage\App\Util::antiInjection($_POST['valorJuros']);
 if (isset($_POST['valorMora']))			$valorMora			= \Zage\App\Util::antiInjection($_POST['valorMora']);
 if (isset($_POST['valorDesconto']))		$valorDesconto		= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
+if (isset($_POST['valorOutros']))		$valorOutros		= \Zage\App\Util::antiInjection($_POST['valorOutros']);
 if (isset($_POST['documento']))			$documento			= \Zage\App\Util::antiInjection($_POST['documento']);
 
 
@@ -77,7 +78,7 @@ if (empty($valor))			$valor				= 0;
 if (empty($valorDesconto))	$valorDesconto		= 0;
 if (empty($valorJuros))		$valorJuros			= 0;
 if (empty($valorMora))		$valorMora			= 0;
-
+if (empty($valorOutros))	$valorOutros		= 0;
 
 #################################################################################
 ## Salvar no banco
@@ -86,7 +87,7 @@ $em->getConnection()->beginTransaction();
 try {
 
 	$conta		= new \Zage\Fin\ContaReceber();
-	$erro		= $conta->recebe($oConta,$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$documento,"MAN",null);
+	$erro		= $conta->recebe($oConta,$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$documento,"MAN",null);
 	
 	if ($erro != false) {
 		$em->getConnection()->rollback();

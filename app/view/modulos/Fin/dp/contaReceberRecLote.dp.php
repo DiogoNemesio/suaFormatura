@@ -98,8 +98,7 @@ try {
 		#################################################################################
 		## Efetiva o recebimento
 		#################################################################################
-		$erro		= $conta->recebe($contas[$i],$codContaCre,$codFormaPag,$dataRec,$valor,0,0,0,$documento,"MAN",null);
-		
+		$erro		= $conta->recebe($contas[$i],$codContaCre,$codFormaPag,$dataRec,$valor,0,0,0,0,$documento,"MAN",null);
 		if ($erro != false) {
 			$em->getConnection()->rollback();
 			echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($erro));

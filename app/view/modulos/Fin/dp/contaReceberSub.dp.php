@@ -24,6 +24,7 @@ if (isset($_POST['valor']))				$valor				= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['valorJuros']))		$valorJuros			= \Zage\App\Util::antiInjection($_POST['valorJuros']);
 if (isset($_POST['valorMora']))			$valorMora			= \Zage\App\Util::antiInjection($_POST['valorMora']);
 if (isset($_POST['valorDesconto']))		$valorDesconto		= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
+if (isset($_POST['valorOutros']))		$valorOutros		= \Zage\App\Util::antiInjection($_POST['valorOutros']);
 if (isset($_POST['dataVenc']))			$dataVenc			= \Zage\App\Util::antiInjection($_POST['dataVenc']);
 if (isset($_POST['documento']))			$documento			= \Zage\App\Util::antiInjection($_POST['documento']);
 if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
@@ -136,6 +137,7 @@ if (!isset($codConta) || empty($codConta)) {
 if (empty($valorDesconto))	$valorDesconto		= 0;
 if (empty($valorJuros))		$valorJuros			= 0;
 if (empty($valorMora))		$valorMora			= 0;
+if (empty($valorOutros))	$valorOutros		= 0;
 $valorTotal		= \Zage\App\Util::toPHPNumber($valorTotal);
 
 #################################################################################
@@ -169,6 +171,7 @@ $conta->setValor($valor);
 $conta->setValorJuros($valorJuros);
 $conta->setValorMora($valorMora);
 $conta->setValorDesconto($valorDesconto);
+$conta->setValorOutros($valorOutros);
 $conta->setDataVencimento($dataVenc);
 $conta->setDocumento($documento);
 $conta->setObservacao($obs);
