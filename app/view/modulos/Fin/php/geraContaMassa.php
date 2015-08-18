@@ -51,6 +51,7 @@ $cid			= \Zage\App\Util::antiInjection($_GET["cid"]);
 ## Monta o array
 #################################################################################
 if (!isset($aSelFormandos)) \Zage\App\Erro::halt('Falta de Parâmetros 3');
+$selFormandos		= $aSelFormandos; 
 $aSelFormandos		= explode(",",$aSelFormandos);
 
 #################################################################################
@@ -80,9 +81,9 @@ $hoje					= new DateTime('now');
 $interval				= $dataConclusao->diff($hoje);
 $numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
 $diaVencimento			= $oOrgFmt->getDiaVencimento();
-$valorPorFormando		= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$valorPorBoleto			= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
-$taxaPorFormando		= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
+$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
+$taxaBoleto				= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
+$taxaUso				= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 $valorTotalFormatura	= \Zage\App\Util::to_float(\Zage\Fmt\Formatura::getValorTotal($system->getCodOrganizacao()));
 $valorJaProvisionado	= \Zage\App\Util::to_float(\Zage\Fmt\Formatura::getValorAReceber($system->getCodOrganizacao()));
 $saldoAReceber			= ($valorTotalFormatura - $valorJaProvisionado);
@@ -91,10 +92,13 @@ $saldoPorFormando		= ($totalPorFormando - ($valorJaProvisionado / $numFormandos)
 $valorMensalidade		= \Zage\App\Util::to_float(((($valorTotalFormatura - $valorJaProvisionado) / $totalformandos) / $numMesesConc));
 
 
+$dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));
+
+
 /*echo "NumMesesConclusao: ".$numMesesConc."<BR>";
-echo "valorPorFormando: ".$valorPorFormando."<BR>";
-echo "valorPorBoleto: ".$valorPorBoleto."<BR>";
-echo "taxaPorFormando: ".$taxaPorFormando."<BR>";
+echo "valorPorFormando: ".$taxaAdmin."<BR>";
+echo "valorPorBoleto: ".$taxaBoleto."<BR>";
+echo "taxaPorFormando: ".$taxaUso."<BR>";
 echo "valorTotalFormatura: ".$valorTotalFormatura."<BR>";
 echo "valorJaProvisionado: ".$valorJaProvisionado."<BR>";
 echo "totalPorFormando: ".$totalPorFormando."<BR>";
@@ -111,15 +115,15 @@ for ($i = 0 ;$i < sizeof($formandos); $i++) {
 
 }
 
-if ($valorPorFormando	< 0) 	$valorPorFormando	= 0;
-if ($valorPorBoleto		< 0)	$valorPorBoleto		= 0;
-if ($taxaPorFormando	< 0)	$taxaPorFormando	= 0;
-if (!$diaVencimento)			$diaVencimento		= 5;
+if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
+if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
+if ($taxaUso		< 0)		$taxaUso		= 0;
+if (!$diaVencimento)			$diaVencimento	= 5;
 
 #################################################################################
 ## Montar o select do dia de vencimento
 #################################################################################
-$oDiaVenc	= "";
+/*$oDiaVenc	= "";
 for ($i = 1; $i <= 31; $i++) {
 	$selected = ($i == $diaVencimento) ? " selected " : "";
 	$dia	= str_pad($i, 2, "0",STR_PAD_LEFT);
@@ -128,7 +132,7 @@ for ($i = 1; $i <= 31; $i++) {
 	}
 
 	$oDiaVenc	.= "<option value='".$i."' $selected>".$dia."</option>";
-}
+}*/
 
 #################################################################################
 ## Select da Forma de Pagamento
@@ -180,6 +184,43 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
+#################################################################################
+## Select da Categoria
+#################################################################################
+try {
+	$aCat	= \Zage\Fin\Categoria::listaCombo("C");
+	$oCat    	= "<option value=\"\"></option>";
+	if ($aCat) {
+
+		$aCatTemp	= array();
+		$i 			= 0;
+
+		foreach ($aCat as $cat) {
+			$tDesc 	= ($cat->getCodCategoriaPai() != null) ? $cat->getCodCategoriaPai()->getDescricao() . "/" . $cat->getDescricao() : $cat->getDescricao();
+			$aCatTemp[$tDesc]	= $cat->getCodigo();
+
+		}
+
+		ksort($aCatTemp);
+
+		foreach ($aCatTemp as $cDesc => $cCod) {
+			$oCat .= "<option value=\"".$cCod."\">".$cDesc.'</option>';
+		}
+	}
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
+## Select do Centro de Custo
+#################################################################################
+try {
+	$aCentroCusto	= $em->getRepository('Entidades\ZgfinCentroCusto')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(),'indCredito' => 1),array('descricao' => 'ASC'));
+	$oCentroCusto	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'DESCRICAO',	null, '');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
 
 #################################################################################
 ## Urls
@@ -198,13 +239,15 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('ID'						,$id);
 $tpl->set('TITULO'					,'Geração de Contas');
 $tpl->set('URL_VOLTAR'				,$urlVoltar);
-$tpl->set('DIAS_VENC'				,$oDiaVenc);
+//$tpl->set('DIAS_VENC'				,$oDiaVenc);
+$tpl->set('SEL_FORMANDOS'			,$selFormandos);
 $tpl->set('NUM_MESES'				,$numMesesConc);
 $tpl->set('NUM_MESES_MAX'			,$numMesesConc);
 $tpl->set('NUM_FORMANDOS'			,$numFormandos);
 $tpl->set('TOTAL_FORMANDOS'			,$totalformandos);
 $tpl->set('NUM_MESES_CONCLUSAO'		,$numMesesConc);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao->format($system->config["data"]["dateFormat"]));
+$tpl->set('DATA_VENC'				,$dataVenc);
 $tpl->set('VALOR_TOTAL_FORM_FMT'	,\Zage\App\Util::to_money($valorTotalFormatura));
 $tpl->set('VALOR_TOTAL_FORMATURA'	,\Zage\App\Util::formataDinheiro($valorTotalFormatura));
 $tpl->set('TOTAL_POR_FORMANDO'		,\Zage\App\Util::formataDinheiro($totalPorFormando));
@@ -216,8 +259,16 @@ $tpl->set('SALDO_RECEBER_FMT'		,\Zage\App\Util::to_money($saldoAReceber));
 $tpl->set('SALDO_FORMANDO'			,\Zage\App\Util::formataDinheiro($saldoPorFormando));
 $tpl->set('SALDO_FORMANDO_FMT'		,\Zage\App\Util::to_money($saldoPorFormando));
 $tpl->set('VALOR_FORMANDO'			,\Zage\App\Util::formataDinheiro($valorMensalidade));
+$tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUso));
+$tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUso));
+$tpl->set('TAXA_BOLETO_FMT'			,\Zage\App\Util::to_money($taxaBoleto));
+$tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
+$tpl->set('TAXA_ADMIN_FMT'			,\Zage\App\Util::to_money($taxaAdmin));
+$tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
 $tpl->set('CONTAS'					,$oConta);
 $tpl->set('FORMAS_PAG'				,$oFormaPag);
+$tpl->set('CATEGORIAS'				,$oCat);
+$tpl->set('CENTRO_CUSTOS'			,$oCentroCusto);
 $tpl->set('DP_MODAL'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################

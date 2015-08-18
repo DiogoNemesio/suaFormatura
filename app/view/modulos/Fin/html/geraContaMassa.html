@@ -3,218 +3,232 @@
 	<h1>%TITULO%</h1>
 	</div><!-- /.page-header -->
 	<br />
-
 	<form id="zgFormID" class="form-horizontal">
-		<input type="hidden" name="id" value="%ID%">
-		<input type="hidden" name="codTipoValor" id="codTipoValorID">
-		<input type="hidden" name="valorTotalFormatura" id="valorTotalFormaturaID" value="%VALOR_TOTAL_FORMATURA%">
-		<input type="hidden" name="totalPorFormando" id="totalPorFormandoID" value="%TOTAL_POR_FORMANDO%">
-		<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
+	<input type="hidden" name="id" value="%ID%">
+	<input type="hidden" name="codTipoValor" id="codTipoValorID">
+	<input type="hidden" name="valorTotalFormatura" id="valorTotalFormaturaID" value="%VALOR_TOTAL_FORMATURA%">
+	<input type="hidden" name="totalPorFormando" id="totalPorFormandoID" value="%TOTAL_POR_FORMANDO%">
+	<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
+	<input type="hidden" name="aSelFormandos" id="aSelFormandosID" value="%SEL_FORMANDOS%">
 
-		<div class="col-sm-8 pull-left">
-			<div class="row">
-				<div class="form-group col-sm-12" id="divDiaVencimentoID">
-				    <label for="identID" class="col-sm-4 control-label">Dia do Vencimento das Mensalidades</label>
-		    		<div class="input-group col-sm-7 pull-left">
-	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-						<select class="select2" style="width:100%;" id="diaVencimentoID" name="diaVencimento" data-rel="select2">
-						%DIAS_VENC%
-						</select>
-				    </div>
-				    <div class="col-sm-1 pull-left" id="divHelpValorPorFormandoID"></div>
-				</div>
-				<div class="form-group col-sm-12" id="divIndValorTotalID">
-					<label class="col-sm-4 control-label">Valor se refere</label>
-					<div class="btn-group btn-corner col-sm-8 pull-left">
-						<span id='GCMassaValorMensalidadeID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorMensalidadeGCMassa();">Valor da Mensalidade</span>
-						<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
-						<span id='GCMassaValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalGCMassa();">Valor Total do Formando</span>
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<div class="col-sm-8 pull-left">
+				<div class="row">
+					<div class="form-group col-sm-12" id="divDataVencID">
+					    <label for="identID" class="col-sm-4 control-label">Vencimento da 1&ordf; mensalidade</label>
+			    		<div class="input-group col-sm-7 pull-left">
+		    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de vencimento da primeira mensalidade, as próximas mensalidades vão ser geradas no mesmo dia do mês subsequente."></i></span>
+		    				<input class="form-control datepicker" id="dataVencID" type="text" name="dataVenc" maxlength="10" value="%DATA_VENC%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+					    </div>
+					    <div class="col-sm-1 pull-left" id="divHelpDataVencID"></div>
 					</div>
-				</div>
-				
-				<div class="form-group col-sm-12" id="divValorID">
-				    <label id='lblTipoValorID' class="col-sm-4 control-label"></label>
-		    		<div class="input-group col-sm-7 pull-left">
-	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-			    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="%VALOR_FORMANDO%" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
-				    </div>
-				    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
-				</div>
-
-				<div class="form-group col-sm-12" id="divNumMesesID">
-				    <label for="identID" class="col-sm-4 control-label">Número de Mensalidades a gerar</label>
-		    		<div class="input-group col-sm-7 pull-left">
-	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de Mensalidades a serem geradas"></i></span>
-						<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" value="%NUM_MESES%" placeholder="Valor por Formando" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
-				    </div>
-				    <div class="col-sm-1 pull-left" id="divHelpNumMesesID"></div>
-				</div>
-
-				<div class="form-group col-sm-12" >
-    				<label class="col-sm-4 control-label">
-    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch " value="1" type="checkbox" />
-    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
-    				</label>
-	    			<div class="input-group col-sm-7 pull-left">
-	    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa de uso do Sistema, Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
-	    				<input readonly type="text" class="form-control" placeholder="Adicionar os valores extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
-				    </div>
-					<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
-		    	</div>
-
-				
-				<div class="form-group col-sm-12" id="divFormaPagID">
-					<label class="col-sm-4 control-label">Forma de Pag.</label>
-	    			<div class="input-group col-sm-7 pull-left">
-	    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Mensalidade"></i></span>
-						<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
-						%FORMAS_PAG%
-						</select>
-				    </div>
-					<div class="help-block col-sm-1 inline" id="divHelpFormaPagID"></div>
-		    	</div>
-				<div class="form-group col-sm-12" id="divContaPagID">
-					<label class="col-sm-4 control-label">Conta de Recebebimento</label>
-	    			<div class="input-group col-sm-7 pull-left">
-	    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
-						<select class="select2" style="width:100%;" id="codContaRecID" name="codContaRec" data-rel="select2">
-						%CONTAS%
-						</select>
-				    </div>
-					<div class="help-block col-sm-1 inline" id="divHelpContaPagID"></div>
-		    	</div>
-				
-				
-			</div>
-
-		</div>
-
-		<!-- #section:plugins/fuelux.wizard -->
-		<div class="col-sm-4 pull-right">
-			<div class="widget-box">
-				<div class="widget-header widget-header-flat widget-header-small center">
-					<h5 class="widget-title">Informações</h5>
-				</div>
-				<div class="widget-body">
-					<div class="widget-main small">
-						<div class="row">
-							<div class="col-sm-12">
-						    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total de Formandos:</p>
-						    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_FORMANDOS%</p>
-					    	</div>
+					<div class="form-group col-sm-12" id="divIndValorTotalID">
+						<label class="col-sm-4 control-label">Valor se refere</label>
+						<div class="btn-group btn-corner col-sm-8 pull-left">
+							<span id='GCMassaValorMensalidadeID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorMensalidadeGCMassa();">Valor da Mensalidade</span>
+							<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
+							<span id='GCMassaValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalGCMassa();">Valor Total do Formando</span>
 						</div>
-						<div class="row">
-							<div class="col-sm-12">
-						    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos selecionados:</p>
-						    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_FORMANDOS%</p>
-					    	</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-						    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até Conclusão:</p>
-						    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_CONCLUSAO% meses &nbsp;(%DATA_CONCLUSAO%)</p>
-					    	</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-						    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da Formatura:</p>
-						    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_TOTAL_FORM_FMT%</p>
-					    	</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-						    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
-						    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_POR_FORMANDO_FMT%</p>
-					    	</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-						    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado (RECEBER):</p>
-						    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
-					    	</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-						    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor a Receber Por Formando:</p>
-						    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_FORMANDO_FMT%</p>
-					    	</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-						    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Total a Receber:</p>
-						    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
-					    	</div>
-						</div>
-
-						<div class="row hidden" id="divInfoIdentID">
-							<h6 class="header blue bolder smaller">&nbsp;Identificação</h6>
-							<div class="vspace-xs"></div>
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Identificação:</p>
-						    	<p id='lbInfoIdentID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
-						</div>
-						<div class="row hidden" id="divInfoDataVencID">
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Vencimento:</p>
-						    	<p id='lbInfoDataVencID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
-						</div>
+					</div>
+					
+					<div class="form-group col-sm-12" id="divValorID">
+					    <label id='lblTipoValorID' class="col-sm-4 control-label"></label>
+			    		<div class="input-group col-sm-7 pull-left">
+		    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
+				    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="%VALOR_FORMANDO%" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+					    </div>
+					    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
+					</div>
 	
-						<div class="row hidden" id="divInfoValorID">
-							<h6 class="header blue bolder smaller">&nbsp;Valores</h6>
-							<div class="vspace-xs"></div>
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor Total:</p>
-						    	<p id='lbInfoValorID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
-						</div>
-						<div class="row hidden" id="divInfoConfID">
-							<h6 class="header blue bolder smaller">&nbsp;Configurações</h6>
-							<div class="vspace-xs"></div>
-						</div>
-						<div class="row hidden" id="divInfoFormaPagID">
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Forma Pag:</p>
-						    	<p id='lbInfoFormaPagID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
-						</div>
-						<div class="row hidden" id="divInfoContaPagID">
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Conta</p>
-						    	<p id='lbInfoContaPagID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
-						</div>
-						<div class="row hidden" id="divInfoSaldoContaID">
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo da Conta:</p>
-						    	<p id='lbInfoSaldoContaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
-						</div>
-						<div class="row hidden" id="divInfoCategoriaID">
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Categoria:</p>
-						    	<p id='lbInfoCategoriaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
-						</div>
-						<div class="row hidden" id="divInfoCentroCustoID">
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">C. Custo:</p>
-						    	<p id='lbInfoCentroCustoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
-						</div>
-						<div class="row hidden" id="divInfoPessoaID">
-							<div class="col-sm-12">
-						    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Fornecedor:</p>
-						    	<p id='lbInfoPessoaID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
-					    	</div>
+					<div class="form-group col-sm-12" id="divNumMesesID">
+					    <label for="identID" class="col-sm-4 control-label">Número de Mensalidades a gerar</label>
+			    		<div class="input-group col-sm-7 pull-left">
+		    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de Mensalidades a serem geradas"></i></span>
+							<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" value="%NUM_MESES%" placeholder="Valor por Formando" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+					    </div>
+					    <div class="col-sm-1 pull-left" id="divHelpNumMesesID"></div>
+					</div>
+	
+					<div class="form-group col-sm-12" >
+	    				<label class="col-sm-4 control-label">
+	    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch " value="1" checked type="checkbox" />
+	    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+	    				</label>
+		    			<div class="input-group col-sm-7 pull-left">
+		    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa de uso do Sistema, Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
+		    				<input readonly type="text" class="form-control" placeholder="Adicionar os valores extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+					    </div>
+						<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
+			    	</div>
+	
+					
+					<div class="form-group col-sm-12" id="divFormaPagID">
+						<label class="col-sm-4 control-label">Forma de Pag.</label>
+		    			<div class="input-group col-sm-7 pull-left">
+		    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Mensalidade"></i></span>
+							<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
+							%FORMAS_PAG%
+							</select>
+					    </div>
+						<div class="help-block col-sm-1 inline" id="divHelpFormaPagID"></div>
+			    	</div>
+					<div class="form-group col-sm-12" id="divContaRecID">
+						<label class="col-sm-4 control-label">Conta de Recebebimento</label>
+		    			<div class="input-group col-sm-7 pull-left">
+		    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
+							<select class="select2" style="width:100%;" id="codContaRecID" name="codContaRec" data-rel="select2">
+							%CONTAS%
+							</select>
+					    </div>
+						<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
+			    	</div>
+					<div class="form-group col-sm-12" id="divCodCategoriaID">
+						<label class="col-sm-4 control-label">Categoria</label>
+		    			<div class="input-group col-sm-7 pull-left">
+		    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a categoria da conta, normalmente uma categoria para mensalidades"></i></span>
+							<select class="select2" style="width:100%;" id="codCategoriaID" name="codCategoria" data-rel="select2">
+							%CATEGORIAS%
+							</select>
+					    </div>
+						<div class="help-block col-sm-1 inline" id="divHelpCodCategoriaID"></div>
+			    	</div>
+					<div class="form-group col-sm-12" id="divCodCentroCustoID">
+						<label class="col-sm-4 control-label">Centro de Custo</label>
+		    			<div class="input-group col-sm-7 pull-left">
+		    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o centro de custo"></i></span>
+							<select class="select2" style="width:100%;" id="codCentroCustoID" name="codCentroCusto" data-rel="select2">
+							%CENTRO_CUSTOS%
+							</select>
+					    </div>
+						<div class="help-block col-sm-1 inline" id="divHelpCodCentroCustoID"></div>
+			    	</div>
+				</div>
+			</div>
+	
+			<!-- #section:plugins/fuelux.wizard -->
+			<div class="col-sm-4 pull-right">
+				<div class="widget-box">
+					<div class="widget-header widget-header-flat widget-header-small center">
+						<h5 class="widget-title">Informações</h5>
+					</div>
+					<div class="widget-body">
+						<div class="widget-main small">
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total de Formandos:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_FORMANDOS%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos selecionados:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_FORMANDOS%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até Conclusão:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_CONCLUSAO% meses &nbsp;(%DATA_CONCLUSAO%)</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da Formatura:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_TOTAL_FORM_FMT%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_POR_FORMANDO_FMT%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado (RECEBER):</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor a Receber Por Formando:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_FORMANDO_FMT%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Total a Receber:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Uso do Sistema:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de emissão do Boleto:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_BOLETO_FMT%</p>
+						    	</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+							    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Administração:</p>
+							    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_ADMIN_FMT%</p>
+						    	</div>
+							</div>
+	
+							<div class="row hidden" id="divInfoIdentID">
+								<h6 class="header blue bolder smaller">&nbsp;Identificação</h6>
+								<div class="vspace-xs"></div>
+								<div class="col-sm-12">
+							    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Identificação:</p>
+							    	<p id='lbInfoIdentID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+						    	</div>
+							</div>
+							<div class="row hidden" id="divInfoDataVencID">
+								<div class="col-sm-12">
+							    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Vencimento:</p>
+							    	<p id='lbInfoDataVencID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+						    	</div>
+							</div>
+		
+							<div class="row hidden" id="divInfoValorID">
+								<h6 class="header blue bolder smaller">&nbsp;Valores</h6>
+								<div class="vspace-xs"></div>
+								<div class="col-sm-12">
+							    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor Total:</p>
+							    	<p id='lbInfoValorID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+						    	</div>
+							</div>
+							<div class="row hidden" id="divInfoConfID">
+								<h6 class="header blue bolder smaller">&nbsp;Configurações</h6>
+								<div class="vspace-xs"></div>
+							</div>
+							<div class="row hidden" id="divInfoFormaPagID">
+								<div class="col-sm-12">
+							    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Forma Pag:</p>
+							    	<p id='lbInfoFormaPagID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+						    	</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="clearfix form-actions">
+		<label class="col-sm-5 control-label">&nbsp;</label>
+		<button type="button" class="btn btn-primary" id="btnSubmitGCMassaID">
+			<i class="fa fa-check bigger-110"></i> Gerar
+		</button>
+	</div>
 	</form>
 </div>
+
 <script>
 
 $(document).one('ajaxloadstart.page', function(e) {
@@ -255,7 +269,19 @@ $('textarea.limited').inputlimiter({
 
 selecionaValorMensalidadeGCMassa();
 
+$('#btnSubmitGCMassaID').click(function() {
+	var vOK;
+	
+	vOK	= validaGCMassa();
+	if (vOK) {
+		$('#zgFormID').submit();
+	}
+	
+});
+
+
 $('#zgFormID').submit(function() {
+	
 	/** Retirar a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
@@ -270,7 +296,7 @@ $('#zgFormID').submit(function() {
 
 	$.ajax({
 		type:	"POST", 
-		url:	"%DP%",
+		url:	"%DP_MODAL%",
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
@@ -280,15 +306,8 @@ $('#zgFormID').submit(function() {
 		
 		if (checaRetornoOK(data) == true) {
 			bootbox.dialog({
-				message: "Conta salva com sucesso !!!", 
+				message: "Mensalidades geradas com sucesso !!!", 
 				buttons: {
-					"novo" : {
-						"label" : "<i class='ace-icon fa fa-plus'></i>Cadastrar nova conta",
-						"className" : "btn-sm btn-primary",
-						"callback": function() {
-							zgLoadUrl('%URL_ADD%');
-						}
-					},
 					"fechar" : {
 						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
 						"className" : "btn-sm btn-danger",
@@ -393,6 +412,76 @@ function atualizaInfoValorGCMassa() {
 	
 	*/
 
+}
+
+
+function validaGCMassa() {
+	var vDataVenc		= $('#dataVencID').val();
+	var vCodTipoValor	= $('#codTipoValorID').val();
+	var vValor			= $('#valorID').val();
+	var vNumMeses		= parseInt($('#numMesesID').val());
+	var vNumMesesMax	= parseInt($('#numMesesMaxID').val());
+	var vIndValorExtra	= $('#indValorExtraID').attr('checked');
+	var vCodFormaPag	= $('#codFormaPagID').val();
+	var vCodContaRec	= $('#codContaRecID').val();
+	var vOK				= true;
+	
+	// Data de Vencimento
+	if (!vDataVenc) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento deve ser informada !!!'));
+		vOK		= false;
+	}else{
+		$('#divDataVencID').removeClass('has-error');
+		$('#divHelpDataVencID').html('&nbsp;');
+	}
+	
+	// Valor
+	if (!vValor) {
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Valor deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divValorID').removeClass('has-error');
+		$('#divHelpValorID').html('&nbsp;');
+	}
+
+	// Número de meses
+	if (!vNumMeses) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser preenchido !!!'));
+		vOK		= false;
+	}else if (vNumMeses > vNumMesesMax) {
+		alert((vNumMeses > vNumMesesMax));
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser no máximo '+vNumMesesMax+' !!!'));
+		vOK		= false;
+	}else{
+		$('#divNumMesesID').removeClass('has-error');
+		$('#divHelpNumMesesID').html('&nbsp;');
+	}
+	
+	// Forma de Pagamento
+	if (!vCodFormaPag) {
+		$('#divFormaPagID').addClass('has-error');
+		$('#divHelpFormaPagID').html(zgCriaSpanErro('Forma de pagamento deve ser selecionada !!!'));
+		vOK		= false;
+	}else{
+		$('#divFormaPagID').removeClass('has-error');
+		$('#divHelpFormaPagID').html('&nbsp;');
+	}
+	
+	// Conta
+	if (!vCodContaRec) {
+		$('#divContaRecID').addClass('has-error');
+		$('#divHelpContaRecID').html(zgCriaSpanErro('Conta de Recebimento deve ser selecionada !!!'));
+		vOK		= false;
+	}else{
+		$('#divContaRecID').removeClass('has-error');
+		$('#divHelpContaRecID').html('&nbsp;');
+	}
+
+	return vOK;
 }
 
 

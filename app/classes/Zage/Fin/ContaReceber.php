@@ -301,8 +301,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
-				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]) + \Zage\App\Util::toMysqlNumber($this->getValorJuros()) + \Zage\App\Util::toMysqlNumber($this->getValorMora()) + \Zage\App\Util::toMysqlNumber($this->getValorOutros()) - \Zage\App\Util::toMysqlNumber($this->getValorDesconto());
-				$_valorTotal	+= $valores[$i];
+				//$log->debug("Valor: ".\Zage\App\Util::to_float($this->_valores[$i]).", Juros: ".\Zage\App\Util::to_float($this->getValorJuros()).", Mora: ".\Zage\App\Util::to_float($this->getValorMora()).", Outros: ".\Zage\App\Util::to_float($this->getValorOutros()).", Desconto: ".\Zage\App\Util::to_float($this->getValorDesconto()));
+				$_val			= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto());
+				$_valorTotal	+= $_val;
+				$valores[$i]	= \Zage\App\Util::toMysqlNumber($_val); 
 			}
 		}
 		
@@ -492,7 +494,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$this->setValorMora(\Zage\App\Util::toMysqlNumber($this->getValorMora()));
 		$this->setValorDesconto(\Zage\App\Util::toMysqlNumber($this->getValorDesconto()));
 		$this->setValorOutros(\Zage\App\Util::toMysqlNumber($this->getValorOutros()));
-		
+
 		#################################################################################
 		## Número de Parcelas, se não definido usar o padrão que é "1"
 		#################################################################################
@@ -618,11 +620,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			#################################################################################
 			## Valor
 			#################################################################################
-			if ($this->getCodTipoRecorrencia()->getCodigo() == "U") {
+			//if ($this->getCodTipoRecorrencia()->getCodigo() == "U") {
 				$object->setValor($this->getValor());
-			}else{
-				$object->setValor($valores[$i]);
-			}
+			//}else{
+			//	$object->setValor($valores[$i]);
+			//}
 			
 			#################################################################################
 			## Guarda o código do grupo da conta caso a conta esteja sendo substituída

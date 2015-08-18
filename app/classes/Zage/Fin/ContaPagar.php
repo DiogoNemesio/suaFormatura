@@ -619,11 +619,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			#################################################################################
 			## Valor
 			#################################################################################
-			if ($this->getCodTipoRecorrencia()->getCodigo() == "U") {
+			//if ($this->getCodTipoRecorrencia()->getCodigo() == "U") {
 				$object->setValor($this->getValor());
-			}else{
-				$object->setValor($valores[$i]);
-			}
+			//}else{
+			//	$object->setValor($valores[$i]);
+			//}
 
 			#################################################################################
 			## Guarda o código do grupo da conta caso a conta esteja sendo substituída

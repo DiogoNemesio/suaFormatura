@@ -68,14 +68,14 @@ $conta->_setCodConta($codConta);
 #################################################################################
 ## Resgata os objetos (chave estrangeiras)
 #################################################################################
-$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
+$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 $oForma		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
 $oStatus	= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => "A"));
 $oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
 $oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
 $oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codPeriodoRec));
 $oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
-$oContaPag	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codContaPag));
+$oContaPag	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codContaPag));
 
 #################################################################################
 ## Validação de rateio
@@ -172,7 +172,7 @@ if (isset($codTipoValor) && $codTipoValor == "P") {
 #################################################################################
 ## Escrever os valores no objeto
 #################################################################################
-$conta->setcodOrganizacao($oOrg);
+$conta->setCodOrganizacao($oOrg);
 $conta->setCodFormaPagamento($oForma);
 $conta->setCodStatus($oStatus);
 $conta->setCodMoeda($oMoeda);
