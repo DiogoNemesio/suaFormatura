@@ -474,7 +474,7 @@ function atualizaResumo() {
 		$('#lbInfoValorObrigatorioID').text($valorObri);
 		
 		//LUCRO
-		$nLucro = $nValor * $qtdeObri * $numUsu - $nCusto;
+		$nLucro = ($nValor * $qtdeObri * $numUsu) - $nCusto;
 		//$lucro = accounting.formatMoney($nlucro, options);
 		
 		if ($nLucro > 0) {

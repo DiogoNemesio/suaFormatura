@@ -38,8 +38,9 @@ $err	= false;
 ## Fazer validação dos campos
 #################################################################################
 /******* Verificar se existe formandos ativos *********/
-if ($numUsuAtivo == 0){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A rifa não pode ser criada pois não existe formando ativo na formatura!"));
+$formandos		= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
+if (sizeof($formandos) == 0)	{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A rifa não pode ser criada pois não existe formando ativo!"));
 	$err	= 1;
 }
 
@@ -105,16 +106,6 @@ if (!isset($valor) || (empty($valor))) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O valor da rifa tem um formato inválido!"));
 		$err	= 1;
 	}
-}
-
-
-#################################################################################
-## Resgatar os formandos ativos dessa organização para enviar a notificação
-#################################################################################
-$formandos		= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
-if (sizeof($formandos) == 0)	{
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Não existes formandos ativos nessa formatura !!!"));
-	$err	= 1;
 }
 
 if ($err != null) {

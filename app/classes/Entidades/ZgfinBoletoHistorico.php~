@@ -71,6 +71,13 @@ class ZgfinBoletoHistorico
     private $desconto;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="OUTROS", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $outros;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="VENCIMENTO", type="date", nullable=true)
@@ -281,6 +288,29 @@ class ZgfinBoletoHistorico
     public function getDesconto()
     {
         return $this->desconto;
+    }
+
+    /**
+     * Set outros
+     *
+     * @param float $outros
+     * @return ZgfinBoletoHistorico
+     */
+    public function setOutros($outros)
+    {
+        $this->outros = $outros;
+
+        return $this;
+    }
+
+    /**
+     * Get outros
+     *
+     * @return float 
+     */
+    public function getOutros()
+    {
+        return $this->outros;
     }
 
     /**

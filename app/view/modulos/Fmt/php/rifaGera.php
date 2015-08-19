@@ -32,33 +32,54 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Verifica os parâmetros obrigatórios
 #################################################################################
-if (!isset($codRifa)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
-	
+if (!isset($codRifa)) \Zage\App\Erro::halt('Falta de Parâmetros : COD_RIFA');
+
 #################################################################################
-## Resgata as informações do banco
+## Resgata as informações da rifa
 #################################################################################
 try {
-	
+
 	$info 		= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
-	
+
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-	
+
 $nome 				= $info->getNome();
 $premio				= $info->getPremio();
 $custo				= \Zage\App\Util::formataDinheiro($info->getCusto());
 $dataSorteio		= $info->getDataSorteio()->format($system->config["data"]["datetimeSimplesFormat"]);
 $localSorteio 		= $info->getLocalSorteio();
 $qtdeObrigatorio	= $info->getQtdeObrigatorio();
+$qtdeObrigatorioInfo= $info->getQtdeObrigatorio();
 $valor				= \Zage\App\Util::formataDinheiro($info->getValorUnitario());
 $indRifaEletronica	= ($info->getIndRifaEletronica()	== 1) ? "checked" : null;
-	
+
 #################################################################################
-## Quantidade de formandos ativos
+## Resgatar formandos ativos
 #################################################################################
-$formandos		= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
+try {
+	$formandos	= \Zage\Seg\Usuario::listaUsuarioOrganizacaoAtivo($system->getCodOrganizacao(), 'F');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+// Número de formandos ativos
 $numAtivo		= sizeof($formandos);
+
+// Gerar select dos formandos
+for ($i = 0; $i < $numAtivo; $i++){
+	$usuCombo .= '<option value='.$formandos[$i]->getCodUsuario()->getCodigo().'>'.$formandos[$i]->getCodUsuario()->getNome().'</option>';
+}
+
+#################################################################################
+## Verificar se já foi gerado bilhete para a rifa
+################################################################################
+if ($info->getIndRifaGerada() == null){
+	$disabled = 'disabled';
+}else{
+	$qtdeObrigatorio = null;
+}
 
 #################################################################################
 ## Número inicial e final
@@ -66,10 +87,52 @@ $numAtivo		= sizeof($formandos);
 $numeroInicial	= 1;
 $numeroFinal	= $numAtivo * $qtdeObrigatorio;
 
+
+#################################################################################
+## Resgata os dados do grid
+#################################################################################
+try {
+	$rifaGera	= $em->getRepository('Entidades\ZgfmtRifaGeracao')->findBy(array('codRifa' => $codRifa),array('data' => 'DESC'));
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+#################################################################################
+## Cria o objeto do Grid (bootstrap)
+#################################################################################
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
+$grid->adicionaTexto($tr->trans('CÓDIGO'),10, $grid::CENTER	,'codGeracao:codigo');
+$grid->adicionaTexto($tr->trans('USUÁRIO'),			20, $grid::CENTER	,'codUsuario:nome');
+$grid->adicionaDataHora($tr->trans('DATA'),	 		20, $grid::CENTER	,'data');
+$grid->adicionaIcone(arquvo,'fa fa-download red',$tr->trans('Arquivo para download'));
+
+$grid->importaDadosDoctrine($rifaGera);
+
+
+#################################################################################
+## Popula os valores dos botões
+#################################################################################
+for ($i = 0; $i < sizeof($rifaGera); $i++) {
+	$rid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$rifaGera[$i]->getCodigo().'&url='.$url);
+	
+	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/rifaGera.php?id='.$rid);
+
+}
+
+#################################################################################
+## Gerar o código html do grid
+#################################################################################
+try {
+	$htmlGrid	= $grid->getHtmlCode();
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
 #################################################################################
 ## Url Voltar
 #################################################################################
 $urlVoltar			= ROOT_URL."/Fmt/rifaLis.php?id=".$id;
+$urlAtualizar		= ROOT_URL."/Fmt/rifaGera.php?id=".$id."codRifa=".$codRifa;
 
 #################################################################################
 ## Carregando o template html
@@ -82,8 +145,12 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('TITULO'					,"Geração dos números da Rifa");
 $tpl->set('URL_FORM'				,$_SERVER['SCRIPT_NAME']);
+$tpl->set('GRID'					,$htmlGrid);
 $tpl->set('URL_VOLTAR'				,$urlVoltar);
+$tpl->set('URL_ATUALIZAR'			,$urlAtualizar);
 $tpl->set('ID'						,$id);
+$tpl->set('FORMANDOS'				,$usuCombo);
+$tpl->set('DISABLED'				,$disabled);
 $tpl->set('NUM_FORMANDO'			,$numAtivo);
 $tpl->set('NUM_RIFAS'				,$numeroFinal);
 $tpl->set('COD_RIFA'				,$codRifa);
@@ -91,7 +158,9 @@ $tpl->set('NOME'					,$nome);
 $tpl->set('PREMIO'					,$premio);
 $tpl->set('CUSTO'					,$custo);
 $tpl->set('LOCAL_SORTEIO'			,$localSorteio);
+$tpl->set('DATA_SORTEIO'			,$dataSorteio);
 $tpl->set('QTDE_OBRIGATORIO'		,$qtdeObrigatorio);
+$tpl->set('QTDE_OBRIGATORIO_INFO'	,$qtdeObrigatorioInfo);
 $tpl->set('VALOR'					,$valor);
 $tpl->set('IND_RIFA_ELETRONICA'		,$indRifaEletronica);
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));

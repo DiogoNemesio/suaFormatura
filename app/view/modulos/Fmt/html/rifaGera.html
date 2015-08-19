@@ -1,89 +1,232 @@
-<form id="zgFormModalID" class="form-horizontal">
-<div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	<h4 class=""><i class="fa fa-cog orange"></i>&nbsp;%TITULO%</h4>
-</div>
-<div class="modal-body" style="overflow-y: scroll; height: 350px;">
-	<input type="hidden" name="id" value="%ID%">
-	<input type="hidden" name="codRifa" value="%COD_RIFA%">
+<div id="content">
+	<div class="page-header">
+	<h1><i class="fa fa-cog blue">&nbsp;</i>Gerar bilhetes
+	<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URL_VOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+	<a id='a01ID' class='btn btn-white ' title="Atualizar" href="javascript:zgLoadUrl('%URL_ATUALIZAR%');"><i class="fa fa-refresh bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+	<br />
+		
+	<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+		<input type="hidden" id="codRifaID" name="codRifa" value="%COD_RIFA%">
+		<input type="hidden" id="valID" name="validado">
+		<div id="divMsgFmtConfID"></div>
+		<div class="row">
+			<div class="col-sm-7">
+				<div class="col-sm-12">
+	    			<div class="form-group col-sm-12" id="divQtdePorFormandoID">
+			    		<label class="col-sm-4 control-label" for="qtdePorFormandoID">Qtde por formando</label>
+			  			<div class="input-group col-sm-7 pull-left">
+			 				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o título da rifa."></i></span>
+			   				<input class="form-control" id="qtdePorFormandoID" type="text" name="qtdePorFormando" placeholder="Quantidade de bilhetes por formando" maxlength="100" value="%QTDE_OBRIGATORIO%" zg-data-toggle="mask" zg-data-mask="numero" autocomplete="off">
+			    		</div>
+					<div class="col-sm-1 pull-left" id="divHelpQtdePorFormandoID"></div>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="form-group col-sm-12" id="divAtivoID">
+				    	<label class="col-xs-12 col-sm-4 control-label" for="ativoID"></label>
+				    	<label>
+				    		<input name="indTodosFormandos" id="indTodosFormandosID" onchange="mostraFormandos();" checked %DISABLED% type="checkbox" class="ace" />
+							<span class="lbl"> Gerar para todos os formandos</span>
+						</label>
+				    </div>
+				</div>
+				<div class="col-sm-12">
+					<div class="form-group col-sm-12 hidden" id="divSelecaoFormandoID">
+					<label class="control-label col-xs-12 col-sm-4 no-padding-right">Selecione os formandos</label>
 	
-    <h4>Deseja realmente gerar os números da rifa ?</h4>
-    <div class="col-sm-12">
-		<div class="form-group">
-			<label class="col-sm-4 control-label">Número de Rifas:</label>
-			<label class="col-sm-2 control-label">%NUM_RIFAS%</label>
-		</div>
-	</div>
-    
-    <div class="col-sm-12">
-		<div class="form-group">
-			<label class="col-sm-4 control-label">Número de Formandos:</label>
-			<label class="col-sm-2 control-label">%NUM_FORMANDO%</label>
-		</div>
-	</div>
-	<div>&nbsp;</div>
-	<div>&nbsp;</div>
-    <h6><i class="fa fa-warning"></i> Ao gerar os números, você não poderá mais alterar, nem excluir a rifa !!!</h6>
+						<div class="col-xs-12 col-sm-7">
+							<select multiple id="formandosID" name="formandos[]" class="select2" data-placeholder="Selecione os formandos...">
+								%FORMANDOS%
+							</select>
+						</div>
+					</div>
+				</div>
+				<div>&nbsp;</div>
+				<div>
+					<label class="col-sm-4 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSalvarFormaturaConfID">
+						<i class="fa fa-check bigger-110"></i> Gerar
+					</button>
+				</div>
+	
+			</div>
+			
+			<div class="col-sm-5">
+				<div class="widget-box">
+					<div class="widget-header widget-header-flat widget-header-small center">
+						<h5 class="widget-title">Informações da rifa</h5>
+					</div>
+					<div class="widget-body">
+						<div class="widget-main small">
+							
+							<div class="row" id="divInfoNomeID">
+								<div class="vspace-xs"></div>
+								<div class="col-sm-12">
+							    	<p class="col-sm-2 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Nome:</p>
+							    	<p id='lbInfoIdentID' class="col-sm-10 pull-left align-left" style="padding: 2px; margin:0;">%NOME%</p>
+						    	</div>
+							</div>
+							<div class="row" id="divInfoPremioID">
+								<div class="col-sm-12">
+							    	<p class="col-sm-2 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Prêmio:</p>
+							    	<p id='lbInfoPremioID' class="col-sm-10 pull-left align-left" style="padding: 2px; margin:0;">%PREMIO%</p>
+						    	</div>
+							</div>
+							<div class="row" id="divInfoPremioID">
+								<div class="col-sm-12">
+							    	<p class="col-sm-2 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meta:</p>
+							    	<p id='lbInfoPremioID' class="col-sm-10 pull-left align-left" style="padding: 2px; margin:0;">%QTDE_OBRIGATORIO_INFO% unidades (mínimo)</p>
+						    	</div>
+							</div>
+							<div class="row" id="divInfoPremioID">
+								<div class="col-sm-12">
+							    	<p class="col-sm-2 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor:</p>
+							    	<p id='lbInfoPremioID' class="col-sm-10 pull-left align-left" style="padding: 2px; margin:0;">R$ %VALOR% (unidade)</p>
+						    	</div>
+							</div>
+							<div class="row" id="divInfoPremioID">
+								<div class="col-sm-12">
+							    	<p class="col-sm-2 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Sorteio:</p>
+							    	<p id='lbInfoPremioID' class="col-sm-10 pull-left align-left" style="padding: 2px; margin:0;">%DATA_SORTEIO% - %LOCAL_SORTEIO%</p>
+						    	</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+	    </div>	    
+	</form>
 
-
-	<div id="divMsgRifaModalID"></div>
-    
+	<h5 class="header blue bolder smaller"><i class="fa fa-download blue">&nbsp;</i> Download</h5>
+	<div class="box-content" id="gridID">
+		%GRID%
+	</div><!--/span-->
+	
 </div>
-<div class="modal-footer">
-	<div class="">
-		<label class="col-sm-5 control-label">&nbsp;</label>
-		<button type="button" class="btn btn-primary" id="btnSubmitID">
-			<i class="fa fa-check bigger-110"></i> Gerar
-		</button>
-		<button type="button" data-dismiss="modal" class="btn btn-warning" id="cancelModalBlo">Fechar</button>
-	</div>
-</div>
-</form>
 
-
-<script type="text/javascript" charset="%CHARSET%">
-//Submit formulário
-
-$('#btnSubmitID').on("click", function(e) {
-	$('#zgFormModalID').submit();
+<script>
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Mascaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 
-$('#zgFormModalID').submit(function() {
+$('.select2').css('width','100%').select2({allowClear:true})
+$('#select2-multiple-style .btn').on('click', function(e){
+	var target = $(this).find('input[type=radio]');
+	var which = 2;
+	if(which == 2) $('.select2').addClass('tag-input-style');
+	 else $('.select2').removeClass('tag-input-style');
+});
+
+//Mensagens
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+
+
+$('#btnSalvarFormaturaConfID').on("click", function(e) {
+	var vOK 	= validaRifaGera();
 	
-	/** Retira a máscara para os campos que estão configurados para tal **/
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	// Retirar a máscara para os campos que estão configurados para tal 
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
-	});
-	
-	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
-	$( "select" ).each(function( index ) {
-		if ($(this).hasClass('readonly')) {
-			$(this).prop( "disabled", false );
-		}
 	});
 	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
-		data:	$('#zgFormModalID').serialize(),
+		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			zgMostraMsg('divMsgRifaModalID',zgGetMsgRetorno(data));
+			zgMostraAviso("Fechar");
+			zgLoadUrl('%URL_ATUALIZAR%');
 		}else{
-			zgMostraErro('divMsgRifaModalID',zgGetMsgRetorno(data));
+			zgMostraErro('divMsgFmtConfID',zgGetMsgRetorno(data));
 		}
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
-			zgLoadUrl('%URL_VOLTAR%');
 			$('#zgDivModalID').off('hidden.bs.modal');
 		});
-
 		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
-		zgMostraErro('zgDivModalID',errorThrown);
+		zgMostraAviso(null);
 	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
 	return false; 
 });
+
+function validaRifaGera() {
+	var vQtdePorFormando	= $('#qtdePorFormandoID').val();
+	var vPremio		    	= $('#premioID').val();
+	var vValor				= $('#valorID').val();
+	
+	var vOK					= true;
+
+
+	/** QTDE OBRIGATORIO **/
+	if (!vQtdePorFormando){
+		$('#divQtdePorFormandoID').addClass('has-error');
+		$('#divHelpQtdePorFormandoID').html(zgCriaSpanErro('Você deve informar o números de bilhetes a ser gerado para cada formando!'));
+		vOK		= false;
+	}else if (vQtdePorFormando <= 0){
+		$('#divQtdePorFormandoID').addClass('has-error');
+		$('#divHelpQtdePorFormandoID').html(zgCriaSpanErro('A quantidade deve ser um número maior que 0!'));
+		vOK		= false;
+	}else{
+		$('#divvQtdePorFormandoID').removeClass('has-error');
+		$('#divHelpQtdePorFormandoID').html('&nbsp;');		
+	}
+
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Abrir aba que tiver campos inválidos
+		$('#tabID li:eq('+ vTab +') a').tab('show');
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+}
+
+
+//Div de endereço correto, mostrar em caso que esteja editando.
+function mostraFormandos() {
+	var vtodosFormandos	= $('#indTodosFormandosID').is(':checked');
+	
+	if (vtodosFormandos == false) {
+		$('#divSelecaoFormandoID').removeClass("hidden");
+	}else{
+		$('#divSelecaoFormandoID').addClass("hidden");
+	}
+}
+
 
 
 </script>
