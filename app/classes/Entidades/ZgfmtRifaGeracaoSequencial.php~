@@ -1,0 +1,34 @@
+<?php
+
+namespace Entidades;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ZgfmtRifaGeracaoSequencial
+ *
+ * @ORM\Table(name="ZGFMT_RIFA_GERACAO_SEQUENCIAL")
+ * @ORM\Entity
+ */
+class ZgfmtRifaGeracaoSequencial
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="idZGFMT_RIFA_GERADO_SEQUENCIAL", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idzgfmtRifaGeradoSequencial;
+
+
+    /**
+     * Get idzgfmtRifaGeradoSequencial
+     *
+     * @return integer 
+     */
+    public function getIdzgfmtRifaGeradoSequencial()
+    {
+        return $this->idzgfmtRifaGeradoSequencial;
+    }
+}
