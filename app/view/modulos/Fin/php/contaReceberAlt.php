@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$log,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -155,14 +160,49 @@ try {
 }
 
 #################################################################################
-## Select da Conta de Débito
+## Select da Conta de Crédito
 #################################################################################
 try {
+
+	#################################################################################
+	## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
+	#################################################################################
+	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+
+	if ($oFmtAdm)	{
+		$aCntCer	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('nome' => 'ASC'));
+	}else{
+		$aCntCer	= null;
+	}
+
 	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codContaRec, '');
+
+	if ($aCntCer) {
+		$oConta		= "<optgroup label='Contas do Cerimonial'>";
+		for ($i = 0; $i < sizeof($aCntCer); $i++) {
+			$selected = ($aCntCer[$i]->getCodigo() == $codContaRec) ? "selected" : ""; 
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' $selected>".$aCntCer[$i]->getNome()."</option>";
+		}
+		$oConta		.= '</optgroup>';
+		if ($aConta) {
+			$oConta		.= "<optgroup label='Contas da Formatura'>";
+			for ($i = 0; $i < sizeof($aConta); $i++) {
+				$selected = ($aConta[$i]->getCodigo() == $codContaRec) ? "selected" : "";
+				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' $selected>".$aConta[$i]->getNome()."</option>";
+			}
+			$oConta		.= '</optgroup>';
+		}
+	}else{
+		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+	}
+
+
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
+
+
+
 
 
 #################################################################################

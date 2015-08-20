@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $system,$em;
+global $em,$system,$log,$tr;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -65,8 +65,38 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
+
+	#################################################################################
+	## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
+	#################################################################################
+	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+
+	if ($oFmtAdm)	{
+		$aCntCer	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('nome' => 'ASC'));
+	}else{
+		$aCntCer	= null;
+	}
+
 	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+
+	if ($aCntCer) {
+		$oConta		= "<optgroup label='Contas do Cerimonial'>";
+		for ($i = 0; $i < sizeof($aCntCer); $i++) {
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."'>".$aCntCer[$i]->getNome()."</option>";
+		}
+		$oConta		.= '</optgroup>';
+		if ($aConta) {
+			$oConta		.= "<optgroup label='Contas da Formatura'>";
+			for ($i = 0; $i < sizeof($aConta); $i++) {
+				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."'>".$aConta[$i]->getNome()."</option>";
+			}
+			$oConta		.= '</optgroup>';
+		}
+	}else{
+		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+	}
+
+
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }

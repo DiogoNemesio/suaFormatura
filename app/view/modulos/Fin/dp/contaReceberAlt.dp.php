@@ -75,7 +75,7 @@ $oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' 
 $oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
 $oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codPeriodoRec));
 $oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
-$oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codContaRec));
+$oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codContaRec));
 
 $log->debug($codPessoa);
 #################################################################################
