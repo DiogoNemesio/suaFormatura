@@ -301,8 +301,9 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
-				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]) + \Zage\App\Util::toMysqlNumber($this->getValorJuros()) + \Zage\App\Util::toMysqlNumber($this->getValorMora()) + \Zage\App\Util::toMysqlNumber($this->getValorOutros()) - \Zage\App\Util::toMysqlNumber($this->getValorDesconto());
-				$_valorTotal	+= $valores[$i];
+				$_val			= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto());
+				$_valorTotal	+= $_val;
+				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]);
 			}
 		}
 		
@@ -620,10 +621,12 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			## Valor
 			#################################################################################
 			//if ($this->getCodTipoRecorrencia()->getCodigo() == "U") {
-				$object->setValor($this->getValor());
+			//	$object->setValor($this->getValor());
 			//}else{
-			//	$object->setValor($valores[$i]);
+				$object->setValor($valores[$i]);
 			//}
+			
+			$valorTotalParcela		= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto());
 
 			#################################################################################
 			## Guarda o código do grupo da conta caso a conta esteja sendo substituída
@@ -655,7 +658,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 				$rateio->_setArrayCentroCustoRateio($this->_centroCustosRateio);
 				$rateio->_setArrayValoresRateio($this->_valoresRateio);
 				$rateio->_setArrayPctRateio($this->_pctRateio);
-				$rateio->_setValorTotal($valores[$i]);
+				$rateio->_setValorTotal($valorTotalParcela);
 				
 				$err = $rateio->salva();
 				

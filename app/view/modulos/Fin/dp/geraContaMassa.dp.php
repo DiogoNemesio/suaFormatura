@@ -76,22 +76,36 @@ $valor		= \Zage\App\Util::to_float($valor);
 #################################################################################
 ## Cria o array de vencimentos e de valores
 #################################################################################
-$aValor	= array();
-$aData	= array();
+$aValor			= array();
+$aData			= array();
+$_valParcela	= round($valor / $numMeses,2);
 list ($dia, $mes, $ano) = split ('[/.-]', $dataVenc);
 for ($i = 0; $i < $numMeses; $i++) {
-	$date		= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes + $i, $dia , $ano));
+	$_mes			= date("m",mktime(0, 0, 0, ($mes + $i), 1 , $ano));
+	$_ano			= date("Y",mktime(0, 0, 0, ($mes + $i), 1 , $ano));
+	$numDays		= cal_days_in_month(CAL_GREGORIAN, $_mes, $_ano);
+	
+	if ($dia > $numDays) {
+		$date		= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes + $i, $numDays , $ano));
+	}else{
+		$date		= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes + $i, $dia , $ano));
+	}
+	
 	$aData[]	= $date;
 	
 	if ($codTipoValor == "M") {
 		$aValor[]	= $valor;
 	}else{
-		$_valParcela	= round($valor / $numMeses,2);
 		if ($i == ($numMeses-1)) {
-			$aValor[]	= round($valor - ($_valParcela * ($numMeses - 1)),2);
+			$valorParcela	= round($valor - ($_valParcela * ($numMeses - 1)),2);	
+			$log->info("Ultima parcela -> Valor da parcela: ".$valorParcela);
 		}else{
-			$aValor[]	= $_valParcela;
+			$valorParcela	= $_valParcela;
 		}
+		
+		$log->info("I = $i, Valor da parcela: ".$valorParcela);
+		
+		$aValor[]	= $valorParcela;
 	}
 }
 
@@ -106,9 +120,10 @@ if ($codTipoValor == "M") {
 }
 
 $codTipoRec		= ($numMeses == 1)  ? "U" : "P";
+$parcela		= ($numMeses == 1)  ? 1 : null;
 $codRecPer		= "M";
 $taxaAdmin		= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$taxaBoleto		= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
+$taxaBoleto		= ($codFormaPag == "BOL") ? \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto()) : 0;
 $taxaUso		= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 $valorJuros		= 0;
 $valorMora		= 0;
@@ -122,19 +137,25 @@ $parcelaInicial	= 1;
 $indAut			= 1;
 $obs			= null;
 
+
 #################################################################################
-## Calcular valor Total
+## Calcular valor Total e Valor da Parcela
 #################################################################################
 $valorTotal	= 0;
 for ($i = 0; $i < sizeof($aValor); $i++) {
 	$valorTotal += (\Zage\App\Util::to_float($aValor[$i]) + \Zage\App\Util::to_float($valorOutros));
 }
+if ($codTipoValor != "M") {
+	$valor		= round($valor / $numMeses,2);
+}
+$valorParcela	= $valor + $valorMora + $valorJuros + $valorOutros - $valorDesconto;
+
 
 #################################################################################
 ## Ajustar o array de valores de rateio
 #################################################################################
 $pctRateio		= array(100);
-$valorRateio	= array($valorTotal);
+$valorRateio	= array($valorParcela);
 
 #################################################################################
 ## Ajustar os campos do tipo CheckBox
@@ -208,7 +229,7 @@ for ($i = 0 ;$i < sizeof($formandos); $i++) {
 	$conta->setObservacao($obs);
 	$conta->setNumParcelas($numParcelas);
 	$conta->setParcelaInicial($parcelaInicial);
-	$conta->setParcela(null);
+	$conta->setParcela($parcela);
 	$conta->setCodPeriodoRecorrencia($oPeriodo);
 	$conta->setCodTipoRecorrencia($oTipoRec);
 	$conta->setIntervaloRecorrencia(1);

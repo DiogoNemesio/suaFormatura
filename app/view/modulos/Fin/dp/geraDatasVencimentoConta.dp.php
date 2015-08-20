@@ -51,7 +51,14 @@ for ($i = 0; $i < $numParcelas; $i++) {
 	}elseif ($codPeriodoRec	== "S") {
 		$date	= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes, $dia + ($i * $intervaloRec * 7) , $ano));
 	}elseif ($codPeriodoRec	== "M") {
-		$date	= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes + ($i * $intervaloRec), $dia , $ano));
+		$_mes			= date("m",mktime(0, 0, 0, $mes + ($i * $intervaloRec), 1 , $ano));
+		$_ano			= date("Y",mktime(0, 0, 0, $mes + ($i * $intervaloRec), 1 , $ano));
+		$numDays		= cal_days_in_month(CAL_GREGORIAN, $_mes, $_ano);
+		if ($dia > $numDays) {
+			$date	= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes + ($i * $intervaloRec), $numDays , $ano));
+		}else{
+			$date	= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes + ($i * $intervaloRec), $dia , $ano));
+		}
 	}elseif ($codPeriodoRec	== "A") {
 		$date	= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes, $dia , $ano + ($i * $intervaloRec)));
 	}else{

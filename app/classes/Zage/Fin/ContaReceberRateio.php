@@ -159,6 +159,8 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 		#################################################################################
 		$n		= sizeof($this->_valoresRateio);
 		
+		$log->debug("Array de valores rateio: ".serialize($this->_valoresRateio));
+		
 		#################################################################################
 		## Validações dos valores 
 		#################################################################################
@@ -169,7 +171,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 			}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
-				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valoresRateio[$i]); 
+				$valores[$i]	= \Zage\App\Util::to_float($this->_valoresRateio[$i]); 
 			}
 		}
 
@@ -178,7 +180,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 		#################################################################################
 		$percs		= array();
 		for ($i = 0; $i < $n; $i++) {
-			$perc		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $this->_pctRateio[$i]));
+			$perc		= \Zage\App\Util::to_float(str_replace("%", "", $this->_pctRateio[$i]));
 			if ($perc == 0) {
 				return $tr->trans('Array de Percentuais tem registro com percentual = 0 na posição "'.$i.'" ');
 			}elseif (!\Zage\App\Util::ehNumero($perc)) {
@@ -242,6 +244,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 			## Calcula o total dos valores para aplicar a diferença no último rateio
 			#################################################################################
 			$valorTotal += $valores[$i];
+			
 
 			#################################################################################
 			## Copia os valores de um objeto para o outro
@@ -250,18 +253,21 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 			$rateio->setCodContaRec($this->getCodContaRec());
 			$rateio->setCodCategoria($cats[$i]);
 			$rateio->setCodCentroCusto($centros[$i]);
-			$rateio->setPctValor($percs[$i]);
+			$rateio->setPctValor(\Zage\App\Util::toMysqlNumber($percs[$i]));
+			
+			
+			$log->info("Rateio [".$i."]-> ValorTotal: ".$valorTotal. " ,_getValorTotal(): ".$this->_getValorTotal());
 			
 			if ($i == ($n -1)) {
 				if ($valorTotal !== $this->_getValorTotal()) {
 					$diff	= ($this->_getValorTotal() - $valorTotal);
-					$rateio->setValor($valores[$i] + $diff);
+					$rateio->setValor(\Zage\App\Util::toMysqlNumber($valores[$i] + $diff));
 				}else{
-					$rateio->setValor($valores[$i]);
+					$rateio->setValor(\Zage\App\Util::toMysqlNumber($valores[$i]));
 				}
 				
 			}else{
-				$rateio->setValor($valores[$i]);
+				$rateio->setValor(\Zage\App\Util::toMysqlNumber($valores[$i]));
 			}
 			
 			try {

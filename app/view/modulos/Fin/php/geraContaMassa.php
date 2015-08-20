@@ -119,6 +119,7 @@ if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
 if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
 if ($taxaUso		< 0)		$taxaUso		= 0;
 if (!$diaVencimento)			$diaVencimento	= 5;
+$totalTaxa			= ($taxaAdmin + $taxaBoleto + $taxaUso);
 
 #################################################################################
 ## Montar o select do dia de vencimento
@@ -259,12 +260,14 @@ $tpl->set('SALDO_RECEBER_FMT'		,\Zage\App\Util::to_money($saldoAReceber));
 $tpl->set('SALDO_FORMANDO'			,\Zage\App\Util::formataDinheiro($saldoPorFormando));
 $tpl->set('SALDO_FORMANDO_FMT'		,\Zage\App\Util::to_money($saldoPorFormando));
 $tpl->set('VALOR_FORMANDO'			,\Zage\App\Util::formataDinheiro($valorMensalidade));
+$tpl->set('VALOR_FORMANDO_FMT'		,\Zage\App\Util::to_money($valorMensalidade));
 $tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUso));
 $tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUso));
 $tpl->set('TAXA_BOLETO_FMT'			,\Zage\App\Util::to_money($taxaBoleto));
 $tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
 $tpl->set('TAXA_ADMIN_FMT'			,\Zage\App\Util::to_money($taxaAdmin));
 $tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
+$tpl->set('TOTAL_TAXA_FMT'			,\Zage\App\Util::to_money($totalTaxa));
 $tpl->set('CONTAS'					,$oConta);
 $tpl->set('FORMAS_PAG'				,$oFormaPag);
 $tpl->set('CATEGORIAS'				,$oCat);
