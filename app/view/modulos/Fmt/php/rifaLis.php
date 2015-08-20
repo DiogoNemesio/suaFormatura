@@ -51,7 +51,7 @@ try {
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
 $grid->adicionaTexto($tr->trans('NOME'),	 		15, $grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('PRÊMIO'),			20, $grid::CENTER	,'premio');
-$grid->adicionaTexto($tr->trans('DATA SORTEIO'),	15, $grid::CENTER	,'dataSorteio');
+$grid->adicionaDataHora($tr->trans('DATA SORTEIO'),	15, $grid::CENTER	,'dataSorteio');
 $grid->adicionaTexto($tr->trans('QTD POR FORMANDO'),15, $grid::CENTER	,'qtdeObrigatorio');
 $grid->adicionaMoeda($tr->trans('VALOR'),			15, $grid::CENTER	,'valorUnitario');
 $grid->adicionaIcone(null,'fa fa-cog red',$tr->trans('Geração das rifas'));
@@ -68,7 +68,7 @@ $grid->importaDadosDoctrine($rifa);
 for ($i = 0; $i < sizeof($rifa); $i++) {
 	$rid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$rifa[$i]->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL.'/Fmt/rifaGera.php?id='.$rid."');");
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/rifaGera.php?id='.$rid);
 	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/rifaHistorico.php?id='.$rid);
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/rifaFin.php?id='.$rid);
 	$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/rifaAlt.php?id='.$rid);

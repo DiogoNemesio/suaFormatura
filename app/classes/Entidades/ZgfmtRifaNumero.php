@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtRifaNumero
  *
- * @ORM\Table(name="ZGFMT_RIFA_NUMERO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_RIFA_NUMERO_UK01", columns={"COD_RIFA", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFMT_RIFA_NUMERO_2_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_RIFA_NUMERO_3_idx", columns={"COD_VENDA"}), @ORM\Index(name="IDX_90F282C9E74EE774", columns={"COD_RIFA"})})
+ * @ORM\Table(name="ZGFMT_RIFA_NUMERO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_RIFA_NUMERO_UK01", columns={"COD_RIFA", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFMT_RIFA_NUMERO_2_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_RIFA_NUMERO_3_idx", columns={"COD_VENDA"}), @ORM\Index(name="fk_ZGFMT_RIFA_NUMERO_4_idx", columns={"COD_GERACAO"}), @ORM\Index(name="IDX_90F282C9E74EE774", columns={"COD_RIFA"})})
  * @ORM\Entity
  */
 class ZgfmtRifaNumero
@@ -85,6 +85,16 @@ class ZgfmtRifaNumero
      * })
      */
     private $codVenda;
+
+    /**
+     * @var \Entidades\ZgfmtRifaGeracaoSequencial
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaGeracaoSequencial")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_GERACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codGeracao;
 
 
     /**
@@ -279,5 +289,28 @@ class ZgfmtRifaNumero
     public function getCodVenda()
     {
         return $this->codVenda;
+    }
+
+    /**
+     * Set codGeracao
+     *
+     * @param \Entidades\ZgfmtRifaGeracaoSequencial $codGeracao
+     * @return ZgfmtRifaNumero
+     */
+    public function setCodGeracao(\Entidades\ZgfmtRifaGeracaoSequencial $codGeracao = null)
+    {
+        $this->codGeracao = $codGeracao;
+
+        return $this;
+    }
+
+    /**
+     * Get codGeracao
+     *
+     * @return \Entidades\ZgfmtRifaGeracaoSequencial 
+     */
+    public function getCodGeracao()
+    {
+        return $this->codGeracao;
     }
 }
