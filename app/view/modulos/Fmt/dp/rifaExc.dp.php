@@ -28,12 +28,13 @@ try {
 		$err = 1;
 	}
 	
-	$oRifa 	 = $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+	$oRifa 	 	= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+	$oRifaNum 	= $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codRifa' => $codRifa));
 	
 	if (!$oRifa) {
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Rifa não encontrada"))));
 		$err = 1;
-	}elseif ($oRifa->getIndRifaGerada() == 1){
+	}elseif ($oRifaNum){
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Esta rifa não pode ser excluída pois já teve seus bilhetes gerados."))));
 		$err = 1;
 	}
@@ -46,5 +47,4 @@ try {
 	exit;
 }
 
-
-echo '0'.\Zage\App\Util::encodeUrl('||'."Tipo Evento exclu&Iacute;do com sucesso!");
+echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Rifa excluída com sucesso!")));
