@@ -68,7 +68,7 @@ try {
 	for ($i = 0; $i < sizeof($catDeb); $i++) {
 		$catPai		= ($catDeb[$i]->getCodCategoriaPai()) ? $catDeb[$i]->getCodCategoriaPai()->getCodigo() : null;
 		$indice		= $arvDeb->adicionaPasta($catDeb[$i]->getCodigo(), $catDeb[$i]->getDescricao(), $catPai);
-		$catFilhas	= \Zage\Fin\Categoria::lista($catDeb[$i]->getCodTipo()->getCodigo(),$catDeb[$i]->getCodigo());
+		$catFilhas	= \Zage\Fin\Categoria::lista($catDeb[$i]->getCodTipo()->getCodigo(),$catDeb[$i]->getCodigo(),$oOrg->getCodTipo()->getCodigo());
 		
 		if ($catDeb[$i]->getIndAtiva() == 0)	$arvDeb->desabilitaItem($indice);
 		
@@ -82,7 +82,7 @@ try {
 	for ($i = 0; $i < sizeof($catCre); $i++) {
 		$catPai		= ($catCre[$i]->getCodCategoriaPai()) ? $catCre[$i]->getCodCategoriaPai()->getCodigo() : null;
 		$indice		= $arvCre->adicionaPasta($catCre[$i]->getCodigo(), $catCre[$i]->getDescricao(), $catPai);
-		$catFilhas	= \Zage\Fin\Categoria::lista($catCre[$i]->getCodTipo()->getCodigo(),$catCre[$i]->getCodigo());
+		$catFilhas	= \Zage\Fin\Categoria::lista($catCre[$i]->getCodTipo()->getCodigo(),$catCre[$i]->getCodigo(),$oOrg->getCodTipo()->getCodigo());
 	
 		if ($catCre[$i]->getIndAtiva() == 0)	$arvCre->desabilitaItem($indice);
 		

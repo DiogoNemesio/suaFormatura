@@ -186,33 +186,6 @@ try {
 }
 
 #################################################################################
-## Select da Categoria
-#################################################################################
-try {
-	$aCat	= \Zage\Fin\Categoria::listaCombo("C");
-	$oCat    	= "<option value=\"\"></option>";
-	if ($aCat) {
-
-		$aCatTemp	= array();
-		$i 			= 0;
-
-		foreach ($aCat as $cat) {
-			$tDesc 	= ($cat->getCodCategoriaPai() != null) ? $cat->getCodCategoriaPai()->getDescricao() . "/" . $cat->getDescricao() : $cat->getDescricao();
-			$aCatTemp[$tDesc]	= $cat->getCodigo();
-
-		}
-
-		ksort($aCatTemp);
-
-		foreach ($aCatTemp as $cDesc => $cCod) {
-			$oCat .= "<option value=\"".$cCod."\">".$cDesc.'</option>';
-		}
-	}
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-#################################################################################
 ## Select do Centro de Custo
 #################################################################################
 try {

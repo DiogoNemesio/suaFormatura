@@ -437,9 +437,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Validações dos percentuais
 		#################################################################################
 		for ($i = 0; $i < $numRateio; $i++) {
-			$perc		= floatval(str_replace("%", "", $this->_pctRateio[$i]));
+			$perc		= \Zage\App\Util::to_float(str_replace("%", "", $this->_pctRateio[$i]));
 			if ($perc == 0) {
-				return $tr->trans('Array de Percentuais tem registro com percentual = 0 na posição "'.$i.'" ');
+				return $tr->trans('Array de Percentuais tem registro com percentual = 0 na posição "'.$i.'" Percentual: '.$perc);
 			}elseif (!\Zage\App\Util::ehNumero($perc)) {
 				return $tr->trans('Array de Percentuais tem registro inválido na posição "'.$i.'" !!!');
 			}

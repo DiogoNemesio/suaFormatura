@@ -16,8 +16,6 @@ global $em,$log,$system,$tr;
 if (isset($_POST['valor']))				$valor				= \Zage\App\Util::antiInjection($_POST['valor']);
 if (isset($_POST['dataVenc']))			$dataVenc			= \Zage\App\Util::antiInjection($_POST['dataVenc']);
 if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
-if (isset($_POST['codCategoria']))		$codCategoria		= \Zage\App\Util::antiInjection($_POST['codCategoria']);
-if (isset($_POST['codCentroCusto']))	$codCentroCusto		= \Zage\App\Util::antiInjection($_POST['codCentroCusto']);
 if (isset($_POST['codContaRec']))		$codContaRec		= \Zage\App\Util::antiInjection($_POST['codContaRec']);
 if (isset($_POST['codTipoValor']))		$codTipoValor		= \Zage\App\Util::antiInjection($_POST['codTipoValor']);
 if (isset($_POST['numMeses']))			$numMeses			= \Zage\App\Util::antiInjection($_POST['numMeses']);
@@ -25,8 +23,6 @@ if (isset($_POST['indValorExtra']))		$indValorExtra		= \Zage\App\Util::antiInjec
 if (isset($_POST['numMesesMax']))		$numMesesMax		= \Zage\App\Util::antiInjection($_POST['numMesesMax']);
 if (isset($_POST['aSelFormandos']))		$aSelFormandos		= \Zage\App\Util::antiInjection($_POST['aSelFormandos']);
 $aSelFormandos		= explode(",",$aSelFormandos);
-
-$log->info("Valor da Mensalidade: ".$valor);
 
 #################################################################################
 ## Validar a data de vencimento
@@ -71,7 +67,6 @@ if (sizeof($formandos) == 0) 	\Zage\App\Erro::halt($tr->trans('Formando[s] não 
 ## Ajustar os campos de valores
 #################################################################################
 $valor		= \Zage\App\Util::to_float($valor);
-
 
 #################################################################################
 ## Cria o array de vencimentos e de valores
@@ -129,14 +124,18 @@ $valorJuros		= 0;
 $valorMora		= 0;
 $valorDesconto	= 0;
 $valorOutros	= ($indValorExtra)	? ($taxaAdmin + $taxaBoleto + $taxaUso) : 0;
-$codCategoria	= array($codCategoria);
-$codCentroCusto	= array($codCentroCusto);
-$codRateio		= array("");
 $numParcelas	= $numMeses;
 $parcelaInicial	= 1;
 $indAut			= 1;
 $obs			= null;
 
+#################################################################################
+## Resgatar os parâmetros da categoria
+#################################################################################
+$codCatMensalidade		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+$codCatPortal			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
+$codCatBoleto			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
+$codCatOutrasTaxas		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
 
 #################################################################################
 ## Calcular valor Total e Valor da Parcela
@@ -154,8 +153,48 @@ $valorParcela	= $valor + $valorMora + $valorJuros + $valorOutros - $valorDescont
 #################################################################################
 ## Ajustar o array de valores de rateio
 #################################################################################
-$pctRateio		= array(100);
-$valorRateio	= array($valorParcela);
+if (!$indValorExtra) {
+	$pctRateio		= array(100);
+	$valorRateio	= array($valorParcela);
+	$codCategoria	= array($codCatMensalidade);
+	$codCentroCusto	= array("");
+	$codRateio		= array("");
+	
+
+}else{
+	$pctRateio[]		= round(100*$valor/$valorParcela,2);
+	$valorRateio[]		= $valor;
+	$codCategoria[]		= $codCatMensalidade;
+	$codCentroCusto[]	= null;
+	$codRateio[]		= null;
+	
+	if ($taxaAdmin)		{
+		$pctRateio[]		= round(100*$taxaAdmin/$valorParcela,2);
+		$valorRateio[]		= $taxaAdmin;
+		$codCategoria[]		= $codCatOutrasTaxas;
+		$codCentroCusto[]	= null;
+		$codRateio[]		= null;
+	}
+
+	if ($taxaBoleto)		{
+		$pctRateio[]		= round(100*$taxaBoleto/$valorParcela,2);
+		$valorRateio[]		= $taxaBoleto;
+		$codCategoria[]		= $codCatBoleto;
+		$codCentroCusto[]	= null;
+		$codRateio[]		= null;
+	}
+	
+	if ($taxaUso)		{
+		$pctRateio[]		= round(100*$taxaUso/$valorParcela,2);
+		$valorRateio[]		= $taxaUso;
+		$codCategoria[]		= $codCatPortal;
+		$codCentroCusto[]	= null;
+		$codRateio[]		= null;
+	}
+	
+	$log->debug("Array de pct: ".serialize($pctRateio));
+	
+}
 
 #################################################################################
 ## Ajustar os campos do tipo CheckBox
