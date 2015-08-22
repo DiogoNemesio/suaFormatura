@@ -181,7 +181,8 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$contas	= \Zage\Fin\ContaReceber::busca($dataIni,$dataFim,$_SESSION["_CRLIS_dataTipo"],$_SESSION["_CRLIS_valorIniFiltro"],$_SESSION["_CRLIS_valorFimFiltro"],$_SESSION["_CRLIS_codCategoriaFiltro"],$_SESSION["_CRLIS_codStatusFiltro"],$_SESSION["_CRLIS_codCentroCustoFiltro"],$_SESSION["_CRLIS_codFormaPagFiltro"],$_SESSION["_CRLIS_codContaRecFiltro"],$_SESSION["_CRLIS_descricaoFiltro"],$_SESSION["_CRLIS_clienteFiltro"]);
+	$contas		= \Zage\Fin\ContaReceber::busca($dataIni,$dataFim,$_SESSION["_CRLIS_dataTipo"],$_SESSION["_CRLIS_valorIniFiltro"],$_SESSION["_CRLIS_valorFimFiltro"],$_SESSION["_CRLIS_codCategoriaFiltro"],$_SESSION["_CRLIS_codStatusFiltro"],$_SESSION["_CRLIS_codCentroCustoFiltro"],$_SESSION["_CRLIS_codFormaPagFiltro"],$_SESSION["_CRLIS_codContaRecFiltro"],$_SESSION["_CRLIS_descricaoFiltro"],$_SESSION["_CRLIS_clienteFiltro"]);
+	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -531,7 +532,7 @@ try {
 ## Select da Categoria
 #################################################################################
 try {
-	$aCat	= \Zage\Fin\Categoria::listaCombo("C");
+	$aCat	= \Zage\Fin\Categoria::listaCombo("C",$oOrg->getCodTipo()->getCodigo());
 	$oCat   = "";
 	if ($aCat) {
 		$aCatTemp	= array();

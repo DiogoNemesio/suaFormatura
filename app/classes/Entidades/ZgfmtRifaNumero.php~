@@ -57,16 +57,6 @@ class ZgfmtRifaNumero
     private $telefone;
 
     /**
-     * @var \Entidades\ZgfmtRifaGeracaoSequencial
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaGeracaoSequencial")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_GERACAO", referencedColumnName="idZGFMT_RIFA_GERADO_SEQUENCIAL")
-     * })
-     */
-    private $codGeracao;
-
-    /**
      * @var \Entidades\ZgfmtRifa
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifa")
@@ -95,6 +85,16 @@ class ZgfmtRifaNumero
      * })
      */
     private $codVenda;
+
+    /**
+     * @var \Entidades\ZgfmtRifaGeracaoSequencial
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaGeracaoSequencial")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_GERACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codGeracao;
 
 
     /**
@@ -223,29 +223,6 @@ class ZgfmtRifaNumero
     }
 
     /**
-     * Set codGeracao
-     *
-     * @param \Entidades\ZgfmtRifaGeracaoSequencial $codGeracao
-     * @return ZgfmtRifaNumero
-     */
-    public function setCodGeracao(\Entidades\ZgfmtRifaGeracaoSequencial $codGeracao = null)
-    {
-        $this->codGeracao = $codGeracao;
-
-        return $this;
-    }
-
-    /**
-     * Get codGeracao
-     *
-     * @return \Entidades\ZgfmtRifaGeracaoSequencial 
-     */
-    public function getCodGeracao()
-    {
-        return $this->codGeracao;
-    }
-
-    /**
      * Set codRifa
      *
      * @param \Entidades\ZgfmtRifa $codRifa
@@ -312,5 +289,28 @@ class ZgfmtRifaNumero
     public function getCodVenda()
     {
         return $this->codVenda;
+    }
+
+    /**
+     * Set codGeracao
+     *
+     * @param \Entidades\ZgfmtRifaGeracaoSequencial $codGeracao
+     * @return ZgfmtRifaNumero
+     */
+    public function setCodGeracao(\Entidades\ZgfmtRifaGeracaoSequencial $codGeracao = null)
+    {
+        $this->codGeracao = $codGeracao;
+
+        return $this;
+    }
+
+    /**
+     * Get codGeracao
+     *
+     * @return \Entidades\ZgfmtRifaGeracaoSequencial 
+     */
+    public function getCodGeracao()
+    {
+        return $this->codGeracao;
     }
 }

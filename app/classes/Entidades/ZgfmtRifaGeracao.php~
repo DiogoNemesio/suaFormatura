@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtRifaGeracao
  *
- * @ORM\Table(name="ZGFMT_RIFA_GERACAO", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_GERACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_RIFA_GERACAO_2_idx", columns={"COD_GERACAO"})})
+ * @ORM\Table(name="ZGFMT_RIFA_GERACAO", indexes={@ORM\Index(name="fk_ZGFMT_RIFA_GERACAO_1_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_RIFA_GERACAO_2_idx", columns={"COD_GERACAO"}), @ORM\Index(name="fk_ZGFMT_RIFA_GERACAO_3_idx", columns={"COD_RIFA"})})
  * @ORM\Entity
  */
 class ZgfmtRifaGeracao
@@ -43,10 +43,20 @@ class ZgfmtRifaGeracao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifaGeracaoSequencial")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_GERACAO", referencedColumnName="idZGFMT_RIFA_GERADO_SEQUENCIAL")
+     *   @ORM\JoinColumn(name="COD_GERACAO", referencedColumnName="CODIGO")
      * })
      */
     private $codGeracao;
+
+    /**
+     * @var \Entidades\ZgfmtRifa
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtRifa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_RIFA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codRifa;
 
 
     /**
@@ -126,5 +136,28 @@ class ZgfmtRifaGeracao
     public function getCodGeracao()
     {
         return $this->codGeracao;
+    }
+
+    /**
+     * Set codRifa
+     *
+     * @param \Entidades\ZgfmtRifa $codRifa
+     * @return ZgfmtRifaGeracao
+     */
+    public function setCodRifa(\Entidades\ZgfmtRifa $codRifa = null)
+    {
+        $this->codRifa = $codRifa;
+
+        return $this;
+    }
+
+    /**
+     * Get codRifa
+     *
+     * @return \Entidades\ZgfmtRifa 
+     */
+    public function getCodRifa()
+    {
+        return $this->codRifa;
     }
 }

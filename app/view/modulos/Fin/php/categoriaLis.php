@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $system,$log,$em;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -51,11 +56,11 @@ $url		= ROOT_URL."/Fin/".basename(__FILE__)."?id=".$id;
 ## Resgata os dados da árvore
 #################################################################################
 try {
-
+	$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 	$arvDeb			= new \Zage\App\Arvore();
 	$arvCre			= new \Zage\App\Arvore();
-	$catDeb			= \Zage\Fin\Categoria::lista("D",null);
-	$catCre			= \Zage\Fin\Categoria::lista("C",null);
+	$catDeb			= \Zage\Fin\Categoria::lista("D",null,$oOrg->getCodTipo()->getCodigo());
+	$catCre			= \Zage\Fin\Categoria::lista("C",null,$oOrg->getCodTipo()->getCodigo());
 	
 	$arvDeb->exibirRaiz(true);
 	$arvCre->exibirRaiz(true);

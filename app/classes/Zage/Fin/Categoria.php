@@ -52,20 +52,27 @@ class Categoria extends \Entidades\ZgfinCategoria {
 	/**
      * Lista Categorias
      */
-    public static function lista ($codTipo = null, $codCategoriaPai = null) {
-    	global $em,$system;
+    public static function lista ($codTipo = null, $codCategoriaPai = null,$codTipoOrg = null) {
+    	global $em,$system,$log;
     	 
     	$qb 	= $em->createQueryBuilder();
     	
     	try {
 	    	$qb->select('ca')
 	    	->from('\Entidades\ZgfinCategoria','ca')
-	    	->leftJoin('ca.codOrganizacao', 'c')
-	    	->where($qb->expr()->andX(
-	    		$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao')
+	    	->where($qb->expr()->orX(
+	    		$qb->expr()->andX(
+	    			$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao'),
+    				$qb->expr()->isNull('ca.codTipoOrganizacao')
+	    		),
+    			$qb->expr()->andX(
+   					$qb->expr()->isNull('ca.codOrganizacao'),
+   					$qb->expr()->eq('ca.codTipoOrganizacao'	, ':codTipoOrg')
+    			)
 	    	))
 	    	->orderBy('ca.descricao', 'ASC')
-	    	->setParameter('codOrganizacao', $system->getCodOrganizacao());
+	    	->setParameter('codOrganizacao'	, $system->getCodOrganizacao())
+	    	->setParameter('codTipoOrg'		, $codTipoOrg);
 
 	    	if ($codTipo != null) {
 	    		$qb->andWhere($qb->expr()->eq('ca.codTipo'	, ':codTipo'))
@@ -78,6 +85,7 @@ class Categoria extends \Entidades\ZgfinCategoria {
 	    		$qb->andWhere($qb->expr()->isNull('ca.codCategoriaPai'));
 	    	}
 	    	$query 		= $qb->getQuery();
+	    	$log->info("SQL Cat: ".$query->getSQL());
 	    	return($query->getResult());
     	} catch (\Exception $e) {
     		\Zage\App\Erro::halt($e->getMessage());
@@ -158,7 +166,7 @@ class Categoria extends \Entidades\ZgfinCategoria {
     /**
      * Lista Categorias para montar a combo
      */
-    public static function listaCombo ($codTipo) {
+    public static function listaCombo ($codTipo,$codTipoOrg) {
     	global $em,$system;
     
     	$qb 	= $em->createQueryBuilder();
@@ -167,13 +175,21 @@ class Categoria extends \Entidades\ZgfinCategoria {
     		$qb->select('ca')
     		->from('\Entidades\ZgfinCategoria','ca')
     		->leftJoin('\Entidades\ZgfinCategoria', 'p', \Doctrine\Orm\Query\Expr\Join::WITH, 'p.codigo = ca.codCategoriaPai')
-    		->where($qb->expr()->andX(
-    			$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao'),
-    			$qb->expr()->eq('ca.codTipo'		, ':codTipo')
+    		->where($qb->expr()->orX(
+    				$qb->expr()->andX(
+    						$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao'),
+    						$qb->expr()->isNull('ca.codTipoOrganizacao')
+    				),
+    				$qb->expr()->andX(
+    						$qb->expr()->isNull('ca.codOrganizacao'),
+    						$qb->expr()->eq('ca.codTipoOrganizacao'	, ':codTipoOrg')
+    				)
     		))
+    		->andWhere($qb->expr()->eq('ca.codTipo'	, ':codTipo'))
     		->orderBy('ca.descricao', 'ASC')
-    		->setParameter('codOrganizacao', $system->getCodOrganizacao())
-    		->setParameter('codTipo', $codTipo);
+    		->setParameter('codOrganizacao'	, $system->getCodOrganizacao())
+    		->setParameter('codTipoOrg'		, $codTipoOrg)
+    		->setParameter('codTipo'		, $codTipo);
     
     		$query 		= $qb->getQuery();
     		return($query->getResult());

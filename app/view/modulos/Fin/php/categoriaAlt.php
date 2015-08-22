@@ -61,6 +61,8 @@ if (!isset($codCategoria)) {
 #################################################################################
 try {
 
+	$podeAlterar	= null;
+	$mensagem		= null;
 	if (isset($codCategoriaPai) && $codCategoriaPai != null) {
 		$catPai		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoriaPai, 'codOrganizacao' => $system->getCodOrganizacao()));
 		if (!$catPai) $catPai			= new \Entidades\ZgfinCategoria();
@@ -69,7 +71,11 @@ try {
 	}
 	
 	if (isset($codCategoria) && $codCategoria != null) {
-		$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria, 'codOrganizacao' => $system->getCodOrganizacao()));
+		$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria));
+		if (!$cat->getCodOrganizacao()) {
+			$podeAlterar	= 'disabled';
+			$mensagem		= $tr->trans('Categoria "%DESCRICAO%" é padrão do sistema e não pode ser alterada !!!',array('%DESCRICAO%' => $cat->getDescricao()));
+		}
 		if (!$cat) {
 			$cat	= new \Entidades\ZgfinCategoria();
 			$ativa			= "checked";
@@ -103,6 +109,8 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('TITULO'				,$tr->trans('Categorias'));
+$tpl->set('PODE_ALTERAR'		,$podeAlterar);
+$tpl->set('MENSAGEM'			,$mensagem);
 $tpl->set('ID'					,$id);
 $tpl->set('COD_CATEGORIA_PAI'	,$catPai->getCodigo());
 $tpl->set('COD_CATEGORIA'		,$cat->getCodigo());

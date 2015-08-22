@@ -15,20 +15,20 @@ class ZgfmtRifaGeracaoSequencial
     /**
      * @var integer
      *
-     * @ORM\Column(name="idZGFMT_RIFA_GERADO_SEQUENCIAL", type="bigint", nullable=false)
+     * @ORM\Column(name="CODIGO", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idzgfmtRifaGeradoSequencial;
+    private $codigo;
 
 
     /**
-     * Get idzgfmtRifaGeradoSequencial
+     * Get codigo
      *
      * @return integer 
      */
-    public function getIdzgfmtRifaGeradoSequencial()
+    public function getCodigo()
     {
-        return $this->idzgfmtRifaGeradoSequencial;
+        return $this->codigo;
     }
 }

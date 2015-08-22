@@ -47,7 +47,8 @@ if (empty($codConta)) 	\Zage\App\Erro::halt('Conta não encontrada !!!');
 ## Resgata as informações do banco
 #################################################################################
 try {
-	$info = $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
+	$info 		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
+	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -205,7 +206,7 @@ try {
 ## Select da Categoria
 #################################################################################
 try {
-	$aCat	= \Zage\Fin\Categoria::listaCombo("D");
+	$aCat	= \Zage\Fin\Categoria::listaCombo("D",$oOrg->getCodTipo()->getCodigo());
 	$oCat   = "<option value=\"\"></option>";
 	if ($aCat) {
 		$aCatTemp	= array();

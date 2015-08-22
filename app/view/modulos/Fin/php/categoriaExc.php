@@ -46,16 +46,20 @@ if (isset($_GET['codCategoria'])) 		{
 #################################################################################
 try {
 
-	$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria, 'codOrganizacao' => $system->getCodOrganizacao()));
-	
+	$cat			= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria));
 	if (!$cat) 	{
 		\Zage\App\Erro::halt($tr->trans('Categoria não existe'));
 	}
 	
+	
 	$cats			= \Zage\Fin\Categoria::lista(null,$codCategoria);
 	$temConta		= \Zage\Fin\Categoria::estaEmUso($codCategoria);
 
-	if ($cats) {
+	if (!$cat->getCodOrganizacao()) {
+		$podeRemover	= 'disabled';
+		$mensagem		= $tr->trans('Categoria "%DESCRICAO%" é padrão do sistema e não pode ser excluída !!!',array('%DESCRICAO%' => $cat->getDescricao()));
+		$classe			= "text-danger";
+	}elseif ($cats) {
 		$podeRemover	= 'disabled';
 		$mensagem		= $tr->trans('Categoria "%DESCRICAO%" não está vazia e não pode ser excluída !!!',array('%DESCRICAO%' => $cat->getDescricao()));
 		$classe			= "text-danger";

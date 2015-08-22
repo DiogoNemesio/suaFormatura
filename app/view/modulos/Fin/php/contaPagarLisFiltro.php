@@ -32,6 +32,11 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
+## Resgata as informações da Organização
+#################################################################################
+$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+
+#################################################################################
 ## Select da Forma de Pagamento
 #################################################################################
 try {
@@ -55,7 +60,7 @@ try {
 ## Select da Categoria
 #################################################################################
 try {
-	$aCat	= \Zage\Fin\Categoria::listaCombo("D");
+	$aCat	= \Zage\Fin\Categoria::listaCombo("D",$oOrg->getCodTipo()->getCodigo());
 	$oCat   = "";
 	if ($aCat) {
 		$aCatTemp	= array();

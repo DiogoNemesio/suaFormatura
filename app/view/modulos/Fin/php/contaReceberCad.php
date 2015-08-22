@@ -42,6 +42,11 @@ $system->checaPermissao($_codMenu_);
 $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
+## Resgata as informações da Organização
+#################################################################################
+$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+
+#################################################################################
 ## Select da Moeda
 #################################################################################
 try {
@@ -105,7 +110,7 @@ try {
 ## Select da Categoria
 #################################################################################
 try {
-	$aCat	= \Zage\Fin\Categoria::listaCombo("C");
+	$aCat	= \Zage\Fin\Categoria::listaCombo("C",$oOrg->getCodTipo()->getCodigo());
 	$oCat    	= "<option value=\"\"></option>";
 	if ($aCat) {
 		

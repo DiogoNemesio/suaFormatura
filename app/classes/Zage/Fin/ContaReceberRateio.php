@@ -196,7 +196,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 		$cats		= array();
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_categoriasRateio[$i]) {
-				$oCat		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codigo' => $this->_categoriasRateio[$i]));
+				$oCat		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $this->_categoriasRateio[$i]));
 				if (!$oCat) {
 					return $tr->trans('Array de Categorias tem categoria inexistente  na posição "'.$i.'" !!!');
 				}else{

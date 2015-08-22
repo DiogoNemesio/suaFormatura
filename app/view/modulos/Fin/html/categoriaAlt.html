@@ -14,7 +14,7 @@
 			    	<label class="col-sm-4 control-label" for="descricaoID">Descrição</label>
 			    	<div class="input-group col-sm-8">
 	   					<span class="input-group-addon"><i class="fa fa-file-text"></i></span>
-	   					<input tabindex="1" class="form-control" id="descricaoID" type="text" name="descricao" maxlength="60" value="%DESCRICAO%" required autocomplete="off">	
+	   					<input tabindex="1" %PODE_ALTERAR% class="form-control" id="descricaoID" type="text" name="descricao" maxlength="60" value="%DESCRICAO%" required autocomplete="off">	
 	    			</div>
 			    </div>
 	    	</div>
@@ -35,13 +35,19 @@
     </div>
 </div>
 <div class="modal-footer">
-	<button type="submit" class="btn btn-primary" id="submit">Salvar</button>
+	<button type="submit" class="btn btn-primary" id="submit" %PODE_ALTERAR%>Salvar</button>
 	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
 </div>
 </form>
 
 
 <script type="text/javascript" charset="%CHARSET%">
+
+var pMsg	= '%MENSAGEM%';
+if (pMsg) {
+	zgMostraErro('divCatMsgID',pMsg);
+}
+
 
 
 $('#zgFormID').submit(function() {

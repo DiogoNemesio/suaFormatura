@@ -58,6 +58,8 @@ $aSelContas		= explode(",",$aSelContas);
 ## Resgata as informações do banco
 #################################################################################
 $contas		= $em->getRepository('Entidades\ZgfinContaReceber')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $aSelContas));
+$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+
 
 if (sizeof($contas) == 0) {
 	\Zage\App\Erro::halt($tr->trans('Conta[s] não encontrada !!!'));
@@ -143,7 +145,7 @@ try {
 ## Select da Categoria
 #################################################################################
 try {
-	$aCat	= \Zage\Fin\Categoria::listaCombo("D");
+	$aCat	= \Zage\Fin\Categoria::listaCombo("C",$oOrg->getCodTipo()->getCodigo());
 	$oCat    	= "<option value=\"\"></option>";
 	if ($aCat) {
 		
