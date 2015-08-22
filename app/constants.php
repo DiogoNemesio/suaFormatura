@@ -14,7 +14,7 @@ if (! defined ( 'DOC_ROOT' )) {
 /**
  * URL Raiz
  */
-if ($_SERVER ['DOCUMENT_ROOT']) {
+if (isset($_SERVER ['DOCUMENT_ROOT']) && $_SERVER ['DOCUMENT_ROOT']) {
 	define ( 'PROTO', strtolower ( substr ( $_SERVER ["SERVER_PROTOCOL"], 0, strpos ( $_SERVER ["SERVER_PROTOCOL"], '/' ) ) ) . "://" );
 	define ( 'ROOT_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/' );
 	define ( 'SITE_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/site/');

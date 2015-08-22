@@ -18,9 +18,10 @@ global $em,$system,$log;
 #################################################################################
 ## Resgatar os jobs marcados para execução
 #################################################################################
+$log->debug("Job executado");
 $jobs	= \Zage\Utl\Job::listaJobsAexecutar();
 for ($i = 0; $i < sizeof($jobs); $i++)	{
-	exec('php '.EXE_PATH . '/jobRun.php '.$jobs[$i]->getCodigo() . ' > /dev/null &');
+	system('php '.EXE_PATH . '/jobRun.php '.$jobs[$i]->getCodigo() . ' > /dev/null &');
 }
 
 ?>
