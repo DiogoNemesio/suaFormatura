@@ -22,6 +22,8 @@ if (isset($_POST['numMeses']))			$numMeses			= \Zage\App\Util::antiInjection($_P
 if (isset($_POST['indValorExtra']))		$indValorExtra		= \Zage\App\Util::antiInjection($_POST['indValorExtra']);
 if (isset($_POST['numMesesMax']))		$numMesesMax		= \Zage\App\Util::antiInjection($_POST['numMesesMax']);
 if (isset($_POST['aSelFormandos']))		$aSelFormandos		= \Zage\App\Util::antiInjection($_POST['aSelFormandos']);
+if (isset($_POST['aValor']))			$aValor				= \Zage\App\Util::antiInjection($_POST['aValor']);
+if (isset($_POST['aData']))				$aData				= \Zage\App\Util::antiInjection($_POST['aData']);
 $aSelFormandos		= explode(",",$aSelFormandos);
 
 #################################################################################
@@ -69,43 +71,6 @@ if (sizeof($formandos) == 0) 	\Zage\App\Erro::halt($tr->trans('Formando[s] não 
 $valor		= \Zage\App\Util::to_float($valor);
 
 #################################################################################
-## Cria o array de vencimentos e de valores
-#################################################################################
-$aValor			= array();
-$aData			= array();
-$_valParcela	= round($valor / $numMeses,2);
-list ($dia, $mes, $ano) = split ('[/.-]', $dataVenc);
-for ($i = 0; $i < $numMeses; $i++) {
-	$_mes			= date("m",mktime(0, 0, 0, ($mes + $i), 1 , $ano));
-	$_ano			= date("Y",mktime(0, 0, 0, ($mes + $i), 1 , $ano));
-	$numDays		= cal_days_in_month(CAL_GREGORIAN, $_mes, $_ano);
-	
-	if ($dia > $numDays) {
-		$date		= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes + $i, $numDays , $ano));
-	}else{
-		$date		= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, $mes + $i, $dia , $ano));
-	}
-	
-	$aData[]	= $date;
-	
-	if ($codTipoValor == "M") {
-		$aValor[]	= $valor;
-	}else{
-		if ($i == ($numMeses-1)) {
-			$valorParcela	= round($valor - ($_valParcela * ($numMeses - 1)),2);	
-			$log->info("Ultima parcela -> Valor da parcela: ".$valorParcela);
-		}else{
-			$valorParcela	= $_valParcela;
-		}
-		
-		$log->info("I = $i, Valor da parcela: ".$valorParcela);
-		
-		$aValor[]	= $valorParcela;
-	}
-}
-
-
-#################################################################################
 ## Criar as variáveis
 #################################################################################
 if ($codTipoValor == "M") {
@@ -126,7 +91,6 @@ $valorDesconto	= 0;
 $valorOutros	= ($indValorExtra)	? ($taxaAdmin + $taxaBoleto + $taxaUso) : 0;
 $numParcelas	= $numMeses;
 $parcelaInicial	= 1;
-$indAut			= 1;
 $obs			= null;
 
 #################################################################################
@@ -311,6 +275,11 @@ for ($i = 0 ;$i < sizeof($formandos); $i++) {
 	}
 	
 }
+
+#################################################################################
+## Define a variável de sessão da listagem de contas para a data do primeiro vencimento
+#################################################################################
+$_SESSION["_CRLIS_dataFiltro"]	= $dataVenc;
 
 #################################################################################
 ## Salva efetivamente no banco

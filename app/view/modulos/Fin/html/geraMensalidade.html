@@ -29,12 +29,12 @@
 			</ul>
 		</div>
 		<hr />
-		<form id="zgFormID" class="form-horizontal">
+		<form id="zgFormGeraMensalidadeID" class="form-horizontal">
 			<input type="hidden" name="id" value="%ID%">
 			<input type="hidden" name="codTipoValor" id="codTipoValorID">
 			<input type="hidden" name="numForSel" id="numForSelID">
 			<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
-			<input type="hidden" name="aSelFormandos" id="aSelFormandosID" value="%SEL_FORMANDOS%">
+			<input type="hidden" name="aSelFormandos" id="aSelFormandosID">
 			
 			<div class="step-content pos-rel">
 				<div class="step-pane active" data-step="1">
@@ -70,87 +70,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-4 pull-right">
-						<div class="widget-box">
-							<div class="widget-header widget-header-flat widget-header-small center">
-								<h5 class="widget-title">Informações</h5>
-							</div>
-							<div class="widget-body">
-								<div class="widget-main small">
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total de Formandos:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_FORMANDOS%</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos selecionados:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblNumFormadosSelID"></p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até Conclusão:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_MAX% meses &nbsp;(%DATA_CONCLUSAO%)</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da Formatura:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_TOTAL_FORM_FMT%</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_POR_FORMANDO_FMT%</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado (RECEBER):</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Total a Receber:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Uso do Sistema:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT%</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de emissão do Boleto:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_BOLETO_FMT%</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Administração:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_ADMIN_FMT%</p>
-								    	</div>
-									</div>
-									<div class="row">
-										<div class="col-sm-12">
-									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total das Taxas:</p>
-									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_TAXA_FMT%</p>
-								    	</div>
-									</div>
-									
-									
-									
-									
-								</div>
-							</div>
-						</div>
-					</div>
+					<div class="col-sm-4 pull-right" id="divInfoVencID"></div>
 				</div>
 				<div class="step-pane" data-step="3">
 					<div class="col-sm-8 pull-left">
@@ -205,13 +125,14 @@
 					    	</div>
 						</div>
 					</div>
+					<div class="col-sm-4 pull-right" id="divInfoValorID"></div>
 				</div>
-				<div class="step-pane" data-step="4" id="divStepParcelasCRCadID">
+				<div class="step-pane" data-step="4" id="divStepParcelasGeraMensalidadeID">
 					<div class="row">
-						<table id="CRCadTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+						<table id="GeraMensalidadeTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
 							<thead>
 								<tr class="warning">
-									<th class="col-sm-1 center" id="thInfoHelpTableParcelasCRCadID"></th>
+									<th class="col-sm-1 center" id="thInfoHelpTableParcelasGeraMensalidadeID"></th>
 									<th class="col-sm-2 center">Parcela</th>
 									<th class="col-sm-2 center">Valor</th>
 									<th class="col-sm-2 center">Data</th>
@@ -222,15 +143,15 @@
 							<tfoot>
 								<tr class="warning">
 									<th class="col-sm-1 center"></th>
-									<th class="col-sm-2 center" id="thInfoParcelaCRCadID"></th>
-									<th class="col-sm-2 center" id="thInfoValorTotalCRCadID"></th>
+									<th class="col-sm-2 center" id="thInfoParcelaGeraMensalidadeID"></th>
+									<th class="col-sm-2 center" id="thInfoValorTotalGeraMensalidadeID"></th>
 									<th class="col-sm-2 center"></th>
 								</tr>
 							</tfoot>
 						</table>
 					</div>
 					<div class="row center">
-						<ul class="pagination" id="pagerValoresCRCadID">
+						<ul class="pagination" id="pagerValoresGeraMensalidadeID">
 						</ul>
 					</div>
 				</div>
@@ -251,6 +172,83 @@
 		<!-- /section:plugins/fuelux.wizard.buttons -->
 	</div>
 </div>
+
+<div class="hidden" id="divInfoGeraMensalidadeID">
+	<div class="widget-box">
+		<div class="widget-header widget-header-flat widget-header-small center">
+			<h5 class="widget-title">Informações</h5>
+		</div>
+		<div class="widget-body">
+			<div class="widget-main small">
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblNumFormadosSelID"></p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até Conclusão:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_MAX% meses &nbsp;(%DATA_CONCLUSAO%)</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da Formatura:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_TOTAL_FORM_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_POR_FORMANDO_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT% (RECEBER)</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Total a Receber:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Uso do Sistema:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de emissão do Boleto:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_BOLETO_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Administração:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_ADMIN_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total das Taxas:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_TAXA_FMT%</p>
+			    	</div>
+				</div>
+				
+				
+				
+				
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
 
 $(document).one('ajaxloadstart.page', function(e) {
@@ -339,13 +337,6 @@ function zgDesabilitaAcaoGeraMensalidade() {
 	$('#numForSelID').val(0);
 }
 
-function zgAcaoGeraSelecionados() {
-	var $aSelFormandos	= [];
-	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
-		$aSelFormandos[$aSelFormandos.length]	= $(this).val();
-	});
-	zgLoadUrl('%URL_GERACAO%&cid='+zgEncodeUrl('aSelFormandos='+$aSelFormandos));
-}
 
 selecionaValorMensalidadegeraMensalidade();
 
@@ -366,34 +357,42 @@ $('#fuelux-wizard-container')
 
 			e.preventDefault();
 		}else{
-			$('#lblNumFormadosSelID').html($('#numForSelID').val());
+			var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
+			$('#lblNumFormadosSelID').html($lblFor);
+			var $divInfo	= $('#divInfoGeraMensalidadeID').html();
+			$('#divInfoVencID').html($divInfo);
 		}
 	}else if (info.step == 2) {
 		var vOk 	= validaVencimentoGeraMensalidade();
 		if(!vOk) 	{
 			e.preventDefault();
+		}else{
+			var $divInfo	= $('#divInfoGeraMensalidadeID').html();
+			$('#divInfoValorID').html($divInfo);
 		}
 	}else if (info.step == 3) {
-		var vOk 	= true;
+		var vOk 	= validaValoresGeraMensalidade();
 		if(!vOk) 	{
 			e.preventDefault();
+		}else{
+			criaTabelaValoresGeraMensalidade();
 		}
 	}
 })
 .on('finished.fu.wizard', function(e) {
-	var vOk 	= true;
+	var vOk 	= atualizaEValidaParcelasGeraMensalidade();
 	if(!vOk) 	{
 		
 		$.gritter.add({
-			title: 'Valores de Rateio inconsistentes',
-			text: 'Ajuste os valores de rateio !!!!',
+			title: 'Valores inconsistentes',
+			text: 'Ajuste os valores das parcelas !!!!',
 			class_name: 'gritter-info gritter-center gritter-error'
 		});
 
 		e.preventDefault();
 		return false;
 	}else{
-		$('#zgFormID').submit();
+		$('#zgFormGeraMensalidadeID').submit();
 	}
 	
 }).on('stepclick.fu.wizard', function(e){
@@ -401,17 +400,7 @@ $('#fuelux-wizard-container')
 });
 
 
-$('#btnSubmitgeraMensalidadeID').click(function() {
-	var vOK;
-	
-	vOK	= validaGeraMensalidade();
-	if (vOK) {
-		$('#zgFormID').submit();
-	}
-	
-});
-
-$('#zgFormID').submit(function() {
+$('#zgFormGeraMensalidadeID').submit(function() {
 	
 	/** Retirar a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
@@ -424,11 +413,18 @@ $('#zgFormID').submit(function() {
 			$(this).prop( "disabled", false );
 		}
 	});
+	
+	var $aSelFormandos	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelFormandos[$aSelFormandos.length]	= $(this).val();
+	});
+
+	$("#aSelFormandosID").val($aSelFormandos);
 
 	$.ajax({
 		type:	"POST", 
-		url:	"%DP_MODAL%",
-		data:	$('#zgFormID').serialize(),
+		url:	"%DP%",
+		data:	$('#zgFormGeraMensalidadeID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
 		$('[zg-data-mask-retira="1"]').each(function( index ) {
@@ -445,9 +441,7 @@ $('#zgFormID').submit(function() {
 						"callback": function() {
 							zgLoadUrl('%URL_VOLTAR%');
 						}
-
 					},
-					
 				}
 			});
 		}else{
@@ -466,7 +460,6 @@ function selecionaValorMensalidadegeraMensalidade() {
 	$('#geraMensalidadeValorTotalID').removeClass("btn-primary");
 	$('#codTipoValorID').val("M");
 	$('#lblTipoValorID').html("Valor da Mensalidade");
-	atualizaInfoValorgeraMensalidade();
 }
 
 function selecionaValorTotalgeraMensalidade() {
@@ -476,38 +469,6 @@ function selecionaValorTotalgeraMensalidade() {
 	$('#geraMensalidadeValorMensalidadeID').removeClass("btn-primary");
 	$('#codTipoValorID').val("T");
 	$('#lblTipoValorID').html("Valor Total do Formando");
-	atualizaInfoValorgeraMensalidade();
-}
-
-function atualizaInfoValorgeraMensalidade() {
-	var $codTipoValor		= $('#codTipoValorID').val();
-	/*var $numMeses			= parseInt($('#numParcelasID').val());
-	
-	var options = {
-		symbol : "R$ ",
-		decimal : ",",
-		thousand: ".",
-		precision : 2,
-		format: "%s%v"
-	};
-	
-	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
-	
-	if (isNaN($valor))		$valor		= 0;
-	
-	$nValor			= ($valor).toFixed(2);
-
-	if ($tipoRecParc	== 'M') {
-		$nValor			= accounting.formatMoney($nValor, options);
-	}else{
-		if (!$valor) return null;
-	}
-	
-	$('#lbInfoValorID').html($nValor);
-	$('#divInfoValorID').removeClass('hidden');
-	
-	*/
-
 }
 
 function validaVencimentoGeraMensalidade() {
@@ -544,26 +505,12 @@ function validaVencimentoGeraMensalidade() {
 }
 
 
-function validaGeraMensalidade() {
-	var vDataVenc		= $('#dataVencID').val();
+function validaValoresGeraMensalidade() {
 	var vCodTipoValor	= $('#codTipoValorID').val();
 	var vValor			= $('#valorID').val();
-	var vNumMeses		= parseInt($('#numMesesID').val());
-	var vNumMesesMax	= parseInt($('#numMesesMaxID').val());
-	var vIndValorExtra	= $('#indValorExtraID').attr('checked');
 	var vCodFormaPag	= $('#codFormaPagID').val();
 	var vCodContaRec	= $('#codContaRecID').val();
 	var vOK				= true;
-	
-	// Data de Vencimento
-	if (!vDataVenc) {
-		$('#divDataVencID').addClass('has-error');
-		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento deve ser informada !!!'));
-		vOK		= false;
-	}else{
-		$('#divDataVencID').removeClass('has-error');
-		$('#divHelpDataVencID').html('&nbsp;');
-	}
 	
 	// Valor
 	if (!vValor) {
@@ -575,20 +522,6 @@ function validaGeraMensalidade() {
 		$('#divHelpValorID').html('&nbsp;');
 	}
 
-	// Número de meses
-	if (!vNumMeses) {
-		$('#divNumMesesID').addClass('has-error');
-		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser preenchido !!!'));
-		vOK		= false;
-	}else if (vNumMeses > vNumMesesMax) {
-		$('#divNumMesesID').addClass('has-error');
-		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser no máximo '+vNumMesesMax+' !!!'));
-		vOK		= false;
-	}else{
-		$('#divNumMesesID').removeClass('has-error');
-		$('#divHelpNumMesesID').html('&nbsp;');
-	}
-	
 	// Forma de Pagamento
 	if (!vCodFormaPag) {
 		$('#divFormaPagID').addClass('has-error');
@@ -611,5 +544,306 @@ function validaGeraMensalidade() {
 
 	return vOK;
 }
+
+function criaTabelaValoresGeraMensalidade() {
+	var $table				= $('#GeraMensalidadeTableValorID');
+	var $tipoRecParc		= $('#codTipoRecID').val();
+	var $codPeriodoRec		= 'M';
+	var $intervaloRec		= 1;
+	var $dataVenc			= $('#dataVencID').val();
+	var vNumMeses			= parseInt($('#numMesesID').val());
+	var $parcelas;
+	var $nValor,$valor,$valorParcela,$valorTotal,$datas;
+
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+		
+	var optTotal = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+
+	$valorParcela	= getValorParcelaGeraMensalidade();
+	$parcelas		= vNumMeses;	
+	$valorTotal		= getValorTotalGeraMensalidade();
+	if ($parcelas <= 1) {
+		$tipoRecParc	= "U";
+	}else{
+		$tipoRecParc	= "P";
+	}
+	
+
+	/** Resgata as datas de vencimentos **/
+	jQuery.ajax({
+		url: "%ROOT_URL%/Fin/geraDatasVencimentoConta.dp.php",
+		data: { dataVenc: $dataVenc, codPeriodoRec: $codPeriodoRec, intervaloRec: $intervaloRec, numParcelas: $parcelas},
+		success: function(ret) {
+			$datas	= JSON.parse(ret);
+		},
+		method: 'get',
+		cache: false,
+		async:false
+	});
+
+	/** Remove os dados atuais **/
+	$('#GeraMensalidadeTableValorID > tbody').find('tr').remove();
+	
+	for ($i = 0; $i < $parcelas; $i++) {
+		var $descParcela	= ($i+1) + " / " + $parcelas;
+		
+		if ($tipoRecParc == "U") {
+			$_parc	= accounting.formatMoney($valorTotal,options);
+		}else{
+			if ($i == ($parcelas -1)) {
+				var $_parc	= accounting.formatMoney($valorTotal - ($valorParcela * ($parcelas -1) ),options);
+			}else{
+				var $_parc 	= accounting.formatMoney($valorParcela,options);
+			}
+		}
+		
+		$('#GeraMensalidadeTableValorID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 40px;">'+$descParcela+'</td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aValor[]" value="'+$_parc+'" onchange="atualizaEValidaParcelasGeraMensalidade();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm datepicker" name="aData[]" value="'+$datas[$i].dataVenc+'" onchange="atualizaEValidaParcelasGeraMensalidade();" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td></tr>');		
+
+		$('#GeraMensalidadeTableValorID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+		$('#GeraMensalidadeTableValorID > tbody > tr:last .datepicker').each(function( index ) {
+			$(this).datepicker({"autoclose": true});
+		});
+		
+	}
+
+	$('#thInfoValorTotalGeraMensalidadeID').html(accounting.formatMoney($valorTotal,optTotal));
+	$('#thInfoParcelaGeraMensalidadeID').html($parcelas);
+	atualizaEValidaParcelasGeraMensalidade();
+	paginateTableValoresGeraMensalidade();
+}
+
+
+function getValorParcelaGeraMensalidade() {
+	var vIndValorExtra	= $('#indValorExtraID:checked').length;
+	var vCodTipoValor	= $('#codTipoValorID').val();
+	var vValor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+	var vNumMeses		= parseInt($('#numMesesID').val());
+	var vCodFormaPag	= $('#codFormaPagID').val();
+	var vtaxaUso		= '%TAXA_USO%'.replace(".", "").replace(",",".");
+	var vtaxaBol		= '%TAXA_BOLETO%'.replace(".", "").replace(",",".");
+	var vtaxaAdm		= '%TAXA_ADMIN%'.replace(".", "").replace(",",".");
+	var $valorParcela;
+	
+	var options = {
+		symbol : "",
+		decimal : ".",
+		thousand: "",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	vtaxaUso	= parseFloat(accounting.formatMoney(vtaxaUso,options));
+	vtaxaBol	= parseFloat(accounting.formatMoney(vtaxaBol,options));
+	vtaxaAdm	= parseFloat(accounting.formatMoney(vtaxaAdm,options));
+	
+	if (vCodTipoValor == 'T')	{
+		$valorParcela	= parseFloat((vValor / vNumMeses).toFixed(2));
+	}else{
+		$valorParcela	= vValor;
+	}
+
+	/*if (vIndValorExtra) {
+		if (vCodFormaPag != "BOL") {
+			vtaxaBol	= 0;
+		}
+		$valorParcela	= $valorParcela + vtaxaUso + vtaxaBol + vtaxaAdm;
+	}*/
+	
+	return ($valorParcela);
+}
+
+function getValorTotalGeraMensalidade() {
+	var vIndValorExtra	= $('#indValorExtraID:checked').length;
+	var vCodTipoValor	= $('#codTipoValorID').val();
+	var vValor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+	var vNumMeses		= parseInt($('#numMesesID').val());
+	var vCodFormaPag	= $('#codFormaPagID').val();
+	var vtaxaUso		= '%TAXA_USO%'.replace(".", "").replace(",",".");
+	var vtaxaBol		= '%TAXA_BOLETO%'.replace(".", "").replace(",",".");
+	var vtaxaAdm		= '%TAXA_ADMIN%'.replace(".", "").replace(",",".");
+	var $valorTotal;
+	
+	var options = {
+		symbol : "",
+		decimal : ".",
+		thousand: "",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+/*	vtaxaUso	= parseFloat(accounting.formatMoney(vtaxaUso,options));
+	vtaxaBol	= parseFloat(accounting.formatMoney(vtaxaBol,options));
+	vtaxaAdm	= parseFloat(accounting.formatMoney(vtaxaAdm,options));*/
+	
+	if (vCodTipoValor == 'T')	{
+		$valorTotal		= vValor;
+	}else{
+		$valorTotal		= parseFloat((vValor * vNumMeses).toFixed(2));
+	}
+
+	/*if (vIndValorExtra) {
+		if (vCodFormaPag != "BOL") {
+			vtaxaBol	= 0;
+		}
+		$valorTotal		= $valorTotal + ((vtaxaUso + vtaxaBol + vtaxaAdm) * vNumMeses);
+	}*/
+	
+	return ($valorTotal);
+}
+
+
+function paginateTableValoresGeraMensalidade() {
+	$('#pagerValoresGeraMensalidadeID li').remove();
+
+	$('table.paginated').each(function() {
+	    var currentPage = 0;
+	    var numPerPage 	= 5;
+	    var $table = $(this);
+	    $table.bind('repaginate', function() {
+	        $table.find('tbody tr').hide().slice(currentPage * numPerPage, (currentPage + 1) * numPerPage).show();
+	    });
+	    $table.trigger('repaginate');
+	    var numRows = $table.find('tbody tr').length;
+	    var numPages = Math.ceil(numRows / numPerPage);
+	    var $pager = $('#pagerValoresGeraMensalidadeID');
+	    for (var page = 0; page < numPages; page++) {
+	    	$('<li><a href="#"><span class="page-number">'+(page + 1)+'</span></a></li>').bind('click', {
+	        //$('<span class="page-number"></span>').text(page + 1).bind('click', {
+	            newPage: page
+	        }, function(event) {
+	            currentPage = event.data['newPage'];
+	            $table.trigger('repaginate');
+	            $(this).addClass('active').siblings().removeClass('active');
+	        }).appendTo($pager).addClass('clickable');
+	    }
+	    $pager.insertBefore($table).find('span.page-number:first').addClass('active');
+	});
+}
+
+function atualizaEValidaParcelasGeraMensalidade() {
+	var vNumMeses			= parseInt($('#numMesesID').val());
+	var $tValor 			= parseFloat(0);
+	var $cem				= (100+0).toFixed(2);
+	var $htmlOK,$htmlError,$htmlValor,$htmlPct,$vOK;
+	var $epsilon			= 0.00000001;
+	var $vOK;
+	var $menorData;
+	var $tipoRecParc,$valorParcela,$total;
+
+	if (vNumMeses <= 1) {
+		$tipoRecParc	= "U";
+	}else{
+		$tipoRecParc	= "P";
+	}
+
+	$valorParcela	= getValorParcelaGeraMensalidade();
+	$parcelas		= vNumMeses;	
+	$total			= getValorTotalGeraMensalidade();
+	$vOK			= true;
+
+	$('#GeraMensalidadeTableValorID > tbody > tr [name*="aValor[]"]').each(function( index ) {
+		$tValor += parseFloat($(this).val().replace(".", "").replace(",","."));
+	});
+	
+	$tValor		= parseFloat($tValor.toFixed(2));
+	
+	var opt = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	var opt1 = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	var opt2 = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	//alert("Valor informado: "+$total+" Valor calculado: "+$tValor);
+	/** Valida os valores **/
+	if ($tValor != $total) {
+		var $textoValor;
+		var	$diffValor	= ($total - $tValor);
+		
+		if ($diffValor > 0) {
+			$textoValor	= "Falta ainda: "+accounting.formatMoney($diffValor, opt1);
+		}else{
+			$textoValor	= "Valor está a maior: "+accounting.formatMoney(($diffValor*-1), opt1);
+		}
+		
+		$htmlError	= zgCriaSpanErro($textoValor);
+		$vOK		= false;
+	}
+	
+	
+	if (!$vOK) {
+		$('#thInfoHelpTableParcelasGeraMensalidadeID').html($htmlError);
+		return $vOK;
+	}
+	
+
+	/** Valida Data **/
+	$('#GeraMensalidadeTableValorID > tbody > tr [name*="aData[]"]').each(function( index ) {
+		var $td		= $(this).parent();
+		var $tr		= $td.parent();
+
+		if (index == 0) {
+			$menorData = moment($(this).val(), "%FORMATO_DATA%");
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+		}else{
+			var $data	= moment($(this).val(), "%FORMATO_DATA%");
+			var $dif	= $data - $menorData; 
+			
+			if ($dif < 0) {
+				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Data deve ser maior do que a parcela anterior"));
+				$tr.addClass("alert-danger");
+				$vOK	= false;
+			}else{
+				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+				$tr.removeClass("alert-danger");
+			}
+			$menorData = moment($(this).val(), "%FORMATO_DATA%");
+		}
+	});
+
+	if (!$vOK) {
+		$('#thInfoHelpTableParcelasGeraMensalidadeID').html(zgCriaSpanErro("Verifique as datas dos registros marcados"));
+		return $vOK;
+	}else{
+		$('#thInfoHelpTableParcelasGeraMensalidadeID').html(zgCriaSpanOK());
+		return $vOK; 
+	}
+	
+}
+
 
 </script>

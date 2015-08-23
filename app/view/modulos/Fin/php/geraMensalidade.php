@@ -173,9 +173,9 @@ try {
 }
 
 #################################################################################
-## Gerar a url de geração de Contas
+## Url Voltar
 #################################################################################
-$urlGeracao				= ROOT_URL."/Fin/geraContaMassa.php?id=".$id;
+$urlVoltar				= ROOT_URL."/Fin/contaReceberLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -188,11 +188,10 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('GRID'					,$htmlGrid);
 $tpl->set('IC'						,$_icone_);
+$tpl->set('ID'						,$id);
 $tpl->set('FILTER_URL'				,$url);
 $tpl->set('DIVCENTRAL'				,$system->getDivCentral());
 $tpl->set('CHECK_NAME'				,$checkboxName);
-$tpl->set('URL_GERACAO'				,$urlGeracao);
-
 $tpl->set('NUM_MESES_MAX'			,$numMesesConc);
 $tpl->set('TOTAL_FORMANDOS'			,$totalformandos);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao->format($system->config["data"]["dateFormat"]));
@@ -214,6 +213,9 @@ $tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
 $tpl->set('TOTAL_TAXA_FMT'			,\Zage\App\Util::to_money($totalTaxa));
 $tpl->set('CONTAS'					,$oConta);
 $tpl->set('FORMAS_PAG'				,$oFormaPag);
+$tpl->set('FORMATO_DATA'			,$system->config["data"]["jsDateFormat"]);
+$tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+$tpl->set('URL_VOLTAR'				,$urlVoltar);
 
 
 #################################################################################
