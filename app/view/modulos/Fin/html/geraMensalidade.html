@@ -1,0 +1,615 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Geração de Mensalidades</h1>
+	</div><!-- /.page-header -->
+	<br />
+
+	<!-- #section:plugins/fuelux.wizard -->
+	<div id="fuelux-wizard-container" class="col-sm-10 pull-left">
+		<div>
+			<!-- #section:plugins/fuelux.wizard.steps -->
+			<ul class="steps">
+				<li data-step="1" class="active">
+					<span class="step">1</span>
+					<span class="title">Seleção dos Formandos</span>
+				</li>
+	
+				<li data-step="2">
+					<span class="step">2</span>
+					<span class="title">Vencimentos</span>
+				</li>
+				<li data-step="3">
+					<span class="step">3</span>
+					<span class="title">Valores</span>
+				</li>
+				<li data-step="4">
+					<span class="step">4</span>
+					<span class="title">Parcelas</span>
+				</li>
+			</ul>
+		</div>
+		<hr />
+		<form id="zgFormID" class="form-horizontal">
+			<input type="hidden" name="id" value="%ID%">
+			<input type="hidden" name="codTipoValor" id="codTipoValorID">
+			<input type="hidden" name="numForSel" id="numForSelID">
+			<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
+			<input type="hidden" name="aSelFormandos" id="aSelFormandosID" value="%SEL_FORMANDOS%">
+			
+			<div class="step-content pos-rel">
+				<div class="step-pane active" data-step="1">
+					<div class="row">
+						<div class="col-sm-12 widget-container-span">
+							<div class="widget-body">
+								<div class="box-content">
+									%GRID%
+								</div><!--/span-->
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="step-pane" data-step="2">
+					<div class="col-sm-8 pull-left">
+						<div class="row">
+							<div class="form-group col-sm-12" id="divDataVencID">
+							    <label for="identID" class="col-sm-5 control-label">Vencimento da 1&ordf; mensalidade</label>
+					    		<div class="input-group col-sm-6 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de vencimento da primeira mensalidade, as próximas mensalidades vão ser geradas no mesmo dia do mês subsequente."></i></span>
+				    				<input class="form-control datepicker" id="dataVencID" type="text" name="dataVenc" maxlength="10" value="%DATA_VENC%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+							    </div>
+							    <div class="col-sm-1 pull-left" id="divHelpDataVencID"></div>
+							</div>
+							<div class="form-group col-sm-12" id="divNumMesesID">
+							    <label for="identID" class="col-sm-5 control-label">Número de Mensalidades a gerar</label>
+					    		<div class="input-group col-sm-6 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de Mensalidades a serem geradas"></i></span>
+									<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" value="%NUM_MESES_MAX%" placeholder="Valor por Formando" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+							    </div>
+							    <div class="col-sm-1 pull-left" id="divHelpNumMesesID"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-4 pull-right">
+						<div class="widget-box">
+							<div class="widget-header widget-header-flat widget-header-small center">
+								<h5 class="widget-title">Informações</h5>
+							</div>
+							<div class="widget-body">
+								<div class="widget-main small">
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total de Formandos:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_FORMANDOS%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos selecionados:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblNumFormadosSelID"></p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até Conclusão:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_MAX% meses &nbsp;(%DATA_CONCLUSAO%)</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da Formatura:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_TOTAL_FORM_FMT%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_POR_FORMANDO_FMT%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado (RECEBER):</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Total a Receber:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Uso do Sistema:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de emissão do Boleto:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_BOLETO_FMT%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Administração:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_ADMIN_FMT%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total das Taxas:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_TAXA_FMT%</p>
+								    	</div>
+									</div>
+									
+									
+									
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="step-pane" data-step="3">
+					<div class="col-sm-8 pull-left">
+						<div class="row ">
+							<div class="form-group col-sm-12" id="divIndValorTotalID">
+								<label class="col-sm-4 control-label">Valor se refere</label>
+								<div class="btn-group btn-corner col-sm-7 pull-left">
+									<span id='geraMensalidadeValorMensalidadeID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorMensalidadegeraMensalidade();">Valor da Mensalidade</span>
+									<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
+									<span id='geraMensalidadeValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalgeraMensalidade();">Valor Total do Formando</span>
+								</div>
+							</div>
+							<div class="form-group col-sm-12" id="divValorID">
+							    <label id='lblTipoValorID' class="col-sm-4 control-label"></label>
+					    		<div class="input-group col-sm-7 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
+						    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+							    </div>
+							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
+							</div>
+							
+							<div class="form-group col-sm-12" >
+			    				<label class="col-sm-4 control-label">
+			    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch " value="1" checked type="checkbox" />
+			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+			    				</label>
+				    			<div class="input-group col-sm-7 pull-left">
+				    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa de uso do Sistema, Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
+				    				<input readonly type="text" class="form-control" placeholder="Adicionar os valores extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
+					    	</div>
+							<div class="form-group col-sm-12" id="divFormaPagID">
+								<label class="col-sm-4 control-label">Forma de Pag.</label>
+				    			<div class="input-group col-sm-7 pull-left">
+				    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Mensalidade"></i></span>
+									<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
+									%FORMAS_PAG%
+									</select>
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpFormaPagID"></div>
+					    	</div>
+							<div class="form-group col-sm-12" id="divContaRecID">
+								<label class="col-sm-4 control-label">Conta de Recebebimento</label>
+				    			<div class="input-group col-sm-7 pull-left">
+				    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
+									<select class="select2" style="width:100%;" id="codContaRecID" name="codContaRec" data-rel="select2">
+									%CONTAS%
+									</select>
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
+					    	</div>
+						</div>
+					</div>
+				</div>
+				<div class="step-pane" data-step="4" id="divStepParcelasCRCadID">
+					<div class="row">
+						<table id="CRCadTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+							<thead>
+								<tr class="warning">
+									<th class="col-sm-1 center" id="thInfoHelpTableParcelasCRCadID"></th>
+									<th class="col-sm-2 center">Parcela</th>
+									<th class="col-sm-2 center">Valor</th>
+									<th class="col-sm-2 center">Data</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+							<tfoot>
+								<tr class="warning">
+									<th class="col-sm-1 center"></th>
+									<th class="col-sm-2 center" id="thInfoParcelaCRCadID"></th>
+									<th class="col-sm-2 center" id="thInfoValorTotalCRCadID"></th>
+									<th class="col-sm-2 center"></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="row center">
+						<ul class="pagination" id="pagerValoresCRCadID">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="wizard-actions col-sm-2 pull-left" >
+	
+		<!-- #section:plugins/fuelux.wizard.buttons -->
+		<button class="btn btn-app btn-prev">
+			Anterior
+			<i class="ace-icon fa fa-arrow-left"></i>
+		</button>
+		<button class="btn btn-app btn-success btn-next" data-last="Finalizar">
+			Próximo
+			<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+		</button>
+		<!-- /section:plugins/fuelux.wizard.buttons -->
+	</div>
+</div>
+<script>
+
+$(document).one('ajaxloadstart.page', function(e) {
+	//in ajax mode, remove remaining elements before leaving page
+	$('[class*=select2]').remove();
+});
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2({allowClear: true});
+	}
+});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2({allowClear: true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+var oTable		= $('#GeraMensalidadeID').dataTable();
+
+$( document ).ready(function() {
+	oTable.on( 'change', 'input[name="%CHECK_NAME%[]"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+
+		if ($count == 0) {
+			zgDesabilitaAcaoGeraMensalidade();
+		}else{
+			zgHabilitaAcaoGeraMensalidade($count);
+		}
+	} );
+	
+	oTable.on( 'change', 'input[name="%CHECK_NAME%_all"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+		var $api 		= oTable.api();
+		var $info 		= $api.page.info();
+		
+		if ($count == 0) {
+			zgDesabilitaAcaoGeraMensalidade();
+		}else{
+			zgHabilitaAcaoGeraMensalidade($count);
+			
+			if ($info.pages > 1) {
+				$.gritter.add({
+					title: 'Aviso',
+					text: 'Os Formandos de todas as páginas, foram selecionados !!!!',
+					class_name: 'gritter-info',
+					time: '5000',
+				});
+			}
+		}
+	} );
+	
+	//oTable.$('input[name="%CHECK_NAME%_all"]').prop('checked', true);
+	
+});
+
+zgDesabilitaAcaoGeraMensalidade();
+
+function zgHabilitaAcaoGeraMensalidade($numFormandos) {
+
+	$('#numForSelID').val($numFormandos);
+}
+
+function zgDesabilitaAcaoGeraMensalidade() {
+	
+	$('#numForSelID').val(0);
+}
+
+function zgAcaoGeraSelecionados() {
+	var $aSelFormandos	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelFormandos[$aSelFormandos.length]	= $(this).val();
+	});
+	zgLoadUrl('%URL_GERACAO%&cid='+zgEncodeUrl('aSelFormandos='+$aSelFormandos));
+}
+
+selecionaValorMensalidadegeraMensalidade();
+
+$('#fuelux-wizard-container')
+.ace_wizard({
+	//step: 2 //optional argument. wizard will jump to step "2" at first
+	//buttons: '.wizard-actions:eq(0)'
+})
+.on('actionclicked.fu.wizard' , function(e, info){
+	if(info.step == 1) {
+		var $numSel	= $('#numForSelID').val();
+		if($numSel == 0) 	{
+			$.gritter.add({
+				title: 'Seleção de Formandos',
+				text: 'Pelo menos 1 formando deve ser selecionado',
+				class_name: 'gritter-info gritter-center gritter-error'
+			});
+
+			e.preventDefault();
+		}else{
+			$('#lblNumFormadosSelID').html($('#numForSelID').val());
+		}
+	}else if (info.step == 2) {
+		var vOk 	= validaVencimentoGeraMensalidade();
+		if(!vOk) 	{
+			e.preventDefault();
+		}
+	}else if (info.step == 3) {
+		var vOk 	= true;
+		if(!vOk) 	{
+			e.preventDefault();
+		}
+	}
+})
+.on('finished.fu.wizard', function(e) {
+	var vOk 	= true;
+	if(!vOk) 	{
+		
+		$.gritter.add({
+			title: 'Valores de Rateio inconsistentes',
+			text: 'Ajuste os valores de rateio !!!!',
+			class_name: 'gritter-info gritter-center gritter-error'
+		});
+
+		e.preventDefault();
+		return false;
+	}else{
+		$('#zgFormID').submit();
+	}
+	
+}).on('stepclick.fu.wizard', function(e){
+	//e.preventDefault();//this will prevent clicking and selecting steps
+});
+
+
+$('#btnSubmitgeraMensalidadeID').click(function() {
+	var vOK;
+	
+	vOK	= validaGeraMensalidade();
+	if (vOK) {
+		$('#zgFormID').submit();
+	}
+	
+});
+
+$('#zgFormID').submit(function() {
+	
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		});
+		
+		if (checaRetornoOK(data) == true) {
+			bootbox.dialog({
+				message: "Mensalidades geradas com sucesso !!!", 
+				buttons: {
+					"fechar" : {
+						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
+						"className" : "btn-sm btn-danger",
+						"callback": function() {
+							zgLoadUrl('%URL_VOLTAR%');
+						}
+
+					},
+					
+				}
+			});
+		}else{
+			zgMostraAviso("Fechar");
+		}
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+
+function selecionaValorMensalidadegeraMensalidade() {
+	$('#geraMensalidadeValorMensalidadeID').addClass("btn-primary");
+	$('#geraMensalidadeValorMensalidadeID').removeClass("btn-light");
+	$('#geraMensalidadeValorTotalID').addClass("btn-light");
+	$('#geraMensalidadeValorTotalID').removeClass("btn-primary");
+	$('#codTipoValorID').val("M");
+	$('#lblTipoValorID').html("Valor da Mensalidade");
+	atualizaInfoValorgeraMensalidade();
+}
+
+function selecionaValorTotalgeraMensalidade() {
+	$('#geraMensalidadeValorTotalID').addClass("btn-primary");
+	$('#geraMensalidadeValorTotalID').removeClass("btn-light");
+	$('#geraMensalidadeValorMensalidadeID').addClass("btn-light");
+	$('#geraMensalidadeValorMensalidadeID').removeClass("btn-primary");
+	$('#codTipoValorID').val("T");
+	$('#lblTipoValorID').html("Valor Total do Formando");
+	atualizaInfoValorgeraMensalidade();
+}
+
+function atualizaInfoValorgeraMensalidade() {
+	var $codTipoValor		= $('#codTipoValorID').val();
+	/*var $numMeses			= parseInt($('#numParcelasID').val());
+	
+	var options = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	$valor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+	
+	if (isNaN($valor))		$valor		= 0;
+	
+	$nValor			= ($valor).toFixed(2);
+
+	if ($tipoRecParc	== 'M') {
+		$nValor			= accounting.formatMoney($nValor, options);
+	}else{
+		if (!$valor) return null;
+	}
+	
+	$('#lbInfoValorID').html($nValor);
+	$('#divInfoValorID').removeClass('hidden');
+	
+	*/
+
+}
+
+function validaVencimentoGeraMensalidade() {
+	var vDataVenc		= $('#dataVencID').val();
+	var vNumMeses		= parseInt($('#numMesesID').val());
+	var vNumMesesMax	= parseInt($('#numMesesMaxID').val());
+	var vOK				= true;
+	
+	// Data de Vencimento
+	if (!vDataVenc) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento deve ser informada !!!'));
+		vOK		= false;
+	}else{
+		$('#divDataVencID').removeClass('has-error');
+		$('#divHelpDataVencID').html('&nbsp;');
+	}
+	
+	// Número de meses
+	if (!vNumMeses) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser preenchido !!!'));
+		vOK		= false;
+	}else if (vNumMeses > vNumMesesMax) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser no máximo '+vNumMesesMax+' !!!'));
+		vOK		= false;
+	}else{
+		$('#divNumMesesID').removeClass('has-error');
+		$('#divHelpNumMesesID').html('&nbsp;');
+	}
+
+	return vOK;
+}
+
+
+function validaGeraMensalidade() {
+	var vDataVenc		= $('#dataVencID').val();
+	var vCodTipoValor	= $('#codTipoValorID').val();
+	var vValor			= $('#valorID').val();
+	var vNumMeses		= parseInt($('#numMesesID').val());
+	var vNumMesesMax	= parseInt($('#numMesesMaxID').val());
+	var vIndValorExtra	= $('#indValorExtraID').attr('checked');
+	var vCodFormaPag	= $('#codFormaPagID').val();
+	var vCodContaRec	= $('#codContaRecID').val();
+	var vOK				= true;
+	
+	// Data de Vencimento
+	if (!vDataVenc) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento deve ser informada !!!'));
+		vOK		= false;
+	}else{
+		$('#divDataVencID').removeClass('has-error');
+		$('#divHelpDataVencID').html('&nbsp;');
+	}
+	
+	// Valor
+	if (!vValor) {
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Valor deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divValorID').removeClass('has-error');
+		$('#divHelpValorID').html('&nbsp;');
+	}
+
+	// Número de meses
+	if (!vNumMeses) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser preenchido !!!'));
+		vOK		= false;
+	}else if (vNumMeses > vNumMesesMax) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser no máximo '+vNumMesesMax+' !!!'));
+		vOK		= false;
+	}else{
+		$('#divNumMesesID').removeClass('has-error');
+		$('#divHelpNumMesesID').html('&nbsp;');
+	}
+	
+	// Forma de Pagamento
+	if (!vCodFormaPag) {
+		$('#divFormaPagID').addClass('has-error');
+		$('#divHelpFormaPagID').html(zgCriaSpanErro('Forma de pagamento deve ser selecionada !!!'));
+		vOK		= false;
+	}else{
+		$('#divFormaPagID').removeClass('has-error');
+		$('#divHelpFormaPagID').html('&nbsp;');
+	}
+	
+	// Conta
+	if (!vCodContaRec) {
+		$('#divContaRecID').addClass('has-error');
+		$('#divHelpContaRecID').html(zgCriaSpanErro('Conta de Recebimento deve ser selecionada !!!'));
+		vOK		= false;
+	}else{
+		$('#divContaRecID').removeClass('has-error');
+		$('#divHelpContaRecID').html('&nbsp;');
+	}
+
+	return vOK;
+}
+
+</script>

@@ -191,9 +191,6 @@ if (!$indValorExtra) {
 		$codCentroCusto[]	= null;
 		$codRateio[]		= null;
 	}
-	
-	$log->debug("Array de pct: ".serialize($pctRateio));
-	
 }
 
 #################################################################################

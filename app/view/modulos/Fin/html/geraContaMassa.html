@@ -261,17 +261,6 @@ $('textarea.limited').inputlimiter({
 
 selecionaValorMensalidadeGCMassa();
 
-$('#btnSubmitGCMassaID').click(function() {
-	var vOK;
-	
-	vOK	= validaGCMassa();
-	if (vOK) {
-		$('#zgFormID').submit();
-	}
-	
-});
-
-
 $('#zgFormID').submit(function() {
 	
 	/** Retirar a máscara para os campos que estão configurados para tal **/
