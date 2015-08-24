@@ -54,19 +54,29 @@ if (!isset($codModulo)) {
 #################################################################################
 try {
 
-	if (isset($codMenuPai) && $codMenuPai != null) {
-		$menuPai		= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenuPai));
-		if (!$menuPai) $menuPai			= new \Entidades\ZgappMenu();
-	}else{
-		$menuPai		= new \Entidades\ZgappMenu();
-	}
-	
 	if (isset($codMenu) && $codMenu != null) {
 		$menu			= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenu));
 		if (!$menu) 	$menu	= new \Entidades\ZgappMenu();
 	}else{
 		$menu			= new \Entidades\ZgappMenu();
 	}
+	
+	
+	if (isset($codMenuPai) && $codMenuPai != null) {
+		$menuPai		= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $codMenuPai));
+		if (!$menuPai) $menuPai			= new \Entidades\ZgappMenu();
+	}else{
+		if ($menu->getCodMenuPai()) {
+			$menuPai		= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $menu->getCodMenuPai()));
+		}
+		
+		if (!isset($menuPai) || (!$menuPai)) {
+			$menuPai		= new \Entidades\ZgappMenu();
+		}
+		
+		
+	}
+	
 
 	if ($codTipo == "M") {
 		$ro		= "readonly";
