@@ -44,6 +44,12 @@ if (new \DateTime("now") > $oRifa->getDataSorteio()){
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Você não pode gerar bilhetes para esta rifa pois já chegou a data do sorteio!"))));
 }
 
+// VERIFICAR SE É RIFA MANUAL
+if ($oRifa->getIndRifaEletronica() == 1){
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Não é possível gerar bilhetes para rifas eletrônicas!"))));
+}
+
+
 // QUANTIDADE DE BILHETES
 if (!isset($qtdePorFormando) || (empty($qtdePorFormando))) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Você deve informar o números de bilhetes a ser gerado para cada formando!"))));

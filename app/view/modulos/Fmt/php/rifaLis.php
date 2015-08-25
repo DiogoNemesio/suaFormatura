@@ -74,6 +74,10 @@ for ($i = 0; $i < sizeof($rifa); $i++) {
 	$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/rifaAlt.php?id='.$rid);
 	$grid->setUrlCelula($i,9,"javascript:zgAbreModal('".ROOT_URL.'/Fmt/rifaExc.php?id='.$rid."');");
 	
+	if ($rifa[$i]->getIndRifaEletronica() == 1){
+		$grid->desabilitaCelula($i, 5);
+	}
+	
 }
 
 #################################################################################
