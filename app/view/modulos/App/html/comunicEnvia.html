@@ -1,0 +1,256 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Enviar mensagem
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		%MSG%
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codEnqueteID" name="codEnquete" value="%COD_ENQUETE%">
+				<input type="hidden" id="indFinalizadoID" name="indFinalizado" value="%IND_FINALIZADO%">
+				<input type='hidden' id='valID'>
+				<div id="divMsg"></div>
+				<div id="indice" class="tab-pane in active">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group" id="divAssuntoID">
+						    	<label class="col-sm-3 control-label" for="assuntoID">Assunto</label>
+									<div class="input-group col-sm-5 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o assunto."></i></span>
+				   					<input class="form-control" id="assuntoID" type="text" name="assunto" placeholder="Assunto" maxlength="100" value="%PERGUNTA%" required autocomplete="off">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpAssuntoID"></div>
+				    		</div>
+				    	</div>
+						<div class="col-sm-12">
+							<div class="form-group" id="divMensagemID">
+						    	<label class="col-sm-3 control-label" for="mensagemID">Mensagem</label>
+									<div class="input-group col-sm-5 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o conteúdo da mensagem."></i></span>
+					    			<textarea class="form-control limited autosize" placeholder="Mensagem" id="mensagemID" name="mensagem" maxlength="500"></textarea>
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpMensagemID"></div>
+						    </div>
+				    	</div>
+				   		<div class="form-group col-sm-12" id="divIndEmailID">
+					    	<label class="col-xs-12 col-sm-4 control-label" for="indEmailID"></label>
+					    	<label>
+					    		<input name="indEmail" id="indEmailID" checked type="checkbox" class="ace" />
+								<span class="lbl"> Enviar via e-mail</span>
+							</label>
+				   		</div>
+				   		<div class="form-group col-sm-12" id="divIndWhatsAppID">
+					    	<label class="col-xs-12 col-sm-4 control-label" for="indWhatsAppID"></label>
+					    	<label>
+					    		<input name="indWhatsApp" id="indWhatsAppID" checked type="checkbox" class="ace" />
+								<span class="lbl"> Enviar via whatsapp</span>
+							</label>
+				   		</div>
+				    	
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-5 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-paper-plane-o bigger-110"></i> Enviar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+
+$(".select2").select2();
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n restantes%s...',
+	limitText: 'máximo de: %n.'
+});
+
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaEnviaMensagem();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+			
+	var $email			= $('#indEmailID').is(':checked');
+	var $whatsapp		= $('#indWhatsAppID').is(':checked');
+	
+	if ($email == true){
+		$indEmail = 'SIM';
+	}else{
+		$indEmail = 'NÃO';
+	}
+	
+	if ($whatsapp == true){
+		$indWP = 'SIM';
+	}else{
+		$indWP = 'NÃO';
+	}
+
+	bootbox.dialog({
+		title: "Tem certeza que deseja enviar a mensagem?",
+		message: "Após está confirmação todos os formandos serão avisados por email ou mensagem.<br><br><b>POR EMAIL:</b> "+$indEmail+"<b><br>POR WHATSAPP:</b> "+$indWP,
+		
+		buttons: {
+			"Confirmar" : {
+				"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+				"className" : "btn-sm btn-primary",
+				"callback": function() {
+					//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
+					$('#zgFormID').submit();
+				}
+			},
+			"Cancelar" : {
+				"label" : "<i class='ace-icon fa fa-thumbs-o-down'></i>Cancelar",
+				"className" : "btn-sm btn-danger",
+				"callback": function() {
+					zgLoadUrl('');
+				}
+
+			},
+			
+		}
+	});
+	
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codEnqueteID').val(zgGetCodRetorno(data));
+			//zgMostraAviso("Fechar");
+			zgMostraMsg('divMsg', 'Sua mensagem foi enviada com sucesso!');
+			$('#assuntoID').val("");
+			$('#mensagemID').val("");
+			$('#indEmailID').prop({ checked: true });
+			$('#indWhatsAppID').prop({ checked: true });
+			
+		}else{
+			zgMostraErro('divMsg',zgGetMsgRetorno(data));
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-paper-plane-o bigger-110"></i> Enviar ');
+		$('#btnSubmitID').attr("disabled",false);
+		
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+/*********************** Verificar o formulário ***********************/
+function validaEnviaMensagem() {
+	var vAssunto		= $('#assuntoID').val();
+	var vMensagem		= $('#mensagemID').val();
+
+	var vOK				= true;
+	
+	// Assunto
+	if (!vAssunto) {
+		$('#divAssuntoID').addClass('has-error');
+		$('#divHelpAssuntoID').html(zgCriaSpanErro('O assunto deve ser preenchido!'));
+		vOK		= false;
+	}else{
+		$('#divAssuntoID').removeClass('has-error');
+		$('#divHelpAssuntoID').html('&nbsp;');
+	}
+	
+	// Mensagem
+	if (!vMensagem) {
+		$('#divMensagemID').addClass('has-error');
+		$('#divHelpMensagemID').html(zgCriaSpanErro('O conteúdo da mensagem deve ser preenchido!'));
+		vOK		= false;
+	}else{
+		$('#divMensagemID').removeClass('has-error');
+		$('#divHelpMensagemID').html('&nbsp;');
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+/********************** Mostrar div de valores **********************/
+$( document ).ready(function() {
+	zgMostraDivs();
+});
+
+function zgMostraDivs() {
+	var vMostraVal		= ['LI'];
+	var vMostraTam		= ['N','L'];
+	var vTipo			= $('#codTipoID').val(); 
+	
+	if (vMostraVal.indexOf(vTipo) < 0) {
+		$('#divValoresID').addClass("hidden");
+	}else{
+		$('#divValoresID').removeClass("hidden");
+	}
+	
+	if (vMostraTam.indexOf(vTipo) < 0) {
+		$('#divTamanhoID').addClass("hidden");
+	}else{
+		$('#divTamanhoID').removeClass("hidden");		
+	}
+}
+
+/********************* TAG **********************/
+tag();
+function tag(){
+	var tag_input 		= $('#valoresID');
+	var indFinalizado	= $('#indFinalizadoID').val();
+	
+	if (indFinalizado != 1){
+		if(! ( /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase())) ) {
+			tag_input.tag({
+				placeholder:tag_input.attr('placeholder'),
+			});
+		} else {
+			tag_input.after('<textarea id="'+tag_input.attr('id')+'" name="'+tag_input.attr('name')+'" rows="3">'+tag_input.val()+'</textarea>').remove();
+		}
+	}
+}
+</script>
+
