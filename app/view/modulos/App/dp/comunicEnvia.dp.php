@@ -29,10 +29,24 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
+$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+
+if ($oOrg->getCodTipo()->getCodigo() == FMT){
+	$codTipo = 'F';
+	$codTipoDesc = 'formandos';
+}elseif ($oOrg->getCodTipo()->getCodigo() == CAS){
+	$codTipo = 'N';
+	$codTipoDesc = 'noivos';
+}else{
+	$codTipo = 'U';
+	$codTipoDesc = 'usuários';
+}
+
 /******* Verificar se existe formandos ativos *********/
-$formandos		= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
-if (sizeof($formandos) == 0)	{
-	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("A rifa não pode ser criada pois não existe formando ativo!"))));
+$log->debug($codTipo);
+$usuarios		= \Zage\Seg\Usuario::listaUsuarioOrganizacaoAtivo($system->getCodOrganizacao(), $codTipo);
+if (sizeof($usuarios) == 0)	{
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Não podemos enviar a mensagem, pois não existe ".$codTipoDesc." ativos!"))));
 }
 
 /******* Assunto *********/
@@ -77,11 +91,6 @@ $em->getConnection()->beginTransaction();
 try {
 	
 	#################################################################################
-	## 
-	#################################################################################
-	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-	
-	#################################################################################
 	## Gerar a notificação
 	#################################################################################
 	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
@@ -89,8 +98,8 @@ try {
 	$notificacao->setAssunto($assunto);
 	$notificacao->setCodRemetente($oRemetente);
 	
-	for ($i = 0; $i < sizeof($formandos); $i++) {
-		$notificacao->associaUsuario($formandos[$i]->getCodigo());
+	for ($i = 0; $i < sizeof($usuarios); $i++) {
+		$notificacao->associaUsuario($usuarios[$i]->getCodUsuario()->getCodigo());
 	}
 	
 	$notificacao->setMensagem($mensagem);

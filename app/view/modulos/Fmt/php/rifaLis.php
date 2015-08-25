@@ -69,7 +69,7 @@ for ($i = 0; $i < sizeof($rifa); $i++) {
 	$rid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$rifa[$i]->getCodigo().'&url='.$url);
 	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/rifaGera.php?id='.$rid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/rifaHistorico.php?id='.$rid);
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/rifaResumo.php?id='.$rid);
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/rifaFin.php?id='.$rid);
 	$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/rifaAlt.php?id='.$rid);
 	$grid->setUrlCelula($i,9,"javascript:zgAbreModal('".ROOT_URL.'/Fmt/rifaExc.php?id='.$rid."');");
