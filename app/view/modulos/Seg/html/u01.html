@@ -157,7 +157,7 @@
 					    	<label class="col-sm-3 control-label" for="dataNascID">Nascimento</label>
 			    			<div class="input-group col-sm-5 pull-left">
 				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe sua data de nascimento."></i></span>
-				    			<input class="form-control" id="dataNascID" type="text" name="dataNasc" maxlength="10" value="%DATA_NASC%" placeholder="Data de nascimento" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data" zg-data-mask-retira="0">
+				    			<input class="form-control datepicker" id="dataNascID" type="text" name="dataNasc" maxlength="10" value="%DATA_NASC%" placeholder="Data de nascimento" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data" zg-data-mask-retira="0">
 					    	</div>
 					    	<div class="col-sm-1 pull-left" id="divHelpApelidoID"></div>
 					    </div>
@@ -522,6 +522,7 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 
 $('[data-rel=popover]').popover({html:true});
 
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
 /******************************************************
 SUBMIT FORMULÁRIO
 /******************************************************/

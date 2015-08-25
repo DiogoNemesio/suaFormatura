@@ -135,15 +135,9 @@ try {
 		$infoVenda = $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codVenda' => $codVenda));
 		$total = 0;
 		for ($i = 0; $i < sizeof($infoVenda); $i++) {
-		$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
-		$linha = $i + 1;
-			
-		$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
-				$html .= '<td style="padding: 10px;">'.$linha.'</td>';
-					$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getCodRifa()->getNome().'</td>';
-					$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getNumero().'</td>';
-					$html .= '<td style="padding: 10px;">'.$infoVenda[$i]->getCodRifa()->getValorUnitario().'</td>';
-					$html .= '</tr>';
+			$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
+				
+			$numSorte .= $infoVenda[$i]->getNumero().' - ';
 		}
 			
 		$notificacao->adicionaVariavel('COD_RIFA'		,$rifa);
@@ -158,17 +152,16 @@ try {
 		$notificacao->adicionaVariavel('NOME'			,$infoVenda[0]->getNome());
 		$notificacao->adicionaVariavel('EMAIL'			,$infoVenda[0]->getEmail());
 		$notificacao->adicionaVariavel('TELEFONE'		,$infoVenda[0]->getTelefone());
-		$notificacao->adicionaVariavel('HTML_TABLE'		,$html);
+		$notificacao->adicionaVariavel('VALOR_UNITARIO'	,$infoVenda[0]->getCodRifa()->getValorUnitario());
+		$notificacao->adicionaVariavel('NUM_SORTE'		,$numSorte);
 			
 		$notificacao->salva();
 	}
 	
-	/********** Salvar as informações *********/
+	/********** Salvar as informações *******/
 	try {
 		$em->flush();
 		$em->getConnection()->commit();
-		$em->clear();
-	
 	} catch (Exception $e) {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
