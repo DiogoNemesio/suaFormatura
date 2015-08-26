@@ -87,7 +87,7 @@ class ZgfinContaReceber
     /**
      * @var float
      *
-     * @ORM\Column(name="VALOR_OUTROS", type="float", precision=10, scale=0, nullable=true)
+     * @ORM\Column(name="VALOR_OUTROS", type="float", precision=10, scale=0, nullable=false)
      */
     private $valorOutros;
 

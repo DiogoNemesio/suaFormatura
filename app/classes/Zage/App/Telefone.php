@@ -145,6 +145,7 @@ class Telefone {
 				$infoTel->setTelefone($telefone[$i]);
 				
 				$em->persist($infoTel);
+				
 			}
 		}
 	}	
