@@ -63,8 +63,6 @@
 <script type="text/javascript" charset="%CHARSET%">
 /********************* Popover *********************/
 $('[data-rel=popover]').popover({html:true});
-
-$(".select2").select2();
 $('[data-toggle="popover"]').popover();
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
@@ -74,6 +72,13 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 $('.datepicker').datepicker({
 	language: "pt-BR"
 });
+
+$(".select2").select2("destroy").select2({});
+/*$(document).ready(function() {
+	$("#codFormaPagID").select2("destroy").select2({});
+	$("#codContaCreID").select2("destroy").select2({});
+});*/
+
 
 </script>
 

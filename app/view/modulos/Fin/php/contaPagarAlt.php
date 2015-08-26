@@ -194,7 +194,7 @@ try {
 			$oConta		.= '</optgroup>';
 		}
 	}else{
-		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$codContaPag, '');
 	}
 
 

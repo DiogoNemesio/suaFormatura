@@ -112,16 +112,6 @@ function mostraMensagem(msg) {
 	}).modal('show');
 }
 
-
-function zgAbreModal(pUrl) {
-	$('#zgDivModalContentID').empty();
-	$('#zgDivModalContentID').load(pUrl);
-	$('#zgDivModalID').modal({
-		keyboard:true,
-		backdrop:true
-	}).modal('show');
-}
-
 function removenull(str) {
     var new_str = str;
     if (str == '') {

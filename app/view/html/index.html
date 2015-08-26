@@ -160,6 +160,7 @@
 		});
 	}
 
+
 	function zgLimpaModalAviso() {
 		$("#zgDivModalContentID").empty();
 		$("#zgDivModalContentID").html('');
@@ -169,6 +170,20 @@
 		zgLimpaModalAviso();
 	}
 
+	function zgAbreModal(pUrl) {
+		$('#zgDivModalContentID').empty();
+		$('#zgDivModalContentID').load(pUrl);
+		$('#zgDivModalID').modal({
+			keyboard:true,
+			backdrop:true
+		}).modal('show');
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModal();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+	}
+
+	
 	function zgCriaSpanErro(pMsg) {
 		return '<span class="popover-error" title="Mensagem de erro" data-rel="zg-popover" data-placement="top" data-trigger="hover" data-content="'+pMsg+'"><i class="fa fa-exclamation-circle red bigger-150"></i></span><script> $("[data-rel=zg-popover]").popover({html:true,template: \\'<div class="popover" style="width: 240px;" role="tooltip"><div class="arrow"></div><div class="popover-title"></div><div class="popover-content small smaller"></div></div>\\' }).on("show.bs.popover", function () { $(this).data("bs.popover").tip().css("max-width", "600px"); });<\\/script>';
 	}

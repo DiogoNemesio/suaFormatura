@@ -148,12 +148,24 @@ $('#zgFormModalID').submit(function() {
 
 $('[data-rel=tooltip]').tooltip();
 $('[data-rel=popover]').popover({html:true});
-$('[data-rel="select2"]').select2();
 $('.datepicker').datepicker({"autoclose": true});
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
+
+
+$(document).ready(function() {
+	$("#codFormaPagID").select2("destroy").select2({});
+	$("#codContaCreID").select2("destroy").select2({});
+});
+
+$(document).one('ajaxloadstart.page', function(e) {
+	$('[class*=select2]').remove();
+	$('.rating').raty('destroy');
+	$('.multiselect').multiselect('destroy');
+});
+
 
 
 </script>
