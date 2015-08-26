@@ -213,7 +213,7 @@ try {
 		if ($oUsuario->_getUsuario()->getCodStatus()->getCodigo() == P) {
 			$assunto			= "Confirmação de cadastro";
 			$nome				= $oUsuario->getNome();
-			$texto = 'Você foi adionado a formatura <b>'.$oOrg->getNome().'</b>. Confirme seu cadastro para acessar tudo sobre sua formatura.';
+			$texto = 'Sua conta foi criada e associada a turma <b>'.$oOrg->getNome().'</b>. Confirme seu cadastro no link abaixo e acesse tudo sobre sua formatura.';
 			$confirmUrl			= ROOT_URL . "/Seg/u01.php?cid=".$cid;
 		}
 	
