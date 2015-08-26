@@ -47,6 +47,11 @@ if (!$info){
 	\Zage\App\Erro::halt($tr->trans('Rifa não encontrada').' (COD_RIFA)');
 }
 
+if ($info->getIndRifaEletronica() == 1){
+	$nomeQtde = 'QTDE VENDIDA';
+}else{
+	$nomeQtde = 'QTDE GERADA';
+}
 
 #################################################################################
 ## Resgata os dados do grid
@@ -64,7 +69,7 @@ $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GFin");
 $grid->adicionaTexto($tr->trans('FORMANDO'),			20, $grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('QTDE OBRIGATÓRIA'),	10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('VALOR DA RIFA (R$)'),	10, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('QTDE VENDIDA'),		10, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans($nomeQtde),				10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('A PAGAR (R$)'),		10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('TOTAL PAGO(R$)'),		10, $grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-money green',$tr->trans('Receber'));

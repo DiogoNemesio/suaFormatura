@@ -93,7 +93,6 @@ try {
 	for ($i = 0; $i < $quantidade; $i++) {
 		$oRifaNum		= new \Entidades\ZgfmtRifaNumero();
 		$rifaSemaforo	= \Zage\Adm\Semaforo::proximoValor($system->getCodOrganizacao(), "RIFA_".$rifa);
-		$log->debug('entrei1');
 		$oRifaNum->setCodFormando($oUsuario);
 		$oRifaNum->setCodRifa($oRifa);
 		$oRifaNum->setCodVenda($oCodVenda);
@@ -122,7 +121,7 @@ try {
 		$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
 		$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_CONF_COMPRA'));
 		$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
-		$notificacao->setAssunto("Compra da Rifa com sucesso.");
+		$notificacao->setAssunto("Confirmação da compra da rifa");
 		$notificacao->setCodRemetente($oRemetente);
 			
 		//$notificacao->associaUsuario($oHistEmail->getCodUsuario()->getCodigo());
@@ -136,8 +135,13 @@ try {
 		$total = 0;
 		for ($i = 0; $i < sizeof($infoVenda); $i++) {
 			$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
-				
-			$numSorte .= $infoVenda[$i]->getNumero().' - ';
+			if ($i + 1 == sizeof($infoVenda)){
+				$separador = '';
+			}else{
+				$separador = ' - ';
+			}
+			
+			$numSorte .= $infoVenda[$i]->getNumero().$separador;
 		}
 			
 		$notificacao->adicionaVariavel('COD_RIFA'		,$rifa);

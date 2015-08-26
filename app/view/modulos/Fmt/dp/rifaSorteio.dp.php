@@ -97,7 +97,6 @@ try {
 		$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
 		$html .= '<td style="padding: 10px;">'.$oRifa->getNumeroVencedor()->getNome().'</td>';
 		$html .= '<td style="padding: 10px;">'.$oRifa->getNumeroVencedor()->getCodigo().'</td>';
-		$html .= '<td style="padding: 10px;">'.$oRifa->getPremio().'</td>';
 		$html .= '</tr>';
 			
 		$notificacao->adicionaVariavel('NOME_RIFA'		,$oRifa->getNome());
