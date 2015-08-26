@@ -1,0 +1,50 @@
+<div id="content">
+	<div class="page-header">
+		<h1><i class="fa fa-barcode black">&nbsp;</i>HISTÓRICO DE PAGAMENTOS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="javascript:zgLoadUrl('%URL_ABE%');" class="btn btn-danger"><i class="ace-icon fa fa-exclamation-circle bigger-130"></i>EM ABERTO</a>
+		</h1>
+	</div><!-- /.page-header -->
+	
+	<form id="zgFormID" class="form-horizontal">
+	<div class="col-xs-12 %HID_HIS%" id="divGridHis">
+		<h4 class="header blue bolder smaller">Pagamentos realizados</h4>
+		<div class="vspace-xs"></div>
+		<div class="row">
+			<div class="box-content col-xs-10">
+				<table id="CPAltTableRateioID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-4 center">Descrição</th>
+							<th class="col-sm-1 center">Parcela</th>
+							<th class="col-sm-2 center">Vencimento</th>
+							<th class="col-sm-2 center">Valor</th>
+							<th class="col-sm-2 center">Data Pagamento</th>
+						</tr>
+					</thead>
+					<tbody>
+					%TAB_HIS%
+					</tbody>
+				</table>
+			</div><!--/span-->
+		</div>
+	</div>
+	</form>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+
+$(".select2").select2();
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.datepicker').datepicker({
+	language: "pt-BR"
+});
+
+</script>
+

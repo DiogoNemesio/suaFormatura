@@ -1,32 +1,63 @@
 <div id="content">
 	<div class="page-header">
-	<h1><i class="fa fa-barcode black">&nbsp;</i>CONSULTE SUAS FATURAS
-	</h1>
+		<h1><i class="fa fa-barcode black">&nbsp;</i>MEUS PAGAMENTOS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="javascript:zgLoadUrl('%URL_HIST%');" class="btn btn-primary"><i class="ace-icon fa fa-history bigger-130"></i>Ver Histórico</a>
+		</h1>
 	</div><!-- /.page-header -->
-
 	
-		<div class="col-sm-12">
-			<form id="zgFormID" class="form-horizontal">
-				<input type="hidden" id="codFeriadoID" name="codFeriado" value="%COD_FERIADO%">
-				<input type='hidden' id='valID'>
-				
-					<h5 class="header blue bolder smaller">Informações Gerais</h5>
-					<div class="vspace-xs"></div>
-					<div class="row">
-						<div class="col-sm-12 center">
-							<div class="col-sm-10 widget-container-span">
-								<div class="widget-body">
-									<div class="box-content">
-										%GRID%
-									</div><!--/span-->
-								</div>
-							</div>
-						</div>
-				    </div>
-				
-			</form>
+	<form id="zgFormID" class="form-horizontal">
+	<div class="col-xs-12 %HID_ATR%" id="divGridAtr">
+		<h4 class="header blue bolder smaller">Pagamentos atrasados&nbsp;<i class="fa fa-exclamation-circle red"></i></h4>
+		<div class="vspace-xs"></div>
+		<div class="row">
+			<div class="box-content col-xs-10">
+				<table id="CPAltTableRateioID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-4 center">Descrição</th>
+							<th class="col-sm-1 center">Parcela</th>
+							<th class="col-sm-2 center">Vencimento</th>
+							<th class="col-sm-2 center">Valor</th>
+							<th class="col-sm-2 center">Júros</th>
+						</tr>
+					</thead>
+					<tbody>
+					%TAB_ATR%
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="3" style="text-align: right;">Total em atraso (com júros)</th>
+							<th colspan="2" style="text-align: right;">%TOT_ATR%</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div><!--/span-->
 		</div>
-
+	</div>
+	
+	<div class="col-xs-12 %HID_FUT%" id="divGridFut">
+		<h4 class="header blue bolder smaller">Próximas %NUM_FUT% mensalidades</h4>
+		<div class="vspace-xs"></div>
+		<div class="row">
+			<div class="box-content col-xs-10">
+				<table id="CPAltTableRateioID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-4 center">Descrição</th>
+							<th class="col-sm-1 center">Parcela</th>
+							<th class="col-sm-2 center">Vencimento</th>
+							<th class="col-sm-2 center">Valor</th>
+							<th class="col-sm-2 center">Júros</th>
+						</tr>
+					</thead>
+					<tbody>
+					%TAB_FUT%
+					</tbody>
+				</table>
+			</div><!--/span-->
+		</div>
+	</div>
+	</form>
 </div>
 
 <script type="text/javascript" charset="%CHARSET%">
@@ -44,83 +75,5 @@ $('.datepicker').datepicker({
 	language: "pt-BR"
 });
 
-/************************* Submit Formulário *************************/
-//Verificar se a validação está OK
-$('#btnSubmitID').on("click", function(e) {
-	
-	var vOk 	= validaFeriadoAlt();
-	
-	if(vOk == false) 	{
-		$.gritter.add({
-			title: 'Está faltando alguma coisa !!!',
-			text: 'Corrija os campos marcados em vermelho',
-			class_name: 'gritter-info gritter-error',
-			time: '5000'
-		});
-		e.preventDefault();
-		return false;
-	}else{;
-		$('#zgFormID').submit();
-	}
-});
-
-$('#zgFormID').submit(function(e) {
-	$.ajax({
-		type:	"POST", 
-		url:	"%DP%",
-		data:	$('#zgFormID').serialize(),
-	}).done(function( data, textStatus, jqXHR) {
-		if (checaRetornoOK(data) == true) {
-			$('#codFeriadoID').val(zgGetCodRetorno(data));
-			zgMostraAviso("Fechar",'Novo Feriado', '%URLNOVO%');
-		}else{
-			zgMostraAviso("Fechar");
-		}
-		
-		$('#zgDivModalID').on('hidden.bs.modal', function () {
-			zgLimpaModalAviso();
-			$('#zgDivModalID').off('hidden.bs.modal');
-		});
-		
-	}).fail(function( jqXHR, textStatus, errorThrown) {
-		zgMostraAviso(null);
-	});
-	return false; 
-});
-
-/*********************** Verificar o formulário ***********************/
-function validaFeriadoAlt() {
-	var vDescricao	= $('#descricaoID').val();
-	var vData		= $('#dataID').val();
-	
-	var vOK				= true;
-	var vIdent;
-	
-	// Descricao
-	if (vDescricao.length == 0 || vDescricao.length > 60 ) {
-		$('#divDescricaoID').addClass('has-error');
-		if (vDescricao.length == 0){
-			$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve ser preenchido !!!'));
-		}else if (vDescricao.length > 30){
-			$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve ter no máximo 60 caracteres !!!'));
-		}
-		return false;
-	}
-	// Data
-	if (!vData) {
-		$('#divDataID').addClass('has-error');
-		$('#divHelpDataID').html(zgCriaSpanErro('Campo data é obrigatório !!!'));
-		vOK		= false;
-	}else{
-		$('#divDataID').removeClass('has-error');
-		$('#divHelpDataID').html('&nbsp;');		
-	}
-	
-	if (vOK == true) {
-		return true ;
-	}else{
-		return false;
-	}
-}
 </script>
 

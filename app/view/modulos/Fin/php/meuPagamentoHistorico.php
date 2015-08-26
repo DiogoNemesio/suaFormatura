@@ -46,8 +46,7 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$pagamentosAtr	= \Zage\Fmt\Formando::listaPagamentosAtrasados($system->getCodOrganizacao(), $_user->getCpf());
-	$pagamentosFut	= \Zage\Fmt\Formando::listaPagamentosAVencer($system->getCodOrganizacao(), $_user->getCpf());
+	$pagamentosHis	= \Zage\Fmt\Formando::listaPagamentosRealizados($system->getCodOrganizacao(), $_user->getCpf());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -55,69 +54,50 @@ try {
 #################################################################################
 ## Verifica se precisa mostrar a tabela de pagamentos em atraso
 #################################################################################
-if (sizeof($pagamentosAtr) == 0) {
-	$hidAtr		= "hidden";
+if (sizeof($pagamentosHis) == 0) {
+	$hidHis		= "hidden";
 }else{
-	$hidAtr		= null;
-}
-
-#################################################################################
-## Verifica se precisa mostrar a tabela de pagamentos futuros
-#################################################################################
-if (sizeof($pagamentosFut) == 0) {
-	$hidFut		= "hidden";
-}else{
-	$hidFut		= null;
+	$hidHis		= null;
 }
 
 #################################################################################
 ## Popula a tabela de pagamentos em atraso
 #################################################################################
-$tabAtr		= "";
-$totalAtr	= 0;
-for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
-	$venc		= $pagamentosAtr[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$valor		= ($pagamentosAtr[$i]->getValor() + $pagamentosAtr[$i]->getValorJuros() + $pagamentosAtr[$i]->getValorMora() + $pagamentosAtr[$i]->getValorOutros() - $pagamentosAtr[$i]->getValorDesconto() - $pagamentosAtr[$i]->getValorCancelado());
-	$_juros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($pagamentosAtr[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$_mora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($pagamentosAtr[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$juros		= ($_juros + $_mora);
-	$totalAtr	+= $valor + $juros;
-	$tabAtr	.= '<tr>
-			<td>'.$pagamentosAtr[$i]->getDescricao().'</td>
-			<td style="text-align: center;">('.$pagamentosAtr[$i]->getParcela().'/'.$pagamentosAtr[$i]->getNumParcelas().')</td>
+$tabHis		= "";
+for ($i = 0; $i < sizeof($pagamentosHis); $i++) {
+	$venc		= $pagamentosHis[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
+	$valor		= ($pagamentosHis[$i]->getValor() + $pagamentosHis[$i]->getValorJuros() + $pagamentosHis[$i]->getValorMora() + $pagamentosHis[$i]->getValorOutros() - $pagamentosHis[$i]->getValorDesconto() - $pagamentosHis[$i]->getValorCancelado());
+	
+	#################################################################################
+	## Resgata o histórico de pagamentos
+	#################################################################################
+	$hist		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codContaRec' => $pagamentosHis[$i]->getCodigo()));
+	if (!$hist)	{
+		$dataPag	= "??/??/????";
+	}else{
+		$dataPag	= "";
+		for ($h = 0 ; $h < sizeof($hist); $h++) {
+			$dataPag .= $hist[$h]->getDataRecebimento()->format($system->config["data"]["dateFormat"]);
+		}
+	}
+	
+	
+	
+	
+	$tabHis	.= '<tr>
+			<td>'.$pagamentosHis[$i]->getDescricao().'</td>
+			<td style="text-align: center;">('.$pagamentosHis[$i]->getParcela().'/'.$pagamentosHis[$i]->getNumParcelas().')</td>
 			<td style="text-align: center;">'.$venc.'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
-			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
+			<td style="text-align: center;">'.$dataPag.'</td>
 	';
 }
-
-#################################################################################
-## Popula a tabela de pagamentos futuros
-#################################################################################
-$tabFut		= "";
-$numFut		= sizeof($pagamentosFut);
-if ($numFut > 5) $numFut = 5;
-for ($i = 0; $i < $numFut; $i++) {
-	$venc		= $pagamentosFut[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$valor		= ($pagamentosFut[$i]->getValor() + $pagamentosFut[$i]->getValorJuros() + $pagamentosFut[$i]->getValorMora() + $pagamentosFut[$i]->getValorOutros() - $pagamentosFut[$i]->getValorDesconto() - $pagamentosFut[$i]->getValorCancelado());
-	$_juros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($pagamentosFut[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$_mora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($pagamentosFut[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$juros		= ($_juros + $_mora);
-	$tabFut	.= '<tr>
-			<td>'.$pagamentosFut[$i]->getDescricao().'</td>
-			<td style="text-align: center;">('.$pagamentosFut[$i]->getParcela().'/'.$pagamentosFut[$i]->getNumParcelas().')</td>
-			<td style="text-align: center;">'.$venc.'</td>
-			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
-			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
-	';
-}
-
 
 
 #################################################################################
 ## Gerar a url de histórico de pagamentos
 #################################################################################
-$urlHist				= ROOT_URL."/Fin/meuPagamentoHistorico.php?id=".$id;
+$urlAbe				= ROOT_URL."/Fin/meuPagamentoLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -131,13 +111,9 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('IC'				,$_icone_);
 $tpl->set('FILTER_URL'		,$url);
 $tpl->set('DIVCENTRAL'		,$system->getDivCentral());
-$tpl->set('URL_HIST'		,$urlHist);
-$tpl->set('HID_ATR'			,$hidAtr);
-$tpl->set('HID_FUT'			,$hidFut);
-$tpl->set('NUM_FUT'			,$numFut);
-$tpl->set('TAB_ATR'			,$tabAtr);
-$tpl->set('TAB_FUT'			,$tabFut);
-$tpl->set('TOT_ATR'			,\Zage\App\Util::to_money($totalAtr));
+$tpl->set('URL_ABE'			,$urlAbe);
+$tpl->set('HID_HIS'			,$hidHis);
+$tpl->set('TAB_HIS'			,$tabHis);
 
 #################################################################################
 ## Por fim exibir a página HTML
