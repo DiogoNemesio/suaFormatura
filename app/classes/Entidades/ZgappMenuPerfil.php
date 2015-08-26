@@ -39,16 +39,6 @@ class ZgappMenuPerfil
     private $codMenu;
 
     /**
-     * @var \Entidades\ZgadmOrganizacaoTipo
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoTipo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TIPO_ORGANIZACAO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codTipoOrganizacao;
-
-    /**
      * @var \Entidades\ZgsegPerfil
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegPerfil")
@@ -57,6 +47,16 @@ class ZgappMenuPerfil
      * })
      */
     private $codPerfil;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacaoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoOrganizacao;
 
 
     /**
@@ -116,29 +116,6 @@ class ZgappMenuPerfil
     }
 
     /**
-     * Set codTipoOrganizacao
-     *
-     * @param \Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao
-     * @return ZgappMenuPerfil
-     */
-    public function setCodTipoOrganizacao(\Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao = null)
-    {
-        $this->codTipoOrganizacao = $codTipoOrganizacao;
-
-        return $this;
-    }
-
-    /**
-     * Get codTipoOrganizacao
-     *
-     * @return \Entidades\ZgadmOrganizacaoTipo 
-     */
-    public function getCodTipoOrganizacao()
-    {
-        return $this->codTipoOrganizacao;
-    }
-
-    /**
      * Set codPerfil
      *
      * @param \Entidades\ZgsegPerfil $codPerfil
@@ -159,5 +136,28 @@ class ZgappMenuPerfil
     public function getCodPerfil()
     {
         return $this->codPerfil;
+    }
+
+    /**
+     * Set codTipoOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao
+     * @return ZgappMenuPerfil
+     */
+    public function setCodTipoOrganizacao(\Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao = null)
+    {
+        $this->codTipoOrganizacao = $codTipoOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacaoTipo 
+     */
+    public function getCodTipoOrganizacao()
+    {
+        return $this->codTipoOrganizacao;
     }
 }
