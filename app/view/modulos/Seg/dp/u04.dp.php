@@ -26,9 +26,6 @@ $senhaAlteracao	= $_cdu02;
 $email			= $_cdu03;
 $codUsuario		= $_cdu04;
 
-$log->info("Email de alteração: ".$email);
-$log->info("Codigo do usuário: ".$codUsuario);
-
 if (isset($_POST['novaSenha'])) 		$senhaNova	= \Zage\App\Util::antiInjection($_POST['novaSenha']);
 if (isset($_POST['confNovaSenha'])) 	$confSenha	= \Zage\App\Util::antiInjection($_POST['confNovaSenha']);
 
