@@ -15,6 +15,11 @@ use \Zend\Mime\Part as MimePart;
 Use \Zend\Mime;
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['email'])) 			$email				= \Zage\App\Util::antiInjection($_POST['email']);
@@ -42,7 +47,7 @@ if ($valEmail->isValid($email) == false){
 $oEmail	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('usuario' => $email));
 
 if (($oEmail != null) && ($oEmail->getUsuario() == $email)){
-	$codUsuario = $oEmail;
+	$codUsuario = $oEmail->getCodigo();
 }else{
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Email não existe!"))));
 	$err 	= 1;
@@ -53,6 +58,7 @@ if ($err != null) {
  	exit;
 }
 
+
 #################################################################################
 ## Salvar no banco
 #################################################################################
@@ -62,15 +68,21 @@ try {
 	if (!$oRecSenha){
 		$oRecSenha	= new \Entidades\ZgsegUsuarioRecSenha();
 	}else{
-		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Existe confirmação de email pendende!"))));
-		exit;
+		$oStatusFec	= $em->getRepository('Entidades\ZgsegHistEmailStatus')->findOneBy(array('codigo' => 'C'));
+		$oRecSenha->setCodStatus($oStatusFec);
+		$oRecSenha->setDataAlteracao(new \DateTime("now"));
+		$oRecSenha->setIpAlteracao(\Zage\App\Util::getIPUsuario());
+		$em->persist($oRecSenha);
+		$em->flush();
+		$em->detach($oRecSenha);
+		$oRecSenha	= new \Entidades\ZgsegUsuarioRecSenha();
 	}
 	
  	if (!$oRecSenha) $oRecSenha	= new \Entidades\ZgsegUsuarioRecSenha();
  	
  	$oStatus	= $em->getRepository('Entidades\ZgsegHistEmailStatus')->findOneBy(array('codigo' => 'A'));
  	
- 	$oRecSenha->setCodUsuario($codUsuario);
+ 	$oRecSenha->setCodUsuario($oEmail);
  	$oRecSenha->setDataSolicitacao(new \DateTime("now"));
  	$oRecSenha->setIpSolicitacao(\Zage\App\Util::getIPUsuario());
  	$oRecSenha->setSenhaAlteracao(\Zage\Seg\Perfil::_geraSenha());
@@ -85,11 +97,11 @@ try {
  	#################################################################################
  	$cid 			= \Zage\App\Util::encodeUrl('_cdu01='.$oRecSenha->getCodigo().'&_cdu02='.$oRecSenha->getSenhaAlteracao().'&_cdu03='.$oEmail->getUsuario().'&_cdu04='.$oRecSenha->getCodUsuario()->getCodigo().'&_cdu05='.$system->getCodOrganizacao());
  	$assunto		= "Redefinição da senha.";
- 	$textoEmail		= "Seu email foi confirmado, mas ainda precisa alterar a senha. Para isso, clique no link abaixo:";
+ 	$textoEmail		= "Solicitação de senha feita no site. Para prosseguir com a alteração clique no link abaixo:";
  	$nome			= $oRecSenha->getCodUsuario()->getNome();
  	$confirmUrl		= ROOT_URL . "/Seg/u04.php?cid=".$cid;
  	
- 	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+ 	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$codUsuario);
  	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'USUARIO_CADASTRO'));
  	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
  	$notificacao->setAssunto("Redefinição da senha.");
@@ -97,11 +109,9 @@ try {
  	
  	$notificacao->associaUsuario($oRecSenha->getCodUsuario()->getCodigo());
  	$notificacao->enviaEmail();
- 	//$notificacao->enviaSistema();
- 	//$notificacao->setEmail($oHistEmail->getEmailNovo()); # Se quiser mandar com cópia
  	$notificacao->setCodTemplate($template);
  	$notificacao->adicionaVariavel("NOME"		, $nome);
- 	$notificacao->adicionaVariavel("ASSUNTO"	, "Redefinição da senha.");
+ 	$notificacao->adicionaVariavel("ASSUNTO"	, $assunto);
  	$notificacao->adicionaVariavel("TEXTO"		, $textoEmail);
  	$notificacao->adicionaVariavel("CONFIRM_URL", $confirmUrl);
  	

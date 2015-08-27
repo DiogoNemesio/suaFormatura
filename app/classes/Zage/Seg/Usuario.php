@@ -412,7 +412,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		#################################################################################
 		/** INFORMAÇÃOES BÁSICAS **/
 		//USUARIO
-		if (empty($this->getUsuario())) {
+		if (!$this->getUsuario()) {
 			return $tr->trans('O email deve ser preenchido!');
 		}elseif (strlen($this->getUsuario()) > 200){
 			return $tr->trans('O email não deve conter mais de 200 caracteres!');
@@ -427,7 +427,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		}
 		
 		//NOME
-		if (empty($this->getNome())) {
+		if (!$this->getNome()) {
 			return $tr->trans('O nome deve ser preenchido!');
 		}elseif (strlen($this->getNome()) < 5){
 			return $tr->trans('Nome muito pequeno, informe o nome completo!');
@@ -436,7 +436,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		}
 		
 		//APELIDO
-		if (empty($this->getApelido())) {
+		if (!$this->getApelido()) {
 			return $tr->trans('O apelido deve ser preenchido!');
 		}elseif (strlen($this->getApelido()) > 60){
 			return $tr->trans('O apelido não deve conter mais de 60 caracteres!');
@@ -444,7 +444,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		
 		//CPF
 		$valCgc			= new \Zage\App\Validador\Cpf();
-		if (empty($this->getCpf())) {
+		if (!$this->getCpf()) {
 			return $tr->trans('O CPF deve ser preenchido!');
 		}else{
 			if ($valCgc->isValid($this->getCpf()) == false) {
@@ -463,7 +463,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		}
 		
 		// Data Nascimento
-		if (empty($this->getDataNascimento())) {
+		if (!$this->getDataNascimento()) {
 			return $tr->trans('A data de nascimento deve ser preenchida!');
 		}else {
 			if (\Zage\App\Util::validaData($this->getDataNascimento(), $system->config["data"]["dateFormat"]) == false) {
@@ -472,36 +472,36 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		}
 
 		//SEXO
-		if (empty($this->getSexo())) {
+		if (!$this->getSexo()) {
 			return $tr->trans('O sexo deve ser preenchido!');
 		}
 		
 		/** ENDEREÇO **/
-		if (!empty($this->getCodLogradouro())){
+		if ($this->getCodLogradouro()){
 
 			//CEP
-			if (empty($this->getCep())) {
+			if ($this->getCep()) {
 				return $tr->trans('O CEP deve ser preenchido!');
-			}elseif ((!empty($this->getCep())) && (strlen($this->getCep()) > 8)) {
+			}elseif (($this->getCep()) && (strlen($this->getCep()) > 8)) {
 				return $tr->trans('O CEP não deve conter mais de 8 caracteres!');
 			}
 			
 			//LOGRADOURO
-			if (empty($this->getEndereco())) {
+			if (!$this->getEndereco()) {
 				return $tr->trans('O Logradouro deve ser preenchido!');
-			}elseif ((!empty($this->getEndereco())) && (strlen($this->getEndereco()) > 100)) {
+			}elseif (($this->getEndereco()) && (strlen($this->getEndereco()) > 100)) {
 				return $tr->trans('O logradouro não deve conter mais de 100 caracteres!');
 			}
 			
 			//BAIRRO
-			if (empty($this->getBairro())) {
+			if (!$this->getBairro()) {
 				return $tr->trans('O bairro deve ser preenchido!');
-			}elseif ((!empty($this->getBairro())) && (strlen($this->getBairro()) > 60)) {
+			}elseif (($this->getBairro()) && (strlen($this->getBairro()) > 60)) {
 				return $tr->trans('O bairro não deve conter mais de 60 caracteres!');
 			}
 			
 			//Verificar o endereço informado é corresponte a base dos correios
-			if (!empty($this->getIndEndCorreto())) {
+			if ($this->getIndEndCorreto()) {
 				$endCorreto	= 1;
 			}else{
 				$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $this->getCodLogradouro()));
@@ -517,23 +517,23 @@ class Usuario extends \Entidades\ZgsegUsuario {
 			//Verifica se o endereço deve ser obrigatório
 			if ($this->_getIndEndObrigatorio() == true){
 				//CEP
-				if (empty($this->getCep())) {
+				if (!$this->getCep()) {
 					return $tr->trans('O CEP deve ser preenchido!');
-				}elseif ((!empty($this->getCep())) && (strlen($this->getCep()) > 8)) {
+				}elseif (($this->getCep()) && (strlen($this->getCep()) > 8)) {
 					return $tr->trans('O CEP não deve conter mais de 8 caracteres!');
 				}
 				
 				//LOGRADOURO
-				if (empty($this->getEndereco())) {
+				if (!$this->getEndereco()) {
 					return $tr->trans('O Logradouro deve ser preenchido!');
-				}elseif ((!empty($this->getEndereco())) && (strlen($this->getEndereco()) > 100)) {
+				}elseif (($this->getEndereco()) && (strlen($this->getEndereco()) > 100)) {
 					return $tr->trans('O logradouro não deve conter mais de 100 caracteres!');
 				}
 					
 				//BAIRRO
-				if (empty($this->getBairro())) {
+				if (!$this->getBairro()) {
 					return $tr->trans('O bairro deve ser preenchido!');
-				}elseif ((!empty($this->getBairro())) && (strlen($this->getBairro()) > 60)) {
+				}elseif (($this->getBairro()) && (strlen($this->getBairro()) > 60)) {
 					return $tr->trans('O bairro não deve conter mais de 60 caracteres!');
 				}
 			}else{
@@ -542,12 +542,12 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		}
 		
 		//NÚMERO
-		if ((!empty($this->getNumero())) && (strlen($this->getNumero()) > 10)) {
+		if (($this->getNumero()) && (strlen($this->getNumero()) > 10)) {
 			return $tr->trans('O número não deve conter mais de 10 caracteres!');
 		}
 			
 		//COMPLEMENTO
-		if ((!empty($this->getComplemento())) && (strlen($this->getComplemento()) > 100)) {
+		if (($this->getComplemento()) && (strlen($this->getComplemento()) > 100)) {
 			return $tr->trans('O complemento do endereço não deve conter mais de 100 caracteres!');
 		}
 					
