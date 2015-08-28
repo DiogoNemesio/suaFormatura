@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$log,$tr;
+
+#################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['_cdu01'])) 			$_cdu01		= \Zage\App\Util::antiInjection($_POST['_cdu01']);
@@ -22,7 +27,6 @@ $email			= $_cdu03;
 $codUsuario		= $_cdu04;
 
 if (isset($_POST['novaSenha'])) 		$senhaNova	= \Zage\App\Util::antiInjection($_POST['novaSenha']);
-if (isset($_POST['senhaAtual'])) 		$senhaAtual	= \Zage\App\Util::antiInjection($_POST['senhaAtual']);
 if (isset($_POST['confNovaSenha'])) 	$confSenha	= \Zage\App\Util::antiInjection($_POST['confNovaSenha']);
 
 #################################################################################
@@ -34,7 +38,7 @@ $err	= false;
 ## Fazer validação dos campos
 #################################################################################
 /** Senha **/
-if (($senhaNova) && (strlen($senhaNova) < 5)) {
+if (($senhaNova) && (strlen($senhaNova) < 4)) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo Senha inválido!"))));
 	$err		= "1";
 }elseif ($senhaNova) {

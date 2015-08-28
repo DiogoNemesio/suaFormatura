@@ -6,6 +6,17 @@
 	</div><!-- /.page-header -->
 	
 	<form id="zgFormID" class="form-horizontal">
+	<input type="hidden" name="codContaSel" 	id="codContaSelID">
+	<input type="hidden" name="vencimento" 		id="vencimentoID">
+	<input type="hidden" name="valor" 			id="valor">
+	<input type="hidden" name="valorJuros" 		id="valorJuros">
+	<input type="hidden" name="valorMora" 		id="valorMora">
+	<input type="hidden" name="valorDesconto" 	id="valorDesconto">
+	<input type="hidden" name="valorOutros" 	id="valorOutros">
+	<input type="hidden" name="tipoMidia" 		id="tipoMidia">
+	<input type="hidden" name="instrucao" 		id="instrucao">
+	<input type="hidden" name="email" 			id="email">
+	
 	<div class="col-xs-12 %HID_ATR%" id="divGridAtr">
 		<h4 class="header blue bolder smaller">Pagamentos atrasados&nbsp;<i class="fa fa-exclamation-circle red"></i></h4>
 		<div class="vspace-xs"></div>
@@ -18,7 +29,8 @@
 							<th class="col-sm-1 center">Parcela</th>
 							<th class="col-sm-2 center">Vencimento</th>
 							<th class="col-sm-2 center">Valor</th>
-							<th class="col-sm-2 center">Júros</th>
+							<th class="col-sm-1 center">Júros</th>
+							<th class="col-sm-2 center">Boleto</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -47,7 +59,8 @@
 							<th class="col-sm-1 center">Parcela</th>
 							<th class="col-sm-2 center">Vencimento</th>
 							<th class="col-sm-2 center">Valor</th>
-							<th class="col-sm-2 center">Júros</th>
+							<th class="col-sm-1 center">Júros</th>
+							<th class="col-sm-2 center">Boleto</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -79,6 +92,19 @@ $(".select2").select2("destroy").select2({});
 	$("#codContaCreID").select2("destroy").select2({});
 });*/
 
+function meuPagDownBoleto(pCodConta,pVenc,pValor,pJuros,pMora,pDesconto,pOutros,pTipoMidia,pInstrucao,pEmail) {
+	$('#codContaSelID').val(pCodConta);
+	$('#vencimentoID').val(pVenc);
+	$('#valorID').val(pValor);
+	$('#valorJurosID').val(pJuros);
+	$('#valorMoraID').val(pMora);
+	$('#valorDescontoID').val(pDesconto);
+	$('#valorOutrosID').val(pOutros);
+	$('#tipoMidiaID').val(pTipoMidia);
+	$('#instrucaoID').val(pInstrucao);
+	$('#emailID').val(pEmail);
+	
+}
 
 </script>
 

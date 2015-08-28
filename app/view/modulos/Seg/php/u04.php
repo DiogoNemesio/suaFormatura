@@ -33,7 +33,7 @@ $senhaAlteracao	= $_cdu02;
 $email			= $_cdu03;
 $codUsuario		= $_cdu04;
 $codOrganizacao = $_cdu05;
-$log->debug($codOrganizacao);
+
 #################################################################################
 ## Verificar se os usuário já existe e se já está ativo
 #################################################################################

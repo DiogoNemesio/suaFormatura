@@ -71,21 +71,69 @@ if (sizeof($pagamentosFut) == 0) {
 }
 
 #################################################################################
+## Instancia o objeto do contas a receber
+#################################################################################
+$contaRec	= new \Zage\Fin\ContaReceber();
+
+
+#################################################################################
 ## Popula a tabela de pagamentos em atraso
 #################################################################################
 $tabAtr		= "";
 $totalAtr	= 0;
 for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
-	$venc		= $pagamentosAtr[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$valor		= ($pagamentosAtr[$i]->getValor() + $pagamentosAtr[$i]->getValorJuros() + $pagamentosAtr[$i]->getValorMora() + $pagamentosAtr[$i]->getValorOutros() - $pagamentosAtr[$i]->getValorDesconto() - $pagamentosAtr[$i]->getValorCancelado());
-	$_juros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($pagamentosAtr[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$_mora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($pagamentosAtr[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$juros		= ($_juros + $_mora);
-	$totalAtr	+= $valor + $juros;
+	
+	
+	#################################################################################
+	## Formatar campos da conta
+	#################################################################################
+	$podeBol			= true;
+	$codFormaPag		= ($pagamentosAtr[$i]->getCodFormaPagamento() 	!= null) ? $pagamentosAtr[$i]->getCodFormaPagamento()->getCodigo() : null;
+	$codContaRec		= ($pagamentosAtr[$i]->getCodConta() 			!= null) ? $pagamentosAtr[$i]->getCodConta() 						: null;
+	$vencimento			= ($pagamentosAtr[$i]->getDataVencimento() 		!= null) ? $pagamentosAtr[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
+	
+	if (!$vencimento) 										$podeBol	= false;
+	if ($codFormaPag	!== "BOL")							$podeBol	= false;
+	if (!$codContaRec) 										$podeBol	= false;
+	if ($codContaRec->getCodTipo()->getCodigo() !== "CC")	$podeBol	= false;
+	if (!$codContaRec->getCodCarteira()) 					$podeBol	= false;
+	
+	
+	#################################################################################
+	## Verificar se a conta está atrasada
+	#################################################################################
+	$vencBol			= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]));
+	$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$vencBol);
+	$htmlAtraso			= "<i class='fa fa-check-circle green bigger-120'></i>";
+	
+	#################################################################################
+	## Calcular o valor
+	#################################################################################
+	if (!$contaRec->getValorJaRecebido($pagamentosAtr[$i]->getCodigo())) {
+		$valor				= ($pagamentosAtr[$i]->getValor() + $pagamentosAtr[$i]->getValorJuros() + $pagamentosAtr[$i]->getValorMora() + $pagamentosAtr[$i]->getValorOutros() - $pagamentosAtr[$i]->getValorDesconto() - $pagamentosAtr[$i]->getValorCancelado());
+	}else{
+		$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($pagamentosAtr[$i]->getCodigo()));
+	}
+	
+	#################################################################################
+	## Calcular o Juros e Mora
+	#################################################################################
+	$_juros				= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($pagamentosAtr[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
+	$_mora				= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($pagamentosAtr[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
+	
+	$urlDown			= "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarExc.php?id=".$uid."');";
+	$urlMail			= "javascript:zgAbreModal('".ROOT_URL."/Fin/geraBoletoMassaMidia.php.php?id=".$uid."');";
+	
+	#################################################################################
+	## Formatar os campos
+	#################################################################################
+	$parcela			= $pagamentosAtr[$i]->getParcela() . " de ".$pagamentosAtr[$i]->getNumParcelas();
+	$juros				= ($_juros + $_mora);
+	$totalAtr			+= $valor + $juros;
 	$tabAtr	.= '<tr>
 			<td>'.$pagamentosAtr[$i]->getDescricao().'</td>
-			<td style="text-align: center;">('.$pagamentosAtr[$i]->getParcela().'/'.$pagamentosAtr[$i]->getNumParcelas().')</td>
-			<td style="text-align: center;">'.$venc.'</td>
+			<td style="text-align: center;">'.$parcela.'</td>
+			<td style="text-align: center;">'.$vencimento.'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
 	';
@@ -98,15 +146,54 @@ $tabFut		= "";
 $numFut		= sizeof($pagamentosFut);
 if ($numFut > 5) $numFut = 5;
 for ($i = 0; $i < $numFut; $i++) {
-	$venc		= $pagamentosFut[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$valor		= ($pagamentosFut[$i]->getValor() + $pagamentosFut[$i]->getValorJuros() + $pagamentosFut[$i]->getValorMora() + $pagamentosFut[$i]->getValorOutros() - $pagamentosFut[$i]->getValorDesconto() - $pagamentosFut[$i]->getValorCancelado());
-	$_juros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($pagamentosFut[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$_mora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($pagamentosFut[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$juros		= ($_juros + $_mora);
+
+	#################################################################################
+	## Formatar campos da conta
+	#################################################################################
+	$podeBol			= true;
+	$codFormaPag		= ($pagamentosFut[$i]->getCodFormaPagamento() 	!= null) ? $pagamentosFut[$i]->getCodFormaPagamento()->getCodigo() : null;
+	$codContaRec		= ($pagamentosFut[$i]->getCodConta() 			!= null) ? $pagamentosFut[$i]->getCodConta() 						: null;
+	$vencimento			= ($pagamentosFut[$i]->getDataVencimento() 		!= null) ? $pagamentosFut[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
+	
+	if (!$vencimento) 										$podeBol	= false;
+	if ($codFormaPag	!== "BOL")							$podeBol	= false;
+	if (!$codContaRec) 										$podeBol	= false;
+	if ($codContaRec->getCodTipo()->getCodigo() !== "CC")	$podeBol	= false;
+	if (!$codContaRec->getCodCarteira()) 					$podeBol	= false;
+	
+	
+	#################################################################################
+	## Verificar se a conta está atrasada
+	#################################################################################
+	$vencBol			= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]));
+	$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$vencBol);
+	$htmlAtraso			= "<i class='fa fa-check-circle green bigger-120'></i>";
+	
+	#################################################################################
+	## Calcular o valor
+	#################################################################################
+	if (!$contaRec->getValorJaRecebido($pagamentosFut[$i]->getCodigo())) {
+		$valor				= ($pagamentosFut[$i]->getValor() + $pagamentosFut[$i]->getValorJuros() + $pagamentosFut[$i]->getValorMora() + $pagamentosFut[$i]->getValorOutros() - $pagamentosFut[$i]->getValorDesconto() - $pagamentosFut[$i]->getValorCancelado());
+	}else{
+		$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($pagamentosFut[$i]->getCodigo()));
+	}
+	
+	#################################################################################
+	## Calcular o Juros e Mora
+	#################################################################################
+	$_juros				= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($pagamentosFut[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
+	$_mora				= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($pagamentosFut[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
+	
+	
+	#################################################################################
+	## Formatar os campos
+	#################################################################################
+	$parcela			= $pagamentosFut[$i]->getParcela() . " de ".$pagamentosFut[$i]->getNumParcelas();
+	$juros				= ($_juros + $_mora);
 	$tabFut	.= '<tr>
 			<td>'.$pagamentosFut[$i]->getDescricao().'</td>
-			<td style="text-align: center;">('.$pagamentosFut[$i]->getParcela().'/'.$pagamentosFut[$i]->getNumParcelas().')</td>
-			<td style="text-align: center;">'.$venc.'</td>
+			<td style="text-align: center;">'.$parcela.'</td>
+			<td style="text-align: center;">'.$vencimento.'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
 	';
