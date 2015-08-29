@@ -66,6 +66,25 @@ if (isset($_POST['email'])) 			$email				= \Zage\App\Util::antiInjection($_POST[
 if (!isset($codContaSel)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 
 if (!is_array($codContaSel)) \Zage\App\Erro::halt('Parâmetros incorretos');
+#################################################################################
+## Verificar parâmetros
+#################################################################################
+if (!is_array($aVenc) 			&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 2 incorreto');
+if (!is_array($aValor) 			&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 3 incorreto');
+if (!is_array($aValorJuros)		&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 4 incorreto');
+if (!is_array($aValorMora) 		&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 5 incorreto');
+if (!is_array($aValorDesconto) 	&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 6 incorreto');
+if (!is_array($aValorOutros) 	&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 7 incorreto');
+
+#################################################################################
+## Corrige os campos que não são arrays
+#################################################################################
+if (!is_array($aVenc) 			)  $aVenc			= array($codContaSel[0] => $aVenc);
+if (!is_array($aValor) 			)  $aValor			= array($codContaSel[0] => $aValor);
+if (!is_array($aValorJuros)		)  $aValorJuros		= array($codContaSel[0] => $aValorJuros);
+if (!is_array($aValorMora) 		)  $aValorMora		= array($codContaSel[0] => $aValorMora);
+if (!is_array($aValorDesconto) 	)  $aValorDesconto	= array($codContaSel[0] => $aValorDesconto);
+if (!is_array($aValorOutros) 	)  $aValorOutros	= array($codContaSel[0] => $aValorOutros);
 
 #################################################################################
 ## Inicializa o html

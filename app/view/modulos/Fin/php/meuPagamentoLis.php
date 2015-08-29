@@ -121,21 +121,35 @@ for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 	$_juros				= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($pagamentosAtr[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
 	$_mora				= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($pagamentosAtr[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
 	
-	$urlDown			= "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarExc.php?id=".$uid."');";
-	$urlMail			= "javascript:zgAbreModal('".ROOT_URL."/Fin/geraBoletoMassaMidia.php.php?id=".$uid."');";
-	
 	#################################################################################
 	## Formatar os campos
 	#################################################################################
 	$parcela			= $pagamentosAtr[$i]->getParcela() . " de ".$pagamentosAtr[$i]->getNumParcelas();
 	$juros				= ($_juros + $_mora);
 	$totalAtr			+= $valor + $juros;
+	$instrucao			= "";
+	
+	if ($podeBol) {
+		$urlDown			= "meuPagBoleto('".$pagamentosAtr[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','PDF','".$instrucao."','');";
+		$urlMail			= "meuPagBoleto('".$pagamentosAtr[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','MAIL','".$instrucao."','".$pagamentosAtr[$i]->getCodPessoa()->getEmail()."');";
+		$htmlBol			= '
+		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
+			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlDown.'"><i class="fa fa-file-pdf-o bigger-120"></i></span>
+			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlMail.'"><i class="fa fa-envelope bigger-120"></i></span>
+		</div>
+		';
+	}else{
+		$htmlBol		= '<i class="icon-only ace-icon fa fa-minus bigger-110"></i>';
+	}
+	
+	
 	$tabAtr	.= '<tr>
 			<td>'.$pagamentosAtr[$i]->getDescricao().'</td>
 			<td style="text-align: center;">'.$parcela.'</td>
 			<td style="text-align: center;">'.$vencimento.'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
+			<td style="text-align: center;">'.$htmlBol.'</td>
 	';
 }
 
@@ -216,6 +230,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('IC'				,$_icone_);
+$tpl->set('ID'				,$id);
 $tpl->set('FILTER_URL'		,$url);
 $tpl->set('DIVCENTRAL'		,$system->getDivCentral());
 $tpl->set('URL_HIST'		,$urlHist);
@@ -225,6 +240,7 @@ $tpl->set('NUM_FUT'			,$numFut);
 $tpl->set('TAB_ATR'			,$tabAtr);
 $tpl->set('TAB_FUT'			,$tabFut);
 $tpl->set('TOT_ATR'			,\Zage\App\Util::to_money($totalAtr));
+$tpl->set('DP'				,ROOT_URL . "/Fin/geraBoletoMidia.php");
 
 #################################################################################
 ## Por fim exibir a página HTML

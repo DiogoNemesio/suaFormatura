@@ -8,7 +8,7 @@ if ($_SERVER['DOCUMENT_ROOT']) {
 
 /** Alterar para receber parâmetros da linha de comando **/
 $string			= "zageSenha!!";
-$complemento		= "zagecom_treinaSF";
+$complemento		= "suaforma_treSF";
 $crypt  		= new \Zage\App\Crypt();
 $texto			= $crypt->encrypt($string,$complemento);
 echo "Senha: ". $string . PHP_EOL;

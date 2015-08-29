@@ -5,17 +5,18 @@
 		</h1>
 	</div><!-- /.page-header -->
 	
-	<form id="zgFormID" class="form-horizontal">
-	<input type="hidden" name="codContaSel" 	id="codContaSelID">
+	<form id="zgFormMeuPagID" class="form-horizontal" method="post" action="%DP%" target="_blank">
+	<input type="hidden" name="id" 				value="%ID%">
+	<input type="hidden" name="codContaSel[]" 	id="codContaSelID">
 	<input type="hidden" name="vencimento" 		id="vencimentoID">
-	<input type="hidden" name="valor" 			id="valor">
-	<input type="hidden" name="valorJuros" 		id="valorJuros">
-	<input type="hidden" name="valorMora" 		id="valorMora">
-	<input type="hidden" name="valorDesconto" 	id="valorDesconto">
-	<input type="hidden" name="valorOutros" 	id="valorOutros">
-	<input type="hidden" name="tipoMidia" 		id="tipoMidia">
-	<input type="hidden" name="instrucao" 		id="instrucao">
-	<input type="hidden" name="email" 			id="email">
+	<input type="hidden" name="valor" 			id="valorID">
+	<input type="hidden" name="valorJuros" 		id="valorJurosID">
+	<input type="hidden" name="valorMora" 		id="valorMoraID">
+	<input type="hidden" name="valorDesconto" 	id="valorDescontoID">
+	<input type="hidden" name="valorOutros" 	id="valorOutrosID">
+	<input type="hidden" name="tipoMidia" 		id="tipoMidiaID">
+	<input type="hidden" name="instrucao" 		id="instrucaoID">
+	<input type="hidden" name="email" 			id="emailID">
 	
 	<div class="col-xs-12 %HID_ATR%" id="divGridAtr">
 		<h4 class="header blue bolder smaller">Pagamentos atrasados&nbsp;<i class="fa fa-exclamation-circle red"></i></h4>
@@ -30,7 +31,7 @@
 							<th class="col-sm-2 center">Vencimento</th>
 							<th class="col-sm-2 center">Valor</th>
 							<th class="col-sm-1 center">Júros</th>
-							<th class="col-sm-2 center">Boleto</th>
+							<th class="col-sm-1 center">Boleto</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -52,7 +53,7 @@
 		<div class="vspace-xs"></div>
 		<div class="row">
 			<div class="box-content col-xs-10">
-				<table id="CPAltTableRateioID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+				<table id="CPAltTableRateioID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
 					<thead>
 						<tr class="warning">
 							<th class="col-sm-4 center">Descrição</th>
@@ -60,7 +61,7 @@
 							<th class="col-sm-2 center">Vencimento</th>
 							<th class="col-sm-2 center">Valor</th>
 							<th class="col-sm-1 center">Júros</th>
-							<th class="col-sm-2 center">Boleto</th>
+							<th class="col-sm-1 center">Boleto</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -92,8 +93,9 @@ $(".select2").select2("destroy").select2({});
 	$("#codContaCreID").select2("destroy").select2({});
 });*/
 
-function meuPagDownBoleto(pCodConta,pVenc,pValor,pJuros,pMora,pDesconto,pOutros,pTipoMidia,pInstrucao,pEmail) {
-	$('#codContaSelID').val(pCodConta);
+
+function meuPagBoleto(pCodConta,pVenc,pValor,pJuros,pMora,pDesconto,pOutros,pTipoMidia,pInstrucao,pEmail) {
+	$('#codContaSelID').eq(0).val(pCodConta);
 	$('#vencimentoID').val(pVenc);
 	$('#valorID').val(pValor);
 	$('#valorJurosID').val(pJuros);
@@ -103,8 +105,20 @@ function meuPagDownBoleto(pCodConta,pVenc,pValor,pJuros,pMora,pDesconto,pOutros,
 	$('#tipoMidiaID').val(pTipoMidia);
 	$('#instrucaoID').val(pInstrucao);
 	$('#emailID').val(pEmail);
-	
+	$('#zgFormMeuPagID').submit();
+	e.preventDefault();
+	return false; 
 }
+
+$('#zgFormMeuPagID').submit(function(e) {
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormMeuPagID').serialize(),
+	});
+	return false; 
+});
+
 
 </script>
 
