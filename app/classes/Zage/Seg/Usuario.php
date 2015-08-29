@@ -480,7 +480,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		if ($this->getCodLogradouro()){
 
 			//CEP
-			if ($this->getCep()) {
+			if (!$this->getCep()) {
 				return $tr->trans('O CEP deve ser preenchido!');
 			}elseif (($this->getCep()) && (strlen($this->getCep()) > 8)) {
 				return $tr->trans('O CEP não deve conter mais de 8 caracteres!');
