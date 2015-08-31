@@ -47,6 +47,15 @@
 						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
 						    </div>
 						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+						    	<label class="col-sm-3 control-label" for="bancoID">Banco</label>
+				    			<div class="input-group col-sm-6">
+					    			<span class="input-group-addon"><i class="fa fa-bank"></i></span>
+					    			<input type="text" name="banco" id="bancoID" data-provide="typeahead" maxlength="100" autocomplete="off"/>
+						    	</div>
+						    </div>
+				    	</div>	
 					</div>
 					<h5 class="header blue bolder smaller">Endereço</h5>
 					<div class="vspace-xs"></div>
@@ -201,6 +210,26 @@ $('[data-rel="select2Local"]').select2({
     },
 });
 
+$("#bancoID").typeahead({
+	minLength: 	2,
+	itens:		2,
+    source : function(query,process) {
+    	clearTimeout(timer);
+    	timer=setTimeout(function() {
+	    	$.ajax({
+	            type: "GET",
+	    	    url: "%ROOT_URL%/Adm/getParceiro.dp.php",
+	        	dataType: "json",
+				data: { q: query },
+	        	async: false,
+	        	success: function(data) {
+	        		return(process(data));
+	            }
+	    	})
+    	}, 30);
+    }
+});
+
 /************************* Submit Formulário *************************/
 //Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
@@ -305,7 +334,9 @@ BUSCAR ENDEREÇO - Buscar o endereço através do CEP
 /******************************************************/
 //Busca ENDEREÇO
 function buscaRua() {
+	var vCodLocal		= $('#codLocalID').val();
 	var vCep			= $('#cepID').cleanVal();
+	
 	if(!vCep){
 		$('#codLogradouroID').val('');
 		$('#descLogradouroID').val('');
@@ -346,9 +377,14 @@ function buscaRua() {
     	    		$('#descLogradouroID').attr("readonly", true);
     	    		$('#bairroID').attr("readonly", true);
     	    		
-    	    		zgMostraDivs();
-    	    		$('#numeroID').focus();
-
+    	    		if(vCodLocal){
+    	    			$('#cepID').attr("readonly", true);
+    	    			$('#numeroID').attr("readonly", true);
+    	    			$('#complementoID').attr("readonly", true);
+    	    		}else{
+        	    		zgMostraDivs();
+        	    		$('#numeroID').focus();
+    	    		}
     	    	}else{
     	    		$('#divHelpCepID').html(zgCriaSpanErro('Cep não encontrado !!!'));
     	    		$('#divCepID').addClass('has-error');
