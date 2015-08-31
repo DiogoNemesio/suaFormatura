@@ -16,29 +16,17 @@
 					<h5 class="header blue bolder smaller">Informações do local</h5>
 					<div class="row">
 						<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divCodLocalID">
-								<label for="codInstrucaoID" class="col-sm-3 control-label">Local</label>
-								<div class="input-group col-sm-7 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o local do evento."></i></span>
-									<input type="hidden" id="codLocalID" name="codLocal" value="%COD_LOCAL%" class="width-100" data-rel="select2Local">								    	
-								</div>
-								<label class="col-sm-2 control-label">
-									<input id="outroLocalID" name="outroLocal" type="checkbox" class="ace" onclick="mostraNome();">
-									<span class="lbl"> outro</span>
-								</label>
-								<div class="col-sm-1 pull-left" id="divHelpCodLocalID"></div>
-							</div>
-						    <div class="form-group col-sm-12 hidden" id="divNomeID">
+						    <div class="form-group col-sm-12" id="divNomeID">
 						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do Evento."></i></span>
-				   					<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome do evento" maxlength="60" value="%NOME%" required autocomplete="off">
+				   					<input type="text" name="nome" id="nomeID" data-provide="typeahead" value="%NOME%" maxlength="60" autocomplete="off"/>
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 				    		</div>
 						</div>
 						<div class="col-sm-6">
-				    		<div class="form-group col-sm-12" id="divDataEventoID">
+							<div class="form-group col-sm-12" id="divDataEventoID">
 						    	<label class="col-sm-3 control-label" for="dataEventoID">Data</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data do Evento."></i></span>
@@ -47,15 +35,6 @@
 						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
 						    </div>
 						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-						    	<label class="col-sm-3 control-label" for="bancoID">Banco</label>
-				    			<div class="input-group col-sm-6">
-					    			<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-					    			<input type="text" name="banco" id="bancoID" data-provide="typeahead" maxlength="100" autocomplete="off"/>
-						    	</div>
-						    </div>
-				    	</div>	
 					</div>
 					<h5 class="header blue bolder smaller">Endereço</h5>
 					<div class="vspace-xs"></div>
@@ -168,53 +147,11 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 /*********************************************************
 * Busca Select2 typehead Organização
 *********************************************************/
-$('[data-rel="select2Local"]').select2({
-    minimumInputLength: 2,
-    placeholder: 'Buscar local',
-    allowClear: true,
-    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-        url: "%ROOT_URL%/Adm/getParceiro.dp.php",
-        dataType: 'json',
-        quietMillis: 250,
-        data: function (term, page) {
-            return {
-                q: term, // search term
-            };
-        },
-        results: function (data) {
-			return {results: data};
-		},
-        cache: true
-        
-    },
-    formatSelection: function(el ){
-    	var originalOption = el.element;
-	
-    	if (typeof el.cep != 'undefined'){
-    		$('#cepID').val(el.cep);
-    	}
-    	buscaRua();
-    	return (el.text);
-    },
-	initSelection : function (element, callback) {
-		var id = $(element).val();
-        if (id !== "") {
-            $.ajax("%ROOT_URL%/Adm/getParceiro.dp.php", {
-                data: {codOrg: id},
-    			method: "GET",
-                dataType: "json"
-			}).done(function(data) {
-				callback(data[0]);
-			});
-		}
-    },
-});
-
-$("#bancoID").typeahead({
+$("#nomeID").typeahead({
 	minLength: 	2,
-	itens:		2,
+	itens:		10,
     source : function(query,process) {
-    	clearTimeout(timer);
+    	clearTimeout(2);
     	timer=setTimeout(function() {
 	    	$.ajax({
 	            type: "GET",
