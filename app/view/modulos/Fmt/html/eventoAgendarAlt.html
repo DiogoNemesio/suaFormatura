@@ -13,11 +13,22 @@
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
-					<h5 class="header blue bolder smaller">Informações gerais</h5>
-					<div class="vspace-xs"></div>
+					<h5 class="header blue bolder smaller">Informações do local</h5>
 					<div class="row">
-				    	<div class="col-sm-6">
-				    		<div class="form-group col-sm-12" id="divNomeID">
+						<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divCodLocalID">
+								<label for="codInstrucaoID" class="col-sm-3 control-label">Local</label>
+								<div class="input-group col-sm-7 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o local do evento."></i></span>
+									<input type="hidden" id="codLocalID" name="codLocal" value="%COD_LOCAL%" class="width-100" data-rel="select2Local">								    	
+								</div>
+								<label class="col-sm-2 control-label">
+									<input id="outroLocalID" name="outroLocal" type="checkbox" class="ace" onclick="mostraNome();">
+									<span class="lbl"> outro</span>
+								</label>
+								<div class="col-sm-1 pull-left" id="divHelpCodLocalID"></div>
+							</div>
+						    <div class="form-group col-sm-12 hidden" id="divNomeID">
 						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do Evento."></i></span>
@@ -25,7 +36,9 @@
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 				    		</div>
-					    	<div class="form-group col-sm-12" id="divDataEventoID">
+						</div>
+						<div class="col-sm-6">
+				    		<div class="form-group col-sm-12" id="divDataEventoID">
 						    	<label class="col-sm-3 control-label" for="dataEventoID">Data</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data do Evento."></i></span>
@@ -33,19 +46,6 @@
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
 						    </div>
-						</div>
-					</div>
-					<h5 class="header blue bolder smaller">Informações do local</h5>
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divCodLocalID">
-								<label for="codInstrucaoID" class="col-sm-3 control-label">Local</label>
-								<div class="input-group col-sm-8 pull-left">
-									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o local do evento."></i></span>
-									<input type="hidden" id="localID" name="local" value="%LOCAL%" class="width-100"  data-rel="select2Local">								    	
-								</div>
-								<div class="col-sm-1 pull-left" id="divHelpCodLocalID"></div>
-							</div>
 						</div>
 					</div>
 					<h5 class="header blue bolder smaller">Endereço</h5>
@@ -148,8 +148,6 @@ $('#date-timepicker').datetimepicker({
 }).next().on(ace.click_event, function(){
 	 
 });
-//Select 2
-$('#codLocalID').css('width','100%').select2({allowClear:true});
 
 /******************************************************
 MASCARA - Inserir as mascaras no campo
@@ -175,14 +173,19 @@ $('[data-rel="select2Local"]').select2({
             };
         },
         results: function (data) {
-			if (data){
-				
-			}
-        	
-        	return {results: data};
+			return {results: data};
 		},
         cache: true
         
+    },
+    formatSelection: function(el ){
+    	var originalOption = el.element;
+	
+    	if (typeof el.cep != 'undefined'){
+    		$('#cepID').val(el.cep);
+    	}
+    	buscaRua();
+    	return (el.text);
     },
 	initSelection : function (element, callback) {
 		var id = $(element).val();
@@ -254,6 +257,18 @@ $('#zgFormID').submit(function(e) {
 	return false; 
 });
 
+function mostraNome() {
+	var vOutroLocal = $('#outroLocalID').is(':checked');
+	
+	if(vOutroLocal == true){
+		$('#divNomeID').removeClass('hidden');
+		$('#codLocalID').attr("readonly", true);
+	}else{
+		$('#divNomeID').addClass('hidden');
+		$('#codLocalID').removeAttr("readonly");
+	}
+}
+
 function validaTipoEventoAlt() {
 	$('#valID').val(0);
 		
@@ -291,8 +306,15 @@ BUSCAR ENDEREÇO - Buscar o endereço através do CEP
 //Busca ENDEREÇO
 function buscaRua() {
 	var vCep			= $('#cepID').cleanVal();
-
-	if (validaCep() !== true) {
+	if(!vCep){
+		$('#codLogradouroID').val('');
+		$('#descLogradouroID').val('');
+		$('#codCidadeID').val('');
+		$('#descCidadeID').val('');
+		$('#descEstadoID').val('');
+		$('#codBairroID').val('');
+		$('#bairroID').val('');
+	}else if (validaCep() !== true) {
 		return false;
 	}else{
 		/** Buscar o cep no banco **/

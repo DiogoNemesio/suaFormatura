@@ -26,6 +26,7 @@ $array		= array();
 for ($i = 0; $i < sizeof($org); $i++) {
 	$array[$i]["id"]		= $org[$i]->getCodigo();
 	$array[$i]["text"]		= $org[$i]->getNome();
+	$array[$i]["cep"]		= $org[$i]->getCep();
 }
 
 echo json_encode($array);

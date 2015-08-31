@@ -42,7 +42,7 @@ if ($codEvento) {
 	}
 	
 	$codTipo		 = ($info->getCodTipoEvento()) ? $info->getCodTipoEvento()->getCodigo() : null;
-	$codLocal		 = ($info->getCodLocal()) ? $info->getCodLocal() : null;
+	$codLocal		 = ($info->getCodLocal()) ? $info->getCodLocal()->getCodigo() : null;
 	$dataEvento		 = ($info->getData() != null) ? $info->getData()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
 	$nome			 = ($info->getNome()) ? $info->getNome() : null;
 	$cep			 = ($info->getCep()) ? $info->getCep() : null;
@@ -136,7 +136,7 @@ $tpl->set ( 'URLNOVO'		 	   , $urlNovo );
 $tpl->set ( 'ID'				   , $id );
 $tpl->set ( 'COD_EVENTO'		   , $codEvento);
 $tpl->set ( 'COD_TIPO'		   	   , $codTipo);
-$tpl->set ( 'COD_LOCAL'		   	   , $oLocal);
+$tpl->set ( 'COD_LOCAL'		   	   , $codLocal);
 $tpl->set ( 'DATA_EVENTO'	   	   , $dataEvento);
 $tpl->set ( 'NOME'			   	   , $nome);
 $tpl->set ( 'CEP'  			 	   , $cep);
