@@ -165,17 +165,33 @@ $("#nomeID").typeahead({
 	            }
 	    	})
     	}, 30);
-    },updater:function (item) {
-    	$('#codLocalID').val(item["id"]);
+    },
+    updater:function (item) {
+	   	$('#codLocalID').val(item["id"]);
 		$('#cepID').val(item["cep"]);
-		buscaRua();
 		$('#descLogradouroID').val(item["endereco"]);
 		$('#bairroID').val(item["bairro"]);
 		$('#numeroID').val(item["numero"]);
 		$('#complementoID').val(item["complemento"]);
-		console.log(item["endereco"]);
+		buscaRua();
+		
 		return item;
     }
+}).keyup(function(e) {
+	if (e.keyCode == '8' || e.keyCode ==  '46' ) {
+		$('#cepID').removeAttr("disabled");
+		$('#numeroID').removeAttr("readonly");
+		$('#complementoID').removeAttr("readonly");
+		
+		$('#cepID').val('');
+		$('#codLogradouroID').val('');
+		$('#descLogradouroID').val('');
+		$('#codCidadeID').val('');
+		$('#descCidadeID').val('');
+		$('#descEstadoID').val('');
+		$('#codBairroID').val('');
+		$('#bairroID').val('');
+	}
 });
 
 /************************* Submit Formulário *************************/
@@ -234,18 +250,6 @@ $('#zgFormID').submit(function(e) {
 	return false; 
 });
 
-function mostraNome() {
-	var vOutroLocal = $('#outroLocalID').is(':checked');
-	
-	if(vOutroLocal == true){
-		$('#divNomeID').removeClass('hidden');
-		$('#codLocalID').attr("readonly", true);
-	}else{
-		$('#divNomeID').addClass('hidden');
-		$('#codLocalID').removeAttr("readonly");
-	}
-}
-
 function validaTipoEventoAlt() {
 	$('#valID').val(0);
 		
@@ -286,6 +290,9 @@ function buscaRua() {
 	var vCep			= $('#cepID').cleanVal();
 	
 	if(!vCep){
+		$('#numeroID').removeAttr("readonly");
+		$('#complementoID').removeAttr("readonly");
+		
 		$('#codLogradouroID').val('');
 		$('#descLogradouroID').val('');
 		$('#codCidadeID').val('');
@@ -303,18 +310,12 @@ function buscaRua() {
     		success: function(ret) {
     			var vData	= JSON.parse(ret);
     	    	if (vData.codLogradouro) {
-    	    		$('#codLogradouroID').val(vData.codLogradouro);
-    	    		$('#descLogradouroID').val(vData.descLogradouro);
     	    		$('#codCidadeID').val(vData.codCidade);
     	    		$('#descCidadeID').val(vData.descCidade);
     	    		$('#descEstadoID').val(vData.descUf);
-    	    		$('#codBairroID').val(vData.codBairro);
-    	    		$('#bairroID').val(vData.descBairro);
-
+    	    		
     	    		$('#divHelpCepID').html('');
     	    		$('#divCepID').removeClass('has-error');
-
-    	    		
     	    		$('#divLogradouroID').removeClass('has-error');
     	    		$('#divNumeroID').removeClass('has-error');
     	    		$('#divHelpLogradouroID').html('');
@@ -330,9 +331,16 @@ function buscaRua() {
     	    			$('#numeroID').attr("readonly", true);
     	    			$('#complementoID').attr("readonly", true);
     	    		}else{
+        	    		$('#codBairroID').val(vData.codBairro);
+        	    		$('#bairroID').val(vData.descBairro);
+        	    		
+    	    			$('#codLogradouroID').val(vData.codLogradouro);
+        	    		$('#descLogradouroID').val(vData.descLogradouro);
+        	    		
         	    		zgMostraDivs();
         	    		$('#numeroID').focus();
     	    		}
+    	    		
     	    	}else{
     	    		$('#divHelpCepID').html(zgCriaSpanErro('Cep não encontrado !!!'));
     	    		$('#divCepID').addClass('has-error');
