@@ -11,6 +11,7 @@
 				<input type="hidden" id="codEventoID" name="codEvento" value="%COD_EVENTO%">
 				<input type="hidden" id="codTipoID" name="codTipo" value="%COD_TIPO%">
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
+				<input type="hidden" id="codLocalID" name="codLocal" value="%COD_LOCAL%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
 					<h5 class="header blue bolder smaller">Informações do local</h5>
@@ -19,8 +20,8 @@
 						    <div class="form-group col-sm-12" id="divNomeID">
 						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
 									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do Evento."></i></span>
-				   					<input type="text" name="nome" id="nomeID" data-provide="typeahead" value="%NOME%" maxlength="60" autocomplete="off"/>
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do local do evento."></i></span>
+				   					<input type="text" class="width-100" name="nome" id="nomeID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 				    		</div>
@@ -160,6 +161,13 @@ $("#nomeID").typeahead({
 				data: { q: query },
 	        	async: false,
 	        	success: function(data) {
+	        		$('#codLocalID').val(data[0]["id"]);
+	        		$('#cepID').val(data[0]["cep"]);
+	        		buscaRua();
+	        		$('#enderecoID').val(data[0]["endereco"]);
+	        		$('#bairroID').val(data[0]["bairro"]);
+	        		$('#numeroID').val(data[0]["numero"]);
+	        		$('#complementoID').val(data[0]["complemento"]);
 	        		return(process(data));
 	            }
 	    	})
