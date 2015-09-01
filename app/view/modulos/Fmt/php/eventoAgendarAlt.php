@@ -54,7 +54,6 @@ if ($codEvento) {
 	$latitude		 = ($info->getLatitude()) ? $info->getLatitude() : null;
 	$longitude		 = ($info->getLongitude()) ? $info->getLongitude() : null;
 	
-	if(isset($nome) && !empty($nome)) $outroLocal = "checked";
 	if($codLogradouro != null){
 	
 		$infoLogradouro = $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
@@ -98,7 +97,6 @@ if ($codEvento) {
 	$bairroPadrao 	= '';
 	$cidade 		= '';
 	$estado 		= '';
-	$outroLocal		= '';
 	$readonly		= 'readonly';
 }
 
@@ -153,7 +151,6 @@ $tpl->set ( 'BAIRRO'		       , $bairroPadrao);
 $tpl->set ( 'CIDADE'			   , $cidade);
 $tpl->set ( 'ESTADO'			   , $estado);
 $tpl->set ( 'READONLY'			   , $readonly);
-$tpl->set ( 'OUTRO_LOCAL'		   , $outroLocal);
 
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 

@@ -20,7 +20,6 @@ if (isset($codOrg)) {
 	$org		= \Zage\Adm\Organizacao::buscaOrganizacaoParceiro($q);
 }
 
-
 $array		= array();
 
 for ($i = 0; $i < sizeof($org); $i++) {

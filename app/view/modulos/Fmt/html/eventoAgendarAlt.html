@@ -161,17 +161,20 @@ $("#nomeID").typeahead({
 				data: { q: query },
 	        	async: false,
 	        	success: function(data) {
-	        		$('#codLocalID').val(data[0]["id"]);
-	        		$('#cepID').val(data[0]["cep"]);
-	        		buscaRua();
-	        		$('#enderecoID').val(data[0]["endereco"]);
-	        		$('#bairroID').val(data[0]["bairro"]);
-	        		$('#numeroID').val(data[0]["numero"]);
-	        		$('#complementoID').val(data[0]["complemento"]);
 	        		return(process(data));
 	            }
 	    	})
     	}, 30);
+    },updater:function (item) {
+    	$('#codLocalID').val(item["id"]);
+		$('#cepID').val(item["cep"]);
+		buscaRua();
+		$('#descLogradouroID').val(item["endereco"]);
+		$('#bairroID').val(item["bairro"]);
+		$('#numeroID').val(item["numero"]);
+		$('#complementoID').val(item["complemento"]);
+		console.log(item["endereco"]);
+		return item;
     }
 });
 
@@ -323,7 +326,7 @@ function buscaRua() {
     	    		$('#bairroID').attr("readonly", true);
     	    		
     	    		if(vCodLocal){
-    	    			$('#cepID').attr("readonly", true);
+    	    			$('#cepID').attr("disabled", true);
     	    			$('#numeroID').attr("readonly", true);
     	    			$('#complementoID').attr("readonly", true);
     	    		}else{
