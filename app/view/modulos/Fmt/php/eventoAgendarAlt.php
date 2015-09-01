@@ -118,8 +118,8 @@ $urlVoltar = ROOT_URL . "/Fmt/eventoAgendarLis.php?id=" . $id;
 ################################################################################
 # Url Novo
 ################################################################################
-$uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ . '&codEvento=' );
-$urlNovo = ROOT_URL . "/Fmt/eventoAgendarAlt.php?id=" . $uid;
+$uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ );
+$urlNovo = ROOT_URL . "/Fmt/eventoAgendarLis.php?id=" . $uid;
 
 ################################################################################
 # Carregando o template html

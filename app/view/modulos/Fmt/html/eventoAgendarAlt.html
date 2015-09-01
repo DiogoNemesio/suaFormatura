@@ -18,7 +18,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 						    <div class="form-group col-sm-12" id="divNomeID">
-						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+						    	<label class="col-sm-3 control-label" for="nomeID">Local</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do local do evento."></i></span>
 				   					<input type="text" class="width-100" name="nome" id="nomeID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
@@ -178,11 +178,13 @@ $("#nomeID").typeahead({
 		return item;
     }
 }).keyup(function(e) {
-	if (e.keyCode == '8' || e.keyCode ==  '46' ) {
-		$('#cepID').removeAttr("disabled");
+	var vCodLocal		= $('#codLocalID').val();
+	if (vCodLocal && (e.keyCode == '8' || e.keyCode ==  '46') ) {
+		$('#cepID').removeAttr("readonly");
 		$('#numeroID').removeAttr("readonly");
 		$('#complementoID').removeAttr("readonly");
 		
+		$('#codLocalID').val('');
 		$('#cepID').val('');
 		$('#codLogradouroID').val('');
 		$('#descLogradouroID').val('');
@@ -191,6 +193,8 @@ $("#nomeID").typeahead({
 		$('#descEstadoID').val('');
 		$('#codBairroID').val('');
 		$('#bairroID').val('');
+		$('#numeroID').val('');
+		$('#complementoID').val('');
 	}
 });
 
@@ -290,9 +294,6 @@ function buscaRua() {
 	var vCep			= $('#cepID').cleanVal();
 	
 	if(!vCep){
-		$('#numeroID').removeAttr("readonly");
-		$('#complementoID').removeAttr("readonly");
-		
 		$('#codLogradouroID').val('');
 		$('#descLogradouroID').val('');
 		$('#codCidadeID').val('');
@@ -327,7 +328,7 @@ function buscaRua() {
     	    		$('#bairroID').attr("readonly", true);
     	    		
     	    		if(vCodLocal){
-    	    			$('#cepID').attr("disabled", true);
+    	    			$('#cepID').attr("readonly", true);
     	    			$('#numeroID').attr("readonly", true);
     	    			$('#complementoID').attr("readonly", true);
     	    		}else{
