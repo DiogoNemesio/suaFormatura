@@ -179,7 +179,7 @@ $("#nomeID").typeahead({
     }
 }).keyup(function(e) {
 	var vCodLocal		= $('#codLocalID').val();
-	if (vCodLocal && (e.keyCode == '8' || e.keyCode ==  '46') ) {
+	if (vCodLocal) {
 		$('#cepID').removeAttr("readonly");
 		$('#numeroID').removeAttr("readonly");
 		$('#complementoID').removeAttr("readonly");
