@@ -85,6 +85,36 @@ class Formatura {
 	}
 	
 	/**
+	 * Lista os formandos de uma organização
+	 * @param number $codOrganizacao
+	 */
+	public static function listaFormandos($codOrganizacao) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+			
+		try {
+			$qb->select('u')
+			->from('\Entidades\ZgsegUsuario','u')
+			->leftJoin('\Entidades\ZgsegUsuarioOrganizacao'	,'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 	= uo.codUsuario')
+			->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= uo.codOrganizacao')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao'),
+					$qb->expr()->in('uo.codPerfil'				, ':perfil')
+			))
+			->setParameter('codOrganizacao'	, $codOrganizacao)
+			->setParameter('perfil'			, array(4,5));
+	
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+			
+	}
+	
+	
+	/**
 	 * Resgata o número de formandos ativos de uma organização
 	 * @param number $codOrganizacao
 	 */

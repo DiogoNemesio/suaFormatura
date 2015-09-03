@@ -46,7 +46,7 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$formandos	= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
+	$formandos	= \Zage\Fmt\Formatura::listaFormandos($system->getCodOrganizacao());
 	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
@@ -97,7 +97,7 @@ $taxaUso				= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($syst
 $valorTotalFormatura	= \Zage\App\Util::to_float(\Zage\Fmt\Formatura::getValorTotal($system->getCodOrganizacao()));
 $valorJaProvisionado	= \Zage\App\Util::to_float(\Zage\Fmt\Formatura::getValorAReceber($system->getCodOrganizacao()));
 $saldoAReceber			= ($valorTotalFormatura - $valorJaProvisionado);
-$totalPorFormando		= \Zage\App\Util::to_float(($valorTotalFormatura / $totalformandos));
+$totalPorFormando		= ($totalformandos) ? \Zage\App\Util::to_float(($valorTotalFormatura / $totalformandos)) : 0;
 //$saldoPorFormando		= ($totalPorFormando - ($valorJaProvisionado / $numFormandos));
 //$valorMensalidade		= \Zage\App\Util::to_float(((($valorTotalFormatura - $valorJaProvisionado) / $totalformandos) / $numMesesConc));
 $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));

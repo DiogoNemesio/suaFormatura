@@ -120,7 +120,7 @@ class Relatorio extends \mPDF {
 				
 		</table>';
 		
-		echo $header;
+		//echo $header;
 		
 		
 		$this->SetHTMLHeader($header);

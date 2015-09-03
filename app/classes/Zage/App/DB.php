@@ -156,7 +156,8 @@ class DB {
 			/**
 			 * Cria a adaptador da conexão
 			 */
-			$config = new \Doctrine\DBAL\Configuration();
+			//$config = new \Doctrine\DBAL\Configuration();
+			$config = new \Doctrine\ORM\Configuration();
 			$this->con = \Doctrine\DBAL\DriverManager::getConnection($dbParams, $config);
 			//$this->con->setFetchMode(\PDO::FETCH_OBJ);
 				
@@ -186,6 +187,10 @@ class DB {
 		try {
 			$isDevMode 	= true;
 			$config 	= Setup::createAnnotationMetadataConfiguration(array(ENTITY_PATH), $isDevMode);
+			//$config->addCustomDatetimeFunction('DATE_FORMAT', '\Zage\App\DB\DateFormat');
+			/*$config->addCustomDatetimeFunction('DATE_FORMAT', function () {
+				return new \Zage\App\DB\DateFormat();
+			});*/
 			$em 		= EntityManager::create($this->con, $config);
 				
 			$driver = new \Doctrine\ORM\Mapping\Driver\DatabaseDriver($em->getConnection()->getSchemaManager());

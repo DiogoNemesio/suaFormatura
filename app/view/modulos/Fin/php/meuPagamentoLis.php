@@ -150,6 +150,7 @@ for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
 			<td style="text-align: center;">'.$htmlBol.'</td>
+			</tr>
 	';
 }
 
@@ -210,6 +211,7 @@ for ($i = 0; $i < $numFut; $i++) {
 			<td style="text-align: center;">'.$vencimento.'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
+			</tr>
 	';
 }
 

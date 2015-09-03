@@ -155,7 +155,7 @@ abstract class Tipo {
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="ace-icon fa fa-building-o"></i>&nbsp;'.$ident.'</a>'.\Zage\App\ZWS::NL;
 		if ($numOrg > 0) {
 			$this->html .= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
-			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-building-o"></i>Selecione o Condomínio</li>'.\Zage\App\ZWS::NL;
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-building-o"></i>Selecione a Organização</li>'.\Zage\App\ZWS::NL;
 				
 			if ($numOrg > $numMaxOrg) {
 				$t	= $numMaxOrg;
