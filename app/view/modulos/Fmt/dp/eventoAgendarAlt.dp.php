@@ -31,6 +31,22 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
+/******* Verificar se existe formandos ativos *********/
+$formandos		= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
+if (sizeof($formandos) == 0)	{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O evento não pode ser criado pois não existe formando ativo!"));
+	$err	= 1;
+}
+
+if (!isset($nome) || empty($nome)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo LOCAL é obrigatório !!"));
+	$err	= 1;
+}
+
+if (!isset($codLocal) || empty($codLocal)) {
+	$codLocal = null;
+}
+
 /** Tipo **/
 if (!isset($codTipo) || empty($codTipo)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo TIPO é obrigatório !!"));
@@ -45,13 +61,16 @@ if ($err != null) {
 #################################################################################
 ## Salvar no banco
 #################################################################################
+//$em->getConnection()->beginTransaction();
 try {
 	
 	if (isset($codEvento) && (!empty($codEvento))) {
  		$oEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento));
  		if (!$oEvento) $oEvento	= new \Entidades\ZgfmtEvento();
+ 		$assunto    = "Evento(".$nome.") alterado(a)";
  	}else{
  		$oEvento	= new \Entidades\ZgfmtEvento();
+ 		$assunto    = "Novo evento(".$nome.") definido";
  	}
  	
  	#################################################################################
@@ -83,10 +102,49 @@ try {
  	$oEvento->setLongitude($longitude);
  	
  	$em->persist($oEvento);
- 	$em->flush();
- 	$em->detach($oEvento);
+	
+	/**
+	 * ******** Enviar notificação ********
+	 **/
+	$oRemetente = $em->getReference ( '\Entidades\ZgsegUsuario', $system->getCodUsuario () );
+	$template = $em->getRepository ( '\Entidades\ZgappNotificacaoTemplate' )->findOneBy ( array (
+			'template' => 'EVENTO_CONF' 
+	) );
+	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+	$notificacao->setAssunto ( $assunto );
+	$notificacao->setCodRemetente ( $oRemetente );
+	
+	for ($i = 0; $i < sizeof($formandos); $i++) {
+		$notificacao->associaUsuario($formandos[$i]->getCodigo());
+	}
+	
+	if (!empty($dataEvento)) {
+		$dataEvento		= $dataEvento->format($system->config["data"]["datetimeSimplesFormat"]);
+	}else{
+		$dataEvento		= null;
+	}
+	
+	$notificacao->enviaSistema();
+	$notificacao->enviaEmail ();
+	//$notificacao->setEmail ( $email );
+	$notificacao->setCodTemplate ( $template );
+
+	$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipo->getDescricao());
+ 	$notificacao->adicionaVariavel("NOME"			, $nome);
+ 	$notificacao->adicionaVariavel("DATA"			, $dataEvento);
+ 	$notificacao->adicionaVariavel("LOGRADOURO"		, $descLogradouro);
+ 	$notificacao->adicionaVariavel("BAIRRO"			, $bairro);
+ 	$notificacao->adicionaVariavel("NUMERO"			, $numero);
+ 	$notificacao->adicionaVariavel("COMPLEMENTO"	, $complemento);
  	
+	$notificacao->salva ();
+ 	/********** Salvar as informações *******/
+	$em->flush();
+	$em->clear();
+	//$em->getConnection()->commit();
+
 } catch (\Exception $e) {
+	//$em->getConnection()->rollback();
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;

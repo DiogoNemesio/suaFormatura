@@ -13,9 +13,12 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 if (isset($_GET['q']))				$q		    = \Zage\App\Util::antiInjection($_GET["q"]);
 if (isset($_GET['codOrg']))			$codOrg		= \Zage\App\Util::antiInjection($_GET["codOrg"]);
+if (isset($_GET['nome']))			$nome		= \Zage\App\Util::antiInjection($_GET["nome"]);
 
 if (isset($codOrg)) {
 	$org		= $em->getRepository('Entidades\ZgadmOrganizacao')->findBy(array('codigo' => $codOrg));
+}else if (isset($nome)) {
+	$org		= $em->getRepository('Entidades\ZgadmOrganizacao')->findBy(array('nome' => $nome));
 }else{
 	$org		= \Zage\Adm\Organizacao::buscaOrganizacaoParceiro($q);
 }

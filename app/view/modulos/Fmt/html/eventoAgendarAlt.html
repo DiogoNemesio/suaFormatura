@@ -1,6 +1,6 @@
 <div id="content">
 	<div class="page-header">
-	<h1>Agendar Evento
+	<h1><i class="fa fa-calendar">&nbsp;</i>Agendar Evento
 		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
 	</h1>
 	</div><!-- /.page-header -->
@@ -24,6 +24,7 @@
 				   					<input type="text" class="width-100" name="nome" id="nomeID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+						    	<div class="col-sm-1 pull-left" id="spinID"></div>
 				    		</div>
 						</div>
 						<div class="col-sm-6">
@@ -178,38 +179,25 @@ $('#nomeID').typeahead({
 	minLength: 1,
 	source: fLocalizaParceiro(vNomeParceiros),
     updater:function (item) {
-		alert(item);
-		return item;
-    }
-});
+    	$('#spinID').html('<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+    	$.ajax({
+            type: "GET",
+    	    url: "%ROOT_URL%/Adm/getParceiro.dp.php",
+        	dataType: "json",
+			data: { q: item },
+        	async: false,
+        	success: function(data) {
+        		$('#codLocalID').val(data[0]["id"]);
+        		$('#cepID').val(data[0]["cep"]);
+        		$('#descLogradouroID').val(data[0]["endereco"]);
+        		$('#bairroID').val(data[0]["bairro"]);
+        		$('#numeroID').val(data[0]["numero"]);
+        		$('#complementoID').val(data[0]["complemento"]);
+        		buscaRua();
+            }
+    	});
+		$('#spinID').html("");
 
-$("#nomeoldID").typeahead({
-	minLength: 	1,
-	itens:		10,
-    source : function(query,process) {
-    	clearTimeout(2);
-    	timer=setTimeout(function() {
-	    	$.ajax({
-	            type: "GET",
-	    	    url: "%ROOT_URL%/Adm/getParceiro.dp.php",
-	        	dataType: "json",
-				data: { q: query },
-	        	async: false,
-	        	success: function(data) {
-	        		return(process(data));
-	            }
-	    	})
-    	}, 30);
-    },
-    updater:function (item) {
-	   	$('#codLocalID').val(item["id"]);
-		$('#cepID').val(item["cep"]);
-		$('#descLogradouroID').val(item["endereco"]);
-		$('#bairroID').val(item["bairro"]);
-		$('#numeroID').val(item["numero"]);
-		$('#complementoID').val(item["complemento"]);
-		buscaRua();
-		
 		return item;
     }
 }).keyup(function(e) {
