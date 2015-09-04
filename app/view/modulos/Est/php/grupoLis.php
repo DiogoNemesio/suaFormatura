@@ -59,12 +59,12 @@ try {
 	for ($i = 0; $i < sizeof($pastas); $i++) {
 		$pastaMae	= ($pastas[$i]->getCodGrupoPai()) ? $pastas[$i]->getCodGrupoPai()->getCodigo() : null;
 		$arvore->adicionaPasta($pastas[$i]->getCodigo(), $pastas[$i]->getDescricao(), $pastaMae);
-		/*$tipos		= \Zage\Est\Grupo::lista($pastas[$i]->getCodigo());
+		$tipos		= \Zage\Est\Grupo::lista($pastas[$i]->getCodigo());
 		
 		for ($j = 0; $j < sizeof($tipos); $j++) {
 			$pastaMae	= ($tipos[$j]->getCodGrupo()) ? $tipos[$j]->getCodGrupo()->getCodigo() : null;
 			$arvore->adicionaItem($tipos[$j]->getCodigo(),$tipos[$j]->getDescricao(), $pastaMae);
-		}*/
+		}
 	}
 	
 	if (isset($busca) && (!empty($busca)) ) {

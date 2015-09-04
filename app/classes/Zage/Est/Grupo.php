@@ -37,12 +37,8 @@ class Grupo extends \Entidades\ZgestGrupo {
 		try {
 			$qb->select('p')
 			->from('\Entidades\ZgestGrupo','p')
-			//->leftJoin('p.codGrupo', 'e')
-			//->where($qb->expr()->andX(
-			//		$qb->expr()->eq('p.codGrupo'	, ':codGrupo')
-			//))
 			->orderBy('p.codGrupoPai,p.descricao', 'ASC');
-			//->setParameter('codEmpresa', $system->getCodEmpresa());
+
 			$query 		= $qb->getQuery();
 			return($query->getResult());
 		} catch (\Exception $e) {
@@ -53,26 +49,21 @@ class Grupo extends \Entidades\ZgestGrupo {
 	/**
      * Lista pastas
      */
-    public static function lista ($codPastaPai = null) {
+    public static function lista ($codGrupo = null) {
     	global $em,$system;
     	 
     	$qb 	= $em->createQueryBuilder();
     	
     	try {
 	    	$qb->select('p')
-	    	->from('\Entidades\ZgestGrupo','p')
-	    	//->leftJoin('p.codGrupo', 'e')
-	    	//->where($qb->expr()->andX(
-	    	//	$qb->expr()->eq('p.codGrupo'	, ':codGrupo')
-	    	//))
+	    	->from('\Entidades\ZgestSubgrupo','p')
 	    	->orderBy('p.descricao', 'ASC');
-	    	//->setParameter('codEmpresa', $system->getCodEmpresa());
 	    	 
-	    	if ($codPastaPai != null) {
-	    		$qb->andWhere($qb->expr()->eq('p.codGrupoPai'	, ':codGrupoPai'))
-	    		->setParameter('codGrupoPai', $codPastaPai);
+	    	if ($codGrupo != null) {
+	    		$qb->andWhere($qb->expr()->eq('p.codGrupo'	, ':codGrupo'))
+	    		->setParameter('codGrupo', $codGrupo);
 	    	}else{
-	    		$qb->andWhere($qb->expr()->isNull('p.codGrupoPai'));
+	    		$qb->andWhere($qb->expr()->isNull('p.codGrupo'));
 	    	}
 	    	$query 		= $qb->getQuery();
 	    	return($query->getResult());

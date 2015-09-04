@@ -190,15 +190,18 @@ $(function () {
 	}
 
 	function alteraTipo(pIdTipo) {
+		console.log($('#codItemSelID').val());
+		console.log($('#codGrupoSelID').val());
+		
 		$('#gruposTree').jstree('deselect_all',true);
 		$('#gruposTree').jstree('select_node',pIdTipo);
-		zgAbreModal('%ROOT_URL%/Est/subgrupoAlt.php?id=%ID%&codTipo='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
+		zgAbreModal('%ROOT_URL%/Est/subgrupoAlt.php?id=%ID%&codSubgrupo='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
 	function excluiTipo(pIdTipo) {
 		$('#gruposTree').jstree('deselect_all',true);
 		$('#gruposTree').jstree('select_node',pIdTipo);
-		zgAbreModal('%ROOT_URL%/Est/subgrupoExc.php?id=%ID%&codTipo='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
+		zgAbreModal('%ROOT_URL%/Est/subgrupoExc.php?id=%ID%&codSubgrupo='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
 	}
 
 	$('#formBuscaID').submit(function() {

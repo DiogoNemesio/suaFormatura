@@ -34,14 +34,15 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codGrupoPai']))	$codSubGrupo		= \Zage\App\Util::antiInjection($_GET['codGrupoPai']);
+if (isset($_GET['codSubgrupo']))	$codSubgrupo		= \Zage\App\Util::antiInjection($_GET['codSubgrupo']);
 if (isset($_GET['codGrupo'])) 		$codGrupo			= \Zage\App\Util::antiInjection($_GET['codGrupo']);
 
-if (isset($codSubGrupo) && $codSubGrupo == \Zage\App\Arvore::_codPastaRaiz) {
-	$codSubGrupo	= null;
+if (isset($codSubgrupo) && $codSubgrupo == \Zage\App\Arvore::_codPastaRaiz) {
+	$codSubgrupo	= null;
 }
 
-if (!isset($codGrupo) && !isset($codSubGrupo)) {
+
+if (!isset($codGrupo) && !isset($codSubgrupo)) {
 	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (GRUPO)');
 }
 
@@ -49,8 +50,8 @@ if (!isset($codGrupo) && !isset($codSubGrupo)) {
 ## Resgata as informações do banco
 #################################################################################
 try {
-	if (isset($codSubGrupo) && $codSubGrupo != null) {
-		$subgrupo		= $em->getRepository('Entidades\ZgestSubgrupo')->findOneBy(array('codigo' => $codSubGrupo));
+	if (isset($codSubgrupo) && $codSubgrupo != null) {
+		$subgrupo		= $em->getRepository('Entidades\ZgestSubgrupo')->findOneBy(array('codigo' => $codSubgrupo));
 		if (!$subgrupo) $subgrupo			= new \Entidades\ZgestSubgrupo();
 	}else{
 		$subgrupo		= new \Entidades\ZgestSubgrupo();
@@ -63,11 +64,16 @@ try {
 		$grupo			= new \Entidades\ZgestGrupo();
 	}
 	
-	$oOrganizacao	 = $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findAll();
+	$oSubgrupoOrg	 = $em->getRepository('Entidades\ZgestSubgrupoOrg')->findOneBy(array('codSubgrupo' => $codSubgrupo ));
+	
+	$oOrganizacao	 = $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findAll(array('', 'descricao' => 'ASC'));
 	for ($i = 0; $i < sizeof($oOrganizacao); $i++) {
+		
+		$checked = ( $oOrganizacao[$i]->getCodigo() == $oSubgrupoOrg->getCodTipoOrganizacao()->getCodigo() ) ? "checked" : null;
+		
 		$checkOrgTipo .= "<div class=\"checkbox\">
 						<label>
-							<input name=\"codTipoOrg[$i]\" id=\"codTipoOrg[$i]\" value=".$oOrganizacao[$i]->getCodigo()." class=\"ace ace-checkbox-2\" type=\"checkbox\">
+							<input name=\"codTipoOrg[$i]\" id=\"codTipoOrg[$i]\" value=".$oOrganizacao[$i]->getCodigo()." class=\"ace ace-checkbox-2\" ".$checked." type=\"checkbox\">
 							<span class=\"lbl\"> ".$oOrganizacao[$i]->getDescricao()."</span>
 						</label>
 					</div>";
