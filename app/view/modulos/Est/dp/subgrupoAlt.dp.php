@@ -21,15 +21,16 @@ if (!isset($codTipoOrg))			$codTipoOrg			= array();
 ## Limpar a variável de erro
 #################################################################################
 $err	= false;
-//$log->debug(serialize($_POST));exit;
+
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
 /** Descricao **/
 if (!isset($descricao) || (empty($descricao)) || (strlen($descricao) > 60)) {
-	$err	= $tr->trans("O campo Descricao deve ter no máximo 60 caracteres");
+	$err	= $tr->trans("A descrição deve ter no máximo 60 caracteres");
 }
 
+/** CodSubgrupo **/
 if (!$codSubgrupo) $codSubgrupo = null;
 
 /** Verifica se o nome já existe no mesmo nível **/
@@ -48,8 +49,12 @@ if ($err != null) {
 ## Salvar no banco
 #################################################################################
 $em->getConnection()->beginTransaction();
+
 try {
 
+	#################################################################################
+	## Salvar subgrupo
+	#################################################################################
 	if (isset($codSubgrupo) && (!empty($codSubgrupo))) {
 		$oSubgrupo	= $em->getRepository('Entidades\ZgestSubgrupo')->findOneBy(array('codigo' => $codGrupo));
 		
@@ -72,61 +77,50 @@ try {
 	$oSubgrupo->setCodGrupo($oGrupo);
 	
 	$em->persist($oSubgrupo);
-	$em->flush();
-	//$em->detach($oSubgrupo);
 
 	#################################################################################
-	## Dependentes
+	## Subgrupo-organização
 	#################################################################################
 	$subgrupos		= $em->getRepository('Entidades\ZgestSubgrupo')->findBy(array('codigo' => $codSubgrupo));
 	
-	#################################################################################
-	## Exclusão
-	#################################################################################
-	for($i = 0; $i < sizeof ( $subgrupos ); $i ++) {
-		if (! in_array ( $subgrupos [$i]->getCodigo (), $codSubgrupo )) {
+	/**** EXCLUSÃO ****/
+	for($i = 0; $i < sizeof($subgrupos); $i ++) {
+		if (!in_array ($subgrupos [$i]->getCodigo() , $codSubgrupo)) {
 			try {
-				$em->remove ( $subgrupos [$i] );
-				$em->flush ();
-			} catch ( \Exception $e ) {
-				$system->criaAviso ( \Zage\App\Aviso\Tipo::ERRO, "Não foi possível excluir o subgrupo: " . $subgrupos [$i]->getDescricao () . " Erro: " . $e->getMessage () );
-				echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities ( $e->getMessage () ) );
-				exit ();
+				$em->remove($subgrupos[$i]);
+				$em->flush();
+			} catch (\Exception $e) {
+				$system->criaAviso (\Zage\App\Aviso\Tipo::ERRO, "Não foi possível excluir o subgrupo: " . $subgrupos [$i]->getDescricao () . " Erro: " . $e->getMessage());
+				echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities($e->getMessage()));
+				exit();
 			}
 		}
 	}
 	
-	### Tipos Organizacao ###
-	for($i = 0; $i < sizeof ( $codTipoOrg ); $i ++) {
-		$oSubgrupoOrg = $em->getRepository ( 'Entidades\ZgestSubgrupoOrg' )->findOneBy ( array (
-				'codigo' => $codTipoOrg[$i],
-				'codSubgrupo' => $oSubgrupo->getCodigo ()
-		) );
+	/**** SALVAR ****/
+	for($i = 0; $i < sizeof($codTipoOrg); $i ++){
+		$oSubgrupoOrg = $em->getRepository('Entidades\ZgestSubgrupoOrg')->findOneBy(array('codigo' => $codTipoOrg[$i],'codSubgrupo' => $oSubgrupo->getCodigo()));
 	
-		if (! $oSubgrupoOrg) {
-			$oSubgrupoOrg = new \Entidades\ZgestSubgrupoOrg ();
+		if (!$oSubgrupoOrg) {
+			$oSubgrupoOrg = new \Entidades\ZgestSubgrupoOrg();
 		}
 	
-		$oSubgrupoTipo	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array(
-				'codigo' => $codTipoOrg[$i]
-		));
-		
-		$log->debug($codTipoOrg[$i]);
+		$oSubgrupoTipo	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => $codTipoOrg[$i]));
 			
-		$oSubgrupoOrg->setCodSubGrupo( $oSubgrupo );
+		$oSubgrupoOrg->setCodSubGrupo($oSubgrupo);
 		$oSubgrupoOrg->setCodTipoOrganizacao($oSubgrupoTipo);
-			
-		try {
-			$em->persist ( $oSubgrupoOrg );
-			$em->flush ();
-			$em->detach ( $oSubgrupoOrg );
-		} catch ( \Exception $e ) {
-			$system->criaAviso ( \Zage\App\Aviso\Tipo::ERRO, "Não foi possível cadastrar o tipo organização: " . $codTipoOrg [$i] . " Erro: " . $e->getMessage () );
-			echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities ( $e->getMessage () ) );
-			exit ();
-		}
+		
+		$em->persist($oSubgrupoOrg);
+	
 	}
+
+	#################################################################################
+	## Flush
+	#################################################################################
+	$em->flush();
+	$em->clear();
 	$em->getConnection()->commit();
+	
 	
 } catch (\Exception $e) {
 	$em->getConnection()->rollback();
