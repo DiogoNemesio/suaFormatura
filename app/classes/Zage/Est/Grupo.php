@@ -4,13 +4,13 @@ namespace Zage\Est;
 
 
 /**
- * Estoque
+ * Pasta
  *
  * @package Grupo
- * @author Diogo Nemésio
+ * @author Daniel Henrique Cassela
  * @version 1.0.1
  */
-class Grupo extends \Entidades\ZgestGrupoMaterial {
+class Grupo extends \Entidades\ZgestGrupo {
 
     /**
      * Construtor
@@ -25,166 +25,87 @@ class Grupo extends \Entidades\ZgestGrupoMaterial {
 		
 	}
 	
+
 	/**
-	 * Lista os locais de arquivo por organização
+	 * Lista pastas
 	 */
-	public static function listaTodos () {
+	public static function listaTodas () {
 		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
 		 
 		try {
-			$qb->select('g')
-			->from('\Entidades\ZgestGrupoMaterial','g')
-			->where($qb->expr()->andX(
-				$qb->expr()->eq('g.codOrganizacao'	, ':codOrganizacao')
-			))
-			->orderBy('g.descricao','ASC')
-			->setParameter('codOrganizacao', $system->getCodOrganizacao());
-			 
+			$qb->select('p')
+			->from('\Entidades\ZgestGrupo','p')
+			//->leftJoin('p.codGrupo', 'e')
+			//->where($qb->expr()->andX(
+			//		$qb->expr()->eq('p.codGrupo'	, ':codGrupo')
+			//))
+			->orderBy('p.codGrupoPai,p.descricao', 'ASC');
+			//->setParameter('codEmpresa', $system->getCodEmpresa());
 			$query 		= $qb->getQuery();
 			return($query->getResult());
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
-		 
 	}
 	
 	/**
-	 * Lista os grupos de um determinado grupo
-	 */
-	public static function lista ($codGrupo) {
-		global $em,$system;
-	
-		$qb 	= $em->createQueryBuilder();
-			
-		try {
-			$qb->select('g')
-			->from('\Entidades\ZgestGrupoMaterial','g')
-			->where($qb->expr()->andX(
-					$qb->expr()->eq('g.codOrganizacao'	, ':codOrganizacao'),
-					$qb->expr()->eq('g.codGrupoPai'		, ':codGrupoPai')
-			))
-			->orderBy('g.descricao','ASC')
-			->setParameter('codGrupoPai'	, $codGrupo)
-			->setParameter('codOrganizacao'	, $system->getCodOrganizacao());
-	
-			$query 		= $qb->getQuery();
-			return($query->getResult());
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
-		}
-			
-	}
-	
-	
-	/**
-	 * Verificar se descricao ja Existe
-	 */
-	public static function existeDescricao ($codGrupo,$codGrupoPai,$descricao) {
-		global $em,$system;
-	
-		$qb 	= $em->createQueryBuilder();
-			
-		try {
-			$qb->select('g')
-			->from('\Entidades\ZgestGrupoMaterial','g')
-			->where($qb->expr()->andX(
-					$qb->expr()->eq('g.codOrganizacao'	, ':codOrganizacao'),
-					$qb->expr()->eq('g.descricao'		, ':descricao')
-			))
-			->orderBy('g.descricao','ASC')
-			->setParameter('descricao', $descricao)
-			->setParameter('codOrganizacao', $system->getCodOrganizacao());
-			
-			if (!empty($codGrupoPai)) {
-				$qb->andWhere(
-					$qb->expr()->eq('g.codGrupoPai'	, ':codGrupoPai')
-				);
-				$qb->setParameter('codGrupoPai', $codGrupoPai);
-				
-			}else{
-				$qb->andWhere(
-					$qb->expr()->isNull('g.codGrupoPai')
-				);
-			}
-			
-	
-			$query 		= $qb->getQuery();
-			$oGrupo		= $query->getResult(); 
-			
-			if (!$oGrupo) {
-				return false;
-			}else{
-				if ($oGrupo[0]->getCodigo() != $codGrupo) {
-					return true;
-				}else{
-					return false;
-				}
-			}
-			
+     * Lista pastas
+     */
+    public static function lista ($codPastaPai = null) {
+    	global $em,$system;
+    	 
+    	$qb 	= $em->createQueryBuilder();
+    	
+    	try {
+	    	$qb->select('p')
+	    	->from('\Entidades\ZgestGrupo','p')
+	    	//->leftJoin('p.codGrupo', 'e')
+	    	//->where($qb->expr()->andX(
+	    	//	$qb->expr()->eq('p.codGrupo'	, ':codGrupo')
+	    	//))
+	    	->orderBy('p.descricao', 'ASC');
+	    	//->setParameter('codEmpresa', $system->getCodEmpresa());
+	    	 
+	    	if ($codPastaPai != null) {
+	    		$qb->andWhere($qb->expr()->eq('p.codGrupoPai'	, ':codGrupoPai'))
+	    		->setParameter('codGrupoPai', $codPastaPai);
+	    	}else{
+	    		$qb->andWhere($qb->expr()->isNull('p.codGrupoPai'));
+	    	}
+	    	$query 		= $qb->getQuery();
+	    	return($query->getResult());
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    }
 
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
-		}
-			
-	}
-	
-	
-	/**
-	 * Lista os locais de arquivo por empresa que estão ativo
-	 */
-	public static function listaAtivo () {
-		global $em,$system;
-	
-		$qb 	= $em->createQueryBuilder();
-			
-		try {
-			$qb->select('l')
-			->from('\Entidades\ZgdocLocal','l')
-			->leftJoin('\Entidades\ZgdocDepartamento', 'd', \Doctrine\ORM\Query\Expr\Join::WITH, 'd.codigo = l.codDepartamento')
-			->where($qb->expr()->andX(
-					$qb->expr()->eq('d.codEmpresa'	, ':codEmpresa'),
-					$qb->expr()->eq('l.indAtivo'	, '1')
-			))
-			->orderBy('l.nome', 'ASC')
-			->setParameter('codEmpresa', $system->getCodEmpresa());
-	
-			$query 		= $qb->getQuery();
-			return($query->getResult());
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
-		}
-			
-	}
 
-	/**
-	 * Busca um local em um departamento de uma empresa
-	 */
-	public static function buscaLocal ($nome, $departamento) {
-		global $em,$system;
-	
-		$qb 	= $em->createQueryBuilder();
-			
-		try {
-			$qb->select('l')
-			->from('\Entidades\ZgdocLocal','l')
-			->leftJoin('\Entidades\ZgdocDepartamento', 'd', \Doctrine\ORM\Query\Expr\Join::WITH, 'd.codigo = l.codDepartamento')
-			->where($qb->expr()->andX(
-					$qb->expr()->eq('d.codEmpresa'			, ':codEmpresa'),
-					$qb->expr()->eq('l.nome'				, ':nome'),
-					$qb->expr()->eq('l.codDepartamento'		, ':codDepartamento')
-			))
-			->setParameter('codEmpresa', 		$system->getCodEmpresa())
-			->setParameter('nome', 		 		$nome)
-			->setParameter('codDepartamento',	$departamento);
-	
-			$query 		= $qb->getQuery();
-			return($query->getResult());
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
-		}
-			
-	}
+    /**
+     * Lista pastas
+     */
+    public static function buscaPorTipo ($sBusca) {
+    	global $em,$system;
+    
+    	$qb 	= $em->createQueryBuilder();
+    		
+    	try {
+    		$qb->select('p')
+    		->from('\Entidades\ZgdocPasta','p')
+    		->leftOuterJoin('\Entidades\ZgdocDocumentoTipo', 'dt', \Doctrine\Orm\Query\Expr\Join::WITH, 'p.codigo = dt.codPasta')
+    		->where($qb->expr()->andX(
+    			$qb->expr()->eq('p.codEmpresa'	, ':codEmpresa'),
+    			$qb->expr()->like($qb->expr()->upper('dt.nome'), ':busca')
+    		))
+    		->orderBy('p.codPastaPai,p.nome', 'ASC')
+    		->setParameter('busca', '%'.strtoupper($sBusca).'%')
+    		->setParameter('codEmpresa', $system->getCodEmpresa());
+    		$query 		= $qb->getQuery();
+    		return($query->getResult());
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    }
+    
 }
-

@@ -31,50 +31,67 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codPasta'])) 	{
-	$codPasta		= \Zage\App\Util::antiInjection($_GET['codPasta']);
-}else{
-	\Zage\App\Erro::halt('Falta de Parâmetros (codPasta) ');
-}
-
-if (isset($codPasta) && $codPasta == \Zage\App\Arvore::_codPastaRaiz) {
-	$codPasta	= null;
-}
-
-
-if (isset($_GET['codTipoDoc'])) $codTipoDoc		= \Zage\App\Util::antiInjection($_GET['codTipoDoc']);
-
-
+if (isset($_GET['busca'])) 			$busca		= \Zage\App\Util::antiInjection($_GET['busca']);
 
 #################################################################################
-## Resgata as informações do banco
+## Resgata os parâmetros passados
+#################################################################################
+if (isset($_GET['codPasta'])) 		$codPastaSel	= \Zage\App\Util::antiInjection($_GET['codPasta']);
+
+#################################################################################
+## Resgata a url desse script
+#################################################################################
+$url		= ROOT_URL."/Est/".basename(__FILE__)."?id=".$id;
+
+#################################################################################
+## Resgata os dados da árvore
 #################################################################################
 try {
+
+	$arvore		= new \Zage\App\Arvore();
+	$pastas		= \Zage\Est\Grupo::listaTodas();
 	
-	if (isset($codTipoDoc) && $codTipoDoc != null) {
-		$info		= $em->getRepository('Entidades\ZgdocDocumentoTipo')->findOneBy(array('codigo' => $codTipoDoc));
-		if (!$info) $info	= new \Entidades\ZgdocDocumentoTipo();
-	}else{
-		$info		= new \Entidades\ZgdocDocumentoTipo();
+	$arvore->exibirRaiz(true);
+	
+	for ($i = 0; $i < sizeof($pastas); $i++) {
+		$pastaMae	= ($pastas[$i]->getCodGrupoPai()) ? $pastas[$i]->getCodGrupoPai()->getCodigo() : null;
+		$arvore->adicionaPasta($pastas[$i]->getCodigo(), $pastas[$i]->getDescricao(), $pastaMae);
+		/*$tipos		= \Zage\Doc\DocumentoTipo::lista($pastas[$i]->getCodigo());
+		
+		for ($j = 0; $j < sizeof($tipos); $j++) {
+			$pastaMae	= ($tipos[$j]->getCodPasta()) ? $tipos[$j]->getCodPasta()->getCodigo() : null;
+			$arvore->adicionaItem($tipos[$j]->getCodigo(),$tipos[$j]->getNome(), $pastaMae);
+		}*/
 	}
 	
-	$pasta			= $em->getRepository('Entidades\ZgdocPasta')->findOneBy(array('codigo' => $codPasta));
+	if (isset($busca) && (!empty($busca)) ) {
+		$filtro		= $arvore->filtrar($busca);
+		//$log->debug(serialize($filtro));
 	
-	if (!$pasta)	\Zage\App\Erro::halt('Pasta não encontrada !!!');
+	}
 	
 	
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
+} catch(\Exception $e) {
+	$result['status'] = 'ERR';
+	$result['message'] = $e->getMessage();
+	exit;
 }
 
-#################################################################################
-## Url do Botão Voltar
-#################################################################################
-$urlVoltar		= ROOT_URL . "/Doc/docTipoLis.php?id=".$id;
+if (!isset($codPastaSel)) {
+	$codPastaSel	= null;
+}
+
+if (isset($busca) && (!empty($busca))) {
+	$filtro = '<button class="btn btn-white btn-info" onclick="buscaArvore();"><i class="ace-icon fa fa-times bigger-120 red"></i>Filtro: '.$busca.'</button>';
+}else{
+	$filtro	= null;
+}
+
+//$debug = $arvore->getJsonCode();
+//$log->debug($debug);
 
 #################################################################################
 ## Carregando o template html
@@ -85,15 +102,14 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
-$tpl->set('URL_VOLTAR'			,$urlVoltar);
-$tpl->set('TITULO'				,$tr->trans('Tipo de Documento'));
 $tpl->set('ID'					,$id);
-$tpl->set('COD_TIPO'			,$info->getCodigo());
-$tpl->set('NOME'				,$info->getNome());
-$tpl->set('DESCRICAO'			,$info->getDescricao());
-$tpl->set('COD_PASTA'			,$pasta->getCodigo());
-$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+$tpl->set('TREE_DATA'			,$arvore->getJsonCode());
+//$tpl->set('TREE_DATA'			,json_encode($arvore->geraArray()));
+$tpl->set('TARGET'				,$system->getDivCentral());
+$tpl->set('URL'					,$url);
+$tpl->set('COD_PASTA_SEL'		,$codPastaSel);
+$tpl->set('COD_PASTA_RAIZ'		,\Zage\App\Arvore::_codPastaRaiz);
+$tpl->set('FILTRO'				,$filtro);
 
 
 #################################################################################

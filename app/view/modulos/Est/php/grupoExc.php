@@ -35,36 +35,34 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codPasta'])) 	{
-	$codPasta		= \Zage\App\Util::antiInjection($_GET['codPasta']);
+if (isset($_GET['codTipoDoc'])) 		{
+	$codTipoDoc			= \Zage\App\Util::antiInjection($_GET['codTipoDoc']);
 }else{
-	\Zage\App\Erro::halt('Falta de Parâmetros (codPasta) ');
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codTipoDoc)');
 }
-
-if (isset($codPasta) && $codPasta == \Zage\App\Arvore::_codPastaRaiz) {
-	$codPasta	= null;
-}
-
-
-if (isset($_GET['codTipoDoc'])) $codTipoDoc		= \Zage\App\Util::antiInjection($_GET['codTipoDoc']);
-
-
 
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
 try {
+
+	$tipo		= $em->getRepository('Entidades\ZgdocDocumentoTipo')->findOneBy(array('codigo' => $codTipoDoc));
 	
-	if (isset($codTipoDoc) && $codTipoDoc != null) {
-		$info		= $em->getRepository('Entidades\ZgdocDocumentoTipo')->findOneBy(array('codigo' => $codTipoDoc));
-		if (!$info) $info	= new \Entidades\ZgdocDocumentoTipo();
-	}else{
-		$info		= new \Entidades\ZgdocDocumentoTipo();
+	if (!$tipo) 	{
+		\Zage\App\Erro::halt($tr->trans('Tipo de Documento não existe'));
 	}
 	
-	$pasta			= $em->getRepository('Entidades\ZgdocPasta')->findOneBy(array('codigo' => $codPasta));
-	
-	if (!$pasta)	\Zage\App\Erro::halt('Pasta não encontrada !!!');
+	$indices		= \Zage\Doc\Indice::lista($codTipoDoc);
+
+	if (!$indices) {
+		$podeRemover	= null;
+		$mensagem		= $tr->trans('Deseja realmente excluir o Tipo de Documento').': <em><b>%NOME%</b></em> ?';
+		$classe			= "text-warning";
+	}else{
+		$podeRemover	= 'disabled';
+		$mensagem		= $tr->trans('Tipo de Documento "'.$tipo->getNome().'" possui índices e não pode ser excluído');
+		$classe			= "text-danger";
+	}
 	
 	
 } catch (\Exception $e) {
@@ -75,6 +73,7 @@ try {
 ## Url do Botão Voltar
 #################################################################################
 $urlVoltar		= ROOT_URL . "/Doc/docTipoLis.php?id=".$id;
+
 
 #################################################################################
 ## Carregando o template html
@@ -87,12 +86,13 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
-$tpl->set('TITULO'				,$tr->trans('Tipo de Documento'));
+$tpl->set('PODE_REMOVER'		,$podeRemover);
+$tpl->set('TITULO'				,$tr->trans('Exclusão de Tipo de Documento'));
 $tpl->set('ID'					,$id);
-$tpl->set('COD_TIPO'			,$info->getCodigo());
-$tpl->set('NOME'				,$info->getNome());
-$tpl->set('DESCRICAO'			,$info->getDescricao());
-$tpl->set('COD_PASTA'			,$pasta->getCodigo());
+$tpl->set('MENSAGEM'			,$mensagem);
+$tpl->set('CLASSE'				,$classe);
+$tpl->set('COD_TIPO_DOC'		,$tipo->getCodigo());
+$tpl->set('NOME'				,$tipo->getNome());
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 
