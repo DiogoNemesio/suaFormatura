@@ -51,7 +51,12 @@ try {
 
 	if (isset($codGrupo) && (!empty($codGrupo))) {
 		$oGrupo	= $em->getRepository('Entidades\ZgestGrupo')->findOneBy(array('codigo' => $codGrupo));
-		if (!$oGrupo) $oGrupo	= new \Entidades\ZgestGrupo();
+		
+		if (!$oGrupo){
+			$oGrupo	= new \Entidades\ZgestGrupo();
+		}else{
+			$codGrupoPai = $oGrupo->getCodGrupoPai()->getCodigo();
+		}
 	}else{
 		$oGrupo		= new \Entidades\ZgestGrupo();
 	}

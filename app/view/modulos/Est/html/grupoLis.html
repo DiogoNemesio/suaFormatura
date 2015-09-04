@@ -55,12 +55,12 @@
 			}else{
 				var items = {
 						criarGrupo: { 
-							label: "Criar Grupo",
+							label: "Criar Sub-Grupo",
 							action: function (node) { criaGrupo(pNode.original.id); }
 						},
-						alteraPasta: { 
+						alteraGrupo: { 
 							label: "Alterar Grupo",
-							action: function (node) { alteraPasta(pNode.original.id); }
+							action: function (node) { alteraGrupo(pNode.original.id); }
 						},
 						excluiGrupo: { 
 							label: "Excluir Grupo",
@@ -171,7 +171,7 @@ $(function () {
 		zgAbreModal('%ROOT_URL%/Est/grupoAlt.php?id=%ID%&codGrupoPai='+$('#codGrupoSelID').val());
 	}
 
-	function alteraPasta(pIdGrupo) {
+	function alteraGrupo(pIdGrupo) {
 		$('#gruposTree').jstree('deselect_all',true);
 		$('#gruposTree').jstree('select_node',pIdGrupo);
 		zgAbreModal('%ROOT_URL%/Est/grupoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
