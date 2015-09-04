@@ -34,14 +34,14 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codGrupoPai']))	$codGrupoPai		= \Zage\App\Util::antiInjection($_GET['codGrupoPai']);
+if (isset($_GET['codGrupoPai']))	$codSubGrupo		= \Zage\App\Util::antiInjection($_GET['codGrupoPai']);
 if (isset($_GET['codGrupo'])) 		$codGrupo			= \Zage\App\Util::antiInjection($_GET['codGrupo']);
 
-if (isset($codGrupoPai) && $codGrupoPai == \Zage\App\Arvore::_codPastaRaiz) {
-	$codGrupoPai	= null;
+if (isset($codSubGrupo) && $codSubGrupo == \Zage\App\Arvore::_codPastaRaiz) {
+	$codSubGrupo	= null;
 }
 
-if (!isset($codGrupo) && !isset($codGrupoPai)) {
+if (!isset($codGrupo) && !isset($codSubGrupo)) {
 	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (GRUPO)');
 }
 
@@ -49,12 +49,11 @@ if (!isset($codGrupo) && !isset($codGrupoPai)) {
 ## Resgata as informações do banco
 #################################################################################
 try {
-
-	if (isset($codGrupoPai) && $codGrupoPai != null) {
-		$grupoPai		= $em->getRepository('Entidades\ZgestGrupo')->findOneBy(array('codigo' => $codGrupoPai));
-		if (!$grupoPai) $grupoPai			= new \Entidades\ZgestGrupo();
+	if (isset($codSubGrupo) && $codSubGrupo != null) {
+		$subgrupo		= $em->getRepository('Entidades\ZgestSubgrupo')->findOneBy(array('codigo' => $codSubGrupo));
+		if (!$subgrupo) $subgrupo			= new \Entidades\ZgestSubgrupo();
 	}else{
-		$grupoPai		= new \Entidades\ZgestGrupo();
+		$subgrupo		= new \Entidades\ZgestSubgrupo();
 	}
 	
 	if (isset($codGrupo) && $codGrupo != null) {
@@ -63,7 +62,16 @@ try {
 	}else{
 		$grupo			= new \Entidades\ZgestGrupo();
 	}
-
+	
+	$oOrganizacao	 = $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findAll();
+	for ($i = 0; $i < sizeof($oOrganizacao); $i++) {
+		$checkOrgTipo .= "<div class=\"checkbox\">
+						<label>
+							<input name=\"codTipoOrg[$i]\" id=\"codTipoOrg[$i]\" value=".$oOrganizacao[$i]->getCodigo()." class=\"ace ace-checkbox-2\" type=\"checkbox\">
+							<span class=\"lbl\"> ".$oOrganizacao[$i]->getDescricao()."</span>
+						</label>
+					</div>";
+	}	
 	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
@@ -87,9 +95,10 @@ $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('TITULO'				,$tr->trans('Gerenciamento de Grupos'));
 $tpl->set('ID'					,$id);
-$tpl->set('COD_GRUPO_PAI'		,$grupoPai->getCodigo());
+$tpl->set('COD_SUBGRUPO'		,$subgrupo->getCodigo());
 $tpl->set('COD_GRUPO'			,$grupo->getCodigo());
-$tpl->set('DESCRICAO'			,$grupo->getDescricao());
+$tpl->set('DESCRICAO'			,$subgrupo->getDescricao());
+$tpl->set('CHECK_ORG_TIPO'		,$checkOrgTipo);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################

@@ -16,7 +16,6 @@ if (isset($_POST['codGrupo'])) 		$codGrupo		= \Zage\App\Util::antiInjection($_PO
 if (isset($_POST['nome'])) 			$nome			= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['descricao'])) 	$descricao		= \Zage\App\Util::antiInjection($_POST['descricao']);
 
-$log->debug('codGrupoPai:'.$codGrupoPai.' codGrupo:'.$codGrupo);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -32,12 +31,12 @@ if (!isset($descricao) || (empty($descricao)) || (strlen($descricao) > 60)) {
 
 if (!$codGrupoPai) $codGrupoPai = null;
 
-/** Verifica se o nome já existe no mesmo nível **
-$existePasta	= $em->getRepository('Entidades\ZgdocPasta')->findOneBy(array('codEmpresa' => $system->getCodEmpresa(),'codGrupoPai' => $codGrupoPai,'nome' => $nome));
+/** Verifica se o nome já existe no mesmo nível **/
+$existeGrupo	= $em->getRepository('Entidades\ZgestGrupo')->findOneBy(array('codGrupoPai' => $codGrupoPai,'descricao' => $descricao));
 
-if (is_object($existePasta) && $existePasta->getCodigo() != $codGrupo) {
-	$err	= $tr->trans("Nome já utilizado, escolha outro nome de pasta");
-}*/
+if (is_object($existeGrupo) && $existeGrupo->getCodigo() != $codGrupo) {
+	$err	= $tr->trans("Descrição já utilizada, escolha outra descrição de grupo");
+}
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));

@@ -26,7 +26,7 @@
 		
 		<div class="widget-box transparent">
 			
-			<div class="box-content" id="tipoDocInfoID">
+			<div class="box-content" id="tipoInfoID">
 				
 			</div><!--/span-->
 			
@@ -68,8 +68,8 @@
 							"separator_after": true
 						},
 						criarItem: { 
-							label: "Criar Tipo de Documento",
-							action: function (node) { criaTipoDoc(pNode.original.id); }
+							label: "Criar Tipo",
+							action: function (node) { criaTipo(pNode.original.id); }
 						},
 					};
 	
@@ -78,11 +78,11 @@
 			var items = {
 					alteraItem: { 
 						label: "Alterar",
-						action: function (node) { alteraTipoDoc(pNode.original.id); }
+						action: function (node) { alteraTipo(pNode.original.id); }
 					},
 					excluiItem: { 
 						label: "Excluir",
-						action: function (node) { excluiTipoDoc(pNode.original.id); },
+						action: function (node) { excluiTipo(pNode.original.id); },
 					},
 				};
 	
@@ -160,8 +160,8 @@ $(function () {
 		/** Seleciona o Item **/
 		$('#codItemSelID').val(pCodItem);
 
-		/** Carrega o Div do Tipo de Documento **/
-		$('#tipoDocInfoID').load('%ROOT_URL%/Doc/indiceLis.php?id=%ID%&codTipoDoc='+pCodItem+'&codGrupo='+pCodGrupo);
+		/** Carrega o Div do Tipo **/
+		$('#tipoInfoID').load('%ROOT_URL%/Doc/indiceLis.php?id=%ID%&codTipo='+pCodItem+'&codGrupo='+pCodGrupo);
 		
 	}
 	
@@ -183,22 +183,22 @@ $(function () {
 		zgAbreModal('%ROOT_URL%/Est/grupoExc.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
-	function criaTipoDoc(pIdGrupo) {
+	function criaTipo(pIdGrupo) {
 		$('#gruposTree').jstree('deselect_all',true);
 		$('#gruposTree').jstree('select_node',pIdGrupo);
-		zgAbreModal('%ROOT_URL%/Doc/docTipoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
+		zgAbreModal('%ROOT_URL%/Est/subgrupoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
 	}
 
-	function alteraTipoDoc(pIdTipo) {
+	function alteraTipo(pIdTipo) {
 		$('#gruposTree').jstree('deselect_all',true);
 		$('#gruposTree').jstree('select_node',pIdTipo);
-		zgAbreModal('%ROOT_URL%/Doc/docTipoAlt.php?id=%ID%&codTipoDoc='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
+		zgAbreModal('%ROOT_URL%/Est/subgrupoAlt.php?id=%ID%&codTipo='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
-	function excluiTipoDoc(pIdTipo) {
+	function excluiTipo(pIdTipo) {
 		$('#gruposTree').jstree('deselect_all',true);
 		$('#gruposTree').jstree('select_node',pIdTipo);
-		zgAbreModal('%ROOT_URL%/Doc/docTipoExc.php?id=%ID%&codTipoDoc='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
+		zgAbreModal('%ROOT_URL%/Est/subgrupoExc.php?id=%ID%&codTipo='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
 	}
 
 	$('#formBuscaID').submit(function() {

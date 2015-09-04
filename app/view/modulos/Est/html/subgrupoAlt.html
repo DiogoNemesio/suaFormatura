@@ -3,9 +3,9 @@
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 	<h4 class=""><i class="fa fa-folder blue"></i>&nbsp;%TITULO%</h4>
 </div>
-<div class="modal-body" style="overflow-y: scroll; height: 250px;">
+<div class="modal-body" style="overflow-y: scroll; height: 350px;">
 	<input type="hidden" name="id" value="%ID%">
-	<input type="hidden" name="codGrupoPai" value="%COD_GRUPO_PAI%">
+	<input type="hidden" name="codSubgrupo" value="%COD_SUBGRUPO%">
 	<input type="hidden" name="codGrupo" value="%COD_GRUPO%">
 	
 	<div>
@@ -15,6 +15,13 @@
 			    	<label class="col-sm-4 control-label" for="descricaoID">Descrição</label>
 	    			<div class="col-sm-8">
 			   			<input tabindex="1" class="form-control" id="descricaoID" type="text" name="descricao" maxlength="60" value="%DESCRICAO%" required autocomplete="off">	
+			    	</div>
+			    </div>
+			   
+			    <div class="form-group">
+			    	<label class="col-sm-4 control-label" for="descricaoID">Tipo organização:</label>
+			    	<div class="col-sm-8">
+						%CHECK_ORG_TIPO%
 			    	</div>
 			    </div>
 	    	</div>
@@ -56,13 +63,10 @@ $('#zgFormID').submit(function() {
 		});
 
 	}).fail(function( jqXHR, textStatus, errorThrown) {
+		$('#submitModalBlo').removeAttr("disabled");
 		zgMostraErro('divGrupoMsgID',errorThrown);
 	});
 	return false; 
-});
-
-$("input,textarea").jqBootstrapValidation({
-	preventSubmit: true
 });
 
 </script>
