@@ -17,7 +17,7 @@
 			</div>
 			<div class="widget-body">
 				<div class="widget-main padding-6 no-padding-left no-padding-right">
-					<div id="pastasTree"></div>
+					<div id="gruposTree"></div>
 				</div>
 			</div>
 		</div>
@@ -45,26 +45,26 @@
 	
 	function zgContextMenu(pNode) {
 		if (pNode.original.zgTipo == "folder") {
-			if (pNode.original.id == "%COD_PASTA_RAIZ%") {
+			if (pNode.original.id == "%COD_GRUPO_RAIZ%") {
 				var items = {
 						criarPasta: { 
 							label: "Criar Grupo",
-							action: function (node) { criaPasta(pNode.original.id); }
+							action: function (node) { criaGrupo(pNode.original.id); }
 						},
 					};
 			}else{
 				var items = {
-						criarPasta: { 
+						criarGrupo: { 
 							label: "Criar Grupo",
-							action: function (node) { criaPasta(pNode.original.id); }
+							action: function (node) { criaGrupo(pNode.original.id); }
 						},
 						alteraPasta: { 
 							label: "Alterar Grupo",
 							action: function (node) { alteraPasta(pNode.original.id); }
 						},
-						excluiPasta: { 
+						excluiGrupo: { 
 							label: "Excluir Grupo",
-							action: function (node) { excluiPasta(pNode.original.id); },
+							action: function (node) { excluiGrupo(pNode.original.id); },
 							"separator_after": true
 						},
 						criarItem: { 
@@ -97,7 +97,7 @@ $(function () {
 			$('#container, #data, #tree, #data .content').height(h).filter('.default').css('lineHeight', h + 'px');
 		}).resize();
 
-		$('#pastasTree').jstree({
+		$('#gruposTree').jstree({
 			'core' : {
 				'data' : %TREE_DATA%,
 				'themes' : {
@@ -118,86 +118,86 @@ $(function () {
 		})
 	});
 	
-	$('#pastasTree').on('select_node.jstree', function (e, data) {
+	$('#gruposTree').on('select_node.jstree', function (e, data) {
 		if (data.instance.get_node(data.selected).original.zgTipo == "folder") {
-			selecionaPasta(data.instance.get_node(data.selected).original.zgCodigo);
+			selecionaGrupo(data.instance.get_node(data.selected).original.zgCodigo);
 		}else{
 			selecionaItem(data.instance.get_node(data.selected).original.zgCodigo,data.instance.get_node(data.selected).original.zgParent);
 		}
 		
 	});
 	
-	$('#pastasTree').on('hover_node.jstree', function (e, data) {
+	$('#gruposTree').on('hover_node.jstree', function (e, data) {
 		var vNome = data.node.original.zgNome + '&nbsp;&nbsp;&nbsp;<a class="fa fa-caret-down" onmouseover="mostraMenuContexto(\\''+data.node.id+'\\');"></a>';
 		//mostraMenuContexto(data.node.id);
-		$('#pastasTree').jstree('set_text',data.node.id , vNome);
+		$('#gruposTree').jstree('set_text',data.node.id , vNome);
 	});
 	
 	function mostraMenuContexto(id) {
-		$('#pastasTree').jstree('show_contextmenu',id);
+		$('#gruposTree').jstree('show_contextmenu',id);
 	}
 	
 
-	$('#pastasTree').on('dehover_node.jstree', function (e, data) {
+	$('#gruposTree').on('dehover_node.jstree', function (e, data) {
 		//alert(JSON.stringify(data));
-		$('#pastasTree').jstree('set_text',data.node.id , data.node.original.zgNome);
+		$('#gruposTree').jstree('set_text',data.node.id , data.node.original.zgNome);
 	});
 	
 
 	$('[data-rel=tooltip]').tooltip();
 	$('[data-rel=popover]').popover({html:true});
 	
-	function selecionaPasta(pCodigo) {
+	function selecionaGrupo(pCodigo) {
 		/** Seleciona a pasta que foi clicada **/
 		$('#codGrupoSelID').val(pCodigo);
 		
 	}
 
-	function selecionaItem(pCodItem,pCodPasta) {
+	function selecionaItem(pCodItem,pCodGrupo) {
 		/** Seleciona a pasta pai do Item **/
-		$('#codGrupoSelID').val(pCodPasta);
+		$('#codGrupoSelID').val(pCodGrupo);
 		
 		/** Seleciona o Item **/
 		$('#codItemSelID').val(pCodItem);
 
 		/** Carrega o Div do Tipo de Documento **/
-		$('#tipoDocInfoID').load('%ROOT_URL%/Doc/indiceLis.php?id=%ID%&codTipoDoc='+pCodItem+'&codGrupo='+pCodPasta);
+		$('#tipoDocInfoID').load('%ROOT_URL%/Doc/indiceLis.php?id=%ID%&codTipoDoc='+pCodItem+'&codGrupo='+pCodGrupo);
 		
 	}
 	
-	function criaPasta(pIdGrupo) {
-		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdGrupo);
+	function criaGrupo(pIdGrupo) {
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdGrupo);
 		zgAbreModal('%ROOT_URL%/Est/grupoAlt.php?id=%ID%&codGrupoPai='+$('#codGrupoSelID').val());
 	}
 
 	function alteraPasta(pIdGrupo) {
-		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdGrupo);
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdGrupo);
 		zgAbreModal('%ROOT_URL%/Est/grupoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
-	function excluiPasta(pIdGrupo) {
-		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdGrupo);
-		zgAbreModal('%ROOT_URL%/Doc/pastaExc.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
+	function excluiGrupo(pIdGrupo) {
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdGrupo);
+		zgAbreModal('%ROOT_URL%/Est/grupoExc.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
 	function criaTipoDoc(pIdGrupo) {
-		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdGrupo);
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdGrupo);
 		zgAbreModal('%ROOT_URL%/Doc/docTipoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
 	}
 
 	function alteraTipoDoc(pIdTipo) {
-		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdTipo);
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdTipo);
 		zgAbreModal('%ROOT_URL%/Doc/docTipoAlt.php?id=%ID%&codTipoDoc='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
 	function excluiTipoDoc(pIdTipo) {
-		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdTipo);
+		$('#gruposTree').jstree('deselect_all',true);
+		$('#gruposTree').jstree('select_node',pIdTipo);
 		zgAbreModal('%ROOT_URL%/Doc/docTipoExc.php?id=%ID%&codTipoDoc='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
 	}
 

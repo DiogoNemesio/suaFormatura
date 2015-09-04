@@ -16,7 +16,7 @@ if (isset($_POST['codGrupo'])) 		$codGrupo		= \Zage\App\Util::antiInjection($_PO
 if (isset($_POST['nome'])) 			$nome			= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['descricao'])) 	$descricao		= \Zage\App\Util::antiInjection($_POST['descricao']);
 
-
+$log->debug('codGrupoPai:'.$codGrupoPai.' codGrupo:'.$codGrupo);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -62,7 +62,6 @@ try {
 		$oGrupoPai	= null;
 	}
 	
-	//$oGrupo->setNome($nome);
 	$oGrupo->setDescricao($descricao);
 	$oGrupo->setCodGrupoPai($oGrupoPai);
 	

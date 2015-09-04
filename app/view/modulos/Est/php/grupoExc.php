@@ -35,10 +35,10 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codTipoDoc'])) 		{
-	$codTipoDoc			= \Zage\App\Util::antiInjection($_GET['codTipoDoc']);
+if (isset($_GET['codGrupo'])) 		{
+	$codGrupo		= \Zage\App\Util::antiInjection($_GET['codGrupo']);
 }else{
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codTipoDoc)');
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (GRUPO)');
 }
 
 #################################################################################
@@ -46,21 +46,22 @@ if (isset($_GET['codTipoDoc'])) 		{
 #################################################################################
 try {
 
-	$tipo		= $em->getRepository('Entidades\ZgdocDocumentoTipo')->findOneBy(array('codigo' => $codTipoDoc));
+	$grupo			= $em->getRepository('Entidades\ZgestGrupo')->findOneBy(array('codigo' => $codGrupo));
 	
-	if (!$tipo) 	{
-		\Zage\App\Erro::halt($tr->trans('Tipo de Documento não existe'));
+	if (!$grupo) 	{
+		\Zage\App\Erro::halt($tr->trans('Grupo não existe'));
 	}
 	
-	$indices		= \Zage\Doc\Indice::lista($codTipoDoc);
+	//$tipos			= \Zage\Doc\DocumentoTipo::lista($codPasta);
+	$grupos			= \Zage\Est\Grupo::lista($codGrupo);
 
-	if (!$indices) {
+	if (/*!$tipos && */!$grupos) {
 		$podeRemover	= null;
-		$mensagem		= $tr->trans('Deseja realmente excluir o Tipo de Documento').': <em><b>%NOME%</b></em> ?';
+		$mensagem		= $tr->trans('Deseja realmente excluir o grupo').': <em><b>%DESCRICAO%</b></em> ?';
 		$classe			= "text-warning";
 	}else{
 		$podeRemover	= 'disabled';
-		$mensagem		= $tr->trans('Tipo de Documento "'.$tipo->getNome().'" possui índices e não pode ser excluído');
+		$mensagem		= $tr->trans('Grupo %DESCRICAO% não está vazio e não pode ser excluído',array('%DESCRICAO%' => $grupo->getNome()));
 		$classe			= "text-danger";
 	}
 	
@@ -72,8 +73,7 @@ try {
 #################################################################################
 ## Url do Botão Voltar
 #################################################################################
-$urlVoltar		= ROOT_URL . "/Doc/docTipoLis.php?id=".$id;
-
+$urlVoltar		= ROOT_URL . "/Est/grupoLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -87,14 +87,13 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('PODE_REMOVER'		,$podeRemover);
-$tpl->set('TITULO'				,$tr->trans('Exclusão de Tipo de Documento'));
+$tpl->set('TITULO'				,$tr->trans('Exclusão de Grupo'));
 $tpl->set('ID'					,$id);
 $tpl->set('MENSAGEM'			,$mensagem);
 $tpl->set('CLASSE'				,$classe);
-$tpl->set('COD_TIPO_DOC'		,$tipo->getCodigo());
-$tpl->set('NOME'				,$tipo->getNome());
+$tpl->set('COD_GRUPO'			,$grupo->getCodigo());
+$tpl->set('DESCRICAO'			,$grupo->getDescricao());
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-
 
 #################################################################################
 ## Por fim exibir a página HTML

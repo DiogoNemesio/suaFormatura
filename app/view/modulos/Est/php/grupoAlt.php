@@ -37,6 +37,8 @@ $system->checaPermissao($_codMenu_);
 if (isset($_GET['codGrupoPai']))	$codGrupoPai		= \Zage\App\Util::antiInjection($_GET['codGrupoPai']);
 if (isset($_GET['codGrupo'])) 		$codGrupo			= \Zage\App\Util::antiInjection($_GET['codGrupo']);
 
+$log->debug('codGrupoPai:'.$codGrupoPai.' codGrupo:'.$codGrupo);
+
 if (isset($codGrupoPai) && $codGrupoPai == \Zage\App\Arvore::_codPastaRaiz) {
 	$codGrupoPai	= null;
 }
@@ -57,7 +59,7 @@ try {
 		$grupoPai		= new \Entidades\ZgestGrupo();
 	}
 	
-	if (isset($codPasta) && $codPasta != null) {
+	if (isset($codGrupo) && $codGrupo != null) {
 		$grupo			= $em->getRepository('Entidades\ZgestGrupo')->findOneBy(array('codigo' => $codGrupo));
 		if (!$grupo) $grupo			= new \Entidades\ZgestGrupo();
 	}else{
@@ -91,7 +93,6 @@ $tpl->set('COD_GRUPO_PAI'		,$grupoPai->getCodigo());
 $tpl->set('COD_GRUPO'			,$grupo->getCodigo());
 $tpl->set('DESCRICAO'			,$grupo->getDescricao());
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-
 
 #################################################################################
 ## Por fim exibir a página HTML

@@ -34,12 +34,12 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['busca'])) 			$busca		= \Zage\App\Util::antiInjection($_GET['busca']);
+if (isset($_GET['busca'])) 			$busca			= \Zage\App\Util::antiInjection($_GET['busca']);
 
 #################################################################################
 ## Resgata os parâmetros passados
 #################################################################################
-if (isset($_GET['codPasta'])) 		$codPastaSel	= \Zage\App\Util::antiInjection($_GET['codPasta']);
+if (isset($_GET['codGrupo'])) 		$codGrupoSel	= \Zage\App\Util::antiInjection($_GET['codGrupo']);
 
 #################################################################################
 ## Resgata a url desse script
@@ -80,8 +80,8 @@ try {
 	exit;
 }
 
-if (!isset($codPastaSel)) {
-	$codPastaSel	= null;
+if (!isset($codGrupoSel)) {
+	$codGrupoSel	= null;
 }
 
 if (isset($busca) && (!empty($busca))) {
@@ -107,8 +107,8 @@ $tpl->set('TREE_DATA'			,$arvore->getJsonCode());
 //$tpl->set('TREE_DATA'			,json_encode($arvore->geraArray()));
 $tpl->set('TARGET'				,$system->getDivCentral());
 $tpl->set('URL'					,$url);
-$tpl->set('COD_PASTA_SEL'		,$codPastaSel);
-$tpl->set('COD_PASTA_RAIZ'		,\Zage\App\Arvore::_codPastaRaiz);
+$tpl->set('COD_GRUPO_SEL'		,$codGrupoSel);
+$tpl->set('COD_GRUPO_RAIZ'		,\Zage\App\Arvore::_codPastaRaiz);
 $tpl->set('FILTRO'				,$filtro);
 
 
