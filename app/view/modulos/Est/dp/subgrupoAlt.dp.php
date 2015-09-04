@@ -47,6 +47,7 @@ if ($err != null) {
 #################################################################################
 ## Salvar no banco
 #################################################################################
+$em->getConnection()->beginTransaction();
 try {
 
 	if (isset($codSubgrupo) && (!empty($codSubgrupo))) {
@@ -74,6 +75,27 @@ try {
 	$em->flush();
 	//$em->detach($oSubgrupo);
 
+	#################################################################################
+	## Dependentes
+	#################################################################################
+	$subgrupos		= $em->getRepository('Entidades\ZgestSubgrupo')->findBy(array('codigo' => $codSubgrupo));
+	
+	#################################################################################
+	## Exclusão
+	#################################################################################
+	for($i = 0; $i < sizeof ( $subgrupos ); $i ++) {
+		if (! in_array ( $subgrupos [$i]->getCodigo (), $codSubgrupo )) {
+			try {
+				$em->remove ( $subgrupos [$i] );
+				$em->flush ();
+			} catch ( \Exception $e ) {
+				$system->criaAviso ( \Zage\App\Aviso\Tipo::ERRO, "Não foi possível excluir o subgrupo: " . $subgrupos [$i]->getDescricao () . " Erro: " . $e->getMessage () );
+				echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities ( $e->getMessage () ) );
+				exit ();
+			}
+		}
+	}
+	
 	### Tipos Organizacao ###
 	for($i = 0; $i < sizeof ( $codTipoOrg ); $i ++) {
 		$oSubgrupoOrg = $em->getRepository ( 'Entidades\ZgestSubgrupoOrg' )->findOneBy ( array (
@@ -84,11 +106,12 @@ try {
 		if (! $oSubgrupoOrg) {
 			$oSubgrupoOrg = new \Entidades\ZgestSubgrupoOrg ();
 		}
-		//if ($infoTel->getCodTipoTelefone () !== $codTipoTel [$i] || $infoTel->getTelefone () !== $telefone [$i]) {
 	
 		$oSubgrupoTipo	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array(
 				'codigo' => $codTipoOrg[$i]
 		));
+		
+		$log->debug($codTipoOrg[$i]);
 			
 		$oSubgrupoOrg->setCodSubGrupo( $oSubgrupo );
 		$oSubgrupoOrg->setCodTipoOrganizacao($oSubgrupoTipo);
@@ -102,9 +125,11 @@ try {
 			echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities ( $e->getMessage () ) );
 			exit ();
 		}
-		//}
 	}
+	$em->getConnection()->commit();
+	
 } catch (\Exception $e) {
+	$em->getConnection()->rollback();
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
 }
