@@ -38,7 +38,7 @@
 	</div>
 </div>
 <form>
-	<input type="hidden" name="codPastaSel" id="codPastaSelID" />
+	<input type="hidden" name="codGrupoSel" id="codGrupoSelID" />
 	<input type="hidden" name="codItemSel" id="codItemSelID" />
 </form>
 <script type="text/javascript">
@@ -48,22 +48,22 @@
 			if (pNode.original.id == "%COD_PASTA_RAIZ%") {
 				var items = {
 						criarPasta: { 
-							label: "Criar Pasta",
+							label: "Criar Grupo",
 							action: function (node) { criaPasta(pNode.original.id); }
 						},
 					};
 			}else{
 				var items = {
 						criarPasta: { 
-							label: "Criar Pasta",
+							label: "Criar Grupo",
 							action: function (node) { criaPasta(pNode.original.id); }
 						},
 						alteraPasta: { 
-							label: "Alterar Pasta",
+							label: "Alterar Grupo",
 							action: function (node) { alteraPasta(pNode.original.id); }
 						},
 						excluiPasta: { 
-							label: "Excluir Pasta",
+							label: "Excluir Grupo",
 							action: function (node) { excluiPasta(pNode.original.id); },
 							"separator_after": true
 						},
@@ -149,56 +149,56 @@ $(function () {
 	
 	function selecionaPasta(pCodigo) {
 		/** Seleciona a pasta que foi clicada **/
-		$('#codPastaSelID').val(pCodigo);
+		$('#codGrupoSelID').val(pCodigo);
 		
 	}
 
 	function selecionaItem(pCodItem,pCodPasta) {
 		/** Seleciona a pasta pai do Item **/
-		$('#codPastaSelID').val(pCodPasta);
+		$('#codGrupoSelID').val(pCodPasta);
 		
 		/** Seleciona o Item **/
 		$('#codItemSelID').val(pCodItem);
 
 		/** Carrega o Div do Tipo de Documento **/
-		$('#tipoDocInfoID').load('%ROOT_URL%/Doc/indiceLis.php?id=%ID%&codTipoDoc='+pCodItem+'&codPasta='+pCodPasta);
+		$('#tipoDocInfoID').load('%ROOT_URL%/Doc/indiceLis.php?id=%ID%&codTipoDoc='+pCodItem+'&codGrupo='+pCodPasta);
 		
 	}
 	
-	function criaPasta(pIdPasta) {
+	function criaPasta(pIdGrupo) {
 		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdPasta);
-		zgAbreModal('%ROOT_URL%/Doc/pastaAlt.php?id=%ID%&codPastaPai='+$('#codPastaSelID').val());
+		$('#pastasTree').jstree('select_node',pIdGrupo);
+		zgAbreModal('%ROOT_URL%/Est/grupoAlt.php?id=%ID%&codGrupoPai='+$('#codGrupoSelID').val());
 	}
 
-	function alteraPasta(pIdPasta) {
+	function alteraPasta(pIdGrupo) {
 		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdPasta);
-		zgAbreModal('%ROOT_URL%/Doc/pastaAlt.php?id=%ID%&codPasta='+$('#codPastaSelID').val());
+		$('#pastasTree').jstree('select_node',pIdGrupo);
+		zgAbreModal('%ROOT_URL%/Est/grupoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
-	function excluiPasta(pIdPasta) {
+	function excluiPasta(pIdGrupo) {
 		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdPasta);
-		zgAbreModal('%ROOT_URL%/Doc/pastaExc.php?id=%ID%&codPasta='+$('#codPastaSelID').val());
+		$('#pastasTree').jstree('select_node',pIdGrupo);
+		zgAbreModal('%ROOT_URL%/Doc/pastaExc.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
-	function criaTipoDoc(pIdPasta) {
+	function criaTipoDoc(pIdGrupo) {
 		$('#pastasTree').jstree('deselect_all',true);
-		$('#pastasTree').jstree('select_node',pIdPasta);
-		zgAbreModal('%ROOT_URL%/Doc/docTipoAlt.php?id=%ID%&codPasta='+$('#codPastaSelID').val());
+		$('#pastasTree').jstree('select_node',pIdGrupo);
+		zgAbreModal('%ROOT_URL%/Doc/docTipoAlt.php?id=%ID%&codGrupo='+$('#codGrupoSelID').val());
 	}
 
 	function alteraTipoDoc(pIdTipo) {
 		$('#pastasTree').jstree('deselect_all',true);
 		$('#pastasTree').jstree('select_node',pIdTipo);
-		zgAbreModal('%ROOT_URL%/Doc/docTipoAlt.php?id=%ID%&codTipoDoc='+$('#codItemSelID').val()+'&codPasta='+$('#codPastaSelID').val());
+		zgAbreModal('%ROOT_URL%/Doc/docTipoAlt.php?id=%ID%&codTipoDoc='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
 	}
 	
 	function excluiTipoDoc(pIdTipo) {
 		$('#pastasTree').jstree('deselect_all',true);
 		$('#pastasTree').jstree('select_node',pIdTipo);
-		zgAbreModal('%ROOT_URL%/Doc/docTipoExc.php?id=%ID%&codTipoDoc='+$('#codItemSelID').val()+'&codPasta='+$('#codPastaSelID').val());
+		zgAbreModal('%ROOT_URL%/Doc/docTipoExc.php?id=%ID%&codTipoDoc='+$('#codItemSelID').val()+'&codGrupo='+$('#codGrupoSelID').val());
 	}
 
 	$('#formBuscaID').submit(function() {
