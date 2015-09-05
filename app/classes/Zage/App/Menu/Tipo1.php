@@ -62,10 +62,10 @@ class Tipo1 extends \Zage\App\Menu\Tipo {
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'</script>'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'<div class="sidebar-shortcuts" id="sidebar-shortcuts">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<button class="btn btn-success"><i class="ace-icon fa fa-search"></i></button>'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<button class="btn btn-info"><i class="ace-icon fa fa-yelp"></i></button>'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<button class="btn btn-warning"><i class="ace-icon fa fa-group"></i></button>'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,5).'<button class="btn btn-danger" data-rel="tooltip" title="Configurações"><i class="ace-icon fa fa-cog"></i></button>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<button id="zgBtnShortCut1ID" class="btn btn-success"	data-rel="tooltip" title="Ir para o início"	><i class="ace-icon fa fa-home"></i></button>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<button id="zgBtnShortCut2ID" class="btn btn-info"		data-rel="tooltip" title="Documentação"		><i class="ace-icon fa fa-book"></i></button>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<button id="zgBtnShortCut3ID" class="btn btn-warning" 	data-rel="tooltip" title="Sobre o sistema"	><i class="ace-icon fa fa-question-circle"></i></button>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<button id="zgBtnShortCut4ID" class="btn btn-danger" 	data-rel="tooltip" title="Enviar Mensagens"	><i class="ace-icon fa fa-send"></i></button>'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'</div>'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<span class="btn btn-success"></span>'.\Zage\App\ZWS::NL;

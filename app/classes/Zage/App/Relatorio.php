@@ -190,6 +190,8 @@ class Relatorio extends \mPDF {
 		$resto				= ($numFiltros % 4);
 		$i					= 0;
 		
+		if ($numFiltros		== 0) return '';
+		
 		//echo "NumFiltros: $numFiltros<BR>NumColsPorLinha: $numColsPorLinha<BR>Resto: $resto<BR>";
 		
 		for ($c = 1; $c <= $numColsPorLinha; $c++) {

@@ -345,6 +345,25 @@
 	
 	<!-- Vakata JSTree -->
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/vakata-jstree/dist/jstree.min.js"></script>
+	
+	<script>
+	$("#zgBtnShortCut1ID").click(function() {
+		zgWindowOpen('%ROOT_URL%/index.php');
+	});
+	
+	$("#zgBtnShortCut2ID").click(function() {
+		zgLoadUrl('%ROOT_URL%/App/documentacao.php');
+	});
+
+	$("#zgBtnShortCut3ID").click(function() {
+		zgLoadUrl('%ROOT_URL%/App/sobre.php');
+	});
+
+	$("#zgBtnShortCut4ID").click(function() {
+		zgLoadUrl('%ROOT_URL%/App/comunicEnvia.php');
+	});
+
+	</script>
 
 </body>
 </html>
