@@ -22,11 +22,11 @@ class ZgestProduto
     private $codigo;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="QUANTIDADE", type="integer", nullable=false)
+     * @ORM\Column(name="NOME", type="string", length=100, nullable=false)
      */
-    private $quantidade;
+    private $nome;
 
     /**
      * @var string
@@ -52,16 +52,16 @@ class ZgestProduto
     /**
      * @var integer
      *
+     * @ORM\Column(name="QUANTIDADE", type="integer", nullable=false)
+     */
+    private $quantidade;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="NUM_DIAS_INDISPONIVEL", type="integer", nullable=true)
      */
     private $numDiasIndisponivel;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
-     */
-    private $dataCadastro;
 
     /**
      * @var integer
@@ -69,6 +69,13 @@ class ZgestProduto
      * @ORM\Column(name="QTDE_DIAS_PRE_RESERVA", type="integer", nullable=true)
      */
     private $qtdeDiasPreReserva;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
+     */
+    private $dataCadastro;
 
     /**
      * @var \Entidades\ZgestTipoProduto
@@ -112,26 +119,26 @@ class ZgestProduto
     }
 
     /**
-     * Set quantidade
+     * Set nome
      *
-     * @param integer $quantidade
+     * @param string $nome
      * @return ZgestProduto
      */
-    public function setQuantidade($quantidade)
+    public function setNome($nome)
     {
-        $this->quantidade = $quantidade;
+        $this->nome = $nome;
 
         return $this;
     }
 
     /**
-     * Get quantidade
+     * Get nome
      *
-     * @return integer 
+     * @return string 
      */
-    public function getQuantidade()
+    public function getNome()
     {
-        return $this->quantidade;
+        return $this->nome;
     }
 
     /**
@@ -204,6 +211,29 @@ class ZgestProduto
     }
 
     /**
+     * Set quantidade
+     *
+     * @param integer $quantidade
+     * @return ZgestProduto
+     */
+    public function setQuantidade($quantidade)
+    {
+        $this->quantidade = $quantidade;
+
+        return $this;
+    }
+
+    /**
+     * Get quantidade
+     *
+     * @return integer 
+     */
+    public function getQuantidade()
+    {
+        return $this->quantidade;
+    }
+
+    /**
      * Set numDiasIndisponivel
      *
      * @param integer $numDiasIndisponivel
@@ -227,29 +257,6 @@ class ZgestProduto
     }
 
     /**
-     * Set dataCadastro
-     *
-     * @param \DateTime $dataCadastro
-     * @return ZgestProduto
-     */
-    public function setDataCadastro($dataCadastro)
-    {
-        $this->dataCadastro = $dataCadastro;
-
-        return $this;
-    }
-
-    /**
-     * Get dataCadastro
-     *
-     * @return \DateTime 
-     */
-    public function getDataCadastro()
-    {
-        return $this->dataCadastro;
-    }
-
-    /**
      * Set qtdeDiasPreReserva
      *
      * @param integer $qtdeDiasPreReserva
@@ -270,6 +277,29 @@ class ZgestProduto
     public function getQtdeDiasPreReserva()
     {
         return $this->qtdeDiasPreReserva;
+    }
+
+    /**
+     * Set dataCadastro
+     *
+     * @param \DateTime $dataCadastro
+     * @return ZgestProduto
+     */
+    public function setDataCadastro($dataCadastro)
+    {
+        $this->dataCadastro = $dataCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCadastro
+     *
+     * @return \DateTime 
+     */
+    public function getDataCadastro()
+    {
+        return $this->dataCadastro;
     }
 
     /**
