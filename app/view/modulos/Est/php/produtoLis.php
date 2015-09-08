@@ -93,7 +93,7 @@ $tpl->load(HTML_PATH . 'templateLis.html');
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Tipo de Material'));
+$tpl->set('NOME'			,$tr->trans('Produtos/Serviços'));
 $tpl->set('URLADD'			,$urlAdd);
 $tpl->set('IC'				,$_icone_);
 

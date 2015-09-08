@@ -40,11 +40,16 @@ if ($codProduto) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
 
+	$nome			= $info->getNome();
 	$descricao		= $info->getDescricao();
+	$preReserva		= $info->getQtdeDiasPreReserva();
+	$diasIndis		= $info->getNumDiasIndisponivel();
+	$ativo			= ($info->getIndAtivo()	== 1) ? "checked" : null;
+	$indExposicao	= ($info->getIndExposicao()	== 1) ? "checked" : null;
+	
 	$codUniMed		= ($info->getCodUnidadeMedida() != null) ? $info->getCodUnidadeMedida()->getCodigo() : null;
 	$referencia		= $info->getReferencia();
 	$descricaoCom	= $info->getDescricaoCompleta();
-	$ativo			= ($info->getIndAtivo()	== 1) ? "checked" : null;
 	$codNcm			= $info->getCodNcm();
 	$codSubgrupo	= ($info->getCodSubgrupoMateiral() != null) ? $info->getCodSubgrupoMateiral()->getCodigo() : null;
 	$margemLucro	= $info->getPctMargemLucro();
@@ -54,11 +59,16 @@ if ($codProduto) {
 	$observacao		= $info->getObservacao();
 
 }else{
+	$nome			= '';
 	$descricao		= '';
+	$preReserva		= '';
+	$diasIndis		= '';
+	$ativo			= 'checked';
+	$indExposicao   = 'checked';
+	
 	$codUniMed		= '';
 	$referencia		= '';
 	$descricaoCom	= '';
-	$ativo			= 'checked';
 	$codNcm			= '';
 	$codSubgrupo	= '';
 	$margemLucro	= '';
@@ -83,13 +93,13 @@ $urlNovo			= ROOT_URL."/Est/produtoAlt.php?id=".$uid;
 #################################################################################
 ## Select das unidades de medida
 #################################################################################
-try {
+/*try {
 	$aUnidades		= $em->getRepository('Entidades\ZgestUnidadeMedida')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 	$oUnidades		= $system->geraHtmlCombo($aUnidades,	'CODIGO', 'DESCRICAO',	$codUniMed, 		null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
-
+*/
 
 #################################################################################
 ## Carregando o template html
@@ -106,7 +116,12 @@ $tpl->set('URLNOVO'					,$urlNovo);
 $tpl->set('ID'						,$id);
 $tpl->set('COD_PRODUTO'				,$codProduto);
 $tpl->set('ATIVO'					,$ativo);
+$tpl->set('IND_EXPOSICAO'			,$indExposicao);
+$tpl->set('NOME'					,$nome);
 $tpl->set('DESCRICAO'				,$descricao);
+$tpl->set('PRE_RESERVA'				,$preReserva);
+$tpl->set('DIAS_INDIS'				,$diasIndis);
+
 $tpl->set('UNIDADES'				,$oUnidades);
 $tpl->set('DESCRICAO_COMPLETA'		,$descricaoCom);
 $tpl->set('NCM'						,$codNcm);
