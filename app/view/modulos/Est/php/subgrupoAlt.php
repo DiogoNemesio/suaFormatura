@@ -63,18 +63,21 @@ try {
 	}else{
 		$grupo			= new \Entidades\ZgestGrupo();
 	}
-	
-	$oSubgrupoOrg	 = $em->getRepository('Entidades\ZgestSubgrupoOrg')->findOneBy(array('codSubgrupo' => $codSubgrupo ));
-	
-	$oOrganizacao	 = $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findAll(array('', 'descricao' => 'ASC'));
-	for ($i = 0; $i < sizeof($oOrganizacao); $i++) {
+
+	$oOrgTipo	 = $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findBy(array(),array('descricao' => 'ASC'));
+	for ($i = 0; $i < sizeof($oOrgTipo); $i++) {
+		$oSubgrupoOrg	 = $em->getRepository('Entidades\ZgestSubgrupoOrg')->findOneBy(array('codSubgrupo' => $codSubgrupo , 'codTipoOrganizacao' => $oOrgTipo[$i]->getCodigo()));
 		
-		$checked = ( $oOrganizacao[$i]->getCodigo() == $oSubgrupoOrg->getCodTipoOrganizacao()->getCodigo() ) ? "checked" : null;
-		
+		if ($oSubgrupoOrg){
+			$checked = 'checked';
+		}else{
+			$checked = '';
+		}
+			
 		$checkOrgTipo .= "<div class=\"checkbox\">
 						<label>
-							<input name=\"codTipoOrg[$i]\" id=\"codTipoOrg[$i]\" value=".$oOrganizacao[$i]->getCodigo()." class=\"ace ace-checkbox-2\" ".$checked." type=\"checkbox\">
-							<span class=\"lbl\"> ".$oOrganizacao[$i]->getDescricao()."</span>
+							<input name=\"codTipoOrg[]\" id=\"codTipoOrg[$i]\" value=".$oOrgTipo[$i]->getCodigo()." class=\"ace ace-checkbox-2\" ".$checked." type=\"checkbox\">
+							<span class=\"lbl\"> ".$oOrgTipo[$i]->getDescricao()."</span>
 						</label>
 					</div>";
 	}	

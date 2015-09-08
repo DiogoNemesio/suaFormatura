@@ -35,10 +35,8 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codGrupo'])) 		{
-	$codGrupo		= \Zage\App\Util::antiInjection($_GET['codGrupo']);
-}else{
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (GRUPO)');
+if (!isset($codConf)) 		{
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_CONF)');
 }
 
 #################################################################################
@@ -46,56 +44,50 @@ if (isset($_GET['codGrupo'])) 		{
 #################################################################################
 try {
 
-	$grupo			= $em->getRepository('Entidades\ZgestGrupo')->findOneBy(array('codigo' => $codGrupo));
+	$info			= $em->getRepository('Entidades\ZgestSubgrupoConf')->findOneBy(array('codigo' => $codConf));
 	
-	if (!$grupo) 	{
-		\Zage\App\Erro::halt($tr->trans('Grupo não existe'));
+	if (!$info) 	{
+		\Zage\App\Erro::halt($tr->trans('Configuração não foi encontrado.'));
 	}
 	
-	$grupos			= \Zage\Est\Grupo::lista($codGrupo);
+	$podeRemover	= null;
+	$mensagem		= $tr->trans('Deseja realmente excluir a configuração').': <b>'.$info->getNome().'</b> ?';
+	$observacao		= $tr->trans('<i class="fa fa-exclamation-triangle red"></i> Está operação excluirá definitivamente a configuração dos sistema.');
+	$classe			= "text-warning";
 
-	if (!$grupos) {
-		$podeRemover	= null;
-		$mensagem		= $tr->trans('Deseja realmente excluir o grupo').': <em><b>%DESCRICAO%</b></em> ?';
-		$classe			= "text-warning";
-	}else{
-		$podeRemover	= 'disabled';
-		$mensagem		= $tr->trans('Grupo %DESCRICAO% não está vazio e não pode ser excluído',array('%DESCRICAO%' => $grupo->getDescricao()));
-		$classe			= "text-danger";
-	}
-	
-	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
 #################################################################################
-## Url do Botão Voltar
+## Urls
 #################################################################################
-$urlVoltar		= ROOT_URL . "/Est/grupoLis.php?id=".$id;
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConf='.$codConf.'&codSubgrupo='.$codSubgrupo);
+$urlVoltar			= ROOT_URL . "/Est/grupoLis.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
+$tpl->load(HTML_PATH . '/templateModalExc.html');
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
-$tpl->set('URL_VOLTAR'			,$urlVoltar);
+$tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('PODE_REMOVER'		,$podeRemover);
-$tpl->set('TITULO'				,$tr->trans('Exclusão de Grupo'));
+$tpl->set('TITULO'				,$tr->trans('Excluir Configuração'));
 $tpl->set('ID'					,$id);
-$tpl->set('MENSAGEM'			,$mensagem);
+$tpl->set('TEXTO'				,$mensagem);
+$tpl->set('OBSERVACAO'			,$observacao);
 $tpl->set('CLASSE'				,$classe);
-$tpl->set('COD_GRUPO'			,$grupo->getCodigo());
-$tpl->set('DESCRICAO'			,$grupo->getDescricao());
+$tpl->set('VAR'					,'codConf');
+$tpl->set('VAR_VALUE'			,$info->getCodigo());
+$tpl->set('NOME'				,$info->getNome());
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
-

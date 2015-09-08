@@ -85,6 +85,16 @@ class ZgfmtEvento
     private $longitude;
 
     /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_LOCAL", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codLocal;
+
+    /**
      * @var \Entidades\ZgfmtEventoTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEventoTipo")
@@ -113,16 +123,6 @@ class ZgfmtEvento
      * })
      */
     private $codLogradouro;
-
-    /**
-     * @var \Entidades\ZgadmOrganizacao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_LOCAL", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codLocal;
 
 
     /**
@@ -343,6 +343,29 @@ class ZgfmtEvento
     }
 
     /**
+     * Set codLocal
+     *
+     * @param \Entidades\ZgadmOrganizacao $codLocal
+     * @return ZgfmtEvento
+     */
+    public function setCodLocal(\Entidades\ZgadmOrganizacao $codLocal = null)
+    {
+        $this->codLocal = $codLocal;
+
+        return $this;
+    }
+
+    /**
+     * Get codLocal
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodLocal()
+    {
+        return $this->codLocal;
+    }
+
+    /**
      * Set codTipoEvento
      *
      * @param \Entidades\ZgfmtEventoTipo $codTipoEvento
@@ -409,28 +432,5 @@ class ZgfmtEvento
     public function getCodLogradouro()
     {
         return $this->codLogradouro;
-    }
-
-    /**
-     * Set codLocal
-     *
-     * @param \Entidades\ZgadmOrganizacao $codLocal
-     * @return ZgfmtEvento
-     */
-    public function setCodLocal(\Entidades\ZgadmOrganizacao $codLocal = null)
-    {
-        $this->codLocal = $codLocal;
-
-        return $this;
-    }
-
-    /**
-     * Get codLocal
-     *
-     * @return \Entidades\ZgadmOrganizacao 
-     */
-    public function getCodLocal()
-    {
-        return $this->codLocal;
     }
 }

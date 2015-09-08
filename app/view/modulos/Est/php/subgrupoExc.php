@@ -35,10 +35,10 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
-if (isset($_GET['codGrupo'])) 		{
-	$codGrupo		= \Zage\App\Util::antiInjection($_GET['codGrupo']);
+if (isset($_GET['codSubgrupo'])) 		{
+	$codSubgrupo			= \Zage\App\Util::antiInjection($_GET['codSubgrupo']);
 }else{
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (GRUPO)');
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (codSubgrupo)');
 }
 
 #################################################################################
@@ -46,21 +46,21 @@ if (isset($_GET['codGrupo'])) 		{
 #################################################################################
 try {
 
-	$grupo			= $em->getRepository('Entidades\ZgestGrupo')->findOneBy(array('codigo' => $codGrupo));
+	$info		= $em->getRepository('Entidades\ZgestSubgrupo')->findOneBy(array('codigo' => $codSubgrupo));
 	
-	if (!$grupo) 	{
-		\Zage\App\Erro::halt($tr->trans('Grupo não existe'));
+	if (!$info) 	{
+		\Zage\App\Erro::halt($tr->trans('Subgrupo não encontrado'));
 	}
 	
-	$grupos			= \Zage\Est\Grupo::lista($codGrupo);
+	$oConf		= $em->getRepository('Entidades\ZgestSubgrupoConf')->findBy(array('codSubgrupo' => $codSubgrupo));
 
-	if (!$grupos) {
+	if (!$oConf) {
 		$podeRemover	= null;
-		$mensagem		= $tr->trans('Deseja realmente excluir o grupo').': <em><b>%DESCRICAO%</b></em> ?';
+		$mensagem		= $tr->trans('Deseja realmente excluir o subgrupo (categoria)').': <em><b>%NOME%</b></em> ?';
 		$classe			= "text-warning";
 	}else{
 		$podeRemover	= 'disabled';
-		$mensagem		= $tr->trans('Grupo %DESCRICAO% não está vazio e não pode ser excluído',array('%DESCRICAO%' => $grupo->getDescricao()));
+		$mensagem		= $tr->trans('O subgrupo (categoria) "'.$info->getDescricao().'" possui configurações e não pode ser excluído');
 		$classe			= "text-danger";
 	}
 	
@@ -72,7 +72,8 @@ try {
 #################################################################################
 ## Url do Botão Voltar
 #################################################################################
-$urlVoltar		= ROOT_URL . "/Est/grupoLis.php?id=".$id;
+$urlVoltar	= ROOT_URL . "/Est/grupoLis.php?id=".$id;
+
 
 #################################################################################
 ## Carregando o template html
@@ -86,13 +87,14 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('PODE_REMOVER'		,$podeRemover);
-$tpl->set('TITULO'				,$tr->trans('Exclusão de Grupo'));
+$tpl->set('TITULO'				,$tr->trans('Excluir Subgrupo'));
 $tpl->set('ID'					,$id);
 $tpl->set('MENSAGEM'			,$mensagem);
 $tpl->set('CLASSE'				,$classe);
-$tpl->set('COD_GRUPO'			,$grupo->getCodigo());
-$tpl->set('DESCRICAO'			,$grupo->getDescricao());
+$tpl->set('COD_SUBGRUPO'		,$info->getCodigo());
+$tpl->set('NOME'				,$info->getDescricao());
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+
 
 #################################################################################
 ## Por fim exibir a página HTML

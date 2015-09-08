@@ -128,9 +128,9 @@ $(function () {
 	});
 	
 	$('#gruposTree').on('hover_node.jstree', function (e, data) {
-		var vNome = data.node.original.zgNome + '&nbsp;&nbsp;&nbsp;<a class="fa fa-caret-down" onmouseover="mostraMenuContexto(\\''+data.node.id+'\\');"></a>';
-		//mostraMenuContexto(data.node.id);
-		$('#gruposTree').jstree('set_text',data.node.id , vNome);
+		//alert("Hover");
+		//var vNome = data.node.original.zgNome + '&nbsp;&nbsp;&nbsp;<a class="fa fa-caret-down" onmouseover="mostraMenuContexto(\\''+data.node.id+'\\');"></a>';
+		//$('#menuTree').jstree('set_text',data.node.id , vNome);
 	});
 	
 	function mostraMenuContexto(id) {
@@ -161,7 +161,7 @@ $(function () {
 		$('#codItemSelID').val(pCodItem);
 
 		/** Carrega o Div do Tipo **/
-		$('#tipoInfoID').load('%ROOT_URL%/Doc/indiceLis.php?id=%ID%&codTipo='+pCodItem+'&codGrupo='+pCodGrupo);
+		$('#tipoInfoID').load('%ROOT_URL%/Est/subgrupoConfLis.php?id=%ID%&codSubgrupo='+pCodItem+'&codGrupo='+pCodGrupo);
 		
 	}
 	

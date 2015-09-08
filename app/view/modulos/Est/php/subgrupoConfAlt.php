@@ -31,48 +31,65 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-
-#################################################################################
-## Resgata os parâmetros passados pelo formulario de pesquisa
-#################################################################################
-if (isset($_GET['codGrupo'])) 		{
-	$codGrupo		= \Zage\App\Util::antiInjection($_GET['codGrupo']);
-}else{
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (GRUPO)');
-}
-
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-try {
-
-	$grupo			= $em->getRepository('Entidades\ZgestGrupo')->findOneBy(array('codigo' => $codGrupo));
+if ($codConf) {
+	try {
+		$info			= $em->getRepository('Entidades\ZgestSubgrupoConf')->findOneBy(array('codigo' => $codConf));
+		$infoVal		= $em->getRepository('Entidades\ZgestSubgrupoConfValor')->findBy(array('codSubgrupoConf' => $codConf));
+		
+	} catch (\Exception $e) {
+		\Zage\App\Erro::halt($e->getMessage());
+	}
+	//$codTipoDoc		= $info->getCodDocumentoTipo()->getCodigo();
+	$nome			= $info->getNome();
+	$descricao		= $info->getDescricao();
+	$obrigatorio	= ($info->getIndObrigatorio() 	== 1) ? "checked" : null;
+	$ativo			= ($info->getIndAtivo()			== 1) ? "checked" : null;
+	$tipo			= $info->getCodTipo()->getCodigo();
+	//$tamanho		= $info->getTamanho();
 	
-	if (!$grupo) 	{
-		\Zage\App\Erro::halt($tr->trans('Grupo não existe'));
+	$valores		= '';
+	
+	
+	if ($infoVal) {
+		foreach ($infoVal as $val) {
+			$valores		.= $val->getValor().',';
+		}
+		$valores	= substr($valores,0,-1);
 	}
 	
-	$grupos			= \Zage\Est\Grupo::lista($codGrupo);
-
-	if (!$grupos) {
-		$podeRemover	= null;
-		$mensagem		= $tr->trans('Deseja realmente excluir o grupo').': <em><b>%DESCRICAO%</b></em> ?';
-		$classe			= "text-warning";
-	}else{
-		$podeRemover	= 'disabled';
-		$mensagem		= $tr->trans('Grupo %DESCRICAO% não está vazio e não pode ser excluído',array('%DESCRICAO%' => $grupo->getDescricao()));
-		$classe			= "text-danger";
-	}
+}else{
 	
-	
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
+	$nome			= '';
+	$descricao		= '';
+	$obrigatorio	= 'checked';
+	$visivel		= 'checked';
+	$tipo			= 'T';
+	$tamanho		= '';
+	$mascara		= '';
+	$ativo			= 'checked';
+	$valores		= '';
+	$valorPadrao	= '';
 }
 
 #################################################################################
-## Url do Botão Voltar
+## Urls
 #################################################################################
-$urlVoltar		= ROOT_URL . "/Est/grupoLis.php?id=".$id;
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConf='.'&codSubgrupo='.$codSubgrupo);
+$urlNovo			= ROOT_URL."/Est/subgrupoConfAlt.php?id=".$uid;
+$urlVoltar			= ROOT_URL."/Est/grupoLis.php?id=".$id;
+#################################################################################
+## Select de Tipos
+#################################################################################
+try {
+	$aConfTipo	= $em->getRepository('Entidades\ZgestSubgrupoConfTipo')->findAll();
+	$oConfTipo	= $system->geraHtmlCombo($aConfTipo, 'CODIGO', 'DESCRICAO', $tipo, null);
+	
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
 
 #################################################################################
 ## Carregando o template html
@@ -83,16 +100,20 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
-$tpl->set('URL_VOLTAR'			,$urlVoltar);
-$tpl->set('PODE_REMOVER'		,$podeRemover);
-$tpl->set('TITULO'				,$tr->trans('Exclusão de Grupo'));
+$tpl->set('URLVOLTAR'			,$urlVoltar);
+$tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
-$tpl->set('MENSAGEM'			,$mensagem);
-$tpl->set('CLASSE'				,$classe);
-$tpl->set('COD_GRUPO'			,$grupo->getCodigo());
-$tpl->set('DESCRICAO'			,$grupo->getDescricao());
+$tpl->set('COD_CONF'			,$codConf);
+$tpl->set('COD_SUBGRUPO'		,$codSubgrupo);
+$tpl->set('NOME'				,$nome);
+$tpl->set('DESCRICAO'			,$descricao);
+$tpl->set('CONF_TIPO'			,$oConfTipo);
+$tpl->set('TAMANHO'				,$tamanho);
+$tpl->set('OBRIGATORIO'			,$obrigatorio);
+$tpl->set('ATIVO'				,$ativo);
+$tpl->set('VALORES'				,$valores);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+
 
 #################################################################################
 ## Por fim exibir a página HTML

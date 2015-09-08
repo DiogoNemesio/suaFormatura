@@ -56,7 +56,7 @@ try {
 	## Salvar subgrupo
 	#################################################################################
 	if (isset($codSubgrupo) && (!empty($codSubgrupo))) {
-		$oSubgrupo	= $em->getRepository('Entidades\ZgestSubgrupo')->findOneBy(array('codigo' => $codGrupo));
+		$oSubgrupo	= $em->getRepository('Entidades\ZgestSubgrupo')->findOneBy(array('codigo' => $codSubgrupo));
 		
 		if (!$oSubgrupo){
 			$oSubgrupo	= new \Entidades\ZgestSubgrupo();
@@ -81,19 +81,12 @@ try {
 	#################################################################################
 	## Subgrupo-organização
 	#################################################################################
-	$subgrupos		= $em->getRepository('Entidades\ZgestSubgrupo')->findBy(array('codigo' => $codSubgrupo));
+	$subgrupos		= $em->getRepository('Entidades\ZgestSubgrupoOrg')->findBy(array('codSubgrupo' => $codSubgrupo));
 	
 	/**** EXCLUSÃO ****/
 	for($i = 0; $i < sizeof($subgrupos); $i ++) {
-		if (!in_array ($subgrupos [$i]->getCodigo() , $codSubgrupo)) {
-			try {
+		if (!in_array ($subgrupos[$i]->getCodigo() , $codTipoOrg)) {
 				$em->remove($subgrupos[$i]);
-				$em->flush();
-			} catch (\Exception $e) {
-				$system->criaAviso (\Zage\App\Aviso\Tipo::ERRO, "Não foi possível excluir o subgrupo: " . $subgrupos [$i]->getDescricao () . " Erro: " . $e->getMessage());
-				echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities($e->getMessage()));
-				exit();
-			}
 		}
 	}
 	

@@ -24,6 +24,13 @@ class ZgestSubgrupoConf
     /**
      * @var string
      *
+     * @ORM\Column(name="NOME", type="string", length=60, nullable=false)
+     */
+    private $nome;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="DESCRICAO", type="string", length=60, nullable=false)
      */
     private $descricao;
@@ -34,6 +41,13 @@ class ZgestSubgrupoConf
      * @ORM\Column(name="IND_OBRIGATORIO", type="integer", nullable=false)
      */
     private $indObrigatorio;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=false)
+     */
+    private $indAtivo;
 
     /**
      * @var \Entidades\ZgestSubgrupo
@@ -64,6 +78,29 @@ class ZgestSubgrupoConf
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set nome
+     *
+     * @param string $nome
+     * @return ZgestSubgrupoConf
+     */
+    public function setNome($nome)
+    {
+        $this->nome = $nome;
+
+        return $this;
+    }
+
+    /**
+     * Get nome
+     *
+     * @return string 
+     */
+    public function getNome()
+    {
+        return $this->nome;
     }
 
     /**
@@ -110,6 +147,29 @@ class ZgestSubgrupoConf
     public function getIndObrigatorio()
     {
         return $this->indObrigatorio;
+    }
+
+    /**
+     * Set indAtivo
+     *
+     * @param integer $indAtivo
+     * @return ZgestSubgrupoConf
+     */
+    public function setIndAtivo($indAtivo)
+    {
+        $this->indAtivo = $indAtivo;
+
+        return $this;
+    }
+
+    /**
+     * Get indAtivo
+     *
+     * @return integer 
+     */
+    public function getIndAtivo()
+    {
+        return $this->indAtivo;
     }
 
     /**
