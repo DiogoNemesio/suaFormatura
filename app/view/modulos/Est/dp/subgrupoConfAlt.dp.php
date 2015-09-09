@@ -112,6 +112,7 @@ try {
  	$oConf->setDescricao($descricao);
  	$oConf->setIndAtivo($indAtivo);
  	$oConf->setIndObrigatorio($indObrigatorio);
+ 	$oConf->setTamanho($tamanho);
  	
  	$em->persist($oConf);
  	

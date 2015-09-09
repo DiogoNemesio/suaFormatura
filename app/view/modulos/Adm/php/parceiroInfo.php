@@ -37,6 +37,8 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
+$codOrganizacao = $system->getCodOrganizacao();
+
 if ((isset($codOrganizacao) && ($codOrganizacao))) {
 
 	try {
@@ -178,13 +180,13 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 #################################################################################
 ## Url Voltar
 #################################################################################
-$urlVoltar			= ROOT_URL."/Fmt/parceiroLis.php?id=".$id;
+$urlVoltar			= ROOT_URL."/Adm/parceiroLis.php?id=".$id;
 
 #################################################################################
 ## Url Novo
 #################################################################################
 $uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codParceiro=');
-$urlNovo			= ROOT_URL."/Fmt/parceiroAlt.php?id=".$uid;
+$urlNovo			= ROOT_URL."/Adm/parceiroAlt.php?id=".$uid;
 
 #################################################################################
 ## Resgata as informaões do tipo PF/PJ

@@ -50,7 +50,7 @@ class WhatsProt
     protected $loginStatus;             // Holds the login status.
     protected $mediaFileInfo = array(); // Media File Information
     protected $mediaQueue = array();    // Queue for media message nodes
-    protected $messageCounter = 1;      // Message counter for auto-id.
+    protected $messageCounter = 0;      // Message counter for auto-id.
     protected $iqCounter = 1;
     protected $messageQueue = array();  // Queue for received messages.
     protected $name;                    // The user name.
@@ -63,7 +63,9 @@ class WhatsProt
     protected $writer;                  // An instance of the BinaryTreeNodeWriter class.
     protected $messageStore;
     protected $nodeId = array();
-    protected $loginTime;
+    protected $messageId;
+    protected $timeout;
+    protected $voice;
     public    $reader;                  // An instance of the BinaryTreeNodeReader class.
 
     /**
@@ -149,10 +151,6 @@ class WhatsProt
 
         $countryCode = ($phone['ISO3166'] != '') ? $phone['ISO3166'] : 'US';
         $langCode    = ($phone['ISO639'] != '') ? $phone['ISO639'] : 'en';
-
-        if ($phone['cc'] == '77' || $phone['cc'] == '79') {
-            $phone['cc'] = '7';
-        }
 
         // Build the url.
         $host  = 'https://' . Constants::WHATSAPP_CHECK_HOST;
@@ -462,6 +460,15 @@ class WhatsProt
     }
 
     /**
+     * Reconnect
+     */
+    public function reconnect()
+    {
+      $this->connect();
+      $this->loginWithPassword($this->password);
+    }
+
+    /**
      * Disconnect from the WhatsApp network.
      */
     public function disconnect()
@@ -558,12 +565,30 @@ class WhatsProt
         $r = array($this->socket);
         $w = array();
         $e = array();
+        $s = socket_select($r, $w, $e, Constants::TIMEOUT_SEC, Constants::TIMEOUT_USEC);
 
-        if (socket_select($r, $w, $e, Constants::TIMEOUT_SEC, Constants::TIMEOUT_USEC)) {
+        if ($s) {
             // Something to read
             if ($stanza = $this->readStanza()) {
                 $this->processInboundData($stanza, $autoReceipt, $type);
+                $this->timeout = null;
                 return true;
+            }
+            else {
+              $s = 0;
+            }
+        }
+
+        if ($s == 0)
+        {
+            if (!isset($this->timeout))
+              $this->timeout = time();
+
+            if ((time() - $this->timeout) > 300)
+            {
+              $this->timeout = null;
+              $this->disconnect();
+              throw new ConnectionException('Connectivity error');
             }
         }
 
@@ -1187,6 +1212,7 @@ class WhatsProt
             ), array($removeNode), null);
 
         $this->sendNode($node);
+        $this->waitForServer($msgId);
     }
 
     /**
@@ -1385,60 +1411,48 @@ class WhatsProt
      * Add participant(s) to a group.
      *
      * @param string $groupId      The group ID.
-     * @param mixed  $participants An array with the participants numbers to add
+     * @param string  $participants An array with the participants numbers to add
      */
-    public function sendGroupsParticipantsAdd($groupId, $participants)
+    public function sendGroupsParticipantsAdd($groupId, $participant)
     {
         $msgId = $this->createMsgId();
-        if (!is_array($participants)) {
-            $participants = array($participants);
-        }
-        $this->sendGroupsChangeParticipants($groupId, $participants, 'add', $msgId);
+        $this->sendGroupsChangeParticipants($groupId, $participant, 'add', $msgId);
     }
 
     /**
-     * Remove participant(s) from a group.
+     * Remove participant from a group.
      *
      * @param string $groupId      The group ID.
-     * @param mixed  $participants An array with the participants numbers to remove
+     * @param string $participant  The number of the participant you want to remove
      */
-    public function sendGroupsParticipantsRemove($groupId, $participants)
+    public function sendGroupsParticipantsRemove($groupId, $participant)
     {
         $msgId = $this->createMsgId();
-        if (!is_array($participants)) {
-            $participants = array($participants);
-        }
-        $this->sendGroupsChangeParticipants($groupId, $participants, 'remove', $msgId);
+        $this->sendGroupsChangeParticipants($groupId, $participant, 'remove', $msgId);
     }
 
     /**
-     * Promote participant(s) of a group; Make a participant an admin of a group.
+     * Promote participant of a group; Make a participant an admin of a group.
      *
      * @param string $gId          The group ID.
-     * @param mixed  $participants An array with the participants numbers to promote
+     * @param string $participant  The number of the participant you want to promote
      */
-    public function sendPromoteParticipants($gId, $participants)
+    public function sendPromoteParticipants($gId, $participant)
     {
         $msgId = $this->createMsgId();
-        if (!is_array($participants)) {
-            $participants = array($participants);
-        }
-        $this->sendGroupsChangeParticipants($gId, $participants, "promote", $msgId);
+        $this->sendGroupsChangeParticipants($gId, $participant, "promote", $msgId);
     }
 
     /**
-     * Demote participant(s) of a group; remove participant of being admin of a group.
+     * Demote participant of a group; remove participant of being admin of a group.
      *
      * @param string $gId          The group ID.
-     * @param array  $participants An array with the participants numbers to demote
+     * @param string $participant  The number of the participant you want to demote
      */
-    public function sendDemoteParticipants($gId, $participants)
+    public function sendDemoteParticipants($gId, $participant)
     {
         $msgId = $this->createMsgId();
-        if (!is_array($participants)) {
-            $participants = array($participants);
-        }
-        $this->sendGroupsChangeParticipants($gId, $participants, "demote", $msgId);
+        $this->sendGroupsChangeParticipants($gId, $participant, "demote", $msgId);
     }
 
     /**
@@ -1531,10 +1545,13 @@ class WhatsProt
      * @param bool   $storeURLmedia Keep copy of file
      * @param int    $fsize
      * @param string $fhash         *
+     * @param bool   $voice
      * @return string|null          Message ID if successfully, null if not.
      */
-    public function sendMessageAudio($to, $filepath, $storeURLmedia = false, $fsize = 0, $fhash = "")
+    public function sendMessageAudio($to, $filepath, $storeURLmedia = false, $fsize = 0, $fhash = "", $voice = false)
     {
+        $this->voice = $voice;
+
         if ($fsize == 0 || $fhash == "") {
             $allowedExtensions = array('3gp', 'caf', 'wav', 'mp3', 'wma', 'ogg', 'aif', 'aac', 'm4a');
             $size = 10 * 1024 * 1024; // Easy way to set maximum file size for this media type.
@@ -2070,10 +2087,7 @@ class WhatsProt
      */
     protected function createMsgId()
     {
-        $msgid = $this->messageCounter;
-        $this->messageCounter++;
-
-        return $this->loginTime . "-" . $msgid;
+        return $this->messageId . dechex($this->messageCounter++);
     }
 
     /**
@@ -2249,7 +2263,7 @@ class WhatsProt
                 $this->phoneNumber
             ));
         $this->sendAvailableForChat();
-        $this->loginTime = time();
+        $this->messageId = substr(base64_encode(mcrypt_create_iv(64, MCRYPT_DEV_URANDOM)), 0, 12);
 
         return true;
     }
@@ -3581,6 +3595,11 @@ class WhatsProt
         if ($this->mediaQueue[$id]['caption'] != '') {
             $mediaAttribs["caption"] = $this->mediaQueue[$id]['caption'];
         }
+        if ($this->voice == true)
+        {
+          $mediaAttribs["origin"] = 'live';
+          $this->voice = false;
+        }
 
         $filepath = $this->mediaQueue[$id]['filePath'];
         $to = $this->mediaQueue[$id]['to'];
@@ -3806,19 +3825,17 @@ class WhatsProt
      * Change participants of a group.
      *
      * @param string $groupId      The group ID.
-     * @param array  $participants An array with the participants.
-     * @param string $tag          The tag action. 'add' or 'remove'
+     * @param string $participant  The participant.
+     * @param string $tag          The tag action. 'add', 'remove', 'promote' or 'demote'
      * @param        $id
      */
-    protected function sendGroupsChangeParticipants($groupId, $participants, $tag, $id)
+    protected function sendGroupsChangeParticipants($groupId, $participant, $tag, $id)
     {
-        $_participants = array();
-        foreach ($participants as $participant) {
-            $_participants[] = new ProtocolNode("participant", array("jid" => $this->getJID($participant)), null, "");
-        }
+
+        $participants = new ProtocolNode("participant", array("jid" => $this->getJID($participant)), null, "");
 
         $childHash = array();
-        $child = new ProtocolNode($tag, $childHash, $_participants, "");
+        $child = new ProtocolNode($tag, $childHash, $participants, "");
 
         $node = new ProtocolNode("iq",
             array(

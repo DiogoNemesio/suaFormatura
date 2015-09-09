@@ -48,7 +48,7 @@ if ($codConf) {
 	$obrigatorio	= ($info->getIndObrigatorio() 	== 1) ? "checked" : null;
 	$ativo			= ($info->getIndAtivo()			== 1) ? "checked" : null;
 	$tipo			= $info->getCodTipo()->getCodigo();
-	//$tamanho		= $info->getTamanho();
+	$tamanho		= $info->getTamanho();
 	
 	$valores		= '';
 	

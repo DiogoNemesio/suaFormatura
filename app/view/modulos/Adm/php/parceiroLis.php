@@ -85,8 +85,8 @@ for ($i = 0; $i < sizeof($organizacoes); $i++) {
 	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Seg/usuarioAdmParLis.php?id='.$uid);
 	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Fmt/cerimonialConf.php?id=".$uid."');");
-	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/parceiroAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/parceiroExc.php?id='.$uid);
+	$grid->setUrlCelula($i,7,ROOT_URL.'/Adm/parceiroAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,8,ROOT_URL.'/Adm/parceiroExc.php?id='.$uid);
 }
 
 #################################################################################
@@ -101,7 +101,7 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fmt/parceiroAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao=');
+$urlAdd			= ROOT_URL.'/Adm/parceiroAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao=');
 
 #################################################################################
 ## Carregando o template html

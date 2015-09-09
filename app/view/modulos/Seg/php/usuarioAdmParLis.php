@@ -106,7 +106,7 @@ $urlAdd			= ROOT_URL.'/Seg/usuarioAdmParAlt.php?id='.\Zage\App\Util::encodeUrl('
 #################################################################################
 ## Gerar a url voltar
 #################################################################################
-$urlVoltar			= ROOT_URL.'/Fmt/parceiroLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao=');
+$urlVoltar			= ROOT_URL.'/Adm/parceiroLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao=');
 
 #################################################################################
 ## Gerar a url atualizar

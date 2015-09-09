@@ -50,6 +50,13 @@ class ZgestSubgrupoConf
     private $indAtivo;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="TAMANHO", type="integer", nullable=true)
+     */
+    private $tamanho;
+
+    /**
      * @var \Entidades\ZgestSubgrupo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgestSubgrupo")
@@ -170,6 +177,29 @@ class ZgestSubgrupoConf
     public function getIndAtivo()
     {
         return $this->indAtivo;
+    }
+
+    /**
+     * Set tamanho
+     *
+     * @param integer $tamanho
+     * @return ZgestSubgrupoConf
+     */
+    public function setTamanho($tamanho)
+    {
+        $this->tamanho = $tamanho;
+
+        return $this;
+    }
+
+    /**
+     * Get tamanho
+     *
+     * @return integer 
+     */
+    public function getTamanho()
+    {
+        return $this->tamanho;
     }
 
     /**
