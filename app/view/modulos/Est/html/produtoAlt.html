@@ -50,16 +50,39 @@
 										</label>
 								    </div>
 						    	</div>
-						    	<div class="col-sm-9">
+						    	<div class="col-sm-6">
 									<div class="form-group">
-								    	<label class="col-sm-2 control-label" for="descricaoComID">Descrição</label>
-						    			<div class="input-group col-sm-10">
-							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
+								    	<label class="col-sm-3 control-label" for="descricaoComID">Descrição</label>
+						    			<div class="input-group col-sm-8">
+ 								    		<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição detalhada do produto (pode colocar as características)."></i></span>
 							    			<textarea id="descricaoComID" class="autosize-transition limited form-control" name="descricaoCom" maxlength="400" required>%DESCRICAO_COMPLETA%</textarea>
-							    			<span class="input-group-addon"><a tabindex="99002" href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="Descrição detalhada do produto (pode colocar as características)"><i class="fa fa-question-circle"></i></a></span>
 								    	</div>
 								    </div>
 						    	</div>
+						    	<div class="col-sm-6">
+							    	<div class="form-group col-sm-12" id="divCodTipoMaterialID">
+										<label for="codTipoMaterialID" class="col-xs-12 col-sm-3 control-label">Tipo Material</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o tipo do material."></i></span>
+											<select id="codTipoMaterialID" name="codTipoMaterial" class="select2" data-placeholder="Selecione o tipo material">
+												%COD_TIPO_MATERIAL%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCodTipoMeterialID"></div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+							    	<div class="form-group col-sm-12" id="divCodSubgrupoID">
+										<label for="codSubgrupoID" class="col-xs-12 col-sm-3 control-label">Sub-grupo</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sub-grupo."></i></span>
+											<select id="codSubgrupoID" name="codSubgrupo" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:subgrupoConf();">
+												%COD_SUBGRUPO%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCodSubGrupoID"></div>
+									</div>
+								</div>
 						    	<div class="col-sm-6">
 									<div class="form-group">
 								    	<label class="col-sm-3 control-label" for="ativoID">Exposição</label>
@@ -107,21 +130,35 @@
 							</div>
 							 -->
 						</div>
-						<!-- 
+
 						<div id="produto-atributos" class="tab-pane">
+							<h4 class="header blue bolder smaller">Configurações</h4>
+							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="numeroID">Número</label>
+								    	<label class="col-sm-3 control-label" for="nomeConfID">Nome</label>
 						    			<div class="input-group col-sm-8">
-							    			<span class="input-group-addon"><i class="fa fa-book"></i></span>
-							    			<input class="form-control" id="numeroID" type="text" name="numero" maxlength="20" value="%NUMERO%" READONLY autocomplete="off">
-							    			<span class="input-group-addon"><a tabindex="99001" href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="Identificação da Conta a Pagar"><i class="fa fa-question-circle"></i></a></span>
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome da configuração."></i></span>
+							    			<input class="form-control" id="nomeConfID" type="text" name="nomeConf" maxlength="100" placeholder="Nome configuração" autocomplete="off" required>
 								    	</div>
 								    </div>
 						    	</div>
+						    	<div class="col-sm-6">
+							    	<div class="form-group col-sm-12" id="divCodTipoConfID">
+										<label for="codTipoConfID" class="col-xs-12 col-sm-3 control-label">Tipo</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o tipo de configuração."></i></span>
+											<select id="codTipoConfID" name="codTipoConf" class="select2" data-placeholder="Selecione o tipo de configuração">
+												<!-- %COD_SUBGRUPO% -->
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCodTipoConfID"></div>
+									</div>
+								</div>
+								<div id="testeID"></div>
 						    </div>
-						</div>-->
+						</div>
 					</div>
 				</div>
 				<div class="clearfix form-actions">
@@ -135,6 +172,11 @@
 </div>
 
 <script type="text/javascript" charset="%CHARSET%">
+
+//$('#codTipoMaterialID').css('width','100%').select2({allowClear:true});
+//$('#codSubgrupoID').css('width','100%').select2({allowClear:true});
+
+$('.select2').css('width','100%').select2({allowClear:true});
 
 $('#zgFormID').submit(function() {
 	$.ajax({
@@ -213,6 +255,27 @@ $("#codSubGrupoID").typeahead({
 });
 */
 
+function subgrupoConf(){
+	var codSubgrupo = $('#codSubgrupoID').val();
+	var htmlDat = "";
+	
+	$.ajax({
+        type: "GET",
+	    url: "%ROOT_URL%/Est/getSubgrupo.dp.php",
+    	dataType: "json",
+		data: { codSubgrupo: codSubgrupo },
+    	async: false,
+    	success: function(data) {
+    		//$('#nomeConfID').val(data[0]["nome"]);
+    		for (i = 0; i < data.length; i++) {
+    			console.log(i);
+        		htmlDat += data[i]["html"];
+    		}
+    		$('#testeID').html(htmlDat);
+        }
+	});
+}
+
 
 $('textarea[class*=autosize]').autosize({append: "\n"});
 $('textarea.limited').inputlimiter({
@@ -220,7 +283,6 @@ $('textarea.limited').inputlimiter({
 	limitText: 'Max: %n.'
 });
 
-$(".select2").select2();
 $('[data-toggle="popover"]').popover();
 
 $('[zg-data-toggle="mask"]').each(function( index ) {

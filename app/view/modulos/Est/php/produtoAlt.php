@@ -46,12 +46,13 @@ if ($codProduto) {
 	$diasIndis		= $info->getNumDiasIndisponivel();
 	$ativo			= ($info->getIndAtivo()	== 1) ? "checked" : null;
 	$indExposicao	= ($info->getIndExposicao()	== 1) ? "checked" : null;
+	$codTipoMaterial= ($info->getCodTipoMaterial() != null) ? $info->getCodTipoMaterial()->getCodigo() : null;
+	$codSubgrupo	= ($info->getCodSubgrupoMateiral() != null) ? $info->getCodSubgrupoMateiral()->getCodigo() : null;
 	
 	$codUniMed		= ($info->getCodUnidadeMedida() != null) ? $info->getCodUnidadeMedida()->getCodigo() : null;
 	$referencia		= $info->getReferencia();
 	$descricaoCom	= $info->getDescricaoCompleta();
 	$codNcm			= $info->getCodNcm();
-	$codSubgrupo	= ($info->getCodSubgrupoMateiral() != null) ? $info->getCodSubgrupoMateiral()->getCodigo() : null;
 	$margemLucro	= $info->getPctMargemLucro();
 	$codTipoPreço	= ($info->getCodTipoPrecoVenda() != null) ? $info->getCodTipoPrecoVenda()->getCodigo() : null;
 	$valorVenda		= $info->getValorVenda();
@@ -63,6 +64,8 @@ if ($codProduto) {
 	$descricao		= '';
 	$preReserva		= '';
 	$diasIndis		= '';
+	$codTipoMaterial= '';
+	$codSubgrupo	= '';
 	$ativo			= 'checked';
 	$indExposicao   = 'checked';
 	
@@ -70,13 +73,42 @@ if ($codProduto) {
 	$referencia		= '';
 	$descricaoCom	= '';
 	$codNcm			= '';
-	$codSubgrupo	= '';
 	$margemLucro	= '';
 	$codTipoPreço	= '';
 	$valorVenda		= '';
 	$desconto		= '';
 	$observacao		= '';
 	
+}
+
+#################################################################################
+## Select das unidades de medida
+#################################################################################
+/*try {
+	$aUnidades		= $em->getRepository('Entidades\ZgestUnidadeMedida')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$oUnidades		= $system->geraHtmlCombo($aUnidades,	'CODIGO', 'DESCRICAO',	$codUniMed, 		null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+*/
+################################################################################
+# Select de tipo de material
+################################################################################
+try {
+	$aMaterial = $em->getRepository('Entidades\ZgestTipoProduto')->findBy(array(),array('descricao' => 'ASC'));
+	$oMaterial = $system->geraHtmlCombo($aMaterial, 'CODIGO', 'DESCRICAO', $codTipoMaterial, '');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+################################################################################
+# Select de Subgrupo
+################################################################################
+try {
+	$aSubGrupo = $em->getRepository('Entidades\ZgestSubgrupo')->findBy(array(),array('descricao' => 'ASC'));
+	$oSubGrupo = $system->geraHtmlCombo($aSubGrupo, 'CODIGO', 'DESCRICAO', $codSubgrupo, '');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
 #################################################################################
@@ -89,17 +121,6 @@ $urlVoltar			= ROOT_URL."/Est/produtoLis.php?id=".$id;
 #################################################################################
 $uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codProduto=');
 $urlNovo			= ROOT_URL."/Est/produtoAlt.php?id=".$uid;
-
-#################################################################################
-## Select das unidades de medida
-#################################################################################
-/*try {
-	$aUnidades		= $em->getRepository('Entidades\ZgestUnidadeMedida')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	$oUnidades		= $system->geraHtmlCombo($aUnidades,	'CODIGO', 'DESCRICAO',	$codUniMed, 		null);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-*/
 
 #################################################################################
 ## Carregando o template html
@@ -121,12 +142,14 @@ $tpl->set('NOME'					,$nome);
 $tpl->set('DESCRICAO'				,$descricao);
 $tpl->set('PRE_RESERVA'				,$preReserva);
 $tpl->set('DIAS_INDIS'				,$diasIndis);
+$tpl->set('COD_TIPO_MATERIAL'		,$oMaterial);
+$tpl->set('COD_SUBGRUPO'			,$oSubGrupo);
+
 
 $tpl->set('UNIDADES'				,$oUnidades);
 $tpl->set('DESCRICAO_COMPLETA'		,$descricaoCom);
 $tpl->set('NCM'						,$codNcm);
 $tpl->set('REFERENCIA'				,$referencia);
-$tpl->set('SUBGRUPO'				,$codSubgrupo);
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
 $tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
