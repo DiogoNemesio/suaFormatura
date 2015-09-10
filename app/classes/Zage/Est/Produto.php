@@ -106,8 +106,8 @@ class Produto extends \Entidades\ZgestProduto {
 			## Resgatar os valores da combo
 			#################################################################################
 			try {
-				$aValores	= $em->getRepository('Entidades\ZgestSubgrupoConfTipo')->findBy(array('codigo' => $info->getCodTipo()->getCodigo()),array('descricao' => 'ASC'));
-				$oValores	= $system->geraHtmlCombo($aValores,	'CODIGO', 'DESCRICAO', $valor, null);
+				$aValores	= $em->getRepository('Entidades\ZgestSubgrupoConfValor')->findBy(array('codSubgrupoConf' => $info->getCodigo()),array('valor' => 'ASC'));
+				$oValores	= $system->geraHtmlCombo($aValores,	'CODIGO', 'VALOR', null, null);
 			} catch (\Exception $e) {
 				\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 			}
