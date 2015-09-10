@@ -35,26 +35,20 @@ class Produto extends \Entidades\ZgestProduto {
     	#################################################################################
     	## Resgata as informações do índice 
     	#################################################################################
-    	/*$info		= $em->getRepository('Entidades\ZgdocIndice')->findOneBy(array('codigo' => $codigo));
+    	$info		= $em->getRepository('Entidades\ZgestSubgrupoConf')->findOneBy(array('codigo' => $codigo));
     	
     	if (!$info) {
     		return null;
-    	}*/
+    	}
     	
     	#################################################################################
     	## Resgatar o valor já salvo
     	#################################################################################
-    	if ($codDocumento !== null) {
-    		$info		= $em->getRepository('Entidades\ZgestSubgrupoConf')->findOneBy(array('codSubgrupo' => $codDocumento));
-    	}else{
-    		$info		= null;
-    	}
-
-    	/*if (empty($valor)) {
-    		$valor	= $info->getValorPadrao();
-    	}else{
+    	$valor		= $em->getRepository('Entidades\ZgestProdutoSubgrupoValor')->findOneBy(array('codSubgrupoConf' => $codigo));
+    	
+    	if ($valor) {
     		$valor 	= $valor->getValor();
-    	}*/
+    	}
     	 
     	#################################################################################
     	## Montar as tags
@@ -73,17 +67,12 @@ class Produto extends \Entidades\ZgestProduto {
     	
 		#################################################################################
     	## Montar as tags das máscaras
-    	## A Precendência é na seguinte ordem:
-    	## 1 -> a Máscara do Índice
-    	## 2 -> a Máscara do Tipo do Índice
     	#################################################################################
-		/*if ($info->getMascara()) {
-			$tagMask	= ' zg-data-toggle="mask" zg-data-mask="'.$info->getMascara().'" zg-data-mask-retira="0"';
-		}elseif ($info->getCodTipo()->getCodMascara()) {
-			$tagMask	= ' zg-data-toggle="mask" zg-data-mask="'.$info->getCodTipo()->getCodMascara()->getNome().'" zg-data-mask-retira="'.$info->getCodTipo()->getCodMascara()->getIndRetiraMascara().'"';
-		}else{
-			$tagMask	= " ";
-		}*/
+    	if ($info->getCodTipo()->getCodMascara()) {
+    		$tagMask	= ' zg-data-toggle="mask" zg-data-mask="'.$info->getCodTipo()->getCodMascara()->getNome().'" zg-data-mask-retira="'.$info->getCodTipo()->getCodMascara()->getIndRetiraMascara().'"';
+    	}else{
+    		$tagMask	= " ";
+    	}
     	 
 		#################################################################################
 		## Montar o html de acordo com o tipo do índice
@@ -94,8 +83,8 @@ class Produto extends \Entidades\ZgestProduto {
 			$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" '.$tagMaxLen.' value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
 			$htmlInput	.= '<span class="input-group-addon"><a href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="'.$info->getDescricao().'"><i class="fa fa-question-circle"></i></a></span>';
 		}elseif ($tipo == 'N') { # Número
-			$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" '.$tagMaxLen.' value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
-			$htmlInput	.= '<span class="input-group-addon"><a href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="'.$info->getDescricao().'"><i class="fa fa-question-circle"></i></a></span>';
+			$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+			$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" '.$tagMaxLen.' value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';		
 		}elseif ($tipo == 'DT') { # Data
 			$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control datepicker" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" '.$tagMaxLen.' value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
 			$htmlInput	.= '<span class="input-group-addon"><a href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="'.$info->getDescricao().'"><i class="fa fa-question-circle"></i></a></span>';
@@ -145,7 +134,7 @@ class Produto extends \Entidades\ZgestProduto {
      */
     public static function geraIdInput($codigo) {
     	//return 'zgIndice_'.$codDocumento.'_'.$codigo.'ID';
-    	return '_zgIndice_'.$codigo.'ID';
+    	return '_zgConf_'.$codigo.'ID';
     }
 
     /**
@@ -155,7 +144,7 @@ class Produto extends \Entidades\ZgestProduto {
      * @return string
      */
     public static function geraNomeInput($codigo) {
-    	return '_zgIndice['.$codigo.']';
+    	return '_zgConf['.$codigo.']';
     	//return 'zgIndice_'.$codDocumento.'['.$codigo.']';
     }
     

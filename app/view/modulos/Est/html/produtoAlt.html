@@ -29,7 +29,7 @@
 	
 					<div class="tab-content profile-edit-tab-content">
 						<div id="produto-informacoes" class="tab-pane in active">
-							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<h5 class="header blue bolder smaller">Informações Gerais</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-6">
@@ -93,7 +93,7 @@
 								    </div>
 						    	</div>
 						    </div>				    
-							<h4 class="header blue bolder smaller">Reserva</h4>
+							<h5 class="header blue bolder smaller">Reserva</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-6">
@@ -101,7 +101,7 @@
 								    	<label class="col-sm-3 control-label" for="preReservaID">Dias pré-reserva</label>
 						    			<div class="input-group col-sm-8">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de dias para pré reserva."></i></span>
-							    			<input class="form-control" id="preReservaID" type="text" name="preReserva" maxlength="100" value="%PRE_RESERVA%" placeholder="Dias pré-reserva" autocomplete="off" required	>
+							    			<input class="form-control" id="preReservaID" type="text" name="preReserva" maxlength="100" value="%PRE_RESERVA%" placeholder="Dias pré-reserva" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0">
 								    	</div>
 								    </div>
 						    	</div>
@@ -132,31 +132,11 @@
 						</div>
 
 						<div id="produto-atributos" class="tab-pane">
-							<h4 class="header blue bolder smaller">Configurações</h4>
+							<h5 class="header blue bolder smaller">Atributos</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="nomeConfID">Nome</label>
-						    			<div class="input-group col-sm-8">
-					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome da configuração."></i></span>
-							    			<input class="form-control" id="nomeConfID" type="text" name="nomeConf" maxlength="100" placeholder="Nome configuração" autocomplete="off" required>
-								    	</div>
-								    </div>
-						    	</div>
-						    	<div class="col-sm-6">
-							    	<div class="form-group col-sm-12" id="divCodTipoConfID">
-										<label for="codTipoConfID" class="col-xs-12 col-sm-3 control-label">Tipo</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o tipo de configuração."></i></span>
-											<select id="codTipoConfID" name="codTipoConf" class="select2" data-placeholder="Selecione o tipo de configuração">
-												<!-- %COD_SUBGRUPO% -->
-											</select>
-										</div>
-										<div class="col-sm-1 pull-left" id="divHelpCodTipoConfID"></div>
-									</div>
+								<div class="col-sm-6" id="divSubgrupoConfID">
 								</div>
-								<div id="testeID"></div>
 						    </div>
 						</div>
 					</div>
@@ -173,10 +153,13 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 
-//$('#codTipoMaterialID').css('width','100%').select2({allowClear:true});
-//$('#codSubgrupoID').css('width','100%').select2({allowClear:true});
-
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
 $('.select2').css('width','100%').select2({allowClear:true});
+$('[data-rel=popover]').popover({html:true});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
 
 $('#zgFormID').submit(function() {
 	$.ajax({
@@ -194,86 +177,10 @@ $('#zgFormID').submit(function() {
 	return false; 
 });
 
-/*
-var timer;
-$("#codSubGrupoID").typeahead({
-	minLength: 	%APP_BS_TA_MINLENGTH%,
-	itens:		%APP_BS_TA_ITENS%,
-	updater: function (item) {
-		 var item = JSON.parse(item);
-		 $('#codSubGrupoID').val(item.id);
-		 return item.name;
-	},
-    source : function(query,process) {
-    	var $datas = new Array;
-    	$datas = [""];
-    	clearTimeout(timer);
-    	timer=setTimeout(function() {
-	    	$.ajax({
-	            type: "GET",
-	    	    url: "%ROOT_URL%/Est/subgrupoLis.dp.php",
-	        	dataType: "json",
-				data: { q: query },
-	        	async: false,
-	        	success: function(data) {
-	        		
-	        		$.map(data, function(data){
-	        			 var group;
-	        			 group = {
-	        			 	id: data.id,
-	        			 	name: data.name,
-	        			 	toString: function () {
-	        			 		return JSON.stringify(this);
-	        			 	},
-	        			 
-	        			 	toLowerCase: function () {
-	        			 		return this.name.toLowerCase();
-	        			 	},
-	        			 	indexOf: function (string) {
-	        			 		return String.prototype.indexOf.apply(this.name, arguments);
-	        			 	},
-	        			 	replace: function (string) {
-	        			 		var value = '';
-	        			 		value += this.name;
-	        			 		
-	        			 		if(typeof(this.name) != 'undefined') {
-	        			 			value += ' <span class="pull-right muted">';
-	        			 			value += '</span>';
-	        			 		}
-	        			 		return String.prototype.replace.apply('<div style="padding: 10px; font-size: 1em;">' + value + '</div>', arguments);
-	        			 	}
-	        			 };
-	        			 $datas.push(group);
-	        		});
-	        		
-	        		//alert(JSON.stringify(data));
-	        		return(process($datas));
-	            }
-	    	})
-    	}, %APP_BS_TA_TIMEOUT%);
-    }
-});
-*/
-
 function subgrupoConf(){
 	var codSubgrupo = $('#codSubgrupoID').val();
-	var htmlDat = "";
 	
-	$.ajax({
-        type: "GET",
-	    url: "%ROOT_URL%/Est/getSubgrupo.dp.php",
-    	dataType: "json",
-		data: { codSubgrupo: codSubgrupo },
-    	async: false,
-    	success: function(data) {
-    		//$('#nomeConfID').val(data[0]["nome"]);
-    		for (i = 0; i < data.length; i++) {
-    			console.log(i);
-        		htmlDat += data[i]["html"];
-    		}
-    		$('#testeID').html(htmlDat);
-        }
-	});
+	$('#divSubgrupoConfID').load("%ROOT_URL%/Est/divSubgrupoConf.php?id=%ID%&codSubgrupo="+codSubgrupo+"");
 }
 
 
@@ -283,7 +190,7 @@ $('textarea.limited').inputlimiter({
 	limitText: 'Max: %n.'
 });
 
-$('[data-toggle="popover"]').popover();
+$('[data-rel=popover]').popover({html:true});
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
