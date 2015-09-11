@@ -29,6 +29,7 @@ for ($i = 0; $i < sizeof($org); $i++) {
 	$array[$i]["id"]			= $org[$i]->getCodigo();
 	$array[$i]["name"]			= $org[$i]->getNome();
 	
+	$array[$i]["codLogradouro"]	= $org[$i]->getCodLogradouro()->getCodigo();
 	$array[$i]["cep"]			= $org[$i]->getCep();
 	$array[$i]["endereco"]		= $org[$i]->getEndereco();
 	$array[$i]["bairro"]		= $org[$i]->getBairro();

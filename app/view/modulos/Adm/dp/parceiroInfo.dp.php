@@ -20,8 +20,18 @@ $codOrganizacao = $system->getCodOrganizacao();
 if (isset($_POST['tipo']))				$tipo				= \Zage\App\Util::antiInjection($_POST['tipo']);
 if (isset($_POST['ident']))				$ident				= \Zage\App\Util::antiInjection($_POST['ident']);
 if (isset($_POST['email']))				$email				= \Zage\App\Util::antiInjection($_POST['email']);
-if (isset($_POST['logomarca']))			$logomarca			= \Zage\App\Util::antiInjection($_POST['logomarca']);
 if (isset($_POST['codPlano']))	 		$codPlano			= \Zage\App\Util::antiInjection($_POST['codPlano']);
+
+$logoNome 			= $_FILES['userfile'][name];
+$logoTipo 			= $_FILES['userfile'][type];
+$tempLoc 			= $_FILES['userfile'][tmp_name];
+$logoTamanho		= $_FILES['userfile'][size];
+
+if (!is_uploaded_file($tempLoc)) {
+	$log->err($tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP'));
+	echo $tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP');
+	exit;
+}
 
 if ($tipo == 'J'){
 	
@@ -207,7 +217,6 @@ if (isset($codLogradouro) && (!empty($codLogradouro))){
 	$endCorreto = null; //Se não houver o codLogradouro o indicador deve ser nulo
 }
 
-
 /******* CONTRATO *********/
 if (!isset($codPlano) || (empty($codPlano))) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O Plano deve ser selecionado!"));
@@ -232,7 +241,14 @@ if ($err != null) {
 #################################################################################
 ## Salvar no banco
 #################################################################################
+$em->getConnection()->beginTransaction();
+
 try {
+	
+	#################################################################################
+	## Validar as informações de codOrganizacao
+	#################################################################################
+	
 	if (isset($codOrganizacao) && (!empty($codOrganizacao))){
  		
 		$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
@@ -247,6 +263,10 @@ try {
  		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  		exit;
  	}
+ 	
+ 	#################################################################################
+ 	## Editar os dados da organização
+ 	#################################################################################
  	
  	$oSexo				= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
  	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
@@ -275,8 +295,6 @@ try {
  	$oParceiro->setComplemento($complemento);
  	
  	$em->persist($oParceiro);
- 	$em->flush();
- 	//$em->detach($oParceiro);
 
  	#################################################################################
  	## Contrato
@@ -291,7 +309,6 @@ try {
  	$oContrato->setCodPlano($oPlano);
  	
  	$em->persist($oContrato);
- 	$em->flush();
  	
  	#################################################################################
  	## Telefones
@@ -303,7 +320,6 @@ try {
  		if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
  			try {
  				$em->remove($telefones[$i]);
- 				$em->flush();
  			} catch (\Exception $e) {
  				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
  				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -330,8 +346,6 @@ try {
  		 	
  			try {
  				$em->persist($infoTel);
- 				$em->flush();
- 				$em->detach($infoTel);
  			} catch (\Exception $e) {
  				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível cadastrar o telefone: ".$telefone[$i]." Erro: ".$e->getMessage());
  				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -339,9 +353,16 @@ try {
  			}
  		}
  	}
-	
+ 	
+ 	#################################################################################
+ 	## Flush
+ 	#################################################################################
+ 	$em->flush();
  	$em->clear();
+ 	$em->getConnection()->commit();
+ 	
 } catch (\Exception $e) {
+	$em->getConnection()->rollback();
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;

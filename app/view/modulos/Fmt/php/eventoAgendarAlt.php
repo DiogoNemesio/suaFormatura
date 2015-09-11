@@ -44,7 +44,7 @@ if ($codEvento) {
 	$codTipo		 = ($info->getCodTipoEvento()) ? $info->getCodTipoEvento()->getCodigo() : null;
 	$codLocal		 = ($info->getCodLocal()) ? $info->getCodLocal()->getCodigo() : null;
 	$dataEvento		 = ($info->getData() != null) ? $info->getData()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
-	$nome			 = ($info->getNome()) ? $info->getNome() : null;
+	$nome			 = ($info->getLocal()) ? $info->getLocal() : null;
 	$cep			 = ($info->getCep()) ? $info->getCep() : null;
 	$codLogradouro	 = ($info->getCodLogradouro()) ? $info->getCodLogradouro()->getCodigo() : null;
 	$endereco		 = ($info->getEndereco()) ? $info->getEndereco() : null;

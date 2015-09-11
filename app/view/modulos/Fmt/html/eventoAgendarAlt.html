@@ -17,13 +17,13 @@
 					<h5 class="header blue bolder smaller">Informações do local</h5>
 					<div class="row">
 						<div class="col-sm-6">
-						    <div class="form-group col-sm-12" id="divNomeID">
-						    	<label class="col-sm-3 control-label" for="nomeID">Local</label>
+						    <div class="form-group col-sm-12" id="divlocalID">
+						    	<label class="col-sm-3 control-label" for="localID">Local</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do local do evento."></i></span>
-				   					<input type="text" class="width-100" name="nome" id="nomeID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
+				   					<input type="text" class="width-100" name="local" id="localID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
 				    			</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+						    	<div class="col-sm-1 pull-left" id="divHelplocalID"></div>
 						    	<div class="col-sm-1 pull-left" id="spinID"></div>
 				    		</div>
 						</div>
@@ -173,7 +173,7 @@ var fLocalizaParceiro = function(strs) {
 	};
 };
 
-$('#nomeID').typeahead({
+$('#localID').typeahead({
 	hint: true,
 	highlight: true,
 	minLength: 1,
@@ -190,6 +190,7 @@ $('#nomeID').typeahead({
         		$('#codLocalID').val(data[0]["id"]);
         		$('#cepID').val(data[0]["cep"]);
         		$('#descLogradouroID').val(data[0]["endereco"]);
+        		$('#codLogradouroID').val(data[0]["codLogradouro"]);
         		$('#bairroID').val(data[0]["bairro"]);
         		$('#numeroID').val(data[0]["numero"]);
         		$('#complementoID').val(data[0]["complemento"]);

@@ -31,9 +31,9 @@ class ZgfmtEvento
     /**
      * @var string
      *
-     * @ORM\Column(name="NOME", type="string", length=60, nullable=true)
+     * @ORM\Column(name="LOCAL", type="string", length=60, nullable=true)
      */
-    private $nome;
+    private $local;
 
     /**
      * @var string
@@ -159,26 +159,26 @@ class ZgfmtEvento
     }
 
     /**
-     * Set nome
+     * Set local
      *
-     * @param string $nome
+     * @param string $local
      * @return ZgfmtEvento
      */
-    public function setNome($nome)
+    public function setLocal($local)
     {
-        $this->nome = $nome;
+        $this->local = $local;
 
         return $this;
     }
 
     /**
-     * Get nome
+     * Get local
      *
      * @return string 
      */
-    public function getNome()
+    public function getLocal()
     {
-        return $this->nome;
+        return $this->local;
     }
 
     /**

@@ -146,7 +146,7 @@
 									<div class="form-group col-sm-12">
 										<div class="col-xs-12">
 										
-											<input multiple="" name='logomarca' type="file" id="id-input-file-3" />
+											<input multiple="" name="logomarca" type="file" id="logoID" />
 										</div>
 									</div>
 									<div class="form-group col-sm-12">
@@ -367,12 +367,13 @@ if (vFormaDesc == "V") {
 	selecionaFormaDescontoPctParcAlt();
 }
 
-$('#id-input-file-3').ace_file_input({
+$('#logoID').ace_file_input({
+	paramName: "logomarca",
 	style:'well',
 	btn_choose:'Sua logomarca',
 	btn_change:null,
 	no_icon:'ace-icon fa fa-cloud-upload',
-	droppable:true,
+	droppable:false,
 	thumbnail:'small'//large | fit
 	//,icon_remove:null//set null, to hide remove/reset button
 	/**,before_change:function(files, dropped) {
@@ -394,8 +395,8 @@ $('#id-input-file-3').ace_file_input({
 	}
 
 }).on('change', function(){
-	//console.log($(this).data('ace_input_files'));
-	//console.log($(this).data('ace_input_method'));
+	console.log($(this).data('ace_input_files'));
+	console.log($(this).data('ace_input_method'));
 });
 
 

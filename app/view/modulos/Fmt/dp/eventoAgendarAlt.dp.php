@@ -15,7 +15,7 @@ if (isset($_POST['codEvento']))				$codEvento			= \Zage\App\Util::antiInjection(
 if (isset($_POST['codTipo']))				$codTipo			= \Zage\App\Util::antiInjection($_POST['codTipo']);
 if (isset($_POST['codLocal']))				$codLocal			= \Zage\App\Util::antiInjection($_POST['codLocal']);
 if (isset($_POST['dataEvento']))			$dataEvento			= \Zage\App\Util::antiInjection($_POST['dataEvento']);
-if (isset($_POST['nome']))					$nome				= \Zage\App\Util::antiInjection($_POST['nome']);
+if (isset($_POST['local']))					$local				= \Zage\App\Util::antiInjection($_POST['local']);
 if (isset($_POST['codLogradouro']))			$codLogradouro		= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
 if (isset($_POST['cep']))					$cep				= \Zage\App\Util::antiInjection($_POST['cep']);
 if (isset($_POST['descLogradouro']))		$descLogradouro		= \Zage\App\Util::antiInjection($_POST['descLogradouro']);
@@ -38,7 +38,7 @@ if (sizeof($formandos) == 0)	{
 	$err	= 1;
 }
 
-if (!isset($nome) || empty($nome)) {
+if (!isset($local) || empty($local)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo LOCAL é obrigatório !!"));
 	$err	= 1;
 }
@@ -67,10 +67,10 @@ try {
 	if (isset($codEvento) && (!empty($codEvento))) {
  		$oEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento));
  		if (!$oEvento) $oEvento	= new \Entidades\ZgfmtEvento();
- 		$assunto    = "Evento(".$nome.") alterado(a)";
+ 		$assunto    = "Evento(".$local.") alterado(a)";
  	}else{
  		$oEvento	= new \Entidades\ZgfmtEvento();
- 		$assunto    = "Novo evento(".$nome.") definido";
+ 		$assunto    = "Novo evento(".$local.") definido";
  	}
  	
  	#################################################################################
@@ -91,7 +91,7 @@ try {
  	$oEvento->setCodTipoEvento($oTipo);
  	$oEvento->setCodLocal($oLocal);
  	$oEvento->setData($dataEvento);
- 	$oEvento->setNome($nome);
+ 	$oEvento->setLocal($local);
  	$oEvento->setCodLogradouro($oLogradouro);
  	$oEvento->setCep($cep);
  	$oEvento->setEndereco($descLogradouro);
@@ -130,7 +130,7 @@ try {
 	$notificacao->setCodTemplate ( $template );
 
 	$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipo->getDescricao());
- 	$notificacao->adicionaVariavel("NOME"			, $nome);
+ 	$notificacao->adicionaVariavel("NOME"			, $local);
  	$notificacao->adicionaVariavel("DATA"			, $dataEvento);
  	$notificacao->adicionaVariavel("LOGRADOURO"		, $descLogradouro);
  	$notificacao->adicionaVariavel("BAIRRO"			, $bairro);
