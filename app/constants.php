@@ -17,7 +17,12 @@ if (! defined ( 'DOC_ROOT' )) {
 if (isset($_SERVER ['DOCUMENT_ROOT']) && $_SERVER ['DOCUMENT_ROOT']) {
 	define ( 'PROTO', strtolower ( substr ( $_SERVER ["SERVER_PROTOCOL"], 0, strpos ( $_SERVER ["SERVER_PROTOCOL"], '/' ) ) ) . "://" );
 	define ( 'ROOT_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/' );
-	define ( 'SITE_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/site/');
+	$pos = stripos($_SERVER ['DOCUMENT_ROOT'], 'suaformatura');
+	if ($pos === false) {
+		define ( 'SITE_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/site/sc/');
+	}else{
+		define ( 'SITE_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/site/sf/');
+	}
 }else{
 	define ( 'ROOT_URL', null );
 }
