@@ -19,9 +19,11 @@ if (isset($_SERVER ['DOCUMENT_ROOT']) && $_SERVER ['DOCUMENT_ROOT']) {
 	define ( 'ROOT_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/' );
 	$pos = stripos($_SERVER ['DOCUMENT_ROOT'], 'suaformatura');
 	if ($pos === false) {
-		define ( 'SITE_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/site/sc/');
+		define ( 'SITE_URL'	, PROTO . $_SERVER ["SERVER_NAME"] . '/site/sc/');
+		define ( 'SITE_PATH', DOC_ROOT . '/site/sc/' );
 	}else{
 		define ( 'SITE_URL', PROTO . $_SERVER ["SERVER_NAME"] . '/site/sf/');
+		define ( 'SITE_PATH', DOC_ROOT . '/site/sf/' );
 	}
 }else{
 	define ( 'ROOT_URL', null );
