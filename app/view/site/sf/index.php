@@ -8,5 +8,13 @@ if (defined('DOC_ROOT')) {
 	include_once('../../../includeNoAuth.php');
 }
 
-echo "Site da SuaFormatura.com";
+#################################################################################
+## Carregando o template html
+#################################################################################
+$tpl	= new \Zage\App\Template();
+$tpl->load(SITE_PATH . 'html/index.html');
+
+
+
+$tpl->show();
 ?>
