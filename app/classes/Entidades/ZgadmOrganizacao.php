@@ -73,13 +73,6 @@ class ZgadmOrganizacao
     /**
      * @var string
      *
-     * @ORM\Column(name="LOGOMARCA", type="blob", nullable=true)
-     */
-    private $logomarca;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="EMAIL", type="string", length=200, nullable=true)
      */
     private $email;
@@ -398,29 +391,6 @@ class ZgadmOrganizacao
     public function getInscMunicipal()
     {
         return $this->inscMunicipal;
-    }
-
-    /**
-     * Set logomarca
-     *
-     * @param string $logomarca
-     * @return ZgadmOrganizacao
-     */
-    public function setLogomarca($logomarca)
-    {
-        $this->logomarca = $logomarca;
-
-        return $this;
-    }
-
-    /**
-     * Get logomarca
-     *
-     * @return string 
-     */
-    public function getLogomarca()
-    {
-        return $this->logomarca;
     }
 
     /**

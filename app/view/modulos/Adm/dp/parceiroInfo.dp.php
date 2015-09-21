@@ -22,10 +22,12 @@ if (isset($_POST['ident']))				$ident				= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['email']))				$email				= \Zage\App\Util::antiInjection($_POST['email']);
 if (isset($_POST['codPlano']))	 		$codPlano			= \Zage\App\Util::antiInjection($_POST['codPlano']);
 
-$logoNome 			= $_FILES['userfile'][name];
-$logoTipo 			= $_FILES['userfile'][type];
-$tempLoc 			= $_FILES['userfile'][tmp_name];
-$logoTamanho		= $_FILES['userfile'][size];
+$logoNome 			= $_FILES['logomarca'][name];
+$logoTipo 			= $_FILES['logomarca'][type];
+$tempLoc 			= $_FILES['logomarca'][tmp_name];
+$logoTamanho		= $_FILES['logomarca'][size];
+
+$log->info("TempLoc: ".$tempLoc);
 
 if (!is_uploaded_file($tempLoc)) {
 	$log->err($tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP'));
