@@ -132,21 +132,22 @@ try {
 	$rsm->addScalarResult('VALOR_PAGO'				, 'VALOR_PAGO');
 	
 	$query 	= $em->createNativeQuery("
-		SELECT  P.CODIGO AS COD_PESSOA,P.NOME AS NOME_PESSOA,R.CODIGO COD_CONTA,DATE_FORMAT(R.DATA_VENCIMENTO,'%d/%m/%Y') AS VENCIMENTO,R.DESCRICAO AS DESCRICAO,(IFNULL(R.VALOR,0) + IFNULL(R.VALOR_JUROS,0) + IFNULL(R.VALOR_MORA,0) + IFNULL(R.VALOR_OUTROS,0) - IFNULL(R.VALOR_DESCONTO,0) - IFNULL(R.VALOR_CANCELADO,0)) AS VALOR, SUM(IFNULL(H.VALOR_RECEBIDO,0) + IFNULL(H.VALOR_JUROS,0) + IFNULL(H.VALOR_MORA,0) + IFNULL(H.VALOR_OUTROS,0) - IFNULL(H.VALOR_DESCONTO,0)) VALOR_PAGO
+		SELECT  P.CODIGO AS COD_PESSOA,P.NOME AS NOME_PESSOA,R.CODIGO COD_CONTA,DATE_FORMAT(R.DATA_VENCIMENTO,'%d/%m/%Y') AS VENCIMENTO,(IFNULL(R.VALOR,0) + IFNULL(R.VALOR_JUROS,0) + IFNULL(R.VALOR_MORA,0) + IFNULL(R.VALOR_OUTROS,0) - IFNULL(R.VALOR_DESCONTO,0) - IFNULL(R.VALOR_CANCELADO,0)) AS VALOR, (IFNULL(H.VALOR_RECEBIDO,0) + IFNULL(H.VALOR_JUROS,0) + IFNULL(H.VALOR_MORA,0) + IFNULL(H.VALOR_OUTROS,0) - IFNULL(H.VALOR_DESCONTO,0)) VALOR_PAGO,R.DESCRICAO AS DESCRICAO
 		FROM	ZGFIN_CONTA_RECEBER 		R
 		LEFT OUTER JOIN ZGFIN_HISTORICO_REC	H	ON (R.CODIGO		= H.COD_CONTA_REC)
 		LEFT JOIN ZGFIN_PESSOA 				P	ON (R.COD_PESSOA	= P.CODIGO)
         LEFT JOIN ZGFIN_CONTA_STATUS_TIPO	ST	ON (R.COD_STATUS	= ST.CODIGO)
 		WHERE	R.COD_ORGANIZACAO			= :codOrg
-		AND		R.COD_STATUS				IN ('A','P')
+		AND		R.COD_STATUS				IN ('A','P','L')
 		AND		R.DATA_VENCIMENTO			< :dataVenc
+		AND		( (R.DATA_LIQUIDACAO IS NULL) OR (R.DATA_LIQUIDACAO > R.DATA_VENCIMENTO) )
+		AND		(H.CODIGO					IS NULL OR 	H.DATA_RECEBIMENTO			>  R.DATA_VENCIMENTO)
 		AND		EXISTS (
             	SELECT 1
             	FROM	ZGFIN_CONTA_RECEBER_RATEIO 	RR
             	WHERE	RR.COD_CONTA_REC			= R.CODIGO
          		AND		RR.COD_CATEGORIA			= :codCat   
         )
-		GROUP BY P.CODIGO,P.NOME,R.CODIGO,DATE_FORMAT(R.DATA_VENCIMENTO,'%d/%m/%Y'),R.DESCRICAO
 		ORDER	BY 1,2,3
 	", $rsm);
 	$query->setParameter('codOrg'	, $system->getCodOrganizacao());
@@ -189,15 +190,15 @@ if (sizeof($dadosRel) > 0) {
 	## Não colocar os tamanhos do campo caso não seja para gerar o PDF
 	#################################################################################
 	if ($geraPdf	== 1) {
-		$w1			= "width: 30%;";
-		$w2			= "width: 44%;";
+		$w1			= "width: 24%;";
+		$w2			= "width: 50%;";
 		$w3			= "width: 12%;";
 		$w4			= "width: 12%;";
 	}else{
-		$w1			= "width: 30%;";
-		$w2			= "width: 44%;";
-		$w3			= "width: 12%;";
-		$w4			= "width: 12%;";
+		$w1			= "";
+		$w2			= "";
+		$w3			= "";
+		$w4			= "";
 	}
 	
 	
@@ -229,14 +230,14 @@ if (sizeof($dadosRel) > 0) {
 				
 		}
 
-		$table .= '<tr style="background-color:#CCCCCC">
+		$table .= '<tr style="background-color:#EEEEEE">
 					<th style="text-align: right;" colspan="3"><strong>TOTAL DO FORMANDO :&nbsp;'.$info["NOME_PESSOA"].'</strong></th>
 					<th style="text-align: right;"><strong>'.\Zage\App\Util::to_money($info["VALOR_APAGAR"]).'</strong></th>
 					</tr>
 					';
 		
 	}
-	$table .= '<tr style="background-color:#FFFFFF">
+	$table .= '<tr style="background-color:#CCCCCC">
 					<th style="text-align: right;" colspan="3"><strong>TOTAL GERAL:&nbsp;</strong></th>
 					<th style="text-align: right;"><strong>'.\Zage\App\Util::to_money($valTotal).'</strong></th>
 					</tr>
@@ -259,10 +260,41 @@ if ($geraPdf == 1) {
 <div class="row">
 	<div class="col-sm-12 center">
 		<div class="btn-group btn-corner center">
+			<button type="button" class="btn btn-white btn-sm" title="Voltar" id="btnRelInadimplenteVoltarID" onclick="zgRelInadimplenteVoltar();">
+				<i class="fa fa-angle-double-left "></i>
+			</button>
+			<span id="relPagamentoPopoverID" style="width: 250px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >'.$texto.'</span>
 			<button type="button" class="btn btn-white btn-sm tooltip-info" onclick="zgRelInadimplenteImprimir();" data-rel="tooltip" data-placement="top" title="Gerar PDF">
 				<i class="fa fa-file-pdf-o red"></i>
 			</button>
+					
+			<button type="button" class="btn btn-white btn-sm" title="Avançar" id="btnRelInadimplenteAvancarID" onclick="zgRelInadimplenteAvancar();">
+				<i class="fa fa-angle-double-right"></i>
+			</button>
 		</div>
+	</div>
+</div>
+
+<div id="divPopoverRelPagamentoContentID" class="hide">
+	<div class="col-sm-12" id="divRelPagamentoContentMensalID">
+		<label class="col-sm-3 control-label">Mês:</label>
+		<div class="col-xs-12 col-sm-9">
+    		<input class="form-control datepicker col-md-12" readonly id="tempDataFiltroID" onchange="copiaValoresFormRelPagamento();" value="'.$dataRef.'" type="text" maxlength="7" autocomplete="off">
+		</div>
+	</div>
+	<div class="form-group col-sm-12 center">
+	&nbsp;
+	</div>
+	<label class="col-sm-3 control-label">&nbsp;</label>
+	<div class="btn-group btn-corner col-sm-9 center">
+		<button type="button" class="btn btn-success btn-sm" onclick="relPagamentoFilter();">OK</button>
+		<button type="button" class="btn btn-danger btn-sm" onclick="fecharPopoverRelPagamento();">Fechar</button>
+	</div>
+</div>
+					
+<div id="divPopoverRelPagamentoTitleID" class="hide">
+	<div class="btn-group btn-corner" style="width: 310px;">
+		<p>Selecione a data de referência</p>
 	</div>
 </div>
 </form>

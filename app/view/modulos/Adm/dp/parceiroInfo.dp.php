@@ -27,13 +27,28 @@ $logoTipo 			= $_FILES['logomarca'][type];
 $tempLoc 			= $_FILES['logomarca'][tmp_name];
 $logoTamanho		= $_FILES['logomarca'][size];
 
-$log->info("TempLoc: ".$tempLoc);
 
-if (!is_uploaded_file($tempLoc)) {
-	$log->err($tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP'));
-	echo $tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP');
-	exit;
+
+$log->info("TempLoc: ".serialize($_FILES));
+$log->info("_POST: ".serialize($_POST));
+
+if ($tempLoc)	{
+	if (!is_uploaded_file($tempLoc)) {
+		$log->err($tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP'));
+		echo $tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP');
+		exit;
+	}
+	
+	/** Verifica se o arquivo existe e pode ser lido **/
+	if (!file_exists($tempLoc) || !is_readable($tempLoc)) {
+		echo $tr->trans("Arquivo %s não existe ou não pode ser lido",array("%s" => $tempLoc));
+		exit;
+	}
+	
 }
+
+
+
 
 if ($tipo == 'J'){
 	
@@ -355,6 +370,31 @@ try {
  			}
  		}
  	}
+ 	
+ 	
+ 	#################################################################################
+ 	## LogoMarca
+ 	#################################################################################
+ 	if ($tempLoc) {
+ 		/** Resgata as informações do arquivo **/
+ 		$tamArq			= filesize($tempLoc);
+ 		$logoExt 		= pathinfo($logoNome, PATHINFO_EXTENSION);
+ 		$data 			= fread(fopen($tempLoc, 'r'), $tamArq);
+ 			
+ 		#################################################################################
+ 		## Verifica se a logo já existe
+ 		#################################################################################
+ 		$oLogo	= $em->getRepository('Entidades\ZgadmOrganizacaoLogo')->findOneBy(array('codOrganizacao' => $codOrganizacao));
+ 		if (!$oLogo)	{
+ 			$oLogo	= new \Entidades\ZgadmOrganizacaoLogo();
+ 			$oLogo->setCodOrganizacao($oParceiro);
+ 		}
+ 		
+ 		$oLogo->setLogomarca($data);
+ 		$em->persist($oLogo);
+ 		 	
+ 	}
+ 	
  	
  	#################################################################################
  	## Flush
