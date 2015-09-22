@@ -11,10 +11,18 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Carregando o template html
 #################################################################################
-$tpl	= new \Zage\App\Template();
-$tpl->load(SITE_PATH . 'html/index.html');
+$tplHeader	= new \Zage\App\Template();
+$tplMain	= new \Zage\App\Template();
+$tplFooter	= new \Zage\App\Template();
+
+$tplHeader->load(SITE_PATH 	. '/html/header.html');
+$tplMain->load(SITE_PATH 	. '/html/index.html');
+$tplFooter->load(SITE_PATH 	. '/html/footer.html');
 
 
+$html	= $tplHeader->getHtml();
+$html	.= $tplMain->getHtml();
+$html	.= $tplFooter->getHtml();
 
-$tpl->show();
+echo $html;
 ?>

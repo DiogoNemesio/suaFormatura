@@ -1,0 +1,680 @@
+<!-- breadcrumb start -->
+
+			<!-- main-container start -->
+			<!-- ================ -->
+			<section class="main-container">
+
+				<div class="container">
+					<div class="row">
+
+						<!-- main start -->
+						<!-- ================ -->
+						<div class="main col-md-8">
+
+							<!-- page-title start -->
+							<!-- ================ -->
+							<h1 class="page-title">CADASTRO DE TURMA</h1>
+							<div class="separator-2"></div>
+							<!-- page-title end -->
+
+							<!-- Forms start -->
+							<!-- ============================================================================== -->							
+							<br>
+							<div id='divMsg'></div>
+								
+							<form class="form" id="zgFormID">
+								<input type="hidden" id="valID" name="validado">
+								<input type="hidden" id="valEmailID" name="validaEmail">
+								<input type="hidden" id="valCpfID" name="validaCpf">
+								<input type="hidden" id="indUsuarioID" name="indUsuario">
+								
+								<h4>Passo 1: Preencha as informações da sua turma</h4>
+								<div class="form-group has-feedback" id="divIdentID">
+									<label class="control-label" for="identID"><a href="#" class="pt-popover" data-toggle="popover" data-placement="right" data-content="Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." title="" data-original-title="Unlimited Subdomains">?</a>
+												        Identificação da turma</label>
+									<input type="text" id="identID" name="ident" maxlength="60" class="form-control" onblur="validaIdent();" autocomplete="off">
+									<i id="iIdentID" class=""></i>
+								</div>
+								<div class="form-group has-feedback" id="divNomeID">
+									<label class="control-label" for="nomeID">Nome da Turma</label>
+									<input type="text" class="form-control" id="nomeID" name="nome" maxlength="100" onblur="validaNome();" autocomplete="off" >
+									<i id="iNomeID" class=""></i>
+								</div>
+								<div class="form-group has-feedback" id="divDataConclusaoID">
+									<label class="control-label" for="dataConclusaoID">Data prevista para conclusão</label>
+									<input type="text" class="form-control" id="dataConclusaoID" maxlength="10" name="dataConclusao" onblur="validaData();" zg-data-toggle="mask" zg-data-mask="data" autocomplete="off">
+									<i id="iDataConclusaoID" class=""></i>
+								</div>
+								<div class="form-group" id="divInstituicaoID">
+							    	<label class="col-sm-2 control-label pull-left" for="instituicaoID">Instituição</label>
+									<input type="hidden" id="instituicaoID" name="instituicao"  data-rel="select2Instituicao">								    	
+								</div>
+								<div class="form-group " id="divCursoID">
+							    	<label class="col-sm-2 control-label" for="cursoID">Curso</label>
+									<input type="hidden" id="cursoID" name="curso" data-rel="select2Curso">								    	
+								</div>
+								<div class="form-group" id="divCidadeID">
+							    	<label class="col-sm-2 control-label pull-left" for="instituicaoID">Cidade</label>
+									<input type="hidden" id="cidadeID" name="cidade"  data-rel="select2Cidade">								    	
+								</div>
+								
+								<h4>Passo 2: Preencha as informações do primeiro formando</h4>
+								<div class="form-group has-feedback" id="divNomeUsuID">
+									<label class="control-label" for="nomeUsuID">Seu nome completo</label>
+									<input type="text" id="nomeUsuID" name="nomeUsu" maxlength="100" class="form-control" onblur="validaNomeUsu();" autocomplete="off">
+									<i id="iNomeUsuID" class=""></i>
+								</div>
+								<div class="form-group has-feedback" id="divEmail1ID">
+									<label class="control-label" for="emailID">E-mail</label>
+									<input type="text" class="form-control" id="email1ID" name="email1" maxlength="200" onblur="validaEmail1();" autocomplete="off" >
+									<i id="iEmail1ID" class=""></i>
+								</div>
+								<div class="form-group has-feedback" id="divEmail2ID">
+									<label class="control-label" for="email2ID">Confirmação de e-mail</label>
+									<input type="text" class="form-control" id="email2ID" name="email2" maxlength="200" onblur="validaEmail2();" autocomplete="off" >
+									<i id="iEmail2ID" class=""></i>
+								</div>
+								<div class="form-group has-feedback" id="divCpfID">
+									<label class="control-label" for="cpfID">CPF</label>
+									<input type="text" class="form-control" id="cpfID" name="cpf" maxlength="200" onblur="validaCpfSite();" zg-data-toggle="mask" zg-data-mask="cpf" autocomplete="off" >
+									<i id="iCpfID" class=""></i>
+								</div>
+								<div class="checkbox" id="divTermoID">
+									<label>
+										<input type="checkbox" id="termoID" name="termo"> Aceito a <a href="#">politica de privacidade</a> e <a href="#">termos de uso</a> do SUAFORMATURA.
+									</label>
+								</div>
+								<button type="button" class="btn btn-default" id="btnSubmitID">Cadastrar</button>
+							</form>
+							
+							
+							
+						</div>
+						<!-- main end -->
+						
+						
+					</div>
+				</div>
+			</section>
+			<!-- main-container end -->
+			
+			
+<script type="text/javascript" charset="%CHARSET%">
+
+//Mascaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+/*********************************************************
+* Submit
+*********************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaForm();
+	
+	if(vOK == false) 	{
+		return false;
+	}else{
+		$('#zgFormID').submit();
+	}
+	
+});
+
+//Submeter o formulário
+$('#zgFormID').submit(function(e) {
+	
+	alert ('entrei');
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codUsuarioID').val(zgGetCodRetorno(data));
+			zgMostraMsg('divMsg',zgGetMsgRetorno(data));
+			
+			//Tornar os campos readonly
+			
+			
+		}else{
+			zgMostraErro('divMsg',zgGetMsgRetorno(data));
+		}
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+	
+	
+});
+
+/*********************************************************
+* Busca Select2 typehead Instituição
+*********************************************************/
+$('[data-rel="select2Instituicao"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar instituição de ensino',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fmt/getInstituicao.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fmt/getInstituicao.dp.php", {
+                data: {codInstituicao: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+/*********************************************************
+* Busca Select2 typehead Cursos
+*********************************************************/
+$('[data-rel="select2Curso"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Selecione o curso',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fmt/getCurso.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Fmt/getCurso.dp.php", {
+                data: {codCurso: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+
+/*********************************************************
+* Busca Select2 typehead Cidades
+*********************************************************/
+$('[data-rel="select2Cidade"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar a cidade',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Adm/getCidadeLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Adm/getCidadeLis.dp.php", {
+                data: {codCidade: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+/*********************************************************
+* VALIDA FORMULÁRIO
+*********************************************************/
+//Valida campo identificação
+function validaIdent(){
+	
+	var vIdent	= $('#identID').val();
+	$('#valID').val(0);
+	
+	if (!vIdent) {
+		$('#divIdentID').addClass('has-error');
+		$('#iIdentID').addClass('fa fa-times form-control-feedback');
+		
+		return false;
+	}else{
+		
+		if (vIdent.length > 60){
+			$('#divIdentID').addClass('has-error');
+			$('#iIdentID').addClass('fa fa-times form-control-feedback');
+			return false;
+		}else{
+			
+			/** Verificar se a identificação está disponível no banco **/
+			jQuery.ajax({
+		   		url: "%ROOT_URL%/Fmt/orgIdentVerifica.dp.php",
+		   		data: { ident: vIdent},
+		   		success: function(ret) {
+		   			var vData	= JSON.parse(ret);
+		   	    	if (vData.existe == 0) {
+		   	    		$('#valID').val(1);
+		   	    	}else{
+		   	    		$('#valID').val(0);
+		   	    	}
+		   		},
+		   		method: 'get',
+		   		cache: false,
+		   		async:false
+		   });
+		}
+	}
+	
+	if ($('#valID').val() == 0) {
+		$('#divIdentID').addClass('has-error');
+		$('#iIdentID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else{
+		$('#divIdentID').removeClass('has-error');
+		$('#divIdentID').addClass('has-success');
+		$('#iIdentID').removeClass('fa fa-times form-control-feedback');
+		$('#iIdentID').addClass('fa fa-check form-control-feedback');
+		return true;
+	}
+}
+
+//Valida campo identificação
+function validaNome(){
+	
+	var vNome	= $('#nomeID').val();
+	
+	if (!vNome) {
+		$('#divNomeID').addClass('has-error');
+		$('#iNomeID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else{
+		if (vNome.length > 60){
+			$('#divNomeID').addClass('has-error');
+			$('#iNomeID').addClass('fa fa-times form-control-feedback');
+			return false;
+		}else{
+			$('#divNomeID').removeClass('has-error');
+			$('#divNomeID').addClass('has-success');
+			$('#iNomeID').removeClass('fa fa-times form-control-feedback');
+			$('#iNomeID').addClass('fa fa-check form-control-feedback');
+
+			return true;
+		}
+	}
+}
+
+//Valida campo identificação
+function validaData(){
+	
+	var vData	= $('#dataConclusaoID').val();
+	
+	if (!vData) {
+		$('#divDataConclusaoID').addClass('has-error');
+		$('#iDataConclusaoID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else{
+		if (vData.length > 10){
+			$('#divDataConclusaoID').addClass('has-error');
+			$('#iDataConclusaoID').addClass('fa fa-times form-control-feedback');
+			return false;
+		}else{
+			$('#divDataConclusaoID').removeClass('has-error');
+			$('#divDataConclusaoID').addClass('has-success');
+			$('#iDataConclusaoID').removeClass('fa fa-times form-control-feedback');
+			$('#iDataConclusaoID').addClass('fa fa-check form-control-feedback');
+
+			return true;
+		}
+	}
+}
+
+//Valida campo identificação
+function validaNomeUsu(){
+	
+	var vNomeUsu	= $('#nomeUsuID').val();
+	
+	if (!vNomeUsu) {
+		$('#divNomeUsuID').addClass('has-error');
+		$('#iNomeUsuID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else{
+		if (vNomeUsu.length > 100){
+			$('#divNomeUsuID').addClass('has-error');
+			$('#iNomeUsuID').addClass('fa fa-times form-control-feedback');
+			return false;
+		}else{
+			$('#divNomeUsuID').removeClass('has-error');
+			$('#divNomeUsuID').addClass('has-success');
+			$('#iNomeUsuID').removeClass('fa fa-times form-control-feedback');
+			$('#iNomeUsuID').addClass('fa fa-check form-control-feedback');
+
+			return true;
+		}
+	}
+}
+
+//Valida campo identificação
+function validaEmail1(){
+	var vEmail	= $('#email1ID').val();
+	$('#valEmailID').val(0);
+	
+	if (!vEmail){
+		$('#divEmail1ID').addClass('has-error');
+		$('#iEmail1ID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else if (validarEmail(vEmail) == false) {
+		$('#divEmail1ID').addClass('has-error');
+		$('#iEmail1ID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else{
+		
+		//Verificar se o nome está disponível no banco
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Seg/usuarioVerificaEmail.dp.php",
+	   		data: { email: vEmail},
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valEmailID').val(1);
+	   	    		$('#indUsuarioID').val(0);
+	   	    	}else{	   	   
+	   	    		$('#valEmailID').val(0);
+	   	    		$('#indUsuarioID').val(1);
+	   	    		
+	   	    		// Carregar informações
+	   	    		$('#nomeUsuID').val(vData.nome);
+	   	    		$('#email2ID').val(vData.usuario);
+	   	    		$('#cpfID').val(vData.cpf);
+	   	    		
+	   	    		
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+		
+		if ($('#valEmailID').val() == 0) {
+			//alert ('Identificamos um usuário com esse email. ');
+			
+			//Readonly
+			$('#nomeUsuID').attr("readonly", true);
+			$('#email1ID').attr("readonly", true);
+			$('#email2ID').attr("readonly", true);
+			$('#cpfID').attr("readonly", true);
+			
+			//Campos com confirmação
+			$('#divNomeUsuID').removeClass('has-error');
+			$('#divNomeUsuID').addClass('has-success');
+			$('#iNomeUsuID').removeClass('fa fa-times form-control-feedback');
+			$('#iNomeUsuID').addClass('fa fa-check form-control-feedback');
+			
+			$('#divEmail1ID').removeClass('has-error');
+			$('#divEmail1ID').addClass('has-success');
+			$('#iEmail1ID').removeClass('fa fa-times form-control-feedback');
+			$('#iEmail1ID').addClass('fa fa-check form-control-feedback');
+			
+			$('#divEmail2ID').removeClass('has-error');
+			$('#divEmail2ID').addClass('has-success');
+			$('#iEmail2ID').removeClass('fa fa-times form-control-feedback');
+			$('#iEmail2ID').addClass('fa fa-check form-control-feedback');
+			
+			$('#divCpfID').removeClass('has-error');
+			$('#divCpfID').addClass('has-success');
+			$('#iCpfID').removeClass('fa fa-times form-control-feedback');
+			$('#iCpfID').addClass('fa fa-check form-control-feedback');
+
+			
+			return true;
+		}else{
+			$('#divEmail1ID').removeClass('has-error');
+			$('#divEmail1ID').addClass('has-success');
+			$('#iEmail1ID').removeClass('fa fa-times form-control-feedback');
+			$('#iEmail1ID').addClass('fa fa-check form-control-feedback');
+			return true;
+		}
+	}	
+}
+
+//Valida email 2
+function validaEmail2(){
+	var vEmail2	= $('#email2ID').val();
+	var vEmail1	= $('#email1ID').val();
+	
+	if (!vEmail2){
+		$('#divEmail2ID').addClass('has-error');
+		$('#iEmail2ID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else if (vEmail1 != vEmail2) {
+		$('#divEmail2ID').addClass('has-error');
+		$('#iEmail2ID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else{
+		$('#divEmail2ID').removeClass('has-error');
+		$('#divEmail2ID').addClass('has-success');
+		$('#iEmail2ID').removeClass('fa fa-times form-control-feedback');
+		$('#iEmail2ID').addClass('fa fa-check form-control-feedback');
+
+		return true;
+	}
+}
+
+/***** Valida CPF *****/
+function validaCpfSite () {
+	var vCpf		= $('#cpfID').val();
+	$('#valCpfID').val(0);
+	
+	if (!vCpf){
+		$('#divCpfID').addClass('has-error');
+		$('#iCpfID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else if (validarCPF(vCpf) == false) {
+		$('#divCpfID').addClass('has-error');
+		$('#iCpfID').addClass('fa fa-times form-control-feedback');
+		return false;
+	}else{
+		
+		//Verificar se o nome está disponível no banco
+		jQuery.ajax({
+	   		url: "%ROOT_URL%/Seg/usuarioVerificaCpf.dp.php",
+	   		data: { cpf: vCpf },
+	   		success: function(ret) {
+	   			var vData	= JSON.parse(ret);
+	   	    	if (vData.existe == 0) {
+	   	    		$('#valCpfID').val(1);
+	   	    		$('#indUsuarioID').val(0);
+	   	    	}else{
+	   	    		$('#valCpfID').val(0);
+	   	    		$('#indUsuarioID').val(1);
+	   	    		
+	   	    		// Carregar informações
+	   	    		$('#nomeUsuID').val(vData.nome);
+	   	    		$('#email2ID').val(vData.usuario);
+	   	    		$('#email1ID').val(vData.usuario);
+	   	    	}
+	   		},
+	   		method: 'get',
+	   		cache: false,
+	   		async:false
+	   });
+		
+		if ($('#valCpfID').val() == 0) {
+			//alert ('Identificamos um usuário com esse CPF.');
+			
+			//Readonly
+			$('#nomeUsuID').attr("readonly", true);
+			$('#email1ID').attr("readonly", true);
+			$('#email2ID').attr("readonly", true);
+			$('#cpfID').attr("readonly", true);
+			
+			//Campos com confirmação
+			$('#divNomeUsuID').removeClass('has-error');
+			$('#divNomeUsuID').addClass('has-success');
+			$('#iNomeUsuID').removeClass('fa fa-times form-control-feedback');
+			$('#iNomeUsuID').addClass('fa fa-check form-control-feedback');
+			
+			$('#divEmail1ID').removeClass('has-error');
+			$('#divEmail1ID').addClass('has-success');
+			$('#iEmail1ID').removeClass('fa fa-times form-control-feedback');
+			$('#iEmail1ID').addClass('fa fa-check form-control-feedback');
+			
+			$('#divEmail2ID').removeClass('has-error');
+			$('#divEmail2ID').addClass('has-success');
+			$('#iEmail2ID').removeClass('fa fa-times form-control-feedback');
+			$('#iEmail2ID').addClass('fa fa-check form-control-feedback');
+			
+			$('#divCpfID').removeClass('has-error');
+			$('#divCpfID').addClass('has-success');
+			$('#iCpfID').removeClass('fa fa-times form-control-feedback');
+			$('#iCpfID').addClass('fa fa-check form-control-feedback');
+
+			return true;
+		}else{
+			$('#divCpfID').removeClass('has-error');
+			$('#divCpfID').addClass('has-success');
+			$('#iCpfID').removeClass('fa fa-times form-control-feedback');
+			$('#iCpfID').addClass('fa fa-check form-control-feedback');
+			return true;
+		}
+	}	
+}
+
+function validaForm () {
+	var vInstituicao = $('#instituicaoID').val();
+	var vCurso	 	 = $('#cursoID').val();
+	var vCidade	 	 = $('#cidadeID').val();
+	var vTermo	 	 = $('#termoID').is(':checked');
+	
+	var vOK	= true;
+	
+	// IDENTIFICAÇÃO
+	if (validaIdent() == false){
+		vOK		= false;
+	}
+	
+	// NOME DA TURMA
+	if (validaNome() == false){
+		vOK		= false;
+	}
+	
+	// DATA DA PREVISÃO
+	if (validaData() == false){
+		vOK		= false;
+	}
+	
+	// INSTITUIÇÃO
+	if (!vInstituicao) {
+		$('#divInstituicaoID').addClass('has-error');
+		vOK		= false;
+	}
+	
+	// CURSO
+	if (!vCurso) {
+		$('#divCursoID').addClass('has-error');
+		vOK		= false;
+	}
+	
+	//CIDADE
+	if (!vCidade) {
+		$('#divCidadeID').addClass('has-error');
+		vOK		= false;
+	}
+	
+	// NOME USUARIO
+	if (validaNomeUsu() == false){
+		vOK		= false;
+	}
+	
+	// EMAIL 1
+	if (validaEmail1() == false){
+		vOK		= false;
+	}
+	
+	// EMAIL CONFIRMAÇÃO
+	if (validaEmail2() == false){
+		vOK		= false;
+	}
+	
+	// CPF
+	if (validaCpfSite() == false){
+		vOK		= false;
+	}
+	
+	// TERMO
+	if (!vTermo == true){	
+		$('#divTermoID').addClass('has-error');
+		vOK		= false;
+	}
+
+	
+	// RETURN
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+	
+}
+
+
+</script>
+			

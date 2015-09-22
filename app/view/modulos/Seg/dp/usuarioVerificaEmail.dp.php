@@ -3,15 +3,14 @@
 ## Includes
 #################################################################################
 if (defined('DOC_ROOT')) {
-	include_once(DOC_ROOT . 'include.php');
+	include_once(DOC_ROOT . 'includeNoAuth.php');
 }else{
-	include_once('../include.php');
+	include_once('../../../includeNoAuth.php');
 }
-
 #################################################################################
 ## Verifica se o usuário está autenticado
 #################################################################################
-include_once(BIN_PATH . 'auth.php');
+//include_once(BIN_PATH . 'auth.php');
 
 #################################################################################
 ## Resgata as variáveis postadas
@@ -35,6 +34,9 @@ try {
 
 if ($oUsuario != null && ($oUsuario->getCodigo() != $codUsuario)) {
 	$array["existe"]	= 1;
+	$array["nome"]		= $oUsuario->getNome();
+	$array["usuario"]	= $oUsuario->getUsuario();
+	$array["cpf"]		= $oUsuario->getCpf();
 	
 }else{
 	$array["existe"]	= 0;
