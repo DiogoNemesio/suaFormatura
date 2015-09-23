@@ -114,18 +114,17 @@ $('#btnSubmitID').on("click", function(e) {
 	
 	var vOK 	= validaForm();
 	
-	if(vOK == false) 	{
+	if (vOK == false) 	{
+		e.preventDefault();
 		return false;
-	}else{
-		$('#zgFormID').submit();
 	}
 	
+	$('#zgFormID').submit();
+	return false;
 });
 
 //Submeter o formulário
 $('#zgFormID').submit(function(e) {
-	
-	alert ('entrei');
 	
 	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
 	$('#btnSubmitID').attr("disabled","disabled");
@@ -170,7 +169,7 @@ $('#zgFormID').submit(function(e) {
 		$( this ).trigger('keyup');
 	});
 	
-	return false; 
+	return false;
 	
 	
 });
@@ -597,6 +596,7 @@ function validaCpfSite () {
 }
 
 function validaForm () {
+	
 	var vInstituicao = $('#instituicaoID').val();
 	var vCurso	 	 = $('#cursoID').val();
 	var vCidade	 	 = $('#cidadeID').val();
@@ -663,7 +663,6 @@ function validaForm () {
 		vOK		= false;
 	}
 
-	
 	// RETURN
 	if (vOK == true) {
 		return true ;
