@@ -182,6 +182,7 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 #################################################################################
 $urlVoltar			= ROOT_URL."/Adm/parceiroLis.php?id=".$id;
 $dpLogoUrl			= ROOT_URL."/Adm/parceiroInfoLogo.dp.php";
+$logoUrl			= ROOT_URL . "/Adm/mostraLogomarca.php?logo=".rand(1,500000);
 
 #################################################################################
 ## Url Novo
@@ -344,6 +345,8 @@ $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_I
 $tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('DP_LOGO'					,$dpLogoUrl);
+$tpl->set('LOGO_URL'				,$logoUrl);
+
 
 $tpl->set('IC'						,$_icone_);
 $tpl->set('COD_MENU'				,$_codMenu_);

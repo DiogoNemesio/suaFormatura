@@ -147,7 +147,7 @@
 										<label class="col-xs-12 col-sm-3 control-label" for="logomarcaID">Logomarca</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="profile-picture">
-												<img id="logomarcaID" class="editable img-responsive" alt="Logomarca" src="../assets/avatars/profile-pic.jpg" />
+												<img id="logomarcaID" class="editable img-responsive" alt="Logomarca" src="%LOGO_URL%" />
 											</span>
 										</div>
 									</div>
@@ -394,9 +394,16 @@ try {//ie8 throws some harmless exceptions, so let's catch'em
 		value: null,
 		image: {
 			//specify ace file input plugin's options here
-			btn_choose: 'Alterar a Logomarca',
+
+			style:'well',
+			btn_choose:'Sua logomarca',
+			btn_change:null,
+			no_icon:'ace-icon fa fa-cloud-upload',
 			droppable: true,
 			maxSize: 1100000,//~1000Kb
+			allowExt: ['jpg', 'jpeg', 'png', 'gif'],
+			allowMime: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'],
+			thumbnail:'fit',//large | fit
 
 			//and a few extra ones here
 			name: 'logomarca',//put the field name here as well, will be used inside the custom plugin
@@ -441,11 +448,10 @@ try {//ie8 throws some harmless exceptions, so let's catch'em
 				return deferred.promise();
 			}
 			
-			var $form = $(avatar).next().find('.editableform:eq(0)')
-			var file_input = $form.find('input[type=file]:eq(0)');
-			var pk = $(avatar).attr('data-pk');//primary key to be sent to server
-			
-			var ie_timeout = null
+			var $form 			= $(avatar).next().find('.editableform:eq(0)');
+			var file_input 		= $form.find('input[type=file]:eq(0)');
+			var pk 				= $(avatar).attr('data-pk');//primary key to be sent to server
+			var ie_timeout 		= null;
 			
 			
 			if( "FormData" in window ) {
@@ -478,14 +484,11 @@ try {//ie8 throws some harmless exceptions, so let's catch'em
 				})
 			}
 			else {
+				
 				deferred = new $.Deferred
 			
 				var temporary_iframe_id = 'temporary-iframe-'+(new Date()).getTime()+'-'+(parseInt(Math.random()*1000));
-				var temp_iframe = 
-						$('<iframe id="'+temporary_iframe_id+'" name="'+temporary_iframe_id+'" \
-						frameborder="0" width="0" height="0" src="about:blank"\
-						style="position:absolute; z-index:-1; visibility: hidden;"></iframe>')
-						.insertAfter($form);
+				var temp_iframe			= $('<iframe id="'+temporary_iframe_id+'" name="'+temporary_iframe_id+'" frameborder="0" width="0" height="0" src="about:blank" style="position:absolute; z-index:-1; visibility: hidden;"></iframe>').insertAfter($form);
 						
 				$form.append('<input type="hidden" name="temporary-iframe-id" value="'+temporary_iframe_id+'" />');
 				
@@ -497,10 +500,10 @@ try {//ie8 throws some harmless exceptions, so let's catch'em
 				//we use "temporary-iframe-id" to access iframe and its deferred object
 			
 				$form.attr({
-						  action: submit_url,
-						  method: 'POST',
-						 enctype: 'multipart/form-data',
-						  target: temporary_iframe_id //important
+					action: submit_url,
+					method: 'POST',
+					enctype: 'multipart/form-data',
+					target: temporary_iframe_id //important
 				});
 			
 				$form.get(0).submit();
@@ -517,7 +520,7 @@ try {//ie8 throws some harmless exceptions, so let's catch'em
 			//deferred callbacks, triggered by both ajax and iframe solution
 			deferred
 			.done(function(result) {//success
-				var res = result[0];//the `result` is formatted by your server side response and is arbitrary
+				var res = result;//the `result` is formatted by your server side response and is arbitrary
 				if(res.status == 'OK') $(avatar).get(0).src = res.url;
 				else alert(res.message);
 			})
@@ -531,9 +534,6 @@ try {//ie8 throws some harmless exceptions, so let's catch'em
 			
 			return deferred.promise();
 			
-			
-			
-			
 			// ***END OF UPDATE AVATAR HERE*** //
 		},
 		
@@ -541,7 +541,7 @@ try {//ie8 throws some harmless exceptions, so let's catch'em
 		}
 	})
 }catch(e) {}
-
+/*
 //let's display edit mode by default?
 var blank_image = true;//somehow you determine if image is initially blank or not, or you just want to display file input at first
 if(blank_image) {
@@ -553,45 +553,8 @@ if(blank_image) {
 		$('#logomarcaID').off('hidden');
 	})
 }
+*/
 
-
-
-
-
-
-$('#logoID').ace_file_input({
-	paramName: "logomarca",
-	style:'well',
-	btn_choose:'Sua logomarca',
-	btn_change:null,
-	no_icon:'ace-icon fa fa-cloud-upload',
-	droppable:false,
-	allowExt: ['jpg', 'jpeg', 'png', 'gif'],
-	allowMime: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'],
-	thumbnail:'small'//large | fit
-	//,icon_remove:null//set null, to hide remove/reset button
-	/**,before_change:function(files, dropped) {
-		//Check an example below
-		//or examples/file-upload.html
-		return true;
-	}*/
-	/**,before_remove : function() {
-		return true;
-	}*/
-	,
-	preview_error : function(filename, error_code) {
-		//name of the file that failed
-		//error_code values
-		//1 = 'FILE_LOAD_FAILED',
-		//2 = 'IMAGE_LOAD_FAILED',
-		//3 = 'THUMBNAIL_FAILED'
-		//alert(error_code);
-	}
-
-}).on('change', function(){
-	console.log($(this).data('ace_input_files'));
-	console.log($(this).data('ace_input_method'));
-});
 
 
 function zgMostraDivs() {

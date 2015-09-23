@@ -7,27 +7,55 @@ if (defined('DOC_ROOT')) {
 }else{
  	include_once('../include.php');
 }
- 
+
+global $log,$em,$system,$tr;
+
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-if (isset($_POST['codEmpresa']))	 	$codEmpresa			= \Zage\App\Util::antiInjection($_POST['codEmpresa']);
-if (isset($_POST['codStatus']))			$codStatus			= \Zage\App\Util::antiInjection($_POST['codStatus']);
+$codOrganizacao 	= $system->getCodOrganizacao();
+$logoNome 			= $_FILES['logomarca']["name"];
+$logoTipo 			= $_FILES['logomarca']["type"];
+$tempLoc 			= $_FILES['logomarca']["tmp_name"];
+//$logoTamanho		= $_FILES['logomarca']["size"];
+
 
 #################################################################################
-## Limpar a variável de erro
+## Verificar se foi via Ajax ou iframe
 #################################################################################
-$err	= false;
+$ajax 	= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']==='XMLHttpRequest';
+
+#################################################################################
+## Criar a variável de retorno
+#################################################################################
+$result	= array();
 
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-
-if ($err != null) {
-	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
- 	exit;
+if (!$tempLoc) {
+	$log->err($tr->trans('Erro, variável logomarca não informada !!!'));
+	$result['status'] 	= 'ERR';
+	$result['message']	= $tr->trans('Erro, variável logomarca não informada !!!');
+	returnLogoFunc($result);
 }
- 
+
+if (!is_uploaded_file($tempLoc)) {
+	$log->err($tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP'));
+	$result['status'] 	= 'ERR';
+	$result['message']	= $tr->trans('Arquivo não pode ser salvo, pois não foi transferido através de uma requisição POST HTTP');
+	returnLogoFunc($result);
+}
+
+/** Verifica se o arquivo existe e pode ser lido **/
+if (!file_exists($tempLoc) || !is_readable($tempLoc)) {
+	$log->err($tr->trans("Arquivo %s não existe ou não pode ser lido",array("%s" => $tempLoc)));
+	$result['status'] 	= 'ERR';
+	$result['message']	= $tr->trans("Arquivo %s não existe ou não pode ser lido",array("%s" => $tempLoc));
+	returnLogoFunc($result);
+}
+
+
 #################################################################################
 ## Salvar no banco
 #################################################################################
@@ -35,45 +63,112 @@ try {
 	#################################################################################
 	## Resgata os objetos (chave estrangeiras)
 	#################################################################################
-	$oOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-	$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
-	$oMatriz		= $em->getRepository('Entidades\ZgadmEmpresa')->findOneBy(array('codigo' => $matriz));
-	$oStatus		= $em->getRepository('Entidades\ZgadmEmpresaStatusTipo')->findOneBy(array('codigo' => $codStatus));
+	$oOrganizacao	= $em->getRepository('\Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+
+	#################################################################################
+	## Redimensionar a logomarca
+	#################################################################################
+	$logoExt 		= pathinfo($logoNome, PATHINFO_EXTENSION);
+	$logoPath		= $tempLoc."_thumb.".$logoExt;
+	move_uploaded_file($tempLoc , $logoPath);
+	$ret			= resizeLogo($logoPath,$logoPath,280);
 	
-	if (isset($codEmpresa) && (!empty($codEmpresa))) {
- 		$oEmpresa	= $em->getRepository('Entidades\ZgadmEmpresa')->findOneBy(array('codigo' => $codEmpresa));
- 		if (!$oEmpresa) $oEmpresa	= new \Entidades\ZgadmEmpresa();
- 	}else{
- 		$oEmpresa	= new \Entidades\ZgadmEmpresa();
- 	}
- 	
- 	$oEmpresa->setCodOrganizacao($oOrganizacao);
- 	$oEmpresa->setNome($nome);
- 	$oEmpresa->setFantasia($fantasia);
- 	$oEmpresa->setCnpj($cnpj);
- 	$oEmpresa->setCodMatriz($oMatriz);
- 	$oEmpresa->setInscEstadual($inscrEst);
- 	$oEmpresa->setInscMunicipal($inscrMun);
- 	
- 	$oEmpresa->setCep($cep);
- 	$oEmpresa->setCodLogradouro($oLogradouro);
- 	$oEmpresa->setBairro($bairro);
- 	$oEmpresa->setEndereco($endereco);
- 	$oEmpresa->setNumero($numero);
- 	$oEmpresa->setComplemento($complemento);
- 	
- 	$oEmpresa->setCodStatus($oStatus);
- 	$oEmpresa->setDataAbertura($dataAbertura);
- 	
- 	$em->persist($oEmpresa);
- 	$em->flush();
- 	$em->detach($oEmpresa);
- 	 	
+	#################################################################################
+	## LogoMarca
+	#################################################################################
+	$tamArq			= filesize($logoPath);
+	$data 			= fread(fopen($logoPath, 'r'), $tamArq);
+
+	#################################################################################
+	## Verifica se a logo já existe
+	#################################################################################
+	$oLogo	= $em->getRepository('\Entidades\ZgadmOrganizacaoLogo')->findOneBy(array('codOrganizacao' => $codOrganizacao));
+	if (!$oLogo)	{
+		$oLogo	= new \Entidades\ZgadmOrganizacaoLogo();
+		$oLogo->setCodOrganizacao($oOrganizacao);
+	}
+		
+	$oLogo->setLogomarca($data);
+	$oLogo->setMimetype($logoTipo);
+	$oLogo->setTamanho($tamArq);
+	$oLogo->setNome($logoNome);
+	$em->persist($oLogo);
+			
+	#################################################################################
+	## Flush
+	#################################################################################
+	$em->flush();
+	$em->clear();
+	
+	
+	$result['status'] 	= 'OK';
+	$result['message']	= $tr->trans('Logomarca alterada com sucesso');
+	$result['url']		= ROOT_URL . "/Adm/mostraLogomarca.php?logo=".rand(1,500000);
+	returnLogoFunc($result);
+	
 } catch (\Exception $e) {
- 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
- 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
- 	exit;
+	$result['status'] 	= 'ERR';
+	$result['message']	= htmlentities($e->getMessage());
+	returnLogoFunc($result);
 }
  
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oEmpresa->getCodigo());
+
+
+function returnLogoFunc($res) {
+	global $ajax;
+	
+	$result = json_encode($res);
+	
+	if ($ajax) {
+		//if request was ajax(modern browser), just echo it back
+		echo $result;
+	}
+	else {
+		//if request was from an older browser not supporting ajax upload
+		//then we have used an iframe instead and the response is sent back to the iframe as a script
+		echo '<script language="javascript" type="text/javascript">';
+		echo 'window.top.window.jQuery("#'.$_POST['temporary-iframe-id'].'").data("deferrer").resolve('.$result.');';
+		echo '</script>';
+	}
+	exit;
+}
+
+
+function resizeLogo($in_file, $out_file, $new_width, $new_height=FALSE)
+{
+	$image = null;
+	$extension = strtolower(preg_replace('/^.*\./', '', $in_file));
+	switch($extension)
+	{
+		case 'jpg':
+		case 'jpeg':
+			$image = imagecreatefromjpeg($in_file);
+			break;
+		case 'png':
+			$image = imagecreatefrompng($in_file);
+			break;
+		case 'gif':
+			$image = imagecreatefromgif($in_file);
+			break;
+	}
+	if(!$image || !is_resource($image)) return false;
+
+
+	$width = imagesx($image);
+	$height = imagesy($image);
+	if($new_height === FALSE)
+	{
+		$new_height = (int)(($height * $new_width) / $width);
+	}
+
+
+	$new_image = imagecreatetruecolor($new_width, $new_height);
+	imagecopyresampled($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+	$ret = imagejpeg($new_image, $out_file, 80);
+
+	imagedestroy($new_image);
+	imagedestroy($image);
+
+	return $ret;
+}
