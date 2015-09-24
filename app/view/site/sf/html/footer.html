@@ -93,4 +93,49 @@
 		<!-- Custom Scripts -->
 		<script type="text/javascript" src="js/custom.js"></script>
 	</body>
+	
+	<script>
+	
+	$('#btnSubmitAltSenhaID').click(function() {
+		$('#zgFormAlteraSenhaID').submit();
+		e.preventDefault();
+		return false; 
+	});
+	
+	
+	// Submeter o formulário
+	$('#zgFormAlteraSenhaID').submit(function() {
+		$('#btnSubmitAltSenhaID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+		$('#btnSubmitAltSenhaID').attr("disabled","disabled");
+		
+		$.ajax({
+			type:	"POST", 
+			url:	"%DP_SENHA%",
+			data:	$('#zgFormAlteraSenhaID').serialize(),
+		}).done(function( data, textStatus, jqXHR) {
+			if (checaRetornoOK(data) == true) {
+				//Mensagem de confirmação
+				zgMostraMsg('divMsgAltSenhaID',zgGetMsgRetorno(data));
+			}else{
+				//Mensagem de erro
+				zgMostraErro('divMsgAltSenhaID',zgGetMsgRetorno(data));
+			}
+			
+			//Voltar o botão de salvar
+			$('#btnSubmitAltSenhaID').html('<i class="fa fa-check bigger-110"></i> Enviar ');
+			$('#btnSubmitAltSenhaID').attr("disabled",false);
+			
+			$('#zgDivModalID').on('hidden.bs.modal', function () {
+				zgLimpaModalAviso();
+				$('#zgDivModalID').off('hidden.bs.modal');
+			});
+		}).fail(function( jqXHR, textStatus, errorThrown) {
+			zgMostraAviso(null);
+		});
+		e.preventDefault();
+		return false; 
+	});
+
+	
+	</script>
 </html>

@@ -128,10 +128,11 @@ for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 	$juros				= ($_juros + $_mora);
 	$totalAtr			+= $valor + $juros;
 	$instrucao			= "";
+	$email				= ($pagamentosAtr[$i]->getCodPessoa()) ? $pagamentosFut[$i]->getCodPessoa()->getEmail() : null;
 	
 	if ($podeBol) {
 		$urlDown			= "meuPagBoleto('".$pagamentosAtr[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','PDF','".$instrucao."','');";
-		$urlMail			= "meuPagBoleto('".$pagamentosAtr[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','MAIL','".$instrucao."','".$pagamentosAtr[$i]->getCodPessoa()->getEmail()."');";
+		$urlMail			= "meuPagBoleto('".$pagamentosAtr[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','MAIL','".$instrucao."','".$email."');";
 		$htmlBol			= '
 		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
 			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlDown.'"><i class="fa fa-file-pdf-o bigger-120"></i></span>
@@ -178,11 +179,14 @@ for ($i = 0; $i < $numFut; $i++) {
 	
 	
 	#################################################################################
-	## Verificar se a conta está atrasada
+	## Contas futuras, não precisa de júros
 	#################################################################################
-	$vencBol			= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]));
-	$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$vencBol);
-	$htmlAtraso			= "<i class='fa fa-check-circle green bigger-120'></i>";
+	$vencBol			= $vencimento;
+	$numDias			= 0;
+	$_juros				= 0;
+	$_mora				= 0;
+	$instrucao			= "";
+	$email				= ($pagamentosFut[$i]->getCodPessoa()) ? $pagamentosFut[$i]->getCodPessoa()->getEmail() : null;
 	
 	#################################################################################
 	## Calcular o valor
@@ -193,24 +197,33 @@ for ($i = 0; $i < $numFut; $i++) {
 		$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($pagamentosFut[$i]->getCodigo()));
 	}
 	
-	#################################################################################
-	## Calcular o Juros e Mora
-	#################################################################################
-	$_juros				= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($pagamentosFut[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
-	$_mora				= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($pagamentosFut[$i]->getCodigo(), date($system->config["data"]["dateFormat"]));
 	
+	
+	if ($podeBol) {
+		$urlDown			= "meuPagBoleto('".$pagamentosFut[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','PDF','".$instrucao."','');";
+		$urlMail			= "meuPagBoleto('".$pagamentosFut[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','MAIL','".$instrucao."','".$email."');";
+		$htmlBol			= '
+		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
+			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlDown.'"><i class="fa fa-file-pdf-o bigger-120"></i></span>
+			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlMail.'"><i class="fa fa-envelope bigger-120"></i></span>
+		</div>
+		';
+	}else{
+		$htmlBol		= '<i class="icon-only ace-icon fa fa-minus bigger-110"></i>';
+	}
 	
 	#################################################################################
 	## Formatar os campos
 	#################################################################################
 	$parcela			= $pagamentosFut[$i]->getParcela() . " de ".$pagamentosFut[$i]->getNumParcelas();
-	$juros				= ($_juros + $_mora);
+	$juros				= 0;
 	$tabFut	.= '<tr>
 			<td>'.$pagamentosFut[$i]->getDescricao().'</td>
 			<td style="text-align: center;">'.$parcela.'</td>
 			<td style="text-align: center;">'.$vencimento.'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
 			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
+			<td style="text-align: center;">'.$htmlBol.'</td>
 			</tr>
 	';
 }

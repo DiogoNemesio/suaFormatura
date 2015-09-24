@@ -93,15 +93,6 @@ function zgDecodeUrl(pStr) {
 	return $.base64.decode(pStr);
 }
 
-function zgMostraErro(pDiv,pMsg) {
-	$('#'+pDiv).html('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>'+pMsg+'</div>');
-}
-
-function zgMostraMsg(pDiv,pMsg) {
-	$('#'+pDiv).html('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>'+pMsg+'</div>');
-}
-
-
 function mostraMensagem(msg) {
 	var url = 'msg.php?mensagem='+msg;
 	$('#zgDivMsgID').load(url,function(){

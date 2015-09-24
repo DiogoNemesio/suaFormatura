@@ -77,7 +77,7 @@
 	
 		
 		<script>
-		
+
 			function atualizaNotificacoes() {
 				$('#zgNotificacoesID').load("%ROOT_URL%/App/notificacao.php");
 			}
@@ -252,6 +252,15 @@
 				}
 				
 			}
+			
+			function mostraLoginSenha(id) {
+				jQuery('.show_box').addClass('hidden');
+				jQuery('#'+id).removeClass('hidden');
+			}
+
+			
+
+			
 		</script>
 		
 	</head>
@@ -327,22 +336,54 @@
 											<button type="button" class="btn dropdown-toggle btn-default btn-sm" data-toggle="dropdown"><i class="fa fa-lock pr-10"></i> Login</button>
 											<ul class="dropdown-menu dropdown-menu-right dropdown-animation">
 												<li>
-													<form class="login-form margin-clear" id="loginIndex">
-														<div class="form-group has-feedback">
-															<label class="control-label">Email</label>
-															<input type="text" class="form-control" placeholder="">
-															<i class="fa fa-user form-control-feedback"></i>
-														</div>
-														<div class="form-group has-feedback">
-															<label class="control-label">Senha</label>
-															<input type="password" class="form-control" placeholder="">
-															<i class="fa fa-lock form-control-feedback"></i>
-														</div>
-														<button type="button" class="btn btn-gray btn-sm" id="submitLoginIndex">Entrar</button>
-														<ul>
-															<li><a href="#">Esqueceu a senha?</a></li>
-														</ul>
-													</form>
+													<div id="header-login-box" class="show_box">
+														<form class="login-form margin-clear" id="loginIndex" method="post" action="%ROOT_URL%/index.php">
+															<div class="form-group has-feedback">
+																<label class="control-label">Email</label>
+																<input type="text" id= "usuarioID" name="zgUsuario" value="" class="form-control" placeholder="Usuário" />
+																<i class="fa fa-user form-control-feedback"></i>
+															</div>
+															<div class="form-group has-feedback">
+																<label class="control-label">Senha</label>
+																<input type="password" id="senhaID" name="zgSenha" class="form-control" placeholder="Senha" />
+																<i class="fa fa-lock form-control-feedback"></i>
+															</div>
+															<button type="submit" class="btn btn-gray btn-sm" id="submitLoginIndex">Entrar</button>
+															<div>&nbsp;</div>
+															<div class="">
+																<div>
+																	<a href="javascript:mostraLoginSenha('header-forgot-box');" class="forgot-password-link">
+																		<i class="ace-icon fa fa-arrow-left"></i>
+																		Esqueci a senha
+																	</a>
+																</div>
+															</div>
+														</form>
+													</div>
+													
+													<div id="header-forgot-box" class="show_box hidden">
+														<form id="zgFormAlteraSenhaID" class="login-form margin-clear">
+															<div class="form-group has-feedback">
+																<label class="control-label">Email</label>
+																<input type="email" id="emailID" name="email" class="form-control" placeholder="Email" />
+																<i class="fa fa-user form-control-feedback"></i>
+															</div>
+															<button type="button" class="btn btn-gray btn-sm" id="btnSubmitAltSenhaID">Enviar</button>
+															<div>&nbsp;</div>
+															<div id="divMsgAltSenhaID"></div>
+															<div class="">
+																<div>
+																	<a href="javascript:mostraLoginSenha('header-login-box');" class="back-to-login-link">
+																		Voltar para o login
+																		<i class="ace-icon fa fa-arrow-right"></i>
+																	</a>
+																</div>
+															</div>
+														</form>
+													</div>
+
+													
+													
 												</li>
 											</ul>
 										</div>

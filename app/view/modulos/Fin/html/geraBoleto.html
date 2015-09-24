@@ -58,7 +58,7 @@
 <div class="modal-footer">
 	<button type="button" class="btn btn-warning" id="geraBoletoEnviaEmailID">Enviar e-mail</button>
 	<button type="button" class="btn btn-primary" id="geraBoletoGeraPDFID">Gerar PDF</button>
-	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+	<button type="button" data-dismiss="modal" class="btn" id="btnGeraBoletoFecharID">Fechar</button>
 </div>
 </form>
 
@@ -85,7 +85,14 @@ $('#geraBoletoEnviaEmailID').click(function() {
 			url:	"%URL_MIDIA%",
 			data:	$('#zgFormGeraBoletoID').serialize(),
 		}).done(function( data, textStatus, jqXHR) {
-			zgMostraAviso("Fechar");
+			$('#btnGeraBoletoFecharID').click();
+			$.gritter.add({
+				title: 'E-mail enviado com sucesso',
+				text: 'O E-mail com o boleto foi enviado com sucesso para os destinatários informados.',
+				class_name: 'gritter-info',
+				time: '5000'
+			});
+			//zgMostraAviso("Fechar");
 		}).fail(function( jqXHR, textStatus, errorThrown) {
 			zgMostraAviso(null);
 		});
