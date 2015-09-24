@@ -27,24 +27,28 @@
 								<input type="hidden" id="valEmailID" name="validaEmail">
 								<input type="hidden" id="valCpfID" name="validaCpf">
 								<input type="hidden" id="indUsuarioID" name="indUsuario">
+								<input type="hidden" id="usuOrgID" name="usuOrg">
 								
 								<h4>Passo 1: Preencha as informações da sua turma</h4>
 								<div class="form-group has-feedback" id="divIdentID">
-									<label class="control-label" for="identID"><a href="#" class="pt-popover" data-toggle="popover" data-placement="right" data-content="Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." title="" data-original-title="Unlimited Subdomains">?</a>
-												        Identificação da turma</label>
-									<input type="text" id="identID" name="ident" maxlength="60" class="form-control" onblur="validaIdent();" autocomplete="off">
+									<label class="control-label" for="identID">Identificação da turma <i class="pt-popover fa fa-question-circle" data-toggle="popover" data-placement="right" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o título da rifa."></i></label>
+									<input type="text" id="identID" name="ident" maxlength="60" class="form-control" onblur="validaIdent();" zg-data-toggle="mask" zg-data-mask="identificacao" autocomplete="off">
 									<i id="iIdentID" class=""></i>
 								</div>
+								<div id="divHelpIdentID"></div>
 								<div class="form-group has-feedback" id="divNomeID">
 									<label class="control-label" for="nomeID">Nome da Turma</label>
 									<input type="text" class="form-control" id="nomeID" name="nome" maxlength="100" onblur="validaNome();" autocomplete="off" >
 									<i id="iNomeID" class=""></i>
 								</div>
+								<div id="divHelpNomeID"></div>
 								<div class="form-group has-feedback" id="divDataConclusaoID">
 									<label class="control-label" for="dataConclusaoID">Data prevista para conclusão</label>
 									<input type="text" class="form-control" id="dataConclusaoID" maxlength="10" name="dataConclusao" onblur="validaData();" zg-data-toggle="mask" zg-data-mask="data" autocomplete="off">
 									<i id="iDataConclusaoID" class=""></i>
 								</div>
+								<div id="divHelpDataConclusaoID"></div>
+								<br>
 								<div class="form-group" id="divInstituicaoID">
 							    	<label class="col-sm-2 control-label pull-left" for="instituicaoID">Instituição</label>
 									<input type="hidden" id="instituicaoID" name="instituicao"  data-rel="select2Instituicao">								    	
@@ -57,28 +61,32 @@
 							    	<label class="col-sm-2 control-label pull-left" for="instituicaoID">Cidade</label>
 									<input type="hidden" id="cidadeID" name="cidade"  data-rel="select2Cidade">								    	
 								</div>
-								
-								<h4>Passo 2: Preencha as informações do primeiro formando</h4>
+								<br>
+								<h4>Passo 2: Preencha as informações do formando</h4>
 								<div class="form-group has-feedback" id="divNomeUsuID">
 									<label class="control-label" for="nomeUsuID">Seu nome completo</label>
 									<input type="text" id="nomeUsuID" name="nomeUsu" maxlength="100" class="form-control" onblur="validaNomeUsu();" autocomplete="off">
 									<i id="iNomeUsuID" class=""></i>
 								</div>
+								<div id="divHelpNomeUsuID"></div>
 								<div class="form-group has-feedback" id="divEmail1ID">
-									<label class="control-label" for="emailID">E-mail</label>
+									<label class="control-label" for="email1ID">E-mail</label>
 									<input type="text" class="form-control" id="email1ID" name="email1" maxlength="200" onblur="validaEmail1();" autocomplete="off" >
 									<i id="iEmail1ID" class=""></i>
 								</div>
+								<div id="divHelpEmail1ID"></div>
 								<div class="form-group has-feedback" id="divEmail2ID">
 									<label class="control-label" for="email2ID">Confirmação de e-mail</label>
 									<input type="text" class="form-control" id="email2ID" name="email2" maxlength="200" onblur="validaEmail2();" autocomplete="off" >
 									<i id="iEmail2ID" class=""></i>
 								</div>
+								<div id="divHelpEmail2ID"></div>
 								<div class="form-group has-feedback" id="divCpfID">
 									<label class="control-label" for="cpfID">CPF</label>
-									<input type="text" class="form-control" id="cpfID" name="cpf" maxlength="200" onblur="validaCpfSite();" zg-data-toggle="mask" zg-data-mask="cpf" autocomplete="off" >
+									<input type="text" class="form-control" id="cpfID" name="cpf" maxlength="200" onblur="validaCpfSite();" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1" autocomplete="off" >
 									<i id="iCpfID" class=""></i>
 								</div>
+								<div id="divHelpCpfID"></div>
 								<div class="checkbox" id="divTermoID">
 									<label>
 										<input type="checkbox" id="termoID" name="termo"> Aceito a <a href="#">politica de privacidade</a> e <a href="#">termos de uso</a> do SUAFORMATURA.
@@ -86,11 +94,39 @@
 								</div>
 								<button type="button" class="btn btn-default" id="btnSubmitID">Cadastrar</button>
 							</form>
-							
-							
-							
 						</div>
 						<!-- main end -->
+						
+						<!-- sidebar start -->
+						<!-- ================ -->
+						<aside class="col-md-3 col-lg-offset-1">
+							<div class="sidebar">
+								<div class="side vertical-divider-left">
+									<h3 class="title">Saiba Mais</h3>
+									<div class="separator-2 mt-20"></div>
+									<ul class="list">
+										<li><i class="fa fa-home pr-10"></i>795 Folsom Ave, Suite 600<br><span class="pl-20">San Francisco, CA 94107</span></li>
+										<li><i class="fa fa-phone pr-10"></i><abbr title="Phone">P:</abbr> (123) 456-7890</li>
+										<li><i class="fa fa-mobile pr-10 pl-5"></i><abbr title="Phone">M:</abbr> (123) 456-7890</li>
+										<li><i class="fa fa-envelope pr-10"></i><a href="mailto:info@idea.com">info@theproject.com</a></li>
+									</ul>
+									
+									<h3 class="title">Follow Us</h3>
+									<div class="separator-2 mt-20 "></div>
+									<ul class="social-links circle small margin-clear clearfix animated-effect-1">
+										<li class="twitter"><a target="_blank" href="http://www.twitter.com"><i class="fa fa-twitter"></i></a></li>
+										<li class="skype"><a target="_blank" href="http://www.skype.com"><i class="fa fa-skype"></i></a></li>
+										<li class="linkedin"><a target="_blank" href="http://www.linkedin.com"><i class="fa fa-linkedin"></i></a></li>
+										<li class="googleplus"><a target="_blank" href="http://plus.google.com"><i class="fa fa-google-plus"></i></a></li>
+										<li class="youtube"><a target="_blank" href="http://www.youtube.com"><i class="fa fa-youtube-play"></i></a></li>
+										<li class="flickr"><a target="_blank" href="http://www.flickr.com"><i class="fa fa-flickr"></i></a></li>
+										<li class="facebook"><a target="_blank" href="http://www.facebook.com"><i class="fa fa-facebook"></i></a></li>
+									</ul><br>
+								</div>
+							</div>
+							<div class="fb-page" data-href="https://www.facebook.com/Sua-Formatura-1028559723830618/" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="true"></div>
+						</aside>
+						<!-- sidebar end -->
 						
 						
 					</div>
@@ -106,6 +142,15 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 
+
+// Facebook
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v2.4";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
 
 /*********************************************************
 * Submit
@@ -126,7 +171,6 @@ $('#btnSubmitID').on("click", function(e) {
 //Submeter o formulário
 $('#zgFormID').submit(function(e) {
 	
-	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
 	$('#btnSubmitID').attr("disabled","disabled");
 	
 	// Retirar a máscara para os campos que estão configurados para tal 
@@ -139,20 +183,19 @@ $('#zgFormID').submit(function(e) {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			$('#codUsuarioID').val(zgGetCodRetorno(data));
-			zgMostraMsg('divMsg',zgGetMsgRetorno(data));
+			$('#usuOrgID').val(zgGetCodRetorno(data));
+			window.location.href = '%SITE_URL%confirmacao_turma.php?&codUsuOrg='+zgGetCodRetorno(data);
+			
+			//zgMostraMsg('divMsg', 'Informações salva com sucesso!');
 			
 			//Tornar os campos readonly
 			
 			
 		}else{
 			zgMostraErro('divMsg',zgGetMsgRetorno(data));
+			$('#btnSubmitID').attr("disabled",false);
 		}
 		
-		//Voltar o botão de salvar
-		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
-		$('#btnSubmitID').attr("disabled",false);
-		$('#cancel').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();
@@ -292,13 +335,14 @@ function validaIdent(){
 	if (!vIdent) {
 		$('#divIdentID').addClass('has-error');
 		$('#iIdentID').addClass('fa fa-times form-control-feedback');
-		
+		$('#divHelpIdentID').html('<p class="small"><font color="#B40431">Preencha a identificação.</font></p>');		
 		return false;
 	}else{
 		
 		if (vIdent.length > 60){
 			$('#divIdentID').addClass('has-error');
 			$('#iIdentID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpIdentID').html('<p class="small"><font color="#B40431">A identificação deve conter no máximo 60 caracteres.</font></p>');
 			return false;
 		}else{
 			
@@ -324,12 +368,14 @@ function validaIdent(){
 	if ($('#valID').val() == 0) {
 		$('#divIdentID').addClass('has-error');
 		$('#iIdentID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpIdentID').html('<p class="small"><font color="#B40431">Já existe uma identificação igual a está no portal, por favor escolha outra.</font></p>');
 		return false;
 	}else{
 		$('#divIdentID').removeClass('has-error');
 		$('#divIdentID').addClass('has-success');
 		$('#iIdentID').removeClass('fa fa-times form-control-feedback');
 		$('#iIdentID').addClass('fa fa-check form-control-feedback');
+		$('#divHelpIdentID').html('');
 		return true;
 	}
 }
@@ -342,18 +388,20 @@ function validaNome(){
 	if (!vNome) {
 		$('#divNomeID').addClass('has-error');
 		$('#iNomeID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpNomeID').html('<p class="small"><font color="#B40431">Preencha o nome da formatura. Ex: Medicina USP 2000.1</font></p>');
 		return false;
 	}else{
 		if (vNome.length > 60){
 			$('#divNomeID').addClass('has-error');
 			$('#iNomeID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpNomeID').html('<p class="small"><font color="#B40431">O nome da turma não deve conter mais de 60 caracteres</font></p>');
 			return false;
 		}else{
 			$('#divNomeID').removeClass('has-error');
 			$('#divNomeID').addClass('has-success');
 			$('#iNomeID').removeClass('fa fa-times form-control-feedback');
 			$('#iNomeID').addClass('fa fa-check form-control-feedback');
-
+			$('#divHelpNomeID').html('');
 			return true;
 		}
 	}
@@ -367,18 +415,25 @@ function validaData(){
 	if (!vData) {
 		$('#divDataConclusaoID').addClass('has-error');
 		$('#iDataConclusaoID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpDataConclusaoID').html('<p class="small"><font color="#B40431">Preencha a data prevista para a conclusão do curso no formato DD/MM/AAAA.</font></p>');
 		return false;
 	}else{
 		if (vData.length > 10){
 			$('#divDataConclusaoID').addClass('has-error');
 			$('#iDataConclusaoID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpDataConclusaoID').html('<p class="small"><font color="#B40431">A data prevista para conclusão não pode conter mais de 10 caracteres.</font></p>');
+			return false;
+		}else if (vData.length < 10){
+			$('#divDataConclusaoID').addClass('has-error');
+			$('#iDataConclusaoID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpDataConclusaoID').html('<p class="small"><font color="#B40431">A data prevista para conclusão está com o formato inválido.</font></p>');
 			return false;
 		}else{
 			$('#divDataConclusaoID').removeClass('has-error');
 			$('#divDataConclusaoID').addClass('has-success');
 			$('#iDataConclusaoID').removeClass('fa fa-times form-control-feedback');
 			$('#iDataConclusaoID').addClass('fa fa-check form-control-feedback');
-
+			$('#divHelpDataConclusaoID').html('');
 			return true;
 		}
 	}
@@ -392,18 +447,25 @@ function validaNomeUsu(){
 	if (!vNomeUsu) {
 		$('#divNomeUsuID').addClass('has-error');
 		$('#iNomeUsuID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpNomeUsuID').html('<p class="small"><font color="#B40431">Informe seu nome completo.</font></p>');
 		return false;
 	}else{
 		if (vNomeUsu.length > 100){
 			$('#divNomeUsuID').addClass('has-error');
 			$('#iNomeUsuID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpNomeUsuID').html('<p class="small"><font color="#B40431">Seu nome não deve conter mais de 100 caracteres.</font></p>');
+			return false;
+		}else if (vNomeUsu.length < 5){
+			$('#divNomeUsuID').addClass('has-error');
+			$('#iNomeUsuID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpNomeUsuID').html('<p class="small"><font color="#B40431">O nome está muito pequeno, preencha com seu nome completo.</font></p>');
 			return false;
 		}else{
 			$('#divNomeUsuID').removeClass('has-error');
 			$('#divNomeUsuID').addClass('has-success');
 			$('#iNomeUsuID').removeClass('fa fa-times form-control-feedback');
 			$('#iNomeUsuID').addClass('fa fa-check form-control-feedback');
-
+			$('#divHelpNomeUsuID').html('');
 			return true;
 		}
 	}
@@ -417,10 +479,12 @@ function validaEmail1(){
 	if (!vEmail){
 		$('#divEmail1ID').addClass('has-error');
 		$('#iEmail1ID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpEmail1ID').html('<p class="small"><font color="#B40431">Informe o seu email corretamente pois será necessário acessá-lo após o cadastro.</font></p>');
 		return false;
 	}else if (validarEmail(vEmail) == false) {
 		$('#divEmail1ID').addClass('has-error');
 		$('#iEmail1ID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpEmail1ID').html('<p class="small"><font color="#B40431">Este email está inválido. Informe seu email corretamente pois será necessário acessá-lo após o cadastro.</font></p>');
 		return false;
 	}else{
 		
@@ -432,7 +496,6 @@ function validaEmail1(){
 	   			var vData	= JSON.parse(ret);
 	   	    	if (vData.existe == 0) {
 	   	    		$('#valEmailID').val(1);
-	   	    		$('#indUsuarioID').val(0);
 	   	    	}else{	   	   
 	   	    		$('#valEmailID').val(0);
 	   	    		$('#indUsuarioID').val(1);
@@ -441,8 +504,6 @@ function validaEmail1(){
 	   	    		$('#nomeUsuID').val(vData.nome);
 	   	    		$('#email2ID').val(vData.usuario);
 	   	    		$('#cpfID').val(vData.cpf);
-	   	    		
-	   	    		
 	   	    	}
 	   		},
 	   		method: 'get',
@@ -479,6 +540,11 @@ function validaEmail1(){
 			$('#divCpfID').addClass('has-success');
 			$('#iCpfID').removeClass('fa fa-times form-control-feedback');
 			$('#iCpfID').addClass('fa fa-check form-control-feedback');
+			
+			$('#divHelpNomeUsuID').html('');
+			$('#divHelpEmail2ID').html('');
+			$('#divHelpEmail1ID').html('');
+			$('#divHelpCpfID').html('');
 
 			
 			return true;
@@ -487,6 +553,7 @@ function validaEmail1(){
 			$('#divEmail1ID').addClass('has-success');
 			$('#iEmail1ID').removeClass('fa fa-times form-control-feedback');
 			$('#iEmail1ID').addClass('fa fa-check form-control-feedback');
+			$('#divHelpEmail1ID').html('');
 			return true;
 		}
 	}	
@@ -500,17 +567,19 @@ function validaEmail2(){
 	if (!vEmail2){
 		$('#divEmail2ID').addClass('has-error');
 		$('#iEmail2ID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpEmail2ID').html('<p class="small"><font color="#B40431">Informe seu email novamente.</font></p>');
 		return false;
 	}else if (vEmail1 != vEmail2) {
 		$('#divEmail2ID').addClass('has-error');
 		$('#iEmail2ID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpEmail2ID').html('<p class="small"><font color="#B40431">Confirmação diferente do email informado.</font></p>');
 		return false;
 	}else{
 		$('#divEmail2ID').removeClass('has-error');
 		$('#divEmail2ID').addClass('has-success');
 		$('#iEmail2ID').removeClass('fa fa-times form-control-feedback');
 		$('#iEmail2ID').addClass('fa fa-check form-control-feedback');
-
+		$('#divHelpEmail2ID').html('');
 		return true;
 	}
 }
@@ -523,10 +592,12 @@ function validaCpfSite () {
 	if (!vCpf){
 		$('#divCpfID').addClass('has-error');
 		$('#iCpfID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpCpfID').html('<p class="small"><font color="#B40431">Informe seu CPF.</font></p>');
 		return false;
 	}else if (validarCPF(vCpf) == false) {
 		$('#divCpfID').addClass('has-error');
 		$('#iCpfID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpCpfID').html('<p class="small"><font color="#B40431">O CPF está inválido.</font></p>');
 		return false;
 	}else{
 		
@@ -538,10 +609,9 @@ function validaCpfSite () {
 	   			var vData	= JSON.parse(ret);
 	   	    	if (vData.existe == 0) {
 	   	    		$('#valCpfID').val(1);
-	   	    		$('#indUsuarioID').val(0);
 	   	    	}else{
 	   	    		$('#valCpfID').val(0);
-	   	    		$('#indUsuarioID').val(1);
+	   	    		$('#indUsuarioID').val(1);	   	    		
 	   	    		
 	   	    		// Carregar informações
 	   	    		$('#nomeUsuID').val(vData.nome);
@@ -549,6 +619,7 @@ function validaCpfSite () {
 	   	    		$('#email1ID').val(vData.usuario);
 	   	    	}
 	   		},
+	   		
 	   		method: 'get',
 	   		cache: false,
 	   		async:false
@@ -583,6 +654,11 @@ function validaCpfSite () {
 			$('#divCpfID').addClass('has-success');
 			$('#iCpfID').removeClass('fa fa-times form-control-feedback');
 			$('#iCpfID').addClass('fa fa-check form-control-feedback');
+			
+			$('#divHelpNomeUsuID').html('');
+			$('#divHelpEmail2ID').html('');
+			$('#divHelpEmail1ID').html('');
+			$('#divHelpCpfID').html('');
 
 			return true;
 		}else{
@@ -590,6 +666,7 @@ function validaCpfSite () {
 			$('#divCpfID').addClass('has-success');
 			$('#iCpfID').removeClass('fa fa-times form-control-feedback');
 			$('#iCpfID').addClass('fa fa-check form-control-feedback');
+			$('#divHelpCpfID').html('');
 			return true;
 		}
 	}	
@@ -660,7 +737,6 @@ function validaForm () {
 	// TERMO
 	if (!vTermo == true){	
 		$('#divTermoID').addClass('has-error');
-		vOK		= false;
 	}
 
 	// RETURN

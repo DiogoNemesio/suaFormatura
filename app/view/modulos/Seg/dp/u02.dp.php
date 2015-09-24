@@ -244,59 +244,64 @@ try {
 	
 	#################################################################################
 	## Salvar Cliente se necessário
-	#################################################################################
+	#################################################################################	
 	$oCliente = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf() , 'codOrganizacao' => $codOrganizacao));
-	$log->debug('entrei');
-	if($oCliente){
-		
-		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
-		
-		$oCliente->setCodOrganizacao($oOrg);
-		$oCliente->setNome($oUsuario->getNome());
-		$oCliente->setFantasia($oUsuario->getApelido());
-		$oCliente->setCgc($oUsuario->getCpf());
-		$oCliente->setEmail($oUsuario->getUsuario());
-		$oCliente->setCodTipoPessoa($clienteTipo);
-		$oCliente->setIndContribuinte(0);
-		$oCliente->setIndCliente(1);
-		$oCliente->setIndFornecedor(0);
-		$oCliente->setIndTransportadora(0);
-		$oCliente->setIndEstrangeiro(0);
-		$oCliente->setIndAtivo(1);
-		$oCliente->setCodSexo($oSexo);
-		
-		$em->persist($oCliente);
 	
-		//ENDEREÇO
-		$oClienteEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oCliente->getCodigo()));
-		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => C));
-		
-		if (!$oClienteEnd){
-			$oClienteEnd = new \Entidades\ZgfinPessoaEndereco();
-		}
-		
-		$oClienteEnd->setCodPessoa($oCliente);
-		$oClienteEnd->setCodTipoEndereco($oEndTipo);
-		$oClienteEnd->setCodLogradouro($oLog);
-		$oClienteEnd->setCep($oUsuario->getCep());
-		$oClienteEnd->setEndereco($oUsuario->getEndereco());
-		$oClienteEnd->setBairro($oUsuario->getBairro());
-		$oClienteEnd->setNumero($oUsuario->getNumero());
-		$oClienteEnd->setComplemento($oUsuario->getComplemento());
-		
-		$em->persist($oClienteEnd);
-		
-		//Telefone
-		$oCliTel			= new \Zage\App\Telefone();
-		$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
-		$oCliTel->_setCodProp($oCliente);
-		$oCliTel->_setTelefone($telefone);
-		$oCliTel->_setCodTipoTel($codTipoTel);
-		$oCliTel->_setCodTelefone($codTelefone);
-		
-		$retorno	= $oCliTel->salvar();
+	if(!$oCliente){
+		$oCliente = new \Entidades\ZgfinPessoa();
+		$oCliente->setDataCadastro(new DateTime(now));
+		$oCliente->setObservacao('Importado do cadastro de formando.');
 	}
 	
+	$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
+	
+	$oCliente->setCodOrganizacao($oOrg);
+	$oCliente->setNome($oUsuario->getNome());
+	$oCliente->setFantasia($oUsuario->getApelido());
+	$oCliente->setCgc($oUsuario->getCpf());
+	$oCliente->setRg($oUsuario->getRg());
+	$oCliente->setDataNascimento($oUsuario->getDataNascimento());
+	$oCliente->setEmail($oUsuario->getUsuario());
+	$oCliente->setCodTipoPessoa($clienteTipo);
+	$oCliente->setIndContribuinte(0);
+	$oCliente->setIndCliente(1);
+	$oCliente->setIndFornecedor(1);
+	$oCliente->setIndTransportadora(0);
+	$oCliente->setIndEstrangeiro(0);
+	$oCliente->setIndAtivo(1);
+	$oCliente->setCodSexo($oSexo);
+	
+	$em->persist($oCliente);
+		
+	//ENDEREÇO
+	$oClienteEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oCliente->getCodigo()));
+	$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => C));
+	
+	if (!$oClienteEnd){
+		$oClienteEnd = new \Entidades\ZgfinPessoaEndereco();
+	}
+	
+	$oClienteEnd->setCodPessoa($oCliente);
+	$oClienteEnd->setCodTipoEndereco($oEndTipo);
+	$oClienteEnd->setCodLogradouro($oLog);
+	$oClienteEnd->setCep($oUsuario->getCep());
+	$oClienteEnd->setEndereco($oUsuario->getEndereco());
+	$oClienteEnd->setBairro($oUsuario->getBairro());
+	$oClienteEnd->setNumero($oUsuario->getNumero());
+	$oClienteEnd->setComplemento($oUsuario->getComplemento());
+	
+	$em->persist($oClienteEnd);
+	
+	//Telefone
+	$oCliTel			= new \Zage\App\Telefone();
+	$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
+	$oCliTel->_setCodProp($oCliente);
+	$oCliTel->_setTelefone($telefone);
+	$oCliTel->_setCodTipoTel($codTipoTel);
+	$oCliTel->_setCodTelefone($codTelefone);
+	
+	$retorno	= $oCliTel->salvar();
+
 	$em->flush();
 	$em->clear();
 	

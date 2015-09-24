@@ -43,6 +43,7 @@ $tplFooter->load(SITE_PATH 	. '/html/footer.html');
 
 $tplHeader->set('MASCARAS'		,$htmlMask);
 $tplMain->set('DP'				,SITE_URL . 'dp/cadTurma.dp.php');
+$tplMain->set('SITE_URL'		,SITE_URL);
 
 $html	= $tplHeader->getHtml();
 $html	.= $tplMain->getHtml();

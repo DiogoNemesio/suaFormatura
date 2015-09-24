@@ -141,7 +141,7 @@ try {
 	$oCliente->setCodTipoPessoa($clienteTipo);
 	$oCliente->setIndContribuinte(0);
 	$oCliente->setIndCliente(1);
-	$oCliente->setIndFornecedor(0);
+	$oCliente->setIndFornecedor(1);
 	$oCliente->setIndTransportadora(0);
 	$oCliente->setIndEstrangeiro(0);
 	$oCliente->setIndAtivo(1);
