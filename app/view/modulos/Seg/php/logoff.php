@@ -13,7 +13,8 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 $_org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array ('codigo' => $system->getCodOrganizacao()));
 if (isset($_org) && ($_org instanceof \Entidades\ZgadmOrganizacao) ) {
-	$url = ROOT_URL . "/" . $_org->getIdentificacao();
+	//$url = ROOT_URL . "/" . $_org->getIdentificacao();
+	$url = ROOT_URL ;
 }else{
 	$url = ROOT_URL ;
 }
@@ -23,6 +24,9 @@ if (isset($_org) && ($_org instanceof \Entidades\ZgadmOrganizacao) ) {
 #################################################################################
 $system->desautentica();
 $system->setCodEmpresa(null);
+session_destroy();
+unset($_SESSION);
+
 header("Location: ".$url, TRUE, 303);
 exit;
 //include(DOC_ROOT . '/view/index.php');

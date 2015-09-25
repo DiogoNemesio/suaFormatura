@@ -31,26 +31,39 @@ if (isset($_GET['zid'])) {
 
 
 if (!isset($_org) && (!isset($_SESSION['_codOrg']))) {
-	die ("Organização não definida !!!");
-}else{
 	
-	$system->setCodLang(1);
-	
-	if (isset($_org) && ($_org instanceof \Entidades\ZgadmOrganizacao) ) {
-		$system->setCodOrganizacao($_org->getCodigo());
+	if ((isset($_POST['zgUsuario'])) && (isset($_POST['zgSenha']))) {
+		/** Resgatar a última organização que o usuário acessou **/
+		$_org	= \Zage\Seg\Usuario::getUltimaOrganizacaoAcesso($_POST['zgUsuario']);
+		
+		/** Caso não tenha, ou seja, seja o primeiro acesso, resgatar a primeira organização encontrada, que o usuário esteja ativo **/
+		if (!$_org) {
+			$orgs	= \Zage\Seg\Usuario::listaOrganizacoesAcesso($_POST['zgUsuario']);
+			if ($orgs && sizeof($orgs) > 0) {
+				$_org	= $orgs[0];
+			}else{
+				die ("Sem acesso a nenhuma organização !!!");
+			}
+		}
 	}else{
-		$_org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array ('codigo' => $_SESSION['_codOrg']));
-		$system->setCodOrganizacao($_SESSION['_codOrg']);
+		die ("Organização não definida !!!");
 	}
-	
-	/** Define a organização **/
-	$db->setOrganizacao($system->getCodOrganizacao());
-	
-	//$log->debug("Código da Organização: ".$system->getCodOrganizacao());
-	
 }
-include_once(BIN_PATH . 'auth.php');
+	
+$system->setCodLang(1);
 
+if (isset($_org) && ($_org instanceof \Entidades\ZgadmOrganizacao) ) {
+	$system->setCodOrganizacao($_org->getCodigo());
+}else{
+	$_org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array ('codigo' => $_SESSION['_codOrg']));
+	$system->setCodOrganizacao($_SESSION['_codOrg']);
+}
+
+/** Define a organização **/
+$db->setOrganizacao($system->getCodOrganizacao());
+	
+//$log->debug("Código da Organização: ".$system->getCodOrganizacao());
+include_once(BIN_PATH . 'auth.php');
 //\Doctrine\Common\Util\Debug::dump($_user);
 //echo "LoggedUser: ".$db->getLoggedUser()."<BR>";
 
