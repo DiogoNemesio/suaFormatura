@@ -89,7 +89,14 @@ if (!$system->estaAutenticado()) {
 				/** Atualiza a hora / data do acesso **/
 				$dateTime	= new \DateTime("now");
 				$_user->setDataUltAcesso($dateTime);
-				$em->merge($_user);
+				$_user->setUltOrgAcesso($_org);
+				$em->persist($_user);
+				$em->flush();
+				$em->detach($_user);
+				
+				/** Resgata novamente os dados do usuário atualizado **/
+				$_user 		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array ('usuario' => $_usuario));
+				
 				
 			} catch (\Exception $e) {
 				\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

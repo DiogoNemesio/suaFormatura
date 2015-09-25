@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgsegUsuario
  *
- * @ORM\Table(name="ZGSEG_USUARIO", uniqueConstraints={@ORM\UniqueConstraint(name="EMAIL_UNIQUE", columns={"USUARIO"}), @ORM\UniqueConstraint(name="CPF_UNIQUE", columns={"CPF"})}, indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_1_idx", columns={"AVATAR"}), @ORM\Index(name="fk_ZGSEG_USUARIO_4_idx", columns={"SEXO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_2_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_3_idx", columns={"COD_STATUS"})})
+ * @ORM\Table(name="ZGSEG_USUARIO", uniqueConstraints={@ORM\UniqueConstraint(name="EMAIL_UNIQUE", columns={"USUARIO"}), @ORM\UniqueConstraint(name="CPF_UNIQUE", columns={"CPF"})}, indexes={@ORM\Index(name="fk_ZGSEG_USUARIO_1_idx", columns={"AVATAR"}), @ORM\Index(name="fk_ZGSEG_USUARIO_4_idx", columns={"SEXO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_2_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGSEG_USUARIO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGSEG_USUARIO_5_idx", columns={"ULT_ORG_ACESSO"})})
  * @ORM\Entity
  */
 class ZgsegUsuario
@@ -69,13 +69,6 @@ class ZgsegUsuario
      * @ORM\Column(name="SENHA", type="string", length=60, nullable=true)
      */
     private $senha;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="ULT_TURMA_ACESSO", type="integer", nullable=true)
-     */
-    private $ultTurmaAcesso;
 
     /**
      * @var \DateTime
@@ -172,6 +165,16 @@ class ZgsegUsuario
      * })
      */
     private $sexo;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ULT_ORG_ACESSO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $ultOrgAcesso;
 
 
     /**
@@ -343,29 +346,6 @@ class ZgsegUsuario
     public function getSenha()
     {
         return $this->senha;
-    }
-
-    /**
-     * Set ultTurmaAcesso
-     *
-     * @param integer $ultTurmaAcesso
-     * @return ZgsegUsuario
-     */
-    public function setUltTurmaAcesso($ultTurmaAcesso)
-    {
-        $this->ultTurmaAcesso = $ultTurmaAcesso;
-
-        return $this;
-    }
-
-    /**
-     * Get ultTurmaAcesso
-     *
-     * @return integer 
-     */
-    public function getUltTurmaAcesso()
-    {
-        return $this->ultTurmaAcesso;
     }
 
     /**
@@ -642,5 +622,28 @@ class ZgsegUsuario
     public function getSexo()
     {
         return $this->sexo;
+    }
+
+    /**
+     * Set ultOrgAcesso
+     *
+     * @param \Entidades\ZgadmOrganizacao $ultOrgAcesso
+     * @return ZgsegUsuario
+     */
+    public function setUltOrgAcesso(\Entidades\ZgadmOrganizacao $ultOrgAcesso = null)
+    {
+        $this->ultOrgAcesso = $ultOrgAcesso;
+
+        return $this;
+    }
+
+    /**
+     * Get ultOrgAcesso
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getUltOrgAcesso()
+    {
+        return $this->ultOrgAcesso;
     }
 }

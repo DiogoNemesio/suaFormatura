@@ -218,7 +218,7 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	))
     	->orderBy('us.nome', 'ASC')
     	->setParameter('codOrganizacao', $codOrganizacao)
-    	->setParameter('codStatusExcluido', C)
+    	->setParameter('codStatusExcluido', 'C')
     	->setParameter('codTipoUsuario', $codTipo);
     	$query 		= $qb->getQuery();
     	return($query->getResult());
@@ -244,13 +244,40 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	)
     	->orderBy('us.nome', 'ASC')
     	->setParameter('codOrganizacao', $codOrganizacao)
-    	->setParameter('codStatusAtivo', A)
+    	->setParameter('codStatusAtivo', 'A')
     	->setParameter('codTipoUsuario', $codTipo);
     	$query 		= $qb->getQuery();
     	return($query->getResult());
     
     }
 	
+    /**
+     * Lista todas as organizações que o usuário tem acesso
+     */
+    public static function listaOrganizacoesAcesso ($usuario) {
+    	global $em;
+    
+    	$qb 	= $em->createQueryBuilder();
+    
+    	$qb->select('o')
+    	->from('\Entidades\ZgsegUsuario','us')
+    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',		'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'us.codigo 	= uo.codUsuario')
+    	->leftJoin('\Entidades\ZgadmOrganizacao',				'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
+    	->leftJoin('\Entidades\ZgsegPerfil',					'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil	= p.codigo')
+    	->where($qb->expr()->andX(
+   			$qb->expr()->eq('us.usuario'			, ':usuario'),
+   			$qb->expr()->eq('uo.codStatus'			, ':codStatusAtivo'))
+    	)
+    	->orderBy('o.nome', 'ASC')
+    	->setParameter('usuario'			, $usuario)
+    	->setParameter('codStatusAtivo'		, 'A');
+    	$query 		= $qb->getQuery();
+    	return($query->getResult());
+    
+    }
+    
+    
+    
     /**
      * Lista os menus do usuário em uma determinada empresa
      */
@@ -323,7 +350,29 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	return true;
     }
     
- 	
+    /**
+     * Resgata a última organização que o usuário acessou 
+     */
+    public static function getUltimaOrganizacaoAcesso ($usuario) {
+    	global $em;
+    
+    	$qb 	= $em->createQueryBuilder();
+    	 
+    	$qb->select('o')
+    	->from('\Entidades\ZgadmOrganizacao','o')
+    	->leftJoin('\Entidades\ZgsegUsuario','u',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= u.ultOrgAcesso')
+    	->where($qb->expr()->andX(
+   			$qb->expr()->eq('u.usuario'			, ':usuario')
+    	))
+    	->orderBy('o.identificacao', 'ASC')
+    	->setParameter('usuario', $usuario);
+    
+    	$query 		= $qb->getQuery();
+    	return($query->getOneOrNullResult());
+    	 
+    }
+    
+    
 	/**
 	 * Busca usuários
 	 */

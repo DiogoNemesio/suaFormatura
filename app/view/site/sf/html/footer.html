@@ -114,21 +114,14 @@
 			data:	$('#zgFormAlteraSenhaID').serialize(),
 		}).done(function( data, textStatus, jqXHR) {
 			if (checaRetornoOK(data) == true) {
-				//Mensagem de confirmação
-				zgMostraMsg('divMsgAltSenhaID',zgGetMsgRetorno(data));
+				zgMostraAviso('divMsgAltSenhaID','E-mail enviado com as instruções !!!');
 			}else{
-				//Mensagem de erro
 				zgMostraErro('divMsgAltSenhaID',zgGetMsgRetorno(data));
 			}
 			
 			//Voltar o botão de salvar
 			$('#btnSubmitAltSenhaID').html('<i class="fa fa-check bigger-110"></i> Enviar ');
 			$('#btnSubmitAltSenhaID').attr("disabled",false);
-			
-			$('#zgDivModalID').on('hidden.bs.modal', function () {
-				zgLimpaModalAviso();
-				$('#zgDivModalID').off('hidden.bs.modal');
-			});
 		}).fail(function( jqXHR, textStatus, errorThrown) {
 			zgMostraAviso(null);
 		});
