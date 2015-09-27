@@ -57,7 +57,7 @@ if ($info->getIndRifaEletronica() == 1){
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$rifas	= \Zage\Fmt\Rifa::listaNumRifasPorFormando($system->getCodOrganizacao(),$codRifa);
+	$rifas		= \Zage\Fmt\Rifa::listaNumRifasPorFormando($system->getCodOrganizacao(),$codRifa);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -66,35 +66,34 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GFin");
-$grid->adicionaTexto($tr->trans('FORMANDO'),			20, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('FORMANDO'),			20, $grid::CENTER	,'NOME');
 $grid->adicionaTexto($tr->trans('QTDE OBRIGATÓRIA'),	10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('VALOR DA RIFA (R$)'),	10, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans($nomeQtde),				10, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans($nomeQtde),				10, $grid::CENTER	,'NUM');
 $grid->adicionaMoeda($tr->trans('A PAGAR (R$)'),		10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('TOTAL PAGO(R$)'),		10, $grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-money green',$tr->trans('Receber'));
-$grid->importaDadosDoctrine($rifas);
+//$grid->importaDadosDoctrine($rifas);
+$grid->importaDadosArray($rifas);
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($rifas); $i++) {
 	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa.'&codUsuario='.$rifas[$i]["codigo"].'&url='.$url);
-	$grid->setValorCelula($i,0,$rifas[$i]["nome"]);
-	$grid->setValorCelula($i,1,$rifas[$i]["qtdeObrigatorio"]);
-	$grid->setValorCelula($i,2,$rifas[$i]["valorUnitario"]);
-	$grid->setValorCelula($i,3,$rifas[$i]["num"]);
+	//$grid->setValorCelula($i,0,$rifas[$i]["nome"]);
+	$grid->setValorCelula($i,1,$info->getQtdeObrigatorio());
+	$grid->setValorCelula($i,2,$info->getValorUnitario());
+	//$grid->setValorCelula($i,3,$rifas[$i]["num"]);
 	
-	if ($rifas[$i]["num"] >= $rifas[$i]["qtdeObrigatorio"]){
-		$total = $rifas[$i]["num"] * $rifas[$i]["valorUnitario"];
+	if ($rifas[$i]["NUM"] >= $info->getQtdeObrigatorio()){
+		$total = $rifas[$i]["NUM"] * $info->getValorUnitario();
 	}else{
-		$total = $rifas[$i]["qtdeObrigatorio"] * $rifas[$i]["valorUnitario"];
+		$total = $info->getQtdeObrigatorio() * $info->getValorUnitario();
 	}
 	
 	$grid->setValorCelula($i,4,$total);
 	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Fmt/rifaFinRec.php?id=".$uid."');");
-	
-	
 }
 
 #################################################################################

@@ -49,7 +49,11 @@ if (!$oEmail) 												\Zage\App\Erro::externalHalt('Usuario não existe, COD
 ## Urls
 #################################################################################
 $org = $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
-$urlRedirecionar	= ROOT_URL . "/".$org->getIdentificacao();
+if ($org) {
+	$urlRedirecionar	= ROOT_URL . "/".$org->getIdentificacao();
+}else{
+	$urlRedirecionar	= ROOT_URL;
+}
 
 #################################################################################
 ## Carregando o template html

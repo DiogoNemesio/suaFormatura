@@ -114,16 +114,16 @@
 			data:	$('#zgFormAlteraSenhaID').serialize(),
 		}).done(function( data, textStatus, jqXHR) {
 			if (checaRetornoOK(data) == true) {
-				zgMostraAviso('divMsgAltSenhaID','E-mail enviado com as instruções !!!');
+				zgMostraAvisoSite('divMsgAltSenhaID','E-mail enviado com as instruções !!!');
 			}else{
-				zgMostraErro('divMsgAltSenhaID',zgGetMsgRetorno(data));
+				zgMostraErroSite('divMsgAltSenhaID',zgGetMsgRetorno(data));
 			}
 			
 			//Voltar o botão de salvar
 			$('#btnSubmitAltSenhaID').html('<i class="fa fa-check bigger-110"></i> Enviar ');
 			$('#btnSubmitAltSenhaID').attr("disabled",false);
 		}).fail(function( jqXHR, textStatus, errorThrown) {
-			zgMostraAviso(null);
+			zgMostraAvisoSite(null);
 		});
 		e.preventDefault();
 		return false; 

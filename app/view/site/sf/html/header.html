@@ -130,7 +130,7 @@
 				zgAbreModal($lUrl);
 			}
 	
-			function zgMostraAviso(pDescBT1,pDescBT2,pUrlBT2,pDescBT3,pUrlBT3,pDescBT4,pUrlBT4) {
+			function zgMostraAvisoSite(pDescBT1,pDescBT2,pUrlBT2,pDescBT3,pUrlBT3,pDescBT4,pUrlBT4) {
 				/** Definir valor padrão para os parâmetros **/
 				
 				if(typeof(pDescBT1)==='undefined')	pDescBT1	= '';
@@ -187,15 +187,15 @@
 				return '<span><i class="fa fa-check-circle green bigger-150"></i></span>';
 			}
 			
-			function zgMostraErro(pDiv,pMsg) {
+			function zgMostraErroSite(pDiv,pMsg) {
 				$('#'+pDiv).html('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>'+pMsg+'</div>');
 			}
 
-			function zgMostraMsg(pDiv,pMsg) {
+			function zgMostraMsgSite(pDiv,pMsg) {
 				$('#'+pDiv).html('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>'+pMsg+'</div>');
 			}
 
-			function zgMostraAviso(pDiv,pMsg) {
+			function zgMostraAvisoSite(pDiv,pMsg) {
 				$('#'+pDiv).html('<div class="alert alert-warning"><button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>'+pMsg+'</div>');
 			}
 	

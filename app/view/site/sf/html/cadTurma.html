@@ -183,7 +183,7 @@ $('#zgFormID').submit(function(e) {
 			
 			
 		}else{
-			zgMostraErro('divMsg',zgGetMsgRetorno(data));
+			zgMostraErroSite('divMsg',zgGetMsgRetorno(data));
 			$('#btnSubmitID').attr("disabled",false);
 		}
 		
@@ -194,7 +194,7 @@ $('#zgFormID').submit(function(e) {
 		});
 		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
-		zgMostraAviso(null);
+		zgMostraAvisoSite(null);
 	});
 	
 	// Recolocar a máscara para os campos que estão configurados para tal
