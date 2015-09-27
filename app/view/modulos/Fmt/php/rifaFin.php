@@ -80,7 +80,7 @@ $grid->importaDadosArray($rifas);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($rifas); $i++) {
-	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa.'&codUsuario='.$rifas[$i]["codigo"].'&url='.$url);
+	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa.'&codFormando='.$rifas[$i]["CODIGO"].'&url='.$url);
 	//$grid->setValorCelula($i,0,$rifas[$i]["nome"]);
 	$grid->setValorCelula($i,1,$info->getQtdeObrigatorio());
 	$grid->setValorCelula($i,2,$info->getValorUnitario());
@@ -110,6 +110,7 @@ try {
 #################################################################################
 $urlVoltar			= ROOT_URL.'/Fmt/rifaLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 $urlAtualizar		= ROOT_URL.'/Fmt/rifaFin.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa);
+
 #################################################################################
 ## Carregando o template html
 #################################################################################

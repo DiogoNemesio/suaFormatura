@@ -2,11 +2,14 @@
 <input type="hidden" name="codUsuario" value="%COD_USUARIO%">
 <input type="hidden" name="codOrganizacao" value="%COD_ORGANIZACAO%">
 <input type="hidden" name="id" value="%ID%">
+<input type="hidden" name="codRifa" id="codRifaID" value="%COD_RIFA%">
 <input type="hidden" id="nomeID" value="%NOME_RIFA%">
 <input type="hidden" id="valorUnitarioID" value="%VALOR_RIFA%">
 <input type="hidden" id="qtdeObrigatorioID" value="%QTDE_OBRI%">
 <input type="hidden" id="indEletronicaID" value="%IND_ELETRONICA%">
-<input type="hidden" id="qtdeVendaID" value="%QTDE_VENDA%">
+<input type="hidden" name="qtdeVenda" id="qtdeVendaID" value="%QTDE_VENDA%">
+<input type="hidden" id="formandoID" value="%NOME_FORMANDO%">
+<input type="hidden" name="valorTotal" id="valorTotalID" value="%VALOR_TOTAL%">
 
 <div id="content">
 	<div class="modal-header">
@@ -51,7 +54,7 @@
 				    	<label class="col-sm-4 control-label" for="valorRecebidoID">Valor a receber</label>
 		    			<div class="input-group col-sm-6 pull-left">
 	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor pago pelo formando."></i></span>
-			    			<input class="form-control" id="valorRecebidoID" type="text" name="valorRecebido" placeholder="Valor (R$) a receber" maxlength="100" value="" onchange="atualizaResumo()" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+			    			<input class="form-control" id="valorRecebidoID" type="text" name="valorRecebido" placeholder="Valor (R$) a receber" maxlength="100" value="%VALOR_RECEBER%" onchange="atualizaResumo()" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 				    	</div>
 				    	<div class="col-sm-1 pull-left" id="divHelpalorRecebidoID"></div>
 					</div>
@@ -87,6 +90,12 @@
 						</div>
 					</div>
 					
+					<div class="row" id="divInfoFormandoID">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formando:</p>
+					    	<p id='lbInfoFormandoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
 					<div class="row" id="divInfoNomeID">
 						<div class="col-sm-12">
 					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Nome:</p>
@@ -152,10 +161,17 @@ $('[data-rel=popover]').popover({html:true});
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
+
+//SELECT2
+$('#codFormaPagID').css('width','100%').select2({allowClear:true});
+$('#codContaRecID').css('width','100%').select2({allowClear:true});
+
+
 //Atualizar MENU
 atualizaResumo();
 
 function atualizaResumo() {
+	var $formando		= $('#formandoID').val();
 	var $nome			= $('#nomeID').val();
 	var $nValor			= $('#valorUnitarioID').val();
 	var $qtdeObri		= $('#qtdeObrigatorioID').val();
@@ -163,6 +179,7 @@ function atualizaResumo() {
 	var $qtdeVenda		= $('#qtdeVendaID').val();
 	var $qtdePagar		= $('#qtdePagarID').val();
 	
+	$('#lbInfoFormandoID').text($formando);
 	$('#lbInfoNomeID').text($nome);
 	$('#lbInfoValorID').text($nome);
 	$('#lbInfoQtdeObrigatorioID').text($qtdeObri);
@@ -176,7 +193,6 @@ function atualizaResumo() {
 		$('#lbInfoTipoID').text('PAPEL');
 	}
 	
-	
 	// MASCARA MOEDA
 	var options = {
 			symbol : "",
@@ -186,13 +202,12 @@ function atualizaResumo() {
 			format: "%s%v"
 		};
 	
-	$valor	= accounting.formatMoney($nValor, options);
+	$valor		= accounting.formatMoney($nValor, options);
 	$('#lbInfoValorID').text($valor);
 	
 	// TOTAL A PAGAR	
-	$total = $nValor * $qtdePagar;
-	
-	$totalMin = $nValor * $qtdeObri;
+	$total 		= $nValor * $qtdePagar;
+	$totalMin 	= $nValor * $qtdeObri;
 
 	
 	if ($total >= $totalMin) {
@@ -205,7 +220,7 @@ function atualizaResumo() {
 	
 	// TOTAL DE DÉBITO
 	$nValorRecebido		= parseFloat($('#valorRecebidoID').val().replace(".", "").replace(",","."));
-	$debito = $total - $nValorRecebido;
+	$debito 			= $total - $nValorRecebido;
 	
 	if ($debito > 0){
 		$('#divInfoDebitoID').removeClass('hidden');
@@ -301,7 +316,7 @@ function validaRifaFinRec() {
 		vOK		= false;
 	}else{
 		$('#divQtdePagarID').removeClass('has-error');
-		$('#divHelpQtdePagarID').html('&nbsp;');		
+		$('#divHelpQtdePagarID').html('&nbsp;');
 	}
 	
 	/** VALOR A RECEBER **/

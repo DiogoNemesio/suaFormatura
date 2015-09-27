@@ -8,54 +8,84 @@ if (defined('DOC_ROOT')) {
  	include_once('../include.php');
 }
 
-global $em,$log,$system;
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$log,$system,$tr;
 
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['codUsuario']))		$codUsuario			= \Zage\App\Util::antiInjection($_POST['codUsuario']);
-
-
-if (isset($_POST['codConta']))			$codConta			= \Zage\App\Util::antiInjection($_POST['codConta']);
-if (isset($_POST['numero']))			$numero				= \Zage\App\Util::antiInjection($_POST['numero']);
-if (isset($_POST['descricao']))			$descricao			= \Zage\App\Util::antiInjection($_POST['descricao']);
-
-if (isset($_POST['codStatus']))			$codStatus			= \Zage\App\Util::antiInjection($_POST['codStatus']);
-
-if (isset($_POST['dataVenc']))			$dataVenc			= \Zage\App\Util::antiInjection($_POST['dataVenc']);
-if (isset($_POST['dataAut']))			$dataAut			= \Zage\App\Util::antiInjection($_POST['dataAut']);
-if (isset($_POST['indAut']))			$indAut				= \Zage\App\Util::antiInjection($_POST['indAut']);
-if (isset($_POST['documento']))			$documento			= \Zage\App\Util::antiInjection($_POST['documento']);
 if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
-if (isset($_POST['obs']))				$obs				= \Zage\App\Util::antiInjection($_POST['obs']);
-if (isset($_POST['codTipoRec']))		$codTipoRec			= \Zage\App\Util::antiInjection($_POST['codTipoRec']);
-if (isset($_POST['codPeriodoRec']))		$codPeriodoRec		= \Zage\App\Util::antiInjection($_POST['codPeriodoRec']);
 if (isset($_POST['codContaRec']))		$codContaRec		= \Zage\App\Util::antiInjection($_POST['codContaRec']);
-if (isset($_POST['flagReceberAuto']))	$flagReceberAuto	= \Zage\App\Util::antiInjection($_POST['flagReceberAuto']);
-if (isset($_POST['flagRecebida']))		$flagRecebida		= \Zage\App\Util::antiInjection($_POST['flagRecebida']);
-if (isset($_POST['flagAlterarSeq']))	$flagAlterarSeq		= \Zage\App\Util::antiInjection($_POST['flagAlterarSeq']);
-if (isset($_POST['codTipoValor']))		$codTipoValor		= \Zage\App\Util::antiInjection($_POST['codTipoValor']);
 if (isset($_POST['valorTotal']))		$valorTotal			= \Zage\App\Util::antiInjection($_POST['valorTotal']);
+if (isset($_POST['valorRecebido']))		$valorRecebido		= \Zage\App\Util::antiInjection($_POST['valorRecebido']);
+if (isset($_POST['codRifa']))			$codRifa			= \Zage\App\Util::antiInjection($_POST['codRifa']);
+if (isset($_POST['qtdeVenda']))			$qtdeVenda			= \Zage\App\Util::antiInjection($_POST['qtdeVenda']);
 
 
 #################################################################################
-## Resgata os arrays passados pelo formulario
+## Validar os parâmetros
 #################################################################################
-if (isset($_POST['codRateio']))			$codRateio			= $_POST['codRateio'];
-if (isset($_POST['codCentroCusto']))	$codCentroCusto		= $_POST['codCentroCusto'];
-if (isset($_POST['codCategoria']))		$codCategoria		= $_POST['codCategoria'];
-if (isset($_POST['valorRateio']))		$valorRateio		= $_POST['valorRateio'];
-if (isset($_POST['pctRateio']))			$pctRateio			= $_POST['pctRateio'];
-if (isset($_POST['aData']))				$codRateio			= $_POST['aData'];
-if (isset($_POST['aValor']))			$aValor				= $_POST['aValor'];
+$infoRifa		= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+$infoUsu		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 
-$codRateio 			= array();
-$codCentroCusto 	= array();
-$codCategoria		= array();
-$valorRateio		= array();
-$pctRateio			= array();
-$codRateio			= array();
-$aValor				= array();
+
+#################################################################################
+## Definir os valores fixos
+#################################################################################
+$dataVenc			= "FALTA DEFINIR";
+$qtdeVenda			= ($qtdeVenda < $infoRifa->getQtdeObrigatorio()) ? $infoRifa->getQtdeObrigatorio() : $qtdeVenda; 
+$codTipoRec			= "U";
+$parcela			= 1;
+$codRecPer			= null;
+$valorJuros			= 0;
+$valorMora			= 0;
+$valorDesconto		= 0;
+$valorOutros		= 0;
+$numParcelas		= 1;
+$parcelaInicial		= 1;
+$obs				= null;
+$descricao			= 'Venda de '.$qtdeVenda.' de bilhetes da Rifa: "'.$infoRifa->getNome().'"';
+
+#################################################################################
+## Resgatar os parâmetros da categoria
+#################################################################################
+$codCatRifa				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_RIFA");
+$codCentroCustoRifa		= ($infoRifa->getCodCentroCusto()) ? $infoRifa->getCodCentroCusto()->getCodigo() : null; 
+
+#################################################################################
+## Ajustar o array de valores de rateio
+#################################################################################
+$pctRateio		= array(100);
+$valorRateio	= array($valorTotal);
+$codCategoria	= array($codCatRifa);
+$codCentroCusto	= array($codCentroCustoRifa);
+$codRateio		= array("");
+$aValor			= array($valorTotal);
+
+#################################################################################
+## Ajustar os campos do tipo CheckBox
+#################################################################################
+$flagRecebida		= 0;
+$flagReceberAuto	= 0;
+$flagAlterarSeq		= 0;
+
+
+#################################################################################
+## Buscar a pessoa associada ao formando
+#################################################################################
+
+
+
+
+
+
+# ---------------- PAREI AQUI ----------------
+
+
+
 
 #################################################################################
 ## Criar o objeto do contas a Receber
@@ -78,7 +108,6 @@ $oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOn
 $oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
 $oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codContaRec));
 
-$log->debug($codPessoa);
 #################################################################################
 ## Validação de rateio
 #################################################################################

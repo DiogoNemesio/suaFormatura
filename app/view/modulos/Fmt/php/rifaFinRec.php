@@ -9,6 +9,12 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$tr,$system;
+
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -34,7 +40,7 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Verificar parâmetro obrigatório
 #################################################################################
-if (!isset($codUsuario)) 		{
+if (!isset($codFormando)) 		{
 	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_USUARIO)');
 }
 
@@ -44,22 +50,25 @@ if (!isset($codRifa)) 		{
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$info 		= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+$info 			= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+$infoUsu		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codFormando));
 
-if (!$info){
-	\Zage\App\Erro::halt($tr->trans('Rifa não encontrada').' (COD_RIFA)');
-}
+if (!$info)		\Zage\App\Erro::halt($tr->trans('Rifa não encontrada').' (COD_RIFA)');
+if (!$infoUsu)	\Zage\App\Erro::halt($tr->trans('Formando não encontrado').' (COD_RIFA)');
 
-$infoVendas 	= $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codRifa' => $codRifa, 'codFormando' => $codUsuario));
+
+$infoVendas 	= $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codRifa' => $codRifa, 'codFormando' => $codFormando));
 $infoVendasNum = sizeof($infoVendas);
 
 #################################################################################
 ## Verificar as informações da rifa
 #################################################################################
 if ($infoVendasNum < $info->getQtdeObrigatorio()){
-	$qtdePagar = $info->getQtdeObrigatorio();
+	$qtdePagar 		= $info->getQtdeObrigatorio();
+	$valorReceber	= $info->getQtdeObrigatorio() * $info->getValorUnitario();
 }else{
-	$qtdePagar = $infoVendasNum; 
+	$qtdePagar 		= $infoVendasNum;
+	$valorReceber	= $infoVendasNum * $info->getValorUnitario();
 }
 
 if ($info->getIndRifaEletronica() == 1){
@@ -91,7 +100,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 try {
 	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	null, '');
+	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	'DH', null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -101,7 +110,7 @@ try {
 #################################################################################
 try {
 	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	null, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -113,18 +122,23 @@ try {
 $tpl->set('ID'					,$id);
 $tpl->set('TITULO'				,'Receber pagamento');
 
-$tpl->set('COD_USUARIO'			,$codUsuario);
+$tpl->set('COD_USUARIO'			,$codFormando);
 
 $tpl->set('NOME_RIFA'			,$info->getNome());
 $tpl->set('VALOR_RIFA'			,$info->getValorUnitario());
 $tpl->set('QTDE_OBRI'			,$info->getQtdeObrigatorio());
 $tpl->set('IND_ELETRONICA'		,$info->getIndRifaEletronica());
 $tpl->set('QTDE_PAGAR'			,$qtdePagar);
+$tpl->set('VALOR_RECEBER'		,\Zage\App\Util::formataDinheiro($valorReceber));
+$tpl->set('MAX_VALOR'			,$valorReceber);
+$tpl->set('VALOR_TOTAL'			,$valorReceber);
+$tpl->set('NOME_FORMANDO'		,$infoUsu->getNome());
+$tpl->set('COD_RIFA'			,$codRifa);
 
 $tpl->set('QTDE_VENDA'			,$infoVendasNum);
-$tpl->set('DISABLED'			,$podeEnviar);
+$tpl->set('DISABLED'			,null);
 $tpl->set('READONLY'			,$readonly);
-$tpl->set('TEXTO'				,$texto);
+$tpl->set('TEXTO'				,null);
 
 $tpl->set('FORMAS_PAG'			,$oFormaPag);
 $tpl->set('CONTAS'				,$oConta);
