@@ -62,6 +62,7 @@ $grid->adicionaMoeda($tr->trans('VALOR'),			15, $grid::CENTER	,'valorUnitario');
 $grid->adicionaIcone(null,'fa fa-cog red',$tr->trans('Geração das rifas'));
 $grid->adicionaIcone(null,'fa fa-history orange',$tr->trans('Histórico'));
 $grid->adicionaIcone(null,'fa fa-usd green',$tr->trans('Financeiro'));
+$grid->adicionaIcone(null,'fa fa-file-pdf-o red',$tr->trans('Resumo Financeiro'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($rifa);
@@ -89,8 +90,9 @@ for ($i = 0; $i < sizeof($rifa); $i++) {
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/rifaGera.php?id='.$rid);
 	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/rifaResumo.php?id='.$rid);
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/rifaFin.php?id='.$rid);
-	$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/rifaAlt.php?id='.$rid);
-	$grid->setUrlCelula($i,9,"javascript:zgAbreModal('".ROOT_URL.'/Fmt/rifaExc.php?id='.$rid."');");
+	$grid->setUrlCelula($i,8,"javascript:zgDownloadUrl('".ROOT_URL.'/Fmt/rifaResumoFin.php?id='.$rid."');");
+	$grid->setUrlCelula($i,9,ROOT_URL.'/Fmt/rifaAlt.php?id='.$rid);
+	$grid->setUrlCelula($i,10,"javascript:zgAbreModal('".ROOT_URL.'/Fmt/rifaExc.php?id='.$rid."');");
 	
 	if ($rifa[$i]->getIndRifaEletronica() == 1 || ($podeGerar == false)) {
 		$grid->desabilitaCelula($i, 5);
