@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$tr,$system;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -61,6 +66,11 @@ $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($rifa);
 
+#################################################################################
+## Criar o objeto da data de hoje
+#################################################################################
+$hoje				= new \DateTime();
+
 
 #################################################################################
 ## Popula os valores dos botões
@@ -68,13 +78,21 @@ $grid->importaDadosDoctrine($rifa);
 for ($i = 0; $i < sizeof($rifa); $i++) {
 	$rid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$rifa[$i]->getCodigo().'&url='.$url);
 	
+	
+	#################################################################################
+	## Criar o objeto da data do sorteio
+	#################################################################################
+	$dataSorteio		= $rifa[$i]->getDataSorteio();
+	$podeGerar			= ($dataSorteio > $hoje)	? true : false;
+	
+	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/rifaGera.php?id='.$rid);
 	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/rifaResumo.php?id='.$rid);
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/rifaFin.php?id='.$rid);
 	$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/rifaAlt.php?id='.$rid);
 	$grid->setUrlCelula($i,9,"javascript:zgAbreModal('".ROOT_URL.'/Fmt/rifaExc.php?id='.$rid."');");
 	
-	if ($rifa[$i]->getIndRifaEletronica() == 1){
+	if ($rifa[$i]->getIndRifaEletronica() == 1 || ($podeGerar == false)) {
 		$grid->desabilitaCelula($i, 5);
 	}
 	

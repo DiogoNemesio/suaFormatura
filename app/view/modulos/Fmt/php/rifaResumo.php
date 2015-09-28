@@ -89,14 +89,14 @@ if ((isset($codRifa) && ($codRifa))) {
 #################################################################################
 ## Resgatar informações dos vendedores
 #################################################################################
-$infoVenda = $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array());
+$infoVenda = $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codRifa' => $codRifa));
 
 $total = 0;
 $array = array();
 for ($i = 0; $i < sizeof($infoVenda); $i++) {
 	//$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
 	if ( !in_array($infoVenda[$i]->getCodFormando()->getCodigo(), $array) ) {
-		$infoVendedor = $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codFormando' => $infoVenda[$i]->getCodFormando()->getCodigo()));
+		$infoVendedor = $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codRifa' => $codRifa,'codFormando' => $infoVenda[$i]->getCodFormando()->getCodigo()));
 		
 		$html .= '<div class="row" id="divInfoNumUsuID">';
 		$html .= '<div class="col-sm-12">';
@@ -108,7 +108,7 @@ for ($i = 0; $i < sizeof($infoVenda); $i++) {
 		$html .= '</div>';
 		$html .= '<h6 class="header blue bolder smaller"></h6>';
 		
-		$array[] += $infoVenda[$i]->getCodFormando()->getCodigo();
+		$array[] = $infoVenda[$i]->getCodFormando()->getCodigo();
 	}
 }
 

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmOrganizacaoPrecadastro
  *
- * @ORM\Table(name="ZGADM_ORGANIZACAO_PRECADASTRO", indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_PRECADASTRO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_PRECADASTRO_2_idx", columns={"COD_CIDADE"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_PRECADASTRO_3_idx", columns={"COD_ORGANIZACAO_PRECADASTRO_TIPO"})})
+ * @ORM\Table(name="ZGADM_ORGANIZACAO_PRECADASTRO", indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_PRECADASTRO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_PRECADASTRO_2_idx", columns={"COD_CIDADE"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_PRECADASTRO_3_idx", columns={"COD_ORGANIZACAO_PRECADASTRO_ATIVIDADE"})})
  * @ORM\Entity
  */
 class ZgadmOrganizacaoPrecadastro
@@ -84,14 +84,14 @@ class ZgadmOrganizacaoPrecadastro
     private $codCidade;
 
     /**
-     * @var \Entidades\ZgadmOrganizacaoPrecadastroTipo
+     * @var \Entidades\ZgadmOrganizacaoPrecadastroAtividade
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoPrecadastroTipo")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoPrecadastroAtividade")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_ORGANIZACAO_PRECADASTRO_TIPO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO_PRECADASTRO_ATIVIDADE", referencedColumnName="CODIGO")
      * })
      */
-    private $codOrganizacaoPrecadastroTipo;
+    private $codOrganizacaoPrecadastroAtividade;
 
 
     /**
@@ -289,25 +289,25 @@ class ZgadmOrganizacaoPrecadastro
     }
 
     /**
-     * Set codOrganizacaoPrecadastroTipo
+     * Set codOrganizacaoPrecadastroAtividade
      *
-     * @param \Entidades\ZgadmOrganizacaoPrecadastroTipo $codOrganizacaoPrecadastroTipo
+     * @param \Entidades\ZgadmOrganizacaoPrecadastroAtividade $codOrganizacaoPrecadastroAtividade
      * @return ZgadmOrganizacaoPrecadastro
      */
-    public function setCodOrganizacaoPrecadastroTipo(\Entidades\ZgadmOrganizacaoPrecadastroTipo $codOrganizacaoPrecadastroTipo = null)
+    public function setCodOrganizacaoPrecadastroAtividade(\Entidades\ZgadmOrganizacaoPrecadastroAtividade $codOrganizacaoPrecadastroAtividade = null)
     {
-        $this->codOrganizacaoPrecadastroTipo = $codOrganizacaoPrecadastroTipo;
+        $this->codOrganizacaoPrecadastroAtividade = $codOrganizacaoPrecadastroAtividade;
 
         return $this;
     }
 
     /**
-     * Get codOrganizacaoPrecadastroTipo
+     * Get codOrganizacaoPrecadastroAtividade
      *
-     * @return \Entidades\ZgadmOrganizacaoPrecadastroTipo 
+     * @return \Entidades\ZgadmOrganizacaoPrecadastroAtividade 
      */
-    public function getCodOrganizacaoPrecadastroTipo()
+    public function getCodOrganizacaoPrecadastroAtividade()
     {
-        return $this->codOrganizacaoPrecadastroTipo;
+        return $this->codOrganizacaoPrecadastroAtividade;
     }
 }

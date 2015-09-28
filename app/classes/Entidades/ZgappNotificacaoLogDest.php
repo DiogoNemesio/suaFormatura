@@ -39,16 +39,6 @@ class ZgappNotificacaoLogDest
     private $codLog;
 
     /**
-     * @var \Entidades\ZgfinPessoa
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPessoa;
-
-    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -57,6 +47,16 @@ class ZgappNotificacaoLogDest
      * })
      */
     private $codUsuario;
+
+    /**
+     * @var \Entidades\ZgfinPessoa
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPessoa;
 
 
     /**
@@ -116,29 +116,6 @@ class ZgappNotificacaoLogDest
     }
 
     /**
-     * Set codPessoa
-     *
-     * @param \Entidades\ZgfinPessoa $codPessoa
-     * @return ZgappNotificacaoLogDest
-     */
-    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
-    {
-        $this->codPessoa = $codPessoa;
-
-        return $this;
-    }
-
-    /**
-     * Get codPessoa
-     *
-     * @return \Entidades\ZgfinPessoa 
-     */
-    public function getCodPessoa()
-    {
-        return $this->codPessoa;
-    }
-
-    /**
      * Set codUsuario
      *
      * @param \Entidades\ZgsegUsuario $codUsuario
@@ -159,5 +136,28 @@ class ZgappNotificacaoLogDest
     public function getCodUsuario()
     {
         return $this->codUsuario;
+    }
+
+    /**
+     * Set codPessoa
+     *
+     * @param \Entidades\ZgfinPessoa $codPessoa
+     * @return ZgappNotificacaoLogDest
+     */
+    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
+    {
+        $this->codPessoa = $codPessoa;
+
+        return $this;
+    }
+
+    /**
+     * Get codPessoa
+     *
+     * @return \Entidades\ZgfinPessoa 
+     */
+    public function getCodPessoa()
+    {
+        return $this->codPessoa;
     }
 }

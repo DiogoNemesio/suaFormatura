@@ -22,22 +22,23 @@ if (isset($_POST['codContaRec']))		$codContaRec		= \Zage\App\Util::antiInjection
 if (isset($_POST['valorTotal']))		$valorTotal			= \Zage\App\Util::antiInjection($_POST['valorTotal']);
 if (isset($_POST['valorRecebido']))		$valorRecebido		= \Zage\App\Util::antiInjection($_POST['valorRecebido']);
 if (isset($_POST['codRifa']))			$codRifa			= \Zage\App\Util::antiInjection($_POST['codRifa']);
-if (isset($_POST['qtdeVenda']))			$qtdeVenda			= \Zage\App\Util::antiInjection($_POST['qtdeVenda']);
+if (isset($_POST['qtdeVendida']))			$qtdeVendida			= \Zage\App\Util::antiInjection($_POST['qtdeVendida']);
 
 
 #################################################################################
 ## Validar os parâmetros
 #################################################################################
-$infoRifa		= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+$oRifa			= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
 $oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 
 
 #################################################################################
 ## Definir os valores fixos
 #################################################################################
-$codGrpAssociacao	= "RIFA_".$infoRifa->getCodigo(). "_".$oUsuario->getCodigo();
+$codGrpAssociacao	= "RIFA_".$oRifa->getCodigo(). "_".$oUsuario->getCodigo();
 $dataVenc			= date($system->config["data"]["dateFormat"]); 
-$qtdeVenda			= ($qtdeVenda < $infoRifa->getQtdeObrigatorio()) ? $infoRifa->getQtdeObrigatorio() : $qtdeVenda; 
+$qtdeVendida		= ($qtdeVendida < $oRifa->getQtdeObrigatorio()) ? $oRifa->getQtdeObrigatorio() : $qtdeVendida;
+$valorTotal			= ($qtdeVendida * $oRifa->getValorUnitario());
 $codTipoRec			= "U";
 $parcela			= 1;
 $codRecPer			= null;
@@ -48,7 +49,7 @@ $valorOutros		= 0;
 $numParcelas		= 1;
 $parcelaInicial		= 1;
 $obs				= null;
-$descricao			= 'Venda de ('.$qtdeVenda.') bilhetes da Rifa: "'.$infoRifa->getNome().'"';
+$descricao			= 'Venda de ('.$qtdeVendida.') bilhetes da Rifa: "'.$oRifa->getNome().'"';
 $indValorParcela	= null;
 
 
@@ -64,7 +65,7 @@ if (!$oConta)		{
 	## Resgatar os parâmetros da categoria
 	#################################################################################
 	$codCatRifa				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_RIFA");
-	$codCentroCustoRifa		= ($infoRifa->getCodCentroCusto()) ? $infoRifa->getCodCentroCusto()->getCodigo() : null; 
+	$codCentroCustoRifa		= ($oRifa->getCodCentroCusto()) ? $oRifa->getCodCentroCusto()->getCodigo() : null; 
 	
 	#################################################################################
 	## Ajustar o array de valores de rateio
@@ -125,7 +126,7 @@ if (!$oConta)		{
 	$conta->setValorDesconto($valorDesconto);
 	$conta->setValorOutros($valorOutros);
 	$conta->setDataVencimento($dataVenc);
-	$conta->setDocumento($infoRifa->getCodigo());
+	$conta->setDocumento($oRifa->getCodigo());
 	$conta->setObservacao($obs);
 	$conta->setNumParcelas($numParcelas);
 	$conta->setParcelaInicial($parcelaInicial);
@@ -148,7 +149,7 @@ if (!$oConta)		{
 	$conta->_setArrayValoresRateio($valorRateio);
 	$conta->_setArrayPctRateio($pctRateio);
 
-
+	
 	#################################################################################
 	## Salvar no banco
 	#################################################################################
@@ -175,6 +176,24 @@ if (!$oConta)		{
 		exit;
 	}
 
+	
+}
+
+#################################################################################
+## Salvar a quantidade de rifas vendidas
+#################################################################################
+$oRifaFormando		= $em->getRepository('Entidades\ZgfmtRifaFormando')->findOneBy(array('codRifa' => $codRifa, 'codFormando' => $codUsuario));
+if (!$oRifaFormando) {
+	
+	$oRifa			= $em->getRepository('Entidades\ZgfmtRifa')->findOneBy(array('codigo' => $codRifa));
+	$oUsuario		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
+	
+	$oRifaFormando	= new \Entidades\ZgfmtRifaFormando();
+	$oRifaFormando->setCodRifa($oRifa);
+	$oRifaFormando->setCodFormando($oUsuario);
+	$oRifaFormando->setQtdeVendida($qtdeVendida);
+
+	$em->persist($oRifaFormando);
 }
 
 #################################################################################

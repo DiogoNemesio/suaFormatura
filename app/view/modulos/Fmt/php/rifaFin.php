@@ -53,10 +53,29 @@ if (!$info){
 }
 
 if ($info->getIndRifaEletronica() == 1){
-	$nomeQtde = 'QTDE VENDIDA';
+	$nomeQtde 		= 'QTDE VENDIDA';
+	$nomeVendido	= "VENDIDO (R$)";
 }else{
-	$nomeQtde = 'QTDE GERADA';
+	$nomeQtde 		= 'QTDE VENDIDA/GERADA';
+	$nomeVendido	= "VENDIDO/GERADO (R$)";
 }
+
+#################################################################################
+## Criar o objeto da data do sorteio
+#################################################################################
+$dataSorteio		= $info->getDataSorteio();
+$hoje				= new \DateTime();
+
+
+#################################################################################
+## Verificar se pode receber a rifa
+#################################################################################
+if ($info->getNumeroVencedor() || $hoje > $dataSorteio) {
+	$podeReceber		= true;
+}else{
+	$podeReceber		= false;
+}
+
 
 #################################################################################
 ## Resgata os dados do grid
@@ -75,9 +94,9 @@ $grid->adicionaTexto($tr->trans('FORMANDO'),			20, $grid::CENTER	,'NOME');
 $grid->adicionaTexto($tr->trans('QTDE OBRIGATÓRIA'),	10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('VALOR DA RIFA (R$)'),	10, $grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans($nomeQtde),				10, $grid::CENTER	,'NUM');
-$grid->adicionaMoeda($tr->trans('VENDIDO (R$)'),		10, $grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('A PAGAR (R$)'),		10, $grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('TOTAL PAGO(R$)'),		10, $grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans($nomeVendido),			10, $grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans('TOTAL A PAGAR (R$)'),	10, $grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans('JÁ PAGO (R$)'),		10, $grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-money green',$tr->trans('Receber'));
 //$grid->importaDadosDoctrine($rifas);
 $grid->importaDadosArray($rifas);
@@ -87,16 +106,35 @@ $grid->importaDadosArray($rifas);
 #################################################################################
 for ($i = 0; $i < sizeof($rifas); $i++) {
 	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa.'&codFormando='.$rifas[$i]["CODIGO"].'&url='.$url);
-	//$grid->setValorCelula($i,0,$rifas[$i]["nome"]);
 	$grid->setValorCelula($i,1,$info->getQtdeObrigatorio());
 	$grid->setValorCelula($i,2,$info->getValorUnitario());
-	//$grid->setValorCelula($i,3,$rifas[$i]["num"]);
 	
+	#################################################################################
+	## Calcula o valor total que o formando deve pagar
+	#################################################################################
 	if ($rifas[$i]["NUM"] >= $info->getQtdeObrigatorio()){
 		$total = $rifas[$i]["NUM"] * $info->getValorUnitario();
 	}else{
 		$total = $info->getQtdeObrigatorio() * $info->getValorUnitario();
 	}
+
+	
+	#################################################################################
+	## Resgatar a quantidade vendida caso a rifa não seja eletrônica
+	#################################################################################
+	if ($info->getIndRifaEletronica() != 1) {
+		$infoVenda		= $em->getRepository('Entidades\ZgfmtRifaFormando')->findOneBy(array('codRifa' => $codRifa, 'codFormando' => $rifas[$i]["CODIGO"]));
+		if ($infoVenda)		{
+			$qtdeVendida		= $infoVenda->getQtdeVendida();
+			$grid->setValorCelula($i,3,"(".$qtdeVendida."/".$rifas[$i]["NUM"].")");
+		}
+	}
+	
+	
+	#################################################################################
+	## Calcula o valor que o formando conseguiu arrecadar
+	#################################################################################
+	$grid->setValorCelula($i,4,($rifas[$i]["NUM"] * $info->getValorUnitario()));
 	
 	#################################################################################
 	## Grupo de Associação da rifa com a conta
@@ -116,10 +154,14 @@ for ($i = 0; $i < sizeof($rifas); $i++) {
 		$valAPagar		= $total - $totalPago;
 	}
 	
-	$grid->setValorCelula($i,4,$total);
-	$grid->setValorCelula($i,5,$valAPagar);
+	$grid->setValorCelula($i,5,$total);
 	$grid->setValorCelula($i,6,$totalPago);
-	$grid->setUrlCelula($i,7,"javascript:zgAbreModal('".ROOT_URL."/Fmt/rifaFinRec.php?id=".$uid."');");
+	
+	if ($valAPagar > 0 && $podeReceber == true)	{
+		$grid->setUrlCelula($i,7,"javascript:zgAbreModal('".ROOT_URL."/Fmt/rifaFinRec.php?id=".$uid."');");
+	}else{
+		$grid->desabilitaCelula($i, 7);
+	}
 }
 
 #################################################################################
