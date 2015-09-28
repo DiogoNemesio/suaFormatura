@@ -82,7 +82,7 @@ try {
 	
 	$oCat->setDescricao($descricao);
 	$oCat->setCodCategoriaPai($oCatPai);
-	$oCat->setcodOrganizacao($oMat);
+	$oCat->setCodOrganizacao($oMat);
 	$oCat->setIndAtiva($ativa);
 	$oCat->setCodTipo($oTipo);
 	

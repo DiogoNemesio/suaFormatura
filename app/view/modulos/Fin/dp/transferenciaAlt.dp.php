@@ -84,7 +84,7 @@ $flagAlterarSeq	= (isset($flagAlterarSeq)) 	? 1 : 0;
 #################################################################################
 ## Escrever os valores no objeto
 #################################################################################
-$transf->setcodOrganizacao($oOrg);
+$transf->setCodOrganizacao($oOrg);
 $transf->setCodFormaPagamento($oForma);
 $transf->setCodStatus($oStatus);
 $transf->setCodMoeda($oMoeda);

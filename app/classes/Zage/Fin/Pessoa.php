@@ -272,5 +272,38 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		
 	}
 
+	/**
+	 * Busca um pessoa pelo CGC 
+	 * @param unknown $codOrganizacao
+	 * @param unknown $cgc
+	 */
+	public static function buscaPorCgc($codOrganizacao,$cgc) {
+		global $em,$system,$log,$tr;
+		
+		#################################################################################
+		## Resgata o objeto doctrine da pessoa
+		#################################################################################
+		$oPessoa			= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $codOrganizacao,'cgc' => $cgc));
+		return $oPessoa;
+	}
+	
+	/**
+	 * Resgata a pessoa (financeiro) associada ao CGC do usuário na organizacação 
+	 * @param unknown $codOrganizacao
+	 * @param unknown $codUsuario
+	 */
+	public static function getPessoaUsuario($codOrganizacao,$codUsuario) {
+		global $em,$system,$log,$tr;
+		
+		#################################################################################
+		## Resgata as informações do usuário
+		#################################################################################
+		$oUsuario			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
+		
+		if (!$oUsuario)		throw new \Exception("Usuário não encontrado em getPessoaUsuario");
+		
+		return self::buscaPorCgc($codOrganizacao, $oUsuario->getCpf());
+	}
+	
 }
 

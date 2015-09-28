@@ -1078,7 +1078,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Calcular o saldo a Receber de uma conta
 	 * @param int $codConta
 	 */
-	public function getValorJaRecebido($codConta) {
+	public static function getValorJaRecebido($codConta) {
 		global $em,$system,$tr,$log;
 		
 		#################################################################################

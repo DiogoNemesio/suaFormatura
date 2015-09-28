@@ -78,7 +78,7 @@ try {
  	
  	$oMat		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
  	
- 	$oConta->setcodOrganizacao($oMat);
+ 	$oConta->setCodOrganizacao($oMat);
  	$oConta->setDescricao($descricao);
  	$oConta->setIndDebito($debito);
  	$oConta->setIndCredito($credito);

@@ -160,7 +160,7 @@ if (isset($codTipoValor) && $codTipoValor == "P") {
 #################################################################################
 ## Escrever os valores no objeto
 #################################################################################
-$conta->setcodOrganizacao($oOrg);
+$conta->setCodOrganizacao($oOrg);
 $conta->setCodFormaPagamento($oForma);
 $conta->setCodStatus($oStatus);
 $conta->setCodMoeda($oMoeda);

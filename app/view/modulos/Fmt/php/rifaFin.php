@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$tr,$system;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -70,6 +75,7 @@ $grid->adicionaTexto($tr->trans('FORMANDO'),			20, $grid::CENTER	,'NOME');
 $grid->adicionaTexto($tr->trans('QTDE OBRIGATÓRIA'),	10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('VALOR DA RIFA (R$)'),	10, $grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans($nomeQtde),				10, $grid::CENTER	,'NUM');
+$grid->adicionaMoeda($tr->trans('VENDIDO (R$)'),		10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('A PAGAR (R$)'),		10, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('TOTAL PAGO(R$)'),		10, $grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-money green',$tr->trans('Receber'));
@@ -92,8 +98,28 @@ for ($i = 0; $i < sizeof($rifas); $i++) {
 		$total = $info->getQtdeObrigatorio() * $info->getValorUnitario();
 	}
 	
+	#################################################################################
+	## Grupo de Associação da rifa com a conta
+	#################################################################################
+	$codGrpAssociacao	= "RIFA_".$info->getCodigo(). "_".$rifas[$i]["CODIGO"];
+	
+	#################################################################################
+	## Verificar se a conta já foi gerada
+	#################################################################################
+	$oConta				= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codGrupoAssociacao' => $codGrpAssociacao));
+	
+	if (!$oConta)		{
+		$totalPago		= 0;
+		$valAPagar		= $total;
+	}else{
+		$totalPago		= \Zage\Fin\ContaReceber::getValorJaRecebido($oConta->getCodigo());
+		$valAPagar		= $total - $totalPago;
+	}
+	
 	$grid->setValorCelula($i,4,$total);
-	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Fmt/rifaFinRec.php?id=".$uid."');");
+	$grid->setValorCelula($i,5,$valAPagar);
+	$grid->setValorCelula($i,6,$totalPago);
+	$grid->setUrlCelula($i,7,"javascript:zgAbreModal('".ROOT_URL."/Fmt/rifaFinRec.php?id=".$uid."');");
 }
 
 #################################################################################

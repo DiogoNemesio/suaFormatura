@@ -159,7 +159,7 @@ try {
  	$oAge		= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codAgencia));
  	
  	
- 	$oConta->setcodOrganizacao($oOrg);
+ 	$oConta->setCodOrganizacao($oOrg);
  	$oConta->setCodTipo($oTipo);
  	$oConta->setNome($nome);
  	$oConta->setCodAgencia($oAge);
