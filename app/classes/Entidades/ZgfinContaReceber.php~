@@ -225,6 +225,13 @@ class ZgfinContaReceber
     private $codGrupoAssociacao;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_SOMENTE_VISUALIZAR", type="integer", nullable=true)
+     */
+    private $indSomenteVisualizar;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -980,6 +987,29 @@ class ZgfinContaReceber
     public function getCodGrupoAssociacao()
     {
         return $this->codGrupoAssociacao;
+    }
+
+    /**
+     * Set indSomenteVisualizar
+     *
+     * @param integer $indSomenteVisualizar
+     * @return ZgfinContaReceber
+     */
+    public function setIndSomenteVisualizar($indSomenteVisualizar)
+    {
+        $this->indSomenteVisualizar = $indSomenteVisualizar;
+
+        return $this;
+    }
+
+    /**
+     * Get indSomenteVisualizar
+     *
+     * @return integer 
+     */
+    public function getIndSomenteVisualizar()
+    {
+        return $this->indSomenteVisualizar;
     }
 
     /**

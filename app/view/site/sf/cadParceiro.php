@@ -42,6 +42,17 @@ try {
 }
 
 #################################################################################
+## Resgata as informaões da atividade
+#################################################################################
+try {
+	$aAtividade	= $em->getRepository('Entidades\ZgadmOrganizacaoPrecadastroAtividade')->findBy(array('indAtivo' => '1'), array('descricao' => ASC));
+	$oAtividade	= $system->geraHtmlCombo($aAtividade,'CODIGO', 'DESCRICAO', null, '');
+
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
 ## Carregando os templates html
 #################################################################################
 $tplHeader	= new \Zage\App\Template();
@@ -49,11 +60,13 @@ $tplMain	= new \Zage\App\Template();
 $tplFooter	= new \Zage\App\Template();
 
 $tplHeader->load(SITE_PATH 	. '/html/header.html');
-$tplMain->load(SITE_PATH 	. '/html/cadTurma.html');
+$tplMain->load(SITE_PATH 	. '/html/cadParceiro.html');
 $tplFooter->load(SITE_PATH 	. '/html/footer.html');
 
 $tplHeader->set('MASCARAS'		,$htmlMask);
-$tplMain->set('DP'				,SITE_URL . 'dp/cadTurma.dp.php');
+$tplMain->set('DP'				,SITE_URL . 'dp/cadParceiro.dp.php');
+$tplMain->set('TIPO'			,$oTipo);
+$tplMain->set('ATIVIDADE'		,$oAtividade);
 $tplMain->set('SITE_URL'		,SITE_URL);
 
 $html	= $tplHeader->getHtml();

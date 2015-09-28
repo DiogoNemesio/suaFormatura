@@ -1,0 +1,609 @@
+<!-- breadcrumb start -->
+
+			<!-- main-container start -->
+			<!-- ================ -->
+			<section class="main-container">
+
+				<div class="container">
+					<div class="row">
+
+						<!-- main start -->
+						<!-- ================ -->
+						<div class="main col-md-8">
+
+							<!-- page-title start -->
+							<!-- ================ -->
+							<h2 class="page-title">Parceiro</h2>
+							<div class="separator-2"></div>
+							<!-- page-title end -->
+
+							<!-- Forms start -->
+							<!-- ============================================================================== -->							
+							<br>
+							<div id='divMsg'></div>
+								
+							<form class="form" id="zgFormID">
+								<input type="hidden" id="valID" name="validado">
+								<input type="hidden" id="valCpfID" name="validaCpf">
+								<input type="hidden" id="indUsuarioID" name="indUsuario">
+								<input type="hidden" id="usuOrgID" name="usuOrg">
+								
+								<div class="form-group has-feedback" id="divPessoaID">
+									<label class="control-label col-sm-2" for="pessoaID">Pessoa:</label>
+									<select class="select2" style="width:50%;" onchange="zgMostraDivs();" id="tipoID" name="tipo" %DISABLED% data-rel="select2">
+										%TIPO%
+									</select>
+								</div>
+								
+								<div id="divPessoaJur">
+									
+									<div class="form-group has-feedback" id="divCnpjID">
+										<label class="control-label" for="cnpjID">CNPJ</label>
+										<input type="text" class="form-control" id="cnpjID" name="cnpj" maxlength="18" onblur="validaCnpj();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cnpj" zg-data-mask-retira="1">
+										<i id="iCnpjID" class=""></i>
+									</div>
+									<div id="divHelpCnpjID"></div>
+									<div class="form-group has-feedback" id="divRazaoID">
+										<label class="control-label" for="razaoID">Razão Social</label>
+										<input type="text" class="form-control" id="razaoID" name="razao" maxlength="100" onblur="validaRazao();" autocomplete="off" >
+										<i id="iRazaoID" class=""></i>
+									</div>
+									<div id="divHelpRazaoID"></div>
+									<div class="form-group has-feedback" id="divFantasiaID">
+										<label class="control-label" for="fantasiaID">Nome Fantasia</label>
+										<input type="text" class="form-control" id="fantasiaID" name="fantasia" maxlength="100" onblur="validaFantasia();" autocomplete="off" >
+										<i id="iFantasiaID" class=""></i>
+									</div>
+									<div id="divHelpFantasiaID"></div>
+								</div>
+								
+								<div id="divPessoaFis">
+									<div class="form-group has-feedback" id="divCpfID">
+										<label class="control-label" for="cpfID">CPF</label>
+										<input type="text" class="form-control" id="cpfID" name="cpf" maxlength="14" onblur="validaCpfSite();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+										<i id="iCpfID" class=""></i>
+									</div>
+									<div id="divHelpCpfID"></div>
+									<div class="form-group has-feedback" id="divNomeID">
+										<label class="control-label" for="nomeID">Nome</label>
+										<input type="text" class="form-control" id="nomeID" name="nome" maxlength="100" onblur="validaNome();" autocomplete="off">
+										<i id="iNomeID" class=""></i>
+									</div>
+									<div id="divHelpNomeID"></div>
+								</div>
+								<br>
+								
+								<div class="form-group" id="divCidadeID">
+							    	<label class="col-sm-2 control-label pull-left" for="instituicaoID">Cidade sede:</label>
+									<input type="hidden" id="cidadeID" name="cidade"  data-rel="select2Cidade">								    	
+								</div>
+								<div class="form-group has-feedback" id="divAtividadeID">
+									<label class="control-label col-sm-2" for="atividadeID">Atividade:</label>
+									<select class="select2" style="width:50%;" id="atividadeID" placeholder="Selecione sua atividade principal" name="atividade" data-rel="select2">
+										%ATIVIDADE%
+									</select>
+								</div>
+								<br>
+								
+								<div class="form-group has-feedback" id="divEmailID">
+									<label class="control-label" for="email1ID">E-mail</label>
+									<input type="text" class="form-control" id="email1ID" name="email" maxlength="200" onblur="validaEmailSite();" autocomplete="off" >
+									<i id="iEmailID" class=""></i>
+								</div>
+								<div id="divHelpEmailID"></div>
+								<div class="form-group has-feedback" id="divTelComercialID">
+									<label class="control-label" for="telComercialID">Telefone comercial</label>
+									<input type="text" class="form-control" id="telComercialID" name="telComercial" onblur="validaTelComercial();" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
+									<i id="iTelComercialID" class=""></i>
+								</div>
+								<div id="divHelpTelComercialID"></div>
+								<div class="form-group has-feedback" id="divTelCelularID">
+									<label class="control-label" for="telCelularID">Telefone celular</label>
+									<input type="text" class="form-control" id="telCelularID" name="telCelular" maxlength="15" onblur="validaTelCelular();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1">
+									<i id="iTelCelularID" class=""></i>
+								</div>
+								<div id="divHelpTelCelularID"></div>
+								
+								<button type="button" class="btn btn-default" id="btnSubmitID">Cadastrar</button>
+							</form>
+						</div>
+						<!-- main end -->
+						
+						<!-- sidebar start -->
+						<!-- ================ -->
+						<aside class="col-md-3 col-lg-offset-1">
+							<div class="sidebar">
+								<div class="side vertical-divider-left">									
+									<h3 class="title">Follow Us</h3>
+									<div class="separator-2 mt-20 "></div>
+									<ul class="social-links circle small margin-clear clearfix animated-effect-1">
+										<li class="twitter"><a target="_blank" href="http://www.twitter.com"><i class="fa fa-twitter"></i></a></li>
+										<li class="skype"><a target="_blank" href="http://www.skype.com"><i class="fa fa-skype"></i></a></li>
+										<li class="linkedin"><a target="_blank" href="http://www.linkedin.com"><i class="fa fa-linkedin"></i></a></li>
+										<li class="googleplus"><a target="_blank" href="http://plus.google.com"><i class="fa fa-google-plus"></i></a></li>
+										<li class="youtube"><a target="_blank" href="http://www.youtube.com"><i class="fa fa-youtube-play"></i></a></li>
+										<li class="flickr"><a target="_blank" href="http://www.flickr.com"><i class="fa fa-flickr"></i></a></li>
+										<li class="facebook"><a target="_blank" href="http://www.facebook.com"><i class="fa fa-facebook"></i></a></li>
+									</ul><br>
+								</div>
+							</div>
+							<div class="fb-page" data-href="https://www.facebook.com/Sua-Formatura-1028559723830618/" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="true"></div>
+						</aside>
+						<!-- sidebar end -->
+						
+						
+					</div>
+				</div>
+			</section>
+			<!-- main-container end -->
+			
+			
+<script type="text/javascript" charset="%CHARSET%">
+
+//Mascaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('#tipoID').css('width','30%').select2({allowClear:true});
+$('#atividadeID').css('width','80%').select2({allowClear:true});
+
+// Mostrar div PF e PJ
+zgMostraDivs();
+function zgMostraDivs() {
+	var vTipo			= $('#tipoID').val();
+	
+	if (vTipo == "J") {
+		$('#divPessoaFis').addClass("hidden");
+		$('#divPessoaJur').removeClass("hidden");
+	}else{
+		$('#divPessoaJur').addClass("hidden");
+		$('#divPessoaFis').removeClass("hidden");
+	}
+}
+
+
+
+// Facebook
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v2.4";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+/*********************************************************
+* Submit
+*********************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaForm();
+	
+	if (vOK == false) 	{
+		e.preventDefault();
+		return false;
+	}
+	
+	$('#zgFormID').submit();
+	return false;
+});
+
+//Submeter o formulário
+$('#zgFormID').submit(function(e) {
+	
+	$('#btnSubmitID').attr("disabled","disabled");
+	
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#usuOrgID').val(zgGetCodRetorno(data));
+			window.location.href = '%SITE_URL%confirmacao_turma.php?&codUsuOrg='+zgGetCodRetorno(data);
+			
+			//zgMostraMsg('divMsg', 'Informações salva com sucesso!');
+			
+			//Tornar os campos readonly
+			
+			
+		}else{
+			zgMostraErro('divMsg',zgGetMsgRetorno(data));
+			$('#btnSubmitID').attr("disabled",false);
+		}
+		
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false;tipoID
+	
+	
+});
+
+/*********************************************************
+* Busca Select2 typehead Cidades
+*********************************************************/
+$('[data-rel="select2Cidade"]').select2({
+    minimumInputLength: 2,
+    width: '80%',
+    placeholder: 'Buscar a cidade',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Adm/getCidadeLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+	initSelection : function (element, callback) {
+		var id = $(element).val();
+        if (id !== "") {
+            $.ajax("%ROOT_URL%/Adm/getCidadeLis.dp.php", {
+                data: {codCidade: id},
+    			method: "GET",
+                dataType: "json"
+			}).done(function(data) {
+				callback(data[0]);
+			});
+		}
+    },
+});
+
+/*********************************************************
+* VALIDA FORMULÁRIO
+*********************************************************/
+//Valida campo email
+function validaEmailSite(){
+	var vEmail	= $('#email1ID').val();
+	
+	if (!vEmail){
+		$('#divEmailID').addClass('has-error');
+		$('#iEmailID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpEmailID').html('<p class="small"><font color="#B40431">Informe um email para contato.</font></p>');
+		return false;
+	}else if (validarEmail(vEmail) == false) {
+		$('#divEmailID').addClass('has-error');
+		$('#iEmailID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpEmailID').html('<p class="small"><font color="#B40431">Este email está inválido.</font></p>');
+		return false;
+	}else{
+		$('#iEmailID').removeClass('fa fa-times form-control-feedback');
+		$('#iEmailID').addClass('fa fa-check form-control-feedback');
+		$('#divEmailID').removeClass('has-error');
+		$('#divEmailID').addClass('has-success');
+		$('#divHelpEmailID').html('');
+		return true;
+	}	
+}
+
+//Valida telefone comercial
+function validaTelComercial(){
+	var vTelComercial	= $('#telComercialID').val();
+	
+	if (!vTelComercial){
+		$('#divTelComercialID').addClass('has-error');
+		$('#iTelComercialID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpTelComercialID').html('<p class="small"><font color="#B40431">Informe um telefone comercial.</font></p>');
+		return false;
+	}else if (vTelComercial.length > 15) {
+		$('#divTelComercialID').addClass('has-error');
+		$('#iTelComercialID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpTelComercialID').html('<p class="small"><font color="#B40431">O telefone não pode conter mais de 15 caracteres.</font></p>');
+		return false;
+	}else if (vTelComercial.length < 14){
+		$('#divTelComercialID').addClass('has-error');
+		$('#iTelComercialID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpTelComercialID').html('<p class="small"><font color="#B40431">O telefone está inválido.</font></p>');
+		return false;
+	}else{
+		$('#iTelComercialID').removeClass('fa fa-times form-control-feedback');
+		$('#iTelComercialID').addClass('fa fa-check form-control-feedback');
+		$('#divTelComercialID').removeClass('has-error');
+		$('#divTelComercialID').addClass('has-success');
+		$('#divHelpTelComercialID').html('');
+		return true;
+	}	
+}
+
+//Valida telefone celular
+function validaTelCelular(){
+	var vTelCelular	= $('#telCelularID').val();
+	
+	if (!vTelCelular){
+		$('#divTelCelularID').addClass('has-error');
+		$('#iTelCelularID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpTelCelularID').html('<p class="small"><font color="#B40431">Informe um telefone celular.</font></p>');
+		return false;
+	}else if (vTelCelular.length > 15) {
+		$('#divTelCelularID').addClass('has-error');
+		$('#iTelCelularID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpTelCelularID').html('<p class="small"><font color="#B40431">O telefone não pode conter mais de 15 caracteres.</font></p>');
+		return false;
+	}else if (vTelCelular.length < 14){
+		$('#divTelCelularID').addClass('has-error');
+		$('#iTelCelularID').addClass('fa fa-times form-control-feedback');
+		$('#divHelpTelCelularID').html('<p class="small"><font color="#B40431">O telefone está inválido.</font></p>');
+		return false;
+	}else{
+		$('#iTelCelularID').removeClass('fa fa-times form-control-feedback');
+		$('#iTelCelularID').addClass('fa fa-check form-control-feedback');
+		$('#divTelCelularID').removeClass('has-error');
+		$('#divTelCelularID').addClass('has-success');
+		$('#divHelpTelCelularID').html('');
+		return true;
+	}	
+}
+
+
+/***** Valida CNPJ *****/
+function validaCnpj() {
+	var vCnpj		= $('#cnpjID').val();
+	var vTipo		= $('#tipoID').val();
+	
+	if (vTipo == 'J'){
+		if (!vCnpj){
+			$('#divCnpjID').addClass('has-error');
+			$('#iCnpjID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpCnpjID').html('<p class="small"><font color="#B40431">Informe seu CNPJ.</font></p>');
+			return false;
+		}else if (validarCNPJ(vCnpj) == false) {
+			$('#divCnpjID').addClass('has-error');
+			$('#iCnpjID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpCnpjID').html('<p class="small"><font color="#B40431">O CNPJ está inválido.</font></p>');
+			return false;
+		}else{
+			$('#iCnpjID').removeClass('fa fa-times form-control-feedback');
+			$('#iCnpjID').addClass('fa fa-check form-control-feedback');
+			$('#divCnpjID').removeClass('has-error');
+			$('#divCnpjID').addClass('has-success');
+			$('#divHelpCnpjID').html('');
+			return true;
+		}
+	}else{
+		$('#iCnpjID').removeClass('fa fa-times form-control-feedback');
+		$('#divCnpjID').removeClass('has-error');
+		$('#divHelpCnpjID').html('');
+		return true;
+	}
+}
+
+//Valida campo identificação
+function validaRazao(){
+	var vRazao	= $('#razaoID').val();
+	var vTipo		= $('#tipoID').val();
+	
+	if (vTipo == 'J'){
+	
+		if (!vRazao) {
+			$('#divRazaoID').addClass('has-error');
+			$('#iRazaoID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpRazaoID').html('<p class="small"><font color="#B40431">Informe a Razão Social.</font></p>');
+			return false;
+		}else{
+			if (vRazao.length > 100){
+				$('#divRazaoID').addClass('has-error');
+				$('#iRazaoID').addClass('fa fa-times form-control-feedback');
+				$('#divHelpRazaoID').html('<p class="small"><font color="#B40431">A Razão Social não deve conter mais de 100 caracteres.</font></p>');
+				return false;
+			}else{
+				$('#divRazaoID').removeClass('has-error');
+				$('#divRazaoID').addClass('has-success');
+				$('#iRazaoID').removeClass('fa fa-times form-control-feedback');
+				$('#iRazaoID').addClass('fa fa-check form-control-feedback');
+				$('#divHelpRazaoID').html('');
+				return true;
+			}
+		}
+	}else{
+		$('#divRazaoID').removeClass('has-error');
+		$('#iRazaoID').removeClass('fa fa-times form-control-feedback');
+		$('#divHelpRazaoID').html('');
+		return true;
+	}
+}
+
+//Valida campo identificação
+function validaFantasia(){
+	var vFantasia	= $('#fantasiaID').val();
+	var vTipo		= $('#tipoID').val();
+	
+	if (vTipo == 'J'){
+	
+		if (!vFantasia) {
+			$('#divFantasiaID').addClass('has-error');
+			$('#iFantasiaID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpFantasiaID').html('<p class="small"><font color="#B40431">Informe o nome fantasia.</font></p>');
+			return false;
+		}else{
+			if (vFantasia.length > 100){
+				$('#divFantasiaID').addClass('has-error');
+				$('#iFantasiaID').addClass('fa fa-times form-control-feedback');
+				$('#divHelpFantasiaID').html('<p class="small"><font color="#B40431">O nome fantasia não deve conter mais de 100 caracteres.</font></p>');
+				return false;
+			}else{
+				$('#divFantasiaID').removeClass('has-error');
+				$('#divFantasiaID').addClass('has-success');
+				$('#iFantasiaID').removeClass('fa fa-times form-control-feedback');
+				$('#iFantasiaID').addClass('fa fa-check form-control-feedback');
+				$('#divHelpFantasiaID').html('');
+				return true;
+			}
+		}
+	}else{
+		$('#divFantasiaID').removeClass('has-error');
+		$('#iFantasiaID').removeClass('fa fa-times form-control-feedback');;
+		$('#divHelpFantasiaID').html('');
+		return true;
+	}
+}
+
+/***** Valida CPF *****/
+function validaCpfSite() {
+	var vCpf		= $('#cpfID').val();
+	var vTipo		= $('#tipoID').val();
+	
+	if (vTipo == 'F'){
+		if (!vCpf){
+			$('#divCpfID').addClass('has-error');
+			$('#iCpfID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpCpfID').html('<p class="small"><font color="#B40431">Informe seu CPF.</font></p>');
+			return false;
+		}else if (validarCPF(vCpf) == false) {
+			$('#divCpfID').addClass('has-error');
+			$('#iCpfID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpCpfID').html('<p class="small"><font color="#B40431">O CPF está inválido.</font></p>');
+			return false;
+		}else{
+			$('#iCpfID').removeClass('fa fa-times form-control-feedback');
+			$('#iCpfID').addClass('fa fa-check form-control-feedback');
+			$('#divCpfID').removeClass('has-error');
+			$('#divCpfID').addClass('has-success');
+			$('#divHelpCpfID').html('');
+			return true;
+		}
+	}else{
+		$('#iCpfID').removeClass('fa fa-times form-control-feedback');
+		$('#divCpfID').removeClass('has-error');
+		$('#divHelpCpfID').html('');
+		return true;
+	}
+}
+
+//Valida campo identificação
+function validaNome(){
+	var vNome	= $('#nomeID').val();
+	var vTipo		= $('#tipoID').val();
+	
+	if (vTipo == 'F'){
+	
+		if (!vNome) {
+			$('#divNomeID').addClass('has-error');
+			$('#iNomeID').addClass('fa fa-times form-control-feedback');
+			$('#divHelpNomeID').html('<p class="small"><font color="#B40431">Informe seu nome completo.</font></p>');
+			return false;
+		}else{
+			if (vNome.length > 100){
+				$('#divNomeID').addClass('has-error');
+				$('#iNomeID').addClass('fa fa-times form-control-feedback');
+				$('#divHelpNomeID').html('<p class="small"><font color="#B40431">Seu nome não deve conter mais de 100 caracteres.</font></p>');
+				return false;
+			}else if (vNome.length < 5){
+				$('#divNomeID').addClass('has-error');
+				$('#iNomeID').addClass('fa fa-times form-control-feedback');
+				$('#divHelpNomeID').html('<p class="small"><font color="#B40431">O nome está muito pequeno, preencha com seu nome completo.</font></p>');
+				return false;
+			}else{
+				$('#divNomeID').removeClass('has-error');
+				$('#divNomeID').addClass('has-success');
+				$('#iNomeID').removeClass('fa fa-times form-control-feedback');
+				$('#iNomeID').addClass('fa fa-check form-control-feedback');
+				$('#divHelpNomeID').html('');
+				return true;
+			}
+		}
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#iNomeID').removeClass('fa fa-times form-control-feedback');
+		$('#divHelpNomeID').html('');
+		return true;
+	}
+}
+
+function validaForm () {
+	
+	var vCidade	 	 = $('#cidadeID').val();
+	var vAtividade 	 = $('#atividadeID').val();
+	
+	var vOK	= true;
+	
+	// CNPJ
+	if (validaCnpj() == false){
+		vOK		= false;
+	}
+	
+	// RAZAO
+	if (validaRazao() == false){
+		vOK		= false;
+	}
+	
+	// DATA DA PREVISÃO
+	if (validaFantasia() == false){
+		vOK		= false;
+	}
+	
+	// ATIVIDADE
+	if (!vAtividade) {
+		$('#divAtividadeID').addClass('has-error');
+		vOK		= false;
+	}
+	
+	//CIDADE
+	if (!vCidade) {
+		$('#divCidadeID').addClass('has-error');
+		vOK		= false;
+	}
+	
+	// CPF
+	if (validaCpfSite() == false){
+		vOK		= false;
+	}
+	
+	// NOME
+	if (validaNome() == false){
+		vOK		= false;
+	}
+	
+	// EMAIL
+	if (validaEmailSite() == false){
+		vOK		= false;
+	}
+	
+	// TELEFONE COM
+	if (validaTelComercial() == false){
+		vOK		= false;
+	}
+
+	// TELEFONE CEL
+	if (validaTelCelular() == false){
+		vOK		= false;
+	}
+
+	// RETURN
+	if (vOK == true) {
+		return true ;
+	}else{
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
+		return false;
+	}
+	
+}
+
+
+</script>
+			
