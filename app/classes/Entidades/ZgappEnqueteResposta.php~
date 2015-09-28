@@ -36,16 +36,6 @@ class ZgappEnqueteResposta
     private $dataResposta;
 
     /**
-     * @var \Entidades\ZgappEnquetePergunta
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgappEnquetePergunta")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PERGUNTA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPergunta;
-
-    /**
      * @var \Entidades\ZgsegUsuario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
@@ -54,6 +44,16 @@ class ZgappEnqueteResposta
      * })
      */
     private $codUsuario;
+
+    /**
+     * @var \Entidades\ZgappEnquetePergunta
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgappEnquetePergunta")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PERGUNTA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPergunta;
 
 
     /**
@@ -113,29 +113,6 @@ class ZgappEnqueteResposta
     }
 
     /**
-     * Set codPergunta
-     *
-     * @param \Entidades\ZgappEnquetePergunta $codPergunta
-     * @return ZgappEnqueteResposta
-     */
-    public function setCodPergunta(\Entidades\ZgappEnquetePergunta $codPergunta = null)
-    {
-        $this->codPergunta = $codPergunta;
-
-        return $this;
-    }
-
-    /**
-     * Get codPergunta
-     *
-     * @return \Entidades\ZgappEnquetePergunta 
-     */
-    public function getCodPergunta()
-    {
-        return $this->codPergunta;
-    }
-
-    /**
      * Set codUsuario
      *
      * @param \Entidades\ZgsegUsuario $codUsuario
@@ -156,5 +133,28 @@ class ZgappEnqueteResposta
     public function getCodUsuario()
     {
         return $this->codUsuario;
+    }
+
+    /**
+     * Set codPergunta
+     *
+     * @param \Entidades\ZgappEnquetePergunta $codPergunta
+     * @return ZgappEnqueteResposta
+     */
+    public function setCodPergunta(\Entidades\ZgappEnquetePergunta $codPergunta = null)
+    {
+        $this->codPergunta = $codPergunta;
+
+        return $this;
+    }
+
+    /**
+     * Get codPergunta
+     *
+     * @return \Entidades\ZgappEnquetePergunta 
+     */
+    public function getCodPergunta()
+    {
+        return $this->codPergunta;
     }
 }
