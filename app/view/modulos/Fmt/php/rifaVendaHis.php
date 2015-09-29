@@ -23,7 +23,7 @@ if (isset($_GET['id'])) {
 }elseif (isset($id)) 	{
 	$id = \Zage\App\Util::antiInjection($id);
 }else{
-	\Zage\App\Erro::halt('Falta de Parâmetros');
+	\Zage\App\Erro::halt('FALTA PARÂMENTRO : ID');
 }
 
 #################################################################################
@@ -39,65 +39,47 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . '/Rhu/'. basename(__FILE__);
+$url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
-## Resgata os dados do grid
+## Resgata informações dO GRID
 #################################################################################
-try {	
-	$rifa	= $em->getRepository('Entidades\ZgfmtRifa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('codigo' => 'DESC'));
+try {
+	$info 		= $em->getRepository('Entidades\ZgfmtRifa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'indRifaEletronica' => '1'), array ('dataCadastro' => DESC));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-	
+
+
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
-$grid->adicionaTexto($tr->trans('NOME'),	 		15, $grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('PRÊMIO'),			20, $grid::CENTER	,'premio');
-$grid->adicionaDataHora($tr->trans('DATA SORTEIO'),	15, $grid::CENTER	,'dataSorteio');
-$grid->adicionaTexto($tr->trans('QTD POR FORMANDO'),15, $grid::CENTER	,'qtdeObrigatorio');
-$grid->adicionaMoeda($tr->trans('VALOR'),			15, $grid::CENTER	,'valorUnitario');
-$grid->adicionaIcone(null,'fa fa-cog red',$tr->trans('Geração das rifas'));
-$grid->adicionaIcone(null,'fa fa-info-circle orange',$tr->trans('Histórico'));
-$grid->adicionaIcone(null,'fa fa-usd green',$tr->trans('Financeiro'));
-$grid->adicionaIcone(null,'fa fa-file-pdf-o red',$tr->trans('Resumo Financeiro'));
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($rifa);
-
-#################################################################################
-## Criar o objeto da data de hoje
-#################################################################################
-$hoje				= new \DateTime();
-
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GVendas");
+$grid->adicionaTexto($tr->trans('RIFA'),				20, $grid::CENTER	,'nome');
+$grid->adicionaTexto($tr->trans('QTDE OBRIGATÓRIA'),	10, $grid::CENTER	,'qtdeObrigatorio');
+$grid->adicionaTexto($tr->trans('QTDE VENDIDA'),		10, $grid::CENTER	,'');
+$grid->adicionaIcone('null','',$tr->trans('META'));
+$grid->adicionaIcone(null,'fa fa-search-plus',$tr->trans('Detalhar vendas'));
+$grid->importaDadosDoctrine($info);
+//$grid->importaDadosArray($info);
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($rifa); $i++) {
-	$rid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$rifa[$i]->getCodigo().'&url='.$url);
+for ($i = 0; $i < sizeof($info); $i++) {
+	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$info[$i]->getCodigo().'&url='.$url);
 	
+	$infoVenda 		= $em->getRepository('Entidades\ZgfmtRifaNumero')->findBy(array('codRifa' => $info[$i]->getCodigo() , 'codFormando' => $system->getCodUsuario()));
+	$qtdeVenda 		= sizeof($infoVenda);
+	$grid->setValorCelula($i,2,$qtdeVenda);
 	
-	#################################################################################
-	## Criar o objeto da data do sorteio
-	#################################################################################
-	$dataSorteio		= $rifa[$i]->getDataSorteio();
-	$podeGerar			= ($dataSorteio > $hoje)	? true : false;
-	
-	
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/rifaGera.php?id='.$rid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/rifaResumo.php?id='.$rid);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/rifaFin.php?id='.$rid);
-	$grid->setUrlCelula($i,8,"javascript:zgDownloadUrl('".ROOT_URL.'/Fmt/rifaResumoFin.php?id='.$rid."');");
-	$grid->setUrlCelula($i,9,ROOT_URL.'/Fmt/rifaAlt.php?id='.$rid);
-	$grid->setUrlCelula($i,10,"javascript:zgAbreModal('".ROOT_URL.'/Fmt/rifaExc.php?id='.$rid."');");
-	
-	if ($rifa[$i]->getIndRifaEletronica() == 1 || ($podeGerar == false)) {
-		$grid->desabilitaCelula($i, 5);
+	if ($qtdeVenda >= $info[$i]->getQtdeObrigatorio()){
+		$grid->setIconeCelula($i, 3, "fa fa-thumbs-up green");
+	}else{
+		$grid->setIconeCelula($i, 3, "fa fa-thumbs-down red");
 	}
 	
+	$grid->setUrlCelula($i,4,ROOT_URL.'/Fmt/rifaVendaHisDetalhe.php?id='.$uid);
 }
 
 #################################################################################
@@ -109,23 +91,34 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
+
+#################################################################################
+## Gerar o código html do grid
+#################################################################################
+$msg .= '<div class="alert alert-info">';
+$msg .= 'Acompanhe as vendas das suas rifas eletrônicas.';
+$msg .= '</div>';
+
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fmt/rifaAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa=');
+$urlVoltar			= ROOT_URL.'/Fmt/rifaLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+$urlAtualizar		= ROOT_URL.'/Fmt/rifaFin.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa);
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Cadastro de rifas'));
-$tpl->set('URLADD'			,$urlAdd);
+$tpl->set('NOME'			,$tr->trans("Histórico de Vendas"));
+$tpl->set('URLVOLTAR'		,$urlVoltar);
+$tpl->set('URLATUALIZAR'	,$urlAtualizar);
+$tpl->set('MSG'				,$msg);
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

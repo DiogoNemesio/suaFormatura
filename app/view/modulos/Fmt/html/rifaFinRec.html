@@ -45,9 +45,9 @@
 						</div>
 					</div>
 					<div class="form-group col-sm-12" id="divQtdeVendidaID">
-				    	<label class="col-sm-4 control-label" for="qtdeVendidaID">Qtde de rifas vendidas</label>
+				    	<label class="col-sm-4 control-label" for="qtdeVendidaID">Qtde vendida</label>
 		    			<div class="input-group col-sm-6 pull-left">
-	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o título da rifa."></i></span>
+	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de rifas vendidas."></i></span>
 			    			<input class="form-control" id="qtdeVendidaID" %READONLY% type="text" name="qtdeVendida" placeholder="Quantidade de rifas a pagar" maxlength="100" value="%QTDE_VENDIDA%" onchange="atualizaResumo()" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 				    	</div>
 				    	<div class="col-sm-1 pull-left" id="divHelpQtdePagarID"></div>
@@ -55,7 +55,7 @@
 					<div class="form-group col-sm-12" id="divValorRecebidoID">
 				    	<label class="col-sm-4 control-label" for="valorRecebidoID">Valor a receber</label>
 		    			<div class="input-group col-sm-6 pull-left">
-	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor pago pelo formando."></i></span>
+	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor (R$) que o formando está repassando a formatura correspondente a quantidade de rifas vendida."></i></span>
 			    			<input class="form-control" id="valorRecebidoID" type="text" name="valorRecebido" placeholder="Valor (R$) a receber" maxlength="100" value="%VALOR_RECEBER%" onchange="atualizaResumo()" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 				    	</div>
 				    	<div class="col-sm-1 pull-left" id="divHelpalorRecebidoID"></div>
@@ -64,7 +64,7 @@
 					<div class="form-group col-sm-12" id="divFormaPagID">
 						<label class="col-sm-4 control-label">Forma de Pag.</label>
 		    			<div class="input-group col-sm-6 pull-left">
-		    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Conta"></i></span>
+		    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a forma de pagamento."></i></span>
 							<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
 							%FORMAS_PAG%
 							</select>
@@ -74,7 +74,7 @@
 			    	<div class="form-group col-sm-12" id="divContaRecID">
 						<label class="col-sm-4 control-label">Conta de Recebimento</label>
 		    			<div class="input-group col-sm-6 pull-left">
-		    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
+		    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de recebimento (conta onde será creditado o valor)."></i></span>
 							<select class="select2" style="width:100%;" id="codContaRecID" name="codContaRec" data-rel="select2">
 							%CONTAS%
 							</select>

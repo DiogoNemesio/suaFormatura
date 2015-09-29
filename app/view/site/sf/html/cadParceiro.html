@@ -14,6 +14,7 @@
 							<!-- page-title start -->
 							<!-- ================ -->
 							<h2 class="page-title">Parceiro</h2>
+							<p class="small">Preencha o formulário para que possamos entrar em contato e enviar um orçamento. Tenho certeza que seremos parceiros.</p>
 							<div class="separator-2"></div>
 							<!-- page-title end -->
 
@@ -23,10 +24,6 @@
 							<div id='divMsg'></div>
 								
 							<form class="form" id="zgFormID">
-								<input type="hidden" id="valID" name="validado">
-								<input type="hidden" id="valCpfID" name="validaCpf">
-								<input type="hidden" id="indUsuarioID" name="indUsuario">
-								<input type="hidden" id="usuOrgID" name="usuOrg">
 								
 								<div class="form-group has-feedback" id="divPessoaID">
 									<label class="control-label col-sm-2" for="pessoaID">Pessoa:</label>
@@ -205,7 +202,7 @@ $('#zgFormID').submit(function(e) {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			$('#usuOrgID').val(zgGetCodRetorno(data));
-			window.location.href = '%SITE_URL%confirmacao_turma.php?&codUsuOrg='+zgGetCodRetorno(data);
+			window.location.href = '%SITE_URL%confirmacao_parceiro.php?&codOrgPre='+zgGetCodRetorno(data);
 			
 			//zgMostraMsg('divMsg', 'Informações salva com sucesso!');
 			
@@ -538,8 +535,15 @@ function validaForm () {
 	
 	var vCidade	 	 = $('#cidadeID').val();
 	var vAtividade 	 = $('#atividadeID').val();
+	var vTipo 	 = $('#tipoID').val();
 	
 	var vOK	= true;
+	
+	//TIPO
+	if (!vTipo) {
+		$('#divTipoID').addClass('has-error');
+		vOK		= false;
+	}
 	
 	// CNPJ
 	if (validaCnpj() == false){

@@ -135,16 +135,18 @@ try {
  		//$oCentroCusto	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codigo' => $oRifa->getCodCentroCustro()->getCodigo()));
  		$oRifa->setDataAlteracao(new \DateTime("now"));
  		$oRifa->setUsuarioAlteracao($oUsuario);
+ 		$novaRifa = false;
  		
  		if (!$oRifa) {
  			$oRifa	= new \Entidades\ZgfmtRifa();
  			$oRifa->setDataCadastro(new \DateTime("now"));
  			$oRifa->setUsuarioCadastro($oUsuario);
+ 			$novaRifa = true;
  		}
  		
  	}else{
  		// Criar novo centro de custo
- 		$oCC = new \Entidades\ZgfinCentroCusto();
+ 		$oCC = new \Entidades\ZgfinCentroCusto(); 		
  		$oCC->setCodOrganizacao($oCodOrg);
  		$oCC->setDescricao('RIFA:'.$nome);
  		$oCC->setIndCredito(1);
@@ -158,6 +160,7 @@ try {
  		$oRifa->setDataCadastro(new \DateTime("now"));
  		$oRifa->setUsuarioCadastro($oUsuario);
  		$oRifa->setCodCentroCusto($oCC);
+ 		$novaRifa = true;
  		
  	}
 	
@@ -188,26 +191,28 @@ try {
 	#################################################################################
 	## Gerar a notificação
 	#################################################################################
-	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
-	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_CADASTRO'));
-	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
-	$notificacao->setAssunto("Vamos vender rifas?");
-	$notificacao->setCodRemetente($oRemetente);
+	if ($novaRifa == true){
+		$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+		$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_CADASTRO'));
+		$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
+		$notificacao->setAssunto("Vamos vender rifas?");
+		$notificacao->setCodRemetente($oRemetente);
+		
+		for ($i = 0; $i < sizeof($formandos); $i++) {
+			$notificacao->associaUsuario($formandos[$i]->getCodigo());
+		}
 	
-	for ($i = 0; $i < sizeof($formandos); $i++) {
-		$notificacao->associaUsuario($formandos[$i]->getCodigo());
+		$notificacao->enviaEmail();
+		$notificacao->enviaSistema();
+		//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
+		$notificacao->setCodTemplate($template);
+		$notificacao->adicionaVariavel("NOME", $nome);
+		$notificacao->adicionaVariavel("PREMIO", $premio);
+		$notificacao->adicionaVariavel("VALOR", $valor);
+		$notificacao->adicionaVariavel("QTDE", $qtdeObri);
+		$notificacao->adicionaVariavel("TIPO", $tipo);
+		$notificacao->salva();
 	}
-
-	$notificacao->enviaEmail();
-	$notificacao->enviaSistema();
-	//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
-	$notificacao->setCodTemplate($template);
-	$notificacao->adicionaVariavel("NOME", $nome);
-	$notificacao->adicionaVariavel("PREMIO", $premio);
-	$notificacao->adicionaVariavel("VALOR", $valor);
-	$notificacao->adicionaVariavel("QTDE", $qtdeObri);
-	$notificacao->adicionaVariavel("TIPO", $tipo);
-	$notificacao->salva();
 	
 	$em->flush();
 	$em->clear();

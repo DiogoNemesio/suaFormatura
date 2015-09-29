@@ -47,6 +47,7 @@ if ((isset($codRifa) && ($codRifa))) {
 	$emailVencedor		= ($info->getNumeroVencedor() != null) ? $info->getNumeroVencedor()->getEmail() : null;
 	$telefoneVencedor	= ($info->getNumeroVencedor() != null) ? $info->getNumeroVencedor()->getTelefone() : null;
 	$nomeVendedor		= ($info->getNumeroVencedor() != null) ? $info->getNumeroVencedor()->getCodFormando()->getNome() : null;
+	$dataCompra			= ($info->getNumeroVencedor() != null) ? $info->getNumeroVencedor()->getData()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
 	
 	$nome 				= $info->getNome();
 	$premio				= $info->getPremio();
@@ -172,6 +173,7 @@ $tpl->set('NOME_VENCEDOR'			,$nomeVencedor);
 $tpl->set('EMAIL_VENCEDOR'			,$emailVencedor);
 $tpl->set('TELEFONE_VENCEDOR'		,$telefoneVencedor);
 $tpl->set('NOME_VENDEDOR'			,$nomeVendedor);
+$tpl->set('DATA_COMPRA'				,$dataCompra);
 
 #Vendas
 $tpl->set('QUANT_VENDAS'			,sizeof($infoVenda));

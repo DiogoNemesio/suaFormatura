@@ -173,4 +173,39 @@ class Rifa {
 		return($query->getResult());*/
 	
 	}
+	
+	
+	/**
+	 * Listar as vendas de uma rifa por formando
+	 *
+	 * @param integer $codOrganizacao
+	 * @return array
+	 */
+	public static function listaVendasRifaFormando($codRifa) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('r')
+			->from('\Entidades\ZgfmtRifaNumero','r')
+			->where($qb->expr()->andx(
+					$qb->expr()->eq('r.codRifa'				, ':codRifa'),
+					$qb->expr()->eq('r.codFormando'			, ':codFormando')
+			)
+			)
+	
+			->setParameter('codRifa', $codRifa)
+			->setParameter('codFormando', $system->getCodUsuario())
+				
+			->groupBy('r.codVenda')
+			->orderBy('r.codigo', 'ASC');
+			
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 }

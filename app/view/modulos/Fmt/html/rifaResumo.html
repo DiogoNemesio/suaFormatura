@@ -2,7 +2,6 @@
 	<div class="page-header">
 	<h1><i class="%IC%">&nbsp;</i>Resumo da rifa
 		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
-		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
 	</h1>
 	</div><!-- /.page-header -->
 
@@ -13,17 +12,15 @@
 			<input type='hidden' name="numUsuAtivo" id='numUsuAtivoID' value="%NUM_USUARIO%">
 			<div class="vspace-xs"></div>
 			<div class="row">
-		    	<div class="col-sm-4">
+		    	<div class="col-sm-6">
 					<div class="widget-box">
 						<div class="widget-header widget-header-flat widget-header-small center">
-							<h5 class="widget-title">Resumo</h5>
+							<h5 class="widget-title">Rifa</h5>
 						</div>
 						<div class="widget-body">
 							<div class="widget-main small">
 								
 								<div class="row" id="divInfoNomeID">
-									<h6 class="header blue bolder smaller">&nbsp;Informações da RIFA:</h6>
-									<div class="vspace-xs"></div>
 									<div class="col-sm-12">
 								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Nome:</p>
 								    	<p id='lbInfoIdentID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;">%NOME%</p>
@@ -34,20 +31,6 @@
 								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Prêmio:</p>
 								    	<p id='lbInfoPremioID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;">%PREMIO%</p>
 							    	</div>
-								</div>
-								<div class="row" id="divInfoTurmaID">
-									<h6 class="header blue bolder smaller">&nbsp;Informações da turma:</h6>
-									<div class="vspace-xs"></div>
-								</div>
-								<div class="row" id="divInfoNumUsuID">
-									<div class="col-sm-12">
-								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos ativos:</p>
-								    	<p id='lbInfoNumUsuID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;">%NUM_USUARIO%</p>
-							    	</div>
-								</div>
-								<div class="row" id="divInfoConfID">
-									<h6 class="header blue bolder smaller">&nbsp;Informações financeira:</h6>
-									<div class="vspace-xs"></div>
 								</div>
 								<div class="row" id="divInfoCustoID">
 									<div class="col-sm-12">
@@ -67,50 +50,21 @@
 								    	<p id='lbInfoQtdeObrigatorioID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;">%QTDE_OBRIGATORIO%</p>
 							    	</div>
 								</div>
-								<div class="row" id="divInfoTotalID">
-									<div class="col-sm-12">
-								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">TOTAL (R$):</p>
-								    	<p id='lbInfoTotalID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL%</p>
-							    	</div>
-								</div>
+								
 								<div class="row" id="divInfoCentroCustoID">
 									<h6 class="header blue bolder smaller"></h6>
 									<div class="col-sm-12">
-								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>LUCRO (R$):</b></p>
-								    	<p id='lbInfoLucroID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"><b>%LUCRO%</b></p>
+								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>LUCRO PREVISTO:</b></p>
+								    	<p id='lbInfoLucroID' class="col-sm-8 pull-right align-left green" style="padding: 2px; margin:0;"><b>R$ %LUCRO%</b></p>
 							    	</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>	
-				
-				<!-- Vendedor -->
-				<div class="col-sm-4">
-					<div class="widget-box">
-						<div class="widget-header widget-header-flat widget-header-small center">
-							<h5 class="widget-title">Vendedor</h5>
-						</div>
-						<div class="widget-body">
-							<div class="widget-main small">
-								<div class="row" id="divInfoVendedorID">
-									<h6 class="header blue bolder smaller">&nbsp;Informações de vendedores:</h6>
-									<div class="vspace-xs"></div>
-									%HTML%
-								</div>
-								<div class="row" id="divTotalVendidoID">
-									<div class="col-sm-12">
-								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>Total vendido:</b></p>
-								    	<p id='lbTotalVendidoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"><b>%QUANT_VENDAS%</b></p>
-							    	</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>	
-				
-				<!-- Vendedor -->
-				<div class="col-sm-4">
+							
+				<!-- Vencedor -->
+				<div class="col-sm-6">
 					<div class="widget-box">
 						<div class="widget-header widget-header-flat widget-header-small center">
 							<h5 class="widget-title">Vencedor</h5>
@@ -135,6 +89,12 @@
 								    	<p id='lbInTelVencedorID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;">%TELEFONE_VENCEDOR%</p>
 							    	</div>
 								</div>
+								<div class="row" id="divTelVencedorID">
+									<div class="col-sm-12">
+								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Vendido em:</p>
+								    	<p id='lbInTelVencedorID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;">%DATA_COMPRA%</p>
+							    	</div>
+								</div>
 								<div class="row" id="divNomeVendedorID">
 									<div class="col-sm-12">
 								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Vendido por:</p>
@@ -144,7 +104,7 @@
 								<div class="row" id="divNumeroVencedorID">
 									<h6 class="header blue bolder smaller"></h6>
 									<div class="col-sm-12">
-								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>Numero Vencedor:</b></p>
+								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>NÚMERO SORTEADO:</b></p>
 								    	<p id='lbNumeroVencedorID' class="col-sm-8 pull-right align-left green" style="padding: 2px; margin:0;"><b>%NUMERO_VENCEDOR%</b></p>
 							    	</div>
 								</div>

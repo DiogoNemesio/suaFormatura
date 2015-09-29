@@ -31,8 +31,6 @@ if (isset($_POST['email2']))			$email2				= \Zage\App\Util::antiInjection($_POST
 if (isset($_POST['cpf']))				$cpf				= \Zage\App\Util::antiInjection($_POST['cpf']);
 
 $codOrganizacao = null;
-
-$log->debug($indUsuario);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
