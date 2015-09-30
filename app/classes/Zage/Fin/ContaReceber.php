@@ -567,6 +567,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$object->setValorCancelado(0);
 				$object->setCodTransacao($this->getCodTransacao());
 				$object->setCodGrupoAssociacao($this->getCodGrupoAssociacao());
+				$object->setIndSomenteVisualizar($this->getIndSomenteVisualizar());
 			}
 				
 			$object->setCodOrganizacao($this->getCodOrganizacao());

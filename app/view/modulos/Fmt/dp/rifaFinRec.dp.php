@@ -51,6 +51,7 @@ $parcelaInicial		= 1;
 $obs				= null;
 $descricao			= 'Venda de ('.$qtdeVendida.') bilhetes da Rifa: "'.$oRifa->getNome().'"';
 $indValorParcela	= null;
+$indSomenteVis		= 1;
 
 
 #################################################################################
@@ -140,6 +141,7 @@ if (!$oConta)		{
 	$conta->_setIndValorParcela($indValorParcela);
 	$conta->_setValorTotal($valorTotal);
 	$conta->setCodGrupoAssociacao($codGrpAssociacao);
+	$conta->setIndSomenteVisualizar($indSomenteVis);
 	
 	$conta->_setArrayValores($aValor);
 	$conta->_setArrayDatas($aData);
