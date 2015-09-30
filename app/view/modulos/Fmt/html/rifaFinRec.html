@@ -55,7 +55,7 @@
 					<div class="form-group col-sm-12" id="divValorRecebidoID">
 				    	<label class="col-sm-4 control-label" for="valorRecebidoID">Valor a receber</label>
 		    			<div class="input-group col-sm-6 pull-left">
-	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor (R$) que o formando está repassando a formatura correspondente a quantidade de rifas vendida."></i></span>
+	    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor (R$) que o formando está repassando a formatura referente as rifas vendidas."></i></span>
 			    			<input class="form-control" id="valorRecebidoID" type="text" name="valorRecebido" placeholder="Valor (R$) a receber" maxlength="100" value="%VALOR_RECEBER%" onchange="atualizaResumo()" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 				    	</div>
 				    	<div class="col-sm-1 pull-left" id="divHelpalorRecebidoID"></div>
@@ -205,6 +205,7 @@ function atualizaResumo() {
 	$valorPago			= parseFloat($valorPago.replace(".", "").replace(",","."));
 	$valorReceber		= parseFloat($valorTotal - $valorPago);
 
+	//Verificar se eletrônica
 	if ($indEletro == 1){
 		$('#divInfoQtdeGeradaID').addClass('hidden');
 		$('#lbInfoTipoID').text('ELETRÔNICA');
@@ -218,10 +219,8 @@ function atualizaResumo() {
 	
 	$('#lbInfoFormandoID').text($formando);
 	$('#lbInfoNomeID').text($nome);
-	$('#lbInfoValorID').text($nome);
+	$('#lbInfoValorID').text($valorUnitario);
 	$('#lbInfoQtdeObrigatorioID').text($qtdeObri);
-
-	//Verificar se eletrônica
 	
 	
 	// MASCARA MOEDA
@@ -236,7 +235,7 @@ function atualizaResumo() {
 	$desc	= "<strong>&nbsp;<span class='text-success'>"+accounting.formatMoney($valorTotal, options)+"</span>&nbsp;</strong>";
 	$('#lbInfoTotalID').html($desc);
 
-	$valor		= accounting.formatMoney($nValor, options);
+	$valor		= accounting.formatMoney($valorUnitario, options);
 	$('#lbInfoValorID').text($valor);
 	
 	$desc	= "<strong>&nbsp;<span class='text-success'>"+accounting.formatMoney($valorPago, options)+"</span>&nbsp;</strong>";
