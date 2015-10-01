@@ -40,6 +40,10 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 $('#zgFormAlteraSenhaID').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+		
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -51,6 +55,11 @@ $('#zgFormAlteraSenhaID').submit(function() {
 		}else{
 			zgMostraAviso("Fechar");
 		}
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
 	});

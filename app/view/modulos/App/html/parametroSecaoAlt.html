@@ -121,6 +121,11 @@ $('#parSecAltBtnSubmitID').on("click", function(e) {
 });
 
 $('#zgFormID').submit(function(e) {
+	
+	$('#parSecAltBtnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#parSecAltBtnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -132,6 +137,11 @@ $('#zgFormID').submit(function(e) {
 		}else{
 			zgMostraAviso("Fechar");
 		}
+		
+		//Voltar o botão de salvar
+		$('#parSecAltBtnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#parSecAltBtnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();

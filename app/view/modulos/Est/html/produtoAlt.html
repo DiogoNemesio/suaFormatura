@@ -52,10 +52,10 @@
 						    	</div>
 						    	<div class="col-sm-6">
 									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="descricaoComID">Descrição</label>
+								    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
 						    			<div class="input-group col-sm-8">
  								    		<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição detalhada do produto (pode colocar as características)."></i></span>
-							    			<textarea id="descricaoComID" class="autosize-transition limited form-control" name="descricaoCom" maxlength="400" required>%DESCRICAO_COMPLETA%</textarea>
+							    			<textarea id="descricaoID" class="autosize-transition limited form-control" name="descricao" maxlength="500" required>%DESCRICAO%</textarea>
 								    	</div>
 								    </div>
 						    	</div>
@@ -110,7 +110,7 @@
 								    	<label class="col-sm-3 control-label" for="diasIndisID">Dias indisponíveis</label>
 						    			<div class="input-group col-sm-8">
 					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de dias indisponíveis."></i></span>
-							    			<input class="form-control" id="diasIndisID" type="text" name="diasIndis" maxlength="100" value="%DIAS_INDIS%" placeholder="Dias pindisponíveis" autocomplete="off" >
+							    			<input class="form-control" id="diasIndisID" type="text" name="diasIndis" maxlength="100" value="%DIAS_INDIS%" placeholder="Dias pindisponíveis" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0">
 								    	</div>
 								    </div>
 						    	</div>
@@ -143,7 +143,7 @@
 				</div>
 				<div class="clearfix form-actions">
 					<label class="col-sm-4 control-label" >&nbsp;</label>
-   					<button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-check bigger-110"></i> Salvar</button>
+   					<button type="submit" class="btn btn-primary" id="btnSubmitID"><i class="fa fa-check bigger-110"></i> Salvar</button>
 					<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
 				</div>
 			</form>
@@ -162,6 +162,11 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 });
 
 $('#zgFormID').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -171,6 +176,12 @@ $('#zgFormID').submit(function() {
 			$('#codProdutoID').val(zgGetCodRetorno(data));
 		}
 		zgMostraAviso("Fechar",'Novo Produto', '%URLNOVO%');
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
 	});
@@ -180,7 +191,7 @@ $('#zgFormID').submit(function() {
 function subgrupoConf(){
 	var codSubgrupo = $('#codSubgrupoID').val();
 	
-	$('#divSubgrupoConfID').load("%ROOT_URL%/Est/divSubgrupoConf.php?id=%ID%&codSubgrupo="+codSubgrupo+"");
+	//$('#divSubgrupoConfID').load("%ROOT_URL%/Est/divSubgrupoConf.php?id=%ID%&codSubgrupo="+codSubgrupo+"");
 }
 
 

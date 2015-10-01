@@ -21,14 +21,19 @@
     </div>
 </div>
 <div class="modal-footer">
-	<button type="submit" class="btn btn-primary" id="submit">Efetuar o registro</button>
-	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+	<button type="submit" class="btn btn-primary" id="btnSubmitID">Efetuar o registro</button>
+	<button type="button" data-dismiss="modal" id="cancel" class="btn">Fechar</button>
 </div>
 </form>
 
 
 <script type="text/javascript" charset="%CHARSET%">
 $('#zgFormModalID').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP_MODAL%",
@@ -39,6 +44,11 @@ $('#zgFormModalID').submit(function() {
 		}else{
 			zgMostraErro('divMsgChipRegID',zgGetMsgRetorno(data));
 		}
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('Efetuar o registro');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLoadUrl('%URL_VOLTAR%');

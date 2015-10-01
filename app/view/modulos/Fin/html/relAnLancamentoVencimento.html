@@ -176,6 +176,10 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 $('#zgFormRelID1').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+		
 	/** Retirar a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
@@ -195,6 +199,9 @@ $('#zgFormRelID1').submit(function() {
 		
 	});
 
+	//Voltar o botão de salvar
+	$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Executar ');
+	$('#btnSubmitID').attr("disabled",false);
 
 	/** Recolocar a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {

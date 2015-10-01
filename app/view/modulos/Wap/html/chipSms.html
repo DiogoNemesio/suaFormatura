@@ -18,13 +18,18 @@
 </div>
 <div class="modal-footer">
 	<button type="submit" %PODE_SMS% class="btn btn-primary" id="btnSmsRequestID">Desejo enviar o código SMS</button>
-	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+	<button type="button" data-dismiss="modal" id="cancel" class="btn">Fechar</button>
 </div>
 </form>
 
 
 <script type="text/javascript" charset="%CHARSET%">
 $('#zgFormModalID').submit(function() {
+	
+	$('#btnSmsRequestID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSmsRequestID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP_MODAL%",
@@ -46,6 +51,11 @@ $('#zgFormModalID').submit(function() {
 				$('#zgDivModalID').off('hidden.bs.modal');
 			});
 		}
+
+		//Voltar o botão de salvar
+		$('#btnSmsRequestID').html('Desejo enviar o código SMS');
+		$('#btnSmsRequestID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
 		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraErro('zgDivModalID',errorThrown);

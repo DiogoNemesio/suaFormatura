@@ -18,7 +18,7 @@
 				</div>
 				<div class="clearfix form-actions">
 					<label class="col-sm-4 control-label">&nbsp;</label>
-					<button type="submit" class="btn btn-primary" id="submit">
+					<button type="submit" class="btn btn-primary" id="btnSubmitID">
 						<i class="fa fa-check bigger-110"></i> Salvar
 					</button>
 				</div>
@@ -40,6 +40,9 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 
 $('#zgFormID').submit(function(e) {
 	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	
 	/** Retira a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
@@ -59,6 +62,10 @@ $('#zgFormID').submit(function(e) {
 			zgLimpaModalAviso();
 			$('#zgDivModalID').off('hidden.bs.modal');
 		});*/
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
 		
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
 		$('[zg-data-mask-retira="1"]').each(function( index ) {

@@ -24,7 +24,7 @@
 
 <div class="clearfix center" style="width: 100%;">
 	<button type="submit" class="btn btn-primary" id="btnSalvarID"><i class="fa fa-check bigger-110"></i> Salvar</button>
-	<button type="button" class="btn btn-warning" onclick="zgLoadUrl('%URL_VOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
+	<button type="button" class="btn btn-warning" id="cancel" onclick="zgLoadUrl('%URL_VOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
 </div>
 </form>
 
@@ -34,6 +34,10 @@ function zgValidaForm%COD_DOCUMENTO% () {
 }
 
 $('#zgFormDoc_%COD_DOCUMENTO%ID').submit(function() {
+	
+	$('#btnSalvarID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSalvarID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
 	
 	/** Retirar a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
@@ -61,6 +65,11 @@ $('#zgFormDoc_%COD_DOCUMENTO%ID').submit(function() {
 			/** Abrir o Próximo documento **/
 			zgProximoDoc();
 		}
+		
+		//Voltar o botão de salvar
+		$('#btnSalvarID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSalvarID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
 		
 /*		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLoadUrl('%URL_VOLTAR%');

@@ -159,6 +159,11 @@ $('#btnSubmitID').on("click", function(e) {
 });
 
 $('#zgFormID').submit(function(e) {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -171,6 +176,11 @@ $('#zgFormID').submit(function(e) {
 		}else{
 			zgMostraErro('divMsg',zgGetMsgRetorno(data));
 		}
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();

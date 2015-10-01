@@ -15,7 +15,7 @@
 	    		<div class="form-group">
 					<label class="col-sm-2 control-label">&nbsp;</label>
 	    			<div class="col-sm-10">
-						<button type="submit" class="btn btn-primary" id="submit">Salvar</button>
+						<button type="submit" class="btn btn-primary" id="btnSubmitID">Salvar</button>
 						<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');">Voltar</button>
 					</div>
 				</div>
@@ -29,6 +29,11 @@
 $('[data-rel="select2"]').select2({allowClear:true});
 
 $('#zgFormID').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -39,6 +44,12 @@ $('#zgFormID').submit(function() {
 			zgLimpaModalAviso();
 			$('#zgDivModalID').off('hidden.bs.modal');
 		});
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
 	});

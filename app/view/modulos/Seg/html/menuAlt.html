@@ -47,13 +47,18 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<button type="submit" class="btn btn-primary" id="submit">Salvar</button>
-	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+	<button type="submit" class="btn btn-primary" id="btnSubmitID">Salvar</button>
+	<button type="button" data-dismiss="modal" id="cancel" class="btn">Fechar</button>
 </div>
 </form>
 
 <script type="text/javascript" charset="%CHARSET%">
 $('#zgFormID').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -64,6 +69,11 @@ $('#zgFormID').submit(function() {
 		}else{
 			zgMostraErro('divMenuMsgID',zgGetMsgRetorno(data));
 		}
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLoadUrl('%URL_VOLTAR%');

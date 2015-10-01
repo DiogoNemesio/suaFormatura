@@ -83,6 +83,10 @@ $("#btnSubmitLayRegID").on("click", function(e) {
 
 
 $('#zgFormID').submit(function() {
+	
+	$('#btnSubmitLayRegID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitLayRegID').attr("disabled","disabled");
+
 	/** Retirar a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
@@ -102,6 +106,11 @@ $('#zgFormID').submit(function() {
 	}).done(function( data, textStatus, jqXHR) {
 		$('#_precisaSalvarID').val(0);
 		zgMostraAviso("Fechar");
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitLayRegID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitLayRegID').attr("disabled",false);
+		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();
 			$('#zgDivModalID').off('hidden.bs.modal');

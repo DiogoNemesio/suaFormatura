@@ -274,6 +274,10 @@ $('#btnSubmitID').on("click", function(e) {
 //Submit formulário
 $('#zgFormID').submit(function() {
 	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
 	/** Retira a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
@@ -324,7 +328,12 @@ $('#zgFormID').submit(function() {
 		}else{
 			zgMostraAviso("Fechar");
 		}
-				
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
 		$('[zg-data-mask-retira="1"]').each(function( index ) {
 			zgMask($( this ), $( this ).attr('zg-data-mask'));

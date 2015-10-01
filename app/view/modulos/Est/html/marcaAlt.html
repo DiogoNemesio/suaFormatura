@@ -22,7 +22,7 @@
 			</div>
 			<div class="clearfix form-actions">
 				<label class="col-sm-4 control-label" >&nbsp;</label>
-   					<button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-check bigger-110"></i> Salvar</button>
+   					<button type="submit" class="btn btn-primary" id="btnSubmitID"><i class="fa fa-check bigger-110"></i> Salvar</button>
 					<button type="button" class="btn btn-warning" id="cancel" onclick="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-undo bigger-110"></i> Voltar</button>
 			</div>
 		</form>
@@ -32,6 +32,11 @@
 <script type="text/javascript" charset="%CHARSET%">
 
 $('#zgFormID').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -41,6 +46,12 @@ $('#zgFormID').submit(function() {
 			$('#codMarcaID').val(zgGetCodRetorno(data));
 		}
 		zgMostraAviso("Fechar",'Nova Marca', '%URLNOVO%');
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
 	});

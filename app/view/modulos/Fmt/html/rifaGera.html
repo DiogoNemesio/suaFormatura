@@ -148,6 +148,10 @@ $('#btnSalvarFormaturaConfID').on("click", function(e) {
 });
 
 $('#zgFormID').submit(function(e) {
+	
+	$('#btnSalvarFormaturaConfID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSalvarFormaturaConfID').attr("disabled","disabled");
+
 	// Retirar a máscara para os campos que estão configurados para tal 
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
@@ -164,6 +168,10 @@ $('#zgFormID').submit(function(e) {
 		}else{
 			zgMostraErro('divMsgFmtConfID',zgGetMsgRetorno(data));
 		}
+
+		//Voltar o botão de salvar
+		$('#btnSalvarFormaturaConfID').html('<i class="fa fa-check bigger-110"></i> Gerar ');
+		$('#btnSalvarFormaturaConfID').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			$('#zgDivModalID').off('hidden.bs.modal');

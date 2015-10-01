@@ -11,15 +11,16 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-if (isset($_POST['codMaterialGrupo']))	$codMaterialGrupo	= \Zage\App\Util::antiInjection($_POST['codMaterialGrupo']);
+if (isset($_POST['codProduto']))		$codProduto			= \Zage\App\Util::antiInjection($_POST['codProduto']);
+if (isset($_POST['nome']))				$nome				= \Zage\App\Util::antiInjection($_POST['nome']);
 if (isset($_POST['descricao']))			$descricao			= \Zage\App\Util::antiInjection($_POST['descricao']);
-if (isset($_POST['descricaoCom']))		$descricaoCom		= \Zage\App\Util::antiInjection($_POST['descricaoCom']);
-if (isset($_POST['referencia']))		$referencia			= \Zage\App\Util::antiInjection($_POST['referencia']);
-if (isset($_POST['ncm']))				$ncm				= \Zage\App\Util::antiInjection($_POST['ncm']);
-if (isset($_POST['codUniMed']))			$codUniMed			= \Zage\App\Util::antiInjection($_POST['codUniMed']);
-if (isset($_POST['codSubGrupo']))	 	$codSubgrupo		= \Zage\App\Util::antiInjection($_POST['codSubGrupo']);
+if (isset($_POST['codTipoMaterial']))	$codTipoMaterial	= \Zage\App\Util::antiInjection($_POST['codTipoMaterial']);
+if (isset($_POST['codSubgrupo']))	 	$codSubgrupo		= \Zage\App\Util::antiInjection($_POST['codSubgrupo']);
 if (isset($_POST['ativo']))	 			$ativo				= \Zage\App\Util::antiInjection($_POST['ativo']);
+if (isset($_POST['indExposicao']))	 	$indExposicao		= \Zage\App\Util::antiInjection($_POST['indExposicao']);
 
+if (isset($_POST['preReserva']))	 	$preReserva			= \Zage\App\Util::antiInjection($_POST['preReserva']);
+if (isset($_POST['diasIndis']))	 		$diasIndis			= \Zage\App\Util::antiInjection($_POST['diasIndis']);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -28,35 +29,33 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-
-$log->debug($ncm);
 /** Descrição**/
-if ((!empty($descricao)) && (strlen($descricao) > 100)) {
- 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo DESCRIÇÃO não deve conter mais de 100 caracteres"));
+if ((!empty($descricao)) && (strlen($descricao) > 500)) {
+ 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo DESCRIÇÃO não deve conter mais de 500 caracteres"));
 	$err	= 1;
 }
 
-if ((empty($descricao))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo DESCRIÇÃO é obrigatório"));
+/** Nome**/
+if ((!empty($nome)) && (strlen($nome) > 100)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME não deve conter mais de 100 caracteres"));
 	$err	= 1;
 }
 
-$oProdutoBusca	= $em->getRepository('Entidades\ZgestProduto')->findOneBy(array('descricao' => $descricao));
+if ((empty($nome))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo NOME é obrigatório"));
+	$err	= 1;
+}
+
+$oProdutoBusca	= $em->getRepository('Entidades\ZgestProduto')->findOneBy(array('nome' => $nome));
 
 if($oProdutoBusca != null && ($oProduto->getCodigo() != $codProduto)){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um produto com essa descrição"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um produto com esse nome"));
 	$err	= 1;
 }
 
-/** Descrição Completa**/
-if ((empty($descricaoCom))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo DESCRIÇÃO COMPLETA é obrigatório"));
-	$err	= 1;
-}
-
-/** Unidade de Medida**/
-if ((empty($codUniMed))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Não existe unidade de medida cadastrado!"));
+/** Tipo Material**/
+if ((empty($codTipoMaterial))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo de TIPO MATERIAL é obrigatório"));
 	$err	= 1;
 }
 
@@ -64,14 +63,8 @@ if ((empty($codUniMed))) {
 if ((empty($codSubgrupo))) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo de SUBGRUPO é obrigatório"));
 	$err	= 1;
-}else{
-	$oSubgrupo	= $em->getRepository('Entidades\ZgestSubgrupoMaterial')->findOneBy(array('codigo' => $codSubgrupo));
-	
-	if($oSubgrupo != null){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Sub-grupo inválido, favor preencher corretamente"));
-		$err	= 1;
-	}
 }
+
 /** Ativo **/
 if (isset($ativo) && (!empty($ativo))) {
 	$ativo	= 1;
@@ -79,6 +72,12 @@ if (isset($ativo) && (!empty($ativo))) {
 	$ativo	= 0;
 }
 
+/** indExposicao **/
+if (isset($indExposicao) && (!empty($indExposicao))) {
+	$indExposicao	= 1;
+}else{
+	$indExposicao	= 0;
+}
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
@@ -98,16 +97,20 @@ try {
  	}
  	
  	$oOrganização		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
- 	$oSubgrupoMaterial	= $em->getRepository('Entidades\ZgestSubgrupoMaterial')->findOneBy(array('codigo' => $codSubgrupo));
- 	$oUniMed			= $em->getRepository('Entidades\ZgestUnidadeMedida')->findOneBy(array('codigo' => $codUniMed));
+ 	$oSubgrupo			= $em->getRepository('Entidades\ZgestSubgrupo')->findOneBy(array('codigo' => $codSubgrupo));
+ 	$oTipoMaterial		= $em->getRepository('Entidades\ZgestTipoProduto')->findOneBy(array('codigo' => $codTipoMaterial));
  	
- 	$oProduto->setCodOrganizao($oOrganização);
+ 	$oProduto->setCodOrganizacao($oOrganização);
+ 	$oProduto->setCodTipoMaterial($oTipoMaterial);
+ 	$oProduto->setCodSubgrupo($oSubgrupo);
+ 	$oProduto->setNome($nome);
  	$oProduto->setDescricao($descricao);
- 	$oProduto->setDescricaoCompleta($descricaoCom);
- 	$oProduto->setCodUnidadeMedida($oUniMed);
- 	$oProduto->setReferencia($referencia);
- 	$oProduto->setCodNcm($ncm);
  	$oProduto->setIndAtivo($ativo);
+ 	$oProduto->setIndExposicao($indExposicao);
+ 	$oProduto->setQuantidade(1);
+ 	$oProduto->setNumDiasIndisponivel($diasIndis);
+ 	$oProduto->setQtdeDiasPreReserva($preReserva);
+ 	$oProduto->setDataCadastro(new \DateTime("now"));
  	
  	$em->persist($oProduto);
  	$em->flush();

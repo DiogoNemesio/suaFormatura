@@ -50,10 +50,13 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GProd");
-$grid->adicionaTexto($tr->trans('CÓDIGO'), 		10, $grid::CENTER	,'codigo');
-$grid->adicionaTexto($tr->trans('DESCRIÇÃO'), 	40, $grid::CENTER	,'descricao');
-$grid->adicionaTexto($tr->trans('SUBGRUPO'),	40, $grid::CENTER	,'codSubgrupoMaterial:descricao');
-$grid->adicionaStatus($tr->trans('STATUS'),'indAtivo');
+$grid->adicionaTexto($tr->trans('CÓDIGO'), 			5, $grid::CENTER	,'codigo');
+$grid->adicionaTexto($tr->trans('NOME'), 			20, $grid::CENTER	,'nome');
+$grid->adicionaTexto($tr->trans('DESCRIÇÃO'),   	20, $grid::CENTER	,'descricao');
+$grid->adicionaTexto($tr->trans('TIPO MATERIAL'),	10, $grid::CENTER	,'codTipoMaterial:descricao');
+$grid->adicionaTexto($tr->trans('SUBGRUPO'),		10, $grid::CENTER	,'codSubgrupo:descricao');
+$grid->adicionaTexto($tr->trans('DIAS DISPONIVEIS'), 5, $grid::CENTER	,'numDiasIndisponivel');
+$grid->adicionaTexto($tr->trans('DIAS PRE-RESERVA'), 5, $grid::CENTER	,'qtdeDiasPreReserva');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($produto);
@@ -65,8 +68,8 @@ $grid->importaDadosDoctrine($produto);
 for ($i = 0; $i < sizeof($produto); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codProduto='.$produto[$i]->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Est/produtoAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Est/produtoExc.php?id='.$uid);
+	$grid->setUrlCelula($i,7,ROOT_URL.'/Est/produtoAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,8,ROOT_URL.'/Est/produtoExc.php?id='.$uid);
 }
 
 #################################################################################
