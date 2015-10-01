@@ -48,11 +48,9 @@ if (!isset($codRifa)) \Zage\App\Erro::halt('FALTA PARÂMENTRO : COD_RIFA');
 
 $info 		= \Zage\Fmt\Rifa::listaVendasRifaFormando($codRifa);
 
-if (!$info){
-	\Zage\App\Erro::halt($tr->trans('Rifa não encontrada').' (COD_RIFA)');
+if ($info){
+	$nomeRifa = $info[0]->getCodRifa()->getNome();
 }
-
-
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
@@ -99,7 +97,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
 $tpl->set('NOME'			,$tr->trans("Histórico de Vendas"));
-$tpl->set('NOME_RIFA'		,$info[0]->getCodRifa()->getNome());
+$tpl->set('NOME_RIFA'		,$nomeRifa);
 $tpl->set('URLVOLTAR'		,$urlVoltar);
 $tpl->set('URLATUALIZAR'	,$urlAtualizar);
 $tpl->set('IC'				,$_icone_);
