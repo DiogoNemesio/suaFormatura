@@ -288,16 +288,6 @@ try {
  	#################################################################################
  	## Contrato
  	#################################################################################
- 	$oContrato		= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $oParceiro->getCodigo()));
- 	if (!$oContrato)	{
- 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Ops, não encontramos as informações do seu contrato. Caso o problema continue entre em contato com o suporte."));
- 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
- 		exit;
- 	}
- 	
- 	$oContrato->setCodPlano($oPlano);
- 	
- 	$em->persist($oContrato);
  	
  	#################################################################################
  	## Telefones
