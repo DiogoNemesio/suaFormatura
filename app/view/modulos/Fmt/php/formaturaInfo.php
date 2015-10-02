@@ -60,7 +60,6 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		
 		$org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 		$orgFmt		= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $codOrganizacao));
-		$oContrato	= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $codOrganizacao));
 	
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
@@ -72,18 +71,6 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$curso			= ($orgFmt->getCodCurso()) ? $orgFmt->getCodCurso()->getCodigo(): null;
 	$cidade			= $orgFmt->getCodCidade()->getCodigo();
 	$dataConclusao	= ($orgFmt->getDataConclusao() != null) ? $orgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
-
-	if ($oContrato) {
-		$codPlano			= ($oContrato->getCodPlano()) ? $oContrato->getCodPlano()->getCodigo() : null;
-		$valorDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getValorDesconto());
-		$pctDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getPctDesconto());
-		$formaDesc			= ($valorDesconto > 0) ? "V" : "P";
-	}else{
-		$codPlano			= null;
-		$formaDesc			= "V";
-		$valorDesconto		= 0;
-		$pctDesconto		= 0;
-	}
 	
 }else{
 	
@@ -94,21 +81,6 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$cidade			= null;
 	$dataConclusao  = null;
 
-	$codPlano		= null;
-	$formaDesc		= "V";
-	$valorDesconto	= 0;
-	$pctDesconto	= 0;
-	
-}
-
-#################################################################################
-## Select dos planos (contrato)
-#################################################################################
-try {
-	$aPlanos		= $em->getRepository('Entidades\ZgadmPlano')->findBy(array('codTipoLicenca' => array('F')),array('nome' => 'ASC'));
-	$oPlanos		= $system->geraHtmlCombo($aPlanos,	'CODIGO', 'NOME',	$codPlano, 		null);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
 #################################################################################
@@ -144,13 +116,7 @@ $tpl->set('CURSO'					,$curso);
 $tpl->set('CIDADE'					,$cidade);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao);
 
-$tpl->set('PLANOS'					,$oPlanos);
-$tpl->set('COD_PLANO'				,$codPlano);
-$tpl->set('VALOR_DESCONTO'			,$valorDesconto);
-$tpl->set('PCT_DESCONTO'			,$pctDesconto);
-$tpl->set('FORMA_DESCONTO'			,$formaDesc);
 $tpl->set('HIDDEN'					,$hidden);
-
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
