@@ -258,12 +258,6 @@ $('#zgFormID').submit(function(e) {
 	$('#btnSubmitID').attr("disabled","disabled");
 	$('#cancel').attr("disabled","disabled");
 
-		//Voltar o botão de salvar
-		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
-		$('#btnSubmitID').attr("disabled",false);
-		$('#cancel').attr("disabled",false);
-		
-		
 	// Retirar a máscara para os campos que estão configurados para tal 
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
