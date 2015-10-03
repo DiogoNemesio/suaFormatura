@@ -68,14 +68,9 @@ try {
 }
 
 #################################################################################
-## Criar o relatório
+## Criar o PDF
 #################################################################################
-$rel	= new \Zage\App\Relatorio();
-
-#################################################################################
-## Criação do cabeçalho
-#################################################################################
-$rel->NaoExibeFiltrosNulo();
+$mpdf	= new \mPDF(''	,'A4-L',10,'',15,15,16,16,9,9,'L');
 
 #################################################################################
 ## Ajustar o timezone
@@ -88,15 +83,52 @@ setlocale (LC_ALL, 'ptb');
 #################################################################################
 $numNumeros		= sizeof($numeros);
 
-$table	= '<table class="table table-condensed">';
+$table	= '<table style="border-spacing: 4px 4px; border-collapse: separate;">';
 
 for ($i = 0; $i < $numNumeros; $i++) {
 	
+	$valor		= $numeros[$i]->getCodRifa()->getValorUnitario();
+	$turma		= $numeros[$i]->getCodRifa()->getCodOrganizacao()->getNome();
+	$premio		= $numeros[$i]->getCodRifa()->getPremio();
+	$local		= $numeros[$i]->getCodRifa()->getLocalSorteio();
+	$data		= $numeros[$i]->getCodRifa()->getDataSorteio()->format($system->config["data"]["dateFormat"]);
+	$numero		= $numeros[$i]->getNumero(); 
+	$formando	= $numeros[$i]->getCodFormando()->getApelido();
+	$nome		= $numeros[$i]->getCodRifa()->getNome();
+	
 	if ($i%2 == 0) {
-		$table .= '<tr>';
+		//$table .= '<tr style="border: 1px dotted #000000;">';
+		$table .= '<tr style="width: 1300px;">';
 	}
 	
-	$table .= '<td style="height: 56px;text-align: left;">'.$numeros[$i]->getNumero().'</td>';
+	$table .= '<td style="height: 100px; border: 1px dotted #000000; width: 650px;">';
+	$table .= '<table style="width: 100%;"><tr>';
+
+	
+	$tab1	= '<table style="width: 100%;">';
+	$tab1	.= '<tr><td><img src="'.IMG_URL.'/logo_sf_rifa.png" border=0 style="border: 0;"></td><td style="text-align: right; font-family: Trebuchet MS,Verdana; font-size:18px; font-weight: bold; color: #000000">#&nbsp;'.$numero.'</td></tr>';
+	$tab1	.= '<tr><td colspan="2"><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Nome:&nbsp;___________________________________ </p></td></tr>';
+	$tab1	.= '<tr><td colspan="2"><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Fone:&nbsp;____________________________________ </p></td></tr>';
+	$tab1	.= '<tr><td colspan="2"><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Formando: '.$formando.' </p></td></tr>';
+	$tab1	.= "</table>";	
+	
+	$tab2	= '<table style="width: 100%;">';
+	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:18px; font-weight: bold; color: #000000">'.$turma.' </p></td><td style="text-align: right; font-family: Trebuchet MS,Verdana; font-size:18px; font-weight: bold; color: #000000">Número:&nbsp;'.$numero.'</td></tr>';
+	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: bold; color: #000000">'.$nome.'</p></td></tr>';
+	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Local: '.$local.'</p></td><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Data do Sorteio: '.$data.'</p></td></tr>';
+	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Prêmio: '.$premio.'</p></td><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Valor: '.\Zage\app\Util::to_money($valor).' </p></td></tr>';
+	$tab2	.= "</table>";
+	
+	
+	$table .= '<td style="text-align: left; height: 100px; width: 200px; border-right: 1px dotted #000000;">'.$tab1.'</td>';
+	$table .= '<td style="text-align: left; height: 100px; width: 450px;">'.$tab2.'</td>';
+	
+	
+	$table .= '</tr></table>';
+	
+	
+	
+	$table .= '</td>';
 	
 	if ($i%2 != 0) {
 		$table .= '</tr>';
@@ -118,6 +150,6 @@ $htmlTable	= '
 $html		.= $htmlTable;
 $relName	= "Rifa_".str_replace(" ", "_", $infoRifa->getNome()).".pdf";
 
-$rel->WriteHTML($html);
-$rel->Output($relName,'D');
+$mpdf->WriteHTML($html);
+$mpdf->Output($relName,'D');
 
