@@ -31,6 +31,19 @@ if ($codTipo == P){
 	if (isset($_POST['qtdeServico']))	 		$quantidade				= \Zage\App\Util::antiInjection($_POST['qtdeServico']);
 }
 
+/** Valores **/
+if (isset($_POST['codValor']))			$codValor			= $_POST['codValor'];
+if (isset($_POST['valor']))				$valor				= $_POST['valor'];
+if (isset($_POST['dataBase']))			$dataBase			= $_POST['dataBase'];
+if (isset($_POST['desconPorcMax']))		$desconPorcMax		= $_POST['desconPorcMax'];
+if (isset($_POST['dataCadastro']))		$dataCadastro		= $_POST['dataCadastro'];
+
+if (!isset($codValor))					$codValor			= array();
+if (!isset($valor))						$valor				= array();
+if (!isset($dataBase))					$dataBase			= array();
+if (!isset($desconPorcMax))				$desconPorcMax		= array();
+if (!isset($dataCadastro))				$dataCadastro		= array();
+
 #################################################################################
 ## Resgata os valores das configurações
 #################################################################################
@@ -93,7 +106,6 @@ if (isset($indReservaOnline) && (!empty($indReservaOnline))) {
 	$indReservaOnline	= 0;
 }
 
-$log->debug($quantidade);
 /** Quantidade **/
 if (isset($quantidade) && (empty($quantidade))) {
 	$quantidade = null;
@@ -205,14 +217,100 @@ try {
  			}
  	}
  	
- 	
- 	
  	#################################################################################
  	## Flush
  	#################################################################################
  	$em->persist($oProduto);
  	$em->flush();
- 	$em->detach($oProduto);
+ 	//$em->detach($oProduto);
+ 	
+ 	#################################################################################
+ 	## Valores
+ 	#################################################################################
+ 	$valores		= $em->getRepository('Entidades\ZgestProdutoValor')->findBy(array('codProduto' => $codProduto));
+ 	
+ 	#################################################################################
+ 	## Exclusão
+ 	#################################################################################
+ 	for($i = 0; $i < sizeof ( $valores ); $i ++) {
+		if (! in_array ( $valores [$i]->getCodigo (), $codValor )) {
+			try {
+				$em->remove ( $valores [$i] );
+				$em->flush ();
+			} catch ( \Exception $e ) {
+				$system->criaAviso ( \Zage\App\Aviso\Tipo::ERRO, "Não foi possível excluir o valor: " . $valores [$i]->getValor () . " Erro: " . $e->getMessage () );
+				echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities ( $e->getMessage () ) );
+				exit ();
+			}
+		}
+	}
+ 	
+ 	#################################################################################
+ 	## Criação / Alteração
+ 	#################################################################################
+ 	for($i = 0; $i < sizeof ( $codValor ); $i ++) {
+
+ 		$infoVal = $em->getRepository ( 'Entidades\ZgestProdutoValor' )->findOneBy ( array (
+				'codigo' => $codValor [$i],
+				'codProduto' => $oProduto->getCodigo () 
+		) );
+		
+		if (! $infoVal) {
+			$infoVal = new \Entidades\ZgestProdutoValor ();
+		}
+		
+		/******* Valor *********/
+		if (!isset($valor[$i]) || (empty($valor[$i]))) {
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O valor deve ser preenchido!"));
+			$err	= 1;
+		}elseif (!empty($valor[$i])) {
+			$valor		= \Zage\App\Util::to_float($valor[$i]);
+			if (!$valor) {
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O valor do produto tem um formato inválido!"));
+				$err	= 1;
+			}
+		}
+		
+		/******* Desconto *********/
+		if (!empty($desconPorcMax[$i])) {
+			$desconPorcMax		= \Zage\App\Util::to_float($desconPorcMax[$i]);
+			if (!$desconPorcMax) {
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A porcentagem de desconto tem um formato inválido!"));
+				$err	= 1;
+			}
+		}
+		
+		if (! empty ( $dataBase [$i] )) {
+			$dataBase = DateTime::createFromFormat ( $system->config ["data"] ["dateFormat"], $dataBase [$i] );
+		} else {
+			$dataBase = null;
+		}
+		
+		if (! empty ( $dataCadastro [$i] )) {
+			$dataCadastro = DateTime::createFromFormat ( $system->config ["data"] ["dateFormat"], $dataCadastro [$i] );
+		} else {
+			$dataCadastro = null;
+		}
+		
+		// if ($infoTel->getCodTipoTelefone () !== $codTipoTel [$i] || $infoTel->getTelefone () !== $telefone [$i]) {
+		
+		$infoVal->setCodProduto ( $oProduto );
+		$infoVal->setValor($valor);
+		$infoVal->setDataBase($dataBase);
+		$infoVal->setDescontoPorcentoMax($desconPorcMax);
+		$infoVal->setDataCadastro($dataCadastro);
+		
+		try {
+			$em->persist ( $infoVal );
+			$em->flush ();
+			$em->detach ( $infoVal );
+		} catch ( \Exception $e ) {
+			$system->criaAviso ( \Zage\App\Aviso\Tipo::ERRO, "Não foi possível cadastrar o valor: " . $valor [$i] . " Erro: " . $e->getMessage () );
+			echo '1' . \Zage\App\Util::encodeUrl ( '||' . htmlentities ( $e->getMessage () ) );
+			exit ();
+		}
+		// }
+	}
  	 	
 } catch (\Exception $e) {
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());

@@ -112,6 +112,24 @@ try {
 }
 
 #################################################################################
+## Resgatar os dados dos valores
+#################################################################################
+$aValores		= $em->getRepository('Entidades\ZgestProdutoValor')->findBy(array('codProduto' => $codProduto));
+$tabVal			= "";
+for ($i = 0; $i < sizeof($aValores); $i++) {
+
+	$dataBase 	  = $aValores[$i]->getDataBase()->format($system->config["data"]["dateFormat"]);
+	$dataCadastro = $aValores[$i]->getDataCadastro()->format($system->config["data"]["dateFormat"]);
+	
+	$tabVal		.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td>
+					<td><input type="text" class="width-100" name="valor[]" value="'.$aValores[$i]->getValor().'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="1"></td>
+					<td><input type="text" class="width-100" class="form-control datepicker" name="dataBase[]" value="'.$dataBase.'" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
+					<td><input type="text" class="width-100" name="desconPorcMax[]" value="'.$aValores[$i]->getDescontoPorcentoMax().'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="1"></td>
+					<td><input type="text" class="width-100" class="form-control datepicker" name="dataCadastro[]" value="'.$dataCadastro.'" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
+					<td class="center"><span class="center" zgdelete onclick="delRowValorProdutoAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codValor[]" value="'.$aValores[$i]->getCodigo().'"></td></tr>';
+}
+
+#################################################################################
 ## Url Voltar
 #################################################################################
 $urlVoltar			= ROOT_URL."/Est/produtoLis.php?id=".$id;
@@ -144,6 +162,7 @@ $tpl->set('PRE_RESERVA'				,$preReserva);
 $tpl->set('DIAS_INDIS'				,$diasIndis);
 $tpl->set('COD_TIPO_MATERIAL'		,$oMaterial);
 $tpl->set('COD_SUBGRUPO'			,$oSubGrupo);
+$tpl->set('TAB_VAL'					,$tabVal);
 
 
 $tpl->set('UNIDADES'				,$oUnidades);

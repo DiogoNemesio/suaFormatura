@@ -158,9 +158,21 @@
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-12">
-									
-									
-									
+									<table id="produtoAltTableValorID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
+										<thead>
+											<tr class="warning">
+												<th class="col-sm-1 center"></th>
+												<th class="col-sm-2 center">Valor</th>
+												<th class="col-sm-2 center">Data Base</th>
+												<th class="col-sm-2 center">Desconto</th>
+												<th class="col-sm-1 center">Data Cadastro</th>
+												<th class="col-sm-1 center"><span onclick="addRowValorProdutoAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										%TAB_VAL%
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>
@@ -192,6 +204,11 @@ $('#zgFormID').submit(function() {
 	$('#btnSubmitID').attr("disabled","disabled");
 	$('#cancel').attr("disabled","disabled");
 	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
@@ -206,6 +223,12 @@ $('#zgFormID').submit(function() {
 		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
 		$('#btnSubmitID').attr("disabled",false);
 		$('#cancel').attr("disabled",false);
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
 		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
@@ -241,14 +264,26 @@ $('textarea.limited').inputlimiter({
 	limitText: 'Max: %n.'
 });
 
+/******************************************************
+ADD E REMOVER PRODUTO
+/******************************************************/
+function addRowValorProdutoAlt() {
+	$('#produtoAltTableValorID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="valor[]" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro"></td><td><input type="text" class="width-100" class="form-control datepicker" name="dataBase[]" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td><td><input type="text" class="width-100" name="desconPorcMax[]" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem"></td><td><input type="text" class="width-100" class="form-control datepicker" name="dataCadastro[]" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td><td class="center"><span class="center" zgdelete onclick="delRowValorProdutoAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codValor[]"></td></tr>');
+	$('#produtoAltTableValorID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup')
+		//$( this ).datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+	});
+	//$('#produtoAltTableValorID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+	var $codValor 	= $("input[name='codValor\\[\\]']");
+}
 
-
-$('[data-rel=popover]').popover({html:true});
-
-$('[zg-data-toggle="mask"]').each(function( index ) {
-	zgMask($( this ), $( this ).attr('zg-data-mask'));
-});
-
-$('.datepicker').datepicker();
-
+function delRowValorProdutoAlt(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+	});
+}
 </script>
