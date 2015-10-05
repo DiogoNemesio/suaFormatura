@@ -208,5 +208,5 @@ try {
  	exit;
 }
  
-//$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
+$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oOrganizacao->getCodigo());

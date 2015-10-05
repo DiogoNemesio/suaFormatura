@@ -82,10 +82,6 @@
 		<button type="button" class="btn btn-primary" id="btnSubmitID">
 			<i class="fa fa-check bigger-110"></i> Salvar
 		</button>
-		<button type="button" class="btn btn-warning" id="cancel"
-			onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
-			<i class="fa fa-undo bigger-110"></i> Voltar
-		</button>
 	</div>
 </div>
 
@@ -246,42 +242,8 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			var $codOrg	= zgGetCodRetorno(data);
 			$('#codOrganizacaoID').val(zgGetCodRetorno(data));
-			
-			bootbox.dialog({
-				message: "A formatura foi salva com sucesso !!", 
-				buttons: {
-					"novo" : {
-						"label" : "<i class='ace-icon fa fa-plus'></i>Cadastrar nova",
-						"className" : "btn-sm btn-primary",
-						"callback": function() {
-							zgLoadUrl('%URLNOVO%');
-						}
-					},
-					"abrir" : {
-						"label" : "<i class='ace-icon fa fa-sign-in'></i>Entrar",
-						"className" : "btn-sm btn-yellow",
-						"callback": function() {
-							//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
-							zgWindowOpen('%ROOT_URL%index.php?zid='+zgEncodeUrl('_codOrganizacao='+$codOrg));
-						}
-					},
-					"fechar" : {
-						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
-						"className" : "btn-sm btn-danger",
-						"callback": function() {
-							zgLoadUrl('');
-						}
-
-					},
-					
-				}
-			});
-			
-			
-			
-			//zgMostraAviso("Fechar",'Nova Formatura', '%URLNOVO%', "Entrar", zgWindowOpen('%ROOT_URL%index.php?zid='+zgEncodeUrl('_codOrganizacao='+$codOrg)));
+			zgMostraAviso("Fechar",'Nova Formatura', '%URLNOVO%');
 		}else{
 			zgMostraAviso("Fechar");
 		}
