@@ -45,19 +45,19 @@ if ($codProduto) {
 	$preReserva		= $info->getQtdeDiasPreReserva();
 	$diasIndis		= $info->getNumDiasIndisponivel();
 	$ativo			= ($info->getIndAtivo()	== 1) ? "checked" : null;
-	$indExposicao	= ($info->getIndExposicao()	== 1) ? "checked" : null;
+	$indReservaOnline	= ($info->getIndReservaOnline()	== 1) ? "checked" : null;
 	$codTipoMaterial= ($info->getCodTipoMaterial() != null) ? $info->getCodTipoMaterial()->getCodigo() : null;
-	$codSubgrupo	= ($info->getCodSubgrupoMateiral() != null) ? $info->getCodSubgrupoMateiral()->getCodigo() : null;
+	$codSubgrupo	= ($info->getCodSubgrupo() != null) ? $info->getCodSubgrupo()->getCodigo() : null;
 	
-	$codUniMed		= ($info->getCodUnidadeMedida() != null) ? $info->getCodUnidadeMedida()->getCodigo() : null;
-	$referencia		= $info->getReferencia();
-	$descricaoCom	= $info->getDescricaoCompleta();
-	$codNcm			= $info->getCodNcm();
-	$margemLucro	= $info->getPctMargemLucro();
-	$codTipoPreço	= ($info->getCodTipoPrecoVenda() != null) ? $info->getCodTipoPrecoVenda()->getCodigo() : null;
-	$valorVenda		= $info->getValorVenda();
-	$desconto		= $info->getPctMaxDesconto();
-	$observacao		= $info->getObservacao();
+	//$codUniMed		= ($info->getCodUnidadeMedida() != null) ? $info->getCodUnidadeMedida()->getCodigo() : null;
+	//$referencia		= $info->getReferencia();
+	//$descricaoCom	= $info->getDescricaoCompleta();
+	//$codNcm			= $info->getCodNcm();
+	//$margemLucro	= $info->getPctMargemLucro();
+	//$codTipoPreço	= ($info->getCodTipoPrecoVenda() != null) ? $info->getCodTipoPrecoVenda()->getCodigo() : null;
+	//$valorVenda		= $info->getValorVenda();
+	//$desconto		= $info->getPctMaxDesconto();
+	//$observacao		= $info->getObservacao();
 
 }else{
 	$nome			= '';
@@ -67,7 +67,7 @@ if ($codProduto) {
 	$codTipoMaterial= '';
 	$codSubgrupo	= '';
 	$ativo			= 'checked';
-	$indExposicao   = 'checked';
+	$indReservaOnline   = 'checked';
 	
 	$codUniMed		= '';
 	$referencia		= '';
@@ -137,7 +137,7 @@ $tpl->set('URLNOVO'					,$urlNovo);
 $tpl->set('ID'						,$id);
 $tpl->set('COD_PRODUTO'				,$codProduto);
 $tpl->set('ATIVO'					,$ativo);
-$tpl->set('IND_EXPOSICAO'			,$indExposicao);
+$tpl->set('IND_EXPOSICAO'			,$indReservaOnline);
 $tpl->set('NOME'					,$nome);
 $tpl->set('DESCRICAO'				,$descricao);
 $tpl->set('PRE_RESERVA'				,$preReserva);

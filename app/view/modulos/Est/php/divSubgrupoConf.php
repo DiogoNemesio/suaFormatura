@@ -38,6 +38,7 @@ $system->checaPermissao($_codMenu_);
 ## Resgata as variáveis postadas
 #################################################################################
 if (isset($_GET['codSubgrupo'])) 		$codSubgrupo			= \Zage\App\Util::antiInjection($_GET['codSubgrupo']);
+if (isset($_GET['codProduto'])) 		$codProduto				= \Zage\App\Util::antiInjection($_GET['codProduto']);
 if (!isset($codSubgrupo) || !$codSubgrupo) exit;
 
 #################################################################################
@@ -56,7 +57,7 @@ for ($i = 0; $i < sizeof($conf); $i++) {
 	$htmlForm	.= '<div class="form-group">';
 	$htmlForm	.= '<label class="col-sm-5 control-label" for="'.$idCampo.'">'.$conf[$i]->getNome().'</label>';
 	$htmlForm	.= '<div class="input-group col-sm-7">';
-	$htmlForm	.= \Zage\Est\Produto::geraHtml($conf[$i]->getCodigo(), $codSubgrupo, ($i+1));
+	$htmlForm	.= \Zage\Est\Produto::geraHtml($conf[$i]->getCodigo(), $codProduto, ($i+1));
 	$htmlForm	.= '</div>';
 	$htmlForm	.= '</div>';
 	$htmlForm	.= '</div>';

@@ -29,7 +29,7 @@ class Produto extends \Entidades\ZgestProduto {
      * Gerar o código HTML do índice
      * @param unknown $codIndice
      */
-    public static function geraHtml($codigo,$codDocumento = null,$tabIndex = -1) {
+    public static function geraHtml($codigo,$codProduto = null,$tabIndex = -1) {
     	global $em,$log,$system;
 
     	#################################################################################
@@ -44,7 +44,7 @@ class Produto extends \Entidades\ZgestProduto {
     	#################################################################################
     	## Resgatar o valor já salvo
     	#################################################################################
-    	$valor		= $em->getRepository('Entidades\ZgestProdutoSubgrupoValor')->findOneBy(array('codSubgrupoConf' => $codigo));
+    	$valor		= $em->getRepository('Entidades\ZgestProdutoSubgrupoValor')->findOneBy(array('codSubgrupoConf' => $codigo , 'codProduto' =>$codProduto));
     	
     	if ($valor) {
     		$valor 	= $valor->getValor();
@@ -128,24 +128,24 @@ class Produto extends \Entidades\ZgestProduto {
     
     /**
      * Gerar o ID do campo
-     * @param integer $codDocumento
+     * @param integer $codProduto
      * @param integer$codigo
      * @return string
      */
     public static function geraIdInput($codigo) {
-    	//return 'zgIndice_'.$codDocumento.'_'.$codigo.'ID';
+    	//return 'zgIndice_'.$codProduto.'_'.$codigo.'ID';
     	return '_zgConf_'.$codigo.'ID';
     }
 
     /**
      * Gerar o Nome do campo
-     * @param integer $codDocumento
+     * @param integer $codProduto
      * @param integer$codigo
      * @return string
      */
     public static function geraNomeInput($codigo) {
     	return '_zgConf['.$codigo.']';
-    	//return 'zgIndice_'.$codDocumento.'['.$codigo.']';
+    	//return 'zgIndice_'.$codProduto.'['.$codigo.']';
     }
     
 }

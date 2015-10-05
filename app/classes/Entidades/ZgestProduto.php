@@ -38,21 +38,21 @@ class ZgestProduto
     /**
      * @var string
      *
-     * @ORM\Column(name="IND_ATIVO", type="string", length=45, nullable=true)
+     * @ORM\Column(name="IND_ATIVO", type="string", length=45, nullable=false)
      */
     private $indAtivo;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_EXPOSICAO", type="integer", nullable=false)
+     * @ORM\Column(name="IND_RESERVA_ONLINE", type="integer", nullable=true)
      */
-    private $indExposicao;
+    private $indReservaOnline;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="QUANTIDADE", type="integer", nullable=false)
+     * @ORM\Column(name="QUANTIDADE", type="integer", nullable=true)
      */
     private $quantidade;
 
@@ -188,26 +188,26 @@ class ZgestProduto
     }
 
     /**
-     * Set indExposicao
+     * Set indReservaOnline
      *
-     * @param integer $indExposicao
+     * @param integer $indReservaOnline
      * @return ZgestProduto
      */
-    public function setIndExposicao($indExposicao)
+    public function setIndReservaOnline($indReservaOnline)
     {
-        $this->indExposicao = $indExposicao;
+        $this->indReservaOnline = $indReservaOnline;
 
         return $this;
     }
 
     /**
-     * Get indExposicao
+     * Get indReservaOnline
      *
      * @return integer 
      */
-    public function getIndExposicao()
+    public function getIndReservaOnline()
     {
-        return $this->indExposicao;
+        return $this->indReservaOnline;
     }
 
     /**

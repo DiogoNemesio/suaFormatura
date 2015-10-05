@@ -25,54 +25,54 @@
 								Atributos
 							</a>
 						</li>
+						<li>
+							<a data-toggle="tab" href="#produto-valor">
+								<i class="green fa fa-dollar bigger-125"></i>
+								Valor
+							</a>
+						</li>
 					</ul>
 	
 					<div class="tab-content profile-edit-tab-content">
 						<div id="produto-informacoes" class="tab-pane in active">
-							<h5 class="header blue bolder smaller">Informações Gerais</h5>
+							<h5 class="row header blue bolder smaller">
+							<span class="col-sm-8">Informações Gerais</span>
+								<span class="col-sm-3">
+									<label class="pull-right inline">
+									<small class="muted">Ativo:</small>
+									<input name="indAtivo" id="ativoID" class="ace ace-switch ace-switch-5" type="checkbox" %ATIVO% />
+									<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO"></span>
+									</label>
+								</span><!-- /.col -->					
+							</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-6">
-									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
-						    			<div class="input-group col-sm-8">
-					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome do produto/serviço."></i></span>
-							    			<input class="form-control" id="nomeID" type="text" name="nome" maxlength="100" value="%NOME%" placeholder="Nome" autocomplete="off" required	>
-								    	</div>
-								    </div>
-						    	</div>
-						    	<div class="col-sm-6">
-									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="ativoID">Ativo</label>
-								    	<label>
-								    		<input name="ativo" id="ativoID" class="ace ace-switch ace-switch-6" type="checkbox" %ATIVO% />
-											<span class="lbl"></span>
-										</label>
-								    </div>
-						    	</div>
-						    	<div class="col-sm-6">
-									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
-						    			<div class="input-group col-sm-8">
- 								    		<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição detalhada do produto (pode colocar as características)."></i></span>
-							    			<textarea id="descricaoID" class="autosize-transition limited form-control" name="descricao" maxlength="500" required>%DESCRICAO%</textarea>
-								    	</div>
-								    </div>
-						    	</div>
-						    	<div class="col-sm-6">
 							    	<div class="form-group col-sm-12" id="divCodTipoMaterialID">
-										<label for="codTipoMaterialID" class="col-xs-12 col-sm-3 control-label">Tipo Material</label>
+										<label for="codTipoMaterialID" class="col-xs-12 col-sm-3 control-label">Tipo</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o tipo do material."></i></span>
-											<select id="codTipoMaterialID" name="codTipoMaterial" class="select2" data-placeholder="Selecione o tipo material">
+											<select id="codTipoID" name="codTipo" class="select2" data-placeholder="Selecione o tipo" onchange="mostraDivTipo();">
 												%COD_TIPO_MATERIAL%
 											</select>
 										</div>
 										<div class="col-sm-1 pull-left" id="divHelpCodTipoMeterialID"></div>
 									</div>
-								</div>
-								<div class="col-sm-6">
-							    	<div class="form-group col-sm-12" id="divCodSubgrupoID">
+									<div class="form-group col-sm-12">
+								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+						    			<div class="input-group col-sm-8">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome do produto/serviço."></i></span>
+							    			<input class="form-control" id="nomeID" type="text" name="nome" maxlength="100" value="%NOME%" placeholder="Nome" autocomplete="off">
+								    	</div>
+								    </div>
+								    <div class="form-group col-sm-12">
+								    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
+						    			<div class="input-group col-sm-8">
+ 								    		<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição detalhada do produto (pode colocar as características)."></i></span>
+							    			<textarea id="descricaoID" class="autosize-transition limited form-control" name="descricao" maxlength="500">%DESCRICAO%</textarea>
+								    	</div>
+								    </div>
+								    <div class="form-group col-sm-12" id="divCodSubgrupoID">
 										<label for="codSubgrupoID" class="col-xs-12 col-sm-3 control-label">Sub-grupo</label>
 										<div class="input-group col-sm-8 pull-left">
 											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sub-grupo."></i></span>
@@ -83,37 +83,50 @@
 										<div class="col-sm-1 pull-left" id="divHelpCodSubGrupoID"></div>
 									</div>
 								</div>
-						    	<div class="col-sm-6">
-									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="ativoID">Exposição</label>
-								    	<label>
-								    		<input name="indExposicao" id="indExposicaoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_EXPOSICAO% />
-											<span class="lbl"></span>
-										</label>
-								    </div>
-						    	</div>
 						    </div>				    
-							<h5 class="header blue bolder smaller">Reserva</h5>
-							<div class="vspace-xs"></div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="preReservaID">Dias pré-reserva</label>
-						    			<div class="input-group col-sm-8">
-					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de dias para pré reserva."></i></span>
-							    			<input class="form-control" id="preReservaID" type="text" name="preReserva" maxlength="100" value="%PRE_RESERVA%" placeholder="Dias pré-reserva" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0">
-								    	</div>
-								    </div>
-						    	</div>
-						    	<div class="col-sm-6">
-									<div class="form-group">
-								    	<label class="col-sm-3 control-label" for="diasIndisID">Dias indisponíveis</label>
-						    			<div class="input-group col-sm-8">
-					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de dias indisponíveis."></i></span>
-							    			<input class="form-control" id="diasIndisID" type="text" name="diasIndis" maxlength="100" value="%DIAS_INDIS%" placeholder="Dias pindisponíveis" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0">
-								    	</div>
-								    </div>
-						    	</div>
+							<div id="divPrincipalServicoID" class="hidden">
+								<h5 class="header blue bolder smaller">Configurações de reservas</h5>
+								<div class="vspace-xs"></div>
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="col-sm-6">
+											<div class="form-group">
+										    	<label class="col-sm-4 control-label" for="indReservaOnlineID">Rerveva pelo sistema?</label>
+										    	<label>
+										    		<input name="indReservaOnline" id="indReservaOnlineID" class="ace ace-switch ace-switch-5" type="checkbox" %IND_EXPOSICAO%/>
+													<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO"></span>
+												</label>
+										    </div>
+										</div>
+							    	</div>
+							    	<div class="col-sm-12" id="divOpcaoReservaID">
+							    		<div class="col-sm-6">
+											<div class="form-group">
+										    	<label class="col-sm-3 control-label" for="preReservaID">Dias pré-reserva</label>
+								    			<div class="input-group col-sm-8">
+							    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de dias que a pré-reserva ficará ativa."></i></span>
+									    			<input class="form-control" id="qtdeDiasPreReservaID" type="text" name="qtdeDiasPreReserva" maxlength="100" value="%PRE_RESERVA%" placeholder="Dias pré-reserva" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0">
+										    	</div>
+										    </div>
+										    <div class="form-group">
+										    	<label class="col-sm-3 control-label" for="diasIndisID">Dias disponíveis</label>
+								    			<div class="input-group col-sm-8">
+							    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de dias que o serviço ou produto estará disponível (reservado) para o cliente."></i></span>
+									    			<input class="form-control" id="qtdeDiasIndisID" type="text" name="qtdeDiasIndis" maxlength="100" value="%DIAS_INDIS%" placeholder="Qtde de dias disponíveis" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0">
+										    	</div>
+										    </div>
+							    		</div>
+								    	<div class="col-sm-6">
+											<div class="form-group">
+										    	<label class="col-sm-3 control-label" for="qtdeServicoID">Quantidade</label>
+								    			<div class="input-group col-sm-8">
+							    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de produtos que você tem para disponibilizar aos clientes. EX: 400 cadeiras disponíveis, 1 salão de festa."></i></span>
+									    			<input class="form-control" id="qtdeServicoID" type="text" name="qtdeServico" maxlength="100" value="%QTDE_SERVICO%" placeholder="Quantidade disponível" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0">
+										    	</div>
+								    		</div>
+							    		</div>
+						    		</div>
+					    		</div>
 					    	</div>
 							<!-- 							
 							<div class="row">
@@ -138,6 +151,18 @@
 								<div class="col-sm-6" id="divSubgrupoConfID">
 								</div>
 						    </div>
+						</div>
+						
+						<div id="produto-valor" class="tab-pane">
+							<h5 class="header blue bolder smaller">Valor do produto/serviço</h5>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-12">
+									
+									
+									
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -188,18 +213,35 @@ $('#zgFormID').submit(function() {
 	return false; 
 });
 
+subgrupoConf();
 function subgrupoConf(){
 	var codSubgrupo = $('#codSubgrupoID').val();
+	var codProduto = $('#codProdutoID').val();
 	
-	//$('#divSubgrupoConfID').load("%ROOT_URL%/Est/divSubgrupoConf.php?id=%ID%&codSubgrupo="+codSubgrupo+"");
+	$('#divSubgrupoConfID').load("%ROOT_URL%/Est/divSubgrupoConf.php?id=%ID%&codSubgrupo="+codSubgrupo+"&codProduto="+codProduto);
 }
 
+//Div opções de Reserva
+mostraDivTipo();
+function mostraDivTipo() {
+	var vTipo		= $('#codTipoID').val();
+	
+	if (vTipo == 'P') {
+		$('#divPrincipalServicoID').addClass("hidden");
+	}else if (vTipo == 'S'){
+		$('#divPrincipalServicoID').removeClass("hidden");
+	}else{
+		$('#divPrincipalServicoID').addClass("hidden");
+	}
+}
 
 $('textarea[class*=autosize]').autosize({append: "\n"});
 $('textarea.limited').inputlimiter({
 	remText: 'Restando: %n character%s ...',
 	limitText: 'Max: %n.'
 });
+
+
 
 $('[data-rel=popover]').popover({html:true});
 
