@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$tr,$system,$log;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -33,6 +38,7 @@ $system->checaPermissao($_codMenu_);
 ## Verifica os parâmetros obrigatórios
 #################################################################################
 if (!isset($codRifa)) \Zage\App\Erro::halt('Falta de Parâmetros : COD_RIFA');
+
 
 #################################################################################
 ## Resgata as informações da rifa
@@ -84,7 +90,6 @@ if ($info->getIndRifaGerada() == null){
 #################################################################################
 ## Número inicial e final
 #################################################################################
-$numeroInicial	= 1;
 $numeroFinal	= $numAtivo * $qtdeObrigatorio;
 
 
@@ -101,21 +106,29 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
-$grid->adicionaTexto($tr->trans('CÓDIGO'),10, $grid::CENTER	,'codGeracao:codigo');
+$grid->adicionaTexto($tr->trans('CÓDIGO'),			10, $grid::CENTER	,'codGeracao:codigo');
 $grid->adicionaTexto($tr->trans('USUÁRIO'),			20, $grid::CENTER	,'codUsuario:nome');
+$grid->adicionaTexto($tr->trans('# GERADAS'),		10, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('NÚMERO INICIAL'),	10, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('NÚMERO FINAL'),	10, $grid::CENTER	,'');
 $grid->adicionaDataHora($tr->trans('DATA'),	 		20, $grid::CENTER	,'data');
-$grid->adicionaIcone(arquvo,'fa fa-download red',$tr->trans('Arquivo para download'));
+$grid->adicionaIcone(null,'fa fa-file-pdf-o red',$tr->trans('Arquivo para download'));
 
 $grid->importaDadosDoctrine($rifaGera);
-
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($rifaGera); $i++) {
-	$rid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$rifaGera[$i]->getCodigo().'&url='.$url);
+	$rid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$codRifa.'&codGeracao='.$rifaGera[$i]->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/rifaGera.php?id='.$rid);
+	$infoGer	= \Zage\Fmt\Rifa::getInfoGeracao($codRifa, $rifaGera[$i]->getCodigo());
+	
+	$grid->setValorCelula($i, 2, $infoGer[0]["num"]);
+	$grid->setValorCelula($i, 3, $infoGer[0]["num_ini"]);
+	$grid->setValorCelula($i, 4, $infoGer[0]["num_fim"]);
+	
+	$grid->setUrlCelula($i,6,"javascript:zgDownloadUrl('".ROOT_URL."/Fmt/rifaPDF.php?id=".$rid."');");
 
 }
 

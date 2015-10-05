@@ -208,4 +208,31 @@ class Rifa {
 		}
 	}
 	
+	/**
+	 * Resgata as informações de uma geração
+	 * @param unknown $codRifa
+	 * @param unknown $codGeracao
+	 */
+	public static function getInfoGeracao($codRifa,$codGeracao) {
+		global $em,$system;
+		
+		$qb 	= $em->createQueryBuilder();
+		
+		try {
+			$qb->select('count(r.numero) as num, max(r.numero) num_fim, min(r.numero) as num_ini')
+			->from('\Entidades\ZgfmtRifaNumero','r')
+			->where($qb->expr()->andx(
+				$qb->expr()->eq('r.codRifa'				, ':codRifa'),
+				$qb->expr()->eq('r.codGeracao'			, ':codGeracao')
+			))
+			->setParameter('codRifa'	,$codRifa)
+			->setParameter('codGeracao'	,$codGeracao);
+		
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+	}
 }

@@ -32,6 +32,8 @@ if (isset($_GET['id'])) {
 #################################################################################
 if (!isset($codRifa)) \Zage\App\Erro::halt('Falta de Parâmetros : COD_RIFA');
 
+
+
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
@@ -48,7 +50,7 @@ $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GCargo");
 $grid->adicionaTexto($tr->trans('QTDE DE BILHETES'),10, $grid::CENTER	,'codGeracao:codigo');
 $grid->adicionaTexto($tr->trans('USUÁRIO'),			20, $grid::CENTER	,'codUsuario:nome');
 $grid->adicionaDataHora($tr->trans('DATA'),	 		20, $grid::CENTER	,'data');
-$grid->adicionaIcone(arquvo,'fa fa-cog red',$tr->trans('Arquivo para download'));
+$grid->adicionaIcone(null,'fa fa-file-pdf-o red',$tr->trans('Arquivo para download'));
 
 $grid->importaDadosDoctrine($rifaGera);
 
@@ -58,7 +60,7 @@ $grid->importaDadosDoctrine($rifaGera);
 for ($i = 0; $i < sizeof($rifaGera); $i++) {
 	$rid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codRifa='.$rifaGera[$i]->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/rifaGera.php?id='.$rid);
+	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/rifaPDF.php?id='.$rid);
 
 }
 

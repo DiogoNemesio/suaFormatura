@@ -114,7 +114,7 @@ abstract class Tipo {
 		$this->html	.= \Zage\App\ZWS::TAB.'<script type="text/javascript">try{ace.settings.check(\'navbar\' , \'fixed\')}catch(e){}</script>'.\Zage\App\ZWS::NL;
 		$this->html	.= \Zage\App\ZWS::TAB.'<div class="navbar-container" id="navbar-container">'.\Zage\App\ZWS::NL;
 		$this->html	.= \Zage\App\ZWS::TAB.'<!-- #section:basics/sidebar.mobile.toggle -->'.\Zage\App\ZWS::NL;
-		$this->html .= str_repeat(\Zage\App\ZWS::TAB,1).'<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler">'.\Zage\App\ZWS::NL;
+		$this->html .= str_repeat(\Zage\App\ZWS::TAB,1).'<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">'.\Zage\App\ZWS::NL;
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,2).'<span class="sr-only">Toggle sidebar</span>'.\Zage\App\ZWS::NL;
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,2).'<span class="icon-bar"></span>'.\Zage\App\ZWS::NL;
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,2).'<span class="icon-bar"></span>'.\Zage\App\ZWS::NL;
