@@ -125,7 +125,7 @@ for ($i = 0; $i < sizeof($aValores); $i++) {
 					<td><input type="text" class="width-100" name="valor[]" value="'.$aValores[$i]->getValor().'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="1"></td>
 					<td><input type="text" class="width-100" class="form-control datepicker" name="dataBase[]" value="'.$dataBase.'" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
 					<td><input type="text" class="width-100" name="desconPorcMax[]" value="'.$aValores[$i]->getDescontoPorcentoMax().'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="1"></td>
-					<td><input type="text" class="width-100" class="form-control datepicker" name="dataCadastro[]" value="'.$dataCadastro.'" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
+					<td><input type="text" class="width-100" class="form-control datepicker" name="dataCadastro[]" readonly value="'.$dataCadastro.'" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
 					<td class="center"><span class="center" zgdelete onclick="delRowValorProdutoAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codValor[]" value="'.$aValores[$i]->getCodigo().'"></td></tr>';
 }
 

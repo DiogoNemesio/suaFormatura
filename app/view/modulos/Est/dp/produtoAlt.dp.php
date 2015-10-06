@@ -36,13 +36,11 @@ if (isset($_POST['codValor']))			$codValor			= $_POST['codValor'];
 if (isset($_POST['valor']))				$valor				= $_POST['valor'];
 if (isset($_POST['dataBase']))			$dataBase			= $_POST['dataBase'];
 if (isset($_POST['desconPorcMax']))		$desconPorcMax		= $_POST['desconPorcMax'];
-if (isset($_POST['dataCadastro']))		$dataCadastro		= $_POST['dataCadastro'];
 
 if (!isset($codValor))					$codValor			= array();
 if (!isset($valor))						$valor				= array();
 if (!isset($dataBase))					$dataBase			= array();
 if (!isset($desconPorcMax))				$desconPorcMax		= array();
-if (!isset($dataCadastro))				$dataCadastro		= array();
 
 #################################################################################
 ## Resgata os valores das configurações
@@ -286,19 +284,13 @@ try {
 			$dataBase = null;
 		}
 		
-		if (! empty ( $dataCadastro [$i] )) {
-			$dataCadastro = DateTime::createFromFormat ( $system->config ["data"] ["dateFormat"], $dataCadastro [$i] );
-		} else {
-			$dataCadastro = null;
-		}
-		
 		// if ($infoTel->getCodTipoTelefone () !== $codTipoTel [$i] || $infoTel->getTelefone () !== $telefone [$i]) {
 		
 		$infoVal->setCodProduto ( $oProduto );
 		$infoVal->setValor($valor);
 		$infoVal->setDataBase($dataBase);
 		$infoVal->setDescontoPorcentoMax($desconPorcMax);
-		$infoVal->setDataCadastro($dataCadastro);
+		$infoVal->setDataCadastro(new \DateTime("now"));
 		
 		try {
 			$em->persist ( $infoVal );
