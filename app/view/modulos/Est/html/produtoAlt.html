@@ -165,8 +165,8 @@
 												<th class="col-sm-1 center"></th>
 												<th class="col-sm-2 center">Valor</th>
 												<th class="col-sm-2 center">Data Base</th>
-												<th class="col-sm-2 center">Desconto</th>
-												<th class="col-sm-1 center">Data Cadastro</th>
+												<th class="col-sm-1 center">Desconto máximo</th>
+												<th class="col-sm-2 center">Data Cadastro</th>
 												<th class="col-sm-1 center"><span onclick="addRowValorProdutoAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 											</tr>
 										</thead>
@@ -298,10 +298,32 @@ function validaProdutoAlt(){
 	var vCodTipo	 	 = $('#codTipoID').val();
 	var vNome		 	 = $('#nomeID').val();
 	var vCodSubgrupo 	 = $('#codSubgrupoID').val();
-
+	
 	var vTab			 = 0;
 	var vOK				 = true;
 	var vIdent;
+	
+	/** Valida os atributos **/
+	var vQuantConf	     = $('#quantConfID').val();
+	
+	for (i = 1; i <= vQuantConf; i++) {
+		if($('#indObrig_zgConf_'+i+'ID').val() == 1){
+			var _zgConf	 = $('#_zgConf_'+i+'ID').val();
+			
+			//_zgConf
+			if (!_zgConf) {
+				$('#div_zgConf_'+i+'ID').addClass('has-error');
+				$('#divHelp_zgConf_'+i+'ID').html(zgCriaSpanErro('O campo deve ser preenchido !!'));
+				vOK		= false;
+				vTab = 0;
+			}else{
+				$('#div_zgConf_'+i+'ID').removeClass('has-error');
+				$('#divHelp_zgConf_'+i+'ID').html('&nbsp;');		
+			}
+		}
+		
+	}
+
 	
 	//Tipo
 	if (!vCodTipo) {
@@ -391,7 +413,7 @@ function validaProdutoAlt(){
 ADD E REMOVER PRODUTO
 /******************************************************/
 function addRowValorProdutoAlt() {
-	$('#produtoAltTableValorID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="valor[]" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro"></td><td><input type="text" class="width-100" class="form-control datepicker" name="dataBase[]" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td><td><input type="text" class="width-100" name="desconPorcMax[]" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem"></td><td><input type="text" class="width-100" class="form-control datepicker" name="dataCadastro[]" readonly maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td><td class="center"><span class="center" zgdelete onclick="delRowValorProdutoAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codValor[]"></td></tr>');
+	$('#produtoAltTableValorID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="valor[]" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro"></td><td><input type="text" class="width-100" class="form-control datepicker" name="dataBase[]" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td><td><input type="text" class="width-100" name="desconPorcMax[]" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem"></td><td><input type="text" class="width-100" class="form-control datepicker" name="dataCadastro[]" readonly maxlength="16" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples"></td><td class="center"><span class="center" zgdelete onclick="delRowValorProdutoAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codValor[]"></td></tr>');
 	$('#produtoAltTableValorID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup')

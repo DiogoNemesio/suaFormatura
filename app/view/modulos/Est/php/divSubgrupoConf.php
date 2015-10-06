@@ -49,20 +49,27 @@ $conf		= $em->getRepository('Entidades\ZgestSubgrupoConf')->findBy(array('codSub
 #################################################################################
 ## Cria o objeto do Grid (bootstrap) 
 #################################################################################
-$htmlForm	= "";
+$htmlForm	  = "";
+
 for ($i = 0; $i < sizeof($conf); $i++) {
 	//echo 'DIV:' . $conf[$i]->getCodigo();
-	$idCampo	= \Zage\Est\Produto::geraIdInput($conf[$i]->getCodigo());
-	$htmlForm	.= '<div class="col-sm-12">';
+	$idCampo	 = \Zage\Est\Produto::geraIdInput($conf[$i]->getCodigo());
+	
+	$htmlForm	.= '<div class="col-sm-12" id="div'.$idCampo.'">';
 	$htmlForm	.= '<div class="form-group">';
-	$htmlForm	.= '<label class="col-sm-5 control-label" for="'.$idCampo.'">'.$conf[$i]->getNome().'</label>';
-	$htmlForm	.= '<div class="input-group col-sm-7">';
+	$htmlForm	.= '<input type="hidden" id="indObrig'.$idCampo.'" value="'.$conf[$i]->getIndObrigatorio().'" >';
+	$htmlForm	.= '<label class="col-sm-3 control-label" for="'.$idCampo.'">'.$conf[$i]->getNome().'</label>';
+	$htmlForm	.= '<div class="input-group col-sm-8 pull-left">';
 	$htmlForm	.= \Zage\Est\Produto::geraHtml($conf[$i]->getCodigo(), $codProduto, ($i+1));
 	$htmlForm	.= '</div>';
+	$htmlForm	.= '<div class="col-sm-1 pull-left" id="divHelp'.$idCampo.'"></div>';
 	$htmlForm	.= '</div>';
 	$htmlForm	.= '</div>';
 
 }
 
+if ( sizeof($conf) >= 1 ){
+	$htmlForm	.= '<input type="hidden" id="quantConfID" value="'.sizeof($conf).'" >';
+}
 
 echo $htmlForm;

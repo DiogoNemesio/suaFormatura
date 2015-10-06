@@ -136,7 +136,7 @@ class Produto extends \Entidades\ZgestProduto {
     	//return 'zgIndice_'.$codProduto.'_'.$codigo.'ID';
     	return '_zgConf_'.$codigo.'ID';
     }
-
+    
     /**
      * Gerar o Nome do campo
      * @param integer $codProduto
