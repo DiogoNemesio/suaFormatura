@@ -72,4 +72,13 @@ if ( sizeof($conf) >= 1 ){
 	$htmlForm	.= '<input type="hidden" id="quantConfID" value="'.sizeof($conf).'" >';
 }
 
+
+$htmlForm	.= '<script type="text/javascript" charset="%CHARSET%">';
+$htmlForm	.= "$('[data-rel=popover]').popover({html:true});";
+$htmlForm	.= "$('[data-rel=select2]').css('width','100%').select2({allowClear:true});";
+$htmlForm	.= "$('[zg-data-toggle="."mask"."]').each(function( index ) {";
+$htmlForm	.= "zgMask($( this ), $( this ).attr('zg-data-mask'));";
+$htmlForm	.= "});";
+$htmlForm	.= '</script>';
+
 echo $htmlForm;

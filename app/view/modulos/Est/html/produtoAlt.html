@@ -196,9 +196,13 @@
 
 <script type="text/javascript" charset="%CHARSET%">
 
-$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
 $('.select2').css('width','100%').select2({allowClear:true});
 $('[data-rel=popover]').popover({html:true});
+
+
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//$('.select2').css('width','100%').select2({allowClear:true});
+//$('[data-rel=popover]').popover({html:true});
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));

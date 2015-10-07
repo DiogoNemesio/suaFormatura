@@ -83,7 +83,8 @@ class Produto extends \Entidades\ZgestProduto {
 			$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" '.$tagMaxLen.' value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
 			$htmlInput	.= '<span class="input-group-addon"><a href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="'.$info->getDescricao().'"><i class="fa fa-question-circle"></i></a></span>';
 		}elseif ($tipo == 'N') { # Número
-			$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='.'ace-icon fa fa-question-circle red'.'></i> Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
+							
+			$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
 			$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" '.$tagMaxLen.' value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';		
 		}elseif ($tipo == 'DT') { # Data
 			$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control datepicker" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" '.$tagMaxLen.' value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
@@ -107,6 +108,7 @@ class Produto extends \Entidades\ZgestProduto {
 			$htmlInput	.= '<input tabindex="'.$tabIndex.'" class="form-control" id="'.$idCampo.'" type="text" name="'.$nomeCampo.'" value="'.$valor.'" '.$tagRequired.' '.$tagMask.' autocomplete="off">';
 			$htmlInput	.= '<span class="input-group-addon"><a href="#" data-container="body" data-toggle="popover" data-placement="top" data-content="'.$info->getDescricao().'"><i class="fa fa-question-circle"></i></a></span>';
 		}elseif ($tipo == 'SN') { # Sim ou Não
+			$htmlInput	.= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title= Ajuda" data-content="'.$info->getDescricao().'"></i></span>';
 			$htmlInput	.= '<select tabindex="'.$tabIndex.'" class="select2" style="width:100%;" id="'.$idCampo.'" name="'.$nomeCampo.'" '.$tagRequired.' data-rel="select2">';
 		
 			#################################################################################
