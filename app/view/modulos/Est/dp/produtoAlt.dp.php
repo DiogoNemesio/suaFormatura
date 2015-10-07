@@ -169,7 +169,7 @@ try {
  		$err			= null;
  	
  		if ($tipoConf == "N") {
- 			if (!is_numeric($valorConf)) 	$err	= 1;
+ 			if (!empty($valorConf) && !is_numeric($valorConf)) 	$err	= 1;
  		}elseif ($tipoConf == "DT") {
  			if (\Zage\App\Util::validaData($valorSubgrupo,$system->config["data"]["dateFormat"]) == false) {
  				$err	= 1;
@@ -182,11 +182,12 @@ try {
  			$valorConf	= str_replace('%', '', $valorConf);
  		}
  	
- 		if ($err !== null) {
+ 		if ($err != null) {
+ 			$log->debug($err);
  			if ($clear	== true) {
  				$em->clear();
  			}
- 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Campo %s inválido',array('%s' => $indices[$i]->getNome())));
+ 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Campo %s inválido',array('%s' => $oSubgrupoConf[$i]->getNome())));
  			echo '1'.\Zage\App\Util::encodeUrl('||');
  			exit;
  	

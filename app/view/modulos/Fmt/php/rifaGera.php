@@ -145,7 +145,9 @@ try {
 ## Url Voltar
 #################################################################################
 $urlVoltar			= ROOT_URL."/Fmt/rifaLis.php?id=".$id;
-$urlAtualizar		= ROOT_URL."/Fmt/rifaGera.php?id=".$id."codRifa=".$codRifa;
+$urlAtualizar		= ROOT_URL."/Fmt/rifaGera.php?id=".$id."&codRifa=".$codRifa;
+
+echo $_;
 
 #################################################################################
 ## Carregando o template html
