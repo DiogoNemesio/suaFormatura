@@ -36,6 +36,12 @@ $chips 			= array();
 for ($i = 0; $i < sizeof($notificacoes); $i++) {
 
 	$log->debug("Processar notificação: ".$notificacoes[$i]->getAssunto());
+
+	#################################################################################
+	## Controle de processamento
+	#################################################################################
+	$indProcessada		= 1;
+	
 	
 	#################################################################################
 	## Monta a mensagem
@@ -184,45 +190,58 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 			}
 			
 			#################################################################################
-			## Cria o log de envio
+			## Verifica se esse tipo de notificação já foi enviada e Cria o log de envio
 			#################################################################################
-			$mailLog		= new \Entidades\ZgappNotificacaoLog();
-			$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
-			$mailLog->setCodFormaEnvio($oFormaEnvio);
-			$mailLog->setCodNotificacao($notificacoes[$i]);
-			
-				
-			#################################################################################
-			## Associa os destinatários
-			#################################################################################
-			$mailLogDest	= new \Entidades\ZgappNotificacaoLogDest();
-			
-			if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
-				$oPessoa			= $em->getReference('\Entidades\ZgfinPessoa', $codDest);
-				$mailLogDest->setCodPessoa($oPessoa);
-			}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_USUARIO) {
-				$oUsu			= $em->getReference('\Entidades\ZgsegUsuario', $codDest);
-				$mailLogDest->setCodUsuario($oUsu);
+			$mailLog		= $em->getRepository('\Entidades\ZgappNotificacaoLog')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo(),'codFormaEnvio' => "E"));
+			$indEnvia		= 1;
+			if (!$mailLog)	{
+				$mailLog		= new \Entidades\ZgappNotificacaoLog();
 			}else{
-				$mailLogDest->setEmail($emailDest);
+				if (!$mailLog->getIndErro()) {
+					$indEnvia		= 0;
+				}elseif ($mailLog->getIndErro() > 4){
+					$indEnvia		= 0;
+				}
 			}
 			
-			$mailLogDest->setCodLog($mailLog);
-			$em->persist($mailLogDest);
+			if ($indEnvia) {
+			
+				$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
+				$mailLog->setCodFormaEnvio($oFormaEnvio);
+				$mailLog->setCodNotificacao($notificacoes[$i]);
 				
-			#################################################################################
-			## Definir os destinatários
-			#################################################################################
-			if (sizeof($destinatarios) > 1) {
-				$mail->addBcc($emailDest);
-				if ($notificacoes[$i]->getEmail() && ($validator->isValid($notificacoes[$i]->getEmail())) ) $mail->addBcc($notificacoes[$i]->getEmail());
-			}else{
-				$mail->addTo($emailDest);
-				if ($notificacoes[$i]->getEmail() && ($validator->isValid($notificacoes[$i]->getEmail())) ) $mail->addCc($notificacoes[$i]->getEmail());
+					
+				#################################################################################
+				## Associa os destinatários
+				#################################################################################
+				$mailLogDest	= new \Entidades\ZgappNotificacaoLogDest();
+				
+				if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+					$oPessoa			= $em->getReference('\Entidades\ZgfinPessoa', $codDest);
+					$mailLogDest->setCodPessoa($oPessoa);
+				}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_USUARIO) {
+					$oUsu			= $em->getReference('\Entidades\ZgsegUsuario', $codDest);
+					$mailLogDest->setCodUsuario($oUsu);
+				}else{
+					$mailLogDest->setEmail($emailDest);
+				}
+				
+				$mailLogDest->setCodLog($mailLog);
+				$em->persist($mailLogDest);
+					
+				#################################################################################
+				## Definir os destinatários
+				#################################################################################
+				if (sizeof($destinatarios) > 1) {
+					$mail->addBcc($emailDest);
+					if ($notificacoes[$i]->getEmail() && ($validator->isValid($notificacoes[$i]->getEmail())) ) $mail->addBcc($notificacoes[$i]->getEmail());
+				}else{
+					$mail->addTo($emailDest);
+					if ($notificacoes[$i]->getEmail() && ($validator->isValid($notificacoes[$i]->getEmail())) ) $mail->addCc($notificacoes[$i]->getEmail());
+				}
+				
+				$numEmails++;
 			}
-			
-			$numEmails++;
-			
 		}	
 		
 		#################################################################################
@@ -239,54 +258,85 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 				continue;
 			}
 			
-			
-			#################################################################################
-			## Busca o Chip que a mensagem será enviada
-			#################################################################################
-			$c	= \Zage\Wap\Chip::buscaChipUsuario($codDest);
 
 			#################################################################################
-			## Caso não tenha chips disponíveis, não tentar enviar a mensagem
+			## Verifica se esse tipo de notificação já foi enviada e Cria o log de envio
 			#################################################################################
-			if (!$c) continue;
-			
-			$log->debug("Chip selecionado: ".$c->getLogin());
-
-			#################################################################################
-			## Instancia a classe para envio
-			#################################################################################
-			$chip		= new \Zage\Wap\Chip();
-			$chip->_setCodigo($c->getCodigo());
-			
-			#################################################################################
-			## Converte o número do celular para o formato do whatsapp
-			#################################################################################
-			$celulares	= \Zage\Wap\Chip::buscaNumeroComWa($codDest);
-			if (!$celulares || sizeof($celulares) ==  0)	continue;
-			
-			try {
-				
-				if (!isset($chips[$c->getCodigo()])) {
-					$log->debug("Tentando conexão com WA!!! ");
-					$chip->conectar();
-					$log->debug("Conexão ao wa feita com sucesso !!! ");
-					
-					$chips[$c->getCodigo()]	= $chip;
-					
+			$waLog		= $em->getRepository('\Entidades\ZgappNotificacaoLog')->findBy(array('codNotificacao' => $notificacoes[$i]->getCodigo(),'codFormaEnvio' => "W"));
+			$indEnvia	= 1;
+			if (!$waLog)	{
+				$waLog		= new \Entidades\ZgappNotificacaoLog();
+			}else{
+				if (!$waLog->getIndErro()) {
+					$indEnvia		= 0;
+				}elseif ($waLog->getIndErro() > 4){
+					$indEnvia		= 0;
 				}
+			}
 				
-				for ($n = 0; $n < sizeof($celulares); $n++) {
-					$log->debug("Concertendo o número : ".$celulares[$n]->getTelefone());
-					//$waNumber	= $chip->_convertCellToWaNumber($celulares[$n]->getTelefone());
-					$waNumber	= $celulares[$n]->getWaLogin();
-					$log->debug("Enviando wa para o número: ".$waNumber);
-					$chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
-				}
+			if ($indEnvia) {
+				
+				#################################################################################
+				## Salvar as informações de log
+				#################################################################################
+				$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "W");
+				$mailLog->setCodFormaEnvio($oFormaEnvio);
+				$mailLog->setCodNotificacao($notificacoes[$i]);
 				
 					
-			} catch (Exception $e) {
-				$log->err("Mensagem wa não enviada, por problema no chip: ".$chip->getLogin()." -> ". $e->getMessage());
-				continue;
+				#################################################################################
+				## Busca o Chip que a mensagem será enviada
+				#################################################################################
+				$c	= \Zage\Wap\Chip::buscaChipUsuario($codDest);
+	
+				#################################################################################
+				## Caso não tenha chips disponíveis, não tentar enviar a mensagem
+				#################################################################################
+				if (!$c) continue;
+				
+				$log->debug("Chip selecionado: ".$c->getLogin());
+	
+				#################################################################################
+				## Instancia a classe para envio
+				#################################################################################
+				$chip		= new \Zage\Wap\Chip();
+				$chip->_setCodigo($c->getCodigo());
+				
+				#################################################################################
+				## Converte o número do celular para o formato do whatsapp
+				#################################################################################
+				$celulares	= \Zage\Wap\Chip::buscaNumeroComWa($codDest);
+				if (!$celulares || sizeof($celulares) ==  0)	continue;
+				
+				try {
+					
+					if (!isset($chips[$c->getCodigo()])) {
+						$log->debug("Tentando conexão com WA!!! ");
+						$chip->conectar();
+						$log->debug("Conexão ao wa feita com sucesso !!! ");
+						
+						$chips[$c->getCodigo()]	= $chip;
+						
+					}
+					
+					for ($n = 0; $n < sizeof($celulares); $n++) {
+						$log->debug("Concertendo o número : ".$celulares[$n]->getTelefone());
+						//$waNumber	= $chip->_convertCellToWaNumber($celulares[$n]->getTelefone());
+						$waNumber	= $celulares[$n]->getWaLogin();
+						$log->debug("Enviando wa para o número: ".$waNumber);
+						$chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
+					}
+					
+						
+				} catch (Exception $e) {
+					$log->err("Mensagem wa não enviada, por problema no chip: ".$chip->getLogin()." -> ". $e->getMessage());
+					$waLog->setDataEnvio(new \DateTime("now"));
+					$waLog->setErro($e->getTraceAsString());
+					$waLog->setIndErro($waLog->getIndErro() + 1);
+					$em->persist($waLog);
+					$indProcessada		= 0;
+					continue;
+				}
 			}
 		}
 	}
@@ -298,25 +348,31 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	if ($numEmails > 0) {
 		try {
 
+			$transport->send($mail);
+				
 			$mailLog->setDataEnvio(new \DateTime("now"));
 			$mailLog->setIndErro(0);
 			$em->persist($mailLog);
 			
-			$transport->send($mail);
 			
 		} catch (Exception $e) {
 			$log->err("Erro ao enviar o e-mail:". $e->getTraceAsString());
+			$mailLog->setDataEnvio(new \DateTime("now"));
 			$mailLog->setErro($e->getTraceAsString());
-			$mailLog->setIndErro(1);
+			$mailLog->setIndErro($mailLog->getIndErro() + 1);
 			$em->persist($mailLog);
+			$indProcessada		= 0;
+			continue;
 		}
 	}
 	
 	#################################################################################
 	## Alterar a flag de processada
 	#################################################################################
-	$notificacoes[$i]->setIndProcessada(1);
-	$em->persist($notificacoes[$i]);
+	if ($indProcessada == 1) {
+		$notificacoes[$i]->setIndProcessada(1);
+		$em->persist($notificacoes[$i]);
+	}
 	
 	
 }

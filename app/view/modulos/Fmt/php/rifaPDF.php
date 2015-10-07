@@ -101,7 +101,7 @@ for ($i = 0; $i < $numNumeros; $i++) {
 		$table .= '<tr style="width: 1300px;">';
 	}
 	
-	$table .= '<td style="height: 100px; border: 1px dotted #000000; width: 650px;">';
+	$table .= '<td style="border: 1px dotted #000000; width: 840px;">';
 	$table .= '<table style="width: 100%;"><tr>';
 
 	
@@ -109,19 +109,19 @@ for ($i = 0; $i < $numNumeros; $i++) {
 	$tab1	.= '<tr><td><img src="'.IMG_URL.'/logo_sf_rifa.png" border=0 style="border: 0;"></td><td style="text-align: right; font-family: Trebuchet MS,Verdana; font-size:18px; font-weight: bold; color: #000000">#&nbsp;'.$numero.'</td></tr>';
 	$tab1	.= '<tr><td colspan="2"><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Nome:&nbsp;___________________________________ </p></td></tr>';
 	$tab1	.= '<tr><td colspan="2"><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Fone:&nbsp;____________________________________ </p></td></tr>';
-	$tab1	.= '<tr><td colspan="2"><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Formando: '.$formando.' </p></td></tr>';
+	$tab1	.= '<tr><td colspan="2"><p style="font-family: Trebuchet MS,Verdana; font-size:12px; font-weight: normal; color: #000000">Formando: '.$formando.' </p></td></tr>';
 	$tab1	.= "</table>";	
 	
 	$tab2	= '<table style="width: 100%;">';
 	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:18px; font-weight: bold; color: #000000">'.$turma.' </p></td><td style="text-align: right; font-family: Trebuchet MS,Verdana; font-size:18px; font-weight: bold; color: #000000">Número:&nbsp;'.$numero.'</td></tr>';
-	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: bold; color: #000000">'.$nome.'</p></td></tr>';
-	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Local: '.$local.'</p></td><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Data do Sorteio: '.$data.'</p></td></tr>';
-	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Prêmio: '.$premio.'</p></td><td><p style="font-family: Trebuchet MS,Verdana; font-size:14px; font-weight: normal; color: #000000">Valor: '.\Zage\app\Util::to_money($valor).' </p></td></tr>';
+	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:12px; font-weight: bold; color: #000000">'.$nome.'</p></td></tr>';
+	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:12px; font-weight: normal; color: #000000">Local: '.$local.'</p></td><td><p style="font-family: Trebuchet MS,Verdana; font-size:12px; font-weight: normal; color: #000000">Data do Sorteio: '.$data.'</p></td></tr>';
+	$tab2	.= '<tr><td><p style="font-family: Trebuchet MS,Verdana; font-size:12px; font-weight: normal; color: #000000">Prêmio: '.$premio.'</p></td><td><p style="font-family: Trebuchet MS,Verdana; font-size:12px; font-weight: normal; color: #000000">Valor: '.\Zage\app\Util::to_money($valor).' </p></td></tr>';
 	$tab2	.= "</table>";
 	
 	
-	$table .= '<td style="text-align: left; height: 100px; width: 200px; border-right: 1px dotted #000000;">'.$tab1.'</td>';
-	$table .= '<td style="text-align: left; height: 100px; width: 450px;">'.$tab2.'</td>';
+	$table .= '<td style="text-align: left; height: 104px; width: 37%; border-right: 1px dotted #000000; padding-left: 12px;">'.$tab1.'</td>';
+	$table .= '<td style="text-align: left; height: 104px; width: 63%;">'.$tab2.'</td>';
 	
 	
 	$table .= '</tr></table>';
@@ -136,7 +136,17 @@ for ($i = 0; $i < $numNumeros; $i++) {
 }
 $table .= '</table>';
 
-$html	= '<body class="no-skin">';
+$html	= '<html>
+<head>
+<style>
+@page {
+  margin: 32px;
+  margin-header: 2px;
+  margin-footer: 2px;
+}
+</style>
+</head>
+<body class="no-skin">';
 $htmlTable	= '
 <div class="row">
 	<div class="col-sm-12 widget-container-span">
