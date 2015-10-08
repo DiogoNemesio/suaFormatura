@@ -122,7 +122,7 @@ abstract class Tipo {
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,1).'</button>'.\Zage\App\ZWS::NL;
 		
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,1).'<div class="navbar-header pull-left" >'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<a class="navbar-brand" target="_blank" href="#"></a>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<a class="navbar-brand" target="_blank" href="#"><img src="'.IMG_URL.'/logo_suaformatura_branca.png" /></a>'.\Zage\App\ZWS::NL;
 		$this->html .= str_repeat(\Zage\App\ZWS::TAB,1).'</div>'.\Zage\App\ZWS::NL;
 	
 	}
