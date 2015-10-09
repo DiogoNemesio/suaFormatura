@@ -10,6 +10,7 @@
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codContaID" name="codConta" value="%COD_CONTA%">
+				<input type="hidden" id="codTipoValPorcID" name="codTipoJurMor">
 				<input type='hidden' id='valID'>
 				<div class="tabbable">
 					<ul class="nav nav-tabs padding-16">
@@ -25,10 +26,16 @@
 								Configurações Boleto
 							</a>
 						</li>
+						<li id='liContaJurosMoraID'>
+							<a id='aContaJurosMoraID' data-toggle="tab"  href="#conta-juros-mora">
+								<i class="blue fa fa-cog bigger-125"></i>
+								Juros e Mora
+							</a>
+						</li>
 					</ul>
 					<div class="tab-content profile-edit-tab-content">
 						<div id="conta-principal" class="tab-pane in active">				
-							<h4 class="header blue bolder smaller">Informações Gerais</h4>
+							<h5 class="header blue bolder smaller">Informações Gerais</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-6">
@@ -117,7 +124,7 @@
 						    </div>
 						</div>
 						<div id="conta-boleto" class="tab-pane in">
-							<h4 class="header blue bolder smaller">Informações de Boleto</h4>
+							<h5 class="header blue bolder smaller">Informações de Boleto</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-6">
@@ -141,52 +148,71 @@
 								    	<div class="col-sm-1 pull-left" id="divHelpInstrucaoID"></div>
 						    		</div>
 						    	</div>
-						    	
 						    </div>
-						    <div class="row">
-						    	<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divValorJurosID">
-								    	<label class="col-sm-3 control-label" for="valorJurosID">Valor Juros</label>
-											<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor Fixo de Júros"></i></span>
-						   					<input class="form-control" type="text" name="valorJuros" id="valorJurosID" value="%VALOR_JUROS%" placeholder="Valor do Juros" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
-						    			</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpValorJurosID"></div>
-						    		</div>
-						    	</div>
-						    	<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divPctJurosID">
-								    	<label class="col-sm-3 control-label" for="pctJurosID">Perc. Juros</label>
-											<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de Júros em cima do valor da conta"></i></span>
-						   					<input class="form-control" type="text" name="pctJuros" id="pctJurosID" value="%PCT_JUROS%" placeholder="Pct do Juros" maxlength="8" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"/>
-						    			</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpPctJurosID"></div>
-						    		</div>
-						    	</div>
-						    </div>
-						    <div class="row">
-						    	<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divValorMoraID">
-								    	<label class="col-sm-3 control-label" for="valorMoraID">Valor Mora</label>
-											<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor Fixo de Mora"></i></span>
-						   					<input class="form-control" type="text" name="valorMora" id="valorMoraID" value="%VALOR_MORA%" placeholder="Valor da Mora" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
-						    			</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpValorMoraID"></div>
-						    		</div>
-						    	</div>
-						    	<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divPctMoraID">
-								    	<label class="col-sm-3 control-label" for="pctMoraID">Perc. Mora</label>
-											<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de Mora em cima do valor da conta"></i></span>
-						   					<input class="form-control" type="text" name="pctMora" id="pctMoraID" value="%PCT_MORA%" maxlength="8" placeholder="Pct da Mora" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"/>
-						    			</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpPctMoraD"></div>
-						    		</div>
-						    	</div>
-						    </div>
+						</div>
+						<div id="conta-juros-mora" class="tab-pane in">
+							<h5 class="header blue bolder smaller">Informações de Juros e Mora</h5>
+							<div class="vspace-xs"></div>
+							
+							<div class="step-pane active" data-step="1">
+								<div class="row ">
+									<div class="form-group col-sm-12" id="divRecorrenciaID">
+										<label class="col-sm-3 control-label">Recorrência</label>
+										<div class="btn-group btn-corner col-sm-8 pull-left">
+											<span id='codTipoValID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaValor();">Valor</span>
+											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor ou a porcentagem de juros e mora"></i></span>
+											<span id='codTipoPorcID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaPorc();">Porcentagem</span>
+										</div>
+										<div class="help-block col-sm-1 inline" id="divHelpRecorrenciaID"></div>
+									</div>
+								</div>
+								<div class="row" id="divPorcID">
+							    	<div class="col-sm-6">
+										<div class="form-group col-sm-12" id="divPctJurosID">
+									    	<label class="col-sm-3 control-label" for="pctJurosID">Perc. Juros</label>
+												<div class="input-group col-sm-8 pull-left">
+												<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de Júros em cima do valor da conta"></i></span>
+							   					<input class="form-control" type="text" name="pctJuros" id="pctJurosID" value="%PCT_JUROS%" placeholder="Pct do Juros" maxlength="8" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"/>
+							    			</div>
+									    	<div class="col-sm-1 pull-left" id="divHelpPctJurosID"></div>
+							    		</div>
+							    	</div>
+							    	<div class="col-sm-6">
+										<div class="form-group col-sm-12" id="divPctMoraID">
+									    	<label class="col-sm-3 control-label" for="pctMoraID">Perc. Mora</label>
+												<div class="input-group col-sm-8 pull-left">
+												<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de Mora em cima do valor da conta"></i></span>
+							   					<input class="form-control" type="text" name="pctMora" id="pctMoraID" value="%PCT_MORA%" maxlength="8" placeholder="Pct da Mora" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"/>
+							    			</div>
+									    	<div class="col-sm-1 pull-left" id="divHelpPctMoraD"></div>
+							    		</div>
+							    	</div>
+							    </div>
+							    
+							    <div class="row" id="divValID">
+								    <div class="col-sm-6">
+										<div class="form-group col-sm-12" id="divValorJurosID">
+									    	<label class="col-sm-3 control-label" for="valorJurosID">Valor Juros</label>
+												<div class="input-group col-sm-8 pull-left">
+												<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor Fixo de Júros"></i></span>
+							   					<input class="form-control" type="text" name="valorJuros" id="valorJurosID" value="%VALOR_JUROS%" placeholder="Valor do Juros" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+							    			</div>
+									    	<div class="col-sm-1 pull-left" id="divHelpValorJurosID"></div>
+							    		</div>
+							    	</div>
+							    	<div class="col-sm-6">
+										<div class="form-group col-sm-12" id="divValorMoraID">
+									    	<label class="col-sm-3 control-label" for="valorMoraID">Valor Mora</label>
+												<div class="input-group col-sm-8 pull-left">
+												<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor Fixo de Mora"></i></span>
+							   					<input class="form-control" type="text" name="valorMora" id="valorMoraID" value="%VALOR_MORA%" placeholder="Valor da Mora" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+							    			</div>
+									    	<div class="col-sm-1 pull-left" id="divHelpValorMoraID"></div>
+							    		</div>
+							    	</div>
+							    </div>
+							</div>
+						    
 						</div>
 					</div>
 				</div>
@@ -455,8 +481,43 @@ function atualizaCarteirasContaAlt() {
 			}
 	    },
 	});
+}
 
+selecionaContaValor();
+selecionaContaPorc();
+mostraDivValPorc();
+
+function mostraDivValPorc() {
+	var vTipoJurMor 		= $('#codTipoValPorcID').val();
 	
+	if (vTipoJurMor 	== 'V') {
+		$('#divPorcID').hide();
+		$('#divValID').show();
+	}else if (vTipoJurMor 	== 'P') {
+		$('#divValID').hide();
+		$('#divPorcID').show();
+	}else{
+		$('#divValID').hide();
+		$('#divPorcID').hide();
+	}
+}
+
+function selecionaContaValor() {
+	$('#codTipoValID').addClass("btn-primary");
+	$('#codTipoValID').removeClass("btn-light");
+	$('#codTipoPorcID').addClass("btn-light");
+	$('#codTipoPorcID').removeClass("btn-primary");
+	$('#codTipoValPorcID').val("V");
+	mostraDivValPorc();
+}
+
+function selecionaContaPorc() {
+	$('#codTipoPorcID').addClass("btn-primary");
+	$('#codTipoPorcID').removeClass("btn-light");
+	$('#codTipoValID').addClass("btn-light");
+	$('#codTipoValID').removeClass("btn-primary");
+	$('#codTipoValPorcID').val("P");
+	mostraDivValPorc();
 }
 
 </script>
