@@ -155,20 +155,19 @@
 							<h5 class="header blue bolder smaller">Informações de Juros e Mora</h5>
 							<div class="vspace-xs"></div>
 							
-							<div class="step-pane active" data-step="1">
-								<div class="row ">
+							<div class="row">
+								<div class="col-sm-6">
 									<div class="form-group col-sm-12" id="divJurosTipoID">
-										<label class="col-sm-3 control-label">Juros</label>
-										<div class="btn-group btn-corner col-sm-8 pull-left">
+										<label class="col-sm-2 control-label">Juros</label>
+										<div class="btn-group btn-corner col-sm-10 pull-left">
 											<span id='codTipoJurValID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaJurosValor();">Valor</span>
 											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor ou a porcentagem de juros"></i></span>
 											<span id='codTipoJurPorcID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaJurosPorc();">Porcentagem</span>
 										</div>
 										<div class="help-block col-sm-1 inline" id="divHelpJurosID"></div>
 									</div>
-								</div>
-								<div class="row" id="divJurosPorcID">
-							    	<div class="col-sm-6">
+								
+									<div id="divJurosPorcID">
 										<div class="form-group col-sm-12" id="divPctJurosID">
 									    	<label class="col-sm-3 control-label" for="pctJurosID">Perc. Juros</label>
 												<div class="input-group col-sm-8 pull-left">
@@ -176,11 +175,9 @@
 							   					<input class="form-control" type="text" name="pctJuros" id="pctJurosID" value="%PCT_JUROS%" placeholder="Pct do Juros" maxlength="8" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"/>
 							    			</div>
 									    	<div class="col-sm-1 pull-left" id="divHelpPctJurosID"></div>
-							    		</div>
-							    	</div>
-							    </div>
-							    <div class="row" id="divJurosValID">
-								    <div class="col-sm-6">
+							    		</div>								    
+								    </div>
+								    <div id="divJurosValID">
 										<div class="form-group col-sm-12" id="divValorJurosID">
 									    	<label class="col-sm-3 control-label" for="valorJurosID">Valor Juros</label>
 												<div class="input-group col-sm-8 pull-left">
@@ -189,25 +186,24 @@
 							    			</div>
 									    	<div class="col-sm-1 pull-left" id="divHelpValorJurosID"></div>
 							    		</div>
-							    	</div>
-							    </div>
-							</div>
+								    </div>
+								</div>
+							
 							
 							<!-- Mora -->
-							<div class="step-pane active" data-step="2">
-								<div class="row ">
+							
+								<div class="col-sm-6">
 									<div class="form-group col-sm-12" id="divMoraTipoID">
-										<label class="col-sm-3 control-label">Mora</label>
-										<div class="btn-group btn-corner col-sm-8 pull-left">
+										<label class="col-sm-2 control-label">Mora</label>
+										<div class="btn-group btn-corner col-sm-10 pull-left">
 											<span id='codTipoMorValID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaMoraValor();">Valor</span>
 											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor ou a porcentagem de juros"></i></span>
 											<span id='codTipoMorPorcID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaMoraPorc();">Porcentagem</span>
 										</div>
 										<div class="help-block col-sm-1 inline" id="divHelpMoraID"></div>
 									</div>
-								</div>
-								<div class="row" id="divMoraPorcID">
-							    	<div class="col-sm-6">
+								
+									<div id="divMoraPorcID">
 										<div class="form-group col-sm-12" id="divPctMoraID">
 									    	<label class="col-sm-3 control-label" for="pctMoraID">Perc. Mora</label>
 												<div class="input-group col-sm-8 pull-left">
@@ -216,10 +212,9 @@
 							    			</div>
 									    	<div class="col-sm-1 pull-left" id="divHelpPctMoraD"></div>
 							    		</div>
-							    	</div>
-							    </div>
-								 <div class="row" id="divMoraValID">
-							    	<div class="col-sm-6">
+								    	
+								    </div>
+									 <div id="divMoraValID">
 										<div class="form-group col-sm-12" id="divValorMoraID">
 									    	<label class="col-sm-3 control-label" for="valorMoraID">Valor Mora</label>
 												<div class="input-group col-sm-8 pull-left">
@@ -228,9 +223,9 @@
 							    			</div>
 									    	<div class="col-sm-1 pull-left" id="divHelpValorMoraID"></div>
 							    		</div>
-							    	</div>
-							    </div>
-						    </div>
+								    </div>
+								</div>
+						   </div>
 						    
 						</div>
 					</div>
