@@ -21,16 +21,16 @@
 								Informações Gerais
 							</a>
 						</li>
+						<li id='liContaJurosMoraID'>
+							<a id='aContaJurosMoraID' data-toggle="tab"  href="#conta-juros-mora">
+								<i class="blue fa fa-line-chart bigger-125"></i>
+								Juros e Mora
+							</a>
+						</li>
 						<li id='liContaBoletoID'>
 							<a id='aContaBoletoID' data-toggle="tab"  href="#conta-boleto">
 								<i class="blue fa fa-cog bigger-125"></i>
 								Configurações Boleto
-							</a>
-						</li>
-						<li id='liContaJurosMoraID'>
-							<a id='aContaJurosMoraID' data-toggle="tab"  href="#conta-juros-mora">
-								<i class="blue fa fa-cog bigger-125"></i>
-								Juros e Mora
 							</a>
 						</li>
 					</ul>
@@ -91,16 +91,17 @@
 								    	<div class="col-sm-1 pull-left" id="divHelpCodAgenciaID"></div>
 									</div>
 								</div>
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divCcorrenteID">
-								    	<label class="col-sm-3 control-label" for="ccorrenteID">Conta Corrente</label>
-											<div class="input-group col-sm-8 pull-left">
-						    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número da Conta Corrente"></i></span>
-							    			<input class="form-control" type="text" name="ccorrente" id="ccorrenteID" value="%CCORRENTE%" maxlength="20" autocomplete="off"/>
-								    	</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpCcorrenteID"></div>
-								    </div>
-						    	</div>
+						    	<div class="col-sm-6">
+							    	<!--<div class="form-inline col-sm-10" id="divCcorrenteID">-->
+							    	<div class="form-group col-sm-12" id="divCcorrenteID">
+							    		<label class="col-sm-3 control-label" for="codAgenciaID">Conta Corrente</label>
+							    		<div class="input-group col-sm-4 pull-left">
+							    			<input class="input-small" type="text" name="ccorrente" id="ccorrenteID" placeholder="Cc." value="%CCORRENTE%" maxlength="20" autocomplete="off"/>
+											- <input class="input-small" type="text" name="ccorrenteDV" id="ccorrenteDVID" value="%CCORRENTEDV%" maxlength="1" autocomplete="off"/>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCcorrenteID"></div>
+									</div>
+								</div>
 						    </div>
 						    <div class="row">
 						    	<div class="col-sm-6">
@@ -110,16 +111,6 @@
 								    		<input name="ativa" id="ativaID" class="ace ace-switch ace-switch-6" type="checkbox" %ATIVA% />
 											<span class="lbl"></span>
 										</label>
-								    </div>
-						    	</div>
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divCcorrenteDVID">
-								    	<label class="col-sm-3 control-label" for="ccorrenteID">Dígito da Conta</label>
-											<div class="input-group col-sm-8 pull-left">
-						    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Dígito verificador da Conta Corrente"></i></span>
-							    			<input class="form-control" type="text" name="ccorrenteDV" id="ccorrenteDVID" value="%CCORRENTEDV%" maxlength="1" autocomplete="off"/>
-								    	</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpCcorrenteDVID"></div>
 								    </div>
 						    	</div>
 						    </div>
@@ -158,8 +149,8 @@
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group col-sm-12" id="divJurosTipoID">
-										<label class="col-sm-2 control-label">Juros</label>
-										<div class="btn-group btn-corner col-sm-10 pull-left">
+										<label class="col-sm-3 control-label">Juros</label>
+										<div class="btn-group btn-corner col-sm-9 pull-left">
 											<span id='codTipoJurValID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaJurosValor();">Valor</span>
 											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor ou a porcentagem de juros"></i></span>
 											<span id='codTipoJurPorcID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaJurosPorc();">Porcentagem</span>
@@ -188,14 +179,10 @@
 							    		</div>
 								    </div>
 								</div>
-							
-							
-							<!-- Mora -->
-							
 								<div class="col-sm-6">
 									<div class="form-group col-sm-12" id="divMoraTipoID">
-										<label class="col-sm-2 control-label">Mora</label>
-										<div class="btn-group btn-corner col-sm-10 pull-left">
+										<label class="col-sm-3 control-label">Mora</label>
+										<div class="btn-group btn-corner col-sm-9 pull-left">
 											<span id='codTipoMorValID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaMoraValor();">Valor</span>
 											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor ou a porcentagem de juros"></i></span>
 											<span id='codTipoMorPorcID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaMoraPorc();">Porcentagem</span>
@@ -275,14 +262,12 @@ function zgMostraDivsContaAlt() {
 	
 	if (vTipo == "CC") {
 		$('#divContaAgenciaID').removeClass("hidden");
-		$('#divCcorrenteDVID').removeClass("hidden");
 		$('#liContaBoletoID').removeClass("disabled");
 		$('#aContaBoletoID').removeClass("disabled");
 		
 		atualizaCarteirasContaAlt();
 	}else{
 		$('#divContaAgenciaID').addClass("hidden");
-		$('#divCcorrenteDVID').addClass("hidden");
 		$('#liContaBoletoID').addClass("disabled");
 		$('#aContaBoletoID').addClass("disabled");
 	}
@@ -417,6 +402,8 @@ function validaContaAlt() {
 	var vNome			= $('#nomeID').val();
 	var vAgencia		= $('#codAgenciaID').val();
 	var vDataInicial	= $('#dataInicialID').val();
+	var vCC				= $('#ccorrenteID').val();
+	var vCCDV			= $('#ccorrenteDVID').val();
 	var vTipo			= $('#tipoID').val();
 
 	
@@ -441,7 +428,21 @@ function validaContaAlt() {
 		}else if (vAgencia.length > 8){
 			$('#divHelpCodAgenciaID').html(zgCriaSpanErro('Agência deve ter no máximo 8 caracteres !!!'));
 		}
-		return false;
+		vOK		= false;
+	}
+
+	// ContaCorrente
+	if (vTipo == 'CC' && !vCC ) {
+		$('#divCcorrenteID').addClass('has-error');
+		$('#divHelpCcorrenteID').html(zgCriaSpanErro('Conta corrente deve ser preenchido !!!'));
+		vOK		= false;
+	}else if (vTipo == 'CC' && !vCCDV ) {
+		$('#divCcorrenteID').addClass('has-error');
+		$('#divHelpCcorrenteID').html(zgCriaSpanErro('Dígito verificador deve ser preenchido !!!'));
+		vOK		= false;
+	}else {
+		$('#divCcorrenteID').removeClass('has-error');
+		$('#divHelpCcorrenteID').html('&nbsp;');
 	}
 	
 	// DataInicial
