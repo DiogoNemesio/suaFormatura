@@ -10,7 +10,8 @@
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codContaID" name="codConta" value="%COD_CONTA%">
-				<input type="hidden" id="codTipoValPorcID" name="codTipoJurMor">
+				<input type="hidden" id="codTipoJurosID" name="codTipoJuros">
+				<input type="hidden" id="codTipoMoraID" name="codTipoMora">
 				<input type='hidden' id='valID'>
 				<div class="tabbable">
 					<ul class="nav nav-tabs padding-16">
@@ -156,17 +157,17 @@
 							
 							<div class="step-pane active" data-step="1">
 								<div class="row ">
-									<div class="form-group col-sm-12" id="divRecorrenciaID">
-										<label class="col-sm-3 control-label">Recorrência</label>
+									<div class="form-group col-sm-12" id="divJurosTipoID">
+										<label class="col-sm-3 control-label">Juros</label>
 										<div class="btn-group btn-corner col-sm-8 pull-left">
-											<span id='codTipoValID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaValor();">Valor</span>
-											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor ou a porcentagem de juros e mora"></i></span>
-											<span id='codTipoPorcID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaPorc();">Porcentagem</span>
+											<span id='codTipoJurValID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaJurosValor();">Valor</span>
+											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor ou a porcentagem de juros"></i></span>
+											<span id='codTipoJurPorcID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaJurosPorc();">Porcentagem</span>
 										</div>
-										<div class="help-block col-sm-1 inline" id="divHelpRecorrenciaID"></div>
+										<div class="help-block col-sm-1 inline" id="divHelpJurosID"></div>
 									</div>
 								</div>
-								<div class="row" id="divPorcID">
+								<div class="row" id="divJurosPorcID">
 							    	<div class="col-sm-6">
 										<div class="form-group col-sm-12" id="divPctJurosID">
 									    	<label class="col-sm-3 control-label" for="pctJurosID">Perc. Juros</label>
@@ -177,6 +178,35 @@
 									    	<div class="col-sm-1 pull-left" id="divHelpPctJurosID"></div>
 							    		</div>
 							    	</div>
+							    </div>
+							    <div class="row" id="divJurosValID">
+								    <div class="col-sm-6">
+										<div class="form-group col-sm-12" id="divValorJurosID">
+									    	<label class="col-sm-3 control-label" for="valorJurosID">Valor Juros</label>
+												<div class="input-group col-sm-8 pull-left">
+												<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor Fixo de Júros"></i></span>
+							   					<input class="form-control" type="text" name="valorJuros" id="valorJurosID" value="%VALOR_JUROS%" placeholder="Valor do Juros" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+							    			</div>
+									    	<div class="col-sm-1 pull-left" id="divHelpValorJurosID"></div>
+							    		</div>
+							    	</div>
+							    </div>
+							</div>
+							
+							<!-- Mora -->
+							<div class="step-pane active" data-step="2">
+								<div class="row ">
+									<div class="form-group col-sm-12" id="divMoraTipoID">
+										<label class="col-sm-3 control-label">Mora</label>
+										<div class="btn-group btn-corner col-sm-8 pull-left">
+											<span id='codTipoMorValID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaMoraValor();">Valor</span>
+											<span tabindex="99001" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor ou a porcentagem de juros"></i></span>
+											<span id='codTipoMorPorcID' style="width: 180px;" class="btn btn-sm" onclick="selecionaContaMoraPorc();">Porcentagem</span>
+										</div>
+										<div class="help-block col-sm-1 inline" id="divHelpMoraID"></div>
+									</div>
+								</div>
+								<div class="row" id="divMoraPorcID">
 							    	<div class="col-sm-6">
 										<div class="form-group col-sm-12" id="divPctMoraID">
 									    	<label class="col-sm-3 control-label" for="pctMoraID">Perc. Mora</label>
@@ -188,18 +218,7 @@
 							    		</div>
 							    	</div>
 							    </div>
-							    
-							    <div class="row" id="divValID">
-								    <div class="col-sm-6">
-										<div class="form-group col-sm-12" id="divValorJurosID">
-									    	<label class="col-sm-3 control-label" for="valorJurosID">Valor Juros</label>
-												<div class="input-group col-sm-8 pull-left">
-												<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor Fixo de Júros"></i></span>
-							   					<input class="form-control" type="text" name="valorJuros" id="valorJurosID" value="%VALOR_JUROS%" placeholder="Valor do Juros" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
-							    			</div>
-									    	<div class="col-sm-1 pull-left" id="divHelpValorJurosID"></div>
-							    		</div>
-							    	</div>
+								 <div class="row" id="divMoraValID">
 							    	<div class="col-sm-6">
 										<div class="form-group col-sm-12" id="divValorMoraID">
 									    	<label class="col-sm-3 control-label" for="valorMoraID">Valor Mora</label>
@@ -211,7 +230,7 @@
 							    		</div>
 							    	</div>
 							    </div>
-							</div>
+						    </div>
 						    
 						</div>
 					</div>
@@ -482,43 +501,80 @@ function atualizaCarteirasContaAlt() {
 	    },
 	});
 }
+/** Juros **/
+selecionaContaJurosValor();
+selecionaContaJurosPorc();
+mostraDivJurosValPorc();
 
-selecionaContaValor();
-selecionaContaPorc();
-mostraDivValPorc();
-
-function mostraDivValPorc() {
-	var vTipoJurMor 		= $('#codTipoValPorcID').val();
+function mostraDivJurosValPorc() {
+	var vTipoJur 		= $('#codTipoJurosID').val();
 	
-	if (vTipoJurMor 	== 'V') {
-		$('#divPorcID').hide();
-		$('#divValID').show();
-	}else if (vTipoJurMor 	== 'P') {
-		$('#divValID').hide();
-		$('#divPorcID').show();
+	if (vTipoJur 	== 'V') {
+		$('#divJurosPorcID').hide();
+		$('#divJurosValID').show();
+	}else if (vTipoJur 	== 'P') {
+		$('#divJurosValID').hide();
+		$('#divJurosPorcID').show();
 	}else{
-		$('#divValID').hide();
-		$('#divPorcID').hide();
+		$('#divJurosPorcID').hide();
+		$('#divJurosValID').hide();
 	}
 }
 
-function selecionaContaValor() {
-	$('#codTipoValID').addClass("btn-primary");
-	$('#codTipoValID').removeClass("btn-light");
-	$('#codTipoPorcID').addClass("btn-light");
-	$('#codTipoPorcID').removeClass("btn-primary");
-	$('#codTipoValPorcID').val("V");
-	mostraDivValPorc();
+function selecionaContaJurosValor() {
+	$('#codTipoJurValID').addClass("btn-primary");
+	$('#codTipoJurValID').removeClass("btn-light");
+	$('#codTipoJurPorcID').addClass("btn-light");
+	$('#codTipoJurPorcID').removeClass("btn-primary");
+	$('#codTipoJurosID').val("V");
+	mostraDivJurosValPorc();
 }
 
-function selecionaContaPorc() {
-	$('#codTipoPorcID').addClass("btn-primary");
-	$('#codTipoPorcID').removeClass("btn-light");
-	$('#codTipoValID').addClass("btn-light");
-	$('#codTipoValID').removeClass("btn-primary");
-	$('#codTipoValPorcID').val("P");
-	mostraDivValPorc();
+function selecionaContaJurosPorc() {
+	$('#codTipoJurPorcID').addClass("btn-primary");
+	$('#codTipoJurPorcID').removeClass("btn-light");
+	$('#codTipoJurValID').addClass("btn-light");
+	$('#codTipoJurValID').removeClass("btn-primary");
+	$('#codTipoJurosID').val("P");
+	mostraDivJurosValPorc();
 }
 
+/** Mora **/
+selecionaContaMoraValor();
+selecionaContaMoraPorc();
+mostraDivMoraValPorc();
+
+function mostraDivMoraValPorc() {
+	var vTipoMor 		= $('#codTipoMoraID').val();
+	
+	if (vTipoMor 	== 'V') {
+		$('#divMoraPorcID').hide();
+		$('#divMoraValID').show();
+	}else if (vTipoMor 	== 'P') {
+		$('#divMoraValID').hide();
+		$('#divMoraPorcID').show();
+	}else{
+		$('#divMoraPorcID').hide();
+		$('#divMoraValID').hide();
+	}
+}
+
+function selecionaContaMoraValor() {
+	$('#codTipoMorValID').addClass("btn-primary");
+	$('#codTipoMorValID').removeClass("btn-light");
+	$('#codTipoMorPorcID').addClass("btn-light");
+	$('#codTipoMorPorcID').removeClass("btn-primary");
+	$('#codTipoMoraID').val("V");
+	mostraDivMoraValPorc();
+}
+
+function selecionaContaMoraPorc() {
+	$('#codTipoMorPorcID').addClass("btn-primary");
+	$('#codTipoMorPorcID').removeClass("btn-light");
+	$('#codTipoMorValID').addClass("btn-light");
+	$('#codTipoMorValID').removeClass("btn-primary");
+	$('#codTipoMoraID').val("P");
+	mostraDivMoraValPorc();
+}
 </script>
 
