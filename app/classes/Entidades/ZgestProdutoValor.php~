@@ -36,6 +36,13 @@ class ZgestProdutoValor
     private $dataBase;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="DESCONTO_PORCENTO_MAX", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $descontoPorcentoMax;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
@@ -107,6 +114,29 @@ class ZgestProdutoValor
     public function getDataBase()
     {
         return $this->dataBase;
+    }
+
+    /**
+     * Set descontoPorcentoMax
+     *
+     * @param float $descontoPorcentoMax
+     * @return ZgestProdutoValor
+     */
+    public function setDescontoPorcentoMax($descontoPorcentoMax)
+    {
+        $this->descontoPorcentoMax = $descontoPorcentoMax;
+
+        return $this;
+    }
+
+    /**
+     * Get descontoPorcentoMax
+     *
+     * @return float 
+     */
+    public function getDescontoPorcentoMax()
+    {
+        return $this->descontoPorcentoMax;
     }
 
     /**

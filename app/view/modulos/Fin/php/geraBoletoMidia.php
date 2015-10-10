@@ -260,9 +260,9 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	}
 	
 	$instrucao1			= "Após o dia ".$vencimento." cobrar ".$textoMora." de Mora e ".$textoJuros." de júros ao dia";
-	$instrucao2			= "Não receber após o vencimento.";
-	$instrucao3			= $codContaRec->getInstrucao();
-	$instrucao4			= $instrucao;
+	$instrucao2			= $codContaRec->getInstrucao();
+	$instrucao3			= $instrucao;
+	$instrucao4			= null;
 	
 	
 	#################################################################################

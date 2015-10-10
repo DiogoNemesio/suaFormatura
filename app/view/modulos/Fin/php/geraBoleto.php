@@ -147,13 +147,11 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	## Calcular o valor e o desconto
 	#################################################################################
 	if (!$contaRec->getValorJaRecebido($contas[$i]->getCodigo())) {
-		$valor				= \Zage\App\Util::to_float($contas[$i]->getValor());
+		$valor				= \Zage\App\Util::to_float($contas[$i]->getValor()) + \Zage\App\Util::to_float($contas[$i]->getValorOutros());
 		$valorDesconto		= \Zage\App\Util::to_float($contas[$i]->getValorDesconto());
-		$valorOutros		= \Zage\App\Util::to_float($contas[$i]->getValorOutros());
 	}else{
 		$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($contas[$i]->getCodigo()));
 		$valorDesconto		= 0;
-		$valorOutros		= 0;
 	}
 	
 	#################################################################################
@@ -193,6 +191,8 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	$valorJuros			= \Zage\App\Util::to_float($valorJuros);
 	$valorMora			= \Zage\App\Util::to_float($valorMora);
 	
+	$valorTotal			= $valor + $valorJuros + $valorMora - $valorDesconto;
+	
 	#################################################################################
 	## Selecionar a parcela que foi clicada
 	#################################################################################
@@ -210,11 +210,11 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 		<td class="col-sm-1 center">'.$vencimento.'</td>
 		<td class="col-sm-1 center"><input class="form-control datepicker" id="vencimentoID" type="text" name="vencimento['.$contas[$i]->getCodigo().']" maxlength="10" value="'.$vencBol.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
 		<td class="col-sm-1 center">'.$htmlAtraso.'</td>
-		<td class="col-sm-2 center"><input type="text" name="valor['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.$valor.'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorJuros.'"	 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorMora['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorMora.'" 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.$valorDesconto.'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorOutros['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.$valorOutros.'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-2 center"><input type="text" name="valor['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valor).'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorTotal['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorTotal).'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorJuros).'"	 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorMora['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorMora).'" 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorDesconto).'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
 	</tr>
 	';	
 

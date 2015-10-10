@@ -69,10 +69,10 @@
 		<dominioSmtp>zage.com.br</dominioSmtp>
 
 		<!-- Nome do Remetente -->
-		<nomeRemetente>Zage Mail</nomeRemetente>
+		<nomeRemetente>Suaformatura.com</nomeRemetente>
 
 		<!-- Email do Remetente -->
-		<remetente>correio@zagis.com.br</remetente>
+		<remetente>contato@zage.com.br</remetente>
 	
 		<!-- Nome do Admin do Sistema -->
 		<nomeAdmin>Daniel Cassela</nomeAdmin>

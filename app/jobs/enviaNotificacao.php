@@ -134,7 +134,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 		#################################################################################
 		$body->setParts($bodyArray);
 		$mail->setBody($body);
-		$mail->setSubject("<ZageNotificação> ".$assunto);
+		$mail->setSubject("<SF> ".$assunto);
 		
 		#################################################################################
 		## Controlar a quantidade de emails a enviar
@@ -280,8 +280,8 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 				## Salvar as informações de log
 				#################################################################################
 				$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "W");
-				$mailLog->setCodFormaEnvio($oFormaEnvio);
-				$mailLog->setCodNotificacao($notificacoes[$i]);
+				$waLog->setCodFormaEnvio($oFormaEnvio);
+				$waLog->setCodNotificacao($notificacoes[$i]);
 				
 					
 				#################################################################################
@@ -327,6 +327,7 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 						$chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
 					}
 					
+					$em->persist($waLog);
 						
 				} catch (Exception $e) {
 					$log->err("Mensagem wa não enviada, por problema no chip: ".$chip->getLogin()." -> ". $e->getMessage());
