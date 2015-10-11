@@ -56,12 +56,37 @@ if (!empty($codConta)) {
 	$ccorrenteDV	= $info->getCcorrenteDV();
 	$ativa			= ($info->getIndAtiva()	== 1) ? "checked" : null;
 	$codCarteira	= ($info->getcodCarteira() != null) ? $info->getcodCarteira()->getCodigo() : null;
-	$valorJuros		= \Zage\App\Util::toPHPNumber($info->getValorJuros());
-	$valorMora		= \Zage\App\Util::toPHPNumber($info->getValorMora());
-	$pctJuros		= \Zage\App\Util::toPHPNumber($info->getPctJuros());
-	$pctMora		= \Zage\App\Util::toPHPNumber($info->getPctMora());
+	$valorJuros		= ($info->getValorJuros() > 0) ? \Zage\App\Util::toPHPNumber($info->getValorJuros()) : null;
+	$valorMora		= ($info->getValorMora() > 0) ? \Zage\App\Util::toPHPNumber($info->getValorMora()) : null;
+	$pctJuros		= ($info->getPctJuros() > 0) ? \Zage\App\Util::toPHPNumber($info->getPctJuros()) : null;
+	$pctMora		= ($info->getPctMora() > 0) ? \Zage\App\Util::toPHPNumber($info->getPctMora()) : null;
 	$instrucao		= $info->getInstrucao();
 	
+	// Botão de seleção de tipo do juros
+	if ($valorJuros > 0){
+		$codTipoJuros = 'V';
+	}elseif ($pctJuros > 0){
+		$codTipoJuros = 'P';
+	}else{
+		$codTipoJuros = 'V';
+	}
+	
+	// Botão de seleção de tipo de mora
+	if ($valorMora > 0){
+		$codTipoMora = 'V';
+	}elseif ($pctMora > 0){
+		$codTipoMora = 'P';
+	}else{
+		$codTipoMora = 'V';
+	}
+	
+	// Saldo Inicial
+	if ($saldoInicial > 0){
+		$saldoInicial = \Zage\App\Util::formataDinheiro($saldoInicial);
+	}else{
+		$saldoInicial = null;
+	}
+
 }else{
 	$codTipo		= null;
 	$nome			= null;
@@ -138,6 +163,8 @@ $tpl->set('CCORRENTEDV'			,$ccorrenteDV);
 $tpl->set('COD_CARTEIRA'		,$codCarteira);
 $tpl->set('VALOR_JUROS'			,$valorJuros);
 $tpl->set('VALOR_MORA'			,$valorMora);
+$tpl->set('COD_TIPO_JUROS'		,$codTipoJuros);
+$tpl->set('COD_TIPO_MORA'		,$codTipoMora);
 $tpl->set('PCT_JUROS'			,$pctJuros);
 $tpl->set('PCT_MORA'			,$pctMora);
 $tpl->set('INSTRUCAO'			,$instrucao);

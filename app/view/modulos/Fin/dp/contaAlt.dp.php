@@ -22,6 +22,9 @@ if (isset($_POST['ccorrenteDV'])) 		$ccorrenteDV		= \Zage\App\Util::antiInjectio
 if (isset($_POST['ativa']))	 			$ativa				= \Zage\App\Util::antiInjection($_POST['ativa']);
 
 if (isset($_POST['codCarteira'])) 			$codCarteira			= \Zage\App\Util::antiInjection($_POST['codCarteira']);
+
+if (isset($_POST['codTipoMora'])) 		$codTipoMora		= \Zage\App\Util::antiInjection($_POST['codTipoMora']);
+if (isset($_POST['codTipoJuros'])) 		$codTipoJuros		= \Zage\App\Util::antiInjection($_POST['codTipoJuros']);
 if (isset($_POST['valorJuros'])) 		$valorJuros			= \Zage\App\Util::antiInjection($_POST['valorJuros']);
 if (isset($_POST['valorMora'])) 		$valorMora			= \Zage\App\Util::antiInjection($_POST['valorMora']);
 if (isset($_POST['pctJuros'])) 			$pctJuros			= \Zage\App\Util::antiInjection($_POST['pctJuros']);
@@ -36,7 +39,7 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-/** Nome **/
+/** NOME **/
 if (!isset($nome) || (empty($nome))) {
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo NOME é obrigatório");
 	$err	= 1;
@@ -47,12 +50,6 @@ if ((!empty($nome)) && (strlen($nome) > 60)) {
 	$err	= 1;
 }
 
-/** Agência **/
-if ( ($codTipo == "CC") && ( !isset($codAgencia) || empty($codAgencia) )   ) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo AGÊNCIA é obrigatório");
-	$err	= 1;
-}
-
 $oNome	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'nome' => $nome ));
 
 if (($oNome != null) && ($oNome->getCodigo() != $codConta)){
@@ -60,34 +57,55 @@ if (($oNome != null) && ($oNome->getCodigo() != $codConta)){
 	$err 	= 1;
 }
 
-if (!$saldoInicial)	$saldoInicial	= 0;
-if (!$valorJuros)	$valorJuros		= 0;
-if (!$valorMora)	$valorMora		= 0;
-
-/** Ajustando os valores para o formato do banco **/
-$saldo		= \Zage\App\Util::toMysqlNumber($saldoInicial);
-$valorJuros	= \Zage\App\Util::toMysqlNumber($valorJuros);
-$valorMora	= \Zage\App\Util::toMysqlNumber($valorMora);
-
-if ($pctJuros)	{
-	$pctJuros		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctJuros));
-}else{
-	$pctJuros		= 0;
+/** AGÊNCIA **/
+if ( ($codTipo == "CC") && ( !isset($codAgencia) || empty($codAgencia) )   ) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo AGÊNCIA é obrigatório");
+	$err	= 1;
 }
 
-if ($pctMora)	{
-	$pctMora		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctMora));
+/** AJUSTANDO O VALOR DA MORA **/
+if ($codTipoMora == 'V'){
+	if ($valorMora){ 
+		$valorMora	= \Zage\App\Util::toMysqlNumber($valorMora);
+	}else{
+		$valorMora = 0;
+	}
+	$pctMora = 0;
+}elseif ($codTipoMora == 'P'){
+	$valorMora = 0;
+	if ($pctMora)	{
+		$pctMora		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctMora));
+	}else{
+		$pctMora = 0;
+	}
+}
+
+/** AJUSTANDO O VALOR DO JUROS **/
+if ($codTipoJuros == 'V'){
+	if ($valorJuros){
+		$valorJuros		= \Zage\App\Util::toMysqlNumber($valorJuros);
+	}else{
+		$valorJuros = 0;
+	}
+	$pctJuros = 0;
+}elseif ($codTipoJuros == 'P'){
+	$valorJuros = 0;
+	if ($pctJuros)	{
+		$pctJuros		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctJuros));
+	}else{
+		$pctJuros = 0;
+	}
+}
+
+/** SALDO INICIAL **/
+if ($saldoInicial){
+	$saldo		= \Zage\App\Util::toMysqlNumber($saldoInicial);
 }else{
-	$pctMora		= 0;
+	$saldo = 0;
 }
 
 
-if (!$saldo)		$saldo			= 0;
-if (!$valorJuros)	$valorJuros		= 0;
-if (!$valorMora)	$valorMora		= 0;
-
-
-/** Data **/
+/** Data 
 if ( isset($dataInicial) &&  !empty($dataInicial)  ) {
 	
 	$valData	= new \Zage\App\Validador\DataBR();
@@ -100,7 +118,7 @@ if ( isset($dataInicial) &&  !empty($dataInicial)  ) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo DATA INÍCIO é obrigatório");
 	$err	= 1;
 }
-
+**/
 
 if (isset($ativa) && (!empty($ativa))) {
 	$ativa	= 1;

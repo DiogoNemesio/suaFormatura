@@ -64,13 +64,19 @@ if (!empty($codAgencia)) {
 #################################################################################
 ## Url Voltar
 #################################################################################
-$urlVoltar			= ROOT_URL."/Fin/agenciaLis.php?id=".$id;
+$urlVoltar		= ROOT_URL."/Fin/agenciaLis.php?id=".$id;
 
 #################################################################################
 ## Url Novo
 #################################################################################
-$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codAgencia=');
-$urlNovo			= ROOT_URL."/Fin/agenciaAlt.php?id=".$uid;
+$uid 			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codAgencia=');
+$urlNovo		= ROOT_URL."/Fin/agenciaAlt.php?id=".$uid;
+
+#################################################################################
+## Url CONTA CORRENTE
+#################################################################################
+$cid 			= \Zage\App\Util::encodeUrl('id='.$id.'&codConta=');
+$urlCC			= ROOT_URL."/Fin/contaLis.php?id=".$cid;
 
 #################################################################################
 ## Carregando o template html
@@ -84,6 +90,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('URLNOVO'				,$urlNovo);
+$tpl->set('URLCC'				,$urlCC);
 $tpl->set('ID'					,$id);
 $tpl->set('COD_AGENCIA'			,$codAgencia);
 $tpl->set('AGENCIA'				,$agencia);

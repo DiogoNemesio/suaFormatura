@@ -13,58 +13,50 @@
 				<input type="hidden" id="_codBancoID" name="_codBanco">
 				
 				<input type='hidden' id='valID'>
-					<h4 class="header blue bolder smaller">Informações Gerais</h4>
+					<h5 class="header blue bolder smaller">Informações Gerais</h5>
 					<div class="vspace-xs"></div>
 					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divNomeID">
-						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
-									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a agência."></i></span>
-				   					<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Nome da agência" maxlength="60" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />	
-				    			</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
-				    		</div>
-							<div class="form-group col-sm-12" id="divAgenciaID">
-						    	<label class="col-sm-3 control-label" for="agenciaID">Cód. Agência</label>
-									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número da agência."></i></span>
-				   					<input class="form-control" id="agenciaID" type="text" name="agencia" placeholder="Número da agência" maxlength="8" value="%AGENCIA%" required autocomplete="off">	
-				    			</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpAgenciaID"></div>
-				    		</div>
-				    	</div>
-						<div class="col-sm-6">
+					<div class="col-sm-6">
+						<div class="col-sm-12">
 							<div class="form-group col-sm-12" id="divBancoID">
 						    	<label class="col-sm-3 control-label" for="bancoID">Banco</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Digite o codígo ou o nome do banco para iniciar a pesquisa."></i></span>
 					    			<input type="hidden" name="codBanco" id="codBancoID" placeholder="Consulta do Banco" value="%COD_BANCO%" style="width:100%;" class="select2" data-rel="select2Banco">
-					    			
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpBancoID"></div>
 						    </div>
-							<div class="form-group col-sm-12" id="divAgenciaDVID">
-						    	<label class="col-sm-3 control-label" for="agenciaID">Dígito Verificador da Agência</label>
+							<div class="form-group col-sm-12" id="divNomeID">
+						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
 									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Dígito verificador da agência."></i></span>
-				   					<input class="form-control" id="agenciaDVID" type="text" name="agenciaDV" placeholder="Digito Verificador da agência" maxlength="1" value="%AGENCIADV%" required autocomplete="off">	
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a agência."></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Identificação da agência" maxlength="60" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />	
 				    			</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpAgenciaDVID"></div>
+						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 				    		</div>
-				    	</div>						  
-				    </div>
-
-				<div class="clearfix form-actions">
-					<label class="col-sm-4 control-label">&nbsp;</label>
-					<button type="button" class="btn btn-primary" id="btnSubmitID">
-						<i class="fa fa-check bigger-110"></i> Salvar
-					</button>
-					<button type="button" class="btn btn-warning" id="cancel"
-						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
-						<i class="fa fa-undo bigger-110"></i> Voltar
-					</button>
-				</div>
+							<div class="form-group col-sm-12" id="divAgenciaID">
+						    	<label class="col-sm-3 control-label" for="agenciaID">Agência</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número da agência."></i></span>
+				   					<input class="input-small" id="agenciaID" type="text" name="agencia" placeholder="Agência" maxlength="8" value="%AGENCIA%" required zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0" autocomplete="off">
+				   					<span> - </span>
+				   					<input class="input-small" id="agenciaDVID" type="text" name="agenciaDV" placeholder="DV" maxlength="1" value="%AGENCIADV%" required zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0" autocomplete="off">	
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpAgenciaID"></div>
+				    		</div>
+				    	</div>
+				    	</div>									  
+					</div>
+					<div class="clearfix form-actions">
+						<label class="col-sm-4 control-label">&nbsp;</label>
+						<button type="button" class="btn btn-primary" id="btnSubmitID">
+							<i class="fa fa-check bigger-110"></i> Salvar
+						</button>
+						<button type="button" class="btn btn-warning" id="cancel"
+							onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+							<i class="fa fa-undo bigger-110"></i> Voltar
+						</button>
+					</div>
 			</form>
 		</div>
 	</div>
@@ -75,6 +67,11 @@
 
 $('[data-rel=popover]').popover({html:true});
 $('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
 
 $('#codBancoID').select2({
     minimumInputLength: 2,
@@ -191,9 +188,9 @@ function checkNomeAlt() {
 	if (vNome.length == 0 || vNome.length > 60 ) {
 		$('#divNomeID').addClass('has-error');
 		if (vNome.length == 0){
-			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
-		}else if (vNome.length > 30){
-			$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ter no máximo 60 caracteres !!!'));
+			$('#divHelpNomeID').html(zgCriaSpanErro('Infome um nome para idenficar esta agência!'));
+		}else if (vNome.length > 60){
+			$('#divHelpNomeID').html(zgCriaSpanErro('A identificação da agência não deve conter mais de 60 caracteres!'));
 		}
 		return false;
 	}else{	
@@ -217,48 +214,11 @@ function checkNomeAlt() {
 	
 	if ($('#valID').val() == 0) {
 		$('#divNomeID').addClass('has-error');
-		$('#divHelpNomeID').html(zgCriaSpanErro('Nome já existe, escolha outro'));
+		$('#divHelpNomeID').html(zgCriaSpanErro('Esta identificação já é utiliza em outra conta. Por favor informe uma outra!'));
 		return false;
 	}else{
 		$('#divNomeID').removeClass('has-error');
 		$('#divHelpNomeID').html('&nbsp;');
-		return true;
-	}
-}
-
-function checkBancoAlt() {
-	var vCodBanco	= $('#codBancoID').val();
-	$('#valID').val(0);
-	
-	if (vBanco.length == 0) {
-		$('#divBancoID').addClass('has-error');
-		$('#divHelpBancoID').html(zgCriaSpanErro('Banco deve ser preenchido !!!'));
-		return false;
-	}else{	
-		/** Verificar se o Banco está disponível no banco **/
-		jQuery.ajax({
-	   		url: "%ROOT_URL%/Fin/agenciaValidaBanco.dp.php",
-	   		data: {  codBanco: vCodBanco},
-	   		success: function(ret) {
-	   			var vData	= JSON.parse(ret);
-	   	    	if (vData.existe == 0) {
-	   	    		$('#valID').val(1);
-	   	    	}else{
-	   	    		$('#valID').val(0);
-	   	    	}
-	   		},
-	   		method: 'get',
-	   		cache: false,
-	   		async:false
-	   });
-	}
-	if ($('#valID').val() == 0) {
-		$('#divBancoID').addClass('has-error');
-		$('#divHelpBancoID').html(zgCriaSpanErro('Banco inválido, selecione um banco válido'));
-		return false;
-	}else{
-		$('#divBancoID').removeClass('has-error');
-		$('#divHelpBancoID').html('&nbsp;');
 		return true;
 	}
 }
@@ -266,53 +226,53 @@ function checkBancoAlt() {
 function validaAgenciaAlt() {
 	var vNome			= $('#nomeID').val();
 	var vAgencia		= $('#agenciaID').val();
-	var vBanco			= $('#bancoID').val();
+	var vBanco			= $('#codBancoID').val();
 	var vAgenciaDV		= $('#agenciaDVID').val();
 	var vVerReadonly	= $('#agenciaDVID').attr('readonly');
 	var vOK				= true;
 	var vIdent;
-
-	// Nome
-	if (!vNome) {
-		$('#divNomeID').addClass('has-error');
-		$('#divHelpNomeID').html(zgCriaSpanErro('Nome deve ser preenchido !!!'));
-		vOK		= false;
-	}else{
-		$('#divNomeID').removeClass('has-error');
-		$('#divHelpNomeID').html('&nbsp;');
-	}
 	
-	// Agencia
+	// Agência
 	if (vAgencia.length == 0 || vAgencia.length > 8 ) {
 		$('#divAgenciaID').addClass('has-error');
 		if (vAgencia.length == 0){
-			$('#divHelpAgenciaID').html(zgCriaSpanErro('Agência deve ser preenchido !!!'));
+			$('#divHelpAgenciaID').html(zgCriaSpanErro('Informe atentamente o número da agência!'));
 		}else if (vAgencia.length > 8){
-			$('#divHelpAgenciaID').html(zgCriaSpanErro('Agência deve ter no máximo 8 caracteres !!!'));
+			$('#divHelpAgenciaID').html(zgCriaSpanErro('A agência deve ter no máximo 8 caracteres!'));
 		}
 		vOK		= false;
 	}else{
 		$('#divAgenciaID').removeClass('has-error');
 		$('#divHelpAgenciaID').html('&nbsp;');
 	}
-
 	
 	// Dígito Verificador
 	if (!vAgenciaDV && !vVerReadonly) {
-		$('#divAgenciaDVID').addClass('has-error');
-		$('#divHelpAgenciaDVID').html(zgCriaSpanErro('Dígito verificador deve ser preenchido !!!'));
+		$('#divAgenciaID').addClass('has-error');
+		$('#divHelpAgenciaID').html(zgCriaSpanErro('Informe atentamente o dígito verificador da conta bancária.'));
 		vOK		= false;
 	}else{
-		$('#divAgenciaDVID').removeClass('has-error');
-		$('#divHelpAgenciaDVID').html('&nbsp;');
+		$('#divAgenciaID').removeClass('has-error');
+		$('#divHelpAgenciaID').html('&nbsp;');
 	}
 	
-	vNomeCheck	= checkNomeAlt();
+	// Banco
+	if (!vBanco) {
+		$('#divBancoID').addClass('has-error');
+		$('#divHelpBancoID').html(zgCriaSpanErro('Selecione o banco!'));
+		vOK		= false;
+	}else{
+		$('#divBancoID').removeClass('has-error');
+		$('#divHelpBancoID').html('&nbsp;');
+	}
+	
+	// Nome
+	vOK	= checkNomeAlt();
 	
 	if (vOK == true) {
-		return vNomeCheck ;
+		return vOK ;
 	}else{
-		return vOK;
+		return false;
 	}	
 }
 
