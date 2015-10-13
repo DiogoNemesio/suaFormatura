@@ -227,3 +227,13 @@ function validarEmail(email) {
 function zgValidaNumero($str) {
 	return $str - parseFloat($str) >= 0;
 }
+
+function agenciaBancoDigito(codAgencia){
+	if (codAgencia == ('001' || '237') ) {
+		return 1;
+	}else if(codAgencia == '041'){
+		return 2;
+	}else{
+		return 0;
+	}
+}
