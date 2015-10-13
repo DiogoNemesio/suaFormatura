@@ -1,6 +1,12 @@
 <?php
 namespace Zage\App;
 
+use \Zend\Mail;
+use \Zend\Mail\Message;
+use \Zend\Mime\Message as MimeMessage;
+use \Zend\Mime\Part as MimePart;
+Use \Zend\Mime;
+
 /**
  * Implementação de notificações
  * 
@@ -563,6 +569,533 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
+	}
+	
+	/**
+	 * Enviar os e-mails de uma notificação
+	 * @param \Entidades\ZgappNotificacao $notificacao
+	 */
+	public static function _notificaEmail($codNotificacao) {
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$tr,$log,$system;
+		
+		#################################################################################
+		## Resgata a notificação
+		#################################################################################
+		$notificacao		= $em->getRepository('\Entidades\ZgappNotificacao')->findOneBy(array('codigo' => $codNotificacao)); 
+		if (!$notificacao)	{
+			throw new \Exception('Notificação não encontrada');
+		}
+		
+		#################################################################################
+		## Verifica se a notificação tem a flag de enviar e-mail
+		#################################################################################
+		if (!$notificacao->getIndViaEmail())	{
+			throw new \Exception('Notificação não está com a flag de envio de e-mail');
+		}
+		
+		#################################################################################
+		## Resgatar a mensagem da notificação
+		#################################################################################
+		$mensagem		= self::_getMensagem($notificacao);
+		$codTipoDest	= $notificacao->getCodTipoDestinatario()->getCodigo();
+		$assunto		= $notificacao->getAssunto();
+		
+		#################################################################################
+		## Criar os objeto do email ,transporte e validador
+		#################################################################################
+		$mail 			= \Zage\App\Mail::getMail();
+		$transport 		= \Zage\App\Mail::getTransport();
+		$validator 		= new \Zend\Validator\EmailAddress();
+		$htmlMail 		= new MimePart($mensagem);
+		$htmlMail->type = "text/html";
+		$body 			= new MimeMessage();
+		$bodyArray		= array();
+		$bodyArray[]	= $htmlMail;
+		
+		if (!$mail || !$transport) return 0;
+			
+		
+		#################################################################################
+		## Colocar os anexos, caso existam
+		#################################################################################
+		$anexos		= $em->getRepository('\Entidades\ZgappNotificacaoAnexo')->findBy(array('codNotificacao' => $notificacao->getCodigo()));
+		for ($a = 0; $a < sizeof($anexos); $a++) {
+			$attachment 				= new Mime\Part($anexos[$a]->getAnexo());
+			$attachment->type 			= 'application/octet-stream';
+			$attachment->filename 		= $anexos[$a]->getNome();
+			$attachment->disposition 	= Mime\Mime::DISPOSITION_ATTACHMENT;
+			$attachment->encoding 		= Mime\Mime::ENCODING_BASE64;
+			$bodyArray[]	= $attachment;
+		}
+		
+		#################################################################################
+		## Definir o conteúdo do e-mail
+		#################################################################################
+		$body->setParts($bodyArray);
+		$mail->setBody($body);
+		$mail->setSubject("<SF> ".$assunto);
+		
+		#################################################################################
+		## Controlar a quantidade de emails a enviar
+		#################################################################################
+		$numEmails	= 0;
+		
+		#################################################################################
+		## Verificar o tipo de destinatário
+		#################################################################################
+		if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+			$destinatarios	= $em->getRepository('\Entidades\ZgappNotificacaoPessoa')->findBy(array('codNotificacao' => $notificacao->getCodigo()));
+		}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_ANONIMO) {
+			$destinatarios	= array();
+			$destinatarios[0]["NOME"]	= $notificacao->getNome();
+			$destinatarios[0]["EMAIL"]	= $notificacao->getEmail();
+		}else{
+			$destinatarios	= $em->getRepository('\Entidades\ZgappNotificacaoUsuario')->findBy(array('codNotificacao' => $notificacao->getCodigo()));
+		}
+
+		#################################################################################
+		## Cascade da notificação
+		#################################################################################
+		$em->persist($notificacao);
+		
+		#################################################################################
+		## Verifica se esse tipo de notificação já foi enviada e Cria o log de envio
+		#################################################################################
+		$mailLog		= $em->getRepository('\Entidades\ZgappNotificacaoLog')->findOneBy(array('codNotificacao' => $notificacao->getCodigo(),'codFormaEnvio' => "E"));
+		if (!$mailLog)	{
+			$mailLog		= new \Entidades\ZgappNotificacaoLog();
+			$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "E");
+			$mailLog->setCodFormaEnvio($oFormaEnvio);
+			$mailLog->setCodNotificacao($notificacao);
+		}else{
+			if ($mailLog->getIndProcessada() == 1) {
+				$log->info("Notificação (".$notificacao->getCodigo().") já foi processado o envio dos e-mails");
+				return 1;
+			}
+		}
+
+		#################################################################################
+		## Array para controle de registro de envio por destinatário
+		#################################################################################
+		$logDest	= array();
+		
+		#################################################################################
+		## Resgata a lista de usuários/Pessoas que receberão a notificação
+		#################################################################################
+		for ($j = 0; $j < sizeof($destinatarios); $j++) {
+		
+			if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+				$nomeDest		= $destinatarios[$j]->getCodPessoa()->getNome();
+				$codDest		= $destinatarios[$j]->getCodPessoa()->getCodigo();
+				$emailDest		= $destinatarios[$j]->getCodPessoa()->getEmail();
+				$campoDest		= "codPessoa";
+			}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_ANONIMO) {
+				$nomeDest		= $destinatarios[$j]["NOME"];
+				$codDest		= $destinatarios[$j]["EMAIL"];
+				$emailDest		= $destinatarios[$j]["EMAIL"];
+				$campoDest		= "email";
+			}else{
+				$nomeDest		= $destinatarios[$j]->getCodUsuario()->getNome();
+				$codDest		= $destinatarios[$j]->getCodUsuario()->getCodigo();
+				$emailDest		= $destinatarios[$j]->getCodUsuario()->getUsuario();
+				$campoDest		= "codUsuario";
+			}
+		
+			$log->debug("Usuario/Pessoa que será notificado[a]: ".$nomeDest);
+		
+			#################################################################################
+			## Valida o e-mail
+			#################################################################################
+			if (!$validator->isValid($emailDest)) {
+				continue;
+			}
+
+			#################################################################################
+			## Verifica se a notificação já foi enviada para esse destinatário
+			#################################################################################
+			$indEnvia		= 1;
+			$logDest[$codDest]	= $em->getRepository('\Entidades\ZgappNotificacaoLogDest')->findOneBy(array('codLog' => $mailLog->getCodigo(), $campoDest => $codDest));
+			if (!$logDest[$codDest]) {
+				$logDest[$codDest]	= new \Entidades\ZgappNotificacaoLogDest();
+			}else{
+				if (!$logDest[$codDest]->getIndErro()) {
+					$indEnvia		= 0;
+				}elseif ($logDest[$codDest]->getIndErro() > 4){
+					$indEnvia		= 0;
+				}
+			}
+
+			if ($indEnvia) {
+					
+				#################################################################################
+				## Associa os destinatários
+				#################################################################################
+				if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+					$oPessoa			= $em->getReference('\Entidades\ZgfinPessoa', $codDest);
+					$logDest[$codDest]->setCodPessoa($oPessoa);
+				}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_USUARIO) {
+					$oUsu			= $em->getReference('\Entidades\ZgsegUsuario', $codDest);
+					$logDest[$codDest]->setCodUsuario($oUsu);
+				}else{
+					$logDest[$codDest]->setEmail($emailDest);
+				}
+	
+				$logDest[$codDest]->setCodLog($mailLog);
+				$logDest[$codDest]->setDataEnvio(new \DateTime("now"));
+				$logDest[$codDest]->setIndErro(0);
+				$logDest[$codDest]->setErro(null);
+				
+				#################################################################################
+				## Definir os destinatários
+				#################################################################################
+				if (sizeof($destinatarios) > 1) {
+					$mail->addBcc($emailDest);
+					if ($notificacao->getEmail() && ($validator->isValid($notificacao->getEmail())) ) $mail->addBcc($notificacao->getEmail());
+				}else{
+					$mail->addTo($emailDest);
+					if ($notificacao->getEmail() && ($validator->isValid($notificacao->getEmail())) ) $mail->addCc($notificacao->getEmail());
+				}
+	
+				$numEmails++;
+			}
+		}
+		
+		#################################################################################
+		## Salvar as informações e enviar o e-mail
+		#################################################################################
+		if ($numEmails > 0) {
+			try {
+				$indOK		= true;
+				$log->debug("Vou enviar o e-mail");
+				$transport->send($mail);
+				$log->debug("E-mail enviado com sucesso !!!");
+				$erro		= null;
+					
+			} catch (\Exception $e) {
+				$log->err("Erro ao enviar o e-mail:". $e->getTraceAsString());
+				$indOK		= false;
+				$erro		= $e->getTraceAsString();
+			}
+			
+			try {
+					
+				$indProcessada		= ($indOK == true) ? 1 : 0;
+				$indErro			= ($indOK == true) ? 0 : 1;
+				
+				$mailLog->setIndProcessada($indProcessada);
+				
+				#################################################################################
+				## Atualizar o controle de log por destinatário
+				#################################################################################
+				$em->persist($mailLog);
+				foreach ($logDest as $codDest => $aLogDest) {
+					$aLogDest->setDataEnvio(new \DateTime("now"));
+					$aLogDest->setErro($erro);
+					$aLogDest->setIndErro($indErro);
+					$em->persist($aLogDest);
+				}
+				
+				$em->flush();
+				$em->clear();
+			
+			} catch (\Exception $e) {
+				return 0;
+			}
+			
+			if ($indOK) {
+				return 1;
+			}else{
+				return 0;
+			}
+		}
+		
+		return 1;
+	}
+	
+	/**
+	 * Enviar as mensagens Whatsapp de uma notificação
+	 * @param \Entidades\ZgappNotificacao $notificacao
+	 */
+	public static function _notificaWa($codNotificacao) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$tr,$log,$system;
+	
+		#################################################################################
+		## Resgata a notificação
+		#################################################################################
+		$notificacao		= $em->getRepository('\Entidades\ZgappNotificacao')->findOneBy(array('codigo' => $codNotificacao));
+		if (!$notificacao)	{
+			throw new \Exception('Notificação não encontrada');
+		}
+		
+		#################################################################################
+		## Verifica se a notificação tem a flag de enviar e-mail
+		#################################################################################
+		if (!$notificacao->getIndViaWa())	{
+			throw new \Exception('Notificação não está com a flag de envio de whatsapp');
+		}
+		
+		$log->debug("Envia wa para notificacao: ".$notificacao->getAssunto());
+			
+		#################################################################################
+		## Não enviar templates via whatsapp
+		#################################################################################
+		if ($notificacao->getCodTipoMensagem()->getCodigo() == "TP") {
+			return 1;
+		}
+		
+		#################################################################################
+		## Resgatar a mensagem da notificação
+		#################################################################################
+		$mensagem		= self::_getMensagem($notificacao);
+		$codTipoDest	= $notificacao->getCodTipoDestinatario()->getCodigo();
+		
+		#################################################################################
+		## Verificar o tipo de destinatário
+		#################################################################################
+		if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+			$destinatarios	= $em->getRepository('\Entidades\ZgappNotificacaoPessoa')->findBy(array('codNotificacao' => $notificacao->getCodigo()));
+		}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_ANONIMO) {
+			/** não enviar whatsapp para o tipo de notificação anônima **/
+			return 1;
+		}else{
+			$destinatarios	= $em->getRepository('\Entidades\ZgappNotificacaoUsuario')->findBy(array('codNotificacao' => $notificacao->getCodigo()));
+		}
+
+		#################################################################################
+		## Cascade da notificação
+		#################################################################################
+		$em->persist($notificacao);
+		
+		#################################################################################
+		## Verifica se esse tipo de notificação já foi enviada e Cria o log de envio
+		#################################################################################
+		$waLog		= $em->getRepository('\Entidades\ZgappNotificacaoLog')->findOneBy(array('codNotificacao' => $notificacao->getCodigo(),'codFormaEnvio' => "W"));
+		if (!$waLog)	{
+			$waLog		= new \Entidades\ZgappNotificacaoLog();
+			$oFormaEnvio	= $em->getReference('\Entidades\ZgappNotificacaoFormaEnvio', "W");
+			$waLog->setCodFormaEnvio($oFormaEnvio);
+			$waLog->setCodNotificacao($notificacao);
+		}else{
+			if ($waLog->getIndProcessada() == 1) {
+				$log->info("Notificação (".$notificacao->getCodigo().") já foi processado o envio das mensagens whatsapp");
+				return 1;
+			}
+		}
+		
+		#################################################################################
+		## Faz o controle de execução 
+		#################################################################################
+		$indOK		= true;
+		
+		#################################################################################
+		## Inicializa o array de Chips, que serão usados para enviar as mensagens
+		#################################################################################
+		$chips 			= array();
+		
+		#################################################################################
+		## Resgata a lista de usuários/Pessoas que receberão a notificação
+		#################################################################################
+		for ($j = 0; $j < sizeof($destinatarios); $j++) {
+		
+			if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+				$nomeDest		= $destinatarios[$j]->getCodPessoa()->getNome();
+				$codDest		= $destinatarios[$j]->getCodPessoa()->getCodigo();
+				$campoDest		= "codPessoa";
+			}else{
+				$nomeDest		= $destinatarios[$j]->getCodUsuario()->getNome();
+				$codDest		= $destinatarios[$j]->getCodUsuario()->getCodigo();
+				$campoDest		= "codUsuario";
+			}
+		
+			$log->debug("Usuario/Pessoa que será notificado[a]: ".$nomeDest);
+		
+
+			#################################################################################
+			## Verifica se a notificação já foi enviada para esse destinatário
+			#################################################################################
+			$indEnvia		= 1;
+			$logDest		= $em->getRepository('\Entidades\ZgappNotificacaoLogDest')->findOneBy(array('codLog' => $waLog->getCodigo(), $campoDest => $codDest));
+			if (!$logDest) {
+				$logDest	= new \Entidades\ZgappNotificacaoLogDest();
+			}else{
+				if (!$logDest->getIndErro()) {
+					$indEnvia		= 0;
+				}elseif ($logDest->getIndErro() > 4){
+					$indEnvia		= 0;
+				}
+			}
+			
+				
+			if ($indEnvia) {
+			
+				#################################################################################
+				## Associa os destinatários
+				#################################################################################
+				if ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_PESSOA) {
+					$oPessoa			= $em->getReference('\Entidades\ZgfinPessoa', $codDest);
+					$logDest->setCodPessoa($oPessoa);
+				}elseif ($codTipoDest	== \Zage\App\Notificacao::TIPO_DEST_USUARIO) {
+					$oUsu			= $em->getReference('\Entidades\ZgsegUsuario', $codDest);
+					$logDest->setCodUsuario($oUsu);
+				}
+				
+				$logDest->setCodLog($waLog);
+				
+				#################################################################################
+				## Busca o Chip que a mensagem será enviada
+				#################################################################################
+				$c	= \Zage\Wap\Chip::buscaChipUsuario($codDest);
+			
+				#################################################################################
+				## Caso não tenha chips disponíveis, não tentar enviar a mensagem
+				#################################################################################
+				if (!$c) {
+					$indOK	= false;
+					$logDest->setDataEnvio(new \DateTime("now"));
+					$logDest->setErro("Não encontramos chips disponíveis para enviar a mensagem");
+					$logDest->setIndErro($logDest->getIndErro() + 1);
+					$em->persist($logDest);
+					continue;
+				}
+			
+				$log->debug("Chip selecionado: ".$c->getLogin());
+			
+				#################################################################################
+				## Instancia a classe para envio
+				#################################################################################
+				$chip		= new \Zage\Wap\Chip();
+				$chip->_setCodigo($c->getCodigo());
+				
+				#################################################################################
+				## Converte o número do celular para o formato do whatsapp
+				#################################################################################
+				$celulares	= \Zage\Wap\Chip::buscaNumeroComWa($codDest);
+				if (!$celulares || sizeof($celulares) ==  0)	continue;
+			
+				try {
+						
+					if (!isset($chips[$c->getCodigo()])) {
+						$log->debug("Tentando conexão com WA!!! ");
+						$chip->conectar();
+						$log->debug("Conexão ao wa feita com sucesso !!! ");
+			
+						$chips[$c->getCodigo()]	= $chip;
+			
+					}
+						
+					for ($n = 0; $n < sizeof($celulares); $n++) {
+						$log->debug("Convertendo o número : ".$celulares[$n]->getTelefone());
+						//$waNumber	= $chip->_convertCellToWaNumber($celulares[$n]->getTelefone());
+						$waNumber	= $celulares[$n]->getWaLogin();
+						$log->debug("Enviando wa para o número: ".$waNumber);
+						$ret	= $chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
+						$log->debug("Retorno do envio: ".$ret);
+					}
+
+					$logDest->setDataEnvio(new \DateTime("now"));
+					$logDest->setErro(null);
+					$logDest->setIndErro(0);
+					$em->persist($logDest);
+						
+				} catch (\Exception $e) {
+					$log->err("Mensagem wa não enviada, por problema no chip: ".$chip->getLogin()." -> ". $e->getMessage());
+					$logDest->setDataEnvio(new \DateTime("now"));
+					$logDest->setErro($e->getTraceAsString());
+					$logDest->setIndErro($logDest->getIndErro() + 1);
+					$em->persist($logDest);
+					$indOK	= false;
+				}
+			}
+		}
+
+		try {
+			
+			$indProcessada		= ($indOK == true) ? 1 : 0;
+			$waLog->setIndProcessada($indProcessada);
+			
+			$em->persist($waLog);
+			$em->flush();
+			$em->clear();
+		
+		} catch (\Exception $e) {
+			return 0;
+		}
+		
+		if ($indOK) {
+			return 1;
+		}else{
+			return 0;
+		}
+	
+	}
+	
+	/**
+	 * Retorna a mensagem associada a notificação
+	 * @param \Entidades\ZgappNotificacao $notificacao
+	 */
+	public function _getMensagem(\Entidades\ZgappNotificacao $notificacao) {
+		
+		global $em,$system;
+		
+		#################################################################################
+		## Monta a mensagem
+		#################################################################################
+		$codTipoMens		= $notificacao->getCodTipoMensagem()->getCodigo();
+		
+		if ($codTipoMens	== \Zage\App\Notificacao::TIPO_MENSAGEM_TEXTO) {
+			$mensagem		= $notificacao->getMensagem();
+		}elseif ($codTipoMens	== \Zage\App\Notificacao::TIPO_MENSAGEM_HTML) {
+			$mensagem		= $notificacao->getMensagem();
+		}elseif ($codTipoMens	== \Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE) {
+		
+			#################################################################################
+			## Verificar se o template foi informado
+			#################################################################################
+			if (!$notificacao->getCodTemplate()) return null;
+		
+			#################################################################################
+			## Resgata as informações do template
+			#################################################################################
+			$template		= $notificacao->getCodTemplate();
+		
+			#################################################################################
+			## Verificar se o template existe
+			#################################################################################
+			if (!file_exists(TPL_PATH . '/' . $template->getCaminho())) return null;
+		
+			#################################################################################
+			## Carregando o template html
+			#################################################################################
+			$tpl	= new \Zage\App\Template();
+			$tpl->load(TPL_PATH . '/' . $template->getCaminho());
+		
+			#################################################################################
+			## Atribui as variáveis do template
+			#################################################################################
+			$variaveis		= $em->getRepository('\Entidades\ZgappNotificacaoVariavel')->findBy(array('codNotificacao' => $notificacao->getCodigo()));
+			for ($v = 0; $v < sizeof($variaveis); $v++) {
+				$tpl->set($variaveis[$v]->getVariavel(), $variaveis[$v]->getValor());
+			}
+		
+			#################################################################################
+			## Por fim exibir a página HTML
+			#################################################################################
+			$mensagem	= $tpl->getHtml();
+		
+			return $mensagem;
+		
+		}else{
+			return null;
+		}
+		
 	}
 	
 	/**

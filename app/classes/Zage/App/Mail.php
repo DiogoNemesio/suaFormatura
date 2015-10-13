@@ -140,9 +140,14 @@ class Mail {
 		#################################################################################
 		## Cria o objeto de transport
 		#################################################################################
-		self::$transport 		= new \Zend\Mail\Transport\Smtp();
-		self::$transport->setOptions($options);
-	
+		try {
+			self::$transport 		= new \Zend\Mail\Transport\Smtp();
+			self::$transport->setOptions($options);
+		} catch (Exception $e) {
+			$log->err("Erro ao conectar ao servidor SMTP:". $e->getTraceAsString());
+			return null;
+		}
+		
 		return self::$transport;
 	}
 	
