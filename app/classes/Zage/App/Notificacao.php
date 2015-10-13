@@ -600,7 +600,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		#################################################################################
 		## Resgatar a mensagem da notificação
 		#################################################################################
-		$mensagem		= self::_getMensagem($notificacao);
+		$mensagem		= self::_getMensagem($codNotificacao);
 		$codTipoDest	= $notificacao->getCodTipoDestinatario()->getCodigo();
 		$assunto		= $notificacao->getAssunto();
 		
@@ -854,7 +854,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		#################################################################################
 		## Resgatar a mensagem da notificação
 		#################################################################################
-		$mensagem		= self::_getMensagem($notificacao);
+		$mensagem		= self::_getMensagem($codNotificacao);
 		$codTipoDest	= $notificacao->getCodTipoDestinatario()->getCodigo();
 		
 		#################################################################################
@@ -997,7 +997,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 						$waNumber	= $celulares[$n]->getWaLogin();
 						$log->debug("Enviando wa para o número: ".$waNumber);
 						$ret	= $chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
-						$log->debug("Retorno do envio: ".$ret);
+						//$log->debug("Retorno do envio: ".$ret);
 					}
 
 					$logDest->setDataEnvio(new \DateTime("now"));
@@ -1041,9 +1041,20 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 	 * Retorna a mensagem associada a notificação
 	 * @param \Entidades\ZgappNotificacao $notificacao
 	 */
-	public function _getMensagem(\Entidades\ZgappNotificacao $notificacao) {
+	public static function _getMensagem($codNotificacao) {
 		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system;
+		
+		#################################################################################
+		## Resgata a notificação
+		#################################################################################
+		$notificacao		= $em->getRepository('\Entidades\ZgappNotificacao')->findOneBy(array('codigo' => $codNotificacao));
+		if (!$notificacao)	{
+			throw new \Exception('Notificação não encontrada');
+		}
 		
 		#################################################################################
 		## Monta a mensagem
@@ -1090,11 +1101,11 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			#################################################################################
 			$mensagem	= $tpl->getHtml();
 		
-			return $mensagem;
-		
 		}else{
 			return null;
 		}
+
+		return $mensagem;
 		
 	}
 	
