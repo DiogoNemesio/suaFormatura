@@ -336,8 +336,6 @@ class Chip extends \Entidades\ZgwapChip {
 			$this->w->pollMessage();
 		}*/
 		
-		
-		
 		#################################################################################
 		## Atualiza as informações do Chip
 		#################################################################################
@@ -381,9 +379,11 @@ class Chip extends \Entidades\ZgwapChip {
 			$tel->setDataUltVerificacao(new \DateTime("now"));
 			$tel->setWaLogin($waLogin);
 			try {
+				$em->beginTransaction();
 				$em->persist($tel);
 				$em->flush();
 				$em->detach($tel);
+				$em->commit();
 			} catch (\Exception $e) {
 				$log->err($tr->trans("Falha ao atualizar o status do contato: $tel->getNumero() ".$e->getMessage()));
 				throw new \Exception($tr->trans("Falha ao atualizar o status do contato: $tel->getNumero() ".$e->getMessage()));
@@ -417,9 +417,11 @@ class Chip extends \Entidades\ZgwapChip {
 			$tel->setDataUltVerificacao(new \DateTime("now"));
 			$tel->setWaLogin($waLogin);
 			try {
+				$em->beginTransaction();
 				$em->persist($tel);
 				$em->flush();
 				$em->detach($tel);
+				$em->commit;
 			} catch (\Exception $e) {
 				$log->err($tr->trans("Falha ao atualizar o status do contato: $tel->getNumero() ".$e->getMessage()));
 				throw new \Exception($tr->trans("Falha ao atualizar o status do contato: $tel->getNumero() ".$e->getMessage()));
