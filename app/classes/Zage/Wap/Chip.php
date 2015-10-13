@@ -341,11 +341,13 @@ class Chip extends \Entidades\ZgwapChip {
 		#################################################################################
 		## Atualiza as informações do Chip
 		#################################################################################
+		$em->beginTransaction();
 		try {
 			$oChip->setDataUltimaSincronizacao(new \DateTime("now"));
 			$em->persist($oChip);
 			$em->flush();
 			$em->detach($oChip);
+			$em->commit();
 		} catch (\Exception $e) {
 			$log->err($tr->trans("Falha ao atualizar a data da última sincronização do chip: $oChip->getCodigo() ".$e->getMessage()));
 			throw new \Exception($tr->trans("Falha ao atualizar a data da última sincronização do chip: $oChip->getCodigo() ".$e->getMessage()));

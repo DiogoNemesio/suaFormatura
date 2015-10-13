@@ -770,10 +770,12 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 		if ($numEmails > 0) {
 			try {
 				$indOK		= true;
+				$log->debug("Vou enviar o e-mail");
 				$transport->send($mail);
+				$log->debug("E-mail enviado com sucesso !!!");
 				$erro		= null;
 					
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$log->err("Erro ao enviar o e-mail:". $e->getTraceAsString());
 				$indOK		= false;
 				$erro		= $e->getTraceAsString();
@@ -800,7 +802,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 				$em->flush();
 				$em->clear();
 			
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				return 0;
 			}
 			
@@ -994,7 +996,8 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 						//$waNumber	= $chip->_convertCellToWaNumber($celulares[$n]->getTelefone());
 						$waNumber	= $celulares[$n]->getWaLogin();
 						$log->debug("Enviando wa para o número: ".$waNumber);
-						$chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
+						$ret	= $chips[$c->getCodigo()]->w->sendMessage($waNumber, $mensagem);
+						$log->debug("Retorno do envio: ".$ret);
 					}
 
 					$logDest->setDataEnvio(new \DateTime("now"));
@@ -1002,7 +1005,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 					$logDest->setIndErro(0);
 					$em->persist($logDest);
 						
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					$log->err("Mensagem wa não enviada, por problema no chip: ".$chip->getLogin()." -> ". $e->getMessage());
 					$logDest->setDataEnvio(new \DateTime("now"));
 					$logDest->setErro($e->getTraceAsString());
@@ -1022,7 +1025,7 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 			$em->flush();
 			$em->clear();
 		
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			return 0;
 		}
 		
