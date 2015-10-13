@@ -40,7 +40,7 @@
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número da agência."></i></span>
 				   					<input class="input-small" id="agenciaID" type="text" name="agencia" placeholder="Agência" maxlength="8" value="%AGENCIA%" required zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0" autocomplete="off">
 				   					<span> - </span>
-				   					<input class="input-small" id="agenciaDVID" type="text" name="agenciaDV" placeholder="DV" maxlength="1" value="%AGENCIADV%" required zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0" autocomplete="off">	
+				   					<input class="input-small" id="agenciaDVID" type="text" name="agenciaDV" placeholder="DV" readonly maxlength="1" value="%AGENCIADV%" required zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0" autocomplete="off">	
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpAgenciaID"></div>
 				    		</div>
@@ -171,13 +171,16 @@ $('#zgFormID').submit(function(e) {
 });
 
 function zgCheckVerificador() {
-	var vBanco		= $('#_codBancoID').val();
+	var vBanco	= $('#_codBancoID').val();
+	var length 	= agenciaBancoDigito(vBanco);
 	
-	if (vBanco == '341') {
+	if (length != 0) {
+		$('#agenciaDVID').val("");
+		$('#agenciaDVID').removeAttr("readonly");
+		$('#agenciaDVID').attr('maxlength', length);
+	}else{
 		$('#agenciaDVID').attr("readonly", "readonly");
 		$('#agenciaDVID').val("");
-	}else{
-		$('#agenciaDVID').removeAttr("readonly");
 	}
 }
 
