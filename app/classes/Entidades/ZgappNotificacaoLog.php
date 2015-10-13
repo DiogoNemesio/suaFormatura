@@ -22,25 +22,11 @@ class ZgappNotificacaoLog
     private $codigo;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="DATA_ENVIO", type="datetime", nullable=false)
-     */
-    private $dataEnvio;
-
-    /**
      * @var integer
      *
-     * @ORM\Column(name="IND_ERRO", type="integer", nullable=false)
+     * @ORM\Column(name="IND_PROCESSADA", type="integer", nullable=true)
      */
-    private $indErro;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ERRO", type="string", length=1000, nullable=true)
-     */
-    private $erro;
+    private $indProcessada;
 
     /**
      * @var \Entidades\ZgappNotificacao
@@ -74,72 +60,26 @@ class ZgappNotificacaoLog
     }
 
     /**
-     * Set dataEnvio
+     * Set indProcessada
      *
-     * @param \DateTime $dataEnvio
+     * @param integer $indProcessada
      * @return ZgappNotificacaoLog
      */
-    public function setDataEnvio($dataEnvio)
+    public function setIndProcessada($indProcessada)
     {
-        $this->dataEnvio = $dataEnvio;
+        $this->indProcessada = $indProcessada;
 
         return $this;
     }
 
     /**
-     * Get dataEnvio
-     *
-     * @return \DateTime 
-     */
-    public function getDataEnvio()
-    {
-        return $this->dataEnvio;
-    }
-
-    /**
-     * Set indErro
-     *
-     * @param integer $indErro
-     * @return ZgappNotificacaoLog
-     */
-    public function setIndErro($indErro)
-    {
-        $this->indErro = $indErro;
-
-        return $this;
-    }
-
-    /**
-     * Get indErro
+     * Get indProcessada
      *
      * @return integer 
      */
-    public function getIndErro()
+    public function getIndProcessada()
     {
-        return $this->indErro;
-    }
-
-    /**
-     * Set erro
-     *
-     * @param string $erro
-     * @return ZgappNotificacaoLog
-     */
-    public function setErro($erro)
-    {
-        $this->erro = $erro;
-
-        return $this;
-    }
-
-    /**
-     * Get erro
-     *
-     * @return string 
-     */
-    public function getErro()
-    {
-        return $this->erro;
+        return $this->indProcessada;
     }
 
     /**

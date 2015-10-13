@@ -38,7 +38,7 @@ class ZgfinConta
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATA_INICIAL", type="date", nullable=false)
+     * @ORM\Column(name="DATA_INICIAL", type="date", nullable=true)
      */
     private $dataInicial;
 

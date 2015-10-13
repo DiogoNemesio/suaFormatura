@@ -29,6 +29,27 @@ class ZgappNotificacaoLogDest
     private $email;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ENVIO", type="datetime", nullable=true)
+     */
+    private $dataEnvio;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_ERRO", type="integer", nullable=true)
+     */
+    private $indErro;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ERRO", type="string", length=1024, nullable=true)
+     */
+    private $erro;
+
+    /**
      * @var \Entidades\ZgappNotificacaoLog
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgappNotificacaoLog")
@@ -90,6 +111,75 @@ class ZgappNotificacaoLogDest
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set dataEnvio
+     *
+     * @param \DateTime $dataEnvio
+     * @return ZgappNotificacaoLogDest
+     */
+    public function setDataEnvio($dataEnvio)
+    {
+        $this->dataEnvio = $dataEnvio;
+
+        return $this;
+    }
+
+    /**
+     * Get dataEnvio
+     *
+     * @return \DateTime 
+     */
+    public function getDataEnvio()
+    {
+        return $this->dataEnvio;
+    }
+
+    /**
+     * Set indErro
+     *
+     * @param integer $indErro
+     * @return ZgappNotificacaoLogDest
+     */
+    public function setIndErro($indErro)
+    {
+        $this->indErro = $indErro;
+
+        return $this;
+    }
+
+    /**
+     * Get indErro
+     *
+     * @return integer 
+     */
+    public function getIndErro()
+    {
+        return $this->indErro;
+    }
+
+    /**
+     * Set erro
+     *
+     * @param string $erro
+     * @return ZgappNotificacaoLogDest
+     */
+    public function setErro($erro)
+    {
+        $this->erro = $erro;
+
+        return $this;
+    }
+
+    /**
+     * Get erro
+     *
+     * @return string 
+     */
+    public function getErro()
+    {
+        return $this->erro;
     }
 
     /**

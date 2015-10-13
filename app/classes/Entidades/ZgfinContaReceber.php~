@@ -92,6 +92,20 @@ class ZgfinContaReceber
     private $valorOutros;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_DESCONTO_JUROS", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $valorDescontoJuros;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_DESCONTO_MORA", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $valorDescontoMora;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="DATA_EMISSAO", type="datetime", nullable=false)
@@ -550,6 +564,52 @@ class ZgfinContaReceber
     public function getValorOutros()
     {
         return $this->valorOutros;
+    }
+
+    /**
+     * Set valorDescontoJuros
+     *
+     * @param float $valorDescontoJuros
+     * @return ZgfinContaReceber
+     */
+    public function setValorDescontoJuros($valorDescontoJuros)
+    {
+        $this->valorDescontoJuros = $valorDescontoJuros;
+
+        return $this;
+    }
+
+    /**
+     * Get valorDescontoJuros
+     *
+     * @return float 
+     */
+    public function getValorDescontoJuros()
+    {
+        return $this->valorDescontoJuros;
+    }
+
+    /**
+     * Set valorDescontoMora
+     *
+     * @param float $valorDescontoMora
+     * @return ZgfinContaReceber
+     */
+    public function setValorDescontoMora($valorDescontoMora)
+    {
+        $this->valorDescontoMora = $valorDescontoMora;
+
+        return $this;
+    }
+
+    /**
+     * Get valorDescontoMora
+     *
+     * @return float 
+     */
+    public function getValorDescontoMora()
+    {
+        return $this->valorDescontoMora;
     }
 
     /**
