@@ -68,15 +68,15 @@ if ($codTipoMora == 'V'){
 	if ($valorMora){ 
 		$valorMora	= \Zage\App\Util::toMysqlNumber($valorMora);
 	}else{
-		$valorMora = 0;
+		$valorMora = null;
 	}
-	$pctMora = 0;
+	$pctMora = null;
 }elseif ($codTipoMora == 'P'){
-	$valorMora = 0;
+	$valorMora = null;
 	if ($pctMora)	{
 		$pctMora		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctMora));
 	}else{
-		$pctMora = 0;
+		$pctMora = null;
 	}
 }
 
@@ -85,15 +85,15 @@ if ($codTipoJuros == 'V'){
 	if ($valorJuros){
 		$valorJuros		= \Zage\App\Util::toMysqlNumber($valorJuros);
 	}else{
-		$valorJuros = 0;
+		$valorJuros = null;
 	}
-	$pctJuros = 0;
+	$pctJuros = null;
 }elseif ($codTipoJuros == 'P'){
-	$valorJuros = 0;
+	$valorJuros = null;
 	if ($pctJuros)	{
 		$pctJuros		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctJuros));
 	}else{
-		$pctJuros = 0;
+		$pctJuros = null;
 	}
 }
 

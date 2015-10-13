@@ -56,10 +56,10 @@ if (!empty($codConta)) {
 	$ccorrenteDV	= $info->getCcorrenteDV();
 	$ativa			= ($info->getIndAtiva()	== 1) ? "checked" : null;
 	$codCarteira	= ($info->getcodCarteira() != null) ? $info->getcodCarteira()->getCodigo() : null;
-	$valorJuros		= ($info->getValorJuros() > 0) ? \Zage\App\Util::toPHPNumber($info->getValorJuros()) : null;
-	$valorMora		= ($info->getValorMora() > 0) ? \Zage\App\Util::toPHPNumber($info->getValorMora()) : null;
-	$pctJuros		= ($info->getPctJuros() > 0) ? \Zage\App\Util::toPHPNumber($info->getPctJuros()) : null;
-	$pctMora		= ($info->getPctMora() > 0) ? \Zage\App\Util::toPHPNumber($info->getPctMora()) : null;
+	$valorJuros		= ($info->getValorJuros()) ? \Zage\App\Util::formataDinheiro($info->getValorJuros()) : null;
+	$valorMora		= ($info->getValorMora()) ? \Zage\App\Util::formataDinheiro($info->getValorMora()) : null;
+	$pctJuros		= ($info->getPctJuros()) ? \Zage\App\Util::formataDinheiro($info->getPctJuros()) : null;
+	$pctMora		= ($info->getPctMora()) ? \Zage\App\Util::formataDinheiro($info->getPctMora()) : null;
 	$instrucao		= $info->getInstrucao();
 	
 	// Botão de seleção de tipo do juros
