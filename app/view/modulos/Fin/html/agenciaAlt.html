@@ -173,7 +173,7 @@ $('#zgFormID').submit(function(e) {
 function zgCheckVerificador() {
 	var vBanco	= $('#_codBancoID').val();
 	var length 	= agenciaBancoDigito(vBanco);
-	
+
 	if (length != 0) {
 		$('#agenciaDVID').val("");
 		$('#agenciaDVID').removeAttr("readonly");

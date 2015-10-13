@@ -229,7 +229,7 @@ function zgValidaNumero($str) {
 }
 
 function agenciaBancoDigito(codAgencia){
-	if (codAgencia == ('001' || '237') ) {
+	if (codAgencia == '001' || codAgencia == '237') {
 		return 1;
 	}else if(codAgencia == '041'){
 		return 2;
