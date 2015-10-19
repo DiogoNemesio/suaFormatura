@@ -229,11 +229,40 @@ function zgValidaNumero($str) {
 }
 
 function agenciaBancoDigito(codAgencia){
+	var valor = new Array();
+	
 	if (codAgencia == '001' || codAgencia == '237') {
-		return 1;
+		valor['DV'] = 1;
+		valor['AG'] = 4;
 	}else if(codAgencia == '041'){
-		return 2;
+		valor['DV'] = 2;
+		valor['AG'] = 4;
+	}else if(codAgencia == '033' || codAgencia == '104' || codAgencia == '341' || codAgencia == '356' 
+		|| codAgencia == '399' || codAgencia == '745'){
+		valor['DV'] = 0;
+		valor['AG'] = 4;
 	}else{
-		return 0;
+		valor['DV'] = 0;
+		valor['AG'] = 0;
 	}
+	
+	return valor;
+}
+
+function contaBancoDigito(codConta){
+	var valor = new Array();
+	
+	if (codConta == '001' || codConta == '104') {
+		valor['CC'] = 8;
+	}else if(codConta == '041' || codConta == '237' || codConta = '356'){
+		valor['CC'] = 7;
+	}else if(codConta == '033' || codConta == '399'){
+		valor['CC'] = 6;
+	}else if(codConta == '341'){
+		valor['CC'] = 5;
+	}else if(codConta == '745'){
+		valor['CC'] = 10;
+	}
+	
+	return valor;
 }
