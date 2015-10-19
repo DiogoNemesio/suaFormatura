@@ -302,7 +302,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
 				//$log->debug("Valor: ".\Zage\App\Util::to_float($this->_valores[$i]).", Juros: ".\Zage\App\Util::to_float($this->getValorJuros()).", Mora: ".\Zage\App\Util::to_float($this->getValorMora()).", Outros: ".\Zage\App\Util::to_float($this->getValorOutros()).", Desconto: ".\Zage\App\Util::to_float($this->getValorDesconto()));
-				$_val			= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto());
+				$_val			= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto()) - \Zage\App\Util::to_float($this->getValorDescontoJuros()) - \Zage\App\Util::to_float($this->getValorDescontoMora());
 				$_valorTotal	+= $_val;
 				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]); 
 			}
@@ -568,6 +568,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$object->setCodTransacao($this->getCodTransacao());
 				$object->setCodGrupoAssociacao($this->getCodGrupoAssociacao());
 				$object->setIndSomenteVisualizar($this->getIndSomenteVisualizar());
+				$object->setValorDescontoJuros(0);
+				$object->setValorDescontoMora(0);
 			}
 				
 			$object->setCodOrganizacao($this->getCodOrganizacao());
@@ -630,7 +632,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			
 			//}
 			
-			$valorTotalParcela		= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto());
+			$valorTotalParcela		= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto()) - \Zage\App\Util::to_float($this->getValorDescontoJuros()) - \Zage\App\Util::to_float($this->getValorDescontoMora());
 			
 			#################################################################################
 			## Guarda o código do grupo da conta caso a conta esteja sendo substituída
@@ -675,7 +677,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				#################################################################################
 				if ($this->_getFlagRecebida()) {
 					if ($object->getDataVencimento() <= \DateTime::createFromFormat($system->config["data"]["dateFormat"],date($system->config["data"]["dateFormat"]))) {
-						$erro = $this->recebe($object, $object->getCodConta(), $object->getCodFormaPagamento(), $object->getDataVencimento()->format($system->config["data"]["dateFormat"]), \Zage\App\Util::toPHPNumber($object->getValor()), \Zage\App\Util::toPHPNumber($object->getValorJuros()), \Zage\App\Util::toPHPNumber($object->getValorMora()), \Zage\App\Util::toPHPNumber($object->getValorDesconto()), \Zage\App\Util::toPHPNumber($object->getValorOutros()), $object->getDocumento(),"MAN");
+						$erro = $this->recebe($object, $object->getCodConta(), $object->getCodFormaPagamento(), $object->getDataVencimento()->format($system->config["data"]["dateFormat"]), \Zage\App\Util::toPHPNumber($object->getValor()), \Zage\App\Util::toPHPNumber($object->getValorJuros()), \Zage\App\Util::toPHPNumber($object->getValorMora()), \Zage\App\Util::toPHPNumber($object->getValorDesconto()), \Zage\App\Util::toPHPNumber($object->getValorOutros()),0,0,$object->getDocumento(),"MAN");
 						if ($erro) {
 							$log->debug("Erro ao salvar: ".$erro);
 							return $erro;
@@ -733,7 +735,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			#################################################################################
 			## Calcula o valor a cancelar
 			#################################################################################
-			$valorCancelar	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$valorCancelar	= self::calculaValorTotal($oConta);
 
 			#################################################################################
 			## Resgata o objeto do novo status
@@ -769,7 +771,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			#################################################################################
 			$rateios	= $em->getRepository('Entidades\ZgfinContaReceberRateio')->findBy(array('codContaRec' => $oConta->getCodigo()));
 			$numRateios	= sizeof($rateios);
-			$valorTotal	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$valorTotal	= self::calculaValorTotal($oConta);
 			$novoValor	= $valorTotal - $valorCancelar;
 			$somatorio	= 0;
 			
@@ -805,7 +807,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$hist->setMotivo($motivo);
 			$hist->setValor($valorCancelar);
 			$hist->setDataCancelamento(new \DateTime("now"));
-			
 		}
 		
 		try {
@@ -821,19 +822,28 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	
 	
 	/**
-	 * Efetivar o recebimento de uma conta 
-	 * @param int $codConta
-	 * @param int $codFormaPag
-	 * @param date $dataRec
-	 * @param float $valor
-	 * @param float $valorJuros
-	 * @param float $valorMora
-	 * @param float $valorDesconto
-	 * @param string $documento
-	 * @param number $codTipoBaixa
-	 * @param number $seqRetorno
+	 * Efetivar o recebimento de uma conta
+	 * @param \Entidades\ZgfinContaReceber $oConta
+	 * @param unknown $codContaDeb
+	 * @param unknown $codFormaPag
+	 * @param unknown $dataRec
+	 * @param unknown $valor
+	 * @param unknown $valorJuros
+	 * @param unknown $valorMora
+	 * @param unknown $valorDesconto
+	 * @param unknown $valorOutros
+	 * @param unknown $valorDescJuros
+	 * @param unknown $valorDescMora
+	 * @param unknown $documento
+	 * @param unknown $codTipoBaixa
+	 * @param string $seqRetorno
+	 * @return string|unknown|NULL
 	 */
-	public function recebe (\Entidades\ZgfinContaReceber $oConta,$codContaDeb,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$documento,$codTipoBaixa,$seqRetorno = null) {
+	public function recebe (\Entidades\ZgfinContaReceber $oConta,$codContaDeb,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,$codTipoBaixa,$seqRetorno = null) {
+
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$tr,$log;
 		
 		#################################################################################
@@ -864,8 +874,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			return("Falta de parâmetros (DATA_REC)");
 		}
 		
-		if (!isset($valor) || empty($valor)) {
-			return("Falta de parâmetros (VALOR)");
+		if ( (!isset($valor) || empty($valor)) && (!isset($valorJuros) || empty($valorJuros)) && (!isset($valorMora) || empty($valorMora)) ) {
+			return($tr->trans("Pelo menos um dos valores deve ser informado !!"));
 		}
 		
 		$valData	= new \Zage\App\Validador\DataBR();
@@ -874,21 +884,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			return("Campo DATA DE RECEBIMENTO inválido");
 		}
 		
-		
-		/** 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * Verificar o que fazer quando o valor do recebimento for maior do que o valor da conta 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * **/
-
 		#################################################################################
 		## Ajusta os valores para o Formato do Banco
 		#################################################################################
@@ -897,53 +892,18 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$valorMora		= \Zage\App\Util::to_float($valorMora);
 		$valorDesconto	= \Zage\App\Util::to_float($valorDesconto);
 		$valorOutros	= \Zage\App\Util::to_float($valorOutros);
-		
-		#################################################################################
-		## Verificar se a conta está atrasada e calcular o júros e mora caso existam
-		#################################################################################
-		if ($this->estaAtrasada($oConta->getCodigo(), $dataRec) == true) {
-			$_valJuros		= $this->calculaJurosPorAtraso($oConta->getCodigo(), $dataRec);
-			$_valMora		= $this->calculaMoraPorAtraso($oConta->getCodigo(), $dataRec);
-			
-			#################################################################################
-			## Atualiza o valor do juros e mora da conta
-			#################################################################################
-			$oConta->setValorJuros($valorJuros + $_valJuros);
-			$oConta->setValorMora($valorMora + $_valMora);
-		}else{
-			$_valJuros		= 0;
-			$_valMora		= 0;
-		}
-		
+		$valorDescJuros	= \Zage\App\Util::to_float($valorDescJuros);
+		$valorDescMora	= \Zage\App\Util::to_float($valorDescMora);
+
 		#################################################################################
 		## Calcular o valor total recebido
 		#################################################################################
-		$valorTotal	= $valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto + ($_valJuros + $_valMora);
-
-		#################################################################################
-		## Resgatar o saldo da conta
-		#################################################################################
-		if ($oConta->getCodigo()) {
-			$saldo		= self::getSaldoAReceber($oConta->getCodigo()) + $_valJuros + $_valMora;
-		}else{
-			$saldo		= $valorTotal;
-		}
+		$valorTotal			= $valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto;
 		
 		#################################################################################
-		## Calcular o novo status
+		## Atualiza o valor de desconto na conta
 		#################################################################################
-		if ($valorTotal < $saldo) {
-			$codStatus	= "P";
-			$dataLiq	= null;
-		}else{
-			$codStatus	= "L";
-			$dataLiq	= $dataRec;
-		}
-		
-		#################################################################################
-		## Resgatar o objeto do status
-		#################################################################################
-		$oStatus		= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => $codStatus));
+		$oConta->setValorDesconto($oConta->getValorDesconto() + $valorDesconto);
 
 		#################################################################################
 		## Resgatar os objetos das chaves estrangeiras
@@ -953,6 +913,131 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$oOrigem	= $em->getRepository('Entidades\ZgadmOrigem')->findOneBy(array('codigo' => 2));
 		$oTipoOper	= $em->getRepository('Entidades\ZgfinOperacaoTipo')->findOneBy(array('codigo' => "C"));
 		$oBaixa		= $em->getRepository('Entidades\ZgfinBaixaTipo')->findOneBy(array('codigo' => $codTipoBaixa));
+		
+		
+		#################################################################################
+		## Resgatar o saldo da conta
+		#################################################################################
+		if ($oConta->getCodigo()) {
+			$saldo		= self::getSaldoAReceber($oConta->getCodigo());
+		}else{
+			$saldo		= $valorTotal;
+		}
+		
+		#################################################################################
+		## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+		#################################################################################
+		if ($this->estaAtrasada($oConta->getCodigo(), $dataRec) == true) {
+
+			#################################################################################
+			## Calcula os valor através da data de referência
+			#################################################################################
+			$_valJuros		= $this->calculaJurosPorAtraso($oConta->getCodigo(), $dataRec);
+			$_valMora		= $this->calculaMoraPorAtraso($oConta->getCodigo(), $dataRec);
+
+			#################################################################################
+			## Atualiza os valores de juros da conta
+			#################################################################################
+			$oConta->setValorJuros($oConta->getValorJuros() + $_valJuros);
+			$oConta->setValorMora($oConta->getValorMora() + $_valMora);
+			$oConta->setValorDescontoJuros($valorDescJuros);
+			$oConta->setValorDescontoMora($valorDescMora);
+			
+			#################################################################################
+			## Aplica os descontos
+			#################################################################################
+			$_valJuros		= ($_valJuros - $valorDescJuros); 
+			$_valMora		= ($_valMora - $valorDescMora);
+			
+			#################################################################################
+			## Verifica se o valor ficou negativo
+			#################################################################################
+			$_valJuros		= ($_valJuros < 0)	? 0 : $_valJuros;
+			$_valMora		= ($_valMora < 0)	? 0 : $_valMora;
+					
+		}else{
+			$_valJuros		= 0;
+			$_valMora		= 0;
+		}
+		
+		#################################################################################
+		## Atualiza o saldo
+		#################################################################################
+		$saldo 			+= ($_valJuros + $_valMora);
+		//$_total			= self::calculaValorTotal($oConta);
+		//$log->info("Conta: ".$oConta->getNumero()." Saldo a receber: ".$saldo." ValorJuros: ".$_valJuros." ValorMora: ".$_valMora." _CalcTotal:".$_total." ValorTotal: ".$valorTotal);
+		
+		#################################################################################
+		## Calcular o novo status
+		#################################################################################
+		if ($valorTotal < $saldo) {
+			$codStatus	= "P";
+			$dataLiq	= null;
+		}else{
+			
+			$codStatus	= "L";
+			$dataLiq	= $dataRec;
+			
+			#################################################################################
+			## Verificar se o valor recebido é maior que o valor devido, caso seja,
+			## Colocar o valor a mais na conta de adiantamento do cliente
+			#################################################################################
+			if ($valorTotal > $saldo) {
+				
+				#################################################################################
+				## O Valor não deve ir para o histórico de recebimento, então deve ser retirado
+				## o valor a maior da origem, ou seja, verificar se veio de júros, mora, ou do 
+				## valor principal
+				#################################################################################
+				$saldoDet			= self::getSaldoAReceberDetalhado($oConta->getCodigo());
+				$diferenca			= $valorTotal - $saldo;
+				$valPrincipal		= $valor + $valorOutros - $valorDesconto; 
+
+				$difPrincipal		= ($valPrincipal	> $saldoDet["PRINCIPAL"])	? ($valPrincipal	- $saldoDet["PRINCIPAL"]) 	: 0; 
+				$difJuros			= ($valorJuros		> $saldoDet["JUROS"]) 		? ($valorJuros		- $saldoDet["JUROS"]) 		: 0; 
+				$difMora			= ($valorMora 		> $saldoDet["MORA"]) 		? ($valorMora		- $saldoDet["MORA"]) 		: 0;
+				
+				$difTotal			= ($difPrincipal + $difJuros + $difMora);
+				
+				if ($diferenca != $difTotal) {
+					$valor			= $valor - $diferenca;
+					if ($valor < 0)	{
+						throw new \Exception("Valor pago a maior !!!, não conseguimos descobrir a origem da diferença");
+					}
+				}else{
+					$valor			= $valor - $difPrincipal;
+					$valorJuros		= $valorJuros - $difJuros;
+					$valorMora		= $valorMora - $difMora;
+				}
+				
+				#################################################################################
+				## Atualiza os novos valores
+				#################################################################################
+				//$novoValorJuros			= ($oConta->getValorJuros() - $difJuros);
+				//$novoValorMora			= ($oConta->getValorMora() - $difMora);
+				//$oConta->setValorJuros($oConta->getValorJuros() - $difJuros);
+				//$oConta->setValorMora($oConta->getValorMora() - $difMora);
+				
+				#################################################################################
+				## Cria o adiantamento
+				#################################################################################
+				$oAdiant	= new \Entidades\ZgfinMovAdiantamento();
+				$oAdiant->setCodContaRec($oConta);
+				$oAdiant->setCodOrganizacao($oOrg);
+				$oAdiant->setCodOrigem($oOrigem);
+				$oAdiant->setCodPessoa($oConta->getCodPessoa());
+				$oAdiant->setCodTipoOperacao($oTipoOper);
+				$oAdiant->setDataAdiantamento(\DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataRec));
+				$oAdiant->setDataTransacao(new \DateTime());
+				$oAdiant->setValor($diferenca);
+				$em->persist($oAdiant);
+			}
+		}
+		
+		#################################################################################
+		## Resgatar o objeto do status
+		#################################################################################
+		$oStatus		= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => $codStatus));
 
 		if ($codContaDeb) {
 			$oContaCre		= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codContaDeb));
@@ -966,19 +1051,19 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$oFormaPag		= null;
 		}
 		
-		if (!$oBaixa)	return ('Tipo de baixa "'.$codTipoBaixa.'" não encontrado');
+		if (!$oBaixa)	throw new \Exception('Tipo de baixa "'.$codTipoBaixa.'" não encontrado');
 		
 		#################################################################################
 		## Criar o objeto das datas
 		#################################################################################
 		if (!empty($dataRec)) {
-			$dataRec = \DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataRec);
+			$dataRec 		= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataRec);
 		}else{
 			$dataRec		= null;
 		}
 		
 		if (!empty($dataLiq)) {
-			$dataLiq = \DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataLiq);
+			$dataLiq 		= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataLiq);
 		}else{
 			$dataLiq		= null;
 		}
@@ -1049,6 +1134,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param int $codConta
 	 */
 	public static function getSaldoAReceber($codConta) {
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$tr,$log;
 		
 		#################################################################################
@@ -1068,13 +1157,67 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$valorRec += floatval($histRec[$i]->getValorRecebido()) + floatval($histRec[$i]->getValorJuros()) + floatval($histRec[$i]->getValorMora()) + floatval($histRec[$i]->getValorOutros()) - floatval($histRec[$i]->getValorDesconto());
 		}
 		
-		$valorTotal		= round( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado()),2);
+		$valorTotal		= self::calculaValorTotal($oConta);
 		
 		return round($valorTotal - $valorRec,2);
 		
 	}
 	
 
+	/**
+	 * Calcular o saldo a receber detalhado por valorPrincipal, júros e mora
+	 * @param int $codConta
+	 */
+	public static function getSaldoAReceberDetalhado($codConta) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$tr,$log;
+	
+		#################################################################################
+		## Resgata as informações da conta
+		#################################################################################
+		$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codigo' => $codConta));
+	
+		if (!$oConta) {
+			return (null);
+		}
+	
+		#################################################################################
+		## Calcular valores já recebidos
+		#################################################################################
+		$histRec		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codContaRec' => $codConta));
+		$valRecPrinc	= 0;
+		$valRecJuros	= 0;
+		$valRecMora		= 0;
+			
+		for ($i = 0; $i < sizeof($histRec); $i++) {
+			$valRecPrinc	+= floatval($histRec[$i]->getValorRecebido()) + floatval($histRec[$i]->getValorOutros()) - floatval($histRec[$i]->getValorDesconto());
+			$valRecJuros	+= floatval($histRec[$i]->getValorJuros());
+			$valRecMora		+= floatval($histRec[$i]->getValorMora());
+		}
+	
+		#################################################################################
+		## Calcular valores totais
+		#################################################################################
+		$valTotPrinc		= $oConta->getValor() + $oConta->getValorOutros() - $oConta->getValorDesconto();
+		$valTotJuros		= $oConta->getValorJuros() - $oConta->getValorDescontoJuros();
+		$valTotMora			= $oConta->getValorMora() - $oConta->getValorDescontoMora();
+		
+		#################################################################################
+		## Calcular o saldo de cada valor
+		#################################################################################
+		$saldo				= array();
+		$saldo["PRINCIPAL"]	= round($valTotPrinc - $valRecPrinc,2); 
+		$saldo["JUROS"]		= round($valTotJuros - $valRecJuros,2);
+		$saldo["MORA"]		= round($valTotMora - $valRecMora,2);
+	
+		return $saldo;
+	
+	}
+	
+	
 	/**
 	 * Calcular o saldo a Receber de uma conta
 	 * @param int $codConta
@@ -1108,6 +1251,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Excluir uma conta
 	 */
 	public function exclui($codConta) {
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$_user,$log,$system,$tr;
 	
 		#################################################################################
@@ -1164,6 +1311,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Lista por Categoria
 	 */
 	public static function listaPorCategoria ($dataIni = null, $dataFim = null, $dataTipo = null,$valorIni = null, $valorFim = null,$aCategoria = array(),$aStatus = array(),$aCentroCusto = array(),$aForma = array(),$aContaDeb = array(),$descricao = null,$fornecedor = null) {
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log;
 	
 		$qb 	= $em->createQueryBuilder();
@@ -1298,6 +1449,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Lista por Centro de Custo
 	 */
 	public static function listaPorCentroCusto($dataIni = null, $dataFim = null, $dataTipo = null,$valorIni = null, $valorFim = null,$aCategoria = array(),$aStatus = array(),$aCentroCusto = array(),$aForma = array(),$aContaDeb = array(),$descricao = null,$fornecedor = null) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log;
 	
 		$qb 	= $em->createQueryBuilder();
@@ -1436,6 +1590,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param number $codConta
 	 */
 	public static function geraNossoNumero($codConta) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log;
 		
 		
@@ -1481,6 +1638,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param string $dataReferencia
 	 */
 	public static function estaAtrasada($codConta,$dataReferencia) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log;
 		
 		#################################################################################
@@ -1495,6 +1655,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$vencimento			= $oConta->getDataVencimento()->format($system->config["data"]["dateFormat"]);
 		$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$dataReferencia);
 		
+		//$log->info("estaAtrasada: Conta:".$codConta." DataReferência: ".$dataReferencia.)
+		
 		if ($numDias > 0) {
 			return true;
 		}else{
@@ -1506,12 +1668,16 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	
 	/**
 	 * Calcular o júros caso a conta esteja atrasada, senão retorna 0
-	 * @param number $codConta
+	 * @param integer $codConta
+	 * @param date $dataReferencia
 	 */
 	public static function calculaJurosPorAtraso($codConta,$dataReferencia) {
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log;
-		
-		
+				
 		#################################################################################
 		## Resgata as informaçoes da conta
 		#################################################################################
@@ -1529,21 +1695,46 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$contaRec			= $oConta->getCodConta();
 		$calculaJuros		= false;
 		if ($contaRec)		{
-			if ( ($contaRec->getCodTipo()->getCodigo() == 'CC')) {
-				if ($contaRec->getValorMora() > 0 || $contaRec->getValorJuros() > 0) {
-					$calculaJuros	= true;
-				}
-				
+			if ($contaRec->getValorMora() > 0 || $contaRec->getValorJuros() > 0 || $contaRec->getPctJuros() > 0 || $contaRec->getPctMora() > 0) {
+				$calculaJuros	= true;
 			}
 		}
 		
 		if ($calculaJuros == false) return 0;
 		
 		#################################################################################
+		## Calcular a data Base, se a conta estiver aberta, usar o vencimento
+		## Caso esteja pendente, usar a maior data de recebimento
+		#################################################################################
+		$vencimento			= $oConta->getDataVencimento();
+
+		if ($oConta->getCodStatus()->getCodigo() == "A") {
+			$dataBase		= $vencimento;
+		}elseif ($oConta->getCodStatus()->getCodigo() == "P") {
+			#################################################################################
+			## Buscar a maior data de recebimento
+			#################################################################################
+			$log->info("Vou executar o _buscaUltimaDataRecebimento");
+			$ultDataRec		= self::_buscaUltimaDataRecebimento($oConta->getCodigo());
+		
+			if (($ultDataRec) && ($ultDataRec > $vencimento)) {
+				$dataBase	= $ultDataRec;
+			}else{
+				$dataBase	= $vencimento;
+			}
+		}else{
+			#################################################################################
+			## Retornar 0, caso o status não seja A ou P
+			#################################################################################
+			return 0;
+		}
+		
+		
+		#################################################################################
 		## Calcular o número de dias em atraso
 		#################################################################################
-		$vencimento			= $oConta->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-		$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$dataReferencia);
+		$dataBase			= $dataBase->format($system->config["data"]["dateFormat"]);
+		$numDias			= \Zage\Fin\Data::numDiasAtraso($dataBase,$dataReferencia);
 		
 		#################################################################################
 		## Ajustar o número dias para zero caso não esteja vencido
@@ -1564,7 +1755,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$valor				= \Zage\App\Util::to_float($oConta->getValor());
 				$valorDesconto		= \Zage\App\Util::to_float($oConta->getValorDesconto());
 			}else{
-				$valor				= \Zage\App\Util::to_float($this->getSaldoAReceber($oConta->getCodigo()));
+				$valor				= \Zage\App\Util::to_float(self::getSaldoAReceber($oConta->getCodigo()));
 				$valorDesconto		= 0;
 			}
 			
@@ -1574,14 +1765,14 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			## Dar Prioridada aos valores, depois aos percentuais
 			#################################################################################
 			if ($valJuros) {
-				$valorJuros	= $valJuros;
+				$valorJuros	= ($valJuros/30)*$numDias;
 			}elseif ($pctJuros) {
 				$valorJuros	= (($valorConta * ($pctJuros/100))/30)*$numDias;
 			}else{
 				$valorJuros	= 0;
 			}
 		
-			return $valorJuros;
+			return round($valorJuros,2);
 		}else{
 			return 0;
 		}
@@ -1590,11 +1781,15 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	
 	/**
 	 * Calcular a mora caso a conta esteja atrasada, senão retorna 0
-	 * @param number $codConta
+	 * @param integer $codConta
+	 * @param date $dataReferencia
 	 */
 	public static function calculaMoraPorAtraso($codConta,$dataReferencia) {
+
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log;
-		
 		
 		#################################################################################
 		## Resgata as informaçoes da conta
@@ -1613,22 +1808,46 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$contaRec			= $oConta->getCodConta();
 		$calculaMora		= false;
 		if ($contaRec)		{
-			if ( ($contaRec->getCodTipo()->getCodigo() == 'CC')) {
-				if ($contaRec->getValorMora() > 0 || $contaRec->getValorJuros() > 0 || $contaRec->getPctJuros() > 0 || $contaRec->getPctMora() > 0) {
-					$calculaMora	= true;
-				}
-	
+			if ($contaRec->getValorMora() > 0 || $contaRec->getValorJuros() > 0 || $contaRec->getPctJuros() > 0 || $contaRec->getPctMora() > 0) {
+				$calculaMora	= true;
 			}
 		}
 	
 		if ($calculaMora == false) return 0;
-	
+
+		#################################################################################
+		## Calcular a data Base, se a conta estiver aberta, usar o vencimento
+		## Caso esteja pendente, usar a maior data de recebimento
+		#################################################################################
+		$vencimento			= $oConta->getDataVencimento();
+
+		if ($oConta->getCodStatus()->getCodigo() == "A") {
+			$dataBase		= $vencimento;
+		}elseif ($oConta->getCodStatus()->getCodigo() == "P") {
+			#################################################################################
+			## Buscar a maior data de recebimento
+			#################################################################################
+			$ultDataRec		= self::_buscaUltimaDataRecebimento($oConta->getCodigo());
+		
+			if (($ultDataRec) && ($ultDataRec > $vencimento)) {
+				$dataBase	= $ultDataRec;
+			}else{
+				$dataBase	= $vencimento;
+			}
+		}else{
+			#################################################################################
+			## Retornar 0, caso o status não seja A ou P
+			#################################################################################
+			return 0;
+		}
+		
+		
 		#################################################################################
 		## Calcular o número de dias em atraso
 		#################################################################################
-		$vencimento			= $oConta->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-		$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$dataReferencia);
-	
+		$dataBase			= $dataBase->format($system->config["data"]["dateFormat"]);
+		$numDias			= \Zage\Fin\Data::numDiasAtraso($dataBase,$dataReferencia);
+		
 		#################################################################################
 		## Ajustar o número dias para zero caso não esteja vencido
 		#################################################################################
@@ -1648,7 +1867,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$valor				= \Zage\App\Util::to_float($oConta->getValor());
 				$valorDesconto		= \Zage\App\Util::to_float($oConta->getValorDesconto());
 			}else{
-				$valor				= \Zage\App\Util::to_float($this->getSaldoAReceber($oConta->getCodigo()));
+				$valor				= \Zage\App\Util::to_float(self::getSaldoAReceber($oConta->getCodigo()));
 				$valorDesconto		= 0;
 			}
 				
@@ -1665,7 +1884,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$valorMora	= 0;
 			}
 				
-			return $valorMora;
+			return round($valorMora,2);
 		}else{
 			return 0;
 		}
@@ -1678,6 +1897,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param number $nossoNumero
 	 */
 	public static function buscaPorNossoNumero ($codContaCorrente,$nossoNumero) {
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
@@ -1704,6 +1927,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Substitui contas
 	 */
 	public function substitui () {
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log,$tr;
 	
 		#################################################################################
@@ -1751,6 +1978,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Faz a substituição de uma conta
 	 */
 	private function _substitui($oConta,$codGrupoSubstituicao) {
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$_user,$log,$system,$tr;
 	
 		#################################################################################
@@ -1777,7 +2008,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			#################################################################################
 			## Calcula o valor a substituir
 			#################################################################################
-			$valorSub	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$valorSub	= self::calculaValorTotal($oConta);
 	
 			#################################################################################
 			## Resgata o objeto do novo status
@@ -1813,7 +2044,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			#################################################################################
 			$rateios	= $em->getRepository('Entidades\ZgfinContaReceberRateio')->findBy(array('codContaRec' => $oConta->getCodigo()));
 			$numRateios	= sizeof($rateios);
-			$valorTotal	= ( floatval($oConta->getValor()) + floatval($oConta->getValorJuros()) + floatval($oConta->getValorMora()) + floatval($oConta->getValorOutros()) - floatval($oConta->getValorDesconto()) - floatval($oConta->getValorCancelado())  );
+			$valorTotal	= self::calculaValorTotal($oConta);
 			$novoValor	= $valorTotal - $valorSub;
 			$somatorio	= 0;
 	
@@ -1863,6 +2094,68 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	
 	}
 	
+	/**
+	 * Calcular o valor total da conta
+	 * @param \Entidades\ZgfinContaReceber $oConta
+	 */
+	public static function calculaValorTotal(\Entidades\ZgfinContaReceber $oConta) {
+		
+		#################################################################################
+		## Calcula o valor do Júros
+		#################################################################################
+		$valJuros		= $oConta->getValorJuros() - $oConta->getValorDescontoJuros();
+		$valJuros		= ($valJuros < 0) ? 0 : $valJuros;
+
+		#################################################################################
+		## Calcula o valor da Mora
+		#################################################################################
+		$valMora		= $oConta->getValorMora() - $oConta->getValorDescontoMora();
+		$valMora		= ($valMora < 0) ? 0 : $valMora;
+		
+		#################################################################################
+		## Calcula o valor total da conta
+		#################################################################################
+		$valorTotal			= \Zage\App\Util::to_float($oConta->getValor() + $valJuros + $valMora + $oConta->getValorOutros() - ($oConta->getValorCancelado() + $oConta->getValorDesconto()));
+		
+		return $valorTotal;
+	}
+	
+
+	/**
+	 * Buscar a maior (última) data de recebimento de uma conta
+	 * @param number $codConta
+	 */
+	public static function _buscaUltimaDataRecebimento ($codConta) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('h')
+			->from('\Entidades\ZgfinHistoricoRec','h')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('h.codContaRec'		, ':codConta')
+			))
+			->orderBy('h.dataRecebimento','DESC')
+			->setParameter('codConta'		, $codConta);
+			$query 		= $qb->getQuery();
+			$return		= $query->getResult();
+
+			if (($return) && ($return[0]->getDataRecebimento())) {
+				return ($return[0]->getDataRecebimento());
+			}else{
+				return null;
+			}
+			
+			
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
 	
 	public function _setCodConta($codigo) {
 		$this->_codigo	= $codigo;

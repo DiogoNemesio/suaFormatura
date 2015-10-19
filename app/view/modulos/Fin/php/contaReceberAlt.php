@@ -67,6 +67,8 @@ $valorMora		= \Zage\App\Util::toPHPNumber($info->getValorMora());
 $valorDesconto	= \Zage\App\Util::toPHPNumber($info->getValorDesconto());
 $valorCancelado	= \Zage\App\Util::toPHPNumber($info->getValorCancelado());
 $valorOutros	= \Zage\App\Util::toPHPNumber($info->getValorOutros());
+$valorDescJuros	= \Zage\App\Util::toPHPNumber($info->getValorDescontoJuros());
+$valorDescMora	= \Zage\App\Util::toPHPNumber($info->getValorDescontoMora());
 $dataEmissao	= ($info->getDataEmissao() != null) 		? $info->getDataEmissao()->format($system->config["data"]["dateFormat"]) : null;
 $dataLiq		= ($info->getDataLiquidacao() != null) 		? $info->getDataLiquidacao()->format($system->config["data"]["dateFormat"]) : null;
 $dataVenc		= ($info->getDataVencimento() != null) 		? $info->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
@@ -350,6 +352,9 @@ $tpl->set('VALOR_DESCONTO'		,\Zage\App\Util::formataDinheiro($valorDesconto));
 $tpl->set('VALOR_CANCELADO'		,\Zage\App\Util::formataDinheiro($valorCancelado));
 $tpl->set('VALOR_OUTROS'		,\Zage\App\Util::formataDinheiro($valorOutros));
 $tpl->set('VALOR_TOTAL'			,$valorTotal);
+$tpl->set('VALOR_DESCONTO_JUROS',\Zage\App\Util::formataDinheiro($valorDescJuros));
+$tpl->set('VALOR_DESCONTO_MORA'	,\Zage\App\Util::formataDinheiro($valorDescMora));
+
 $tpl->set('DATA_EMISSAO'		,$dataEmissao);
 $tpl->set('DATA_LIQ'			,$dataLiq);
 $tpl->set('DATA_VENC'			,$dataVenc);

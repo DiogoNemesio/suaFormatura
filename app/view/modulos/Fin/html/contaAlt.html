@@ -383,11 +383,13 @@ function checkNomeAlt() {
 	}
 }
 
+
 function zgCheckVerificador() {
 	var vAgencia = $('#codAgenciaID').val();
 
-	var vBanco	 = JSON.parse(%ARRAY_BANCO%);
-	
+	var vBanco	 = JSON.parse('%ARRAY_BANCO%');
+	alert("O BANCO DA AGÊNCIA: "+vAgencia+' é: '+vBanco[vAgencia]);
+
 	console.log(vBanco);
 }
 

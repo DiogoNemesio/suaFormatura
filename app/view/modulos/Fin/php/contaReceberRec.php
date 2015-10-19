@@ -45,11 +45,7 @@ if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 ## Resgata as informações do banco
 #################################################################################
 $oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
-
-if (!$oConta) {
-	\Zage\App\Erro::halt('Conta não encontrada');
-	
-}
+if (!$oConta) \Zage\App\Erro::halt('Conta não encontrada');
 
 #################################################################################
 ## Valida o status da conta
@@ -64,35 +60,60 @@ switch ($oConta->getCodStatus()->getCodigo()) {
 		break;
 }
 
+#################################################################################
+## Verifica se a conta pode ser recebida
+#################################################################################
 if (!$podePag) {
 	\Zage\App\Erro::halt($tr->trans('Conta não pode ser confirmada, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
 }
 
+#################################################################################
+## Formata as informações da conta 
+#################################################################################
 $codFormaPag		= ($oConta->getCodFormaPagamento() != null) ? $oConta->getCodFormaPagamento()->getCodigo() : null;
 $codContaPag		= ($oConta->getCodConta() != null) ? $oConta->getCodConta()->getCodigo() : null;
+$dataRec			= date($system->config["data"]["dateFormat"]);
+$vencimento			= ($oConta->getDataVencimento() != null) 	? $oConta->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
+$documento			= "";
 
-$dataRec			= ($oConta->getDataVencimento() != null) 	? $oConta->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
 
+#################################################################################
+## Calcula o valor pendente de recebimento
+#################################################################################
 $contaPag			= new \Zage\Fin\ContaReceber();
-
+$saldoDet			= $contaPag->getSaldoAReceberDetalhado($codConta);
 if (!$contaPag->getValorJaRecebido($codConta)) {
 	$valor				= \Zage\App\Util::toPHPNumber($oConta->getValor());
-	$valorJuros			= \Zage\App\Util::toPHPNumber($oConta->getValorJuros());
-	$valorMora			= \Zage\App\Util::toPHPNumber($oConta->getValorMora());
 	$valorDesconto		= \Zage\App\Util::toPHPNumber($oConta->getValorDesconto());
 	$valorOutros		= \Zage\App\Util::toPHPNumber($oConta->getValorOutros());
-	
 }else{
-	$valor				= \Zage\App\Util::toPHPNumber($contaPag->getSaldoAReceber($codConta));
-	$valorJuros			= 0;
-	$valorMora			= 0;
+	$valor				= \Zage\App\Util::toPHPNumber($saldoDet["PRINCIPAL"]);
 	$valorDesconto		= 0;
 	$valorOutros		= 0;
 }
 
-$documento				= "";
+#################################################################################
+## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+#################################################################################
+if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRec) == true) {
+
+	#################################################################################
+	## Calcula os valor através da data de referência
+	#################################################################################
+	$valorJuros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($oConta->getCodigo(), $dataRec);
+	$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($oConta->getCodigo(), $dataRec);
+	
+	$valorJuros		+= $saldoDet["JUROS"];
+	$valorMora		+= $saldoDet["MORA"];
+}else{
+	$valorJuros			= \Zage\App\Util::toPHPNumber($oConta->getValorJuros());
+	$valorMora			= \Zage\App\Util::toPHPNumber($oConta->getValorMora());
+}
 
 
+#################################################################################
+## Gerenciar as URls
+#################################################################################
 if (!isset($urlVoltar) || (!$urlVoltar)) {
 	$urlVoltar			= ROOT_URL . "/Fin/contaReceberLis.php?id=".$id;
 }else{
@@ -167,6 +188,7 @@ $tpl->set('COD_CONTA'			,$codConta);
 $tpl->set('FORMAS_PAG'			,$oFormaPag);
 $tpl->set('CONTAS_CRE'			,$oConta);
 $tpl->set('DATA_REC'			,$dataRec);
+$tpl->set('VENCIMENTO'			,$vencimento);
 $tpl->set('VALOR'				,\Zage\App\Util::formataDinheiro($valor));
 $tpl->set('VALOR_JUROS'			,\Zage\App\Util::formataDinheiro($valorJuros));
 $tpl->set('VALOR_MORA'			,\Zage\App\Util::formataDinheiro($valorMora));
@@ -175,9 +197,11 @@ $tpl->set('VALOR_OUTROS'		,\Zage\App\Util::formataDinheiro($valorOutros));
 $tpl->set('DOCUMENTO'			,$documento);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+$tpl->set('TEMP_JUROS'			,\Zage\App\Util::toMysqlNumber($valorJuros));
+$tpl->set('TEMP_MORA'			,\Zage\App\Util::toMysqlNumber($valorMora));
+
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
-

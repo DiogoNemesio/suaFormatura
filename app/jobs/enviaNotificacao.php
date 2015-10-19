@@ -41,12 +41,10 @@ for ($i = 0; $i < sizeof($notificacoes); $i++) {
 	#################################################################################
 	## Chama as rotinas de envio
 	#################################################################################
-	$log->info("Chamada das funções de envio");
 	if ($notificacoes[$i]->getIndViaEmail()) 		$okE	= \Zage\App\Notificacao::_notificaEmail($notificacoes[$i]->getCodigo());
 	if ($notificacoes[$i]->getIndViaWa()) 			$okW	= \Zage\App\Notificacao::_notificaWa($notificacoes[$i]->getCodigo());
 	
 	$ok		= ($okE == 1 && $okW == 1) ? 1 : 0;
-	$log->info("Retorno das funções: OK: ".$ok. " OKE: ".$okE. " OKW: ".$okW);
 	
 	#################################################################################
 	## Controle de processamento

@@ -43,16 +43,6 @@ class ZgfmtOrcSubcategoria
     private $indAtivo;
 
     /**
-     * @var \Entidades\ZgfmtEventoTipo
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEventoTipo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TIPO_EVENTO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codTipoEvento;
-
-    /**
      * @var \Entidades\ZgfmtOrcSubcategoria
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrcSubcategoria")
@@ -71,6 +61,16 @@ class ZgfmtOrcSubcategoria
      * })
      */
     private $codOrganizacao;
+
+    /**
+     * @var \Entidades\ZgfmtEventoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEventoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_EVENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoEvento;
 
 
     /**
@@ -153,29 +153,6 @@ class ZgfmtOrcSubcategoria
     }
 
     /**
-     * Set codTipoEvento
-     *
-     * @param \Entidades\ZgfmtEventoTipo $codTipoEvento
-     * @return ZgfmtOrcSubcategoria
-     */
-    public function setCodTipoEvento(\Entidades\ZgfmtEventoTipo $codTipoEvento = null)
-    {
-        $this->codTipoEvento = $codTipoEvento;
-
-        return $this;
-    }
-
-    /**
-     * Get codTipoEvento
-     *
-     * @return \Entidades\ZgfmtEventoTipo 
-     */
-    public function getCodTipoEvento()
-    {
-        return $this->codTipoEvento;
-    }
-
-    /**
      * Set codOrcSubcategoria
      *
      * @param \Entidades\ZgfmtOrcSubcategoria $codOrcSubcategoria
@@ -219,5 +196,28 @@ class ZgfmtOrcSubcategoria
     public function getCodOrganizacao()
     {
         return $this->codOrganizacao;
+    }
+
+    /**
+     * Set codTipoEvento
+     *
+     * @param \Entidades\ZgfmtEventoTipo $codTipoEvento
+     * @return ZgfmtOrcSubcategoria
+     */
+    public function setCodTipoEvento(\Entidades\ZgfmtEventoTipo $codTipoEvento = null)
+    {
+        $this->codTipoEvento = $codTipoEvento;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoEvento
+     *
+     * @return \Entidades\ZgfmtEventoTipo 
+     */
+    public function getCodTipoEvento()
+    {
+        return $this->codTipoEvento;
     }
 }

@@ -4,8 +4,10 @@
 	<h4 class=""><i class="fa fa-check red"></i>&nbsp;%TITULO%</h4>
 </div>
 <div class="modal-body" style="overflow-y: scroll; height: 420px;">
-	<input type="hidden" name="codConta" value="%COD_CONTA%">
+	<input type="hidden" name="codConta" value="%COD_CONTA%" id="codContaID">
 	<input type="hidden" name="id" value="%ID%">
+	<input type="hidden" id="tJurosID" value='%TEMP_JUROS%'>
+	<input type="hidden" id="tMoraID" value='%TEMP_MORA%'>
 	<div class="row">
     	<div class="col-sm-12">
 			<div class="form-group">
@@ -38,7 +40,7 @@
 		    	<label class="col-sm-3 control-label" for="dataRecID">Data do Rec.</label>
     			<div class="input-group col-sm-8">
 	    			<span tabindex="99003" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Data de efetivação do recebimento"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control datepicker" id="dataRecID" type="text" name="dataRec" maxlength="10" value="%DATA_REC%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+	    			<input class="form-control datepicker" id="dataRecID" type="text" name="dataRec" maxlength="10" value="%DATA_REC%" onchange="CRRecAtualizaJurosMora();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 		    	</div>
 		    </div>
     	</div>
@@ -60,7 +62,7 @@
 		    	<label class="col-sm-3 control-label" for="valorJurosID">Júros</label>
     			<div class="input-group col-sm-8">
 	    			<span tabindex="99005" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Júros"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="valorJurosID" type="text" name="valorJuros" maxlength="20" value="%VALOR_JUROS%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+	    			<input class="form-control" id="valorJurosID" type="text" name="valorJuros" maxlength="20" value="%VALOR_JUROS%" onchange="CRRecAtualizaPerdaoJurosMora();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
 		    	</div>
 		    </div>
     	</div>
@@ -71,11 +73,26 @@
 		    	<label class="col-sm-3 control-label" for="valorMoraID">Mora</label>
     			<div class="input-group col-sm-8">
 	    			<span tabindex="99006" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor da Mora"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="valorMoraID" type="text" name="valorMora" maxlength="20" value="%VALOR_MORA%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+	    			<input class="form-control" id="valorMoraID" type="text" name="valorMora" maxlength="20" value="%VALOR_MORA%" onchange="CRRecAtualizaPerdaoJurosMora();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
 		    	</div>
 		    </div>
     	</div>
     </div>
+	<div class="row hidden" id="divFlagPerdoaID">
+		<div class="col-sm-12">
+			<div class="form-group">
+	  			<label class="col-sm-3 control-label">
+	  				<input name="flagPerdoa" id="flagPerdoaID" class="ace ace-switch " value="1" type="checkbox" />
+	  				<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+	  			</label>
+	   			<div class="input-group col-sm-8 pull-left">
+	   				<span tabindex="99007" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para perdoar o restante do júros/mora que não estão sendo pagos"></i></span>
+	   				<input readonly type="text" class="form-control" placeholder="Perdoar júros ?" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+			    </div>
+				<div class="help-block col-sm-1 inline" id="divHelpFlagPerdoaID"></div>
+			</div>
+    	</div>
+	</div>
     <div class="row">
 		<div class="col-sm-12">
 			<div class="form-group">
@@ -176,6 +193,121 @@ $(document).one('ajaxloadstart.page', function(e) {
 	$('.multiselect').multiselect('destroy');
 });
 
+function CRRecAtualizaJurosMora() {
+	var $vencimento			= '%VENCIMENTO%';
+	var	$dataRec			= $('#dataRecID').val();
+	var $dia,$mes,$ano,$temp,$oDataRec,$oVenc;
+	
+	
+	/**
+	 * Cria os objetos Date
+	 */
+	$temp		= $vencimento.split('/');
+	$dia		= parseInt($temp[0]);
+	$mes		= parseInt($temp[1]) - 1;
+	$ano		= parseInt($temp[2]);
 
+	$oVenc		= new Date($ano,$mes,$dia);
+
+	$temp		= $dataRec.split('/');
+	$dia		= parseInt($temp[0]);
+	$mes		= parseInt($temp[1]) - 1;
+	$ano		= parseInt($temp[2]);
+
+	$oDataRec	= new Date($ano,$mes,$dia);
+	
+	if ($oVenc > $oDataRec) {
+		$('#valorJurosID').val(0);
+		$('#valorMoraID').val(0);
+	}else{
+		$.ajax({
+			url: "%ROOT_URL%/Fin/getJurosMoraContaReceber.dp.php",
+			data:  { codConta: $('#codContaID').val(), dataRef: $dataRec},
+			success: function(data) {
+				var $_juros	= data["valorJuros"];
+				var $_mora	= data["valorMora"];
+
+				$_juros		= parseFloat($_juros);
+				$_mora		= parseFloat($_mora);
+				
+				$('#tJurosID').val($_juros);
+				$('#tMoraID').val($_mora);
+
+				var opt = {
+					symbol : "",
+					decimal : ",",
+					thousand: ".",
+					precision : 2,
+					format: "%s%v"
+				};
+
+				$_juros	= accounting.formatMoney($_juros, opt);
+				$_mora	= accounting.formatMoney($_mora, opt);
+
+				$('#valorJurosID').val($_juros);
+				$('#valorMoraID').val($_mora);
+		    },
+			dataType: 'json'
+		});
+	}
+	
+	$('#valorJurosID').trigger('change');
+	$('#valorMoraID').trigger('change');
+
+	//divFlagPerdoaID
+}
+
+
+function CRRecAtualizaPerdaoJurosMora() {
+	var $vencimento			= '%VENCIMENTO%';
+	var	$dataRec			= $('#dataRecID').val();
+	var	$valorJuros			= $('#valorJurosID').val();
+	var	$valorMora			= $('#valorMoraID').val();
+	var $tJuros				= $('#tJurosID').val();
+	var $tMora				= $('#tMoraID').val();
+	var $dia,$mes,$ano,$temp,$oDataRec,$oVenc;
+
+	//$tJuros			= $tJuros.replace(".", "").replace(",",".");
+	//$tMora			= $tMora.replace(".", "").replace(",",".");
+	$valorJuros		= $valorJuros.replace(".", "").replace(",",".");
+	$valorMora		= $valorMora.replace(".", "").replace(",",".");
+
+	$tJuros			= parseFloat($tJuros);
+	$tMora			= parseFloat($tMora);
+	$valorJuros		= parseFloat($valorJuros);
+	$valorMora		= parseFloat($valorMora);
+	
+	if (!$valorJuros || isNaN($valorJuros))	$valorJuros	= parseFloat(0);
+	if (!$valorMora || isNaN($valorMora))	$valorMora	= parseFloat(0);
+
+	/**
+	 * Cria os objetos Date
+	 */
+	$temp		= $vencimento.split('/');
+	$dia		= parseInt($temp[0]);
+	$mes		= parseInt($temp[1]) - 1;
+	$ano		= parseInt($temp[2]);
+
+	$oVenc		= new Date($ano,$mes,$dia);
+
+	$temp		= $dataRec.split('/');
+	$dia		= parseInt($temp[0]);
+	$mes		= parseInt($temp[1]) - 1;
+	$ano		= parseInt($temp[2]);
+
+	$oDataRec	= new Date($ano,$mes,$dia);
+	
+	//alert('tJuros: '+$tJuros+" ValorJuros: "+$valorJuros+" tMora: "+$tMora+" ValorMora: "+$valorMora);
+	
+	if ($oVenc < $oDataRec) {
+		if ( ($tJuros > $valorJuros) || ($tMora > $valorMora)) {
+			$('#divFlagPerdoaID').removeClass("hidden");
+		}else{
+			$('#divFlagPerdoaID').addClass("hidden");
+		}
+	}else{
+		$('#divFlagPerdoaID').addClass("hidden");
+	}
+}
 
 </script>

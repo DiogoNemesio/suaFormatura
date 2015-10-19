@@ -173,6 +173,26 @@
 								<div class="help-block col-sm-5 inline" id="divHelpMoraID"></div>
 					    	</div>
 						</div>
+						<div class="row hidden" id="divDescontoJurosID">
+							<div class="form-group col-sm-12">
+								<label class="col-sm-3 control-label">Desconto do Júros</label>
+				    			<div class="input-group col-sm-4 pull-left">
+				    				<span tabindex="99010" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Desconto do Júros"></i></span>
+					    			<input onchange="atualizaInfoValorCRAlt()" class="form-control" id="valorDescontoJurosID" type="text" name="valorDescontoJuros" maxlength="20" value="%VALOR_DESCONTO_JUROS%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" readonly>
+							    </div>
+								<div class="help-block col-sm-5 inline" id="divHelpDescontoJurosID"></div>
+					    	</div>
+						</div>
+						<div class="row hidden" id="divDescontoMoraID">
+							<div class="form-group col-sm-12">
+								<label class="col-sm-3 control-label">Desconto de Mora</label>
+				    			<div class="input-group col-sm-4 pull-left">
+				    				<span tabindex="99010" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Desconto da Mora"></i></span>
+					    			<input onchange="atualizaInfoValorCRAlt()" class="form-control" id="valorDescontoMoraID" type="text" name="valorDescontoMora" maxlength="20" value="%VALOR_DESCONTO_MORA%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" readonly>
+							    </div>
+								<div class="help-block col-sm-5 inline" id="divHelpDescontoMoraID"></div>
+					    	</div>
+						</div>
 						<div class="row">
 							<div class="form-group col-sm-12" id="divOutrosID">
 								<label class="col-sm-3 control-label">Outros Valores</label>
@@ -448,6 +468,18 @@
 
 
 <script type="text/javascript" charset="%CHARSET%">
+
+var $valorDescontoJuros	= parseFloat($('#valorDescontoJurosID').val());
+var $valorDescontoMora	= parseFloat($('#valorDescontoMoraID').val());
+
+if ($valorDescontoJuros > 0) {
+	$('#divDescontoJurosID').removeClass("hidden");
+}
+
+if ($valorDescontoMora > 0) {
+	$('#divDescontoMoraID').removeClass("hidden");
+}
+
 
 $( "#zgDivModalDialogID" ).css( "width", function( index ) {
 	return "74%";
