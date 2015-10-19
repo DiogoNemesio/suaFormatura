@@ -174,13 +174,21 @@ function zgCheckVerificador() {
 	var vBanco	= $('#_codBancoID').val();
 	var length 	= agenciaBancoDigito(vBanco);
 
-	if (length != 0) {
+	if (length['DV'] != 0) {
 		$('#agenciaDVID').val("");
 		$('#agenciaDVID').removeAttr("readonly");
-		$('#agenciaDVID').attr('maxlength', length);
+		$('#agenciaDVID').attr('maxlength', length['DV']);
 	}else{
 		$('#agenciaDVID').attr("readonly", "readonly");
 		$('#agenciaDVID').val("");
+	}
+	
+	if (length['AG'] != 0) {
+		$('#agenciaID').val("");
+		$('#agenciaID').attr('maxlength', length['AG']);
+	}else{
+		$('#agenciaID').val("");
+		$('#agenciaID').attr('maxlength', 8);
 	}
 }
 
