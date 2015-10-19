@@ -36,7 +36,6 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 
-
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
@@ -125,7 +124,11 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
+for ($i = 0; $i < sizeof($aAgencia); $i++) {
+	$arrayBanco[$aAgencia[$i]->getCodigo()] = $aAgencia[$i]->getCodBanco()->getCodBanco();
+}
 
+$log->debug($arrayBanco);
 #################################################################################
 ## Url Voltar
 #################################################################################
@@ -168,6 +171,7 @@ $tpl->set('COD_TIPO_MORA'		,$codTipoMora);
 $tpl->set('PCT_JUROS'			,$pctJuros);
 $tpl->set('PCT_MORA'			,$pctMora);
 $tpl->set('INSTRUCAO'			,$instrucao);
+$tpl->set('ARRAY_BANCO'			,json_encode($arrayBanco));
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################

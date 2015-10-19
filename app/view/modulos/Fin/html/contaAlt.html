@@ -63,7 +63,7 @@
 											<label class="col-sm-3 control-label" for="codAgenciaID">Agência</label>
 												<div class="input-group col-sm-8 pull-left">
 							    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a agência desta conta."></i></span>
-												<select class="select2" style="width:100%;" id="codAgenciaID" name="codAgencia" placeholder="Selecione a agência" data-rel="select2">
+												<select class="select2" style="width:100%;" id="codAgenciaID" name="codAgencia" placeholder="Selecione a agência" data-rel="select2" onchange="zgCheckVerificador();">
 												%AGENCIAS%
 												</select>
 											</div>
@@ -381,6 +381,14 @@ function checkNomeAlt() {
 		$('#divHelpNomeID').html('&nbsp;');
 		return true;
 	}
+}
+
+function zgCheckVerificador() {
+	var vAgencia = $('#codAgenciaID').val();
+
+	var vBanco	 = JSON.parse(%ARRAY_BANCO%);
+	
+	console.log(vBanco);
 }
 
 function validaContaAlt() {
