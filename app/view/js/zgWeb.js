@@ -249,19 +249,21 @@ function agenciaBancoDigito(codAgencia){
 	return valor;
 }
 
-function contaBancoDigito(codConta){
+function contaBancoDigito(codBanco){
 	var valor = new Array();
 	
-	if (codConta == '001' || codConta == '104') {
+	if (codBanco == '001' || codBanco == '104') {
 		valor['CC'] = 8;
-	}else if(codConta == '041' || codConta == '237' || codConta = '356'){
+	}else if(codBanco == '041' || codBanco == '237' || codBanco == '356'){
 		valor['CC'] = 7;
-	}else if(codConta == '033' || codConta == '399'){
+	}else if(codBanco == '033' || codBanco == '399'){
 		valor['CC'] = 6;
-	}else if(codConta == '341'){
+	}else if(codBanco == '341'){
 		valor['CC'] = 5;
-	}else if(codConta == '745'){
+	}else if(codBanco == '745'){
 		valor['CC'] = 10;
+	}else{
+		valor['CC'] = 0;
 	}
 	
 	return valor;
