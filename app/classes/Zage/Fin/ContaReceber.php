@@ -874,9 +874,20 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			return("Falta de parâmetros (DATA_REC)");
 		}
 		
-		if ( (!isset($valor) || empty($valor)) && (!isset($valorJuros) || empty($valorJuros)) && (!isset($valorMora) || empty($valorMora)) ) {
+		if ( (!isset($valor) || empty($valor)) && (!isset($valorJuros) || empty($valorJuros)) && (!isset($valorMora) || empty($valorMora)) && (!isset($valorOutros) || empty($valorOutros)) ) {
 			return($tr->trans("Pelo menos um dos valores deve ser informado !!"));
 		}
+
+		#################################################################################
+		## Validação dos valores, não pode receber valores negativos
+		#################################################################################
+		if ($valor 			< 0)	return($tr->trans("Campo valor não pode ser negativo"));
+		if ($valorJuros 	< 0)	return($tr->trans("Campo valor de júros não pode ser negativo"));
+		if ($valorMora 		< 0)	return($tr->trans("Campo valor de mora não pode ser negativo"));
+		if ($valorOutros 	< 0)	return($tr->trans("Campo Outros valores não pode ser negativo"));
+		if ($valorDesconto 	< 0)	return($tr->trans("Campo Desconto não pode ser negativo"));
+		if ($valorDescJuros < 0)	return($tr->trans("Campo Desconto de júros não pode ser negativo"));
+		if ($valorDescMora 	< 0)	return($tr->trans("Campo Desconto de mora não pode ser negativo"));
 		
 		$valData	= new \Zage\App\Validador\DataBR();
 		
@@ -982,7 +993,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			## Verificar se o valor recebido é maior que o valor devido, caso seja,
 			## Colocar o valor a mais na conta de adiantamento do cliente
 			#################################################################################
-			if ($valorTotal > $saldo) {
+			if (($valorTotal > $saldo) && ($oConta->getCodPessoa())) {
 				
 				#################################################################################
 				## O Valor não deve ir para o histórico de recebimento, então deve ser retirado
@@ -993,9 +1004,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$diferenca			= $valorTotal - $saldo;
 				$valPrincipal		= $valor + $valorOutros - $valorDesconto; 
 
-				$difPrincipal		= ($valPrincipal	> $saldoDet["PRINCIPAL"])	? ($valPrincipal	- $saldoDet["PRINCIPAL"]) 	: 0; 
-				$difJuros			= ($valorJuros		> $saldoDet["JUROS"]) 		? ($valorJuros		- $saldoDet["JUROS"]) 		: 0; 
-				$difMora			= ($valorMora 		> $saldoDet["MORA"]) 		? ($valorMora		- $saldoDet["MORA"]) 		: 0;
+				$difPrincipal		= ($valPrincipal	> $saldoDet["PRINCIPAL"] + $saldoDet["OUTROS"]	)	? ($valPrincipal	- ($saldoDet["PRINCIPAL"] + $saldoDet["OUTROS"])) 	: 0; 
+				$difJuros			= ($valorJuros		> $saldoDet["JUROS"]							) 	? ($valorJuros		- $saldoDet["JUROS"]) 								: 0; 
+				$difMora			= ($valorMora 		> $saldoDet["MORA"]								) 	? ($valorMora		- $saldoDet["MORA"]) 								: 0;
 				
 				$difTotal			= ($difPrincipal + $difJuros + $difMora);
 				
@@ -1193,17 +1204,19 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$valRecMora		= 0;
 			
 		for ($i = 0; $i < sizeof($histRec); $i++) {
-			$valRecPrinc	+= floatval($histRec[$i]->getValorRecebido()) + floatval($histRec[$i]->getValorOutros()) - floatval($histRec[$i]->getValorDesconto());
+			$valRecPrinc	+= floatval($histRec[$i]->getValorRecebido()) - floatval($histRec[$i]->getValorDesconto());
 			$valRecJuros	+= floatval($histRec[$i]->getValorJuros());
 			$valRecMora		+= floatval($histRec[$i]->getValorMora());
+			$valRecOutros	+= floatval($histRec[$i]->getValorOutros());
 		}
 	
 		#################################################################################
 		## Calcular valores totais
 		#################################################################################
-		$valTotPrinc		= $oConta->getValor() + $oConta->getValorOutros() - $oConta->getValorDesconto();
+		$valTotPrinc		= $oConta->getValor() - $oConta->getValorDesconto();
 		$valTotJuros		= $oConta->getValorJuros() - $oConta->getValorDescontoJuros();
 		$valTotMora			= $oConta->getValorMora() - $oConta->getValorDescontoMora();
+		$valTotOutros		= $oConta->getValorOutros();
 		
 		#################################################################################
 		## Calcular o saldo de cada valor
@@ -1212,6 +1225,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$saldo["PRINCIPAL"]	= round($valTotPrinc - $valRecPrinc,2); 
 		$saldo["JUROS"]		= round($valTotJuros - $valRecJuros,2);
 		$saldo["MORA"]		= round($valTotMora - $valRecMora,2);
+		$saldo["OUTROS"]	= round($valTotOutros - $valRecOutros,2);
 	
 		return $saldo;
 	
@@ -1714,7 +1728,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			#################################################################################
 			## Buscar a maior data de recebimento
 			#################################################################################
-			$log->info("Vou executar o _buscaUltimaDataRecebimento");
+			//$log->info("Vou executar o _buscaUltimaDataRecebimento");
 			$ultDataRec		= self::_buscaUltimaDataRecebimento($oConta->getCodigo());
 		
 			if (($ultDataRec) && ($ultDataRec > $vencimento)) {
@@ -1824,6 +1838,14 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		if ($oConta->getCodStatus()->getCodigo() == "A") {
 			$dataBase		= $vencimento;
 		}elseif ($oConta->getCodStatus()->getCodigo() == "P") {
+
+			#################################################################################
+			## Retornar 0, pois a mora é uma cobrança única e já compôs o saldo devedor
+			## no campo valorMora da tabela
+			#################################################################################
+			return 0;
+				
+			
 			#################################################################################
 			## Buscar a maior data de recebimento
 			#################################################################################

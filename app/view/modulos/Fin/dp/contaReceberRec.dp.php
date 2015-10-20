@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$log,$system;
+global $em,$log,$system,$tr;
 
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
@@ -32,23 +32,28 @@ $err	= null;
 
 if (!isset($codConta) || empty($codConta)) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Falta de parâmetros (COD_CONTA)"))));
-	$err	= 1;
 }
 
 if (!isset($codFormaPag) || empty($codFormaPag)) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Forma de Pagamento não informado !!!"))));
-	$err	= 1;
 }
 
 if (!isset($dataRec) || empty($dataRec)) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Falta de parâmetros (DATA_REC)"))));
-	$err	= 1;
 }
 
-if ( (!isset($valor) || empty($valor)) && (!isset($valorJuros) || empty($valorJuros)) && (!isset($valorMora) || empty($valorMora)) ) {
+if ( (!isset($valor) || empty($valor)) && (!isset($valorJuros) || empty($valorJuros)) && (!isset($valorMora) || empty($valorMora))  && (!isset($valorOutros) || empty($valorOutros)) ) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Pelo menos um dos valores deve ser informado !!"))));
-	$err	= 1;
 }
+
+#################################################################################
+## Validação dos valores, não pode receber valores negativos
+#################################################################################
+if ($valor 			< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo valor não pode ser negativo"))));
+if ($valorJuros 	< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo valor de júros não pode ser negativo"))));
+if ($valorMora 		< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo valor de mora não pode ser negativo"))));
+if ($valorOutros 	< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo Outros valores não pode ser negativo"))));
+if ($valorDesconto 	< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo Desconto não pode ser negativo"))));
 
 $valData	= new \Zage\App\Validador\DataBR();
 

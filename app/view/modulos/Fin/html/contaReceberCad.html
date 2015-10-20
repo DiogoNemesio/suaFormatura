@@ -1119,6 +1119,7 @@ function validaValoresCRCad() {
 function validaConfiguracoesCRCad() {
 	var $codFormaPag	= $("#codFormaPagID option:selected").val();
 	var $codConta		= $("#codContaRecID option:selected").val();
+	var $codPessoa		= $("#codPessoaID option:selected").val();
 	
 	var vOK				= true;
 	
@@ -1131,6 +1132,12 @@ function validaConfiguracoesCRCad() {
 	if (!$codFormaPag) {
 		$('#divFormaPagID').addClass('has-error');
 		$('#divHelpFormaPagID').html(zgCriaSpanErro('Forma de pagamento deve ser selecionada !!'));
+		vOK			= false;
+	}
+
+	if (!$codPessoa) {
+		$('#divCodPessoaID').addClass('has-error');
+		$('#divHelpCodPessoaID').html(zgCriaSpanErro('Cliente deve ser selecionado !!'));
 		vOK			= false;
 	}
 
