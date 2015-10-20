@@ -171,23 +171,25 @@ $('#zgFormID').submit(function(e) {
 });
 
 function zgCheckVerificador() {
-	var vBanco	= $('#_codBancoID').val();
-	var length 	= agenciaBancoDigito(vBanco);
+	var vAgencia = $('#codAgenciaID').val();
+	var vBanco	 = $('#_codBancoID').val();
+	var length 	 = agenciaBancoDigito(vBanco);
 
-	if (length['DV'] != 0) {
+	if(!vAgencia){
+		$('#agenciaID').val("");
 		$('#agenciaDVID').val("");
+	}
+	
+	if (length['DV'] != 0) {
 		$('#agenciaDVID').removeAttr("readonly");
 		$('#agenciaDVID').attr('maxlength', length['DV']);
 	}else{
 		$('#agenciaDVID').attr("readonly", "readonly");
-		$('#agenciaDVID').val("");
 	}
 	
 	if (length['AG'] != 0) {
-		$('#agenciaID').val("");
 		$('#agenciaID').attr('maxlength', length['AG']);
 	}else{
-		$('#agenciaID').val("");
 		$('#agenciaID').attr('maxlength', 8);
 	}
 }
