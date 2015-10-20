@@ -63,6 +63,8 @@ $grid->importaDadosDoctrine($agencias);
 #################################################################################
 for ($i = 0; $i < sizeof($agencias); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codAgencia='.$agencias[$i]->getCodigo().'&url='.$url);
+	
+	if(!$agencias[$i]->getAgenciaDV()) $grid->setValorCelula($i, 2, '-');
 	$grid->setValorCelula($i,0,$agencias[$i]->getCodBanco()->getCodBanco() . ' - '.$agencias[$i]->getCodBanco()->getNome());
 	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/agenciaAlt.php?id='.$uid);
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/agenciaExc.php?id='.$uid);

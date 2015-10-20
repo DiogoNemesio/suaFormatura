@@ -52,13 +52,14 @@ if (!empty($codAgencia)) {
 	$agenciaDV		= $info->getAgenciaDV();
 	$nome			= $info->getNome();
 	$banco			= ($info->getCodBanco() != null) ? $info->getCodBanco()->getCodBanco() . ' / '.$info->getCodBanco()->getNome() : null;
-	
+	$indCheckAlt	= 1;
 }else{
 	$codBanco		= null;
 	$agencia		= null;
 	$agenciaDV		= null;
 	$nome			= null;
 	$banco			= null;
+	$indCheckAlt	= null;
 }
 
 #################################################################################
@@ -98,11 +99,11 @@ $tpl->set('AGENCIADV'			,$agenciaDV);
 $tpl->set('COD_BANCO'			,$codBanco);
 $tpl->set('BANCO'				,$banco);
 $tpl->set('NOME'				,$nome);
+$tpl->set('IND_CHECK_ALT'		,$indCheckAlt);
 $tpl->set('APP_BS_TA_MINLENGTH'	,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
 $tpl->set('APP_BS_TA_TIMEOUT'	,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-
 
 #################################################################################
 ## Por fim exibir a página HTML
