@@ -15,8 +15,8 @@
 					<th class="col-sm-1 center">Vencimento</th>
 					<th class="col-sm-1 center">Vencimento(Boleto)</th>
 					<th class="col-sm-1 center">Atraso</th>
-					<th class="col-sm-2 center">Valor Original</th>
-					<th class="col-sm-2 center">Valor Total</th>
+					<th class="col-sm-1 center">Valor Original</th>
+					<th class="col-sm-1 center">Saldo Devedor</th>
 					<th class="col-sm-1 center">Júros</th>
 					<th class="col-sm-1 center">Mora</th>
 					<th class="col-sm-1 center">Desconto</th>
@@ -148,5 +148,119 @@ $("#geraBoletoCheckallID").change(function(){
 		});
 	}
 });
+
+
+
+
+function GeraBolAtualizaJurosMora($index) {
+	
+	var $vencOrig			= $('input[name="vencimentoOriginal['+$index+']"]').val();
+	var $vencimento			= $('input[name="vencimento['+$index+']"]').val();
+	var $juros				= $('input[name="valorJuros['+$index+']"]');
+	var $mora				= $('input[name="valorMora['+$index+']"]');
+	var $codConta			= $('input[name="codConta['+$index+']"]').val();
+	
+	var $dia,$mes,$ano,$temp,$oDataRec,$oVenc;
+	
+	/**
+	 * Cria os objetos Date
+	 */
+	$temp		= $vencimento.split('/');
+	$dia		= parseInt($temp[0]);
+	$mes		= parseInt($temp[1]) - 1;
+	$ano		= parseInt($temp[2]);
+
+	$oVenc		= new Date($ano,$mes,$dia);
+
+	$temp		= $vencOrig.split('/');
+	$dia		= parseInt($temp[0]);
+	$mes		= parseInt($temp[1]) - 1;
+	$ano		= parseInt($temp[2]);
+
+	$oVencOrig	= new Date($ano,$mes,$dia);
+	
+	if ($oVenc > $oDataRec) {
+		$juros.val(0);
+		$mora.val(0);
+		$juros.prop('readonly', true);
+		$mora.prop('readonly', true);
+
+	}else{
+		$.ajax({
+			url: "%ROOT_URL%/Fin/getJurosMoraContaReceber.dp.php",
+			data:  { codConta: $codConta, dataRef: $vencimento},
+			success: function(data) {
+				var $_juros	= data["valorJuros"];
+				var $_mora	= data["valorMora"];
+
+				$_juros		= parseFloat($_juros);
+				$_mora		= parseFloat($_mora);
+				
+				var opt = {
+					symbol : "",
+					decimal : ",",
+					thousand: ".",
+					precision : 2,
+					format: "%s%v"
+				};
+
+				$_juros	= accounting.formatMoney($_juros, opt);
+				$_mora	= accounting.formatMoney($_mora, opt);
+
+				$juros.val($_juros);
+				$mora.val($_mora);
+		    },
+			dataType: 'json'
+		});
+	}
+	
+	$juros.prop('readonly', false);
+	$mora.prop('readonly', false);
+
+	//$juros.trigger('change');
+	//$mora.trigger('change');
+	
+	GeraBolAtualizaSaldoDevedor($index);
+
+	//divFlagPerdoaID
+}
+
+
+
+function GeraBolAtualizaSaldoDevedor($index) {
+	
+	var $juros				= $('input[name="valorJuros['+$index+']"]').val();
+	var $mora				= $('input[name="valorMora['+$index+']"]').val();
+	var $saldoDevedor		= $('input[name="saldoDevedor['+$index+']"]').val();
+	var $saldoDevedorTotal	= $('input[name="saldoDevedorTotal['+$index+']"]');
+	var $desconto			= $('input[name="valorDesconto['+$index+']"]').val();
+	var	$_st;
+	
+	
+	$_juros					= parseFloat($juros.replace(".", "").replace(",","."));
+	$_mora					= parseFloat($mora.replace(".", "").replace(",","."));
+	$_saldo					= parseFloat($saldoDevedor.replace(".", "").replace(",","."));
+	$_desc					= parseFloat($desconto.replace(".", "").replace(",","."));
+	
+	if (isNaN($_juros))		$_juros			= 0;
+	if (isNaN($_mora))		$_mora			= 0;
+	if (isNaN($_saldo))		$_saldo			= 0;
+	if (isNaN($_desc))		$_desc			= 0;
+
+	$_st					= ($_juros + $_mora + $_saldo) - $_desc;
+
+	var opt = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	$_st	= accounting.formatMoney($_st, opt);
+	
+	$saldoDevedorTotal.val($_st);
+
+}
 
 </script>

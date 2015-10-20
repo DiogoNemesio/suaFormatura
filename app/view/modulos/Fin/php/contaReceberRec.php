@@ -89,7 +89,16 @@ if (!$contaPag->getValorJaRecebido($codConta)) {
 }else{
 	$valor				= \Zage\App\Util::toPHPNumber($saldoDet["PRINCIPAL"]);
 	$valorDesconto		= 0;
-	$valorOutros		= 0;
+	$valorOutros		= \Zage\App\Util::toPHPNumber($saldoDet["OUTROS"]);
+	
+	#################################################################################
+	## Verificar se o outros valores foi pago no valor principal
+	#################################################################################
+	if (($valor < 0) && (($valor + $valorOutros) == 0)) {
+		$valor			= 0;
+		$valorOutros	= 0;
+	}
+	
 }
 
 #################################################################################
@@ -103,13 +112,16 @@ if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRec) == true
 	$valorJuros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($oConta->getCodigo(), $dataRec);
 	$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($oConta->getCodigo(), $dataRec);
 	
-	$valorJuros		+= $saldoDet["JUROS"];
-	$valorMora		+= $saldoDet["MORA"];
 }else{
 	$valorJuros			= \Zage\App\Util::toPHPNumber($oConta->getValorJuros());
 	$valorMora			= \Zage\App\Util::toPHPNumber($oConta->getValorMora());
 }
 
+#################################################################################
+## Atualiza o saldo a receber
+#################################################################################
+$valorJuros			+= $saldoDet["JUROS"];
+$valorMora			+= $saldoDet["MORA"];
 
 #################################################################################
 ## Gerenciar as URls

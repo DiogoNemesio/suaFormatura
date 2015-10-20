@@ -70,6 +70,17 @@ if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRef) == true
 }
 
 #################################################################################
+## Verificar se existe pendência de pagamento de júros / mora
+#################################################################################
+$saldoDet			= \Zage\Fin\ContaReceber::getSaldoAReceberDetalhado($oConta->getCodigo());
+
+#################################################################################
+## Atualiza o saldo a receber
+#################################################################################
+$valorJuros			+= $saldoDet["JUROS"];
+$valorMora			+= $saldoDet["MORA"];
+
+#################################################################################
 ## Atribui os valores de júros e mora ao array que será retornado 
 #################################################################################
 $array["valorJuros"]	= \Zage\App\Util::to_float(round($valorJuros,2));
