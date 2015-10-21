@@ -98,10 +98,10 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Logs forma de envio"));
+$tpl->set('NOME'			,$tr->trans("Forma de envio"));
 $tpl->set('URLVOLTAR'		,$urlVoltar);
 $tpl->set('URLATUALIZAR'	,$urlAtualizar);
-$tpl->set('ASSUNTO'			,"Log envio");
+$tpl->set('ASSUNTO'			,"Forma de envio");
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

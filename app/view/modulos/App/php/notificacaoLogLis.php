@@ -80,11 +80,6 @@ try {
 }
 
 #################################################################################
-## Gerar a url de adicão
-#################################################################################
-$urlAdd			= ROOT_URL.'/App/notificacaoLogAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog=');
-
-#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
@@ -94,8 +89,8 @@ $tpl->load(HTML_PATH . 'templateLis.html');
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Logs de Notificação'));
-$tpl->set('URLADD'			,$urlAdd);
+$tpl->set('NOME'			,$tr->trans('Log de Notificação'));
+$tpl->set('URLADD'			,'');
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

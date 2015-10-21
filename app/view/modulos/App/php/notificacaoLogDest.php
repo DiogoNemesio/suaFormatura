@@ -66,6 +66,14 @@ $grid->importaDadosDoctrine($logs);
 for ($i = 0; $i < sizeof($logs); $i++) {
 	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$codLog);
 
+	if ($logs[$i]->getCodUsuario()){
+		$grid->setValorCelula($i, 0, $logs[$i]->getCodUsuario()->getUsuario());
+	}else if ($logs[$i]->getCodPessoa()){
+		$grid->setValorCelula($i, 0, $logs[$i]->getCodPessoa()->getEmail());
+	}else if ($logs[$i]->getEmail()){
+		$grid->setValorCelula($i, 0, $logs[$i]->getEmail());
+	}
+	
 	if ($logs[$i]->getIndErro() != 1){
 		$grid->setValorCelula($i, 2, "<span class=\"label label-success arrowed\">Processada</span>");
 	}else{
@@ -99,11 +107,11 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Logs Destinátarios"));
+$tpl->set('NOME'			,$tr->trans("Destinatário"));
 $tpl->set('URLINICIO'		,$urlInicio);
 $tpl->set('URLVOLTAR'		,$urlVoltar);
 $tpl->set('URLATUALIZAR'	,$urlAtualizar);
-$tpl->set('ASSUNTO'			,"Logs destinárarios");
+$tpl->set('ASSUNTO'			,"Destinatário");
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################
