@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$tr,$system;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -18,7 +23,7 @@ if (isset($_GET['id'])) {
 }elseif (isset($id)) 	{
 	$id = \Zage\App\Util::antiInjection($id);
 }else{
-	\Zage\App\Erro::halt('Falta de Parâmetros');
+	\Zage\App\Erro::halt('FALTA PARÂMENTRO : ID');
 }
 
 #################################################################################
@@ -34,40 +39,38 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . '/App/'. basename(__FILE__);
+$url		= ROOT_URL . "/App/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$notifLog	= $em->getRepository('Entidades\ZgappNotificacao')->findBy(array(), array());
+	$logs	= $em->getRepository('Entidades\ZgappNotificacaoLogDest')->findBy(array('codLog' => $codLog), array());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-	
+
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GNotifLog");
-$grid->adicionaTexto($tr->trans('ASSUNTO'),		 	20, $grid::CENTER	,'assunto');
-$grid->adicionaTexto($tr->trans('STATUS'),	 		15, $grid::CENTER	,'indProcessada');
-$grid->adicionaDataHora($tr->trans('DATA'),	 		15, $grid::CENTER	,'data');
-$grid->adicionaIcone(null,'fa fa-info-circle',$tr->trans('Detalhes'));
-$grid->importaDadosDoctrine($notifLog);
+$grid->adicionaTexto($tr->trans('USUÁRIO'),			15, $grid::CENTER	,'codUsuario:usuario');
+$grid->adicionaDataHora($tr->trans('DATA ENVIO'),	15, $grid::CENTER	,'dataEnvio');
+$grid->adicionaTexto($tr->trans('STATUS'),			15, $grid::CENTER	,'indErro');
+$grid->adicionaTexto($tr->trans('DESCRIÇÃO ERRO'),	30, $grid::CENTER	,'erro');
+$grid->importaDadosDoctrine($logs);
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($notifLog); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$notifLog[$i]->getCodigo().'&url='.$url);
-	
-	if ($notifLog[$i]->getIndProcessada() == 1) {
-		$grid->setValorCelula($i, 1, "<span class=\"label label-success arrowed\">Processada</span>");
+for ($i = 0; $i < sizeof($logs); $i++) {
+	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$codLog);
+
+	if ($logs[$i]->getIndErro() != 1){
+		$grid->setValorCelula($i, 2, "<span class=\"label label-success arrowed\">Processada</span>");
 	}else{
-		$grid->setValorCelula($i, 1, "<span class=\"label label-danger arrowed-in\">Não Processada</span>");
+		$grid->setValorCelula($i, 2, "<span class=\"label label-danger arrowed-in\">Não Processada</span>");
 	}
-	
-	$grid->setUrlCelula($i,3,ROOT_URL.'/App/notificacaoLogEnv.php?id='.$uid);
 }
 
 #################################################################################
@@ -82,20 +85,25 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/App/notificacaoLogAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog=');
+$urlInicio			= ROOT_URL.'/App/notificacaoLogLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+$urlVoltar			= ROOT_URL.'/App/notificacaoLogEnv.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$codNotifLog);
+$urlAtualizar		= ROOT_URL.'/App/notificacaoLogDest.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$codNotifLog.'&codLog='.$codLog);
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Logs de Notificação'));
-$tpl->set('URLADD'			,$urlAdd);
+$tpl->set('NOME'			,$tr->trans("Logs Destinátarios"));
+$tpl->set('URLINICIO'		,$urlInicio);
+$tpl->set('URLVOLTAR'		,$urlVoltar);
+$tpl->set('URLATUALIZAR'	,$urlAtualizar);
+$tpl->set('ASSUNTO'			,"Logs destinárarios");
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################
