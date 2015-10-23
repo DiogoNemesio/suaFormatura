@@ -5,260 +5,75 @@
 		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
 	</h1>
 	</div><!-- /.page-header -->
-
+	<div id="divAvisoLayoutOrcamentoID"></div>
+	
 	<div id="user-profile-3" class="user-profile row">
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
-				<input type="hidden" name="id" value="%ID%">
+				<input type="hidden" name="_precisaSalvar" id="_precisaSalvarID">
+				<input type="hidden" name="_alterarEvento" id="_alterarEventoID">
+				<input type="hidden" id="codEventoID" name="codEvento" value="%COD_EVENTO%">
 				<input type="hidden" id="codVersaoID" name="codVersao" value="%COD_VERSAO%">
-				<div class="tabbable">
-					<ul class="nav nav-tabs padding-16" id='tabID'>
-						<li class="active">
-							<a data-toggle="tab" href="#planoOrc">
-								<i class="green fa fa-edit bigger-125"></i>
-								Principal
-							</a>
-						</li>
-					</ul>
-	
-					<div class="tab-content profile-edit-tab-content">
-						<div class="row">
-							<div id="divMissaID" class="col-sm-12 widget-container-col ui-sortable" style="min-height: 39px;">
-								<div class="widget-box transparent ui-sortable-handle" style="opacity: 1; z-index: 0;">
-									<div class="widget-header">
-										<h4 class="widget-title lighter">Missa</h4>
-										<div class="widget-toolbar no-border">
-											<a href="#" data-action="collapse">
-												<i class="ace-icon fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-
-									<div class="widget-body" style="display: block;">
-										<div class="widget-main padding-6 no-padding-left no-padding-right">
-											<table id="orcAltTableMissaID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
-												<thead>
-													<tr class="warning">
-														<th class="col-sm-1 center"></th>
-														<th class="col-sm-2 center">Item</th>
-														<th class="col-sm-2 center">Tipo Item</th>
-														<th class="col-sm-2 center">Categoria</th>
-														<th class="col-sm-1 center">Ativo</th>
-														<th class="col-sm-1 center"><span onclick="addRowMissaOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-													</tr>
-												</thead>
-												<tbody>
-												%TAB_MISSA%
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+				
+				<h4 class="header blue bolder smaller">Informações do orçamento</h4>
+				<div class="vspace-xs"></div>
+			    	<div class="col-sm-6">
+			    		<div class="form-group col-sm-12" id="divVersaoID">
+					    	<label class="col-sm-2 control-label" for="versaoID">Versão</label>
+								<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da versão."></i></span>
+			   					<input class="form-control" id="versaoID" type="text" name="versao" placeholder="Versão" maxlength="60" value="%VERSAO%" required autocomplete="off">
+			    			</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpVersaoID"></div>
+			    		</div>
+			    	</div>
+			    	<div class="col-sm-3">
+						<div class="form-group col-sm-12" id="divIndVersaoID">
+					    	<label class="col-xs-12 col-sm-5 control-label" for="indVersaoID">Status</label>
+					    	<label>
+					    		<input name="indVersao" id="indVersaoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_VERSAO% />
+								<span class="lbl"></span>
+							</label>
+					    </div>
+		    		</div>
+			    		
+					<div class="btn-group">
+						%BOTOES%
+					</div>
+					<div class="vspace-xs"></div>
+					<div class="row">
+				    	<div class="col-sm-12">
+							<div>
+								<table id="layRegTableOrcamentoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
+									<thead>
+										<tr class="warning">
+											<th class="col-sm-1 center"></th>
+											<th class="col-sm-2 center">Item</th>
+											<th class="col-sm-2 center">Tipo Item</th>
+											<th class="col-sm-2 center">Categoria</th>
+											<th class="col-sm-1 center">Ativo</th>
+											<th class="col-sm-1 center"><span class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									%TAB_ORCAMENTO%
+									</tbody>
+									<tfoot>
+										<tr>
+											<th colspan="5" style="text-align: left;"></th>
+											<th class="col-sm-1 center"><span class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</tfoot>
+								</table>
 							</div>
-							<div id="divCulEvanID" class="col-sm-12 widget-container-col ui-sortable" style="min-height: 39px;">
-								<div class="widget-box transparent ui-sortable-handle" style="opacity: 1; z-index: 0;">
-									<div class="widget-header">
-										<h4 class="widget-title lighter">Culto Evangélico</h4>
-										<div class="widget-toolbar no-border">
-											<a href="#" data-action="collapse">
-												<i class="ace-icon fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-
-									<div class="widget-body" style="display: block;">
-										<div class="widget-main padding-6 no-padding-left no-padding-right">
-											<table id="orcAltTableCulEvanID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
-												<thead>
-													<tr class="warning">
-														<th class="col-sm-1 center"></th>
-														<th class="col-sm-2 center">Item</th>
-														<th class="col-sm-2 center">Tipo Item</th>
-														<th class="col-sm-2 center">Categoria</th>
-														<th class="col-sm-1 center">Ativo</th>
-														<th class="col-sm-1 center"><span onclick="addRowCulEvanOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-													</tr>
-												</thead>
-												<tbody>
-												%TAB_CUL_EVAN%
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div id="divCulEspID" class="col-sm-12 widget-container-col ui-sortable" style="min-height: 39px;">
-								<div class="widget-box transparent ui-sortable-handle" style="opacity: 1; z-index: 0;">
-									<div class="widget-header">
-										<h4 class="widget-title lighter">Culto Espírita</h4>
-										<div class="widget-toolbar no-border">
-											<a href="#" data-action="collapse">
-												<i class="ace-icon fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-
-									<div class="widget-body" style="display: block;">
-										<div class="widget-main padding-6 no-padding-left no-padding-right">
-											<table id="orcAltTableCulEspID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
-												<thead>
-													<tr class="warning">
-														<th class="col-sm-1 center"></th>
-														<th class="col-sm-2 center">Item</th>
-														<th class="col-sm-2 center">Tipo Item</th>
-														<th class="col-sm-2 center">Categoria</th>
-														<th class="col-sm-1 center">Ativo</th>
-														<th class="col-sm-1 center"><span onclick="addRowCulEspOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-													</tr>
-												</thead>
-												<tbody>
-												%TAB_CUL_ESP%
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div id="divApocPlaID" class="col-sm-12 widget-container-col ui-sortable" style="min-height: 39px;">
-								<div class="widget-box transparent ui-sortable-handle" style="opacity: 1; z-index: 0;">
-									<div class="widget-header">
-										<h4 class="widget-title lighter">Aposição da Placa</h4>
-										<div class="widget-toolbar no-border">
-											<a href="#" data-action="collapse">
-												<i class="ace-icon fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-
-									<div class="widget-body" style="display: block;">
-										<div class="widget-main padding-6 no-padding-left no-padding-right">
-											<table id="orcAltTableApocPlaID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
-												<thead>
-													<tr class="warning">
-														<th class="col-sm-1 center"></th>
-														<th class="col-sm-2 center">Item</th>
-														<th class="col-sm-2 center">Tipo Item</th>
-														<th class="col-sm-2 center">Categoria</th>
-														<th class="col-sm-1 center">Ativo</th>
-														<th class="col-sm-1 center"><span onclick="addRowApocPlaOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-													</tr>
-												</thead>
-												<tbody>
-												%TAB_APOC_PLA%
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div id="divAulaSaudID" class="col-sm-12 widget-container-col ui-sortable" style="min-height: 39px;">
-								<div class="widget-box transparent ui-sortable-handle" style="opacity: 1; z-index: 0;">
-									<div class="widget-header">
-										<h4 class="widget-title lighter">Aula da Saudade</h4>
-										<div class="widget-toolbar no-border">
-											<a href="#" data-action="collapse">
-												<i class="ace-icon fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-
-									<div class="widget-body" style="display: block;">
-										<div class="widget-main padding-6 no-padding-left no-padding-right">
-											<table id="orcAltTableAulaSaudID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
-												<thead>
-													<tr class="warning">
-														<th class="col-sm-1 center"></th>
-														<th class="col-sm-2 center">Item</th>
-														<th class="col-sm-2 center">Tipo Item</th>
-														<th class="col-sm-2 center">Categoria</th>
-														<th class="col-sm-1 center">Ativo</th>
-														<th class="col-sm-1 center"><span onclick="addRowAulaSaudOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-													</tr>
-												</thead>
-												<tbody>
-												%TAB_AULA_SAUD%
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div id="divColGrauID" class="col-sm-12 widget-container-col ui-sortable" style="min-height: 39px;">
-								<div class="widget-box transparent ui-sortable-handle" style="opacity: 1; z-index: 0;">
-									<div class="widget-header">
-										<h4 class="widget-title lighter">Colação de Grau</h4>
-										<div class="widget-toolbar no-border">
-											<a href="#" data-action="collapse">
-												<i class="ace-icon fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-
-									<div class="widget-body" style="display: block;">
-										<div class="widget-main padding-6 no-padding-left no-padding-right">
-											<table id="orcAltTableColGrauID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
-												<thead>
-													<tr class="warning">
-														<th class="col-sm-1 center"></th>
-														<th class="col-sm-2 center">Item</th>
-														<th class="col-sm-2 center">Tipo Item</th>
-														<th class="col-sm-2 center">Categoria</th>
-														<th class="col-sm-1 center">Ativo</th>
-														<th class="col-sm-1 center"><span onclick="addRowColGrauOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-													</tr>
-												</thead>
-												<tbody>
-												%TAB_COL_GRAU%
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div id="divBaileID" class="col-sm-12 widget-container-col ui-sortable" style="min-height: 39px;">
-								<div class="widget-box transparent ui-sortable-handle" style="opacity: 1; z-index: 0;">
-									<div class="widget-header">
-										<h4 class="widget-title lighter">Baile</h4>
-										<div class="widget-toolbar no-border">
-											<a href="#" data-action="collapse">
-												<i class="ace-icon fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-
-									<div class="widget-body" style="display: block;">
-										<div class="widget-main padding-6 no-padding-left no-padding-right">
-											<table id="orcAltTableBaileID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 100%;">
-												<thead>
-													<tr class="warning">
-														<th class="col-sm-1 center"></th>
-														<th class="col-sm-2 center">Item</th>
-														<th class="col-sm-2 center">Tipo Item</th>
-														<th class="col-sm-2 center">Categoria</th>
-														<th class="col-sm-1 center">Ativo</th>
-														<th class="col-sm-1 center"><span onclick="addRowBaileOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-													</tr>
-												</thead>
-												<tbody>
-												%TAB_BAILE%
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
+							<div class="clearfix form-actions">
+								<label class="col-sm-5 control-label" >&nbsp;</label>
+				   				<button type="button" class="btn btn-primary" id="btnSubmitListaOrcID"><i class="fa fa-check bigger-110"></i> Salvar</button>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="clearfix form-actions">
-					<label class="col-sm-4 control-label">&nbsp;</label>
-					<button type="button" class="btn btn-primary" id="btnSubmitID">
-						<i class="fa fa-check bigger-110"></i> Salvar
-					</button>
-					<button type="button" class="btn btn-warning" id="cancel"
-						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
-						<i class="fa fa-undo bigger-110"></i> Voltar
-					</button>
 				</div>
 			</form>
 		</div>
@@ -266,25 +81,23 @@
 </div>
 
 <script type="text/javascript" charset="%CHARSET%">
-$('.select2').css('width','100%').select2({allowClear:true});
+/********************* Popover *********************/
 $('[data-rel=popover]').popover({html:true});
-$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
-//$('.select2').css('width','100%').select2({allowClear:true});
-//$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
 
+//Máscaras
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 
-/*********************************************************
-* Submit Formulário
-*********************************************************/
-//Verifica retorno da validação do formulário
-$('#btnSubmitID').on("click", function(e) {
+$('.select2').css('width','100%').select2({allowClear:true});
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitListaOrcID').on("click", function(e) {
+	var vOk 	= validaOrcamento();
 	
-	var vOK 	= true;
-	
-	if(vOK == false) 	{
+	if(vOk == false) 	{
 		$.gritter.add({
 			title: 'Está faltando alguma coisa !!!',
 			text: 'Corrija os campos marcados em vermelho',
@@ -292,273 +105,137 @@ $('#btnSubmitID').on("click", function(e) {
 			time: '5000'
 		});
 		e.preventDefault();
-		
 		return false;
 	}else{
 		$('#zgFormID').submit();
 	}
 });
 
-//Submit formulário
 $('#zgFormID').submit(function() {
-	
-	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-	$('#btnSubmitID').attr("disabled","disabled");
-	$('#cancel').attr("disabled","disabled");
-	
-	/** Retira a máscara para os campos que estão configurados para tal **/
+	/** Retirar a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
 		$( this ).val($( this ).cleanVal());
 	});
 	
+	$('#btnSubmitListaOrcID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitListaOrcID').attr("disabled","disabled");
+
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
+		$('#_precisaSalvarID').val(0);
 		if (checaRetornoOK(data) == true) {
-			$('#codVersaoID').val(zgGetCodRetorno(data));
+			$('#codProdutoID').val(zgGetCodRetorno(data));
+			zgMostraMsg('divAvisoLayoutOrcamentoID', zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divAvisoLayoutOrcamentoID', zgGetMsgRetorno(data));
 		}
-		zgMostraAviso("Fechar",'Novo Orçamento', '%URLNOVO%');
 		
-		//Voltar o botão de salvar
-		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
-		$('#btnSubmitID').attr("disabled",false);
-		$('#cancel').attr("disabled",false);
+		$('#btnSubmitListaOrcID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitListaOrcID').attr("disabled",false);
 		
 		/** Recolocar a máscara para os campos que estão configurados para tal **/
 		$('[zg-data-mask-retira="1"]').each(function( index ) {
 			zgMask($( this ), $( this ).attr('zg-data-mask'));
 			$( this ).trigger('keyup');
 		});
-		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
-		zgMostraAviso(null);
+		zgMostraAviso("Fechar");
 	});
 	return false; 
 });
 
-//Div opções de Reserva
-/*mostraDivTipo();
-function mostraDivTipo() {
-	var vTipo		= $('#codTipoID').val();
+function addRowOrcamentoLayReg() {
+	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;
 	
-	if (vTipo == 'P') {
-		$('#divPrincipalServicoID').addClass("hidden");
-	}else if (vTipo == 'S'){
-		$('#divPrincipalServicoID').removeClass("hidden");
-	}else{
-		$('#divPrincipalServicoID').addClass("hidden");
-	}
-}*/
+	$('#_precisaSalvarID').val(1);
 
-function validaOrcAlt(){
-	var vCodSubgrupo 	 = $('#codSubgrupoID').val();
+	if ($return == true) return $return;
+
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item[]" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="item"]').each(function( index ) {
+		$( this ).focus();
+	});
+	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	$('#layRegTableOrcamentoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+}
+
+function delRowOrcamentoLayReg(pObj) {
+	$('#_precisaSalvarID').val(1);
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
+	var $tr		= $td.parent();
+
+	$tr.addClass("danger");
+	$tr.fadeOut(500, function(){
+		$tr.remove();
+	});
+}
+
+function verificaAlteracao(pObj) {
+	$('#_precisaSalvarID').val(1);
+}
+
+function validaOrcamento () {
+	var $return,$ok;
 	
-	var vTab			 = 0;
-	var vOK				 = true;
-	var vIdent;
+	$ok	= true;
 	
-	/** Valida os Valores **/
-	var $codValor		= $("input[name='codValor\\[\\]']");
-	var $valor			= $("input[name='valor\\[\\]']");
-	var $dataBase	 	= $("input[name='dataBase\\[\\]']");
-	var $desconPorcMax	= $("input[name='desconPorcMax\\[\\]']");
-	var $valorCount		= $("input[name='valor\\[\\]']");
-	var $vCount			= 0;
-	
-	for (i = 0; i < $codValor.length; i++) {
-		var $td		= $valor.eq(i).parent();
-		var $tr		= $td.parent();
+	$('#layRegTableOrcamentoID > tbody > tr').each(function( index ) {
 		
-		for (j = 0; j < $codValor.length; j++) {
-			if($valor.eq(i).val() == $valorCount.eq(j).val()){
-				$vCount++;
-			}
-		}
-		if($vCount > 1){
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Valores repetido"));
-			$tr.addClass("alert-danger");
-			vOK		= false;
-			vTab = 2;
-		}else if (!$valor.eq(i).val()) {
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Valor deve ser preenchido"));
-			$tr.addClass("alert-danger");
-			vOK		= false;
-			vTab = 2;
-		}else if (!$dataBase.eq(i).val()) {
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Data base deve ser preenchido"));
-			$tr.addClass("alert-danger");
-			vOK		= false;
-			vTab = 2;
+		$itemObj 	= $(this).find('[name*="item[]"]');
+		
+		$item		= $itemObj.val();
+		if (!$item) {
+			zgMostraErro('divAvisoLayoutOrcamentoID','Não pode haver uma linha sem nome do item preenchido!');
+			$ok 	= false;
+			$(this).addClass('alert-danger');
 		}else{
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
-			$tr.removeClass("alert-danger");
+			$(this).removeClass('alert-danger');
 		}
-		
-		$vCount = 0;
-	}
 	
-	if (vOK == true) {
-		return true ;
-	}else{
-		//Rolar pagina para o topo
-		$('html, body').animate({scrollTop:0}, 'slow');
+	});
+
+	if (!$ok)	return false;
+	
+	return true;	
+}
+
+function zgLoadUrlSeSalvouOrc($url) {
+	
+	var vOk 	= validaOrcamento();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
 		return false;
+	}else{
+		if ($('#_precisaSalvarID').val() == 1) {
+			$('#_alterarEventoID').val(1);
+			$('#zgFormID').submit();
+			zgLoadUrl($url);
+			
+			$.gritter.add({
+				title: 'Lista atualizada!',
+				text: 'Sua lista de Orcamentos foi atualizada com sucesso.',
+				class_name: 'gritter-info gritter-sticky',
+				time: '5000'
+			});
+			
+		}else{
+			zgLoadUrl($url);
+		}
 	}
-}
-
-/******************************************************
-ADD E REMOVER MISSA
-/******************************************************/
-function addRowMissaOrcAlt() {
-	$('#orcAltTableMissaID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="itemMissa[]" autocomplete="off"></td><td><select class="select2" style="width:100%;" name="codTipoItemMissa[]" data-rel="select2">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoriaMissa[]" data-rel="select2">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivoMissa" id="indAtivoMissaID" class="ace ace-switch ace-switch-6" type="checkbox" /><span class="lbl"></span></label></rd><td class="center"><span class="center" zgdelete onclick="delRowMissaOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codOrcMissa[]"></td></tr>');
-	$('#orcAltTableMissaID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-		zgMask($( this ), $( this ).attr('zg-data-mask'));
-		$( this ).trigger('keyup')
-	});
-	$('#orcAltTableMissaID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	var $codOrcMissa 	= $("input[name='codOrcMissa\\[\\]']");
-}
-
-function delRowMissaOrcAlt(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	$tr.addClass("danger");
-	$tr.fadeOut(800, function(){
-		$tr.remove();
-	});
-}
-
-/******************************************************
-ADD E REMOVER CULTO EVANGELICO
-/******************************************************/
-function addRowCulEvanOrcAlt() {
-	$('#orcAltTableCulEvanID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="itemCulEvan[]" autocomplete="off"></td><td><select class="select2" style="width:100%;" name="codTipoItemCulEvan[]" data-rel="select2">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoriaCulEvan[]" data-rel="select2">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivoCulEvan" id="indAtivoCulEvanID" class="ace ace-switch ace-switch-6" type="checkbox" /><span class="lbl"></span></label></rd><td class="center"><span class="center" zgdelete onclick="delRowCulEvanOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codOrcCulEvan[]"></td></tr>');
-	$('#orcAltTableCulEvanID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-		zgMask($( this ), $( this ).attr('zg-data-mask'));
-		$( this ).trigger('keyup')
-	});
-	$('#orcAltTableCulEvanID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	var $codOrcMissa 	= $("input[name='codOrcCulEvan\\[\\]']");
-}
-
-function delRowCulEvanOrcAlt(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	$tr.addClass("danger");
-	$tr.fadeOut(800, function(){
-		$tr.remove();
-	});
-}
-
-/******************************************************
-ADD E REMOVER CULTO ESPIRITA
-/******************************************************/
-function addRowCulEspOrcAlt() {
-	$('#orcAltTableCulEspID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="itemCulEsp[]" autocomplete="off"></td><td><select class="select2" style="width:100%;" name="codTipoItemCulEsp[]" data-rel="select2">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoriaCulEsp[]" data-rel="select2">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivoCulEsp" id="indAtivoCulEspID" class="ace ace-switch ace-switch-6" type="checkbox" /><span class="lbl"></span></label></rd><td class="center"><span class="center" zgdelete onclick="delRowCulEspOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codOrcCulEsp[]"></td></tr>');
-	$('#orcAltTableCulEspID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-		zgMask($( this ), $( this ).attr('zg-data-mask'));
-		$( this ).trigger('keyup')
-	});
-	$('#orcAltTableCulEspID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	var $codOrcMissa 	= $("input[name='codOrcCulEsp\\[\\]']");
-}
-
-function delRowCulEspOrcAlt(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	$tr.addClass("danger");
-	$tr.fadeOut(800, function(){
-		$tr.remove();
-	});
-}
-
-/******************************************************
-ADD E REMOVER APOSICAO DA PLACA
-/******************************************************/
-function addRowApocPlaOrcAlt() {
-	$('#orcAltTableApocPlaID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="itemApocPla[]" autocomplete="off"></td><td><select class="select2" style="width:100%;" name="codTipoItemApocPla[]" data-rel="select2">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoriaApocPla[]" data-rel="select2">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivoApocPla" id="indAtivoApocPlaID" class="ace ace-switch ace-switch-6" type="checkbox" /><span class="lbl"></span></label></rd><td class="center"><span class="center" zgdelete onclick="delRowApocPlaOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codOrcApocPla[]"></td></tr>');
-	$('#orcAltTableApocPlaID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-		zgMask($( this ), $( this ).attr('zg-data-mask'));
-		$( this ).trigger('keyup')
-	});
-	$('#orcAltTableApocPlaID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	var $codOrcMissa 	= $("input[name='codOrcApocPla\\[\\]']");
-}
-
-function delRowApocPlaOrcAlt(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	$tr.addClass("danger");
-	$tr.fadeOut(800, function(){
-		$tr.remove();
-	});
-}
-
-/******************************************************
-ADD E REMOVER AULA DA SAUDADE
-/******************************************************/
-function addRowAulaSaudOrcAlt() {
-	$('#orcAltTableAulaSaudID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="itemAulaSaud[]" autocomplete="off"></td><td><select class="select2" style="width:100%;" name="codTipoItemAulaSaud[]" data-rel="select2">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoriaAulaSaud[]" data-rel="select2">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivoAulaSaud" id="indAtivoAulaSaudID" class="ace ace-switch ace-switch-6" type="checkbox" /><span class="lbl"></span></label></rd><td class="center"><span class="center" zgdelete onclick="delRowAulaSaudOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codOrcAulaSaud[]"></td></tr>');
-	$('#orcAltTableAulaSaudID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-		zgMask($( this ), $( this ).attr('zg-data-mask'));
-		$( this ).trigger('keyup')
-	});
-	$('#orcAltTableAulaSaudID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	var $codOrcMissa 	= $("input[name='codOrcAulaSaud\\[\\]']");
-}
-
-function delRowAulaSaudOrcAlt(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	$tr.addClass("danger");
-	$tr.fadeOut(800, function(){
-		$tr.remove();
-	});
-}
-
-/******************************************************
-ADD E REMOVER COLAÇÃO DE GRAU
-/******************************************************/
-function addRowColGrauOrcAlt() {
-	$('#orcAltTableColGrauID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="itemColGrau[]" autocomplete="off"></td><td><select class="select2" style="width:100%;" name="codTipoItemColGrau[]" data-rel="select2">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoriaColGrau[]" data-rel="select2">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivoColGrau" id="indAtivoColGrauID" class="ace ace-switch ace-switch-6" type="checkbox" /><span class="lbl"></span></label></rd><td class="center"><span class="center" zgdelete onclick="delRowColGrauOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codOrcColGrau[]"></td></tr>');
-	$('#orcAltTableColGrauID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-		zgMask($( this ), $( this ).attr('zg-data-mask'));
-		$( this ).trigger('keyup')
-	});
-	$('#orcAltTableColGrauID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	var $codOrcMissa 	= $("input[name='codOrcColGrau\\[\\]']");
-}
-
-function delRowColGrauOrcAlt(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	$tr.addClass("danger");
-	$tr.fadeOut(800, function(){
-		$tr.remove();
-	});
-}
-
-/******************************************************
-ADD E REMOVER BAILE
-/******************************************************/
-function addRowBaileOrcAlt() {
-	$('#orcAltTableBaileID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="itemBaile[]" autocomplete="off"></td><td><select class="select2" style="width:100%;" name="codTipoItemBaile[]" data-rel="select2">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoriaBaile[]" data-rel="select2">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivoBaile" id="indAtivoBaileID" class="ace ace-switch ace-switch-6" type="checkbox" /><span class="lbl"></span></label></rd><td class="center"><span class="center" zgdelete onclick="delRowBaileOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codOrcBaile[]"></td></tr>');
-	$('#orcAltTableBaileID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-		zgMask($( this ), $( this ).attr('zg-data-mask'));
-		$( this ).trigger('keyup')
-	});
-	$('#orcAltTableBaileID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	var $codOrcMissa 	= $("input[name='codOrcBaile\\[\\]']");
-}
-
-function delRowBaileOrcAlt(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	$tr.addClass("danger");
-	$tr.fadeOut(800, function(){
-		$tr.remove();
-	});
 }
 </script>
+
