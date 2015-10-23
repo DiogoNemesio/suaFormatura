@@ -200,12 +200,12 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	
 	
 	$htmlTab			.= '
-	<tr>
+	<tr id="trGeraBol_'.$contas[$i]->getCodigo().'_ID">
 		<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codContaSel[]" class="ace" value="'.$contas[$i]->getCodigo().'" /><span class="lbl"></span></label></th>
 		<td class="col-sm-1 center">'.$parcela.' <input type="hidden" name="codConta['.$contas[$i]->getCodigo().']" value="'.$contas[$i]->getCodigo().'" /></td>
 		<td class="col-sm-1 center">'.$vencimento.'</td>
 		<td class="col-sm-1 center"><input class="form-control datepicker" onchange="GeraBolAtualizaJurosMora(\''.$contas[$i]->getCodigo().'\');" type="text" name="vencimento['.$contas[$i]->getCodigo().']" maxlength="10" value="'.$vencBol.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"><input type="hidden" name="vencimentoOriginal['.$contas[$i]->getCodigo().']" value="'.$vencimento.'"></td>
-		<td class="col-sm-1 center">'.$htmlAtraso.'</td>
+		<td class="col-sm-1 center">'.$htmlAtraso.'&nbsp;<span class="hidden" id="spUpdate_'.$contas[$i]->getCodigo().'_ID"><i class="fa fa-cog fa-spin"></i></span></td>
 		<td class="col-sm-1 center"><input class="input-medium" type="text" name="valor['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorOriginal).'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
 		<td class="col-sm-1 center"><input class="input-medium" type="text" name="saldoDevedorTotal['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.\Zage\App\Util::formataDinheiro($saldoDevedorTotal).'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">  <input type="hidden" name="saldoDevedor['.$contas[$i]->getCodigo().']" value="'.$saldoDevedor.'" /></td>
 		<td class="col-sm-1 center"><input class="input-medium" type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorJuros).'"	 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" '.$roJuros.' onchange="GeraBolAtualizaSaldoDevedor(\''.$contas[$i]->getCodigo().'\');"></td>

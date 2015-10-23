@@ -81,7 +81,7 @@ if (!isset($urlVoltar) || (!$urlVoltar)) {
 #################################################################################
 ## Calculo dos valores
 #################################################################################
-$valorTotal			= \Zage\App\Util::to_money($oConta->getValor() + $oConta->getValorJuros() + $oConta->getValorMora() + $oConta->getValorOutros() - ($oConta->getValorCancelado() + $oConta->getValorDesconto()));
+$valorTotal			= \Zage\App\Util::to_money(\Zage\Fin\ContaReceber::calculaValorTotal($oConta));
 $valorRecebido		= \Zage\App\Util::to_money((new \Zage\Fin\ContaReceber())->getValorJaRecebido($codConta)); 
 
 #################################################################################

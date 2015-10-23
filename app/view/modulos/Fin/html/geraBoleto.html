@@ -159,8 +159,17 @@ function GeraBolAtualizaJurosMora($index) {
 	var $juros				= $('input[name="valorJuros['+$index+']"]');
 	var $mora				= $('input[name="valorMora['+$index+']"]');
 	var $codConta			= $('input[name="codConta['+$index+']"]').val();
+	var $zero				= 0;
+	var opt = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
 	
 	var $dia,$mes,$ano,$temp,$oDataRec,$oVenc;
+	$zero	= accounting.formatMoney($zero, opt);
 	
 	/**
 	 * Cria os objetos Date
@@ -179,16 +188,26 @@ function GeraBolAtualizaJurosMora($index) {
 
 	$oVencOrig	= new Date($ano,$mes,$dia);
 	
-	if ($oVenc > $oDataRec) {
-		$juros.val(0);
-		$mora.val(0);
+	if ($oVencOrig >= $oVenc) {
+		
+		$juros.val($zero);
+		$mora.val($zero);
+		
 		$juros.prop('readonly', true);
 		$mora.prop('readonly', true);
 
 	}else{
+		
+		var $spUpdate	= $('#spUpdate_'+$index+'_ID');
+		var $trUpdate	= $('#trGeraBol_'+$index+'_ID');
+		
+		$spUpdate.removeClass("hidden");
+		$trUpdate.addClass("warning");
+		
 		$.ajax({
 			url: "%ROOT_URL%/Fin/getJurosMoraContaReceber.dp.php",
 			data:  { codConta: $codConta, dataRef: $vencimento},
+			async: false,
 			success: function(data) {
 				var $_juros	= data["valorJuros"];
 				var $_mora	= data["valorMora"];
@@ -196,33 +215,29 @@ function GeraBolAtualizaJurosMora($index) {
 				$_juros		= parseFloat($_juros);
 				$_mora		= parseFloat($_mora);
 				
-				var opt = {
-					symbol : "",
-					decimal : ",",
-					thousand: ".",
-					precision : 2,
-					format: "%s%v"
-				};
-
 				$_juros	= accounting.formatMoney($_juros, opt);
 				$_mora	= accounting.formatMoney($_mora, opt);
 
 				$juros.val($_juros);
 				$mora.val($_mora);
+				
+				$juros.prop('readonly', false);
+				$mora.prop('readonly', false);
 		    },
 			dataType: 'json'
 		});
+		
+		$spUpdate.addClass("hidden");
+		$trUpdate.removeClass("warning");
+		
 	}
 	
-	$juros.prop('readonly', false);
-	$mora.prop('readonly', false);
-
-	//$juros.trigger('change');
-	//$mora.trigger('change');
+	$juros.trigger('change');
+	$juros.trigger('keyup');
+	$mora.trigger('change');
+	$mora.trigger('keyup');
 	
 	GeraBolAtualizaSaldoDevedor($index);
-
-	//divFlagPerdoaID
 }
 
 
@@ -260,6 +275,12 @@ function GeraBolAtualizaSaldoDevedor($index) {
 	$_st	= accounting.formatMoney($_st, opt);
 	
 	$saldoDevedorTotal.val($_st);
+
+	/**
+	 * Seleciona o registro editado
+	 */
+	var $_chk	= $('input[type=checkbox][name="codContaSel[]"][value="'+$index+'"]');
+	$_chk.prop('checked', true);
 
 }
 

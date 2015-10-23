@@ -60,10 +60,11 @@
 		<div class="col-sm-12">
 			<div class="form-group">
 		    	<label class="col-sm-3 control-label" for="valorJurosID">Júros</label>
-    			<div class="input-group col-sm-8">
+    			<div class="input-group col-sm-8 pull-left">
 	    			<span tabindex="99005" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Júros"><i class="fa fa-question-circle"></i></span>
 	    			<input class="form-control" id="valorJurosID" type="text" name="valorJuros" maxlength="20" value="%VALOR_JUROS%" onchange="CRRecAtualizaPerdaoJurosMora();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
 		    	</div>
+		    	<div class="help-block col-sm-1 inline" id="divHelpJurosID"><span id="spJurosID" class="hidden"><i class="fa fa-cog fa-spin"></i></span></div>
 		    </div>
     	</div>
     </div>
@@ -71,10 +72,11 @@
 		<div class="col-sm-12">
 			<div class="form-group">
 		    	<label class="col-sm-3 control-label" for="valorMoraID">Mora</label>
-    			<div class="input-group col-sm-8">
+    			<div class="input-group col-sm-8 pull-left">
 	    			<span tabindex="99006" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor da Mora"><i class="fa fa-question-circle"></i></span>
 	    			<input class="form-control" id="valorMoraID" type="text" name="valorMora" maxlength="20" value="%VALOR_MORA%" onchange="CRRecAtualizaPerdaoJurosMora();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
 		    	</div>
+		    	<div class="help-block col-sm-1 inline" id="divHelpMoraID"><span id="spMoraID" class="hidden"><i class="fa fa-cog fa-spin"></i></span></div>
 		    </div>
     	</div>
     </div>
@@ -220,9 +222,17 @@ function CRRecAtualizaJurosMora() {
 		$('#valorJurosID').val(0);
 		$('#valorMoraID').val(0);
 	}else{
+
+		$('#valorJurosID').prop('readonly',true);
+		$('#valorMoraID').prop('readonly',true);
+		
+		$('#spJurosID').removeClass("hidden");
+		$('#spMoraID').removeClass("hidden");
+
 		$.ajax({
 			url: "%ROOT_URL%/Fin/getJurosMoraContaReceber.dp.php",
 			data:  { codConta: $('#codContaID').val(), dataRef: $dataRec},
+			async: false,
 			success: function(data) {
 				var $_juros	= data["valorJuros"];
 				var $_mora	= data["valorMora"];
@@ -249,6 +259,12 @@ function CRRecAtualizaJurosMora() {
 		    },
 			dataType: 'json'
 		});
+		
+		$('#valorJurosID').prop('readonly',false);
+		$('#valorMoraID').prop('readonly',false);
+		$('#spJurosID').addClass("hidden");
+		$('#spMoraID').addClass("hidden");
+
 	}
 	
 	$('#valorJurosID').trigger('change');
