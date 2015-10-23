@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$tr,$system;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -18,7 +23,7 @@ if (isset($_GET['id'])) {
 }elseif (isset($id)) 	{
 	$id = \Zage\App\Util::antiInjection($id);
 }else{
-	\Zage\App\Erro::halt('Falta de Parâmetros');
+	\Zage\App\Erro::halt('FALTA PARÂMENTRO : ID');
 }
 
 #################################################################################
@@ -34,40 +39,46 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
+$url		= ROOT_URL . "/App/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$agencias	= $em->getRepository('Entidades\ZgfinAgencia')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()), array('nome' => 'ASC'));
+	$logs	= $em->getRepository('Entidades\ZgappNotificacaoLogDest')->findBy(array('codLog' => $codLog), array());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-	
+
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GAgencia");
-$grid->adicionaTexto($tr->trans('BANCO'),				30, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('AGÊNCIA'),				15, $grid::CENTER	,'agencia');
-$grid->adicionaTexto($tr->trans('DIGITO'),				15, $grid::CENTER	,'agenciaDV');
-$grid->adicionaTexto($tr->trans('NOME'),				30, $grid::CENTER	,'nome');
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($agencias);
-
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GNotifLog");
+$grid->adicionaTexto($tr->trans('USUÁRIO'),			15, $grid::CENTER	,'codUsuario:usuario');
+$grid->adicionaDataHora($tr->trans('DATA ENVIO'),	15, $grid::CENTER	,'dataEnvio');
+$grid->adicionaTexto($tr->trans('STATUS'),			15, $grid::CENTER	,'indErro');
+$grid->adicionaTexto($tr->trans('DESCRIÇÃO ERRO'),	30, $grid::CENTER	,'erro');
+$grid->importaDadosDoctrine($logs);
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($agencias); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codAgencia='.$agencias[$i]->getCodigo().'&url='.$url);
+for ($i = 0; $i < sizeof($logs); $i++) {
+	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$codLog);
+
+	if ($logs[$i]->getCodUsuario()){
+		$grid->setValorCelula($i, 0, $logs[$i]->getCodUsuario()->getUsuario());
+	}else if ($logs[$i]->getCodPessoa()){
+		$grid->setValorCelula($i, 0, $logs[$i]->getCodPessoa()->getEmail());
+	}else if ($logs[$i]->getEmail()){
+		$grid->setValorCelula($i, 0, $logs[$i]->getEmail());
+	}
 	
-	if(!$agencias[$i]->getAgenciaDV()) $grid->setValorCelula($i, 2, '-');
-	$grid->setValorCelula($i,0,$agencias[$i]->getCodBanco()->getCodBanco() . ' - '.$agencias[$i]->getCodBanco()->getNome());
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/agenciaAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/agenciaExc.php?id='.$uid);
+	if ($logs[$i]->getIndErro() != 1){
+		$grid->setValorCelula($i, 2, "<span class=\"label label-success arrowed\">Processada</span>");
+	}else{
+		$grid->setValorCelula($i, 2, "<span class=\"label label-danger arrowed-in\">Não Processada</span>");
+	}
 }
 
 #################################################################################
@@ -82,20 +93,25 @@ try {
 #################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fin/agenciaAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codAgencia=');
+$urlInicio			= ROOT_URL.'/App/notificacaoLogLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+$urlVoltar			= ROOT_URL.'/App/notificacaoLogEnv.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$codNotifLog);
+$urlAtualizar		= ROOT_URL.'/App/notificacaoLogDest.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$codNotifLog.'&codLog='.$codLog);
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Agências"));
-$tpl->set('URLADD'			,$urlAdd);
+$tpl->set('NOME'			,$tr->trans("Destinatário"));
+$tpl->set('URLINICIO'		,$urlInicio);
+$tpl->set('URLVOLTAR'		,$urlVoltar);
+$tpl->set('URLATUALIZAR'	,$urlAtualizar);
+$tpl->set('ASSUNTO'			,"Destinatário");
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

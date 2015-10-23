@@ -49,12 +49,10 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GNotifLog");
-$grid->adicionaTexto($tr->trans('ASSUNTO'),		 	18, $grid::CENTER	,'assunto');
-$grid->adicionaTexto($tr->trans('FORMA ENVIO'),		18, $grid::CENTER	,'indViaEmail');
+$grid->adicionaTexto($tr->trans('ASSUNTO'),		 	20, $grid::CENTER	,'assunto');
 $grid->adicionaTexto($tr->trans('STATUS'),	 		15, $grid::CENTER	,'indProcessada');
-$grid->adicionaTexto($tr->trans('DATA'),	 		15, $grid::CENTER	,'data');
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
+$grid->adicionaDataHora($tr->trans('DATA'),	 		15, $grid::CENTER	,'data');
+$grid->adicionaIcone(null,'fa fa-info-circle',$tr->trans('Detalhes'));
 $grid->importaDadosDoctrine($notifLog);
 
 #################################################################################
@@ -64,15 +62,12 @@ for ($i = 0; $i < sizeof($notifLog); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog='.$notifLog[$i]->getCodigo().'&url='.$url);
 	
 	if ($notifLog[$i]->getIndProcessada() == 1) {
-		$grid->setValorCelula($i, 2, "PROCESSADA");
+		$grid->setValorCelula($i, 1, "<span class=\"label label-success arrowed\">Processada</span>");
 	}else{
-		$grid->setValorCelula($i, 2, "NÂO PROCESSADA");
+		$grid->setValorCelula($i, 1, "<span class=\"label label-danger arrowed-in\">Não Processada</span>");
 	}
 	
-	//$grid->setUrlCelula($i,4,ROOT_URL.'/App/notificacaoLogAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,4,"javascript:zgAbreModal('".ROOT_URL.'/App/notificacaoLogAlt.php?id='.$uid."');");
-	
-	//$grid->setUrlCelula($i,4,ROOT_URL.'/App/parametroExc.php?id='.$uid);
+	$grid->setUrlCelula($i,3,ROOT_URL.'/App/notificacaoLogEnv.php?id='.$uid);
 }
 
 #################################################################################
@@ -85,11 +80,6 @@ try {
 }
 
 #################################################################################
-## Gerar a url de adicão
-#################################################################################
-$urlAdd			= ROOT_URL.'/App/notificacaoLogAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codNotifLog=');
-
-#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
@@ -99,8 +89,8 @@ $tpl->load(HTML_PATH . 'templateLis.html');
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Logs de Notificação'));
-$tpl->set('URLADD'			,$urlAdd);
+$tpl->set('NOME'			,$tr->trans('Log de Notificação'));
+$tpl->set('URLADD'			,'');
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

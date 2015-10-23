@@ -60,6 +60,7 @@ if (!empty($codConta)) {
 	$pctJuros		= ($info->getPctJuros()) ? \Zage\App\Util::formataDinheiro($info->getPctJuros()) : null;
 	$pctMora		= ($info->getPctMora()) ? \Zage\App\Util::formataDinheiro($info->getPctMora()) : null;
 	$instrucao		= $info->getInstrucao();
+	$indCheckAlt	= 1;
 	
 	// Botão de seleção de tipo do juros
 	if ($valorJuros > 0){
@@ -101,6 +102,7 @@ if (!empty($codConta)) {
 	$pctJuros		= null;
 	$pctMora		= null;
 	$instrucao		= null;
+	$indCheckAlt	= null;
 }
 
 
@@ -172,6 +174,7 @@ $tpl->set('PCT_JUROS'			,$pctJuros);
 $tpl->set('PCT_MORA'			,$pctMora);
 $tpl->set('INSTRUCAO'			,$instrucao);
 $tpl->set('ARRAY_BANCO'			,json_encode($arrayBanco));
+$tpl->set('IND_CHECK_ALT'		,$indCheckAlt);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################

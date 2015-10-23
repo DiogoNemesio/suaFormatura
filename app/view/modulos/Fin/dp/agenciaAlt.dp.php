@@ -81,10 +81,12 @@ if (($oCodAgencia != null) && ($oCodAgencia->getCodigo() != $codAgencia)){
 }
 
 /** Dígito Verificador da Agência **/
-if (!isset($agenciaDV) || (empty($agenciaDV) && $agenciaDV != '0') && $infoBanco->getCodBanco() != 341) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo Dígito Verificador da AGÊNCIA é obrigatório");
-	$err	= 1;
-}else if($infoBanco->getCodBanco() == 341){
+if ( in_array($infoBanco->getCodBanco(), array('001', '041', '237'), true) ) {
+	if(!isset($agenciaDV) || empty($agenciaDV)){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo Dígito Verificador da AGÊNCIA é obrigatório");
+		$err	= 1;
+	}
+}else{
 	$agenciaDV = null;
 }
 

@@ -10,6 +10,7 @@
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codAgenciaID" name="codAgencia" value="%COD_AGENCIA%">
+				<input type="hidden" id="indCheckAltID" name="indCheckAlt" value="%IND_CHECK_ALT%">
 				<input type="hidden" id="_codBancoID" name="_codBanco">
 				
 				<input type='hidden' id='valID'>
@@ -72,7 +73,6 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 
-
 $('#codBancoID').select2({
     minimumInputLength: 2,
     allowClear: true,
@@ -114,9 +114,7 @@ $('#codBancoID').select2({
     },
 });
 
-
 /************************* Submit Formulário *************************/
- 
 //Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
 	
@@ -131,7 +129,7 @@ $('#btnSubmitID').on("click", function(e) {
 		});
 		e.preventDefault();
 		return false;
-	}else{;
+	}else{
 		$('#zgFormID').submit();
 	}
 });
@@ -171,11 +169,11 @@ $('#zgFormID').submit(function(e) {
 });
 
 function zgCheckVerificador() {
-	var vAgencia = $('#codAgenciaID').val();
-	var vBanco	 = $('#_codBancoID').val();
-	var length 	 = agenciaBancoDigito(vBanco);
+	var vCheckAlt = $('#indCheckAltID').val();
+	var vBanco	  = $('#_codBancoID').val();
+	var length 	  = agenciaBancoDigito(vBanco);
 
-	if(!vAgencia){
+	if(!vCheckAlt){
 		$('#agenciaID').val("");
 		$('#agenciaDVID').val("");
 	}
@@ -192,6 +190,8 @@ function zgCheckVerificador() {
 	}else{
 		$('#agenciaID').attr('maxlength', 8);
 	}
+	
+	$('#indCheckAltID').val(null);
 }
 
 function checkNomeAlt() {
@@ -254,21 +254,16 @@ function validaAgenciaAlt() {
 			$('#divHelpAgenciaID').html(zgCriaSpanErro('A agência deve ter no máximo 8 caracteres!'));
 		}
 		vOK		= false;
-	}else{
-		$('#divAgenciaID').removeClass('has-error');
-		$('#divHelpAgenciaID').html('&nbsp;');
-	}
-	
-	// Dígito Verificador
-	if (!vAgenciaDV && !vVerReadonly) {
+	}else if (!vAgenciaDV && !vVerReadonly) {
 		$('#divAgenciaID').addClass('has-error');
 		$('#divHelpAgenciaID').html(zgCriaSpanErro('Informe atentamente o dígito verificador da conta bancária.'));
 		vOK		= false;
-	}else{
+	}else {
 		$('#divAgenciaID').removeClass('has-error');
 		$('#divHelpAgenciaID').html('&nbsp;');
 	}
 	
+	console.log(vOK);
 	// Banco
 	if (!vBanco) {
 		$('#divBancoID').addClass('has-error');
@@ -280,10 +275,13 @@ function validaAgenciaAlt() {
 	}
 	
 	// Nome
-	vOK	= checkNomeAlt();
+	if (checkNomeAlt() == false){
+		vOK = false;
+	}
 	
+	console.log(vOK);
 	if (vOK == true) {
-		return vOK ;
+		return true ;
 	}else{
 		return false;
 	}	
