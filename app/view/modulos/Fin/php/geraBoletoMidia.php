@@ -55,7 +55,6 @@ if (isset($_POST['valor'])) 			$aValor				= \Zage\App\Util::antiInjection($_POST
 if (isset($_POST['valorJuros'])) 		$aValorJuros		= \Zage\App\Util::antiInjection($_POST['valorJuros']);
 if (isset($_POST['valorMora'])) 		$aValorMora			= \Zage\App\Util::antiInjection($_POST['valorMora']);
 if (isset($_POST['valorDesconto'])) 	$aValorDesconto		= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
-if (isset($_POST['valorOutros'])) 		$aValorOutros		= \Zage\App\Util::antiInjection($_POST['valorOutros']);
 if (isset($_POST['tipoMidia'])) 		$tipoMidia			= \Zage\App\Util::antiInjection($_POST['tipoMidia']);
 if (isset($_POST['instrucao'])) 		$instrucao			= \Zage\App\Util::antiInjection($_POST['instrucao']);
 if (isset($_POST['email'])) 			$email				= \Zage\App\Util::antiInjection($_POST['email']);
@@ -64,8 +63,8 @@ if (isset($_POST['email'])) 			$email				= \Zage\App\Util::antiInjection($_POST[
 ## Verificar parâmetro obrigatório
 #################################################################################
 if (!isset($codContaSel)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
-
 if (!is_array($codContaSel)) \Zage\App\Erro::halt('Parâmetros incorretos');
+
 #################################################################################
 ## Verificar parâmetros
 #################################################################################
@@ -74,7 +73,6 @@ if (!is_array($aValor) 			&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Pa
 if (!is_array($aValorJuros)		&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 4 incorreto');
 if (!is_array($aValorMora) 		&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 5 incorreto');
 if (!is_array($aValorDesconto) 	&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 6 incorreto');
-if (!is_array($aValorOutros) 	&& sizeof($codContaSel) > 1)  \Zage\App\Erro::halt('Parâmetro 7 incorreto');
 
 #################################################################################
 ## Corrige os campos que não são arrays
@@ -84,13 +82,23 @@ if (!is_array($aValor) 			)  $aValor			= array($codContaSel[0] => $aValor);
 if (!is_array($aValorJuros)		)  $aValorJuros		= array($codContaSel[0] => $aValorJuros);
 if (!is_array($aValorMora) 		)  $aValorMora		= array($codContaSel[0] => $aValorMora);
 if (!is_array($aValorDesconto) 	)  $aValorDesconto	= array($codContaSel[0] => $aValorDesconto);
-if (!is_array($aValorOutros) 	)  $aValorOutros	= array($codContaSel[0] => $aValorOutros);
 
 #################################################################################
 ## Inicializa o html
 #################################################################################
 $htmlBol	= '';
 $parcelas	= '';
+
+#################################################################################
+## Instancia o objeto do contas a receber
+#################################################################################
+$contaRec	= new \Zage\Fin\ContaReceber();
+
+#################################################################################
+## Calcula a data de hoje
+#################################################################################
+$hoje		= date($system->config["data"]["dateFormat"]);
+
 
 #################################################################################
 ## Faz o loop nas parcelas das contas
@@ -116,10 +124,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	if (!$codContaRec)  {
 		\Zage\App\Erro::halt('Conta não possui conta corrente !!!');
 	}else{
-	
-		if ($codContaRec->getCodTipo()->getCodigo() !== "CC") {
-			\Zage\App\Erro::halt('Conta não é do tipo conta corrente!!!');
-		}
 	
 		$codAgencia		= $codContaRec->getCodAgencia();
 		if (!$codAgencia) {
@@ -183,14 +187,53 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	}
 	
 	#################################################################################
-	## Formata as informações de vencimento / Valor
+	## Formata as informações de vencimento 
 	#################################################################################
 	$vencimento				= $aVenc[$codConta];
-	$valor					= \Zage\App\Util::to_float($aValor[$codConta]);
+	
+	#################################################################################
+	## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+	#################################################################################
+	$saldoDet			= $contaRec->getSaldoAReceberDetalhado($codConta);
+	if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $hoje) == true) {
+	
+		#################################################################################
+		## Calcula os valor através da data de referência
+		#################################################################################
+		$valorJuros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($oConta->getCodigo(), $vencimento);
+		$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($oConta->getCodigo(), $vencimento);
+	
+	}else{
+	
+		#################################################################################
+		## Resgata o valor de júros da conta
+		#################################################################################
+		$valorJuros		= \Zage\App\Util::to_float($oConta->getValorJuros());
+		$valorMora		= \Zage\App\Util::to_float($oConta->getValorMora());
+	}
+	
+	
+	#################################################################################
+	## Atualiza o saldo a receber
+	#################################################################################
+	$valorJuros			+= $saldoDet["JUROS"];
+	$valorMora			+= $saldoDet["MORA"];
+	
+	#################################################################################
+	## Validação dos valores, não pode receber valores negativos
+	#################################################################################
+	if ($valorJuros 	< 0)	$valorJuros		= 0;
+	if ($valorMora 		< 0)	$valorMora		= 0;
+	
+	
+	#################################################################################
+	## Formata as informações de Valor
+	#################################################################################
+	$valor					= \Zage\App\Util::to_float($saldoDet["PRINCIPAL"]);
 	$juros					= \Zage\App\Util::to_float($aValorJuros[$codConta]);
 	$mora					= \Zage\App\Util::to_float($aValorMora[$codConta]);
 	$desconto				= \Zage\App\Util::to_float($aValorDesconto[$codConta]);
-	$outros					= \Zage\App\Util::to_float($aValorOutros[$codConta]);
+	$outros					= \Zage\App\Util::to_float($saldoDet["OUTROS"]);
 	$especie				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getCodInternacional() : null;
 	//$especieDoc				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getSimbolo() 	: null;
 	$especieDoc				= "DM"; # Duplicata Mercantil
@@ -201,12 +244,105 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	if (!$outros)			$outros		= 0;
 	
 	#################################################################################
+	## Faz o controle de salvamento da conta
+	#################################################################################
+	$_salvar				= false;
+	
+	#################################################################################
 	## Verifica se a conta já gerou o Sequencial do nosso número
 	#################################################################################
 	$sequencial			= $oConta->getSequencialNossoNumero();
 	if (!$sequencial)		{
 		$sequencial 		= \Zage\Fin\ContaReceber::geraNossoNumero($codConta);
 		$oConta->setSequencialNossoNumero($sequencial);
+		$_salvar			= true;
+	}
+	
+	#################################################################################
+	## Verifica se foi alterado o valor do júros
+	#################################################################################
+	if ($juros != $valorJuros) {
+		if ($juros > $valorJuros) {
+			/**
+			 * Combinado de não fazer nada, deixar a diferença a maior ir para adiantamento
+			#################################################################################
+			## Calcula a diferença
+			#################################################################################
+			$_difJuros	= \Zage\App\Util::to_float($juros - $valorJuros);
+					
+			#################################################################################
+			## Adicionar o valor cobrado a mais de júros na conta
+			#################################################################################
+			$oConta->setValorJuros(\Zage\App\Util::to_float($oConta->getValorJuros()) + $_difJuros);
+
+			#################################################################################
+			## Atualiza a flag para salvar a conta
+			#################################################################################
+			$_salvar	= true;
+			*/
+		}else{
+			#################################################################################
+			## Calcula a diferença
+			#################################################################################
+			$_difJuros	= \Zage\App\Util::to_float($valorJuros - $juros);
+				
+			#################################################################################
+			## Salvar o valor de desconto de júros
+			#################################################################################
+			$oConta->setValorDescontoJuros(\Zage\App\Util::to_float($oConta->getValorDescontoJuros()) + $_difJuros);
+			
+			#################################################################################
+			## Atualiza a flag para salvar a conta
+			#################################################################################
+			$_salvar	= true;
+		}
+	}
+	
+	#################################################################################
+	## Verifica se foi alterado o valor da mora
+	#################################################################################
+	if ($mora != $valorMora) {
+		if ($mora > $valorMora) {
+			
+			/**
+			 * Combinado de não fazer nada, deixar a diferença a maior ir para adiantamento
+			#################################################################################
+			## Calcula a diferença
+			#################################################################################
+			$_difMora	= \Zage\App\Util::to_float($mora - $valorMora);
+					
+			#################################################################################
+			## Adicionar o valor cobrado a mais de mora na conta
+			#################################################################################
+			$oConta->setValorMora(\Zage\App\Util::to_float($oConta->getValorMora()) + $_difMora);
+
+			#################################################################################
+			## Atualiza a flag para salvar a conta
+			#################################################################################
+			$_salvar	= true;
+			**/
+		}else{
+			#################################################################################
+			## Calcula a diferença
+			#################################################################################
+			$_difMora	= \Zage\App\Util::to_float($valorMora - $mora);
+				
+			#################################################################################
+			## Salvar o valor de desconto da mora
+			#################################################################################
+			$oConta->setValorDescontoMora(\Zage\App\Util::to_float($oConta->getValorDescontoMora()) + $_difMora);
+			
+			#################################################################################
+			## Atualiza a flag para salvar a conta
+			#################################################################################
+			$_salvar	= true;
+		}
+	}
+	
+	#################################################################################
+	## Verifica se é necessário salvar
+	#################################################################################
+	if ($_salvar)	{
 		$em->persist($oConta);
 		$em->flush();
 	}
@@ -248,7 +384,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	## Dar Prioridada aos valores, depois aos percentuais
 	#################################################################################
 	if ($valJuros) {
-		$textoJuros		= \Zage\App\Util::to_money($valJuros);
+		$textoJuros		= \Zage\App\Util::to_money(($valJuros/30));
 	}elseif ($pctJuros) {
 		$textoJuros		= round($pctJuros/30,2)."%";
 	}

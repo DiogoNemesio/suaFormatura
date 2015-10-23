@@ -133,7 +133,9 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	
 		$roJuros		= null;
 	}else{
-		
+		#################################################################################
+		## Resgata o valor de júros da conta
+		#################################################################################
 		$valorJuros		= \Zage\App\Util::toPHPNumber($contas[$i]->getValorJuros());
 		$valorMora		= \Zage\App\Util::toPHPNumber($contas[$i]->getValorMora());
 		$numDias		= 0;

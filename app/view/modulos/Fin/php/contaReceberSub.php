@@ -67,6 +67,8 @@ if (sizeof($contas) == 0) {
 
 $indPodeSub		= true;
 $valorSub		= 0;
+$outrosSub		= 0;
+$totalSub		= 0;
 
 for ($i = 0; $i < sizeof($contas); $i++) {
 
@@ -85,8 +87,12 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	#################################################################################
 	## Definir o valor a ser substituído
 	#################################################################################
-	$valPend	= \Zage\Fin\ContaReceber::getSaldoAReceber($contas[$i]->getCodigo());
+	$saldoPend	= \Zage\Fin\ContaReceber::getSaldoAReceberDetalhado($contas[$i]->getCodigo());
+	//$valPend	= \Zage\Fin\ContaReceber::getSaldoAReceber($contas[$i]->getCodigo());
+	$valPend	= $saldoPend["PRINCIPAL"] + $saldoPend["JUROS"] + $saldoPend["MORA"]; 
+	$outrosSub	+= $saldoPend["OUTROS"];
 	$valorSub	+= $valPend;
+	$totalSub	+= $valPend + $saldoPend["OUTROS"];
 	
 	#################################################################################
 	## Salvar o Cliente / Fornecedor
@@ -207,7 +213,9 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('ID'						,$id);
 $tpl->set('COD_CONTA'				,implode(",",$aSelContas));
 $tpl->set('URL_VOLTAR'				,$urlVoltar);
-$tpl->set('VALOR_TOTAL'				,number_format($valorSub,2,',',''));
+$tpl->set('VALOR_TOTAL'				,number_format($totalSub,2,',',''));
+$tpl->set('VALOR'					,number_format($valorSub,2,',',''));
+$tpl->set('VALOR_OUTROS'			,number_format($outrosSub,2,',',''));
 $tpl->set('DATA_VENC'				,date('d/m/Y'));
 $tpl->set('MOEDAS'					,$oMoeda);
 $tpl->set('CENTROS_CUSTO'			,$oCentroCusto);

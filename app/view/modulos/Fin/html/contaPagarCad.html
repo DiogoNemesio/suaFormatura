@@ -531,6 +531,9 @@ $('#fuelux-wizard-container')
 		if(!vOk) 	{
 			e.preventDefault();
 		}else{
+			/** Apaga os registros de rateio **/
+			$('#CPCadTableRateioID > tbody').find('tr').remove();
+			
 			var $numRows = $("#CPCadTableRateioID > tbody").children().length;
 			if ($numRows == 0){
 				addRowRateioCPCad(getValorParcelaCPCad(),'100,00');

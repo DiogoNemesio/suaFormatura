@@ -110,7 +110,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	#################################################################################
 	## Definir o valor total
 	#################################################################################
-	$valTotal	= ( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) + floatval($contas[$i]->getValorOutros()) - floatval($contas[$i]->getValorDesconto()) - floatval($contas[$i]->getValorCancelado())  );
+	$valTotal	= \Zage\Fin\ContaReceber::calculaValorTotal($contas[$i]);
 	$grid->setValorCelula($i,4,$valTotal);
 	
 	#################################################################################

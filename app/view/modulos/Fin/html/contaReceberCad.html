@@ -531,6 +531,9 @@ $('#fuelux-wizard-container')
 		if(!vOk) 	{
 			e.preventDefault();
 		}else{
+			/** Apaga os registros de rateio **/
+			$('#CRCadTableRateioID > tbody').find('tr').remove();
+
 			var $numRows = $("#CRCadTableRateioID > tbody").children().length;
 			if ($numRows == 0){
 				addRowRateioCRCad(getValorParcelaCRCad(),'100,00');
@@ -1119,15 +1122,17 @@ function validaValoresCRCad() {
 function validaConfiguracoesCRCad() {
 	var $codFormaPag	= $("#codFormaPagID option:selected").val();
 	var $codConta		= $("#codContaRecID option:selected").val();
-	var $codPessoa		= $("#codPessoaID option:selected").val();
+	var $codPessoa		= $("#codPessoaID").val();
 	
 	var vOK				= true;
 	
 	$('#divFormaPagID').removeClass('has-error');
 	$('#divContaRecID').removeClass('has-error');
+	$('#divCodPessoaID').removeClass('has-error');
 		
 	$('#divHelpFormaPagID').html('');
 	$('#divHelpContaRecID').html('');
+	$('#divHelpCodPessoaID').html('');
 	
 	if (!$codFormaPag) {
 		$('#divFormaPagID').addClass('has-error');
