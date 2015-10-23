@@ -1,0 +1,140 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Orçamento
+	</h1>
+	</div><!-- /.page-header -->
+	<br />
+		
+	<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
+		<input type="hidden" id="valID" name="validado">
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group col-sm-12" id="divIdentID">
+				    <label for="numFormandoID" class="col-sm-5 control-label">Número de formandos</label>
+		    		<div class="input-group col-sm-6 pull-left">
+	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a turma no sistema. Essa identificação será utilizar para compor o link de acesso."></i></span>
+			    		<input class="form-control" id="numFormandoID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="" %READONLY% onblur="atualizaConvidado();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    </div>
+				    <div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
+				</div>
+				<div class="form-group col-sm-12" id="divNomeID">
+			    	<label for="numConvidadoID" class="col-sm-5 control-label">Convites por formando</label>
+	    			<div class="input-group col-sm-6 pull-left">
+	   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome da turma."></i></span>
+		    			<input class="form-control" id="numConvidadoID" type="text" name="nome" placeholder="" maxlength="100" value="%NOME%" onblur="atualizaConvidado();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+			    	</div>
+			    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+			    </div>
+			    <div class="form-group col-sm-12" id="divDataConclusaoID">
+			    	<label for="dataConclusaoID" class="col-sm-5 control-label">Data da conclusão</label>
+	    			<div class="input-group col-sm-6 pull-left">
+	   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data prevista de conclusão do curso."></i></span>
+		    			<input class="form-control datepicker" id="dataConclusaoID" type="text" name="dataConclusao" placeholder="Data prevista de conclusão" maxlength="100" value="%DATA_CONCLUSAO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+			    	</div>
+		    		<div class="col-sm-1 pull-left" id="divHelpDataConclusaoID"></div>
+		    	</div>
+		    	<div class="form-group col-sm-12" id="divCodVersaoOrcID">
+					<label for="codVersaoOrcID" class="col-xs-12 col-sm-5 control-label">Versão do orçamento</label>
+					<div class="input-group col-sm-6 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sub-grupo."></i></span>
+						<select id="codVersaoOrcID" name="codVersaoOrc" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaVersaoOrc();">
+							%VERSAO_ORC%
+						</select>
+					</div>
+					<div class="col-sm-1 pull-left" id="divHelpCodVersaoOrcID"></div>
+				</div>
+		   	</div>
+		   	<div class="col-sm-5">
+			    <div class="profile-user-info profile-user-info-striped" id="divInfoID">
+					<div class="profile-info-row">
+						<div class="profile-info-name">Nº de Pessoas:</div>
+						<div class="profile-info-value" id="gridNumConvidadoID">
+							
+						</div>
+					</div>
+				
+					<div class="profile-info-row">
+						<div class="profile-info-name">Meses</div>
+						<div class="profile-info-value">
+							<span class="editable">%NOME%</span>
+						</div>
+					</div>				
+				</div>
+			</div>
+	    </div>
+	    <br>
+	    <div class="row" id="divInfoContratoID">
+			<div class="vspace-xs"></div>
+			
+			
+			<div class="vspace-xs"></div>
+		
+			<div class="row" id="divItem">
+		    	
+			</div>
+		</div>
+	    
+	    
+	</form>
+
+	
+	<div class="clearfix form-actions">
+		<label class="col-sm-4 control-label">&nbsp;</label>
+		<button type="button" class="btn btn-primary" id="btnSubmitID">
+			<i class="fa fa-check bigger-110"></i> Salvar
+		</button>
+		<button type="button" class="btn btn-warning" id="cancel"
+			onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+			<i class="fa fa-undo bigger-110"></i> Voltar
+		</button>
+	</div>
+</div>
+
+<script>
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Mascaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Mensagens
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+
+// SELECT2
+$('#codVersaoOrcID').css('width','100%').select2({allowClear:true});
+
+atualizaConvidado();
+function atualizaConvidado() {
+	var vNumFormando 		= $('#numFormandoID').val();
+	var vNumConvidado 		= $('#numConvidadoID').val();
+	
+	if (vNumFormando && vNumConvidado) {
+		$('#divInfoID').show();
+		// Calculo dos nº de convidados
+		vNumConvidado = vNumFormando * vNumConvidado;
+		$('#gridNumConvidadoID').html("<span class='editable'>"+vNumConvidado+" pessoas presentes</span>");
+	}else{
+		$('#divInfoID').hide();
+		//$('#divPctDescontoID').show();
+	}
+}
+
+carregaVersaoOrc();
+function carregaVersaoOrc(){
+	var codVersaoOrc = $('#codVersaoOrcID').val();
+	
+	if (codVersaoOrc){
+		$('#divItem').html("<i class='ace-icon fa fa-spinner fa-spin orange bigger-125'></i>");
+		$('#divItem').load("%ROOT_URL%/Fmt/orcamentoDivItem.php?id=%ID%&codVersaoOrc="+codVersaoOrc);
+		
+	}
+
+	
+}
+
+
+</script>
