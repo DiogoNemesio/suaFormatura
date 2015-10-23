@@ -94,10 +94,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		\Zage\App\Erro::halt('Conta não possui conta corrente !!!');
 	}else{
 	
-		if ($codContaRec->getCodTipo()->getCodigo() !== "CC") {
-			\Zage\App\Erro::halt('Conta não é do tipo conta corrente!!!');
-		}
-	
 		$codAgencia		= $codContaRec->getCodAgencia();
 		if (!$codAgencia) {
 			\Zage\App\Erro::halt('Conta corrente não pertence a uma agência !!!');
@@ -158,24 +154,64 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		$sacadoUF			= null;
 	
 	}
+
 	
 	#################################################################################
-	## Formata as informações de vencimento / Valor
+	## Formata as informações de vencimento
 	#################################################################################
 	$vencimento				= $aVenc[$codConta];
-	$valor					= \Zage\App\Util::to_float($aValor[$codConta]);
+	
+	#################################################################################
+	## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+	#################################################################################
+	$saldoDet			= $contaRec->getSaldoAReceberDetalhado($codConta);
+	if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $hoje) == true) {
+	
+		#################################################################################
+		## Calcula os valor através da data de referência
+		#################################################################################
+		$valorJuros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($oConta->getCodigo(), $vencimento);
+		$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($oConta->getCodigo(), $vencimento);
+	
+	}else{
+	
+		#################################################################################
+		## Resgata o valor de júros da conta
+		#################################################################################
+		$valorJuros		= \Zage\App\Util::to_float($oConta->getValorJuros());
+		$valorMora		= \Zage\App\Util::to_float($oConta->getValorMora());
+	}
+	
+	
+	#################################################################################
+	## Atualiza o saldo a receber
+	#################################################################################
+	$valorJuros			+= $saldoDet["JUROS"];
+	$valorMora			+= $saldoDet["MORA"];
+	
+	#################################################################################
+	## Validação dos valores, não pode receber valores negativos
+	#################################################################################
+	if ($valorJuros 	< 0)	$valorJuros		= 0;
+	if ($valorMora 		< 0)	$valorMora		= 0;
+	
+	
+	#################################################################################
+	## Formata as informações de Valor
+	#################################################################################
+	$valor					= \Zage\App\Util::to_float($saldoDet["PRINCIPAL"]);
 	$juros					= \Zage\App\Util::to_float($aValorJuros[$codConta]);
 	$mora					= \Zage\App\Util::to_float($aValorMora[$codConta]);
 	$desconto				= \Zage\App\Util::to_float($aValorDesconto[$codConta]);
-	$outros					= \Zage\App\Util::to_float($aValorOutros[$codConta]);
+	$outros					= \Zage\App\Util::to_float($saldoDet["OUTROS"]);
 	$especie				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getCodInternacional() : null;
-	//$especieDoc				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getSimbolo() 	: null;
 	$especieDoc				= "DM"; # Duplicata Mercantil
 	
 	if (!$juros)			$juros		= 0;
 	if (!$mora)				$mora		= 0;
 	if (!$desconto)			$desconto	= 0;
 	if (!$outros)			$outros		= 0;
+	
 	
 	#################################################################################
 	## Verifica se a conta já gerou o Sequencial do nosso número
@@ -224,7 +260,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	## Dar Prioridada aos valores, depois aos percentuais
 	#################################################################################
 	if ($valJuros) {
-		$textoJuros		= \Zage\App\Util::to_money($valJuros);
+		$textoJuros		= \Zage\App\Util::to_money(($valJuros/30));
 	}elseif ($pctJuros) {
 		$textoJuros		= round($pctJuros/30,2)."%";
 	}

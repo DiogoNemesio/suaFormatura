@@ -108,82 +108,78 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	
 	if (!$codContaRec) {
 		\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Nenhuma conta corrente informada !!!'));
-	}else if ($codContaRec->getCodTipo()->getCodigo() !== "CC") {
-		\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Conta de recebimento não é do tipo "CONTA CORRENTE" !!! (%s)',array('%s' => $codContaRec->getCodTipo()->getCodigo())));
 	}else if (!$codContaRec->getCodCarteira()) {
 		\Zage\App\Erro::halt($tr->trans('Não pode gerar boleto da conta, Carteira não configurada na conta corrente !!!'));
 	}
 	
 	#################################################################################
-	## Verificar se a conta está atrasada
+	## Verificar se a conta está atrasada e calcular o júros e mora caso existam
 	#################################################################################
-	$vencimento			= $contas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-	$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento);
-
-	#################################################################################
-	## Calcular o vencimento do boleto
-	#################################################################################
-	if ($numDias > 0) {
-		$vencBol		= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]));
+	$saldoDet			= $contaRec->getSaldoAReceberDetalhado($contas[$i]->getCodigo());
+	if (\Zage\Fin\ContaReceber::estaAtrasada($contas[$i]->getCodigo(), $hoje) == true) {
 		
 		#################################################################################
-		## Calcular os dias em atraso com a data de referência o vencimento do boleto
+		## Calcula o número de dias de atraso, e o novo vencimento do boleto
 		#################################################################################
-		$numDias		= \Zage\Fin\Data::numDiasAtraso($vencimento,$vencBol);
+		$numDias		= \Zage\Fin\Data::numDiasAtraso($vencimento);
+		$vencBol		= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]));
 		$htmlAtraso		= $numDias;
+		
+		#################################################################################
+		## Calcula os valor através da data de referência
+		#################################################################################
+		$valorJuros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($contas[$i]->getCodigo(), $vencBol);
+		$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($contas[$i]->getCodigo(), $vencBol);
+	
+		$roJuros		= null;
 	}else{
+		#################################################################################
+		## Resgata o valor de júros da conta
+		#################################################################################
+		$valorJuros		= \Zage\App\Util::toPHPNumber($contas[$i]->getValorJuros());
+		$valorMora		= \Zage\App\Util::toPHPNumber($contas[$i]->getValorMora());
+		$numDias		= 0;
 		$vencBol		= $vencimento;
 		$htmlAtraso		= "<i class='fa fa-check-circle green bigger-120'></i>";
+		$roJuros		= "readonly";
 	}
 	
 	#################################################################################
-	## Ajustar o número dias para zero caso não esteja vencido
+	## Atualiza o saldo a receber
 	#################################################################################
-	//if ($numDias < 0) 	$numDias	= 0;
-	
+	$valorJuros			+= $saldoDet["JUROS"];
+	$valorMora			+= $saldoDet["MORA"];
 	
 	#################################################################################
 	## Calcular o valor e o desconto
 	#################################################################################
-	if (!$contaRec->getValorJaRecebido($contas[$i]->getCodigo())) {
+	if (!$contaRec->getValorJaRecebido($contas[$i])) {
 		$valor				= \Zage\App\Util::to_float($contas[$i]->getValor());
 		$valorDesconto		= \Zage\App\Util::to_float($contas[$i]->getValorDesconto());
 		$valorOutros		= \Zage\App\Util::to_float($contas[$i]->getValorOutros());
 	}else{
-		$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($contas[$i]->getCodigo()));
+		$valor				= \Zage\App\Util::to_float($saldoDet["PRINCIPAL"]);
 		$valorDesconto		= 0;
-		$valorOutros		= 0;
-	}
-	
-	#################################################################################
-	## Calcular o Juros e Mora
-	#################################################################################
-	if ($numDias <= 0) {
-		$valorJuros			= 0;
-		$valorMora			= 0;
-		$numDias			= 0;
-	}else{
-		$valJuros			= \Zage\App\Util::to_float($codContaRec->getValorJuros());
-		$valMora			= \Zage\App\Util::to_float($codContaRec->getValorMora());
-		$pctJuros			= $codContaRec->getPctJuros();
-		$pctMora			= $codContaRec->getPctMora();
-	
+		$valorOutros		= \Zage\App\Util::to_float($saldoDet["OUTROS"]);
+		
 		#################################################################################
-		## Dar Prioridada aos valores, depois aos percentuais
+		## Verificar se o outros valores foi pago no valor principal
 		#################################################################################
-		if ($valJuros) {
-			$valorJuros	= $valJuros;
-		}elseif ($pctJuros) {
-			$valorJuros	= (($valor * ($pctJuros/100))/30)*$numDias;
-		}
-	
-		if ($valMora)	{
-			$valorMora	= $valMora;
-		}else{
-			$valorMora	= ($valor * ($pctMora/100));
+		if (($valor < 0) && (($valor + $valorOutros) == 0)) {
+			$valor			= 0;
+			$valorOutros	= 0;
 		}
 	}
 	
+	#################################################################################
+	## Validação dos valores, não pode receber valores negativos
+	#################################################################################
+	if ($valor 			< 0)	$valor			= 0;
+	if ($valorJuros 	< 0)	$valorJuros		= 0;
+	if ($valorMora 		< 0)	$valorMora		= 0;
+	if ($valorOutros 	< 0)	$valorOutros	= 0;
+	if ($valorDesconto 	< 0)	$valorDesconto	= 0;
+
 
 	#################################################################################
 	## Formatar os campos
@@ -191,6 +187,10 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	$parcela			= $contas[$i]->getParcela() . " / ".$contas[$i]->getNumParcelas();
 	$valorJuros			= \Zage\App\Util::to_float($valorJuros);
 	$valorMora			= \Zage\App\Util::to_float($valorMora);
+	$valorTotal			= $valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto;
+	$valorOriginal		= \Zage\App\Util::to_float($contas[$i]->getValor()) + \Zage\App\Util::to_float($contas[$i]->getValorOutros()) - \Zage\App\Util::to_float($contas[$i]->getValorDesconto());
+	$saldoDevedor		= $saldoDet["PRINCIPAL"] + $saldoDet["OUTROS"];
+	$saldoDevedorTotal	= $saldoDevedor + $valorJuros + $valorMora;
 	
 	#################################################################################
 	## Selecionar todas as contas por padrão
@@ -204,11 +204,11 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 		<td class="col-sm-1 center">'.$vencimento.'</td>
 		<td class="col-sm-1 center"><input class="form-control datepicker" id="vencimentoID" type="text" name="vencimento['.$contas[$i]->getCodigo().']" maxlength="10" value="'.$vencBol.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
 		<td class="col-sm-1 center">'.$htmlAtraso.'</td>
-		<td class="col-sm-2 center"><input type="text" name="valor['.$contas[$i]->getCodigo().']" readonly	maxlength="20" value="'.$valor.'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorJuros.'"	 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorMora['.$contas[$i]->getCodigo().']" 		maxlength="20" value="'.$valorMora.'" 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.$valorDesconto.'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-		<td class="col-sm-1 center"><input type="text" name="valorOutros['.$contas[$i]->getCodigo().']" 	maxlength="20" value="'.$valorOutros.'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input class="input-medium" type="text" name="valor['.$contas[$i]->getCodigo().']" 				readonly maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorOriginal).'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+		<td class="col-sm-1 center"><input class="input-medium" type="text" name="saldoDevedorTotal['.$contas[$i]->getCodigo().']"	readonly maxlength="20" value="'.\Zage\App\Util::formataDinheiro($saldoDevedorTotal).'" 	autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">  <input type="hidden" name="saldoDevedor['.$contas[$i]->getCodigo().']" value="'.$saldoDevedor.'" /></td>
+		<td class="col-sm-1 center"><input class="input-medium" type="text" name="valorJuros['.$contas[$i]->getCodigo().']" 		readonly maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorJuros).'"	 		autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" onchange="GeraBolAtualizaSaldoDevedor(\''.$contas[$i]->getCodigo().'\');"></td>
+		<td class="col-sm-1 center"><input class="input-medium" type="text" name="valorMora['.$contas[$i]->getCodigo().']" 			readonly maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorMora).'" 				autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" onchange="GeraBolAtualizaSaldoDevedor(\''.$contas[$i]->getCodigo().'\');"></td>
+		<td class="col-sm-1 center"><input class="input-small" type="text" name="valorDesconto['.$contas[$i]->getCodigo().']" 		readonly maxlength="20" value="'.\Zage\App\Util::formataDinheiro($valorDesconto).'" 			autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" onchange="GeraBolAtualizaSaldoDevedor(\''.$contas[$i]->getCodigo().'\');"></td>
 	</tr>
 	';	
 
