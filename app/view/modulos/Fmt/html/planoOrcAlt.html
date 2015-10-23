@@ -1,0 +1,241 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Cadastro de Orçamento
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+	<div id="divAvisoLayoutOrcamentoID"></div>
+	
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" name="_precisaSalvar" id="_precisaSalvarID">
+				<input type="hidden" name="_alterarEvento" id="_alterarEventoID">
+				<input type="hidden" id="codEventoID" name="codEvento" value="%COD_EVENTO%">
+				<input type="hidden" id="codVersaoID" name="codVersao" value="%COD_VERSAO%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+				
+				<h4 class="header blue bolder smaller">Informações do orçamento</h4>
+				<div class="vspace-xs"></div>
+			    	<div class="col-sm-6">
+			    		<div class="form-group col-sm-12" id="divVersaoID">
+					    	<label class="col-sm-2 control-label" for="versaoID">Versão</label>
+								<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da versão."></i></span>
+			   					<input class="form-control" id="versaoID" type="text" name="versao" placeholder="Versão" maxlength="60" value="%VERSAO%" required autocomplete="off">
+			    			</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpVersaoID"></div>
+			    		</div>
+			    	</div>
+			    	<div class="col-sm-3">
+						<div class="form-group col-sm-12" id="divIndVersaoID">
+					    	<label class="col-xs-12 col-sm-5 control-label" for="indVersaoID">Status</label>
+					    	<label>
+					    		<input name="indVersao" id="indVersaoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_VERSAO% />
+								<span class="lbl"></span>
+							</label>
+					    </div>
+		    		</div>
+			    		
+					<div class="btn-group">
+						%BOTOES%
+					</div>
+					<div class="vspace-xs"></div>
+					<div class="row">
+				    	<div class="col-sm-12">
+							<div>
+								<table id="layRegTableOrcamentoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
+									<thead>
+										<tr class="warning">
+											<th class="col-sm-1 center"></th>
+											<th class="col-sm-2 center">Item</th>
+											<th class="col-sm-2 center">Tipo Item</th>
+											<th class="col-sm-2 center">Categoria</th>
+											<th class="col-sm-1 center">Ativo</th>
+											<th class="col-sm-1 center"><span class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									%TAB_ORCAMENTO%
+									</tbody>
+									<tfoot>
+										<tr>
+											<th colspan="5" style="text-align: left;"></th>
+											<th class="col-sm-1 center"><span class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+							<div class="clearfix form-actions">
+								<label class="col-sm-5 control-label" >&nbsp;</label>
+				   				<button type="button" class="btn btn-primary" id="btnSubmitListaOrcID"><i class="fa fa-check bigger-110"></i> Salvar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+
+//Máscaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.select2').css('width','100%').select2({allowClear:true});
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitListaOrcID').on("click", function(e) {
+	var vOk 	= validaOrcamento();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function() {
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$('#btnSubmitListaOrcID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitListaOrcID').attr("disabled","disabled");
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		$('#_precisaSalvarID').val(0);
+		if (checaRetornoOK(data) == true) {
+			$('#codProdutoID').val(zgGetCodRetorno(data));
+			zgMostraMsg('divAvisoLayoutOrcamentoID', zgGetMsgRetorno(data));
+		}else{
+			zgMostraErro('divAvisoLayoutOrcamentoID', zgGetMsgRetorno(data));
+		}
+		
+		$('#btnSubmitListaOrcID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitListaOrcID').attr("disabled",false);
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+
+function addRowOrcamentoLayReg() {
+	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;
+	
+	$('#_precisaSalvarID').val(1);
+
+	if ($return == true) return $return;
+
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item[]" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="item"]').each(function( index ) {
+		$( this ).focus();
+	});
+	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	$('#layRegTableOrcamentoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+}
+
+function delRowOrcamentoLayReg(pObj) {
+	$('#_precisaSalvarID').val(1);
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
+	var $tr		= $td.parent();
+
+	$tr.addClass("danger");
+	$tr.fadeOut(500, function(){
+		$tr.remove();
+	});
+}
+
+function verificaAlteracao(pObj) {
+	$('#_precisaSalvarID').val(1);
+}
+
+function validaOrcamento () {
+	var $return,$ok;
+	
+	$ok	= true;
+	
+	$('#layRegTableOrcamentoID > tbody > tr').each(function( index ) {
+		
+		$itemObj 	= $(this).find('[name*="item[]"]');
+		
+		$item		= $itemObj.val();
+		if (!$item) {
+			zgMostraErro('divAvisoLayoutOrcamentoID','Não pode haver uma linha sem nome do item preenchido!');
+			$ok 	= false;
+			$(this).addClass('alert-danger');
+		}else{
+			$(this).removeClass('alert-danger');
+		}
+	
+	});
+
+	if (!$ok)	return false;
+	
+	return true;	
+}
+
+function zgLoadUrlSeSalvouOrc($url) {
+	
+	var vOk 	= validaOrcamento();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{
+		if ($('#_precisaSalvarID').val() == 1) {
+			$('#_alterarEventoID').val(1);
+			$('#zgFormID').submit();
+			zgLoadUrl($url);
+			
+			$.gritter.add({
+				title: 'Lista atualizada!',
+				text: 'Sua lista de Orcamentos foi atualizada com sucesso.',
+				class_name: 'gritter-info gritter-sticky',
+				time: '5000'
+			});
+			
+		}else{
+			zgLoadUrl($url);
+		}
+	}
+}
+</script>
+
