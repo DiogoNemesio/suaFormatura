@@ -9,6 +9,7 @@
 		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
 		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
 		<input type="hidden" id="valID" name="validado">
+		<input type='hidden' id='dataAnteriorID' name="dataAnterior" value="01/01/0001">
 
 		<div class="row">
 			<div class="col-sm-6">
@@ -16,7 +17,7 @@
 				    <label for="numFormandoID" class="col-sm-5 control-label">Número de formandos</label>
 		    		<div class="input-group col-sm-6 pull-left">
 	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a turma no sistema. Essa identificação será utilizar para compor o link de acesso."></i></span>
-			    		<input class="form-control" id="numFormandoID" type="text" name="ident" maxlength="60" value="%IDENT%" placeholder="" %READONLY% onblur="atualizaConvidado();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+			    		<input class="form-control" id="numFormandoID" type="text" name="numFormando" maxlength="5"  %READONLY% onchange="orcAlteraQtdeFormandos();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 				    </div>
 				    <div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
 				</div>
@@ -24,7 +25,7 @@
 			    	<label for="numConvidadoID" class="col-sm-5 control-label">Convites por formando</label>
 	    			<div class="input-group col-sm-6 pull-left">
 	   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome da turma."></i></span>
-		    			<input class="form-control" id="numConvidadoID" type="text" name="nome" placeholder="" maxlength="100" value="%NOME%" onblur="atualizaConvidado();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+		    			<input class="form-control" id="numConvidadoID" type="text" name="numConvidado" maxlength="5" onblur="orcAlteraQtdeConvidados();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 			    	</div>
 			    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 			    </div>
@@ -32,7 +33,7 @@
 			    	<label for="dataConclusaoID" class="col-sm-5 control-label">Data da conclusão</label>
 	    			<div class="input-group col-sm-6 pull-left">
 	   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data prevista de conclusão do curso."></i></span>
-		    			<input class="form-control datepicker" id="dataConclusaoID" type="text" name="dataConclusao" placeholder="Data prevista de conclusão" maxlength="100" value="%DATA_CONCLUSAO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+		    			<input class="form-control datepicker" id="dataConclusaoID" type="text" name="dataConclusao" placeholder="Data prevista de conclusão" onchange="orcAtualizaInfo();" value="%DATA_CONCLUSAO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 			    	</div>
 		    		<div class="col-sm-1 pull-left" id="divHelpDataConclusaoID"></div>
 		    	</div>
@@ -51,16 +52,15 @@
 			    <div class="profile-user-info profile-user-info-striped" id="divInfoID">
 					<div class="profile-info-row">
 						<div class="profile-info-name">Nº de Pessoas:</div>
-						<div class="profile-info-value" id="gridNumConvidadoID">
-							
-						</div>
+						<div class="profile-info-value" id="orcNumConvidadoID"></div>
 					</div>
-				
 					<div class="profile-info-row">
 						<div class="profile-info-name">Meses</div>
-						<div class="profile-info-value">
-							<span class="editable">%NOME%</span>
-						</div>
+						<div class="profile-info-value" id="orcNumMesesID"><span id="spOrcInfoNumMesesID"></span>&nbsp;<span id='spOrcIcNumMesesID' class="hidden"><i class="fa fa-refresh fa-spin"></i></span></div>
+					</div>				
+					<div class="profile-info-row">
+						<div class="profile-info-name">Custo Final</div>
+						<div class="profile-info-value" id="orcCustoFinalID"></div>
 					</div>				
 				</div>
 			</div>
@@ -107,34 +107,223 @@ $('[data-rel=popover]').popover({html:true});
 // SELECT2
 $('#codVersaoOrcID').css('width','100%').select2({allowClear:true});
 
-atualizaConvidado();
-function atualizaConvidado() {
-	var vNumFormando 		= $('#numFormandoID').val();
-	var vNumConvidado 		= $('#numConvidadoID').val();
+orcAtualizaInfo();
+
+function orcAtualizaInfo() {
+	var $numFormando 		= $('#numFormandoID').val();
+	var $numConvidado 		= $('#numConvidadoID').val();
+	var $codVersaoOrc 		= $('#codVersaoOrcID').val();
+	var $dataConclusao		= $('#dataConclusaoID').val();
+	var $dataAnterior		= $('#dataAnteriorID').val();
 	
-	if (vNumFormando && vNumConvidado) {
-		$('#divInfoID').show();
+	var $mostraInfo			= 0;
+	
+	
+	
+	if ($numFormando && $numConvidado) {
+		$mostraInfo			= 1;
+
 		// Calculo dos nº de convidados
-		vNumConvidado = vNumFormando * vNumConvidado;
-		$('#gridNumConvidadoID').html("<span class='editable'>"+vNumConvidado+" pessoas presentes</span>");
+		var $total				= parseInt($numFormando) * parseInt($numConvidado);
+		$('#orcNumConvidadoID').html("<span class=''>"+$total+" pessoas presentes</span>");
+	}else{
+		$('#orcNumConvidadoID').html("<span class=''>&nbsp;</span>");
+	}
+	
+	
+	
+	if ($dataConclusao) {
+		$mostraInfo			= 1;
+		
+		//alert("DataConc: "+$dataConclusao+" DataAnterior: "+$dataAnterior);
+		
+		if ($dataConclusao !== $dataAnterior) {
+			var $spIcon		= $('#spOrcIcNumMesesID');
+			
+			$spIcon.removeClass("hidden");
+			
+			$.ajax({
+				url: "%ROOT_URL%/Fin/getNumMesesAteData.dp.php",
+				data:  { dataRef: $dataConclusao},
+				async: false,
+				method: "POST",
+				success: function(data) {
+					var $meses	= data["MESES"];
+	
+					$meses		= parseInt($meses);
+					$('#spOrcInfoNumMesesID').html($meses+" meses previstos");
+					$('#dataAnteriorID').val($dataConclusao);
+			    },
+				dataType: 'json'
+			});
+			
+			$spIcon.addClass("hidden");
+		}
+	}
+	
+	
+	if ($mostraInfo		== 1) {
+		$('#divInfoID').show();
 	}else{
 		$('#divInfoID').hide();
-		//$('#divPctDescontoID').show();
 	}
+	
 }
 
-carregaVersaoOrc();
-function carregaVersaoOrc(){
-	var codVersaoOrc = $('#codVersaoOrcID').val();
+function carregaVersaoOrc() {
+	var $numFormando 		= $('#numFormandoID').val();
+	var $numConvidado 		= $('#numConvidadoID').val();
+	var $codVersaoOrc 		= $('#codVersaoOrcID').val();
+	var $dataConclusao		= $('#dataConclusaoID').val();
 	
-	if (codVersaoOrc){
+	if (!$codVersaoOrc)		{
+		return;
+	}
+	
+	if (!$numFormando) {
+		alert("informe o número de formandos !!! ");
+		$('#codVersaoOrcID').val(null).trigger("change");
+		return;
+	}
+	
+	if (!$numConvidado) {
+		alert("informe o número de convidados !!! ");
+		$('#codVersaoOrcID').val(null).trigger("change");
+		return;
+	}
+
+	if (!$dataConclusao) {
+		alert("informe a data prevista de conclusão !!! ");
+		$('#codVersaoOrcID').val(null).trigger("change");
+		return;
+	}
+
+	if ($codVersaoOrc){
 		$('#divItem').html("<i class='ace-icon fa fa-spinner fa-spin orange bigger-125'></i>");
-		$('#divItem').load("%ROOT_URL%/Fmt/orcamentoDivItem.php?id=%ID%&codVersaoOrc="+codVersaoOrc);
+		$('#divItem').load( "%ROOT_URL%/Fmt/orcamentoDivItem.php?id=%ID%&codVersaoOrc="+$codVersaoOrc, function() {
+			orcAlteraQtdeFormandos();
+			orcAlteraQtdeConvidados();
+		});
+		
 		
 	}
+}
 
+function orcAlteraQtdeFormandos() {
+	var $numFormando 		= $('#numFormandoID').val();
+	
+	$('input[zg-name="qtde"][zg-tipo="F"]').each(function() {
+		$(this).val($numFormando);
+		$(this).trigger('change');
+	});
+	
+	orcAlteraQtdeConvidados();
+}
+
+function orcAlteraQtdeConvidados() {
+	var $numFormando 		= $('#numFormandoID').val();
+	var $numConvidado 		= $('#numConvidadoID').val();
+	var $total				= parseInt($numFormando) * parseInt($numConvidado);
+
+	
+	$('input[zg-name="qtde"][zg-tipo="C"]').each(function() {
+		$(this).val($total);
+		$(this).trigger('change');
+	});
+	
+	orcAtualizaInfo();
+}
+
+
+function orcAtualizaTotalItem($codigo) {
+	var $oQtde	= $('input[zg-name="qtde"][zg-codigo="'+$codigo+'"]');
+	var $oValor	= $('input[zg-name="valor"][zg-codigo="'+$codigo+'"]');
+	var $oTotal	= $('#total_'+$codigo+'_ID');
+	var $evento	= $oQtde.attr('zg-evento');
+	
+	var	$valor	= parseFloat($oValor.val().replace(".", "").replace(",","."));
+	var $qtde	= parseInt($oQtde.val());
+	var $total	= $valor * $qtde;
+	
+	var options = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	
+	/** Atualiza o Span com o total do item **/
+	$oTotal.html(accounting.formatMoney($total, options));
+	
+	/** Atualiza o total do evento **/
+	orcAtualizaInfoEvento($evento);
+
+}
+
+function orcAtualizaInfoEvento($evento) {
+	var $totalEvento	= 0;
+	
+	$('input[zg-evento="'+$evento+'"][zg-name="qtde"]').each(function() {
+		var $qtde		= parseInt($(this).val()); 
+		var $codigo		= $(this).attr("zg-codigo");
+		var $valor		= parseFloat($('input[zg-evento="'+$evento+'"][zg-name="valor"][zg-codigo="'+$codigo+'"]').val().replace(".", "").replace(",","."));
+		
+		if (isNaN($valor)) {
+			$valor 	= parseFloat(0);
+		}
+
+		if (isNaN($qtde)) {
+			$qtde 	= parseInt(0);
+		}
+
+		//alert("Codigo: "+$codigo+" Qtde: "+$qtde+" Valor: "+$valor);
+		var $totalItem	= $qtde * $valor;
+		$totalEvento	+= $totalItem;
+	});
+	
+	var options = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	//alert("Total Evento: "+$totalEvento);
+	/** Atualiza o Span com o total do evento **/
+	$('#totalEvento_'+$evento+'_ID').html(accounting.formatMoney($totalEvento, options));
+	$('#totalEvento_'+$evento+'_ID').attr('zg-total-evento',$totalEvento);
+	
+	orcAtualizaCustoFinal();
 	
 }
 
+function orcAtualizaCustoFinal() {
+	var $custoFinal	= 0;
+	
+	$('span[zg-total-evento]').each(function() {
+		var $totalEvento	= parseFloat($(this).attr("zg-total-evento"));
+		if (isNaN($totalEvento)) {
+			$totalEvento 	= parseFloat(0);
+		}
+
+		$custoFinal	+= $totalEvento;
+	});
+	
+	var options = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	//alert("Total Evento: "+$totalEvento);
+	/** Atualiza o Span com o custo final do evento **/
+	$('#orcCustoFinalID').html(accounting.formatMoney($custoFinal, options));
+	
+}
 
 </script>

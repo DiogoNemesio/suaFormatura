@@ -7,10 +7,12 @@ if (defined('DOC_ROOT')) {
 }else{
 	include_once('../include.php');
 }
+
 #################################################################################
-## Verifica se o usuário está autenticado
+## Variáveis globais
 #################################################################################
-include_once(BIN_PATH . 'auth.php');
+global $em,$tr,$system;
+
 #################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
@@ -44,42 +46,104 @@ if (!isset($codVersaoOrc)) exit;
 #################################################################################
 ## Resgatar os dados
 #################################################################################
-$oItem		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codVersao' => $codVersaoOrc));
-
-//for ($i = 0; $i < sizeof($oItem); $i++) {
-//	$arrayItem[$oItem[$i]->getCodTipoEvento()] = $oItem[$i]->getCodigo();
-//}
+$itens		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codVersao' => $codVersaoOrc,'indAtivo' => 1));
 
 #################################################################################
-## Cria o objeto do Grid (bootstrap) 
+## Verificar se o orçamento tem algum item
 #################################################################################
-$htmlForm	  = "";
-
-$htmlForm	.= '<h4 align="center"><b>Detalhes do evento</b></h4>';
-$htmlForm	.= '<br>';
-$htmlForm	.= '<div class="col-sm-10" align="center">';
-$htmlForm	.= '<table id="dynamic-table" class="table table-hover">';
-
-
-
-for ($i = 0; $i < sizeof($oItem); $i++) {
-	
-	$htmlForm	.= '<tr>';
-	$htmlForm	.= '<td class="center">';
-	$htmlForm	.= '<label class="pos-rel">';
-	$htmlForm	.= '<input type="checkbox" class="ace" />';
-	$htmlForm	.= '<span class="lbl"></span>';
-	$htmlForm	.= '</label>';
-	$htmlForm	.= '</td>';
-	$htmlForm	.= '<td><input class="form-control" id="numConvidadoID" placeholder="Quantidade" type="text" name="nome" placeholder="" maxlength="100" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>';
-	$htmlForm	.= '<td>'.$oItem[$i]->getItem().'</td>';
-	$htmlForm	.= '<td><input class="form-control" id="numConvidadoID" type="text" name="nome" placeholder="Valor unitário" maxlength="100" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro"></td>';
-	$htmlForm	.= '<td>TOTAL</td>';
-	$htmlForm	.= '</tr>';
-
+if (sizeof($itens) == 0)	{
+	die ("Configure o Plano orçamentário antes de usá-lo");
 }
 
-$htmlForm	.= '</table>';
+#################################################################################
+## Montar o array com as informações do Plano
+#################################################################################
+$aItens		= array(); 
+for ($i = 0; $i < sizeof($itens); $i++) {
+	$codTipo		= $itens[$i]->getCodTipoEvento()->getCodigo();
+	$codigo		= $itens[$i]->getCodigo();
+	$aItens[$codTipo]["DESCRICAO"]			= $itens[$i]->getCodTipoEvento()->getDescricao();
+	$aItens[$codTipo]["ITENS"][$codigo]["CODIGO"] 	= $itens[$i]->getCodigo();
+	$aItens[$codTipo]["ITENS"][$codigo]["TIPO"] 	= $itens[$i]->getCodTipoItem()->getCodigo();
+	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 	= $itens[$i]->getItem();
+}
+
+//print_r($aItens);
+//exit;
+
+#################################################################################
+## Cria o html dinâmico 
+#################################################################################
+$tabIndex	= 101;
+$htmlForm	= '';
+$htmlForm	.= '<h4 align="center"><b>Detalhes do evento</b></h4>';
+$htmlForm	.= '<br>';
+$htmlForm	.= '<center>';
+$htmlForm	.= '<div id="itensOrcamentoID" class="panel-group accordion-style1" style="width: 98%;">';
+
+foreach ($aItens as $codTipo => $aItem)	{
+	$htmlForm	.= '<div class="panel panel-default">';
+	$htmlForm	.= '<div class="panel-heading">';
+	$htmlForm	.= '<a href="#itemTipo_'.$codTipo.'_ID" data1-parent="#itensOrcamentoID" data-toggle="collapse" class="accordion-toggle">';
+	//$htmlForm	.= '<i class="ace-icon fa fa-chevron-left pull-right" data-icon-hide="ace-icon fa fa-chevron-down" data-icon-show="ace-icon fa fa-chevron-left"></i>';
+	$htmlForm	.= '<i class="ace-icon fa fa-chevron-right pull-left" data-icon-hide="ace-icon fa fa-chevron-down" data-icon-show="ace-icon fa fa-chevron-right"></i>';
+	$htmlForm	.= '&nbsp;<label style="text-align: center;">'.$aItem["DESCRICAO"].'</label>';
+	$htmlForm	.= '</a>';
+	$htmlForm	.= '</div>';
+	$htmlForm	.= '<div class="panel-collapse" id="itemTipo_'.$codTipo.'_ID">';
+	$htmlForm	.= '<div class="panel-body">';
+
+	
+	
+	#################################################################################
+	## Montar a tabela de itens
+	#################################################################################
+	$tipoItens	= $aItem["ITENS"];
+	if (sizeof($tipoItens) > 0) {
+		$htmlForm	.= '<div class="col-sm-10" align="center">';
+		$htmlForm	.= '<table id="tabItem_'.$codItem.'_ID" class="table table-hover table-condensed">';
+		
+		foreach ($tipoItens as $codItem => $item) {
+			
+			if ($item["TIPO"] == "UN") {
+				$ro		= null;
+				$valor	= null;
+			}else{
+				$ro		= "readonly";
+				$valor	= 1;
+			}
+			
+			$htmlForm	.= '<tr>';
+			$htmlForm	.= '<td class="col-sm-2">'.$item["ITEM"].'</td>';
+			$htmlForm	.= '<td class="col-sm-1 right"><span>Qtde:&nbsp;</span> <input class="input-mini" id="qtde_'.$item["CODIGO"].'_ID" type="text"'.$ro.' zg-tipo="'.$item["TIPO"].'" zg-evento="'.$codTipo.'" zg-codigo="'.$item["CODIGO"].'" zg-name="qtde" maxlength="5" value="'.$valor.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="orcAtualizaTotalItem(\''.$item["CODIGO"].'\');"></td>';
+			$htmlForm	.= '<td class="col-sm-1 center"><i class="fa fa-close"></i></td>';
+			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAtualizaTotalItem(\''.$item["CODIGO"].'\');"></td>';
+			$htmlForm	.= '<td class="col-sm-2"><span>Total:&nbsp;</span><span zg-total-item="1" id="total_'.$item["CODIGO"].'_ID">R$ 0,00</span></td>';
+			$htmlForm	.= '</tr>';
+			$tabIndex++;
+			
+		}
+		$htmlForm	.= '</table>';
+		$htmlForm	.= '</div>';
+	}
+	
+	$htmlForm	.= '</div>';
+	
+	$htmlForm	.= '<div class="panel-footer">';
+	$htmlForm	.= '<span>Total do item '.$aItem["DESCRICAO"].': </span>&nbsp;<span id="totalEvento_'.$codTipo.'_ID" zg-total-evento="" >R$ 0,00</span>';
+	$htmlForm	.= '</div>';
+
+	$htmlForm	.= '</div>';
+	$htmlForm	.= '</div>';
+}
+
 $htmlForm	.= '</div>';
+$htmlForm	.= '</center>';
+$htmlForm	.= '<script>';
+$htmlForm	.= "$('[zg-data-toggle=\"mask\"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+";
+$htmlForm	.= '</script>';
 
 echo $htmlForm;
