@@ -29,6 +29,11 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
+#################################################################################
+## Resgata as variáveis postadas
+#################################################################################
+if (isset($_GET['codVersao'])) 		$codVersao			= \Zage\App\Util::antiInjection($_GET['codVersao']);
+
 ################################################################################
 # Resgata as informações do banco
 ################################################################################
@@ -61,7 +66,7 @@ if (sizeof($eventos) > 0) {
 		}else{
 			$class		= "btn-white";
 		}
-		$bid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEvento='.$eventos[$i]->getCodigo().'&codVersao='.$codVersao);
+		$bid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEvento='.$eventos[$i]->getCodigo());
 		$urlBotao		= ROOT_URL."/Fmt/". basename(__FILE__)."?id=".$bid;
 		$htmlBotoes 	.= '<button type="button" onclick="javascript:zgLoadUrlSeSalvouOrc(\''.$urlBotao.'\');" class="btn '.$class.' btn-sm btn-bold">'.$eventos[$i]->getDescricao().'</button>';
 	}
@@ -83,7 +88,7 @@ try {
 ## Select de Categoria
 #################################################################################
 try {
-	$aCategoria		= $em->getRepository('Entidades\ZgfinCategoria')->findAll();
+	$aCategoria		= $em->getRepository('Entidades\ZgfinCategoria')->findBy(array('codTipo' => D , 'indAtiva' => 1 , 'codOrganizacao' => null ,  'codTipoOrganizacao' => FMT ));
 	$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	null, 	null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -94,8 +99,9 @@ try {
 #################################################################################
 $aOrcItem		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codVersao' => $codVersao, 'codTipoEvento' => $codEvento));
 $tabOrcamento	= "";
-for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 
+for ($i = 0; $i < sizeof($aOrcItem); $i++) {
+	
 	$indAtivo		= ($aOrcItem[$i]->getIndAtivo()	== 1) ? "checked" : null;
 	$codTipoItem	= ($aOrcItem[$i]->getCodTipoItem()) ? $aOrcItem[$i]->getCodTipoItem()->getCodigo() : null;
 	$oTipoItem		= $system->geraHtmlCombo($aTipoItem,	'CODIGO', 'DESCRICAO',	$codTipoItem, '');
@@ -106,7 +112,7 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 				<td><input type="text" class="width-100" name="item[]" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
 				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oTipoItem.'</select></td>
 				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCategoria.'</select></td>
-				<td align="center"><label><input name="indAtivo" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
+				<td align="center"><label><input name="indAtivo[]" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
 				<td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'"></td></tr>';
 }
 
@@ -140,6 +146,7 @@ $tpl->set('COD_ITEM'				,$oTipoItem);
 $tpl->set('COD_CATEGORIA'			,$oCategoria);
 $tpl->set('TAB_ORCAMENTO'			,$tabOrcamento);
 $tpl->set('BOTOES'			  		,$htmlBotoes);
+$tpl->set('URL_BOTOES'			  	,$urlBotao);
 
 $tpl->set('VERSAO'					,$versao);
 $tpl->set('IND_VERSAO'				,$indVersao);

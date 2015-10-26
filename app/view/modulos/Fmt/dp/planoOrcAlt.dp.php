@@ -33,7 +33,7 @@ if (!isset($indAtivo))			$indAtivo		= array();
 if ($codOrcamento == null){
 	$codOrcamento	= array();
 }
-
+$log->debug($indAtivo);
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -81,6 +81,7 @@ try {
 	
 	if (!$oVersao) {
 		$oVersao	= new \Entidades\ZgfmtPlanoOrcamentario();
+		$oVersao->setDataCadastro(new \DateTime("now"));
 	}
 	
 	#################################################################################
@@ -97,17 +98,16 @@ try {
 	$oVersao->setCodOrganizacao($oOrganizacao);
 	$oVersao->setVersao($versao);
 	$oVersao->setIndAtivo($indVersao);
-	$oVersao->setDataCadastro(new \DateTime("now"));
 	
 	$em->persist($oVersao);
 	
 	#################################################################################
-	## Apagar os orcamentos
+	## Apagar os itens do orçamento
 	#################################################################################
-	$orcamentos			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codTipoEvento' => $codEvento));
+	$orcamentos			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codTipoEvento' => $codEvento, 'codVersao' => $codVersao));
 
 	for ($i = 0; $i < sizeof($orcamentos); $i++) {
-		$log->debug($orcamentos[$i]->getCodigo());
+		
 		if (!in_array($orcamentos[$i]->getCodigo(), $codOrcamento)) {
 			try {
 				$em->remove($orcamentos[$i]);
@@ -131,12 +131,13 @@ try {
 		
 		if (!$oOrcamento) {
 			$oOrcamento	= new \Entidades\ZgfmtPlanoOrcItem();
+			$oOrcamento->setDataCadastro(new \DateTime("now"));
 		}
 		
-		if (isset($indAtivo [$i]) && (!empty($indAtivo [$i]))) {
-			$indAtivo = 1;
+		if (isset($indAtivo [$i])) {
+			$indAtivoLinha = 1;
 		}else{
-			$indAtivo = 0;
+			$indAtivoLinha = 0;
 		}
 		
 		#################################################################################
@@ -153,8 +154,8 @@ try {
 		$oOrcamento->setCodCategoria($oCodCategoria);
 		$oOrcamento->setCodTipoItem($oCodTipoItem);
 		$oOrcamento->setItem($item[$i]);
-		$oOrcamento->setIndAtivo($indAtivo);
-		$oOrcamento->setDataCadastro(new \DateTime("now"));
+		$oOrcamento->setIndAtivo($indAtivoLinha);
+		
 
 		$em->persist($oOrcamento);
 	}
@@ -168,5 +169,4 @@ try {
 	exit;
 }
 
-echo '0'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Lista de orçamento atualizada com sucesso!')));
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oVersao->getCodigo());

@@ -1,6 +1,6 @@
 <div id="content">
 	<div class="page-header">
-	<h1><i class="%IC%">&nbsp;</i>Cadastro de Orçamento
+	<h1><i class="%IC%">&nbsp;</i>Versão do Orçamento
 		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
 		<a id='a01ID' class='btn btn-white ' title="Novo Cadastro" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
 	</h1>
@@ -17,41 +17,46 @@
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
 				
-				<h4 class="header blue bolder smaller">Informações do orçamento</h4>
-				<div class="vspace-xs"></div>
-			    	<div class="col-sm-6">
-			    		<div class="form-group col-sm-12" id="divVersaoID">
-					    	<label class="col-sm-2 control-label" for="versaoID">Versão</label>
-								<div class="input-group col-sm-8 pull-left">
-				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da versão."></i></span>
-			   					<input class="form-control" id="versaoID" type="text" name="versao" placeholder="Versão" maxlength="60" value="%VERSAO%" required autocomplete="off">
-			    			</div>
-					    	<div class="col-sm-1 pull-left" id="divHelpVersaoID"></div>
-			    		</div>
-			    	</div>
-			    	<div class="col-sm-3">
-						<div class="form-group col-sm-12" id="divIndVersaoID">
-					    	<label class="col-xs-12 col-sm-5 control-label" for="indVersaoID">Status</label>
-					    	<label>
-					    		<input name="indVersao" id="indVersaoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_VERSAO% />
-								<span class="lbl"></span>
-							</label>
-					    </div>
-		    		</div>
-			    		
-					<div class="btn-group">
-						%BOTOES%
-					</div>
+				
+		    	
+		    	
+				    	
 					<div class="vspace-xs"></div>
 					<div class="row">
+						<h5 class="header blue bolder smaller">Nome do modelo</h5>
+						<div class="vspace-xs"></div>
+				    	<div class="col-sm-6">
+				    		<div class="form-group col-sm-12" id="divVersaoID">
+						    	<label class="col-sm-2 control-label" for="versaoID">Versão</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da versão."></i></span>
+				   					<input class="form-control" id="versaoID" type="text" name="versao" placeholder="Versão" maxlength="60" value="%VERSAO%" onchange="verificaAlteracao($(this));" required autocomplete="off">
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpVersaoID"></div>
+				    		</div>
+				    	</div>
+				    	<div class="col-sm-6">
+							<div class="form-group col-sm-12" id="divIndVersaoID">
+						    	<label class="col-xs-12 col-sm-5 control-label" for="indVersaoID">Status</label>
+						    	<label>
+						    		<input name="indVersao" id="indVersaoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_VERSAO% />
+									<span class="lbl"></span>
+								</label>
+						    </div>
+			    		</div>
 				    	<div class="col-sm-12">
+				    		<h5 class="header blue bolder smaller">Ítens do modelo</h5>
+							<div class="vspace-xs"></div>
+							<div class="btn-group">
+								%BOTOES%
+							</div>
 							<div>
 								<table id="layRegTableOrcamentoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
 									<thead>
 										<tr class="warning">
 											<th class="col-sm-1 center"></th>
 											<th class="col-sm-2 center">Item</th>
-											<th class="col-sm-2 center">Tipo Item</th>
+											<th class="col-sm-2 center">Calcular por</th>
 											<th class="col-sm-2 center">Categoria</th>
 											<th class="col-sm-1 center">Ativo</th>
 											<th class="col-sm-1 center"><span class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
@@ -119,16 +124,17 @@ $('#zgFormID').submit(function() {
 	
 	$('#btnSubmitListaOrcID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
 	$('#btnSubmitListaOrcID').attr("disabled","disabled");
-
+	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP%",
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
+		
 		$('#_precisaSalvarID').val(0);
 		if (checaRetornoOK(data) == true) {
-			$('#codProdutoID').val(zgGetCodRetorno(data));
-			zgMostraMsg('divAvisoLayoutOrcamentoID', zgGetMsgRetorno(data));
+			$('#codVersaoID').val(zgGetCodRetorno(data));
+			zgMostraMsg('divAvisoLayoutOrcamentoID', 'Informações salvas com sucesso!');
 		}else{
 			zgMostraErro('divAvisoLayoutOrcamentoID', zgGetMsgRetorno(data));
 		}
@@ -154,7 +160,7 @@ function addRowOrcamentoLayReg() {
 
 	if ($return == true) return $return;
 
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item[]" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item[]" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo[]" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="item"]').each(function( index ) {
 		$( this ).focus();
 	});
@@ -183,9 +189,21 @@ function verificaAlteracao(pObj) {
 
 function validaOrcamento () {
 	var $return,$ok;
+	var vVersao = $('#versaoID').val();
 	
 	$ok	= true;
 	
+	//VERSÃO
+	if (!vVersao) {
+		$('#divVersaoID').addClass('has-error');
+		$('#divHelpVersaoID').html(zgCriaSpanErro('É necessário que seja informando um nome para a versão!'));
+		$ok		= false;
+	}else{
+		$('#divVersaoID').removeClass('has-error');
+		$('#divHelpVersaoID').html('&nbsp;');		
+	}
+	
+	// TABELA
 	$('#layRegTableOrcamentoID > tbody > tr').each(function( index ) {
 		
 		$itemObj 	= $(this).find('[name*="item[]"]');
@@ -208,7 +226,8 @@ function validaOrcamento () {
 
 function zgLoadUrlSeSalvouOrc($url) {
 	
-	var vOk 	= validaOrcamento();
+	var vOk 		= validaOrcamento();
+	var vCodVersao 	= $('#codVersaoID').val();
 	
 	if(vOk == false) 	{
 		$.gritter.add({
@@ -222,20 +241,39 @@ function zgLoadUrlSeSalvouOrc($url) {
 	}else{
 		if ($('#_precisaSalvarID').val() == 1) {
 			$('#_alterarEventoID').val(1);
-			$('#zgFormID').submit();
-			zgLoadUrl($url);
 			
-			$.gritter.add({
-				title: 'Lista atualizada!',
-				text: 'Sua lista de Orcamentos foi atualizada com sucesso.',
-				class_name: 'gritter-info gritter-sticky',
-				time: '5000'
+			$.ajax({
+				type:	"POST", 
+				url:	"%DP%",
+				data:	$('#zgFormID').serialize(),
+			}).done(function( data, textStatus, jqXHR) {
+				
+				$('#_precisaSalvarID').val(0);
+				if (checaRetornoOK(data) == true) {
+					$('#codVersaoID').val(zgGetCodRetorno(data));
+					
+					$.gritter.add({
+						title: 'Lista atualizada!',
+						text: 'Sua lista de Orcamentos foi atualizada com sucesso.',
+						class_name: 'gritter-info gritter-sticky',
+						time: '5000'
+					});
+					
+					zgLoadUrl($url+'&codVersao='+$('#codVersaoID').val());
+					
+				}else{
+					zgMostraErro('divAvisoLayoutOrcamentoID', zgGetMsgRetorno(data));
+				}
+				
+			}).fail(function( jqXHR, textStatus, errorThrown) {
+				zgMostraAviso("Fechar");
 			});
-			
+			return false; 
+				
 		}else{
-			zgLoadUrl($url);
+			//alert ($('#codVersaoID').val()); 
+			zgLoadUrl($url+'&codVersao='+$('#codVersaoID').val());
 		}
 	}
 }
 </script>
-
