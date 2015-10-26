@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtPlanoOrcItem
  *
- * @ORM\Table(name="ZGFMT_PLANO_ORC_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_1_idx", columns={"COD_VERSAO"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_2_idx", columns={"COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_3_idx", columns={"COD_CATEGORIA"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_4_idx", columns={"COD_TIPO_ITEM"})})
+ * @ORM\Table(name="ZGFMT_PLANO_ORC_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_1_idx", columns={"COD_VERSAO"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_3_idx", columns={"COD_CATEGORIA"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_4_idx", columns={"COD_TIPO_ITEM"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_2_idx", columns={"COD_GRUPO_ITEM"})})
  * @ORM\Entity
  */
 class ZgfmtPlanoOrcItem
@@ -53,14 +53,14 @@ class ZgfmtPlanoOrcItem
     private $codVersao;
 
     /**
-     * @var \Entidades\ZgfmtEventoTipo
+     * @var \Entidades\ZgfmtPlanoOrcGrupoItem
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEventoTipo")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcGrupoItem")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TIPO_EVENTO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_GRUPO_ITEM", referencedColumnName="CODIGO")
      * })
      */
-    private $codTipoEvento;
+    private $codGrupoItem;
 
     /**
      * @var \Entidades\ZgfinCategoria
@@ -186,26 +186,26 @@ class ZgfmtPlanoOrcItem
     }
 
     /**
-     * Set codTipoEvento
+     * Set codGrupoItem
      *
-     * @param \Entidades\ZgfmtEventoTipo $codTipoEvento
+     * @param \Entidades\ZgfmtPlanoOrcGrupoItem $codGrupoItem
      * @return ZgfmtPlanoOrcItem
      */
-    public function setCodTipoEvento(\Entidades\ZgfmtEventoTipo $codTipoEvento = null)
+    public function setCodGrupoItem(\Entidades\ZgfmtPlanoOrcGrupoItem $codGrupoItem = null)
     {
-        $this->codTipoEvento = $codTipoEvento;
+        $this->codGrupoItem = $codGrupoItem;
 
         return $this;
     }
 
     /**
-     * Get codTipoEvento
+     * Get codGrupoItem
      *
-     * @return \Entidades\ZgfmtEventoTipo 
+     * @return \Entidades\ZgfmtPlanoOrcGrupoItem 
      */
-    public function getCodTipoEvento()
+    public function getCodGrupoItem()
     {
-        return $this->codTipoEvento;
+        return $this->codGrupoItem;
     }
 
     /**
