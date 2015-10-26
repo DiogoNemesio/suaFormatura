@@ -10,6 +10,10 @@
 		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
 		<input type="hidden" id="valID" name="validado">
 		<input type='hidden' id='dataAnteriorID' name="dataAnterior" value="01/01/0001">
+		<input type="hidden" id="numMesesID" name="numMeses">
+		<input type="hidden" id="taxaAdminID" name="taxaAdmin" value="%TAXA_ADMIN%">
+		<input type="hidden" id="taxaBoletoID" name="taxaBoleto" value="%TAXA_BOLETO%">
+		<input type="hidden" id="taxaSistemaID" name="taxaSistema" value="%TAXA_SISTEMA%">
 
 		<div class="row">
 			<div class="col-sm-6">
@@ -48,7 +52,7 @@
 					<div class="col-sm-1 pull-left" id="divHelpCodVersaoOrcID"></div>
 				</div>
 		   	</div>
-		   	<div class="col-sm-5">
+		   	<div class="col-sm-4">
 			    <div class="profile-user-info profile-user-info-striped" id="divInfoID">
 					<div class="profile-info-row">
 						<div class="profile-info-name">Nº de Pessoas:</div>
@@ -59,9 +63,25 @@
 						<div class="profile-info-value" id="orcNumMesesID"><span id="spOrcInfoNumMesesID"></span>&nbsp;<span id='spOrcIcNumMesesID' class="hidden"><i class="fa fa-refresh fa-spin"></i></span></div>
 					</div>				
 					<div class="profile-info-row">
-						<div class="profile-info-name">Custo Final</div>
-						<div class="profile-info-value" id="orcCustoFinalID"></div>
+						<div class="profile-info-name">Orçamento</div>
+						<div class="profile-info-value" id="orcTotalOrcID"></div>
 					</div>				
+					<div class="profile-info-row">
+						<div class="profile-info-name">Sistema</div>
+						<div class="profile-info-value" id="orcCustoSistemaID"></div>
+					</div>				
+					<div class="profile-info-row">
+						<div class="profile-info-name">Outros Custos</div>
+						<div class="profile-info-value" id="orcOutrosCustosID"></div>
+					</div>				
+					<div class="profile-info-row">
+						<div class="profile-info-name">Total</div>
+						<div class="profile-info-value" id="orcCustoFinalID"></div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">Mensalidade</div>
+						<div class="profile-info-value" id="orcMensalidadeID"></div>
+					</div>
 				</div>
 			</div>
 	    </div>
@@ -115,10 +135,8 @@ function orcAtualizaInfo() {
 	var $codVersaoOrc 		= $('#codVersaoOrcID').val();
 	var $dataConclusao		= $('#dataConclusaoID').val();
 	var $dataAnterior		= $('#dataAnteriorID').val();
-	
 	var $mostraInfo			= 0;
-	
-	
+
 	
 	if ($numFormando && $numConvidado) {
 		$mostraInfo			= 1;
@@ -153,12 +171,14 @@ function orcAtualizaInfo() {
 					$meses		= parseInt($meses);
 					$('#spOrcInfoNumMesesID').html($meses+" meses previstos");
 					$('#dataAnteriorID').val($dataConclusao);
+					$('#numMesesID').val($meses);
 			    },
 				dataType: 'json'
 			});
 			
 			$spIcon.addClass("hidden");
 		}
+		
 	}
 	
 	
@@ -302,6 +322,33 @@ function orcAtualizaInfoEvento($evento) {
 
 function orcAtualizaCustoFinal() {
 	var $custoFinal	= 0;
+	var $taxaAdmin			= parseFloat($('#taxaAdminID').val().replace(".", "").replace(",","."));
+	var $taxaBoleto			= parseFloat($('#taxaBoletoID').val().replace(".", "").replace(",","."));
+	var $taxaSistema		= parseFloat($('#taxaSistemaID').val().replace(".", "").replace(",","."));
+	var $numFormando		= parseInt($('#numFormandoID').val());
+
+	/** Validação das taxas **/
+	if (isNaN($taxaAdmin)) {
+		$taxaAdmin 	= parseFloat(0);
+	}
+
+	if (isNaN($taxaBoleto)) {
+		$taxaBoleto 	= parseFloat(0);
+	}
+
+	if (isNaN($taxaSistema)) {
+		$taxaSistema 	= parseFloat(0);
+	}
+
+	var options = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+
 	
 	$('span[zg-total-evento]').each(function() {
 		var $totalEvento	= parseFloat($(this).attr("zg-total-evento"));
@@ -322,7 +369,33 @@ function orcAtualizaCustoFinal() {
 
 	//alert("Total Evento: "+$totalEvento);
 	/** Atualiza o Span com o custo final do evento **/
-	$('#orcCustoFinalID').html(accounting.formatMoney($custoFinal, options));
+	$('#orcTotalOrcID').html(accounting.formatMoney($custoFinal, options));
+
+	
+	/**
+	 * Calcula o valor de uso do sistema e outros custos 
+	 */
+	 var $numMeses			= parseInt($('#numMesesID').val());
+	 if (isNaN($numMeses) || !$numMeses) {
+		 return;
+	 }
+	 var $valSistema		= ($numMeses * $taxaSistema);
+	 var $valOutros			= ($numMeses * ($taxaAdmin + $taxaBoleto));
+	 var $valTotal			= ($custoFinal + (($valSistema + $valOutros) * $numFormando));
+	 var $valMensalidade	= (($valTotal / $numFormando) / $numMeses);
+
+	 var $spTotalSistema	= $('#orcCustoSistemaID');
+	 var $spTotalOutros		= $('#orcOutrosCustosID');
+	 var $spCustoFinal		= $('#orcCustoFinalID');
+	 var $spMensalidade		= $('#orcMensalidadeID');
+	 
+	/** Atualiza os Span's com as informações **/
+	$spTotalSistema.html(accounting.formatMoney($valSistema, options) + " por formando");
+	$spTotalOutros.html(accounting.formatMoney($valOutros, options) + " por formando (Boleto + Administração)");
+	$spCustoFinal.html(accounting.formatMoney($valTotal, options) + " (Custo Total Final)");
+	$spMensalidade.html(accounting.formatMoney($valMensalidade, options) + " mensais por formando");
+
+	
 	
 }
 

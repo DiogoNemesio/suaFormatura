@@ -35,14 +35,14 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata as informações da organização que está cadastrando a Formatura
+## Resgata as informações da organização
 #################################################################################
-$orgCad 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+$oOrg 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 
 #################################################################################
 ## Verifica se as configurações do cerimonial estão OK
 #################################################################################
-if ($orgCad->getCodTipo()->getCodigo() == "CER") {
+if ($oOrg->getCodTipo()->getCodigo() == "CER") {
 	$orgCer		= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 	if (!$orgCer) \Zage\App\Erro::halt('Sua Organização, não está configurada para cadastrar Formaturas, entre em contato com o SuaFormatura.com através do e-mail: '.$system->config["mail"]["admin"]);
 	$hidden		= "hidden";
@@ -50,58 +50,44 @@ if ($orgCad->getCodTipo()->getCodigo() == "CER") {
 	$hidden		= "";
 }
 
-
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-if ((isset($codOrganizacao) && ($codOrganizacao))) {
-
-	try {
-		
-		$org 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
-		$orgFmt		= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $codOrganizacao));
-		$oContrato	= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $codOrganizacao));
-		
-	} catch (\Exception $e) {
-		\Zage\App\Erro::halt($e->getMessage());
-	}
+try {
 	
-	$ident			= $org->getIdentificacao();
-	$nome			= $org->getNome();
-	$instituicao	= $orgFmt->getCodInstituicao()->getCodigo();
-	$curso			= $orgFmt->getCodCurso()->getCodigo();
-	$cidade			= $orgFmt->getCodCidade()->getCodigo();
-	$dataConclusao	= ($orgFmt->getDataConclusao() != null) ? $orgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
-
-	if ($oContrato) {
-		$codPlano			= ($oContrato->getCodPlano()) ? $oContrato->getCodPlano()->getCodigo() : null;
-		$valorDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getValorDesconto());
-		$pctDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getPctDesconto());
-		$formaDesc			= ($valorDesconto > 0) ? "V" : "P";
-	}else{
-		$codPlano			= null;
-		$formaDesc			= "V";
-		$valorDesconto		= 0;
-		$pctDesconto		= 0;
-	}
+	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$oContrato	= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 	
-	
-	
-}else{
-	
-	$ident			= null;
-	$nome			= null;
-	$instituicao	= null;
-	$curso			= null;
-	$cidade			= null;
-	$dataConclusao  = null;
-
-	$codPlano		= null;
-	$formaDesc		= "V";
-	$valorDesconto	= 0;
-	$pctDesconto	= 0;
-	
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
 }
+
+$ident			= $oOrg->getIdentificacao();
+$nome			= $oOrg->getNome();
+$instituicao	= $oOrgFmt->getCodInstituicao()->getCodigo();
+$curso			= $oOrgFmt->getCodCurso()->getCodigo();
+$cidade			= $oOrgFmt->getCodCidade()->getCodigo();
+$dataConclusao	= ($oOrgFmt->getDataConclusao() != null) ? $oOrgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
+
+if ($oContrato) {
+	$codPlano			= ($oContrato->getCodPlano()) ? $oContrato->getCodPlano()->getCodigo() : null;
+	$valorDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getValorDesconto());
+	$pctDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getPctDesconto());
+	$formaDesc			= ($valorDesconto > 0) ? "V" : "P";
+}else{
+	$codPlano			= null;
+	$formaDesc			= "V";
+	$valorDesconto		= 0;
+	$pctDesconto		= 0;
+}
+
+
+#################################################################################
+## Taxas  
+#################################################################################
+$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
+$taxaBoleto				= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
+$taxaUso				= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 
 #################################################################################
 ## Select dos 
@@ -161,6 +147,9 @@ $tpl->set('PCT_DESCONTO'			,$pctDesconto);
 $tpl->set('FORMA_DESCONTO'			,$formaDesc);
 $tpl->set('HIDDEN'					,$hidden);
 
+$tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
+$tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
+$tpl->set('TAXA_SISTEMA'			,\Zage\App\Util::formataDinheiro($taxaUso));
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
