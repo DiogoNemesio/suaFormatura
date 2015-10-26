@@ -113,7 +113,7 @@ for ($i = 0; $i < sizeof($infoVenda); $i++) {
 	}
 }
 
-$total = sizeof($infoVenda) * $valor;
+$total = $qtdeObrigatorio * $valor;
 $lucro = $total - $custo;
 
 #################################################################################

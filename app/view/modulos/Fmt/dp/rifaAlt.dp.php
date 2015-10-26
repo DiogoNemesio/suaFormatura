@@ -146,9 +146,11 @@ try {
  		
  	}else{
  		// Criar novo centro de custo
- 		$oCC = new \Entidades\ZgfinCentroCusto(); 		
+ 		$oCC = new \Entidades\ZgfinCentroCusto();
+ 		$oCCTipo	= $em->getRepository('Entidades\ZgfinCentroCustoTipo')->findOneBy(array('codigo' => R));
  		$oCC->setCodOrganizacao($oCodOrg);
  		$oCC->setDescricao('RIFA:'.$nome);
+ 		$oCC->setCodTipoCentroCusto($oCCTipo);
  		$oCC->setIndCredito(1);
  		$oCC->setIndDebito(1);
  			

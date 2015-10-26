@@ -77,11 +77,13 @@ try {
  	}
  	
  	$oMat		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+ 	$oCCTipo	= $em->getRepository('Entidades\ZgfinCentroCustoTipo')->findOneBy(array('codigo' => P));
  	
  	$oConta->setCodOrganizacao($oMat);
  	$oConta->setDescricao($descricao);
  	$oConta->setIndDebito($debito);
  	$oConta->setIndCredito($credito);
+ 	$oConta->setCodTipoCentroCusto($oCCTipo);
  	
  	$em->persist($oConta);
  	$em->flush();
