@@ -84,13 +84,13 @@ $htmlForm	.= '<div id="itensOrcamentoID" class="panel-group accordion-style1" st
 foreach ($aItens as $codTipo => $aItem)	{
 	$htmlForm	.= '<div class="panel panel-default">';
 	$htmlForm	.= '<div class="panel-heading">';
-	$htmlForm	.= '<a href="#itemTipo_'.$codTipo.'_ID" data1-parent="#itensOrcamentoID" data-toggle="collapse" class="accordion-toggle">';
+	$htmlForm	.= '<a href="#itemTipo_'.$codTipo.'_ID" data-parent_old="#itensOrcamentoID" data-toggle="collapse" aria-expanded="true" aria-controls="collapseThree" class="accordion-toggle collapsed">';
 	//$htmlForm	.= '<i class="ace-icon fa fa-chevron-left pull-right" data-icon-hide="ace-icon fa fa-chevron-down" data-icon-show="ace-icon fa fa-chevron-left"></i>';
 	$htmlForm	.= '<i class="ace-icon fa fa-chevron-right pull-left" data-icon-hide="ace-icon fa fa-chevron-down" data-icon-show="ace-icon fa fa-chevron-right"></i>';
 	$htmlForm	.= '&nbsp;<label style="text-align: center;">'.$aItem["DESCRICAO"].'</label>';
 	$htmlForm	.= '</a>';
 	$htmlForm	.= '</div>';
-	$htmlForm	.= '<div class="panel-collapse" id="itemTipo_'.$codTipo.'_ID">';
+	$htmlForm	.= '<div class="panel-collapse collapse in" id="itemTipo_'.$codTipo.'_ID">';
 	$htmlForm	.= '<div class="panel-body">';
 
 	
