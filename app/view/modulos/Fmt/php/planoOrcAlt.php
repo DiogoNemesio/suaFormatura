@@ -54,7 +54,7 @@ if ($codVersao) {
 #################################################################################
 ## Resgatas os Eventos
 #################################################################################
-$eventos		= $em->getRepository('Entidades\ZgfmtEventoTipo')->findBy(array(),array('descricao' => "ASC"));
+$eventos		= $em->getRepository('Entidades\ZgfmtPlanoOrcGrupoItem')->findBy(array(),array('codigo' => "ASC"));
 
 $htmlBotoes			= "";
 if (sizeof($eventos) > 0) {
@@ -97,7 +97,7 @@ try {
 #################################################################################
 ## Resgatar os dados dos valores
 #################################################################################
-$aOrcItem		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codVersao' => $codVersao, 'codTipoEvento' => $codEvento));
+$aOrcItem		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codVersao' => $codVersao, 'codGrupoItem' => $codEvento));
 $tabOrcamento	= "";
 
 for ($i = 0; $i < sizeof($aOrcItem); $i++) {

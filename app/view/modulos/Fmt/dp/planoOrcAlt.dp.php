@@ -104,7 +104,7 @@ try {
 	#################################################################################
 	## Apagar os itens do orçamento
 	#################################################################################
-	$orcamentos			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codTipoEvento' => $codEvento, 'codVersao' => $codVersao));
+	$orcamentos			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codGrupoItem' => $codEvento, 'codVersao' => $codVersao));
 
 	for ($i = 0; $i < sizeof($orcamentos); $i++) {
 		
@@ -145,12 +145,12 @@ try {
 		#################################################################################
 		$oCodCategoria	= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCategoria[$i]));
 		$oCodTipoItem	= $em->getRepository('Entidades\ZgfmtPlanoOrcItemTipo')->findOneBy(array('codigo' => $codTipoItem[$i]));
-		$oCodTipoEvento	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codEvento));
+		$oCodTipoEvento	= $em->getRepository('Entidades\ZgfmtPlanoOrcGrupoItem')->findOneBy(array('codigo' => $codEvento));
 		
 		$oOrcamento->setCodVersao($oCodVersao);
 		$oOrcamento->setCodVersao($oVersao);
 		
-		$oOrcamento->setCodTipoEvento($oCodTipoEvento);
+		$oOrcamento->setCodGrupoItem($oCodTipoEvento);
 		$oOrcamento->setCodCategoria($oCodCategoria);
 		$oOrcamento->setCodTipoItem($oCodTipoItem);
 		$oOrcamento->setItem($item[$i]);
