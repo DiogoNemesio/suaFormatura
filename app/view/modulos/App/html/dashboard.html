@@ -1,0 +1,203 @@
+<form id="zgFormDashFinID">
+	<input type="hidden" name="mesFiltro"		id="mesFiltroID"		value="%MES_FILTRO%">
+	<input type="hidden" name="dataAvancar"		id="dataAvancarID"	>
+	<input type="hidden" name="dataVoltar"		id="dataVoltarID"	>
+
+<div class="page-header">
+	<h1>
+		<i class="fa fa-graduation-cap">&nbsp;</i> Sua Formatura
+		
+		<div class="fb-like" data-href="https://www.facebook.com/Sua-Formatura-1028559723830618/" show_faces="false" data-share="false" data-layout="button_count"></div>
+	</h1>
+	
+</div><!-- /.page-header -->
+
+
+<!--
+<div class="row">
+	
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS 
+							
+		<div class="col-sm-7 infobox-container">
+			<div class="infobox infobox-green">
+				<div class="infobox-icon">
+					<i class="ace-icon fa fa-comments"></i>
+				</div>
+	
+				<div class="infobox-data">
+					<span class="infobox-data-number">32</span>
+					<div class="infobox-content">comments + 2 reviews</div>
+				</div>
+	
+				<div class="stat stat-success">8%</div>
+			</div>
+
+			<div class="infobox infobox-blue">
+				<div class="infobox-icon">
+					<i class="ace-icon fa fa-twitter"></i>
+				</div>
+
+				<div class="infobox-data">
+					<span class="infobox-data-number">11</span>
+					<div class="infobox-content">new followers</div>
+				</div>
+
+				<div class="badge badge-success">
+					+32%
+					<i class="ace-icon fa fa-arrow-up"></i>
+				</div>
+			</div>
+
+			<div class="infobox infobox-pink">
+				<div class="infobox-icon">
+					<i class="ace-icon fa fa-shopping-cart"></i>
+				</div>
+
+				<div class="infobox-data">
+					<span class="infobox-data-number">8</span>
+					<div class="infobox-content">new orders</div>
+				</div>
+				<div class="stat stat-important">4%</div>
+			</div>
+
+			<div class="infobox infobox-green">
+				<div class="infobox-icon">
+					<i class="ace-icon fa fa-graduation-cap"></i>
+				</div>
+
+				<div class="infobox-data">
+					<span class="infobox-data-number">47</span>
+					<div class="infobox-content">Formandos</div>
+				</div>
+			</div>
+
+			<div class="infobox infobox-orange2">
+				<div class="infobox-chart">
+					<span class="sparkline" data-values="196,128,202,177,154,94,100,170,224"></span>
+				</div>
+
+				<div class="infobox-data">
+					<span class="infobox-data-number">150.000,00</span>
+					<div class="infobox-content">Total</div>
+				</div>
+
+				
+			</div>
+
+			<div class="infobox infobox-blue2">
+				<div class="infobox-progress">
+					<div class="easy-pie-chart percentage" data-percent="42" data-size="46">
+						<span class="percent">95</span>%
+					</div>
+				</div>
+
+				<div class="infobox-data">
+					<span class="infobox-text">Status</span>
+
+					<div class="infobox-content">
+						<span class="bigger-110">~</span>
+						Restantes
+					</div>
+				</div>
+			</div>
+
+			
+
+			
+			
+		</div>
+	</div>
+</div>
+-->
+<script>
+
+// FACEBOOK
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v2.5";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+
+jQuery(function($) {
+	$('.easy-pie-chart.percentage').each(function(){
+		var $box = $(this).closest('.infobox');
+		var barColor = $(this).data('color') || (!$box.hasClass('infobox-dark') ? $box.css('color') : 'rgba(255,255,255,0.95)');
+		var trackColor = barColor == 'rgba(255,255,255,0.95)' ? 'rgba(255,255,255,0.25)' : '#E2E2E2';
+		var size = parseInt($(this).data('size')) || 50;
+		$(this).easyPieChart({
+			barColor: barColor,
+			trackColor: trackColor,
+			scaleColor: false,
+			lineCap: 'butt',
+			lineWidth: parseInt(size/10),
+			animate: /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase()) ? false : 1000,
+			size: size
+		});
+	})
+
+	$('.sparkline').each(function(){
+		var $box = $(this).closest('.infobox');
+		var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
+		$(this).sparkline('html',
+						 {
+							tagValuesAttribute:'data-values',
+							type: 'bar',
+							barColor: barColor ,
+							chartRangeMin:$(this).data('min') || 0
+						 });
+	});
+
+
+  
+	
+	
+	//Android's default browser somehow is confused when tapping on label which will lead to dragging the task
+	//so disable dragging when clicking on label
+	var agent = navigator.userAgent.toLowerCase();
+	if("ontouchstart" in document && /applewebkit/.test(agent) && /android/.test(agent))
+	  $('#tasks').on('touchstart', function(e){
+		var li = $(e.target).closest('#tasks li');
+		if(li.length == 0)return;
+		var label = li.find('label.inline').get(0);
+		if(label == e.target || $.contains(label, e.target)) e.stopImmediatePropagation() ;
+	});
+
+	$('#tasks').sortable({
+		opacity:0.8,
+		revert:true,
+		forceHelperSize:true,
+		placeholder: 'draggable-placeholder',
+		forcePlaceholderSize:true,
+		tolerance:'pointer',
+		stop: function( event, ui ) {
+			//just for Chrome!!!! so that dropdowns on items don't appear below other items after being moved
+			$(ui.item).css('z-index', 'auto');
+		}
+		}
+	);
+	$('#tasks').disableSelection();
+	$('#tasks input:checkbox').removeAttr('checked').on('click', function(){
+		if(this.checked) $(this).closest('li').addClass('selected');
+		else $(this).closest('li').removeClass('selected');
+	});
+
+
+	//show the dropdowns on top or bottom depending on window height and menu position
+	$('#task-tab .dropdown-hover').on('mouseenter', function(e) {
+		var offset = $(this).offset();
+
+		var $w = $(window)
+		if (offset.top > $w.scrollTop() + $w.innerHeight() - 100) 
+			$(this).addClass('dropup');
+		else $(this).removeClass('dropup');
+	});
+
+})
+
+
+
+</script>
