@@ -57,7 +57,7 @@
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de início do período de vendas na internet."></i></span>
 					    			<input class="form-control datepicker" id="dataInicioInternetID" type="text" name="dataInicioInternet" placeholder="Data do início" maxlength="10" value="%DATA_INI_NET%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataIniNetID"></div>
 						    </div>															
 							<div class="form-group col-sm-12" id="divFimInternetID">
 						    	<label class="col-sm-3 control-label" for="dataFimInternetID">Data Fim</label>
@@ -65,7 +65,7 @@
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de encerramento do período de vendas na internet."></i></span>
 					    			<input class="form-control datepicker" id="dataFimInternetID" type="text" name="dataFimInternet" placeholder="Data do encerramento" maxlength="10" value="%DATA_FIM_NET%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataFimNetID"></div>
 						    </div>
 						    <div class="form-group col-sm-12" id="divContaRecID">
 								<label class="col-sm-3 control-label">Conta Corrente</label>
@@ -234,7 +234,8 @@ function validaConviteExtraConf() {
 	var Compara02 = parseInt(vDataFimNet.split("/")[2].toString() + vDataFimNet.split("/")[1].toString() + vDataFimNet.split("/")[0].toString());
 	
 	if (Compara01 > Compara02 ){
-		alert ('data 1 maior que data 2');
+		$('#divDataFimInternetID').addClass('has-error');
+		$('#divHelpDataFimNetID').html(zgCriaSpanErro('O valor unitário do convite extra deve ser maior que 0.'));
 	}
 	
 	
