@@ -21,7 +21,8 @@ if (isset($_POST['ccorrente']))	 		$ccorrente			= \Zage\App\Util::antiInjection(
 if (isset($_POST['ccorrenteDV'])) 		$ccorrenteDV		= \Zage\App\Util::antiInjection($_POST['ccorrenteDV']);
 if (isset($_POST['ativa']))	 			$ativa				= \Zage\App\Util::antiInjection($_POST['ativa']);
 
-if (isset($_POST['codCarteira'])) 			$codCarteira			= \Zage\App\Util::antiInjection($_POST['codCarteira']);
+if (isset($_POST['codCarteira'])) 		$codCarteira			= \Zage\App\Util::antiInjection($_POST['codCarteira']);
+if (isset($_POST['valorBoleto'])) 		$valorBoleto			= \Zage\App\Util::antiInjection($_POST['valorBoleto']);
 
 if (isset($_POST['codTipoMora'])) 		$codTipoMora		= \Zage\App\Util::antiInjection($_POST['codTipoMora']);
 if (isset($_POST['codTipoJuros'])) 		$codTipoJuros		= \Zage\App\Util::antiInjection($_POST['codTipoJuros']);
@@ -137,6 +138,13 @@ if (isset($codCarteira) && (!empty($codCarteira))) {
 	$oCarteira	= null;
 }
 
+/** VALOR BOLETO **/
+if ($valorBoleto){
+	$valorBoleto		= \Zage\App\Util::toMysqlNumber($valorBoleto);
+}else{
+	$valorBoleto = null;
+}
+
 /** Apagar as informações de Boleto caso o tipo não seja CC **/
 if ($codTipo	!== "CC") {
 	$codAgencia		= null;
@@ -187,6 +195,7 @@ try {
  	$oConta->setSaldoInicial($saldo);
  	$oConta->setIndAtiva($ativa);
  	$oConta->setCodCarteira($oCarteira);
+ 	$oConta->setValorBoleto($valorBoleto);
  	$oConta->setValorJuros($valorJuros);
  	$oConta->setValorMora($valorMora);
  	$oConta->setPctJuros($pctJuros);

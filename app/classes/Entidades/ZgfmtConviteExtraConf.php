@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtConviteExtraConf
  *
- * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_CONF", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_2_idx", columns={"CONTA_RECEBIMENTO_INTERNET"})})
+ * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_CONF", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_2_idx", columns={"CONTA_RECEBIMENTO_INTERNET"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_3_idx", columns={"COD_TIPO_EVENTO"})})
  * @ORM\Entity
  */
 class ZgfmtConviteExtraConf
@@ -52,9 +52,9 @@ class ZgfmtConviteExtraConf
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATE_FIM_PRESENCIAL", type="date", nullable=true)
+     * @ORM\Column(name="DATA_FIM_PRESENCIAL", type="date", nullable=true)
      */
-    private $dateFimPresencial;
+    private $dataFimPresencial;
 
     /**
      * @var integer
@@ -71,14 +71,11 @@ class ZgfmtConviteExtraConf
     private $valor;
 
     /**
-     * @var \Entidades\ZgfinConta
+     * @var \DateTime
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinConta")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="CONTA_RECEBIMENTO_INTERNET", referencedColumnName="CODIGO")
-     * })
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
      */
-    private $contaRecebimentoInternet;
+    private $dataCadastro;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -89,6 +86,26 @@ class ZgfmtConviteExtraConf
      * })
      */
     private $codOrganizacao;
+
+    /**
+     * @var \Entidades\ZgfinConta
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinConta")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="CONTA_RECEBIMENTO_INTERNET", referencedColumnName="CODIGO")
+     * })
+     */
+    private $contaRecebimentoInternet;
+
+    /**
+     * @var \Entidades\ZgfmtEventoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEventoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_EVENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoEvento;
 
 
     /**
@@ -194,26 +211,26 @@ class ZgfmtConviteExtraConf
     }
 
     /**
-     * Set dateFimPresencial
+     * Set dataFimPresencial
      *
-     * @param \DateTime $dateFimPresencial
+     * @param \DateTime $dataFimPresencial
      * @return ZgfmtConviteExtraConf
      */
-    public function setDateFimPresencial($dateFimPresencial)
+    public function setDataFimPresencial($dataFimPresencial)
     {
-        $this->dateFimPresencial = $dateFimPresencial;
+        $this->dataFimPresencial = $dataFimPresencial;
 
         return $this;
     }
 
     /**
-     * Get dateFimPresencial
+     * Get dataFimPresencial
      *
      * @return \DateTime 
      */
-    public function getDateFimPresencial()
+    public function getDataFimPresencial()
     {
-        return $this->dateFimPresencial;
+        return $this->dataFimPresencial;
     }
 
     /**
@@ -263,26 +280,26 @@ class ZgfmtConviteExtraConf
     }
 
     /**
-     * Set contaRecebimentoInternet
+     * Set dataCadastro
      *
-     * @param \Entidades\ZgfinConta $contaRecebimentoInternet
+     * @param \DateTime $dataCadastro
      * @return ZgfmtConviteExtraConf
      */
-    public function setContaRecebimentoInternet(\Entidades\ZgfinConta $contaRecebimentoInternet = null)
+    public function setDataCadastro($dataCadastro)
     {
-        $this->contaRecebimentoInternet = $contaRecebimentoInternet;
+        $this->dataCadastro = $dataCadastro;
 
         return $this;
     }
 
     /**
-     * Get contaRecebimentoInternet
+     * Get dataCadastro
      *
-     * @return \Entidades\ZgfinConta 
+     * @return \DateTime 
      */
-    public function getContaRecebimentoInternet()
+    public function getDataCadastro()
     {
-        return $this->contaRecebimentoInternet;
+        return $this->dataCadastro;
     }
 
     /**
@@ -306,5 +323,51 @@ class ZgfmtConviteExtraConf
     public function getCodOrganizacao()
     {
         return $this->codOrganizacao;
+    }
+
+    /**
+     * Set contaRecebimentoInternet
+     *
+     * @param \Entidades\ZgfinConta $contaRecebimentoInternet
+     * @return ZgfmtConviteExtraConf
+     */
+    public function setContaRecebimentoInternet(\Entidades\ZgfinConta $contaRecebimentoInternet = null)
+    {
+        $this->contaRecebimentoInternet = $contaRecebimentoInternet;
+
+        return $this;
+    }
+
+    /**
+     * Get contaRecebimentoInternet
+     *
+     * @return \Entidades\ZgfinConta 
+     */
+    public function getContaRecebimentoInternet()
+    {
+        return $this->contaRecebimentoInternet;
+    }
+
+    /**
+     * Set codTipoEvento
+     *
+     * @param \Entidades\ZgfmtEventoTipo $codTipoEvento
+     * @return ZgfmtConviteExtraConf
+     */
+    public function setCodTipoEvento(\Entidades\ZgfmtEventoTipo $codTipoEvento = null)
+    {
+        $this->codTipoEvento = $codTipoEvento;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoEvento
+     *
+     * @return \Entidades\ZgfmtEventoTipo 
+     */
+    public function getCodTipoEvento()
+    {
+        return $this->codTipoEvento;
     }
 }

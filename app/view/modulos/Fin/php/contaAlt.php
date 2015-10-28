@@ -55,6 +55,7 @@ if (!empty($codConta)) {
 	$ccorrenteDV	= $info->getCcorrenteDV();
 	$ativa			= ($info->getIndAtiva()	== 1) ? "checked" : null;
 	$codCarteira	= ($info->getcodCarteira() != null) ? $info->getcodCarteira()->getCodigo() : null;
+	$valorBoleto	= ($info->getValorBoleto()) ? \Zage\App\Util::formataDinheiro($info->getValorBoleto()) : null;
 	$valorJuros		= ($info->getValorJuros()) ? \Zage\App\Util::formataDinheiro($info->getValorJuros()) : null;
 	$valorMora		= ($info->getValorMora()) ? \Zage\App\Util::formataDinheiro($info->getValorMora()) : null;
 	$pctJuros		= ($info->getPctJuros()) ? \Zage\App\Util::formataDinheiro($info->getPctJuros()) : null;
@@ -97,6 +98,7 @@ if (!empty($codConta)) {
 	$ccorrenteDV	= null;
 	$ativa			= "checked";
 	$codCarteira	= null;
+	$valorBoleto	= null;
 	$valorJuros		= null;
 	$valorMora		= null;
 	$pctJuros		= null;
@@ -130,7 +132,6 @@ for ($i = 0; $i < sizeof($aAgencia); $i++) {
 	$arrayBanco[$aAgencia[$i]->getCodigo()] = $aAgencia[$i]->getCodBanco()->getCodBanco();
 }
 
-$log->debug($arrayBanco);
 #################################################################################
 ## Url Voltar
 #################################################################################
@@ -166,6 +167,7 @@ $tpl->set('AGENCIAS'			,$oAgencia);
 $tpl->set('CCORRENTE'			,$ccorrente);
 $tpl->set('CCORRENTEDV'			,$ccorrenteDV);
 $tpl->set('COD_CARTEIRA'		,$codCarteira);
+$tpl->set('VALOR_BOLETO'		,$valorBoleto);
 $tpl->set('VALOR_JUROS'			,$valorJuros);
 $tpl->set('VALOR_MORA'			,$valorMora);
 $tpl->set('COD_TIPO_JUROS'		,$codTipoJuros);
