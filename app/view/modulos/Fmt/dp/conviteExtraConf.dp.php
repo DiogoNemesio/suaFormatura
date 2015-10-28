@@ -37,7 +37,7 @@ if (!isset($valor) || empty($valor)) {
 }else{
 	$valor 		= \Zage\App\Util::to_float($valor);
 	if ($valor < 0){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O valor unitário do convite extra deve ser maior que 0."));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O valor do convite extra deve ser maior que 0."));
 		$err	= 1;
 	}
 }
@@ -53,12 +53,14 @@ if (!empty($dataInicioInternet)) {
 	if ($dataInicioInternet < new \DateTime("now")) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A data do início da venda na internet não pode ser inferior a data de hoje.");
 		$err	= 1;
-	}elseif (empty($codContaRec)){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione uma conta bancária para receber os pagamentos.");
-		$err	= 1;
 	}
 }else{
-	$dataInicioInternet = null;
+	if ($codContaRec || $dataFimInternet){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Para iniciar a venda na internet é necessário preencher uma data de início.");
+		$err	= 1;
+	}else{
+		$dataInicioInternet = null;
+	}	
 }
 
 /** DATA FIM INTERNET **/
@@ -70,24 +72,21 @@ if (!empty($dataFimInternet)) {
 	}elseif ($dataFimInternet < $dataInicioInternet){
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A data do encerramento da venda na internet não pode ser inferior a data de inicio.");
 		$err	= 1;
-	}elseif ($dataFimInternet && empty($dataInicioInternet)){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Para iniciar a venda na internet é necessário preencher uma data de início.");
-		$err	= 1;
 	}
 }else{
 	$dataFimInternet = null;
 }
 
 /** CONTA CORRENTE **/
-if ($codContaRec && empty($dataInicioInternet)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Para iniciar a venda na internet é necessário preencher uma data de início.");
+if ((empty($codContaRec)) && ($dataInicioInternet || $custoBoleto)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a conta corrente.");
 	$err	= 1;
 }
 
 /** CUSTO BOLETO **/
 if (!empty($custoBoleto)) {
-	if (empty($codContaRec)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a conta corrente.");
+	if ($custoBoleto < 0) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"O custo do boleto não deve ser menor que 0.");
 		$err	= 1;
 	}elseif ($custoBoleto > $custoBoletoPadrao){
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"O custo do boleto não deve ser maior que R$ ".$custoBoletoPadrao);
