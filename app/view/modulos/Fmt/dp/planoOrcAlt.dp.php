@@ -7,7 +7,12 @@ if (defined('DOC_ROOT')) {
 }else{
  	include_once('../include.php');
 }
- 
+
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$log,$tr;
+
 #################################################################################
 ## Resgata os parâmetros passados pelo formulário
 #################################################################################
@@ -33,11 +38,8 @@ if (!isset($indAtivo))			$indAtivo		= array();
 if ($codOrcamento == null){
 	$codOrcamento	= array();
 }
-$log->debug($indAtivo);
-#################################################################################
-## Limpar a variável de erro
-#################################################################################
-$err	= false;
+
+$log->debug(serialize($indAtivo));
 
 #################################################################################
 ## Fazer validação dos campos
@@ -64,8 +66,7 @@ if (!empty($item)){
 
 /** item **/
 if (!is_array($item)) {
-	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("djuhdsiuhdsiuh!"))));
-	$err 	= 1;
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Item não é um array!"))));
 }
 
 #################################################################################
@@ -123,6 +124,7 @@ try {
 	## Criar / Alterar
 	#################################################################################
 	for ($i = 0; $i < $numCon; $i++) {
+
 		//$log->debug($codVersao[$i]);
 		#################################################################################
 		## Verifica se o registro já existe no banco
@@ -147,9 +149,7 @@ try {
 		$oCodTipoItem	= $em->getRepository('Entidades\ZgfmtPlanoOrcItemTipo')->findOneBy(array('codigo' => $codTipoItem[$i]));
 		$oCodTipoEvento	= $em->getRepository('Entidades\ZgfmtPlanoOrcGrupoItem')->findOneBy(array('codigo' => $codEvento));
 		
-		$oOrcamento->setCodVersao($oCodVersao);
 		$oOrcamento->setCodVersao($oVersao);
-		
 		$oOrcamento->setCodGrupoItem($oCodTipoEvento);
 		$oOrcamento->setCodCategoria($oCodCategoria);
 		$oOrcamento->setCodTipoItem($oCodTipoItem);
