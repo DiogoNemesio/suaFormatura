@@ -87,7 +87,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 	$htmlForm	.= '<a href="#itemTipo_'.$codTipo.'_ID" data-parent_old="#itensOrcamentoID" data-toggle="collapse" aria-expanded="true" aria-controls="collapseThree" class="accordion-toggle collapsed">';
 	//$htmlForm	.= '<i class="ace-icon fa fa-chevron-left pull-right" data-icon-hide="ace-icon fa fa-chevron-down" data-icon-show="ace-icon fa fa-chevron-left"></i>';
 	$htmlForm	.= '<i class="ace-icon fa fa-chevron-right pull-left" data-icon-hide="ace-icon fa fa-chevron-down" data-icon-show="ace-icon fa fa-chevron-right"></i>';
-	$htmlForm	.= '&nbsp;<label class="pull-left" id="lb">'.$aItem["DESCRICAO"].'</label>';
+	$htmlForm	.= '&nbsp;<label class="pull-left" id="lbEvento_'.$codTipo.'_ID">'.$aItem["DESCRICAO"].'</label>';
 	$htmlForm	.= '</a>';
 	$htmlForm	.= '</div>';
 	$htmlForm	.= '<div class="panel-collapse collapse in" id="itemTipo_'.$codTipo.'_ID">';
@@ -115,9 +115,9 @@ foreach ($aItens as $codTipo => $aItem)	{
 			
 			$htmlForm	.= '<tr>';
 			$htmlForm	.= '<td class="col-sm-2">'.$item["ITEM"].'</td>';
-			$htmlForm	.= '<td class="col-sm-1 right"><span>Qtde:&nbsp;</span> <input class="input-mini" id="qtde_'.$item["CODIGO"].'_ID" type="text"'.$ro.' zg-tipo="'.$item["TIPO"].'" zg-evento="'.$codTipo.'" zg-codigo="'.$item["CODIGO"].'" zg-name="qtde" maxlength="5" value="'.$valor.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="orcAtualizaTotalItem(\''.$item["CODIGO"].'\');"></td>';
+			$htmlForm	.= '<td class="col-sm-1 right"><span>Qtde:&nbsp;</span> <input class="input-mini" id="qtde_'.$item["CODIGO"].'_ID" name="aQtde['.$item["CODIGO"].']" type="text"'.$ro.' zg-tipo="'.$item["TIPO"].'" zg-evento="'.$codTipo.'" zg-codigo="'.$item["CODIGO"].'" zg-name="qtde" maxlength="5" value="'.$valor.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="orcAtualizaTotalItem(\''.$item["CODIGO"].'\');"></td>';
 			$htmlForm	.= '<td class="col-sm-1 center"><i class="fa fa-close"></i></td>';
-			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAtualizaTotalItem(\''.$item["CODIGO"].'\');"></td>';
+			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAtualizaTotalItem(\''.$item["CODIGO"].'\');"></td>';
 			$htmlForm	.= '<td class="col-sm-2"><span>Total:&nbsp;</span><span zg-total-item="1" id="total_'.$item["CODIGO"].'_ID">R$ 0,00</span></td>';
 			$htmlForm	.= '</tr>';
 			$tabIndex++;

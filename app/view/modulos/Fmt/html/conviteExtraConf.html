@@ -1,0 +1,280 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="fa fa-cog">&nbsp;</i>Convite Extra
+	<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>	
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codConviteConfID" name="codConviteConf" value="%COD_CONVITE_CONF%">
+				<input type="hidden" id="codTipoEventoID" name="codTipoEvento" value="%COD_TIPO_EVENTO%">
+				<input type="hidden" id="custoBoletoPadraoID" name="custoBoletoPadrao" value="%CUSTO_BOLETO_PADRAO%">
+				<input type='hidden' id='valID'>
+				<div id="indice" class="tab-pane in active">
+					<h5 class="header blue bolder smaller">Informações gerais</h5>
+					<div class="row">
+						<div class="col-sm-6">
+						    <div class="form-group col-sm-12" id="divValorID">
+						    	<label class="col-sm-3 control-label" for="valorID">Valor</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor (R$) unitário do convite extra."></i></span>
+				   					<input type="text" class="width-100" name="valor" id="valorID" data-provide="typeahead" value="%VALOR%" maxlength="60" placeholder="Valor do convite" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro"/>
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpValorID"></div>
+				    		</div>
+				    		<div class="form-group col-sm-12" id="divQtdeMaxID">
+						    	<label class="col-sm-3 control-label" for="qtdeMaxID">Qtd Máxima</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade máxima de convites extras por aluno."></i></span>
+					    			<input class="form-control" id="qtdeMaxID" type="text" name="qtdeMax" placeholder="Quantidade máxima por aluno" maxlength="16" value="%QTDE_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    </div>
+						</div>
+						<div class="col-sm-4">
+					   		<div class="profile-user-info profile-user-info-striped" id="divInfoID">
+								<div class="profile-info-row">
+									<div class="profile-info-name">Evento:</div>
+									<div class="profile-info-value" id="orcNumConvidadoID">%DESCRICAO_TIPO_EVENTO%</div>
+								</div>
+								<div class="profile-info-row">
+									<div class="profile-info-name">Quantidade:</div>
+									<div class="profile-info-value" id="orcNumMesesID"><span id="spOrcInfoNumMesesID"></span>&nbsp;<span id='spOrcIcNumMesesID' class="hidden"><i class="fa fa-refresh fa-spin"></i></span></div>
+								</div>				
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-sm-6">
+							<h5 class="header blue bolder smaller" align="center">Compra na internet</h5>
+							<div class="vspace-xs"></div>
+							<div class="form-group col-sm-12" id="divDataInicioInternetID">
+						    	<label class="col-sm-3 control-label" for="dataInicioInternetID">Data Início</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de início do período de vendas na internet."></i></span>
+					    			<input class="form-control datepicker" id="dataInicioInternetID" type="text" name="dataInicioInternet" placeholder="Data do início" maxlength="10" value="%DATA_INI_NET%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataIniNetID"></div>
+						    </div>															
+							<div class="form-group col-sm-12" id="divFimInternetID">
+						    	<label class="col-sm-3 control-label" for="dataFimInternetID">Data Fim</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de encerramento do período de vendas na internet."></i></span>
+					    			<input class="form-control datepicker" id="dataFimInternetID" type="text" name="dataFimInternet" placeholder="Data do encerramento" maxlength="10" value="%DATA_FIM_NET%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataFimNetID"></div>
+						    </div>
+						    <div class="form-group col-sm-12" id="divContaRecID">
+								<label class="col-sm-3 control-label">Conta Corrente</label>
+				    			<div class="input-group col-sm-8 pull-left">
+				    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta bancária para receber os pagamentos das vendas pela internet. É necessário que a conta esteja configurada para emitir boleto."></i></span>
+									<select class="select2" style="width:100%;" id="codContaRecID" placeholder="Selecione a conta" name="codContaRec" data-rel="select2" onchange="buscaCustoBoleto();">
+									%CONTAS%
+									</select>
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
+					    	</div>
+					    	<div class="form-group col-sm-12" id="divCustoBoletoID">
+						    	<label class="col-sm-3 control-label" for="custoBoletoID">Custo Boleto</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="O valor do custo do boleto será adicionado a uma venda como taxa de conveniência."></i></span>
+					    			<input class="form-control" id="custoBoletoID" type="text" name="custoBoleto" placeholder="Custo do boleto" maxlength="16" value="%CUSTO_BOLETO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    </div>							
+						</div>
+						<div class="col-sm-6">
+							<h5 class="header blue bolder smaller" align="center">Compra presencial</h5>
+							<div class="vspace-xs"></div>
+							<div class="form-group col-sm-12" id="divDataInicioPresencialID">
+						    	<label class="col-sm-3 control-label" for="dataInicioPresencialID">Data Início</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de início do período de vendas presencial."></i></span>
+					    			<input class="form-control datepicker" id="dataInicioPresencialID" type="text" name="dataInicioPresencial" placeholder="Data do início" maxlength="10" value="%DATA_INI_PRE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    </div>															
+							<div class="form-group col-sm-12" id="divDataInicioFimlID">
+						    	<label class="col-sm-3 control-label" for="dataInicioFimID">Data Fim</label>
+									<div class="input-group col-sm-8 pull-left">
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de encerramento do período de vendas presencial."></i></span>
+					    			<input class="form-control datepicker" id="dataInicioFimID" type="text" name="dataFimPresencial" placeholder="Data do encerramento" maxlength="10" value="%DATA_FIM_PRE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    	</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    </div>															
+						</div>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<label class="col-sm-5 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+//Popover
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Select2
+$('[data-rel="select2"]').select2({allowClear: true});
+
+/******************************************************
+MASCARA - Inserir as mascaras no campo
+/******************************************************/
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOk 	= validaConviteExtraConf();
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+$('#zgFormID').submit(function(e) {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codConviteConfID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Voltar', '%URLVOLTAR%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});	
+
+
+//VALIDA FORMULÁRIO
+function validaConviteExtraConf() {
+	var vValor			= $('#valorID').val();
+	var vDataIniNet		= $('#dataInicioInternetID').val();
+	var vDataFimNet		= $('#dataFimInternetID').val();
+
+	var vOK		= true;
+	
+	//VALOR DO CONVITE
+	if (!vValor){
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Informe o valor unitário do convite extra.'));
+		vOK = false;
+	}else{
+		nValor		= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+		if (nValor < 0){
+			$('#divValorID').addClass('has-error');
+			$('#divHelpValorID').html(zgCriaSpanErro('O valor unitário do convite extra deve ser maior que 0.'));
+			vOK = false;
+		}else{
+			$('#divValorID').removeClass('has-error');
+			$('#divHelpValorID').html('&nbsp;');
+		}
+	}
+
+	//DATA FIM
+	var Compara01 = parseInt(vDataIniNet.split("/")[2].toString() + vDataIniNet.split("/")[1].toString() + vDataIniNet.split("/")[0].toString());
+	var Compara02 = parseInt(vDataFimNet.split("/")[2].toString() + vDataFimNet.split("/")[1].toString() + vDataFimNet.split("/")[0].toString());
+	
+	if (Compara01 > Compara02 ){
+		$('#divDataFimInternetID').addClass('has-error');
+		$('#divHelpDataFimNetID').html(zgCriaSpanErro('O valor unitário do convite extra deve ser maior que 0.'));
+	}
+	
+	
+	if (vOK == true) {
+		return true;
+	}else{
+		return vOK;
+	}
+}
+
+function buscaCustoBoleto(){
+	var vConta 			= $('#codContaRecID').val();
+	var vContaBoleto	= JSON.parse('%ARRAY_CONTA%');
+	var vCustoBoleto	= vContaBoleto[vConta];
+	var vCodConf		= $('#codConviteConfID').val();	
+	
+	if (vConta){
+		// CALCULOS
+		var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+		
+		$('#custoBoletoID').removeAttr("readonly");
+		
+		var vValor	= accounting.formatMoney(vCustoBoleto, options);
+		$('#custoBoletoPadraoID').val(vValor);
+		$('#custoBoletoID').val(vValor);
+		
+		
+	}else{		
+		$('#custoBoletoID').val('');
+		$('#custoBoletoID').attr("readonly", true);
+	}
+	
+}
+
+</script>
+

@@ -90,7 +90,7 @@ $taxaBoleto				= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
 $taxaUso				= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 
 #################################################################################
-## Select dos 
+## Buscar o cerimonial que está administrando
 #################################################################################
 $oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
 
@@ -154,7 +154,7 @@ $tpl->set('TAXA_SISTEMA'			,\Zage\App\Util::formataDinheiro($taxaUso));
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
 $tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
-$tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+$tpl->set('DP'						,ROOT_URL."/Fmt/orcamentoPdf.php?id=".$uid);
 $tpl->set('IC'						,$_icone_);
 $tpl->set('COD_MENU'				,$_codMenu_);
 

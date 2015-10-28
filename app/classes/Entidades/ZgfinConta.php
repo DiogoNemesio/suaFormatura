@@ -66,6 +66,13 @@ class ZgfinConta
     /**
      * @var float
      *
+     * @ORM\Column(name="VALOR_BOLETO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorBoleto;
+
+    /**
+     * @var float
+     *
      * @ORM\Column(name="VALOR_MORA", type="float", precision=10, scale=0, nullable=true)
      */
     private $valorMora;
@@ -292,6 +299,29 @@ class ZgfinConta
     public function getCcorrenteDv()
     {
         return $this->ccorrenteDv;
+    }
+
+    /**
+     * Set valorBoleto
+     *
+     * @param float $valorBoleto
+     * @return ZgfinConta
+     */
+    public function setValorBoleto($valorBoleto)
+    {
+        $this->valorBoleto = $valorBoleto;
+
+        return $this;
+    }
+
+    /**
+     * Get valorBoleto
+     *
+     * @return float 
+     */
+    public function getValorBoleto()
+    {
+        return $this->valorBoleto;
     }
 
     /**
