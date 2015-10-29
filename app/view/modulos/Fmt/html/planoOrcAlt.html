@@ -163,7 +163,7 @@ function addRowOrcamentoLayReg() {
 	var $numRows = $("#layRegTableOrcamentoID > tbody").children().length;
 	
 
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item['+$numRows+']" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo['+$numRows+']" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item['+$numRows+']" zg-name="item" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo['+$numRows+']" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="item"]').each(function( index ) {
 		$( this ).focus();
 	});
@@ -209,7 +209,7 @@ function validaOrcamento () {
 	// TABELA
 	$('#layRegTableOrcamentoID > tbody > tr').each(function( index ) {
 		
-		$itemObj 	= $(this).find('[name*="item[]"]');
+		$itemObj 	= $(this).find('[zg-name="item"]');
 		
 		$item		= $itemObj.val();
 		if (!$item) {

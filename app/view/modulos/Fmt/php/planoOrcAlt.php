@@ -109,10 +109,10 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 	$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	$codCategoria, '');
 	
 	$tabOrcamento	.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg" onchange="verificaAlteracao($(this));"></div></td>
-				<td><input type="text" class="width-100" name="item[]" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
-				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oTipoItem.'</select></td>
-				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCategoria.'</select></td>
-				<td align="center"><label><input name="indAtivo[]" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
+				<td><input type="text" class="width-100" name="item['.$i.']" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
+				<td><select class="select2" style="width:100%;" name="codTipoItem['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oTipoItem.'</select></td>
+				<td><select class="select2" style="width:100%;" name="codCategoria['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCategoria.'</select></td>
+				<td align="center"><label><input name="indAtivo['.$i.']" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
 				<td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'"></td></tr>';
 }
 
