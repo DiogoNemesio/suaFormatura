@@ -59,7 +59,7 @@
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpDataIniNetID"></div>
 						    </div>															
-							<div class="form-group col-sm-12" id="divFimInternetID">
+							<div class="form-group col-sm-12" id="divDataFimInternetID">
 						    	<label class="col-sm-3 control-label" for="dataFimInternetID">Data Fim</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de encerramento do período de vendas na internet."></i></span>
@@ -83,7 +83,7 @@
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="O valor do custo do boleto será adicionado a uma venda como taxa de conveniência."></i></span>
 					    			<input class="form-control" id="custoBoletoID" type="text" name="custoBoleto" placeholder="Custo do boleto" maxlength="16" value="%CUSTO_BOLETO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    	<div class="col-sm-1 pull-left" id="divHelpCustoBoletoID"></div>
 						    </div>							
 						</div>
 						<div class="col-sm-6">
@@ -95,15 +95,15 @@
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de início do período de vendas presencial."></i></span>
 					    			<input class="form-control datepicker" id="dataInicioPresencialID" type="text" name="dataInicioPresencial" placeholder="Data do início" maxlength="10" value="%DATA_INI_PRE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataIniPreID"></div>
 						    </div>															
-							<div class="form-group col-sm-12" id="divDataInicioFimlID">
-						    	<label class="col-sm-3 control-label" for="dataInicioFimID">Data Fim</label>
+							<div class="form-group col-sm-12" id="divDataFimPresencialID">
+						    	<label class="col-sm-3 control-label" for="dataFimPresencialID">Data Fim</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de encerramento do período de vendas presencial."></i></span>
-					    			<input class="form-control datepicker" id="dataInicioFimID" type="text" name="dataFimPresencial" placeholder="Data do encerramento" maxlength="10" value="%DATA_FIM_PRE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+					    			<input class="form-control datepicker" id="dataFimPresencialID" type="text" name="dataFimPresencial" placeholder="Data do encerramento" maxlength="10" value="%DATA_FIM_PRE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    	<div class="col-sm-1 pull-left" id="divHelpDataFimPreID"></div>
 						    </div>															
 						</div>
 					</div>
@@ -209,7 +209,15 @@ function validaConviteExtraConf() {
 	var vValor			= $('#valorID').val();
 	var vDataIniNet		= $('#dataInicioInternetID').val();
 	var vDataFimNet		= $('#dataFimInternetID').val();
-
+	var vCC				= $('#codContaRecID').val();
+	var vCustoBoleto	= $('#custoBoletoID').val();
+	var vCustoBoletoP	= $('#custoBoletoPadraoID').val();
+	var vDataIniPre		= $('#dataInicioPresencialID').val();
+	var vDataFimPre		= $('#dataFimPresencialID').val();
+	
+	var date = new Date();
+	var dataHoje = moment(date).format('YYYYMMDD');
+	
 	var vOK		= true;
 	
 	//VALOR DO CONVITE
@@ -221,23 +229,134 @@ function validaConviteExtraConf() {
 		nValor		= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
 		if (nValor < 0){
 			$('#divValorID').addClass('has-error');
-			$('#divHelpValorID').html(zgCriaSpanErro('O valor unitário do convite extra deve ser maior que 0.'));
+			$('#divHelpValorID').html(zgCriaSpanErro('O valor do convite extra deve ser maior que 0.'));
 			vOK = false;
 		}else{
 			$('#divValorID').removeClass('has-error');
 			$('#divHelpValorID').html('&nbsp;');
 		}
 	}
+	
+	//DATA INÍCIO
+	if (!vDataIniNet){
+		if (vDataFimNet || vCC){
+			$('#divDataInicioInternetID').addClass('has-error');
+			$('#divHelpDataIniNetID').html(zgCriaSpanErro('Para iniciar a venda na internet é necessário preencher uma data de início.'));
+			vOK = false;
+		}else{
+			$('#divDataInicioInternetID').removeClass('has-error');
+			$('#divHelpDataIniNetID').html('&nbsp;');	
+		}
+	}else{
+		var ComparaIniNet = parseInt(vDataIniNet.split("/")[2].toString() + vDataIniNet.split("/")[1].toString() + vDataIniNet.split("/")[0].toString());
+		if (dataHoje > ComparaIniNet){
+			$('#divDataInicioInternetID').addClass('has-error');
+			$('#divHelpDataIniNetID').html(zgCriaSpanErro('A data do início da venda na internet não pode ser inferior a data de hoje.'));
+			vOK = false;
+		}else{
+			$('#divDataInicioInternetID').removeClass('has-error');
+			$('#divHelpDataIniNetID').html('&nbsp;');	
+		}
+	}
 
 	//DATA FIM
-	var Compara01 = parseInt(vDataIniNet.split("/")[2].toString() + vDataIniNet.split("/")[1].toString() + vDataIniNet.split("/")[0].toString());
-	var Compara02 = parseInt(vDataFimNet.split("/")[2].toString() + vDataFimNet.split("/")[1].toString() + vDataFimNet.split("/")[0].toString());
-	
-	if (Compara01 > Compara02 ){
-		$('#divDataFimInternetID').addClass('has-error');
-		$('#divHelpDataFimNetID').html(zgCriaSpanErro('O valor unitário do convite extra deve ser maior que 0.'));
+	if (vDataFimNet){
+		var ComparaFimNet = parseInt(vDataFimNet.split("/")[2].toString() + vDataFimNet.split("/")[1].toString() + vDataFimNet.split("/")[0].toString());
+		if (vDataIniNet){
+			var ComparaIniNet = parseInt(vDataIniNet.split("/")[2].toString() + vDataIniNet.split("/")[1].toString() + vDataIniNet.split("/")[0].toString());			
+			if (ComparaIniNet > ComparaFimNet){		
+				$('#divDataFimInternetID').addClass('has-error');
+				$('#divHelpDataFimNetID').html(zgCriaSpanErro('A data do encerramento da venda na internet não pode ser inferior a data de inicio.'));
+				vOK = false;
+			}else{
+				$('#divDataFimInternetID').removeClass('has-error');
+				$('#divHelpDataFimNetID').html('&nbsp;');
+			}	
+		}else if (dataHoje > ComparaFimNet){
+			$('#divDataFimInternetID').addClass('has-error');
+			$('#divHelpDataFimNetID').html(zgCriaSpanErro('A data do encerramento da venda na internet não pode ser inferior a data de hoje.'));
+			vOK = false;
+		}else{
+			$('#divDataFimInternetID').removeClass('has-error');
+			$('#divHelpDataFimNetID').html('&nbsp;');
+		}	
+	}else{
+		$('#divDataFimInternetID').removeClass('has-error');
+		$('#divHelpDataFimNetID').html('&nbsp;');
 	}
 	
+	//CONTA BANCÁRIA
+	if ((!vCC) && (vDataIniNet || vCustoBoleto)){
+		$('#divContaRecID').addClass('has-error');
+		$('#divHelpContaRecID').html(zgCriaSpanErro('Selecione a conta bancária.'));
+		vOK = false;
+	}else{
+		$('#divContaRecID').removeClass('has-error');
+		$('#divHelpContaRecID').html('&nbsp;');
+	}
+	
+	//CUSTO
+	if (vCustoBoleto){
+		nCustoBoleto		= parseFloat($('#custoBoletoID').val().replace(".", "").replace(",","."));
+		if (vCustoBoleto > vCustoBoletoP){
+			$('#divCustoBoletoID').addClass('has-error');
+			$('#divHelpCustoBoletoID').html(zgCriaSpanErro('O custo do boleto não deve ser maior que R$ '+vCustoBoletoP));
+			vOK = false;
+		}else if (nCustoBoleto < 0){
+			$('#divCustoBoletoID').addClass('has-error');
+			$('#divHelpCustoBoletoID').html(zgCriaSpanErro('O custo do boleto não deve ser menor que 0.'));
+			vOK = false;
+		}else{
+			$('#divCustoBoletoID').removeClass('has-error');
+			$('#divHelpCustoBoletoID').html('&nbsp;');
+		}
+	}else{
+		$('#divCustoBoletoID').removeClass('has-error');
+		$('#divHelpCustoBoletoID').html('&nbsp;');
+	}
+	
+	//DATA INICIO PRESENCIAL
+	if (!vDataIniPre){
+		$('#divDataInicioPresencialID').addClass('has-error');
+		$('#divHelpDataIniPreID').html(zgCriaSpanErro('Informe a data do início da venda presencial.'));
+		vOK = false;
+	}else{
+		var ComparaIniPre = parseInt(vDataIniPre.split("/")[2].toString() + vDataIniPre.split("/")[1].toString() + vDataIniPre.split("/")[0].toString());
+		if (dataHoje > ComparaIniPre){
+			$('#divDataInicioPresencialID').addClass('has-error');
+			$('#divHelpDataIniPreID').html(zgCriaSpanErro('A data do início da venda presencial não pode ser inferior a data de hoje.'));
+			vOK = false;
+		}else{
+			$('#divDataInicioPresencialID').removeClass('has-error');
+			$('#divHelpDataIniPreID').html('&nbsp;');	
+		}
+	}
+	
+	//DATA FIM PRESENCIAL
+	if (vDataFimPre){
+		var ComparaFimPre = parseInt(vDataFimPre.split("/")[2].toString() + vDataFimPre.split("/")[1].toString() + vDataFimPre.split("/")[0].toString());
+		if (vDataIniPre){
+			var ComparaIniPre = parseInt(vDataIniPre.split("/")[2].toString() + vDataIniPre.split("/")[1].toString() + vDataIniPre.split("/")[0].toString());			
+			if (ComparaIniPre > ComparaFimPre){		
+				$('#divDataFimPresencialID').addClass('has-error');
+				$('#divHelpDataFimPreID').html(zgCriaSpanErro('A data do encerramento da venda presencial não pode ser inferior a data de inicio.'));
+				vOK = false;
+			}else{
+				$('#divDataFimPresencialID').removeClass('has-error');
+				$('#divHelpDataFimPreID').html('&nbsp;');
+			}	
+		}else if (dataHoje > ComparaFimPre){
+			$('#divDataFimPresencialID').addClass('has-error');
+			$('#divHelpDataFimPreID').html(zgCriaSpanErro('A data do encerramento da venda presencial não pode ser inferior a data de hoje.'));
+			vOK = false;
+		}else{
+			$('#divDataFimPresencialID').removeClass('has-error');
+			$('#divHelpDataFimPreID').html('&nbsp;');
+		}	
+	}else{
+		$('#divDataFimPresencialID').removeClass('has-error');
+		$('#divHelpDataFimPreID').html('&nbsp;');
+	}
 	
 	if (vOK == true) {
 		return true;
@@ -263,6 +382,8 @@ function buscaCustoBoleto(){
 		};
 		
 		$('#custoBoletoID').removeAttr("readonly");
+		$('#divCustoBoletoID').removeClass('has-error');
+		$('#divHelpCustoBoletoID').html('&nbsp;');
 		
 		var vValor	= accounting.formatMoney(vCustoBoleto, options);
 		$('#custoBoletoPadraoID').val(vValor);

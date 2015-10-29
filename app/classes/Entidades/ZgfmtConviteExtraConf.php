@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtConviteExtraConf
  *
- * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_CONF", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_2_idx", columns={"CONTA_RECEBIMENTO_INTERNET"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_3_idx", columns={"COD_TIPO_EVENTO"})})
+ * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_CONF", uniqueConstraints={@ORM\UniqueConstraint(name="fk_ZGFMT_CONVITE_EXTRA_CONF_3_idx", columns={"COD_TIPO_EVENTO", "COD_ORGANIZACAO"})}, indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_2_idx", columns={"CONTA_RECEBIMENTO_INTERNET"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_CONF_4_idx", columns={"COD_TIPO_EVENTO"})})
  * @ORM\Entity
  */
 class ZgfmtConviteExtraConf
