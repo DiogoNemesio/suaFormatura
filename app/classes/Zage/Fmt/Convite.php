@@ -75,7 +75,7 @@ class Convite {
 		$qb 	= $em->createQueryBuilder();
 	
 		try {
-			$qb->select('i')
+			$qb->select('v')
 			->from('\Entidades\ZgfmtConviteExtraItem','i')
 			->leftJoin('\Entidades\ZgfmtConviteExtraVenda'	,'v',	\Doctrine\ORM\Query\Expr\Join::WITH, 'v.codigo 	= i.codVenda')
 			->leftJoin('\Entidades\ZgfmtConviteExtraConf'	,'c',	\Doctrine\ORM\Query\Expr\Join::WITH, 'c.codigo 	= i.codConviteConf')

@@ -9,11 +9,6 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
-## Variáveis globais
-#################################################################################
-global $em,$tr,$system;
-
-#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -23,7 +18,7 @@ if (isset($_GET['id'])) {
 }elseif (isset($id)) 	{
 	$id = \Zage\App\Util::antiInjection($id);
 }else{
-	\Zage\App\Erro::halt('FALTA PARÂMENTRO : ID');
+	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
 
 #################################################################################
@@ -39,13 +34,14 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
+$url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$convExtraAluno	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findBy(array('codConviteConf' => $codConvExtra), array());
+	$convExtra = \Zage\Fmt\Convite::listaVendaConviteFormando();
+	//$convExtra		= $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()), array());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -53,19 +49,26 @@ try {
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GNotifLog");
-$grid->adicionaTexto($tr->trans('ALUNO'),				15, $grid::CENTER	,'codCliente:nome');
-$grid->adicionaTexto($tr->trans('QUANTIDADE COMPRADA'), 15, $grid::CENTER	,'quantidade');
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GConvAlunos");
+$grid->adicionaTexto($tr->trans('ALUNO'),		 		20, $grid::CENTER	,'codFormando:nome');
+$grid->adicionaTexto($tr->trans('TOTAL VENDAS'),	 	20, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('TOTAL ITENS'),	 		20, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('VALOR TOTAL'),		 	20, $grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-info-circle',$tr->trans('Detalhes'));
-$grid->importaDadosDoctrine($convExtraAluno);
+$grid->importaDadosDoctrine($convExtra);
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($convExtraAluno); $i++) {
-	$uid	= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&convExtraAluno='.$convExtraAluno[$i]->getCodCliente()->getCodigo().'&codConvExtra='.$codConvExtra);
-
-	$grid->setUrlCelula($i,2,ROOT_URL.'/Fmt/conviteExtraVendaAlunoLis.php?id='.$uid);
+for ($i = 0; $i < sizeof($convExtra); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConvExtra='.$convExtra[$i]->getCodigo().'&url='.$url);
+	
+	$itens		= $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findBy(array('codVenda' => $convExtra[$i]->getCodigo()), array());
+	
+	$grid->setValorCelula($i, 1, count($convExtra) );
+	$grid->setValorCelula($i, 2, count($itens) );
+	$grid->setValorCelula($i, 3, count($convExtra) * $convExtra[$i]->getValorTotal() );
+	$grid->setUrlCelula($i, 4, ROOT_URL.'/Fmt/conviteExtraVendaLis.php?id='.$uid);
 }
 
 #################################################################################
@@ -78,25 +81,17 @@ try {
 }
 
 #################################################################################
-## Gerar a url de adicão
-#################################################################################
-$urlVoltar			= ROOT_URL.'/Fmt/conviteExtraEventoLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
-$urlAtualizar		= ROOT_URL.'/Fmt/conviteExtraAlunosLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConvExtra='.$codConvExtra);
-
-#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
+$tpl->load(HTML_PATH . 'templateLis.html');
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Convite dos Alunos"));
-$tpl->set('URLVOLTAR'		,$urlVoltar);
-$tpl->set('URLATUALIZAR'	,$urlAtualizar);
-$tpl->set('ASSUNTO'			,"Convite dos Alunos");
+$tpl->set('NOME'			,$tr->trans('Convite dos Formandos'));
+$tpl->set('URLADD'			,'');
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

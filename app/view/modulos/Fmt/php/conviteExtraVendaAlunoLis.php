@@ -40,7 +40,7 @@ $url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$convExtra		= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findBy(array('codCliente' => $convExtraAluno), array());
+	$convExtra		= $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findBy(array('codCliente' => $convExtraAluno), array());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -49,20 +49,20 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GNotifLog");
-$grid->adicionaTexto($tr->trans('COMPRA'),		 		15, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('COMPRA'),		 		15, $grid::CENTER	,'codVenda');
 $grid->adicionaTexto($tr->trans('QUANTIDADE'),			15, $grid::CENTER	,'quantidade');
-$grid->adicionaDataHora($tr->trans('DATA COMPRA'),		15, $grid::CENTER	,'dataCadastro');
+$grid->adicionaTexto($tr->trans('VALOR UNITÁRIO'),		15, $grid::CENTER	,'valorUnitario');
 $grid->importaDadosDoctrine($convExtra);
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-$numCompra = 1;
+//$numCompra = 1;
 for ($i = 0; $i < sizeof($convExtra); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConvExtra='.$convExtra[$i]->getCodigo().'&url='.$url);
 	
-	$numCompra += $i; 
-	$grid->setValorCelula($i, 0, "#".$numCompra);
+	//$numCompra += $i; 
+	//$grid->setValorCelula($i, 0, "#".$numCompra);
 }
 
 #################################################################################
