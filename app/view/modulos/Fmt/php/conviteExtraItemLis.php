@@ -40,30 +40,19 @@ $url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$convExtra		= $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findBy(array('codCliente' => $convExtraAluno), array());
+	$convExtraItem		= $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findBy(array('codVenda' => $convExtraVenda), array());
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 	
 #################################################################################
-## Cria o objeto do Grid (bootstrap)
+## Cria o objeto do Grid (bootstrap) Textos completos	
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GNotifLog");
-$grid->adicionaTexto($tr->trans('COMPRA'),		 		15, $grid::CENTER	,'codVenda');
-$grid->adicionaTexto($tr->trans('QUANTIDADE'),			15, $grid::CENTER	,'quantidade');
+$grid->adicionaTexto($tr->trans('EVENTO'),			 	15, $grid::CENTER	,'codConviteConf:codTipoEvento:descricao');
+$grid->adicionaTexto($tr->trans('QUANTIDADE'),		 	15, $grid::CENTER	,'quantidade');
 $grid->adicionaTexto($tr->trans('VALOR UNITÁRIO'),		15, $grid::CENTER	,'valorUnitario');
-$grid->importaDadosDoctrine($convExtra);
-
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-//$numCompra = 1;
-for ($i = 0; $i < sizeof($convExtra); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConvExtra='.$convExtra[$i]->getCodigo().'&url='.$url);
-	
-	//$numCompra += $i; 
-	//$grid->setValorCelula($i, 0, "#".$numCompra);
-}
+$grid->importaDadosDoctrine($convExtraItem);
 
 #################################################################################
 ## Gerar o código html do grid
@@ -75,11 +64,16 @@ try {
 }
 
 #################################################################################
+## Url Novo
+#################################################################################
+$urlVenda = ROOT_URL.'/Fmt/conviteExtraVenda.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+
+#################################################################################
 ## Gerar a url de adicão
 #################################################################################
-$urlInicio			= ROOT_URL.'/Fmt/conviteExtraEventoLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
-$urlVoltar			= ROOT_URL.'/Fmt/conviteExtraAlunosLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConvExtra='.$codConvExtra);
-$urlAtualizar		= ROOT_URL.'/Fmt/conviteExtraVendaAlunoLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConvExtra='.$codConvExtra.'&convExtraAluno='.$convExtraAluno);
+$urlInicio			= ROOT_URL.'/Fmt/conviteExtraAlunosLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+$urlVoltar			= ROOT_URL.'/Fmt/conviteExtraVendaLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$codFormando);
+$urlAtualizar		= ROOT_URL.'/Fmt/conviteExtraItemLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&convExtraVenda='.$convExtraVenda.'&codFormando='.$codFormando);
 
 #################################################################################
 ## Carregando o template html
@@ -91,12 +85,12 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Venda do aluno'));
-$tpl->set('URLADD'			,'');
+$tpl->set('NOME'			,$tr->trans('Venda Itens'));
+$tpl->set('URLVENDA'		,$urlVenda);
 $tpl->set('URLINICIO'		,$urlInicio);
 $tpl->set('URLVOLTAR'		,$urlVoltar);
 $tpl->set('URLATUALIZAR'	,$urlAtualizar);
-$tpl->set('ASSUNTO'			,"Venda do aluno");
+$tpl->set('ASSUNTO'			,"Venda Itens");
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

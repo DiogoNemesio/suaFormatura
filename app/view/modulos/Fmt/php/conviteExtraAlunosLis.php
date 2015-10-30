@@ -61,7 +61,7 @@ $grid->importaDadosDoctrine($convExtra);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($convExtra); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConvExtra='.$convExtra[$i]->getCodigo().'&url='.$url);
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$convExtra[$i]->getCodFormando()->getCodigo().'&url='.$url);
 	
 	$itens		= $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findBy(array('codVenda' => $convExtra[$i]->getCodigo()), array());
 	
@@ -81,17 +81,22 @@ try {
 }
 
 #################################################################################
+## Url Novo
+#################################################################################
+$urlVenda = ROOT_URL.'/Fmt/conviteExtraVenda.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+
+#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
 $tpl->set('NOME'			,$tr->trans('Convite dos Formandos'));
-$tpl->set('URLADD'			,'');
+$tpl->set('URLADD'			,$urlVenda);
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################
