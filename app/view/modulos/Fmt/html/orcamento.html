@@ -1,5 +1,12 @@
 <div id="content">
 	<div class="page-header">
+		<label class="pull-left">Orçamento</label>
+		<span class="center">
+			<select id="codPlanoOrcID" name="codPlanoOrc" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaVersaoOrc();">
+				%VERSAO_ORC%
+			</select>
+		</span>
+	
 	<h1>Orçamento
 		<button class="btn btn-grey btn-round" id='btnOrcPrintID' disabled="disabled" onclick="orcImprime();">
 			<i class="ace-icon fa fa-file-pdf-o bigger-120" id="icOrcPrintID"></i>
@@ -45,10 +52,10 @@
 		    		<div class="col-sm-1 pull-left" id="divHelpDataConclusaoID"></div>
 		    	</div>
 		    	<div class="form-group col-sm-12" id="divCodVersaoOrcID">
-					<label for="codVersaoOrcID" class="col-xs-12 col-sm-5 control-label">Versão do orçamento</label>
+					<label for="codPlanoOrcID" class="col-xs-12 col-sm-5 control-label">Versão do orçamento</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sub-grupo."></i></span>
-						<select id="codVersaoOrcID" name="codVersaoOrc" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaVersaoOrc();">
+						<select id="codPlanoOrcID" name="codPlanoOrc" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaVersaoOrc();">
 							%VERSAO_ORC%
 						</select>
 					</div>
@@ -134,7 +141,7 @@ $('[data-rel=tooltip]').tooltip();
 $('[data-rel=popover]').popover({html:true});
 
 // SELECT2
-$('#codVersaoOrcID').css('width','100%').select2({allowClear:true});
+$('#codPlanoOrcID').css('width','100%').select2({allowClear:true});
 
 function orcImprime() {
 	$("#zgFormOrcamentoID").unbind( "submit" );
@@ -178,7 +185,7 @@ orcAtualizaInfo();
 function orcAtualizaInfo() {
 	var $numFormando 		= $('#numFormandoID').val();
 	var $numConvidado 		= $('#numConvidadoID').val();
-	var $codVersaoOrc 		= $('#codVersaoOrcID').val();
+	var $codPlanoOrc 		= $('#codPlanoOrcID').val();
 	var $dataConclusao		= $('#dataConclusaoID').val();
 	var $dataAnterior		= $('#dataAnteriorID').val();
 	var $mostraInfo			= 0;
@@ -239,34 +246,34 @@ function orcAtualizaInfo() {
 function carregaVersaoOrc() {
 	var $numFormando 		= $('#numFormandoID').val();
 	var $numConvidado 		= $('#numConvidadoID').val();
-	var $codVersaoOrc 		= $('#codVersaoOrcID').val();
+	var $codPlanoOrc 		= $('#codPlanoOrcID').val();
 	var $dataConclusao		= $('#dataConclusaoID').val();
 	
-	if (!$codVersaoOrc)		{
+	if (!$codPlanoOrc)		{
 		return;
 	}
 	
 	if (!$numFormando) {
 		alert("informe o número de formandos !!! ");
-		$('#codVersaoOrcID').val(null).trigger("change");
+		$('#codPlanoOrcID').val(null).trigger("change");
 		return;
 	}
 	
 	if (!$numConvidado) {
 		alert("informe o número de convidados !!! ");
-		$('#codVersaoOrcID').val(null).trigger("change");
+		$('#codPlanoOrcID').val(null).trigger("change");
 		return;
 	}
 
 	if (!$dataConclusao) {
 		alert("informe a data prevista de conclusão !!! ");
-		$('#codVersaoOrcID').val(null).trigger("change");
+		$('#codPlanoOrcID').val(null).trigger("change");
 		return;
 	}
 
-	if ($codVersaoOrc){
+	if ($codPlanoOrc){
 		$('#divItem').html("<i class='ace-icon fa fa-spinner fa-spin orange bigger-125'></i>");
-		$('#divItem').load( "%ROOT_URL%/Fmt/orcamentoDivItem.php?id=%ID%&codVersaoOrc="+$codVersaoOrc, function() {
+		$('#divItem').load( "%ROOT_URL%/Fmt/orcamentoDivItem.php?id=%ID%&codPlanoOrc="+$codPlanoOrc, function() {
 			orcAlteraQtdeFormandos();
 			orcAlteraQtdeConvidados();
 		});

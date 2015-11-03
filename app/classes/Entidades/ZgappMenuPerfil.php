@@ -39,16 +39,6 @@ class ZgappMenuPerfil
     private $codMenu;
 
     /**
-     * @var \Entidades\ZgsegPerfil
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegPerfil")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PERFIL", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPerfil;
-
-    /**
      * @var \Entidades\ZgadmOrganizacaoTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoTipo")
@@ -57,6 +47,16 @@ class ZgappMenuPerfil
      * })
      */
     private $codTipoOrganizacao;
+
+    /**
+     * @var \Entidades\ZgsegPerfil
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegPerfil")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PERFIL", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPerfil;
 
 
     /**
@@ -116,29 +116,6 @@ class ZgappMenuPerfil
     }
 
     /**
-     * Set codPerfil
-     *
-     * @param \Entidades\ZgsegPerfil $codPerfil
-     * @return ZgappMenuPerfil
-     */
-    public function setCodPerfil(\Entidades\ZgsegPerfil $codPerfil = null)
-    {
-        $this->codPerfil = $codPerfil;
-
-        return $this;
-    }
-
-    /**
-     * Get codPerfil
-     *
-     * @return \Entidades\ZgsegPerfil 
-     */
-    public function getCodPerfil()
-    {
-        return $this->codPerfil;
-    }
-
-    /**
      * Set codTipoOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao
@@ -159,5 +136,28 @@ class ZgappMenuPerfil
     public function getCodTipoOrganizacao()
     {
         return $this->codTipoOrganizacao;
+    }
+
+    /**
+     * Set codPerfil
+     *
+     * @param \Entidades\ZgsegPerfil $codPerfil
+     * @return ZgappMenuPerfil
+     */
+    public function setCodPerfil(\Entidades\ZgsegPerfil $codPerfil = null)
+    {
+        $this->codPerfil = $codPerfil;
+
+        return $this;
+    }
+
+    /**
+     * Get codPerfil
+     *
+     * @return \Entidades\ZgsegPerfil 
+     */
+    public function getCodPerfil()
+    {
+        return $this->codPerfil;
     }
 }

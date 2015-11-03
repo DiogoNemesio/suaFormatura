@@ -203,7 +203,7 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	
 	$htmlTab			.= '
 	<tr id="trGeraBol_'.$contas[$i]->getCodigo().'_ID">
-		<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codContaSel[]" class="ace" value="'.$contas[$i]->getCodigo().'" /><span class="lbl"></span></label></th>
+		<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codContaSel[]" class="ace" value="'.$contas[$i]->getCodigo().'" /><span class="lbl"></span></label></td>
 		<td class="col-sm-1 center">'.$parcela.' <input type="hidden" name="codConta['.$contas[$i]->getCodigo().']" value="'.$contas[$i]->getCodigo().'" /></td>
 		<td class="col-sm-1 center">'.$vencimento.'</td>
 		<td class="col-sm-1 center"><input class="form-control datepicker" onchange="GeraBolAtualizaJurosMora(\''.$contas[$i]->getCodigo().'\');" type="text" name="vencimento['.$contas[$i]->getCodigo().']" maxlength="10" value="'.$vencBol.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"><input type="hidden" name="vencimentoOriginal['.$contas[$i]->getCodigo().']" value="'.$vencimento.'"></td>

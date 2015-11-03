@@ -39,14 +39,14 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata as variáveis postadas
 #################################################################################
-if (isset($_GET['codVersaoOrc'])) 		$codVersaoOrc			= \Zage\App\Util::antiInjection($_GET['codVersaoOrc']);
+if (isset($_GET['codPlanoOrc'])) 		$codPlanoOrc			= \Zage\App\Util::antiInjection($_GET['codPlanoOrc']);
 
-if (!isset($codVersaoOrc)) exit;
+if (!isset($codPlanoOrc)) exit;
 
 #################################################################################
 ## Resgatar os dados
 #################################################################################
-$itens		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codVersao' => $codVersaoOrc,'indAtivo' => 1));
+$itens		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codPlano' => $codPlanoOrc,'indAtivo' => 1));
 
 #################################################################################
 ## Verificar se o orçamento tem algum item
@@ -60,9 +60,10 @@ if (sizeof($itens) == 0)	{
 #################################################################################
 $aItens		= array(); 
 for ($i = 0; $i < sizeof($itens); $i++) {
-	$codTipo		= $itens[$i]->getCodTipoEvento()->getCodigo();
-	$codigo		= $itens[$i]->getCodigo();
-	$aItens[$codTipo]["DESCRICAO"]			= $itens[$i]->getCodTipoEvento()->getDescricao();
+	$codTipo		= $itens[$i]->getCodGrupoItem()->getCodigo();
+	$codigo			= $itens[$i]->getCodigo();
+
+	$aItens[$codTipo]["DESCRICAO"]					= $itens[$i]->getCodGrupoItem()->getDescricao();
 	$aItens[$codTipo]["ITENS"][$codigo]["CODIGO"] 	= $itens[$i]->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["TIPO"] 	= $itens[$i]->getCodTipoItem()->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 	= $itens[$i]->getItem();
@@ -113,7 +114,10 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$valor	= 1;
 			}
 			
+			$checked	= null;
+			
 			$htmlForm	.= '<tr>';
+			$htmlForm	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codItemSel['.$item["CODIGO"].']" class="ace" value="'.$item["CODIGO"].'" /><span class="lbl"></span></label></td>';
 			$htmlForm	.= '<td class="col-sm-2">'.$item["ITEM"].'</td>';
 			$htmlForm	.= '<td class="col-sm-1 right"><span>Qtde:&nbsp;</span> <input class="input-mini" id="qtde_'.$item["CODIGO"].'_ID" name="aQtde['.$item["CODIGO"].']" type="text"'.$ro.' zg-tipo="'.$item["TIPO"].'" zg-evento="'.$codTipo.'" zg-codigo="'.$item["CODIGO"].'" zg-name="qtde" maxlength="5" value="'.$valor.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="orcAtualizaTotalItem(\''.$item["CODIGO"].'\');"></td>';
 			$htmlForm	.= '<td class="col-sm-1 center"><i class="fa fa-close"></i></td>';

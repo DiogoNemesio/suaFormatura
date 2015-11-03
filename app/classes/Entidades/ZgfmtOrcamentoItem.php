@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrcamentoItem
  *
- * @ORM\Table(name="ZGFMT_ORCAMENTO_ITEM")
+ * @ORM\Table(name="ZGFMT_ORCAMENTO_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_ORCAMENTO_ITEM_1_idx", columns={"COD_ORCAMENTO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_ITEM_2_idx", columns={"COD_ITEM"})})
  * @ORM\Entity
  */
 class ZgfmtOrcamentoItem
@@ -20,20 +20,6 @@ class ZgfmtOrcamentoItem
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $codigo;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="COD_ORCAMENTO", type="integer", nullable=false)
-     */
-    private $codOrcamento;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="COD_ITEM", type="integer", nullable=false)
-     */
-    private $codItem;
 
     /**
      * @var float
@@ -52,9 +38,36 @@ class ZgfmtOrcamentoItem
     /**
      * @var string
      *
-     * @ORM\Column(name="OBSERVACAO", type="string", length=200, nullable=false)
+     * @ORM\Column(name="OBSERVACAO", type="string", length=200, nullable=true)
      */
     private $observacao;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_HABILITADO", type="integer", nullable=false)
+     */
+    private $indHabilitado;
+
+    /**
+     * @var \Entidades\ZgfmtOrcamento
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrcamento")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORCAMENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrcamento;
+
+    /**
+     * @var \Entidades\ZgfmtPlanoOrcItem
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ITEM", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codItem;
 
 
     /**
@@ -65,52 +78,6 @@ class ZgfmtOrcamentoItem
     public function getCodigo()
     {
         return $this->codigo;
-    }
-
-    /**
-     * Set codOrcamento
-     *
-     * @param integer $codOrcamento
-     * @return ZgfmtOrcamentoItem
-     */
-    public function setCodOrcamento($codOrcamento)
-    {
-        $this->codOrcamento = $codOrcamento;
-
-        return $this;
-    }
-
-    /**
-     * Get codOrcamento
-     *
-     * @return integer 
-     */
-    public function getCodOrcamento()
-    {
-        return $this->codOrcamento;
-    }
-
-    /**
-     * Set codItem
-     *
-     * @param integer $codItem
-     * @return ZgfmtOrcamentoItem
-     */
-    public function setCodItem($codItem)
-    {
-        $this->codItem = $codItem;
-
-        return $this;
-    }
-
-    /**
-     * Get codItem
-     *
-     * @return integer 
-     */
-    public function getCodItem()
-    {
-        return $this->codItem;
     }
 
     /**
@@ -180,5 +147,74 @@ class ZgfmtOrcamentoItem
     public function getObservacao()
     {
         return $this->observacao;
+    }
+
+    /**
+     * Set indHabilitado
+     *
+     * @param integer $indHabilitado
+     * @return ZgfmtOrcamentoItem
+     */
+    public function setIndHabilitado($indHabilitado)
+    {
+        $this->indHabilitado = $indHabilitado;
+
+        return $this;
+    }
+
+    /**
+     * Get indHabilitado
+     *
+     * @return integer 
+     */
+    public function getIndHabilitado()
+    {
+        return $this->indHabilitado;
+    }
+
+    /**
+     * Set codOrcamento
+     *
+     * @param \Entidades\ZgfmtOrcamento $codOrcamento
+     * @return ZgfmtOrcamentoItem
+     */
+    public function setCodOrcamento(\Entidades\ZgfmtOrcamento $codOrcamento = null)
+    {
+        $this->codOrcamento = $codOrcamento;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrcamento
+     *
+     * @return \Entidades\ZgfmtOrcamento 
+     */
+    public function getCodOrcamento()
+    {
+        return $this->codOrcamento;
+    }
+
+    /**
+     * Set codItem
+     *
+     * @param \Entidades\ZgfmtPlanoOrcItem $codItem
+     * @return ZgfmtOrcamentoItem
+     */
+    public function setCodItem(\Entidades\ZgfmtPlanoOrcItem $codItem = null)
+    {
+        $this->codItem = $codItem;
+
+        return $this;
+    }
+
+    /**
+     * Get codItem
+     *
+     * @return \Entidades\ZgfmtPlanoOrcItem 
+     */
+    public function getCodItem()
+    {
+        return $this->codItem;
     }
 }
