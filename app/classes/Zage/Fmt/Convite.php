@@ -125,6 +125,7 @@ class Convite {
 			->orderBy('c.codigo', 'ASC');
 				
 			$query 		= $qb->getQuery();
+			
 			return($query->getResult());
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
