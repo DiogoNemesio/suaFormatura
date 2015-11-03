@@ -1,17 +1,22 @@
 <div id="content">
-	<div class="page-header">
-		<label class="pull-left">Orçamento</label>
-		<span class="center">
-			<select id="codPlanoOrcID" name="codPlanoOrc" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaVersaoOrc();">
-				%VERSAO_ORC%
+	<div class="page-header col-sm-12">
+		<label class="pull-left col-sm-2 blue">Orçamento</label>
+		<div class="col-sm-8 center">
+			<select id="codVersaoOrcID" name="codVersaoOrc" class="select2" data-placeholder="Selecione a versão do Orçamento" onchange="javascript:carregaVersaoOrc();">
+				%VERSOES_ORC%
 			</select>
-		</span>
-	
-	<h1>Orçamento
-		<button class="btn btn-grey btn-round" id='btnOrcPrintID' disabled="disabled" onclick="orcImprime();">
-			<i class="ace-icon fa fa-file-pdf-o bigger-120" id="icOrcPrintID"></i>
-		</button>
-	</h1>
+		</div>
+		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner pull-right col-sm-2">
+			<button class="btn btn-grey" id='btnOrcPrintID' disabled="disabled" onclick="orcImprime();">
+				<i class="ace-icon fa fa-print bigger-120" id="icOrcPrintID"></i>
+			</button>
+			<button class="btn btn-grey " id='btnOrcMailID' disabled="disabled" onclick="orcEnviaEmail();">
+				<i class="ace-icon fa fa-envelope bigger-120" id="icOrcMailID"></i>
+			</button>
+			<button class="btn btn-grey " id='btnOrcAceiteID' disabled="disabled" onclick="orcAceite();">
+				<i class="ace-icon fa fa-check-circle bigger-120" id="icOrcAceiteID"></i>
+			</button>
+		</div>
 	</div><!-- /.page-header -->
 	<br />
 		
@@ -24,6 +29,8 @@
 		<input type="hidden" id="taxaAdminID" name="taxaAdmin" value="%TAXA_ADMIN%">
 		<input type="hidden" id="taxaBoletoID" name="taxaBoleto" value="%TAXA_BOLETO%">
 		<input type="hidden" id="taxaSistemaID" name="taxaSistema" value="%TAXA_SISTEMA%">
+		<input type="hidden" id="indAceiteID" name="indAceite" value="%IND_ACEITE%">
+		<input type="hidden" id="indSalvoID" name="indSalvo" value="%IND_SALVO%">
 
 		<div class="row">
 			<div class="col-sm-6">
@@ -31,7 +38,7 @@
 				    <label for="numFormandoID" class="col-sm-5 control-label">Número de formandos</label>
 		    		<div class="input-group col-sm-6 pull-left">
 	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a turma no sistema. Essa identificação será utilizar para compor o link de acesso."></i></span>
-			    		<input class="form-control" id="numFormandoID" type="text" name="numFormando" maxlength="5"  %READONLY% onchange="orcAlteraQtdeFormandos();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+			    		<input class="form-control" id="numFormandoID" type="text" name="numFormando" maxlength="5" value="%NUM_FORMANDOS%" onchange="orcAlteraQtdeFormandos();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 				    </div>
 				    <div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
 				</div>
@@ -39,7 +46,7 @@
 			    	<label for="numConvidadoID" class="col-sm-5 control-label">Convites por formando</label>
 	    			<div class="input-group col-sm-6 pull-left">
 	   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome da turma."></i></span>
-		    			<input class="form-control" id="numConvidadoID" type="text" name="numConvidado" maxlength="5" onblur="orcAlteraQtdeConvidados();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+		    			<input class="form-control" id="numConvidadoID" type="text" name="numConvidado" maxlength="5" value="%NUM_CONVIDADOS%" onchange="orcAlteraQtdeConvidados();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 			    	</div>
 			    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 			    </div>
@@ -55,20 +62,11 @@
 					<label for="codPlanoOrcID" class="col-xs-12 col-sm-5 control-label">Versão do orçamento</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sub-grupo."></i></span>
-						<select id="codPlanoOrcID" name="codPlanoOrc" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaVersaoOrc();">
-							%VERSAO_ORC%
+						<select id="codPlanoOrcID" name="codPlanoOrc" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaPlanoOrc();">
+							%PLANO_ORC%
 						</select>
 					</div>
 					<div class="col-sm-1 pull-left" id="divHelpCodVersaoOrcID"></div>
-				</div>
-		    	<div class="form-group col-sm-12 hidden" id="divImpressaoID">
-					<label class="col-xs-12 col-sm-5 control-label">Imprimir Orçamento</label>
-					<div class=" col-sm-6 pull-left">
-		    			<button class="btn btn-white btn-info btn-bold">
-							<i class="ace-icon fa fa-file-pdf-o bigger-120 black"></i>
-						</button>
-					</div>
-					<div class="col-sm-1 pull-left" id="divHelpImpressaoID"></div>
 				</div>
 		   	</div>
 		   	<div class="col-sm-4">
@@ -116,14 +114,10 @@
 		    	
 			</div>
 		</div>
-		<div class="clearfix form-actions">
-			<label class="col-sm-4 control-label">&nbsp;</label>
+		<div class="clearfix form-actions col-sm-12">
+			<label class="col-sm-6 control-label">&nbsp;</label>
 			<button type="button" class="btn btn-primary" id="btnSubmitID" onclick="orcSalva();">
 				<i class="fa fa-check bigger-110"></i> Salvar
-			</button>
-			<button type="button" class="btn btn-warning" id="cancel"
-				onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
-				<i class="fa fa-undo bigger-110"></i> Voltar
 			</button>
 		</div>
 	</form>
@@ -142,6 +136,7 @@ $('[data-rel=popover]').popover({html:true});
 
 // SELECT2
 $('#codPlanoOrcID').css('width','100%').select2({allowClear:true});
+$('#codVersaoOrcID').css('width','50%').select2({allowClear:true});
 
 function orcImprime() {
 	$("#zgFormOrcamentoID").unbind( "submit" );
@@ -202,7 +197,6 @@ function orcAtualizaInfo() {
 	}
 	
 	
-	
 	if ($dataConclusao) {
 		$mostraInfo			= 1;
 		
@@ -230,6 +224,12 @@ function orcAtualizaInfo() {
 			});
 			
 			$spIcon.addClass("hidden");
+			
+			/**
+			 * Atualiza a flag de salvamento
+			 */
+			$('#indSalvoID').val(0);
+
 		}
 		
 	}
@@ -243,7 +243,7 @@ function orcAtualizaInfo() {
 	
 }
 
-function carregaVersaoOrc() {
+function carregaPlanoOrc() {
 	var $numFormando 		= $('#numFormandoID').val();
 	var $numConvidado 		= $('#numConvidadoID').val();
 	var $codPlanoOrc 		= $('#codPlanoOrcID').val();
@@ -290,6 +290,11 @@ function orcAlteraQtdeFormandos() {
 		$(this).trigger('change');
 	});
 	
+	/**
+	 * Atualiza a flag de salvamento
+	 */
+	$('#indSalvoID').val(0);
+	
 	orcAlteraQtdeConvidados();
 }
 
@@ -303,8 +308,85 @@ function orcAlteraQtdeConvidados() {
 		$(this).val($total);
 		$(this).trigger('change');
 	});
-	
+
+	/**
+	 * Atualiza a flag de salvamento
+	 */
+	$('#indSalvoID').val(0);
+
 	orcAtualizaInfo();
+}
+
+
+function orcAlteraQuantidade($codigo) {
+	var $oQtde		= $('input[zg-name="qtde"][zg-codigo="'+$codigo+'"]');
+	var $sel;
+	
+	if ($oQtde.is('[readonly]')) {
+		$sel	= false;
+	}else{
+		$sel	= true;
+	}
+	
+	/**
+	 * Seleciona o registro editado, somente se o campo não for readonly
+	 */
+	if ($sel == true) {
+		var $_chk	= $('input[type=checkbox][name="codItemSel['+$codigo+']"][value="'+$codigo+'"]');
+		$_chk.prop('checked', true);
+	}
+
+	/**
+	 * Atualiza a flag de salvamento
+	 */
+	$('#indSalvoID').val(0);
+
+	/**
+	 * Atualiza o total do item
+	 */
+	orcAtualizaTotalItem($codigo);
+
+	/**
+	 * Controlar a ação dos botões 
+	 */
+	 orcAtualizaBotoes();
+}
+
+
+function orcAlteraValor($codigo) {
+	/**
+	 * Seleciona o registro editado
+	 */
+	var $_chk	= $('input[type=checkbox][name="codItemSel['+$codigo+']"][value="'+$codigo+'"]');
+	$_chk.prop('checked', true);
+	
+	/**
+	 * Atualiza a flag de salvamento
+	 */
+	$('#indSalvoID').val(0);
+
+	/**
+	 * Atualiza o total do item
+	 */
+	orcAtualizaTotalItem($codigo);
+
+	/**
+	 * Controlar a ação dos botões 
+	 */
+	 orcAtualizaBotoes();
+}
+
+function orcAlteraSel($codigo) {
+	/**
+	 * Atualiza a flag de salvamento
+	 */
+	$('#indSalvoID').val(0);
+
+	/**
+	 * Controlar a ação dos botões 
+	 */
+	 orcAtualizaBotoes();
+
 }
 
 
@@ -332,7 +414,6 @@ function orcAtualizaTotalItem($codigo) {
 	
 	/** Atualiza o total do evento **/
 	orcAtualizaInfoEvento($evento);
-
 }
 
 function orcAtualizaInfoEvento($evento) {
@@ -425,26 +506,6 @@ function orcAtualizaCustoFinal() {
 	$('#orcTotalOrcID').html(accounting.formatMoney($custoFinal, options));
 
 	/**
-	 * Controlar o botão de impressão 
-	 */
-	if ($custoFinal > 0) {
-		$('#btnOrcPrintID').attr("disabled",false);
-		$('#icOrcPrintID').removeClass("blue");
-		$('#icOrcPrintID').addClass("red");
-		$('#btnOrcPrintID').removeClass("disabled");
-		$('#btnOrcPrintID').removeClass("btn-grey");
-		$('#btnOrcPrintID').addClass("btn-white");
-	}else{
-		$('#btnOrcPrintID').attr("disabled","disabled");
-		$('#icOrcPrintID').removeClass("red");
-		$('#icOrcPrintID').addClass("blue");
-		$('#btnOrcPrintID').addClass("disabled");
-		$('#btnOrcPrintID').removeClass("btn-white");
-		$('#btnOrcPrintID').addClass("btn-grey");
-		//alert("Desabilitei o botão de impressão");
-	}
-	
-	/**
 	 * Calcula o valor de uso do sistema e outros custos 
 	 */
 	 var $numMeses			= parseInt($('#numMesesID').val());
@@ -466,6 +527,64 @@ function orcAtualizaCustoFinal() {
 	$spTotalOutros.html(accounting.formatMoney($valOutros, options) + " por formando (Boleto + Administração)");
 	$spCustoFinal.html(accounting.formatMoney($valTotal, options) + " (Custo Total Final)");
 	$spMensalidade.html(accounting.formatMoney($valMensalidade, options) + " mensais por formando");
+}
+
+function orcAtualizaBotoes() {
+	var $indSalvo			= $('#indSalvoID').val();
+
+	if ($indSalvo == 1) {
+		
+		/** Botão de impressão **/
+		$('#btnOrcPrintID').attr("disabled",false);
+		$('#btnOrcPrintID').removeClass("disabled");
+		$('#btnOrcPrintID').removeClass("btn-grey");
+		$('#btnOrcPrintID').addClass("btn-white");
+		$('#icOrcPrintID').removeClass("white");
+		$('#icOrcPrintID').addClass("blue");
+
+		/** Botão de Envio de e-mail **/
+		$('#btnOrcMailID').attr("disabled",false);
+		$('#btnOrcMailID').removeClass("disabled");
+		$('#btnOrcMailID').removeClass("btn-grey");
+		$('#btnOrcMailID').addClass("btn-white");
+		$('#icOrcMailID').removeClass("white");
+		$('#icOrcMailID').addClass("red");
+
+		/** Botão de Aceite **/
+		$('#btnOrcAceiteID').attr("disabled",false);
+		$('#btnOrcAceiteID').removeClass("disabled");
+		$('#btnOrcAceiteID').removeClass("btn-grey");
+		$('#btnOrcAceiteID').addClass("btn-white");
+		$('#icOrcAceiteID').removeClass("white");
+		$('#icOrcAceiteID').addClass("green");
+
+	
+	}else{
+		/** Botão de impressão **/
+		$('#btnOrcPrintID').attr("disabled","disabled");
+		$('#btnOrcPrintID').addClass("disabled");
+		$('#btnOrcPrintID').removeClass("btn-white");
+		$('#btnOrcPrintID').addClass("btn-grey");
+		$('#icOrcPrintID').removeClass("blue");
+		$('#icOrcPrintID').addClass("white");
+		
+		/** Botão de Envio de e-mail **/
+		$('#btnOrcMailID').attr("disabled","disabled");
+		$('#btnOrcMailID').addClass("disabled");
+		$('#btnOrcMailID').removeClass("btn-white");
+		$('#btnOrcMailID').addClass("btn-grey");
+		$('#icOrcMailID').removeClass("red");
+		$('#icOrcMailID').addClass("white");
+
+		/** Botão de Aceite **/
+		$('#btnOrcAceiteID').attr("disabled","disabled");
+		$('#btnOrcAceiteID').addClass("disabled");
+		$('#btnOrcAceiteID').removeClass("btn-white");
+		$('#btnOrcAceiteID').addClass("btn-grey");
+		$('#icOrcAceiteID').removeClass("green");
+		$('#icOrcAceiteID').addClass("white");
+	}
+	
 }
 
 </script>

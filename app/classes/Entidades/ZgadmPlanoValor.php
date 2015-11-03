@@ -43,6 +43,13 @@ class ZgadmPlanoValor
     private $dataCadastro;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_MAX_DESCONTO", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $pctMaxDesconto;
+
+    /**
      * @var \Entidades\ZgadmPlano
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmPlano")
@@ -130,6 +137,29 @@ class ZgadmPlanoValor
     public function getDataCadastro()
     {
         return $this->dataCadastro;
+    }
+
+    /**
+     * Set pctMaxDesconto
+     *
+     * @param float $pctMaxDesconto
+     * @return ZgadmPlanoValor
+     */
+    public function setPctMaxDesconto($pctMaxDesconto)
+    {
+        $this->pctMaxDesconto = $pctMaxDesconto;
+
+        return $this;
+    }
+
+    /**
+     * Get pctMaxDesconto
+     *
+     * @return float 
+     */
+    public function getPctMaxDesconto()
+    {
+        return $this->pctMaxDesconto;
     }
 
     /**
