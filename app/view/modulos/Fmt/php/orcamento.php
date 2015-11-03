@@ -25,6 +25,12 @@ if (isset($_GET['id'])) {
 }
 
 #################################################################################
+## Resgata as variáveis postadas
+#################################################################################
+if (isset($_GET['codVersaoOrc'])) 		$codVersaoOrc			= \Zage\App\Util::antiInjection($_GET['codVersaoOrc']);
+
+
+#################################################################################
 ## Descompacta o ID
 #################################################################################
 \Zage\App\Util::descompactaId($id);
@@ -89,19 +95,38 @@ $taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
 $taxaBoleto				= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
 $taxaUso				= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 
+
+#################################################################################
+## Versões do orçamento
+#################################################################################
+$aVersoesOrc			= $em->getRepository('Entidades\ZgfmtOrcamento')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('versao' => 'DESC'));
+try {
+	$oVersoesOrc		= $system->geraHtmlCombo($aVersoesOrc, 'CODIGO', 'VERSAO', $codVersaoOrc, '');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+if ($aVersoesOrc) {
+	$infoVersao			= $em->getRepository('Entidades\ZgfmtOrcamento')->findOneBy(array('codigo' => $codVersaoOrc));
+	$codPlanoVersao		= $infoVersao->getCodPlanoVersao()->getCodigo();
+}else{
+	$codPlanoVersao		= null;
+}
+
+
 #################################################################################
 ## Buscar o cerimonial que está administrando
 #################################################################################
-$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+$oFmtAdm				= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
 
 if ($oFmtAdm)	{
-	$aVersaoOrc	= $em->getRepository('Entidades\ZgfmtPlanoOrcamentario')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('versao' => 'ASC'));
+	$aPlanoOrc	= $em->getRepository('Entidades\ZgfmtPlanoOrcamentario')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('versao' => 'ASC'));
 }else{
-	$aVersaoOrc	= null;
+	$aPlanoOrc	= null;
 }
 
 try {
-	$oVersaoOrc		= $system->geraHtmlCombo($aVersaoOrc, 'CODIGO', 'VERSAO', $codPlanoVersao, '');
+	$oPlanoOrc		= $system->geraHtmlCombo($aPlanoOrc, 'CODIGO', 'VERSAO', $codPlanoVersao, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -115,7 +140,7 @@ $urlVoltar			= ROOT_URL."/Fmt/formaturaLis.php?id=".$id;
 #################################################################################
 ## Url Novo
 #################################################################################
-$uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormatura=');
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormatura=');
 $urlNovo			= ROOT_URL."/Fmt/formaturaAlt.php?id=".$uid;
 
 #################################################################################
@@ -132,7 +157,7 @@ $tpl->set('URLVOLTAR'				,$urlVoltar);
 $tpl->set('URLNOVO'					,$urlNovo);
 $tpl->set('ID'						,$id);
 
-$tpl->set('COD_ORGANIZACAO'			,$codOrganizacao);
+$tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());
 $tpl->set('IDENT'					,$ident);
 $tpl->set('NOME'					,$nome);
 $tpl->set('INSTITUICAO'				,$instituicao);
@@ -140,7 +165,9 @@ $tpl->set('CURSO'					,$curso);
 $tpl->set('CIDADE'					,$cidade);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao);
 
-$tpl->set('VERSAO_ORC'				,$oVersaoOrc);
+
+$tpl->set('VERSOES_ORC'				,$oVersoesOrc);
+$tpl->set('PLANO_ORC'				,$oPlanoOrc);
 $tpl->set('COD_PLANO'				,$codPlano);
 $tpl->set('VALOR_DESCONTO'			,$valorDesconto);
 $tpl->set('PCT_DESCONTO'			,$pctDesconto);
@@ -154,7 +181,8 @@ $tpl->set('TAXA_SISTEMA'			,\Zage\App\Util::formataDinheiro($taxaUso));
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
 $tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_TIMEOUT'));
-$tpl->set('DP'						,ROOT_URL."/Fmt/orcamentoPdf.php?id=".$uid);
+//$tpl->set('DP'						,ROOT_URL."/Fmt/orcamentoPdf.php?id=".$uid);
+$tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'						,$_icone_);
 $tpl->set('COD_MENU'				,$_codMenu_);
 
