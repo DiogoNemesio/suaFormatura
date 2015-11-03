@@ -31,77 +31,65 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-#################################################################################
-## Resgata a url desse script
-#################################################################################
-$url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 
 #################################################################################
-## Resgata informações de orcamento
+## Resgata os parâmetros passados pelo formulario de pesquisa
+#################################################################################
+if (!isset($codVersao)) 		{
+	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_VERSAO)');
+}
+
+#################################################################################
+## Resgata as informações do banco
 #################################################################################
 try {
-	$orcamento	= $em->getRepository('Entidades\ZgfmtPlanoOrcamentario')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
-	
-#################################################################################
-## Cria o objeto do Grid (bootstrap)
-#################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GOrc");
-$grid->adicionaTexto($tr->trans('VERSAO'),	 			20, $grid::CENTER	,'versao');
-$grid->adicionaTexto($tr->trans('STATUS'),				20, $grid::CENTER	,'indAtivo');
-$grid->adicionaDataHora($tr->trans('DATA CADASTRO'),		20, $grid::CENTER	,'dataCadastro');
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($orcamento);
 
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($orcamento); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codVersao='.$orcamento[$i]->getCodigo().'&url='.$url);
+	$info			= $em->getRepository('Entidades\ZgfmtPlanoOrcamentario')->findOneBy(array('codigo' => $codVersao));
 	
-	if ($orcamento[$i]->getIndAtivo() == 1) {
-		$grid->setValorCelula($i, 1, "<span class=\"label label-success arrowed\">Ativa</span>");
-	}else{
-		$grid->setValorCelula($i, 1, "<span class=\"label label-danger arrowed\">Inativa</span>");
+	if (!$info) 	{
+		\Zage\App\Erro::halt($tr->trans('Plano Orçamentário não foi encontrato.'));
 	}
 	
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/planoOrcAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,4,"javascript:zgAbreModal('".ROOT_URL.'/Fmt/planoOrcExc.php?id='.$uid."');");
-}
+	$podeRemover	= null;
+	$mensagem		= $tr->trans('Deseja realmente excluir a versão').': <b>'.$info->getVersao().'</b> ?';
+	$observacao		= $tr->trans('<i class="fa fa-exclamation-triangle red"></i> Está operação excluirá definitivamente este modelo de orçamento.');
+	$classe			= "text-warning";
 
-#################################################################################
-## Gerar o código html do grid
-#################################################################################
-try {
-	$htmlGrid	= $grid->getHtmlCode();
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
 #################################################################################
-## Gerar a url de adicão
+## Urls
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fmt/planoOrcAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codVersao=');
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+$urlVoltar			= ROOT_URL . "/Fmt/planoOrcLis.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(HTML_PATH . '/templateModalExc.html');
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Orçamento'));
-$tpl->set('URLADD'			,$urlAdd);
-$tpl->set('URL_VOLTAR'		,$urlVoltar);
-$tpl->set('URL_ATUALIZAR'	,$urlAtualizar);
-$tpl->set('IC'				,$_icone_);
+$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('URLVOLTAR'			,$urlVoltar);
+$tpl->set('PODE_REMOVER'		,$podeRemover);
+$tpl->set('TITULO'				,$tr->trans('Excluir'));
+$tpl->set('ID'					,$id);
+$tpl->set('TEXTO'				,$mensagem);
+$tpl->set('OBSERVACAO'			,$observacao);
+$tpl->set('CLASSE'				,$classe);
+$tpl->set('VAR'					,'codPlano');
+$tpl->set('VAR_VALUE'			,$info->getCodigo());
+$tpl->set('NOME'				,$info->getVersao());
+$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+
+
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
+

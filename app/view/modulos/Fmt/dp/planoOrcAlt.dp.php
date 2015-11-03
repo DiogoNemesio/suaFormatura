@@ -16,7 +16,7 @@ global $em,$system,$log,$tr;
 #################################################################################
 ## Resgata os parâmetros passados pelo formulário
 #################################################################################
-if (isset($_POST['codVersao']))				$codVersao			= \Zage\App\Util::antiInjection($_POST['codVersao']);
+if (isset($_POST['codVersao']))				$codPlano			= \Zage\App\Util::antiInjection($_POST['codVersao']);
 if (isset($_POST['codEvento']))				$codEvento			= \Zage\App\Util::antiInjection($_POST['codEvento']);
 if (isset($_POST['codOrcamento']))			$codOrcamento		= \Zage\App\Util::antiInjection($_POST['codOrcamento']);
 if (isset($_POST['item']))					$item				= \Zage\App\Util::antiInjection($_POST['item']);
@@ -38,8 +38,6 @@ if (!isset($indAtivo))			$indAtivo		= array();
 if ($codOrcamento == null){
 	$codOrcamento	= array();
 }
-
-$log->debug(serialize($indAtivo));
 
 #################################################################################
 ## Fazer validação dos campos
@@ -78,11 +76,11 @@ $numCon	= sizeof($codOrcamento);
 ## Salvar no banco
 #################################################################################
 try {
-	$oVersao		= $em->getRepository('Entidades\ZgfmtPlanoOrcamentario')->findOneBy(array('codigo' => $codVersao));
+	$oPlano		= $em->getRepository('Entidades\ZgfmtPlanoOrcamentario')->findOneBy(array('codigo' => $codPlano));
 	
-	if (!$oVersao) {
-		$oVersao	= new \Entidades\ZgfmtPlanoOrcamentario();
-		$oVersao->setDataCadastro(new \DateTime("now"));
+	if (!$oPlano) {
+		$oPlano	= new \Entidades\ZgfmtPlanoOrcamentario();
+		$oPlano->setDataCadastro(new \DateTime("now"));
 	}
 	
 	#################################################################################
@@ -96,16 +94,16 @@ try {
 		$indVersao = 0;
 	}
 
-	$oVersao->setCodOrganizacao($oOrganizacao);
-	$oVersao->setVersao($versao);
-	$oVersao->setIndAtivo($indVersao);
+	$oPlano->setCodOrganizacao($oOrganizacao);
+	$oPlano->setVersao($versao);
+	$oPlano->setIndAtivo($indVersao);
 	
-	$em->persist($oVersao);
+	$em->persist($oPlano);
 	
 	#################################################################################
 	## Apagar os itens do orçamento
 	#################################################################################
-	$orcamentos			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codGrupoItem' => $codEvento, 'codVersao' => $codVersao));
+	$orcamentos			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codGrupoItem' => $codEvento, 'codPlano' => $codPlano));
 
 	for ($i = 0; $i < sizeof($orcamentos); $i++) {
 		
@@ -125,7 +123,6 @@ try {
 	#################################################################################
 	for ($i = 0; $i < $numCon; $i++) {
 
-		//$log->debug($codVersao[$i]);
 		#################################################################################
 		## Verifica se o registro já existe no banco
 		#################################################################################
@@ -149,14 +146,13 @@ try {
 		$oCodTipoItem	= $em->getRepository('Entidades\ZgfmtPlanoOrcItemTipo')->findOneBy(array('codigo' => $codTipoItem[$i]));
 		$oCodTipoEvento	= $em->getRepository('Entidades\ZgfmtPlanoOrcGrupoItem')->findOneBy(array('codigo' => $codEvento));
 		
-		$oOrcamento->setCodVersao($oVersao);
+		$oOrcamento->setCodPlano($oPlano);
 		$oOrcamento->setCodGrupoItem($oCodTipoEvento);
 		$oOrcamento->setCodCategoria($oCodCategoria);
 		$oOrcamento->setCodTipoItem($oCodTipoItem);
 		$oOrcamento->setItem($item[$i]);
 		$oOrcamento->setIndAtivo($indAtivoLinha);
 		
-
 		$em->persist($oOrcamento);
 	}
 
@@ -169,4 +165,4 @@ try {
 	exit;
 }
 
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oVersao->getCodigo());
+echo '0'.\Zage\App\Util::encodeUrl('|'.$oPlano->getCodigo());
