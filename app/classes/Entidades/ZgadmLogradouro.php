@@ -43,16 +43,6 @@ class ZgadmLogradouro
     private $cep;
 
     /**
-     * @var \Entidades\ZgadmLogradouroTipo
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmLogradouroTipo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TIPO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codTipo;
-
-    /**
      * @var \Entidades\ZgadmBairro
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmBairro")
@@ -61,6 +51,16 @@ class ZgadmLogradouro
      * })
      */
     private $codBairro;
+
+    /**
+     * @var \Entidades\ZgadmLogradouroTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmLogradouroTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipo;
 
 
     /**
@@ -143,29 +143,6 @@ class ZgadmLogradouro
     }
 
     /**
-     * Set codTipo
-     *
-     * @param \Entidades\ZgadmLogradouroTipo $codTipo
-     * @return ZgadmLogradouro
-     */
-    public function setCodTipo(\Entidades\ZgadmLogradouroTipo $codTipo = null)
-    {
-        $this->codTipo = $codTipo;
-
-        return $this;
-    }
-
-    /**
-     * Get codTipo
-     *
-     * @return \Entidades\ZgadmLogradouroTipo 
-     */
-    public function getCodTipo()
-    {
-        return $this->codTipo;
-    }
-
-    /**
      * Set codBairro
      *
      * @param \Entidades\ZgadmBairro $codBairro
@@ -186,5 +163,28 @@ class ZgadmLogradouro
     public function getCodBairro()
     {
         return $this->codBairro;
+    }
+
+    /**
+     * Set codTipo
+     *
+     * @param \Entidades\ZgadmLogradouroTipo $codTipo
+     * @return ZgadmLogradouro
+     */
+    public function setCodTipo(\Entidades\ZgadmLogradouroTipo $codTipo = null)
+    {
+        $this->codTipo = $codTipo;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipo
+     *
+     * @return \Entidades\ZgadmLogradouroTipo 
+     */
+    public function getCodTipo()
+    {
+        return $this->codTipo;
     }
 }
