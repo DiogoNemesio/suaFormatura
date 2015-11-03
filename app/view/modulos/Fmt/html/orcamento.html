@@ -158,14 +158,18 @@ function orcSalva() {
 			data:	$('#zgFormOrcamentoID').serialize(),
 		}).done(function( data, textStatus, jqXHR) {
 			
+			if (checaRetornoOK(data) == true) {
+				zgMostraMsg('divMsgOrcID',"Orçamento salvo com sucesso !!!");
+			}else{
+				zgMostraErro('divMsgOrcID',zgGetMsgRetorno(data));
+			}
+
 			//Voltar o botão de salvar
 			$('#btnSubmitID').html('Salvar ');
 			$('#btnSubmitID').attr("disabled",false);
 			$('#cancel').attr("disabled",false);
-
-			zgMostraMsg('divMsgOrcID',"Orçamento salvo com sucesso !!!");
 		}).fail(function( jqXHR, textStatus, errorThrown) {
-			zgMostraAviso(null);
+			zgMostraErro('divMsgOrcID',errorThrown);
 		});
 		return false; 
 	});
