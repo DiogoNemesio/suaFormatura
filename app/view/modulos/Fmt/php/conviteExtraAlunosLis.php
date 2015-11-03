@@ -64,10 +64,16 @@ for ($i = 0; $i < sizeof($convExtra); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$convExtra[$i]->getCodFormando()->getCodigo().'&url='.$url);
 	
 	$itens		= $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findBy(array('codVenda' => $convExtra[$i]->getCodigo()), array());
+	$convVenda	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findBy(array('codFormando' => $convExtra[$i]->getCodFormando()->getCodigo()), array());
 	
-	$grid->setValorCelula($i, 1, count($convExtra) );
+	$valorTotal = null;
+	for ($ii = 0; $ii < sizeof($convVenda); $ii++) {
+		$valorTotal += $convVenda[$ii]->getValorTotal();
+	}
+	
+	$grid->setValorCelula($i, 1, count($convVenda) );
 	$grid->setValorCelula($i, 2, count($itens) );
-	$grid->setValorCelula($i, 3, count($convExtra) * $convExtra[$i]->getValorTotal() );
+	$grid->setValorCelula($i, 3, $valorTotal );
 	$grid->setUrlCelula($i, 4, ROOT_URL.'/Fmt/conviteExtraVendaLis.php?id='.$uid);
 }
 
@@ -96,7 +102,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
 $tpl->set('NOME'			,$tr->trans('Convite dos Formandos'));
-$tpl->set('URLADD'			,$urlVenda);
+$tpl->set('URLVENDA'		,$urlVenda);
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################
