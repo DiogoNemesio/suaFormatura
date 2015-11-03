@@ -1,0 +1,207 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Venda de Convites</h1>
+	</div><!-- /.page-header -->
+	<br />
+		
+	<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" id="codConvVendaID" name="codConvVenda" value="%COD_CONV_VENDA%">
+		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
+		<input type="hidden" id="valID" name="validado">
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group col-sm-12" id="divCodFormandoID">
+					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
+					<div class="input-group col-sm-6 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o formando."></i></span>
+						<select id="codFormandoID" name="codFormando" class="select2" data-placeholder="Selecione o formando" >
+							%COD_FORMANDO%
+						</select>
+					</div>
+					<div class="col-sm-1 pull-left" id="divHelpCodFormandoID"></div>
+				</div>
+				<div class="form-group col-sm-12" id="divCodFormaPagID">
+					<label for="codFormaPagID" class="col-xs-12 col-sm-5 control-label">Forma de Pagamento</label>
+					<div class="input-group col-sm-6 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a forma de pagamento."></i></span>
+						<select id="codFormaPagID" name="codFormaPag" class="select2" data-placeholder="Selecione a forma de pagamento" >
+							%COD_FORMA_PAG%
+						</select>
+					</div>
+					<div class="col-sm-1 pull-left" id="divHelpCodFormaPagID"></div>
+				</div>
+				<div class="form-group col-sm-12" id="divCodContaID">
+					<label for="codContaID" class="col-xs-12 col-sm-5 control-label">Conta Recebimento</label>
+					<div class="input-group col-sm-6 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a conta de recebimento."></i></span>
+						<select id="codContaID" name="codConta" class="select2" data-placeholder="Selecione a conta de recebimento" >
+							%COD_CONTA%
+						</select>
+					</div>
+					<div class="col-sm-1 pull-left" id="divHelpCodContaID"></div>
+				</div>
+		   	</div>
+
+			<div class="col-sm-6">
+				<table id="simple-table" class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>EVENTO</th>
+							<th>TAXA</th>
+							<th>VALOR</th>
+							<th>DATA CADASTRO</th>
+							<th>DISPONIVEL</th>
+							<th>QTD</th>
+						</tr>
+					</thead>
+					%HTML%
+				</table>
+			</div>
+			
+	    </div>
+	    <br>
+
+		<div class="clearfix form-actions">
+			<label class="col-sm-4 control-label">&nbsp;</label>
+			<button type="button" class="btn btn-primary" id="btnSubmitID">
+				<i class="fa fa-check bigger-110"></i> Salvar
+			</button>
+			<button type="button" class="btn btn-warning" id="cancel"
+				onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+				<i class="fa fa-undo bigger-110"></i> Voltar
+			</button>
+		</div>
+	</form>
+</div>
+<script>
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Mascaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Mensagens
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+
+// SELECT2
+$('.select2').css('width','100%').select2({allowClear:true});
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	var vOK 	= true;
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codConvVendaID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar",'Nova Venda', '%URLNOVO%');
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+/*
+orcAtualizaInfo();
+
+function orcAtualizaInfo() {
+	var $numFormando 		= $('#numFormandoID').val();
+	var $numConvidado 		= $('#numConvidadoID').val();
+	var $codVersaoOrc 		= $('#codVersaoOrcID').val();
+	var $dataConclusao		= $('#dataConclusaoID').val();
+	var $dataAnterior		= $('#dataAnteriorID').val();
+	var $mostraInfo			= 0;
+
+	
+	if ($numFormando && $numConvidado) {
+		$mostraInfo			= 1;
+
+		// Calculo dos nº de convidados
+		var $total				= parseInt($numFormando) * parseInt($numConvidado);
+		$('#orcNumConvidadoID').html("<span class=''>"+$total+" pessoas presentes</span>");
+	}else{
+		$('#orcNumConvidadoID').html("<span class=''>&nbsp;</span>");
+	}
+	
+	if ($dataConclusao) {
+		$mostraInfo			= 1;
+		
+		//alert("DataConc: "+$dataConclusao+" DataAnterior: "+$dataAnterior);
+		
+		if ($dataConclusao !== $dataAnterior) {
+			var $spIcon		= $('#spOrcIcNumMesesID');
+			
+			$spIcon.removeClass("hidden");
+			
+			$.ajax({
+				url: "%ROOT_URL%/Fin/getNumMesesAteData.dp.php",
+				data:  { dataRef: $dataConclusao},
+				async: false,
+				method: "POST",
+				success: function(data) {
+					var $meses	= data["MESES"];
+	
+					$meses		= parseInt($meses);
+					$('#spOrcInfoNumMesesID').html($meses+" meses previstos");
+					$('#dataAnteriorID').val($dataConclusao);
+					$('#numMesesID').val($meses);
+			    },
+				dataType: 'json'
+			});
+			
+			$spIcon.addClass("hidden");
+		}
+		
+	}
+	
+	/*if ($mostraInfo		== 1) {
+		$('#divInfoID').show();
+	}else{
+		$('#divInfoID').hide();
+	}*
+	
+}*/
+
+</script> 

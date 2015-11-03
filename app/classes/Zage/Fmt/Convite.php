@@ -81,7 +81,7 @@ class Convite {
 			->leftJoin('\Entidades\ZgfmtConviteExtraConf'	,'c',	\Doctrine\ORM\Query\Expr\Join::WITH, 'c.codigo 	= i.codConviteConf')
 			->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= c.codOrganizacao')
 			->where($qb->expr()->andx(
-					$qb->expr()->eq('o.codigo'				, ':codOrganizacao')		
+					$qb->expr()->eq('o.codigo'					, ':codOrganizacao')
 				)
 			)
 	
@@ -90,6 +90,40 @@ class Convite {
 			->groupBy('v.codFormando');
 			//->orderBy('r.codigo', 'ASC');
 			
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	/**
+	* Lista Configuracoes validas
+	*
+	* @param integer $codOrganizacao
+	* @return array
+	*/
+	public static function listaConviteAptaVenda() {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('c')
+			->from('\Entidades\ZgfmtConviteExtraConf','c')
+				->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= c.codOrganizacao')
+				->where($qb->expr()->andx(
+						$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
+						$qb->expr()->lte('c.dataInicioPresencial'	, ':now'),
+						$qb->expr()->gte('c.dataFimPresencial'	, ':now')
+				)
+			)
+	
+			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('now', new \DateTime("now"))
+				
+			->orderBy('c.codigo', 'ASC');
+				
 			$query 		= $qb->getQuery();
 			return($query->getResult());
 		} catch (\Exception $e) {

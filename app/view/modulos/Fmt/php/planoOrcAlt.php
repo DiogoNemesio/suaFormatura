@@ -97,7 +97,7 @@ try {
 #################################################################################
 ## Resgatar os dados dos valores
 #################################################################################
-$aOrcItem		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codVersao' => $codVersao, 'codGrupoItem' => $codEvento));
+$aOrcItem		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codPlano' => $codVersao, 'codGrupoItem' => $codEvento));
 $tabOrcamento	= "";
 
 for ($i = 0; $i < sizeof($aOrcItem); $i++) {
