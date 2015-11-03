@@ -39,14 +39,14 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata as variáveis postadas
 #################################################################################
-if (isset($_GET['codVersaoOrc'])) 		$codVersaoOrc			= \Zage\App\Util::antiInjection($_GET['codVersaoOrc']);
+if (isset($_GET['codPlanoOrc'])) 		$codPlanoOrc			= \Zage\App\Util::antiInjection($_GET['codPlanoOrc']);
 
-if (!isset($codVersaoOrc)) exit;
+if (!isset($codPlanoOrc)) exit;
 
 #################################################################################
 ## Resgatar os dados
 #################################################################################
-$itens		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codVersao' => $codVersaoOrc,'indAtivo' => 1));
+$itens		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codPlano' => $codPlanoOrc,'indAtivo' => 1));
 
 #################################################################################
 ## Verificar se o orçamento tem algum item

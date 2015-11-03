@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtPlanoOrcItem
  *
- * @ORM\Table(name="ZGFMT_PLANO_ORC_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_1_idx", columns={"COD_VERSAO"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_3_idx", columns={"COD_CATEGORIA"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_4_idx", columns={"COD_TIPO_ITEM"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_2_idx", columns={"COD_GRUPO_ITEM"})})
+ * @ORM\Table(name="ZGFMT_PLANO_ORC_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_1_idx", columns={"COD_PLANO"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_3_idx", columns={"COD_CATEGORIA"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_4_idx", columns={"COD_TIPO_ITEM"}), @ORM\Index(name="fk_ZGFMT_PLANO_ORC_ITEM_2_idx", columns={"COD_GRUPO_ITEM"})})
  * @ORM\Entity
  */
 class ZgfmtPlanoOrcItem
@@ -47,10 +47,10 @@ class ZgfmtPlanoOrcItem
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcamentario")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_VERSAO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_PLANO", referencedColumnName="CODIGO")
      * })
      */
-    private $codVersao;
+    private $codPlano;
 
     /**
      * @var \Entidades\ZgfmtPlanoOrcGrupoItem
@@ -163,26 +163,26 @@ class ZgfmtPlanoOrcItem
     }
 
     /**
-     * Set codVersao
+     * Set codPlano
      *
-     * @param \Entidades\ZgfmtPlanoOrcamentario $codVersao
+     * @param \Entidades\ZgfmtPlanoOrcamentario $codPlano
      * @return ZgfmtPlanoOrcItem
      */
-    public function setCodVersao(\Entidades\ZgfmtPlanoOrcamentario $codVersao = null)
+    public function setCodPlano(\Entidades\ZgfmtPlanoOrcamentario $codPlano = null)
     {
-        $this->codVersao = $codVersao;
+        $this->codPlano = $codPlano;
 
         return $this;
     }
 
     /**
-     * Get codVersao
+     * Get codPlano
      *
      * @return \Entidades\ZgfmtPlanoOrcamentario 
      */
-    public function getCodVersao()
+    public function getCodPlano()
     {
-        return $this->codVersao;
+        return $this->codPlano;
     }
 
     /**
