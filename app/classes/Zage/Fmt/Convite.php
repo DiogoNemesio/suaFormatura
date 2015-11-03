@@ -103,11 +103,12 @@ class Convite {
 	* @param integer $codOrganizacao
 	* @return array
 	*/
-	public static function listaConviteAptaVenda() {
-		global $em,$system;
+	public static function listaConviteAptoVenda() {
+		global $em,$system, $log;
 	
 		$qb 	= $em->createQueryBuilder();
-	
+		$hoje 	= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], date($system->config["data"]["dateFormat"]." 00:00:00"));
+		
 		try {
 			$qb->select('c')
 			->from('\Entidades\ZgfmtConviteExtraConf','c')
@@ -115,16 +116,17 @@ class Convite {
 				->where($qb->expr()->andx(
 						$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
 						$qb->expr()->lte('c.dataInicioPresencial'	, ':now'),
-						$qb->expr()->gte('c.dataFimPresencial'	, ':now')
+						$qb->expr()->gte('c.dataFimPresencial'		, ':now')
 				)
 			)
 	
 			->setParameter('codOrganizacao', $system->getCodOrganizacao())
-			->setParameter('now', new \DateTime("now"))
+			->setParameter('now', $hoje)
 				
 			->orderBy('c.codigo', 'ASC');
 				
 			$query 		= $qb->getQuery();
+			
 			return($query->getResult());
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());

@@ -48,12 +48,14 @@ for ($i = 0; $i < sizeof($info); $i++) {
 	$dataCadastro	 = ($info[$i]->getDataCadastro() != null) ? $info[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
 	$quantDisp		 = null;
 
-	$html .= "<tr><td>".$eventoDesc."<input type='hidden' name='codTipoEvento[".$i."]' value='".$codEvento."' ></td>
-				<td>".$taxaConv."<input type='hidden' name='taxaConv[".$i."]' value='".$taxaConv."' ></td>
-				<td>".$valor."<input type='hidden' name='valor[".$i."]' value='".$valor."' ></td>
-				<td>".$dataCadastro."</td><td>".$quantDisp."<input type='hidden' name='quantDisp[".$i."]' value='".$quantDisp."'></td>
-				<td><input type='text' name='quantConv[".$i."]' id='quantConv' value='0' size='2'><input type='hidden' name='codConvExtra[]' value='".$info[$i]->getCodigo()."'></td></tr>";
+	$html .= "<tr class=\"center\"><td>".$eventoDesc."<input type='hidden' name='codTipoEvento[".$i."]' value='".$codEvento."' ></td>
+				<td>".$valor."<input type='hidden' name='valor[]' value='".$valor."' ></td>
+				<td>".$quantDisp."<input type='hidden' name='quantDisp[".$i."]' value='".$quantDisp."'></td>
+				<td><input type='text' name='quantConv[]' id='quantConv' value='0' size='2' onchange='zgCalcularTotal();'></td>
+				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[".$i."]' value='0'><input type='hidden' name='codConvExtra[]' value='".$info[$i]->getCodigo()."'></td></tr>";
 }
+
+$html .= "<tr></td><td></td><td></td><td></td><td></td><td><div id='valorTotalID' name='valorTotal'>TOTAL: R$ 0,00</div></td>";
 
 ################################################################################
 # Select de Formando

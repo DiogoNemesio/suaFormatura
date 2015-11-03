@@ -44,21 +44,18 @@
 				</div>
 		   	</div>
 
-			<div class="col-sm-6">
-				<table id="simple-table" class="table table-striped table-bordered table-hover">
-					<thead>
-						<tr>
-							<th>EVENTO</th>
-							<th>TAXA</th>
-							<th>VALOR</th>
-							<th>DATA CADASTRO</th>
-							<th>DISPONIVEL</th>
-							<th>QTD</th>
-						</tr>
-					</thead>
-					%HTML%
-				</table>
-			</div>
+			<table id="layRegTableConviteID" class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th class="col-sm-3 center">EVENTO</th>
+						<th class="col-sm-3 center">VALOR</th>
+						<th class="col-sm-3 center">DISPONÍVEL</th>
+						<th class="col-sm-1 center">QUANTIDADE</th>
+						<th class="col-sm-1 center">TOTAL</th>
+					</tr>
+				</thead>
+				%HTML%
+			</table>
 			
 	    </div>
 	    <br>
@@ -143,6 +140,25 @@ $('#zgFormID').submit(function() {
 	});
 	return false; 
 });
+
+function zgCalcularTotal(){
+	var $valor		 = $("input[name='valor\\[\\]']");
+	var $quantConv   = $("input[name='quantConv\\[\\]']");
+	var $total		 = $("input[name='total\\[\\]']");
+	var vCount		 = 0;
+	var vValorTotal	 = 0;
+	
+	for (i = 0; i < $quantConv.length; i++) {
+		var $td		= $quantConv.eq(i).parent();
+		var $tr		= $td.parent();
+		
+		vCount = $quantConv.eq(i).val() * $valor.eq(i).val();
+		vValorTotal += vCount;
+		$tr.find('[zg-name="total"]').html("R$ " + vCount);
+	}
+	$('#valorTotalID').html("TOTAL: R$ " + vValorTotal);
+}
+
 /*
 orcAtualizaInfo();
 
