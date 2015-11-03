@@ -123,7 +123,12 @@ foreach ($aItens as $codTipo => $aItem)	{
 			$htmlForm	.= '<td class="col-sm-1 center"><i class="fa fa-close"></i></td>';
 			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\');"></td>';
 			$htmlForm	.= '<td class="col-sm-2"><span>Total:&nbsp;</span><span zg-total-item="1" id="total_'.$item["CODIGO"].'_ID">R$ 0,00</span></td>';
+			$htmlForm	.= '<td class="col-sm-1"><span style="cursor: pointer;" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i class="fa fa-commenting-o"><i></span></td>';
 			$htmlForm	.= '</tr>';
+			$htmlForm	.= '<tr class="hidden" id="trOrcObs_'.$item["CODIGO"].'_ID">';
+			$htmlForm	.= '<td colspan="7"><textarea name="aObs['.$item["CODIGO"].']" onchange="orcAlteraObs(\''.$item["CODIGO"].'\');"></textarea></td>';
+			$htmlForm	.= '</tr>';
+				
 			$tabIndex++;
 			
 		}

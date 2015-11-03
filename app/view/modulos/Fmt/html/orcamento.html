@@ -389,6 +389,29 @@ function orcAlteraSel($codigo) {
 
 }
 
+function orcAlteraObs($codigo) {
+	/**
+	 * Atualiza a flag de salvamento
+	 */
+	$('#indSalvoID').val(0);
+
+	/**
+	 * Controlar a ação dos botões 
+	 */
+	 orcAtualizaBotoes();
+
+}
+
+
+function orcHabilitaObs($codigo) {
+	var $oTr		= $('#trOrcObs_'+$codigo+'_ID');
+	
+	if ($oTr.hasClass( "hidden")) {
+		$oTr.removeClass("hidden");
+	}else{
+		$oTr.addClass("hidden");
+	}
+}
 
 function orcAtualizaTotalItem($codigo) {
 	var $oQtde	= $('input[zg-name="qtde"][zg-codigo="'+$codigo+'"]');
