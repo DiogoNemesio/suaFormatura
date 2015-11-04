@@ -36,11 +36,11 @@ class ZgadmContrato
     private $dataFim;
 
     /**
-     * @var \DateTime
+     * @var float
      *
-     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
+     * @ORM\Column(name="VALOR_CONTRATO", type="float", precision=10, scale=0, nullable=false)
      */
-    private $dataCadastro;
+    private $valorContrato;
 
     /**
      * @var float
@@ -55,6 +55,13 @@ class ZgadmContrato
      * @ORM\Column(name="VALOR_DESCONTO", type="float", precision=10, scale=0, nullable=true)
      */
     private $valorDesconto;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
+     */
+    private $dataCadastro;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -144,26 +151,26 @@ class ZgadmContrato
     }
 
     /**
-     * Set dataCadastro
+     * Set valorContrato
      *
-     * @param \DateTime $dataCadastro
+     * @param float $valorContrato
      * @return ZgadmContrato
      */
-    public function setDataCadastro($dataCadastro)
+    public function setValorContrato($valorContrato)
     {
-        $this->dataCadastro = $dataCadastro;
+        $this->valorContrato = $valorContrato;
 
         return $this;
     }
 
     /**
-     * Get dataCadastro
+     * Get valorContrato
      *
-     * @return \DateTime 
+     * @return float 
      */
-    public function getDataCadastro()
+    public function getValorContrato()
     {
-        return $this->dataCadastro;
+        return $this->valorContrato;
     }
 
     /**
@@ -210,6 +217,29 @@ class ZgadmContrato
     public function getValorDesconto()
     {
         return $this->valorDesconto;
+    }
+
+    /**
+     * Set dataCadastro
+     *
+     * @param \DateTime $dataCadastro
+     * @return ZgadmContrato
+     */
+    public function setDataCadastro($dataCadastro)
+    {
+        $this->dataCadastro = $dataCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCadastro
+     *
+     * @return \DateTime 
+     */
+    public function getDataCadastro()
+    {
+        return $this->dataCadastro;
     }
 
     /**

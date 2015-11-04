@@ -18,6 +18,10 @@ global $em,$log,$system;
 #################################################################################
 if (isset($_POST['codOrganizacao']))		$codOrganizacao			= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
 if (isset($_POST['codPlano']))				$codPlano				= \Zage\App\Util::antiInjection($_POST['codPlano']);
+if (isset($_POST['codFormaDesconto']))		$codFormaDesconto				= \Zage\App\Util::antiInjection($_POST['codFormaDesconto']);
+if (isset($_POST['valorDesconto']))			$valorDesconto				= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
+if (isset($_POST['pctDesconto']))			$pctDesconto				= \Zage\App\Util::antiInjection($_POST['pctDesconto']);
+
 
 $err	= null;
 
@@ -47,6 +51,26 @@ if (!isset($codPlano) || empty($codPlano)) {
 	}
 }
 
+/** DESCONTO **/
+if ($codFormaDesconto == V){
+	if (isset($valorDesconto) || !empty($valorDesconto)) {
+		$valorDesconto = \Zage\App\Util::toMysqlNumber($valorDesconto);
+		$pctDesconto = null;
+	}else{
+		$valorDesconto = null;
+		$pctDesconto = null;	
+	}
+}elseif ($codFormaDesconto == P){
+	if (isset($pctDesconto) || !empty($pctDesconto)) {
+		$pctDesconto 	=\Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctDesconto));
+		$valorDesconto 	= null;
+	}else{
+		$pctDesconto = null;
+		$valorDesconto = null;
+	}
+}
+
+
 if ($err) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
 	exit;
@@ -67,6 +91,8 @@ if (!$oOrgCer) {
 try {
 	$oOrgCer->setCodOrganizacao($oOrg);
 	$oOrgCer->setCodPlanoFormatura($oPlano);
+	$oOrgCer->setValorDesconto($valorDesconto);
+	$oOrgCer->setPctDesconto($pctDesconto);
 	$em->persist($oOrgCer);
 	
 	$em->flush();

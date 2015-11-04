@@ -47,9 +47,29 @@ try {
 	$oOrgCer	= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $codOrganizacao));
 	
 	if ($oOrgCer)	{
-		$codPlano	= ($oOrgCer->getCodPlanoFormatura()) ? $oOrgCer->getCodPlanoFormatura()->getCodigo() : null;
+		$codPlano		= ($oOrgCer->getCodPlanoFormatura()) ? $oOrgCer->getCodPlanoFormatura()->getCodigo() : null;
+		
+		if ($oOrgCer->getValorDesconto()){
+			$valorDesconto 		= \Zage\App\Util::formataDinheiro($oOrgCer->getValorDesconto());
+			$codFormaDesconto	= 'V';
+		}else{
+			$valorDesconto = null;
+		}
+		
+		
+		if ($oOrgCer->getPctDesconto()){
+			$pctDesconto 		= \Zage\App\Util::formataDinheiro($oOrgCer->getPctDesconto());
+			$codFormaDesconto 	= 'P';
+		}else{
+			$pctDesconto = null;
+		}
+		
+		
+		
 	}else{
-		$codPlano	= null;
+		$codPlano		= null;
+		$valorDescnto	= null;
+		$pctDesconto	= null;
 	}
 
 	
@@ -73,7 +93,7 @@ try {
 #################################################################################
 ## Urls
 #################################################################################
-$urlVoltar			= ROOT_URL . "/Fmt/parceiroLis.php?id=".$id;
+$urlVoltar			= ROOT_URL . "/Adm/parceiroLis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -89,6 +109,9 @@ $tpl->set('ID'						,$id);
 $tpl->set('COD_ORGANIZACAO'			,$codOrganizacao);
 $tpl->set('COD_PLANO'				,$codPlano);
 $tpl->set('PLANOS'					,$oPlanos);
+$tpl->set('VALOR_DESCONTO'			,$valorDesconto);
+$tpl->set('PCT_DESCONTO'			,$pctDesconto);
+$tpl->set('COD_FORMA_DESC'			,$codFormaDesconto);
 $tpl->set('URL_VOLTAR'				,$urlVoltar);
 $tpl->set('DP_MODAL'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 

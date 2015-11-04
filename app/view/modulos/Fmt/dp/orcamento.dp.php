@@ -28,7 +28,7 @@ if (isset($_POST['aQtde'])) 			$aQtde				= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['aValor'])) 			$aValor				= \Zage\App\Util::antiInjection($_POST['aValor']);
 if (isset($_POST['aObs'])) 				$aObs				= \Zage\App\Util::antiInjection($_POST['aObs']);
 
-
+$log->info("POST ORC: ".serialize($_POST));
 
 #################################################################################
 ## Verificar parâmetro obrigatório
@@ -42,6 +42,13 @@ if (!is_array($codItemSel)) \Zage\App\Erro::halt('Parâmetros incorretos');
 if (!is_array($aQtde) 			|| sizeof($aQtde) 		< 1)  \Zage\App\Erro::halt('Parâmetro 2 incorreto');
 if (!is_array($aValor) 			|| sizeof($aValor) 		< 1)  \Zage\App\Erro::halt('Parâmetro 3 incorreto');
 if (!is_array($aObs) 			|| sizeof($aObs) 		< 1)  \Zage\App\Erro::halt('Parâmetro 4 incorreto');
+
+
+#################################################################################
+## Formatar os campos
+#################################################################################
+$taxaSistema			= \Zage\App\Util::to_float($taxaSistema);
+$numMeses				= (int) $numMeses;
 
 #################################################################################
 ## Fazer validação dos campos
@@ -65,6 +72,18 @@ if (!isset($codPlanoOrc) || (empty($codPlanoOrc))) {
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Selecione um Plano de Orçamento existente"))));
 	}
 }
+
+/******* Data de Conclusão *********/
+if (\Zage\App\Util::validaData($dataConclusao, $system->config["data"]["dateFormat"]) == false) {
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Data de conclusão inválida"))));
+}
+
+/******* Indicador de aceite *********/
+if (isset($indAceite) || $indAceite) {
+	$indAceite		= 1;
+}else{
+	$indAceite		= 0;
+}
  
 #################################################################################
 ## Salvar no banco
@@ -75,12 +94,13 @@ try {
 	$oDataConc		= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataConclusao);
 	$ultVersao		= \Zage\Fmt\Orcamento::getUltimoNumeroVersao($system->getCodOrganizacao());
 	$versao			= ($ultVersao) ? ($ultVersao + 1) : 1;
+	$log->info("Versão: ".$versao);
 	
 	$oOrc			= new \Entidades\ZgfmtOrcamento();
 	$oOrc->setCodOrganizacao($oOrganizacao);
 	$oOrc->setCodPlanoOrc($oPlanoOrc);
 	$oOrc->setCodUsuario($oUser);
-	$oOrc->setDataCadastro(new \DateTime());
+	$oOrc->setDataCadastro(new \DateTime("now"));
 	$oOrc->setDataConclusao($oDataConc);
 	$oOrc->setIndAceite($indAceite);
 	$oOrc->setNumMeses($numMeses);
@@ -96,13 +116,15 @@ try {
  	#################################################################################
  	foreach ($codItemSel as $codItem => $item) {
  		$oItem			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findOneBy(array('codigo' => $codItem));
+ 		$valor			= \Zage\App\Util::to_float($aValor[$codItem]);
+ 		$qtde			= (int) $aQtde[$codItem];
  		$oOrcItem		= new \Entidades\ZgfmtOrcamentoItem();
  		$oOrcItem->setCodItem($oItem);
  		$oOrcItem->setCodOrcamento($oOrc);
  		$oOrcItem->setIndHabilitado(1);
  		$oOrcItem->setObservacao($aObs[$codItem]);
- 		$oOrcItem->setQuantidade($aQtde[$codItem]);
- 		$oOrcItem->setValorUnitario($aValor[$codItem]);
+ 		$oOrcItem->setQuantidade($qtde);
+ 		$oOrcItem->setValorUnitario($valor);
  		$em->persist($oOrcItem);
  	}
  	
@@ -110,17 +132,13 @@ try {
 	#################################################################################
  	## Salvar as informações
  	#################################################################################
- 	try {
- 		$em->flush();
- 		$em->clear();
- 	} catch (Exception $e) {
- 		$log->err("Erro ao salvar o Organização:". $e->getTraceAsString());
- 		throw new \Exception("Erro ao salvar o Orçamento. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
- 	}
- 	
+	$em->flush();
+	$em->clear();
  	
 } catch (\Exception $e) {
- 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+ 	$log->err("Erro ao salvar o Orçamento:". $e->getTraceAsString());
+ 	//throw new \Exception("Erro ao salvar o Orçamento. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;
 }
  

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrcamento
  *
- * @ORM\Table(name="ZGFMT_ORCAMENTO", indexes={@ORM\Index(name="fk_ZGFMT_ORCAMENTO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_2_idx", columns={"COD_PLANO_VERSAO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_3_idx", columns={"COD_USUARIO"})})
+ * @ORM\Table(name="ZGFMT_ORCAMENTO", indexes={@ORM\Index(name="fk_ZGFMT_ORCAMENTO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_2_idx", columns={"COD_PLANO_ORC"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_3_idx", columns={"COD_USUARIO"})})
  * @ORM\Entity
  */
 class ZgfmtOrcamento
@@ -64,6 +64,20 @@ class ZgfmtOrcamento
     private $indAceite;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="NUM_MESES", type="integer", nullable=true)
+     */
+    private $numMeses;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="TAXA_SISTEMA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $taxaSistema;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -78,10 +92,10 @@ class ZgfmtOrcamento
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcamentario")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PLANO_VERSAO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_PLANO_ORC", referencedColumnName="CODIGO")
      * })
      */
-    private $codPlanoVersao;
+    private $codPlanoOrc;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -243,6 +257,52 @@ class ZgfmtOrcamento
     }
 
     /**
+     * Set numMeses
+     *
+     * @param integer $numMeses
+     * @return ZgfmtOrcamento
+     */
+    public function setNumMeses($numMeses)
+    {
+        $this->numMeses = $numMeses;
+
+        return $this;
+    }
+
+    /**
+     * Get numMeses
+     *
+     * @return integer 
+     */
+    public function getNumMeses()
+    {
+        return $this->numMeses;
+    }
+
+    /**
+     * Set taxaSistema
+     *
+     * @param float $taxaSistema
+     * @return ZgfmtOrcamento
+     */
+    public function setTaxaSistema($taxaSistema)
+    {
+        $this->taxaSistema = $taxaSistema;
+
+        return $this;
+    }
+
+    /**
+     * Get taxaSistema
+     *
+     * @return float 
+     */
+    public function getTaxaSistema()
+    {
+        return $this->taxaSistema;
+    }
+
+    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -266,26 +326,26 @@ class ZgfmtOrcamento
     }
 
     /**
-     * Set codPlanoVersao
+     * Set codPlanoOrc
      *
-     * @param \Entidades\ZgfmtPlanoOrcamentario $codPlanoVersao
+     * @param \Entidades\ZgfmtPlanoOrcamentario $codPlanoOrc
      * @return ZgfmtOrcamento
      */
-    public function setCodPlanoVersao(\Entidades\ZgfmtPlanoOrcamentario $codPlanoVersao = null)
+    public function setCodPlanoOrc(\Entidades\ZgfmtPlanoOrcamentario $codPlanoOrc = null)
     {
-        $this->codPlanoVersao = $codPlanoVersao;
+        $this->codPlanoOrc = $codPlanoOrc;
 
         return $this;
     }
 
     /**
-     * Get codPlanoVersao
+     * Get codPlanoOrc
      *
      * @return \Entidades\ZgfmtPlanoOrcamentario 
      */
-    public function getCodPlanoVersao()
+    public function getCodPlanoOrc()
     {
-        return $this->codPlanoVersao;
+        return $this->codPlanoOrc;
     }
 
     /**
