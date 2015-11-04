@@ -245,6 +245,17 @@ class Util {
 		return(number_format($valor,2,',',''));
 	}
 	
+	/**
+	 * Retornar um float para JS / Jquery
+	 *
+	 * @param number
+	 * @return float
+	 */
+	public static function formataFloatJquery($n) {
+		$valor		= self::to_float($n);
+		return(number_format($valor,2,'.',''));
+	}
+	
 	
 	/**
 	 * Retornar um número transformado em float
