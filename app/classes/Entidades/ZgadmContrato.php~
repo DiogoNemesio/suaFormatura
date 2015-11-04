@@ -38,9 +38,9 @@ class ZgadmContrato
     /**
      * @var float
      *
-     * @ORM\Column(name="VALOR_CONTRATO", type="float", precision=10, scale=0, nullable=false)
+     * @ORM\Column(name="VALOR_PLANO", type="float", precision=10, scale=0, nullable=false)
      */
-    private $valorContrato;
+    private $valorPlano;
 
     /**
      * @var float
@@ -151,26 +151,26 @@ class ZgadmContrato
     }
 
     /**
-     * Set valorContrato
+     * Set valorPlano
      *
-     * @param float $valorContrato
+     * @param float $valorPlano
      * @return ZgadmContrato
      */
-    public function setValorContrato($valorContrato)
+    public function setValorPlano($valorPlano)
     {
-        $this->valorContrato = $valorContrato;
+        $this->valorPlano = $valorPlano;
 
         return $this;
     }
 
     /**
-     * Get valorContrato
+     * Get valorPlano
      *
      * @return float 
      */
-    public function getValorContrato()
+    public function getValorPlano()
     {
-        return $this->valorContrato;
+        return $this->valorPlano;
     }
 
     /**
