@@ -78,16 +78,6 @@ class ZgfmtOrcamento
     private $taxaSistema;
 
     /**
-     * @var \Entidades\ZgfmtPlanoOrcamentario
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcamentario")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PLANO_ORC", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPlanoOrc;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -96,6 +86,16 @@ class ZgfmtOrcamento
      * })
      */
     private $codOrganizacao;
+
+    /**
+     * @var \Entidades\ZgfmtPlanoOrcamentario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcamentario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PLANO_ORC", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPlanoOrc;
 
     /**
      * @var \Entidades\ZgsegUsuario
@@ -303,29 +303,6 @@ class ZgfmtOrcamento
     }
 
     /**
-     * Set codPlanoOrc
-     *
-     * @param \Entidades\ZgfmtPlanoOrcamentario $codPlanoOrc
-     * @return ZgfmtOrcamento
-     */
-    public function setCodPlanoOrc(\Entidades\ZgfmtPlanoOrcamentario $codPlanoOrc = null)
-    {
-        $this->codPlanoOrc = $codPlanoOrc;
-
-        return $this;
-    }
-
-    /**
-     * Get codPlanoOrc
-     *
-     * @return \Entidades\ZgfmtPlanoOrcamentario 
-     */
-    public function getCodPlanoOrc()
-    {
-        return $this->codPlanoOrc;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -346,6 +323,29 @@ class ZgfmtOrcamento
     public function getCodOrganizacao()
     {
         return $this->codOrganizacao;
+    }
+
+    /**
+     * Set codPlanoOrc
+     *
+     * @param \Entidades\ZgfmtPlanoOrcamentario $codPlanoOrc
+     * @return ZgfmtOrcamento
+     */
+    public function setCodPlanoOrc(\Entidades\ZgfmtPlanoOrcamentario $codPlanoOrc = null)
+    {
+        $this->codPlanoOrc = $codPlanoOrc;
+
+        return $this;
+    }
+
+    /**
+     * Get codPlanoOrc
+     *
+     * @return \Entidades\ZgfmtPlanoOrcamentario 
+     */
+    public function getCodPlanoOrc()
+    {
+        return $this->codPlanoOrc;
     }
 
     /**

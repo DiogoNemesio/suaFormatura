@@ -223,8 +223,17 @@ try {
 		$oContrato->setCodStatus($oStatusContrato);
 	}
 	
+	$planoValor		= $em->getRepository('\Entidades\ZgadmPlanoValor')->findOneBy(array('codPlano' => $codPlano),array('dataBase' => 'DESC'));
+	$oOrgCer		= $em->getRepository('\Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	
+	if ($oOrgCer){
+		$pctDesconto 	= $oOrgCer->getPctDesconto();
+		$valorDesconto 	= $oOrgCer->getValorDesconto();
+	}
+	
 	$oContrato->setCodOrganizacao($oOrganizacao);
 	$oContrato->setCodPlano($oPlano);
+	$oContrato->setValorPlano($planoValor->getValor());
 	$oContrato->setPctDesconto($pctDesconto);
 	$oContrato->setValorDesconto($valorDesconto);
 	$em->persist($oContrato);

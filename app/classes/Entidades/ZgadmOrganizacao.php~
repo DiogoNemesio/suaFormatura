@@ -162,16 +162,6 @@ class ZgadmOrganizacao
     private $observacaoCancelamento;
 
     /**
-     * @var \Entidades\ZgadmOrganizacao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_REPRESENTANTE", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codRepresentante;
-
-    /**
      * @var \Entidades\ZgadmOrganizacaoPessoaTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoPessoaTipo")
@@ -230,6 +220,16 @@ class ZgadmOrganizacao
      * })
      */
     private $codMotivoCancelamento;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_REPRESENTANTE", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codRepresentante;
 
 
     /**
@@ -703,29 +703,6 @@ class ZgadmOrganizacao
     }
 
     /**
-     * Set codRepresentante
-     *
-     * @param \Entidades\ZgadmOrganizacao $codRepresentante
-     * @return ZgadmOrganizacao
-     */
-    public function setCodRepresentante(\Entidades\ZgadmOrganizacao $codRepresentante = null)
-    {
-        $this->codRepresentante = $codRepresentante;
-
-        return $this;
-    }
-
-    /**
-     * Get codRepresentante
-     *
-     * @return \Entidades\ZgadmOrganizacao 
-     */
-    public function getCodRepresentante()
-    {
-        return $this->codRepresentante;
-    }
-
-    /**
      * Set codTipoPessoa
      *
      * @param \Entidades\ZgadmOrganizacaoPessoaTipo $codTipoPessoa
@@ -861,5 +838,28 @@ class ZgadmOrganizacao
     public function getCodMotivoCancelamento()
     {
         return $this->codMotivoCancelamento;
+    }
+
+    /**
+     * Set codRepresentante
+     *
+     * @param \Entidades\ZgadmOrganizacao $codRepresentante
+     * @return ZgadmOrganizacao
+     */
+    public function setCodRepresentante(\Entidades\ZgadmOrganizacao $codRepresentante = null)
+    {
+        $this->codRepresentante = $codRepresentante;
+
+        return $this;
+    }
+
+    /**
+     * Get codRepresentante
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodRepresentante()
+    {
+        return $this->codRepresentante;
     }
 }
