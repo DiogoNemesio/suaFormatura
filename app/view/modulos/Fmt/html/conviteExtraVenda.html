@@ -16,7 +16,7 @@
 					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o formando."></i></span>
-						<select id="codFormandoID" name="codFormando" class="select2" data-placeholder="Selecione o formando" >
+						<select id="codFormandoID" name="codFormando" class="select2" data-placeholder="Selecione o formando" onchange="zgConviteDisponivel();" >
 							%COD_FORMANDO%
 						</select>
 					</div>
@@ -44,7 +44,7 @@
 				</div>
 		   	</div>
 
-			<table id="layRegTableConviteID" class="table table-striped table-bordered table-hover">
+			<!-- <table id="layRegTableConviteID" class="table table-striped table-bordered table-hover">
 				<thead>
 					<tr>
 						<th class="col-sm-3 center">EVENTO</th>
@@ -55,8 +55,9 @@
 					</tr>
 				</thead>
 				%HTML%
-			</table>
+			</table>-->
 			
+			<div id="divConvitesID"></div>
 	    </div>
 	    <br>
 
@@ -90,7 +91,7 @@ $('.select2').css('width','100%').select2({allowClear:true});
 SUBMIT FORMULARIO
 /******************************************************/
 $('#btnSubmitID').on("click", function(e) {
-	var vOK 	= true;
+	var vOK 	= zgValidaQuantDisp();
 	
 	if(vOK == false) 	{
 		$.gritter.add({
@@ -157,6 +158,72 @@ function zgCalcularTotal(){
 		$tr.find('[zg-name="total"]').html("R$ " + vCount);
 	}
 	$('#valorTotalID').html("TOTAL: R$ " + vValorTotal);
+}
+
+zgConviteDisponivel();
+function zgConviteDisponivel(){
+	var codFormando  = $('#codFormandoID').val();
+	$('#divConvitesID').load("%ROOT_URL%/Fmt/divConvitesDisp.php?id=%ID%&codFormando=" + codFormando);
+}
+
+function zgValidaQuantDisp(){
+	var vFormando 		= $('#codFormandoID').val();
+	var vFormaPag 		= $('#codFormaPagID').val();
+	var vConta		 	= $('#codContaID').val();
+	var $quantConv  	= $("input[name='quantConv\\[\\]']");
+	var $quantDisp  	= $("input[name='quantDisp\\[\\]']");
+	vOK					= true;
+	
+	if (!vFormando) {
+		$('#divCodFormandoID').addClass('has-error');
+		$('#divHelpCodFormandoID').html(zgCriaSpanErro('Formando deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divCodFormandoID').removeClass('has-error');
+		$('#divHelpCodFormandoID').html('&nbsp;');		
+	}
+	
+	if (!vFormaPag) {
+		$('#divCodFormaPagID').addClass('has-error');
+		$('#divHelpCodFormaPagID').html(zgCriaSpanErro('Forma de Pagamento deve ser preenchida !!'));
+		vOK		= false;
+	}else{
+		$('#divCodFormaPagID').removeClass('has-error');
+		$('#divHelpCodFormaPagID').html('&nbsp;');		
+	}
+	
+	if (!vConta) {
+		$('#divCodContaID').addClass('has-error');
+		$('#divHelpCodContaID').html(zgCriaSpanErro('Conta recebimento deve ser preenchida !!'));
+		vOK		= false;
+	}else{
+		$('#divCodContaID').removeClass('has-error');
+		$('#divHelpCodContaID').html('&nbsp;');		
+	}
+	
+	for (i = 0; i < $quantConv.length; i++) {
+		var $td		= $quantConv.eq(i).parent();
+		var $tr		= $td.parent();
+		
+		//$tr.find('[zg-name="total"]').html("R$ " + vCount);
+		
+		if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Quantidade da compra deve ser menor ou igual a disponível"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}
+		
+	}
+	
+
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
 }
 
 /*

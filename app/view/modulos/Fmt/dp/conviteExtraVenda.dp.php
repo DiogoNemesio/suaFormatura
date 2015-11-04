@@ -22,6 +22,7 @@ if (isset($_POST['taxaConv']))			$taxaConv			= \Zage\App\Util::antiInjection($_P
 if (isset($_POST['valor']))				$valor				= \Zage\App\Util::antiInjection($_POST['valor']);
 if (isset($_POST['quantDisp']))			$quantDisp			= \Zage\App\Util::antiInjection($_POST['quantDisp']);
 if (isset($_POST['quantConv']))			$quantConv			= \Zage\App\Util::antiInjection($_POST['quantConv']);
+if (isset($_POST['codTipoEvento']))		$codEvento			= \Zage\App\Util::antiInjection($_POST['codTipoEvento']);
 
 if (!isset($codConvExtra))				$codConvExtra		= array();
 if (!isset($codTipoEvento))				$codTipoEvento		= array();
@@ -29,6 +30,7 @@ if (!isset($taxaConv))					$taxaConv			= array();
 if (!isset($valor))						$valor				= array();
 if (!isset($quantDisp))					$quantDisp			= array();
 if (!isset($quantConv))					$quantConv			= array();
+if (!isset($codEvento))					$codEvento			= array();
 
 #################################################################################
 ## Limpar a variável de erro
@@ -48,7 +50,7 @@ if (!isset($codFormaPag) || empty($codFormaPag)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a forma de pagamento.");
 	$err	= 1;
 }
-
+	
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  	exit;
@@ -76,6 +78,22 @@ try {
 
 	for ($i = 0; $i < sizeof($codConvExtra); $i++) {
 		$valorTotal += $quantConv[$i] * $valor[$i];
+		
+
+		if (isset($quantConv) || !empty($quantConv)) {
+			$convDis	= \Zage\Fmt\Convite::listaConviteDispFormando($codFormando, $codEvento[$i]);
+			if(empty($convDis) && $convDis != 0) {
+				$oConf = $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codTipoEvento' => $codEvento));
+				$convDis = $oConf->getQtdeMaxAluno();
+			}
+			
+			$validador = $convDis - $quantConv[$i];
+			if($validador < 0){
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Quantidade não pode ser maior que a disponível.");
+				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
+ 				exit;
+			}
+		}
 	}
 	
 	#################################################################################

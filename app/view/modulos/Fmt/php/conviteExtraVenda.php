@@ -35,7 +35,7 @@ $system->checaPermissao ( $_codMenu_ );
 # Resgata as informações do banco
 ################################################################################
 try {
-	$info = \Zage\Fmt\Convite::listaConviteAptaVenda();
+	$info = \Zage\Fmt\Convite::listaConviteAptoVenda();
 } catch ( \Exception $e ) {
 	\Zage\App\Erro::halt ( $e->getMessage () );
 }
@@ -46,11 +46,10 @@ for ($i = 0; $i < sizeof($info); $i++) {
 	$taxaConv		 = ($info[$i]->getTaxaConveniencia()) ? $info[$i]->getTaxaConveniencia() : null;
 	$valor			 = ($info[$i]->getValor()) ? $info[$i]->getValor() : null;
 	$dataCadastro	 = ($info[$i]->getDataCadastro() != null) ? $info[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
-	$quantDisp		 = null;
 
 	$html .= "<tr class=\"center\"><td>".$eventoDesc."<input type='hidden' name='codTipoEvento[".$i."]' value='".$codEvento."' ></td>
 				<td>".$valor."<input type='hidden' name='valor[]' value='".$valor."' ></td>
-				<td>".$quantDisp."<input type='hidden' name='quantDisp[".$i."]' value='".$quantDisp."'></td>
+				<td><div name='quantDisp[]' zg-name=\"quantDisp\"></div></td>
 				<td><input type='text' name='quantConv[]' id='quantConv' value='0' size='2' onchange='zgCalcularTotal();'></td>
 				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[".$i."]' value='0'><input type='hidden' name='codConvExtra[]' value='".$info[$i]->getCodigo()."'></td></tr>";
 }
