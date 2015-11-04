@@ -82,7 +82,7 @@ try {
 
 		if (isset($quantConv) || !empty($quantConv)) {
 			$convDis	= \Zage\Fmt\Convite::listaConviteDispFormando($codFormando, $codEvento[$i]);
-			if(empty($convDis) && $convDis != 0) {
+			if(empty($convDis) || $convDis == 0) {
 				$oConf = $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codTipoEvento' => $codEvento));
 				$convDis = $oConf->getQtdeMaxAluno();
 			}
