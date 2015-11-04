@@ -27,43 +27,6 @@ class Convite {
 	}
 	
 	/**
-	 * Lista de rifas aptas para venda
-	 *
-	 * @param integer $codOrganizacao
-	 * @return array
-	 */
-	public static function listaRifaAptaVenda() {
-		global $em,$system;
-	
-		$qb 	= $em->createQueryBuilder();
-	
-		try {
-			$qb->select('r')
-			->from('\Entidades\ZgfmtRifa','r')
-			->leftJoin('\Entidades\ZgadmOrganizacao'	,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= r.codOrganizacao')
-			->where($qb->expr()->andx(
-							$qb->expr()->eq('o.codigo'				, ':codOrganizacao'),
-							$qb->expr()->eq('r.indRifaEletronica'	, ':indRifaEletronica'),
-							$qb->expr()->eq('r.indRifaGerada'		, ':indRifaEletronica'),
-							$qb->expr()->gte('r.dataSorteio'		, ':now')
-					)
-			)
-	
-			->setParameter('codOrganizacao', $system->getCodOrganizacao())
-			->setParameter('indRifaEletronica', '1')
-			
-			->setParameter('now', new \DateTime("now"))
-				
-			->orderBy('r.dataSorteio', 'DESC');
-	
-			$query 		= $qb->getQuery();
-			return($query->getResult());
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
-		}
-	}
-	
-	/**
 	 * Lista vendas por formando
 	 *
 	 * @param integer $codOrganizacao

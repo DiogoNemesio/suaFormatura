@@ -48,16 +48,15 @@ try {
 	\Zage\App\Erro::halt ( $e->getMessage () );
 }
 
-echo '
-<table id="layRegTableConviteID" class="table table-striped table-bordered table-hover">
+echo '<table id="layRegTableConviteID" class="table table-striped table-bordered table-hover">
 <thead>
 <tr>
 <th class="col-sm-1 center"></th>
 <th class="col-sm-3 center">EVENTO</th>
 <th class="col-sm-3 center">VALOR</th>
-<th class="col-sm-3 center">DISPONÍVEL</th>
+<th class="col-sm-1 center">DISPONÍVEL</th>
 <th class="col-sm-1 center">QUANTIDADE</th>
-<th class="col-sm-1 center">TOTAL</th>
+<th class="col-sm-2 center">TOTAL</th>
 </tr>
 </thead>';
 
@@ -71,7 +70,7 @@ for ($i = 0; $i < sizeof($info); $i++) {
 	
 	if (isset($codFormando) && !empty($codFormando)) {
 		$convDis	= \Zage\Fmt\Convite::listaConviteDispFormando($codFormando, $codEvento);
-		$log->debug($convDis);
+
 		if(empty($convDis) || $convDis == 0) {
 			$oConf = $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codTipoEvento' => $codEvento));
 			$convDis = $oConf->getQtdeMaxAluno();

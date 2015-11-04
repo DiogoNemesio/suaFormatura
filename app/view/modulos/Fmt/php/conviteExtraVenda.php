@@ -32,35 +32,10 @@ if (isset ( $_GET ['id'] )) {
 $system->checaPermissao ( $_codMenu_ );
 
 ################################################################################
-# Resgata as informações do banco
-################################################################################
-try {
-	$info = \Zage\Fmt\Convite::listaConviteAptoVenda();
-} catch ( \Exception $e ) {
-	\Zage\App\Erro::halt ( $e->getMessage () );
-}
-
-for ($i = 0; $i < sizeof($info); $i++) {
-	$codEvento		 = ($info[$i]->getCodTipoEvento()) ? $info[$i]->getCodTipoEvento()->getCodigo() : null;
-	$eventoDesc		 = ($info[$i]->getCodTipoEvento()) ? $info[$i]->getCodTipoEvento()->getDescricao() : null;
-	$taxaConv		 = ($info[$i]->getTaxaConveniencia()) ? $info[$i]->getTaxaConveniencia() : null;
-	$valor			 = ($info[$i]->getValor()) ? $info[$i]->getValor() : null;
-	$dataCadastro	 = ($info[$i]->getDataCadastro() != null) ? $info[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
-
-	$html .= "<tr class=\"center\"><td>".$eventoDesc."<input type='hidden' name='codTipoEvento[".$i."]' value='".$codEvento."' ></td>
-				<td>".$valor."<input type='hidden' name='valor[]' value='".$valor."' ></td>
-				<td><div name='quantDisp[]' zg-name=\"quantDisp\"></div></td>
-				<td><input type='text' name='quantConv[]' id='quantConv' value='0' size='2' onchange='zgCalcularTotal();'></td>
-				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[".$i."]' value='0'><input type='hidden' name='codConvExtra[]' value='".$info[$i]->getCodigo()."'></td></tr>";
-}
-
-$html .= "<tr></td><td></td><td></td><td></td><td></td><td><div id='valorTotalID' name='valorTotal'>TOTAL: R$ 0,00</div></td>";
-
-################################################################################
 # Select de Formando
 ################################################################################
 try {
-	$aFormando = $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('indAtivo' => 1),array('nome' => 'ASC'));
+	$aFormando = $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codTipoPessoa' => 'O','indAtivo' => 1),array('nome' => 'ASC'));
 	$oFormando = $system->geraHtmlCombo($aFormando, 'CODIGO', 'NOME', $codFormando, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -114,8 +89,8 @@ $tpl->set ( 'COD_CONV_VENDA'	   , $codConvVenda);
 $tpl->set ( 'COD_FORMANDO'	   	   , $oFormando);
 $tpl->set ( 'COD_FORMA_PAG'	   	   , $oFormaPag);
 $tpl->set ( 'COD_CONTA'	   		   , $oConta);
-$tpl->set ( 'HTML'			   	   , $html);
 
+$tpl->set ( 'IC'				   ,$_icone_);
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 
 ################################################################################

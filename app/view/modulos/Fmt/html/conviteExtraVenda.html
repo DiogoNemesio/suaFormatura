@@ -1,6 +1,9 @@
 <div id="content">
 	<div class="page-header">
-	<h1>Venda de Convites</h1>
+	<h1><i class="%IC%">&nbsp;</i>Venda de Convites
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
 	</div><!-- /.page-header -->
 	<br />
 		
@@ -44,20 +47,9 @@
 				</div>
 		   	</div>
 
-			<!-- <table id="layRegTableConviteID" class="table table-striped table-bordered table-hover">
-				<thead>
-					<tr>
-						<th class="col-sm-3 center">EVENTO</th>
-						<th class="col-sm-3 center">VALOR</th>
-						<th class="col-sm-3 center">DISPONÍVEL</th>
-						<th class="col-sm-1 center">QUANTIDADE</th>
-						<th class="col-sm-1 center">TOTAL</th>
-					</tr>
-				</thead>
-				%HTML%
-			</table>-->
-			
-			<div id="divConvitesID"></div>
+			<div class="col-sm-9 col-sm-offset-1">
+				<div id="divConvitesID"></div>
+			</div>
 	    </div>
 	    <br>
 
@@ -91,7 +83,7 @@ $('.select2').css('width','100%').select2({allowClear:true});
 SUBMIT FORMULARIO
 /******************************************************/
 $('#btnSubmitID').on("click", function(e) {
-	var vOK 	= zgValidaQuantDisp();
+	var vOK 	= zgCheckConvite();
 	
 	if(vOK == false) 	{
 		$.gritter.add({
@@ -158,20 +150,46 @@ function zgCalcularTotal(){
 		$tr.find('[zg-name="total"]').html("R$ " + vCount);
 	}
 	$('#valorTotalID').html("TOTAL: R$ " + vValorTotal);
+	
+	if (zgValidaQuantDisp() == false){
+		return false;
+	}
 }
 
-zgConviteDisponivel();
 function zgConviteDisponivel(){
 	var codFormando  = $('#codFormandoID').val();
-	$('#divConvitesID').load("%ROOT_URL%/Fmt/divConvitesDisp.php?id=%ID%&codFormando=" + codFormando);
+	if(codFormando){
+		$('#divConvitesID').html('<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+		$('#divConvitesID').load("%ROOT_URL%/Fmt/divConvitesDisp.php?id=%ID%&codFormando=" + codFormando);
+	}else{
+		$('#divConvitesID').html('');
+	}
 }
 
 function zgValidaQuantDisp(){
+	var $quantConv  	= $("input[name='quantConv\\[\\]']");
+	var $quantDisp  	= $("input[name='quantDisp\\[\\]']");
+	
+	for (i = 0; i < $quantConv.length; i++) {
+		var $td		= $quantConv.eq(i).parent();
+		var $tr		= $td.parent();
+		
+		if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Quantidade da compra deve ser menor ou igual a disponível"));
+			$tr.addClass("alert-danger");
+			vOK		= false;
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}
+	}
+}
+
+function zgCheckConvite(){
 	var vFormando 		= $('#codFormandoID').val();
 	var vFormaPag 		= $('#codFormaPagID').val();
 	var vConta		 	= $('#codContaID').val();
-	var $quantConv  	= $("input[name='quantConv\\[\\]']");
-	var $quantDisp  	= $("input[name='quantDisp\\[\\]']");
+	
 	vOK					= true;
 	
 	if (!vFormando) {
@@ -201,24 +219,10 @@ function zgValidaQuantDisp(){
 		$('#divHelpCodContaID').html('&nbsp;');		
 	}
 	
-	for (i = 0; i < $quantConv.length; i++) {
-		var $td		= $quantConv.eq(i).parent();
-		var $tr		= $td.parent();
-		
-		//$tr.find('[zg-name="total"]').html("R$ " + vCount);
-		
-		if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Quantidade da compra deve ser menor ou igual a disponível"));
-			$tr.addClass("alert-danger");
-			vOK		= false;
-		}else{
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
-			$tr.removeClass("alert-danger");
-		}
-		
+	if (zgValidaQuantDisp() == false){
+		vOK = false;
 	}
 	
-
 	if (vOK == true) {
 		return true ;
 	}else{
