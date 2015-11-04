@@ -35,7 +35,7 @@ $system->checaPermissao ( $_codMenu_ );
 # Resgata as informações do banco
 ################################################################################
 try {
-	$info = \Zage\Fmt\Convite::listaConviteAptaVenda();
+	$info = \Zage\Fmt\Convite::listaConviteAptoVenda();
 } catch ( \Exception $e ) {
 	\Zage\App\Erro::halt ( $e->getMessage () );
 }
