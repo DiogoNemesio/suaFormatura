@@ -22,6 +22,20 @@ class ZgfmtOrganizacaoCerimonial
     private $codigo;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_DESCONTO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorDesconto;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_DESCONTO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctDesconto;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -50,6 +64,52 @@ class ZgfmtOrganizacaoCerimonial
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set valorDesconto
+     *
+     * @param float $valorDesconto
+     * @return ZgfmtOrganizacaoCerimonial
+     */
+    public function setValorDesconto($valorDesconto)
+    {
+        $this->valorDesconto = $valorDesconto;
+
+        return $this;
+    }
+
+    /**
+     * Get valorDesconto
+     *
+     * @return float 
+     */
+    public function getValorDesconto()
+    {
+        return $this->valorDesconto;
+    }
+
+    /**
+     * Set pctDesconto
+     *
+     * @param float $pctDesconto
+     * @return ZgfmtOrganizacaoCerimonial
+     */
+    public function setPctDesconto($pctDesconto)
+    {
+        $this->pctDesconto = $pctDesconto;
+
+        return $this;
+    }
+
+    /**
+     * Get pctDesconto
+     *
+     * @return float 
+     */
+    public function getPctDesconto()
+    {
+        return $this->pctDesconto;
     }
 
     /**
