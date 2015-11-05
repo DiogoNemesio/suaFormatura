@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrcamento
  *
- * @ORM\Table(name="ZGFMT_ORCAMENTO", indexes={@ORM\Index(name="fk_ZGFMT_ORCAMENTO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_2_idx", columns={"COD_PLANO_ORC"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_3_idx", columns={"COD_USUARIO"})})
+ * @ORM\Table(name="ZGFMT_ORCAMENTO", indexes={@ORM\Index(name="fk_ZGFMT_ORCAMENTO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_2_idx", columns={"COD_PLANO_ORC"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_3_idx", columns={"COD_USUARIO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_4_idx", columns={"COD_USUARIO_ACEITE"})})
  * @ORM\Entity
  */
 class ZgfmtOrcamento
@@ -106,6 +106,16 @@ class ZgfmtOrcamento
      * })
      */
     private $codUsuario;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_USUARIO_ACEITE", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codUsuarioAceite;
 
 
     /**
@@ -369,5 +379,28 @@ class ZgfmtOrcamento
     public function getCodUsuario()
     {
         return $this->codUsuario;
+    }
+
+    /**
+     * Set codUsuarioAceite
+     *
+     * @param \Entidades\ZgsegUsuario $codUsuarioAceite
+     * @return ZgfmtOrcamento
+     */
+    public function setCodUsuarioAceite(\Entidades\ZgsegUsuario $codUsuarioAceite = null)
+    {
+        $this->codUsuarioAceite = $codUsuarioAceite;
+
+        return $this;
+    }
+
+    /**
+     * Get codUsuarioAceite
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getCodUsuarioAceite()
+    {
+        return $this->codUsuarioAceite;
     }
 }

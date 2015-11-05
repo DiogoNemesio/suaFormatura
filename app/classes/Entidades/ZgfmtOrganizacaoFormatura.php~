@@ -50,6 +50,27 @@ class ZgfmtOrganizacaoFormatura
     private $diaVencimento;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_PREVISTO_TOTAL", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorPrevistoTotal;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="QTDE_PREVISTA_FORMANDOS", type="integer", nullable=true)
+     */
+    private $qtdePrevistaFormandos;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="QTDE_PREVISTA_CONVIDADOS", type="integer", nullable=true)
+     */
+    private $qtdePrevistaConvidados;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -190,6 +211,75 @@ class ZgfmtOrganizacaoFormatura
     public function getDiaVencimento()
     {
         return $this->diaVencimento;
+    }
+
+    /**
+     * Set valorPrevistoTotal
+     *
+     * @param float $valorPrevistoTotal
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setValorPrevistoTotal($valorPrevistoTotal)
+    {
+        $this->valorPrevistoTotal = $valorPrevistoTotal;
+
+        return $this;
+    }
+
+    /**
+     * Get valorPrevistoTotal
+     *
+     * @return float 
+     */
+    public function getValorPrevistoTotal()
+    {
+        return $this->valorPrevistoTotal;
+    }
+
+    /**
+     * Set qtdePrevistaFormandos
+     *
+     * @param integer $qtdePrevistaFormandos
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setQtdePrevistaFormandos($qtdePrevistaFormandos)
+    {
+        $this->qtdePrevistaFormandos = $qtdePrevistaFormandos;
+
+        return $this;
+    }
+
+    /**
+     * Get qtdePrevistaFormandos
+     *
+     * @return integer 
+     */
+    public function getQtdePrevistaFormandos()
+    {
+        return $this->qtdePrevistaFormandos;
+    }
+
+    /**
+     * Set qtdePrevistaConvidados
+     *
+     * @param integer $qtdePrevistaConvidados
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setQtdePrevistaConvidados($qtdePrevistaConvidados)
+    {
+        $this->qtdePrevistaConvidados = $qtdePrevistaConvidados;
+
+        return $this;
+    }
+
+    /**
+     * Get qtdePrevistaConvidados
+     *
+     * @return integer 
+     */
+    public function getQtdePrevistaConvidados()
+    {
+        return $this->qtdePrevistaConvidados;
     }
 
     /**
