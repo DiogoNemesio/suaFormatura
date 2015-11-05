@@ -38,7 +38,7 @@ class ZgfmtOrcamentoItem
     /**
      * @var string
      *
-     * @ORM\Column(name="OBSERVACAO", type="string", length=200, nullable=true)
+     * @ORM\Column(name="OBSERVACAO", type="string", length=1000, nullable=true)
      */
     private $observacao;
 
