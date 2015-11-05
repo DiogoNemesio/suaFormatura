@@ -7,13 +7,13 @@
 			</select>
 		</div>
 		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner pull-right col-sm-2">
-			<span class="btn btn-grey tooltip-success" id='btnOrcPrintID' disabled="disabled" onclick="orcImprime();" data-rel="tooltip" data-placement="top" title="Top Danger">
+			<span class="btn btn-grey tooltip-info" id='btnOrcPrintID' zg-disabled="disabled" onclick="orcImprime();" data-rel="tooltip" data-placement="top">
 				<i class="ace-icon fa fa-print bigger-120" id="icOrcPrintID"></i>
 			</span>
-			<span class="btn btn-grey tooltip-success" id='btnOrcMailID' disabled="disabled" onclick="orcEnviaEmail();" data-rel="tooltip" data-placement="top" title="Top Danger">
+			<span class="btn btn-grey tooltip-error" id='btnOrcMailID' zg-disabled="disabled" onclick="orcEnviaEmail();" data-rel="tooltip" data-placement="top">
 				<i class="ace-icon fa fa-envelope bigger-120" id="icOrcMailID"></i>
 			</span>
-			<span class="btn btn-grey tooltip-success" id='btnOrcAceiteID' disabled="disabled" onclick="orcAceite();" data-rel="tooltip" data-placement="top" title="Top Danger">
+			<span class="btn btn-grey tooltip-success" id='btnOrcAceiteID' zg-disabled="disabled" onclick="orcAceite();" data-rel="tooltip" data-placement="top">
 				<i class="ace-icon fa fa-check-circle bigger-120" id="icOrcAceiteID"></i>
 			</span>
 		</div>
@@ -146,10 +146,31 @@ function carregaVersaoOrc() {
 }
 
 function orcImprime() {
+	
+	/** Verificar se pode imprimir **/
+	var $disabled	= $('#btnOrcPrintID').attr('zg-disabled');
+	if ($disabled)	return false;
+	
 	$("#zgFormOrcamentoID").unbind( "submit" );
 	$('#zgFormOrcamentoID').submit();
-	e.preventDefault();
 	return false; 
+}
+
+function orcEnviaEmail() {
+
+	/** Verificar se pode Enviar e-mails **/
+	var $disabled	= $('#btnOrcMailID').attr('zg-disabled');
+	if ($disabled)	return false;
+	
+}
+
+
+function orcAceite() {
+
+	/** Verificar se pode Aceitar o Orçamento **/
+	var $disabled	= $('#btnOrcAceiteID').attr('zg-disabled');
+	if ($disabled)	return false;
+	
 }
 
 function orcSalva() {
@@ -634,54 +655,60 @@ function orcAtualizaBotoes() {
 	if ($indHabilita	== true) {
 		
 		/** Botão de impressão **/
-		$('#btnOrcPrintID').attr("disabled",false);
-		$('#btnOrcPrintID').removeClass("disabled");
+		$('#btnOrcPrintID').attr("zg-disabled",false);
+		//$('#btnOrcPrintID').removeClass("disabled");
 		$('#btnOrcPrintID').removeClass("btn-grey");
 		$('#btnOrcPrintID').addClass("btn-white");
 		$('#icOrcPrintID').removeClass("white");
 		$('#icOrcPrintID').addClass("blue");
+		$('#btnOrcPrintID').attr("title","Imprimir orçamento").tooltip('fixTitle');
 
 		/** Botão de Envio de e-mail **/
-		$('#btnOrcMailID').attr("disabled",false);
-		$('#btnOrcMailID').removeClass("disabled");
+		$('#btnOrcMailID').attr("zg-disabled",false);
+		//$('#btnOrcMailID').removeClass("disabled");
 		$('#btnOrcMailID').removeClass("btn-grey");
 		$('#btnOrcMailID').addClass("btn-white");
 		$('#icOrcMailID').removeClass("white");
 		$('#icOrcMailID').addClass("red");
+		$('#btnOrcMailID').attr("title","Enviar orçamento por e-mail").tooltip('fixTitle');
 
 		/** Botão de Aceite **/
-		$('#btnOrcAceiteID').attr("disabled",false);
-		$('#btnOrcAceiteID').removeClass("disabled");
+		$('#btnOrcAceiteID').attr("zg-disabled",false);
+		//$('#btnOrcAceiteID').removeClass("disabled");
 		$('#btnOrcAceiteID').removeClass("btn-grey");
 		$('#btnOrcAceiteID').addClass("btn-white");
 		$('#icOrcAceiteID').removeClass("white");
 		$('#icOrcAceiteID').addClass("green");
+		$('#btnOrcAceiteID').attr("title","Dar Aceite no Orçamento").tooltip('fixTitle');
 
 	
 	}else{
 		/** Botão de impressão **/
-		$('#btnOrcPrintID').attr("disabled","disabled");
-		$('#btnOrcPrintID').addClass("disabled");
+		$('#btnOrcPrintID').attr("zg-disabled","disabled");
+		//$('#btnOrcPrintID').addClass("disabled");
 		$('#btnOrcPrintID').removeClass("btn-white");
 		$('#btnOrcPrintID').addClass("btn-grey");
 		$('#icOrcPrintID').removeClass("blue");
 		$('#icOrcPrintID').addClass("white");
-		
+		$('#btnOrcPrintID').attr("title","Salve o Orçamento, para poder imprimir").tooltip('fixTitle');
+				
 		/** Botão de Envio de e-mail **/
-		$('#btnOrcMailID').attr("disabled","disabled");
-		$('#btnOrcMailID').addClass("disabled");
+		$('#btnOrcMailID').attr("zg-disabled","disabled");
+		//$('#btnOrcMailID').addClass("disabled");
 		$('#btnOrcMailID').removeClass("btn-white");
 		$('#btnOrcMailID').addClass("btn-grey");
 		$('#icOrcMailID').removeClass("red");
 		$('#icOrcMailID').addClass("white");
+		$('#btnOrcMailID').attr("title","Salve o Orçamento, para poder enviar por e-mail").tooltip('fixTitle');
 
 		/** Botão de Aceite **/
-		$('#btnOrcAceiteID').attr("disabled","disabled");
-		$('#btnOrcAceiteID').addClass("disabled");
+		$('#btnOrcAceiteID').attr("zg-disabled","disabled");
+		//$('#btnOrcAceiteID').addClass("disabled");
 		$('#btnOrcAceiteID').removeClass("btn-white");
 		$('#btnOrcAceiteID').addClass("btn-grey");
 		$('#icOrcAceiteID').removeClass("green");
 		$('#icOrcAceiteID').addClass("white");
+		$('#btnOrcAceiteID').attr("title","Salve o Orçamento, para poder Aceitá-lo").tooltip('fixTitle');
 	}
 }
 
