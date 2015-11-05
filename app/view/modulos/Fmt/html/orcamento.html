@@ -35,7 +35,7 @@
 
 		<div class="row">
 			<div class="col-sm-6">
-				<div class="form-group col-sm-12" id="divIdentID">
+				<div class="form-group col-sm-12" id="divNumFormandoID">
 				    <label for="numFormandoID" class="col-sm-5 control-label">Número de formandos</label>
 		    		<div class="input-group col-sm-6 pull-left">
 	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a turma no sistema. Essa identificação será utilizar para compor o link de acesso."></i></span>
@@ -43,7 +43,7 @@
 				    </div>
 				    <div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
 				</div>
-				<div class="form-group col-sm-12" id="divNomeID">
+				<div class="form-group col-sm-12" id="divNumConvidadoID">
 			    	<label for="numConvidadoID" class="col-sm-5 control-label">Convites por formando</label>
 	    			<div class="input-group col-sm-6 pull-left">
 	   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome da turma."></i></span>
@@ -134,8 +134,10 @@ $('[data-rel=popover]').popover({html:true});
 $('#codPlanoOrcID').css('width','100%').select2({allowClear:true});
 $('#codVersaoOrcID').css('width','50%').select2({allowClear:true});
 
+orcCalculaNumMeses();
 carregaPlanoOrc();
 orcAtualizaInfo();
+orcAtualizaBotoes();
 
 function carregaVersaoOrc() {
 	var $url	= '%URL_RELOAD%';
@@ -188,7 +190,7 @@ function orcSalva() {
 			/**
 			 * Atualiza a flag de salvamento
 			 */
-			$('#indSalvoID').val(1);
+			 orcIndSalvo();
 
 			/**
 			 * Controlar a ação dos botões 
@@ -267,17 +269,55 @@ function carregaPlanoOrc() {
 	}
 
 	if ($codPlanoOrc){
-		$('#divItem').html("<i class='ace-icon fa fa-spinner fa-spin orange bigger-125'></i>");
-		$('#divItem').load( "%ROOT_URL%/Fmt/orcamentoDivItem.php?id=%ID%&codPlanoOrc="+$codPlanoOrc+"&codVersao="+$codVersao, function() {
-			orcAlteraQtdeFormandos();
-			orcAlteraQtdeConvidados();
+		$('#divMsgOrcID').html("<i class='ace-icon fa fa-spinner fa-spin orange bigger-125'></i>");
+		//var vUrl	= "%ROOT_URL%/Fmt/orcamentoDivItem.php?id=%ID%&codPlanoOrc="+$codPlanoOrc+"&codVersao="+$codVersao;
+		var vUrl	= "%ROOT_URL%/Fmt/orcamentoDivItem.php";
+
+		$.ajax({
+			url:	vUrl,
+			data:  { id: '%ID%', codPlanoOrc: $codPlanoOrc, codVersao: $codVersao},
+			async: false,
+			method: "GET",
+			dataType: 'html'
+		}).done(function( data, textStatus, jqXHR) {
+			$("#divItem").empty();
+			$('#divItem').html(data);
+			orcAtualizaCustoFinal();
+			$('#divMsgOrcID').empty();
+			
+		}).fail(function( jqXHR, textStatus, errorThrown) {
+			alert("Falhou: "+errorThrown);
 		});
-		
-		
 	}
 }
 
 function orcAlteraDataConclusao() {
+	var $dataConclusao		= $('#dataConclusaoID').val();
+	var $dataAnterior		= $('#dataAnteriorID').val();
+
+	if ($dataConclusao !== $dataAnterior) {
+		/** Calcula o número de meses **/
+		orcCalculaNumMeses();
+
+		/**
+		 * Atualiza a flag de salvamento
+		 */
+		orcIndPrecisaSalvar();
+	}
+
+	/** Atualiza as informações da tela **/
+	orcAtualizaInfo();
+
+	/**
+	 * Controlar a ação dos botões 
+	 */
+	orcAtualizaBotoes();
+
+
+}
+
+
+function orcCalculaNumMeses() {
 	var $dataConclusao		= $('#dataConclusaoID').val();
 	var $dataAnterior		= $('#dataAnteriorID').val();
 	
@@ -303,21 +343,7 @@ function orcAlteraDataConclusao() {
 		});
 		
 		$spIcon.addClass("hidden");
-		
-		/**
-		 * Atualiza a flag de salvamento
-		 */
-		$('#indSalvoID').val(0);
-
 	}
-
-	/** Atualiza as informações da tela **/
-	orcAtualizaInfo();
-
-	/**
-	 * Controlar a ação dos botões 
-	 */
-	orcAtualizaBotoes();
 }
 
 
@@ -332,7 +358,7 @@ function orcAlteraQtdeFormandos() {
 	/**
 	 * Atualiza a flag de salvamento
 	 */
-	$('#indSalvoID').val(0);
+	 orcIndPrecisaSalvar();
 
 	/**
 	 * Controlar a ação dos botões 
@@ -358,7 +384,7 @@ function orcAlteraQtdeConvidados() {
 	/**
 	 * Atualiza a flag de salvamento
 	 */
-	$('#indSalvoID').val(0);
+	 orcIndPrecisaSalvar();
 
 	/**
 	 * Controlar a ação dos botões 
@@ -391,7 +417,7 @@ function orcAlteraQuantidade($codigo) {
 	/**
 	 * Atualiza a flag de salvamento
 	 */
-	$('#indSalvoID').val(0);
+	 orcIndPrecisaSalvar();
 
 	/**
 	 * Atualiza o total do item
@@ -415,7 +441,7 @@ function orcAlteraValor($codigo) {
 	/**
 	 * Atualiza a flag de salvamento
 	 */
-	$('#indSalvoID').val(0);
+	 orcIndPrecisaSalvar();
 
 	/**
 	 * Atualiza o total do item
@@ -432,7 +458,7 @@ function orcAlteraSel($codigo) {
 	/**
 	 * Atualiza a flag de salvamento
 	 */
-	$('#indSalvoID').val(0);
+	 orcIndPrecisaSalvar();
 
 	/**
 	 * Controlar a ação dos botões 
@@ -445,7 +471,7 @@ function orcAlteraObs($codigo) {
 	/**
 	 * Atualiza a flag de salvamento
 	 */
-	$('#indSalvoID').val(0);
+	 orcIndPrecisaSalvar();
 
 	/**
 	 * Controlar a ação dos botões 
@@ -594,9 +620,18 @@ function orcAtualizaCustoFinal() {
 
 function orcAtualizaBotoes() {
 	var $indSalvo			= $('#indSalvoID').val();
-	alert("IndSalvo:" + $indSalvo);
+	var $numFormando 		= $('#numFormandoID').val();
+	var $numConvidado 		= $('#numConvidadoID').val();
+	var $codPlanoOrc 		= $('#codPlanoOrcID').val();
+	var $dataConclusao		= $('#dataConclusaoID').val();
+	var $indHabilita		= false;
 
-	if ($indSalvo == 1) {
+	
+	if ($numFormando && $numConvidado && $dataConclusao && ($indSalvo == 1)) {
+		$indHabilita	= true;
+	}
+	
+	if ($indHabilita	== true) {
 		
 		/** Botão de impressão **/
 		$('#btnOrcPrintID').attr("disabled",false);
@@ -654,6 +689,32 @@ function orcValidaOrcamento() {
 	
 	var $ok = true;
 	
+	var $numFormando 		= $('#numFormandoID').val();
+	var $numConvidado 		= $('#numConvidadoID').val();
+	var $codPlanoOrc 		= $('#codPlanoOrcID').val();
+	var $dataConclusao		= $('#dataConclusaoID').val();
+	
+	if (!$numFormando)		{
+		$('#divNumFormandoID').addClass('alert-danger');
+		$ok 	= false;
+	}else{
+		$('#divNumFormandoID').removeClass('alert-danger');
+	}
+	
+	if (!$numConvidado)		{
+		$('#divNumConvidadoID').addClass('alert-danger');
+		$ok 	= false;
+	}else{
+		$('#divNumConvidadoID').removeClass('alert-danger');
+	}
+	
+	if (!$dataConclusao)		{
+		$('#divDataConclusaoID').addClass('alert-danger');
+		$ok 	= false;
+	}else{
+		$('#divDataConclusaoID').removeClass('alert-danger');
+	}
+
 	/** Fazer loop em todas as tabelas de eventos **/
 	$('[zg-table-orc="1"]').each(function( index1 ) {
 		$(this).find('tbody > tr').each(function( index2 ) {
@@ -678,7 +739,16 @@ function orcValidaOrcamento() {
 	
 	if (!$ok)	return false;
 	
-	return true;	
+	return true;
+}
+
+function orcIndPrecisaSalvar() {
+	//alert("Indicando que não precisa salvar");
+	$('#indSalvoID').val(0);
+}
+
+function orcIndSalvo() {
+	$('#indSalvoID').val(1);
 }
 
 </script>

@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$tr,$system;
+global $em,$tr,$system,$log;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -195,5 +195,6 @@ $htmlForm	.= "$('[zg-data-toggle=\"mask\"]').each(function( index ) {
 });
 ";
 $htmlForm	.= '</script>';
+$log->info("Terminei orcamentoDivItem");
 
 echo $htmlForm;
