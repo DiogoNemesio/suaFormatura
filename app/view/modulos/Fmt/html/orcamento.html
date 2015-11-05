@@ -6,14 +6,14 @@
 				%VERSOES_ORC%
 			</select>
 		</div>
-		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner pull-right col-sm-2">
+		<div data-toggle="buttons" class="btn-group btn-corner pull-right col-sm-2">
 			<span class="btn btn-grey tooltip-info" id='btnOrcPrintID' zg-disabled="disabled" onclick="orcImprime();" data-rel="tooltip" data-placement="top">
 				<i class="ace-icon fa fa-print bigger-120" id="icOrcPrintID"></i>
 			</span>
 			<span class="btn btn-grey tooltip-error" id='btnOrcMailID' zg-disabled="disabled" onclick="orcEnviaEmail();" data-rel="tooltip" data-placement="top">
 				<i class="ace-icon fa fa-envelope bigger-120" id="icOrcMailID"></i>
 			</span>
-			<span class="btn btn-grey tooltip-success" id='btnOrcAceiteID' zg-disabled="disabled" onclick="orcAceite();" data-rel="tooltip" data-placement="top">
+			<span class="btn btn-grey tooltip-success" id='btnOrcAceiteID' zg-disabled="disabled" onclick="orcConfirmAceite();" data-rel="tooltip" data-placement="top">
 				<i class="ace-icon fa fa-check-circle bigger-120" id="icOrcAceiteID"></i>
 			</span>
 		</div>
@@ -29,7 +29,6 @@
 		<input type="hidden" id="taxaAdminID" name="taxaAdmin" value="%TAXA_ADMIN%">
 		<input type="hidden" id="taxaBoletoID" name="taxaBoleto" value="%TAXA_BOLETO%">
 		<input type="hidden" id="taxaSistemaID" name="taxaSistema" value="%TAXA_SISTEMA%">
-		<input type="hidden" id="indAceiteID" name="indAceite" value="%IND_ACEITE%">
 		<input type="hidden" id="indSalvoID" name="indSalvo" value="1">
 		<input type="hidden" id="codVersaoID" name="codVersao" value="%COD_VERSAO%">
 
@@ -130,9 +129,24 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 $('[data-rel=tooltip]').tooltip();
 $('[data-rel=popover]').popover({html:true});
 
+function orcFormatCodVersaoSelect(icon) {
+	var originalOption = icon.element;
+	var $ic	= $(originalOption).data('icon');
+	if ($ic) {
+		return icon.text + '&nbsp;<i class="fa ' + $ic + '"></i> ';
+	}else{
+		return icon.text;
+	}
+    
+}
+
 // SELECT2
 $('#codPlanoOrcID').css('width','100%').select2({allowClear:true});
-$('#codVersaoOrcID').css('width','50%').select2({allowClear:true});
+$('#codVersaoOrcID').css('width','50%').select2({
+	allowClear:true,
+    formatResult: orcFormatCodVersaoSelect
+});
+
 
 orcCalculaNumMeses();
 carregaPlanoOrc();
@@ -146,13 +160,20 @@ function carregaVersaoOrc() {
 }
 
 function orcImprime() {
-	
+
+	var $codVesaoOrc 		= $('#codVersaoOrcID').val();
+
 	var $url	= '%URL_MIDIA%';
 	$url		+= '&codVersaoOrc='+$('#codVersaoOrcID').val();
 	
 	/** Verificar se pode imprimir **/
 	var $disabled	= $('#btnOrcPrintID').attr('zg-disabled');
 	if ($disabled == "disabled")	return false;
+
+	
+	if (!$codVesaoOrc)	{
+		alert('Orçamento não salvo');
+	}
 	
 	zgDownloadUrl($url);
 	
@@ -171,11 +192,85 @@ function orcEnviaEmail() {
 }
 
 
-function orcAceite() {
+function orcConfirmAceite() {
 
 	/** Verificar se pode Aceitar o Orçamento **/
 	var $disabled	= $('#btnOrcAceiteID').attr('zg-disabled');
 	if ($disabled == "disabled")	return false;
+	
+	
+	bootbox.dialog({
+		title: "Tem certeza que deseja aceitar o orçamento?",
+		message: "Ao aceitar este orçamento, os valores serão usados como referência para a gestão financeira da formatura",
+		
+		buttons: {
+			"Confirmar" : {
+				"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+				"className" : "btn-sm btn-primary",
+				"callback": function() {
+					//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
+					alert("Vou aceitar");
+					//$('#zgFormID').submit();
+				}
+			},
+			"Cancelar" : {
+				"label" : "<i class='ace-icon fa fa-thumbs-o-down'></i>Cancelar",
+				"className" : "btn-sm btn-danger",
+				"callback": function() {
+					return;
+				}
+
+			},
+			
+		}
+	});
+}
+
+function orcAceite() {
+	var $codVesaoOrc 		= $('#codVersaoOrcID').val();
+
+	if (!$codVesaoOrc)	{
+		alert('Orçamento não salvo');
+	}
+
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_ACEITE%",
+		data:  { id: '%ID%', codVersaoOrc: $codVersaoOrc},
+	}).done(function( data, textStatus, jqXHR) {
+		
+		if (checaRetornoOK(data) == true) {
+			$.gritter.add({
+				title: 'Orçamento',
+				text: 'O Orçamento foi aceito com sucesso',
+				class_name: 'gritter-info',
+				time: '5000'
+			});
+		}else{
+			$.gritter.add({
+				title: 'Erro ao aceitar o orçamento',
+				text: zgGetMsgRetorno(data),
+				class_name: 'gritter-info gritter-error',
+				time: '15000'
+			});
+		}
+
+		/** Atualiza o indicador de aceite **/
+		$('#indAceiteID').val(zgGetCodRetorno(data));
+		
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		$.gritter.add({
+			title: 'Erro ao aceitar o orçamento',
+			text: errorThrown,
+			class_name: 'gritter-info gritter-error',
+			time: '15000'
+		});
+	});
+	return false; 
+
+	
 	
 }
 
@@ -205,7 +300,7 @@ function orcSalva() {
 		}).done(function( data, textStatus, jqXHR) {
 			
 			if (checaRetornoOK(data) == true) {
-				alert(zgGetCodRetorno(data));
+				//alert(zgGetCodRetorno(data));
 				zgMostraMsg('divMsgOrcID',"Orçamento salvo com sucesso !!!");
 			}else{
 				zgMostraErro('divMsgOrcID',zgGetMsgRetorno(data));

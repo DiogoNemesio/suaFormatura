@@ -86,7 +86,7 @@ $oVersoesOrc			= '<option value="">'.$tr->trans("Novo Orçamento").'</option>';
 for ($i = 0; $i < sizeof($aVersoesOrc); $i++) {
 	$selected 		= ($codVersaoOrc == $aVersoesOrc[$i]->getCodigo()) ?  "selected=\"true\"" : null;
 	$dataVersao		= ($aVersoesOrc[$i]->getDataCadastro()) ? $aVersoesOrc[$i]->getDataCadastro()->format($system->config["data"]["dateFormat"]) : null;
-	$oVersoesOrc	.= "<option value=\"".$aVersoesOrc[$i]->getCodigo()."\" $selected>".$tr->trans("Versão").": ".$aVersoesOrc[$i]->getVersao().' ('.$dataVersao.')'.'</option>';
+	$oVersoesOrc	.= "<option data-icon=\"fa-check-circle green\" value=\"".$aVersoesOrc[$i]->getCodigo()."\" $selected>".$tr->trans("Versão").": ".$aVersoesOrc[$i]->getVersao().' ('.$dataVersao.')'.'</option>';
 }
 //if (!$oVersoesOrc)	$oVersoesOrc	= '<option value="">'.$tr->trans("Novo Orçamento").'</option>';
 
@@ -128,6 +128,7 @@ try {
 $urlReload			= ROOT_URL."/Fmt/orcamento.php?id=".$id;
 $urlMidia			= ROOT_URL."/Fmt/orcamentoPdf.php?id=".$id;
 $urlMail			= ROOT_URL."/Fmt/orcamentoMail.php?id=".$id;
+$urlAceite			= ROOT_URL."/Fmt/orcamentoAceite.dp.php";
 
 #################################################################################
 ## Carregando o template html
@@ -142,6 +143,7 @@ $tpl->set('URL_FORM'				,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URL_RELOAD'				,$urlReload);
 $tpl->set('URL_MIDIA'				,$urlMidia);
 $tpl->set('URL_MAIL'				,$urlMail);
+$tpl->set('DP_ACEITE'				,$urlAceite);
 $tpl->set('ID'						,$id);
 
 $tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());

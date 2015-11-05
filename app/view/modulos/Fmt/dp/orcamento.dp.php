@@ -102,7 +102,7 @@ try {
 	$oOrc->setCodUsuario($oUser);
 	$oOrc->setDataCadastro(new \DateTime("now"));
 	$oOrc->setDataConclusao($oDataConc);
-	$oOrc->setIndAceite($indAceite);
+	//$oOrc->setIndAceite($indAceite);
 	$oOrc->setNumMeses($numMeses);
 	$oOrc->setQtdeConvidados($numConvidado);
 	$oOrc->setQtdeFormandos($numFormando);
