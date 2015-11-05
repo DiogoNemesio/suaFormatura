@@ -94,7 +94,6 @@ try {
 	$oDataConc		= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataConclusao);
 	$ultVersao		= \Zage\Fmt\Orcamento::getUltimoNumeroVersao($system->getCodOrganizacao());
 	$versao			= ($ultVersao) ? ($ultVersao + 1) : 1;
-	$log->info("Versão: ".$versao);
 	
 	$oOrc			= new \Entidades\ZgfmtOrcamento();
 	$oOrc->setCodOrganizacao($oOrganizacao);
@@ -116,7 +115,7 @@ try {
  	#################################################################################
  	foreach ($codItemSel as $codItem => $item) {
  		$oItem			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findOneBy(array('codigo' => $codItem));
- 		$valor			= \Zage\App\Util::to_float($aValor[$codItem]);
+ 		$valor			= ($aValor[$codItem]) ? \Zage\App\Util::to_float($aValor[$codItem]) : 0; 
  		$qtde			= (int) $aQtde[$codItem];
  		$oOrcItem		= new \Entidades\ZgfmtOrcamentoItem();
  		$oOrcItem->setCodItem($oItem);

@@ -316,26 +316,33 @@ function orcSalva() {
 			data:	$('#zgFormOrcamentoID').serialize(),
 		}).done(function( data, textStatus, jqXHR) {
 			
-			if (checaRetornoOK(data) == true) {
-				//alert(zgGetCodRetorno(data));
-				zgMostraMsg('divMsgOrcID',"Orçamento salvo com sucesso !!!");
-			}else{
-				zgMostraErro('divMsgOrcID',zgGetMsgRetorno(data));
-			}
 
 			//Voltar o botão de salvar
 			$('#btnSubmitID').html('Salvar');
 			$('#btnSubmitID').attr("disabled",false);
-			
-			/** Atualiza o código da versão gerada **/
-			$('#codVersaoID').val(zgGetCodRetorno(data));
-			
-			$.gritter.add({
-				title: 'Orçamento',
-				text: 'O Orçamento foi salvo com sucesso',
-				class_name: 'gritter-info',
-				time: '5000'
-			});
+
+			if (checaRetornoOK(data) == true) {
+
+				/** Atualiza o código da versão gerada **/
+				$('#codVersaoID').val(zgGetCodRetorno(data));
+				
+				$.gritter.add({
+					title: 'Orçamento',
+					text: 'O Orçamento foi salvo com sucesso',
+					class_name: 'gritter-info',
+					time: '5000'
+				});
+			}else{
+
+				$.gritter.add({
+					title: 'Erro ao salvar o Orçamento',
+					text: zgGetMsgRetorno(data),
+					class_name: 'gritter-info gritter-error',
+					time: '5000'
+				});
+
+				return false;
+			}
 
 			/** Atualizar a tela, carregar a nova versão salva **/
 			carregaVersaoOrc(zgGetCodRetorno(data));
@@ -895,7 +902,7 @@ function orcValidaOrcamento() {
 			$chk		= $oChk.is(':checked');
 			
 			
-			if ((!$qtde || !$valor) && ($chk)) {
+			if ((!$qtde) && ($chk)) {
 				$(this).addClass('alert-danger');
 				$ok 	= false;
 			}else{

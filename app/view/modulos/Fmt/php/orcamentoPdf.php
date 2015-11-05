@@ -72,14 +72,24 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
-$ident			= $oOrg->getIdentificacao();
-$nome			= $oOrg->getNome();
-//$instituicao	= $oOrgFmt->getCodInstituicao()->getCodigo();
-//$curso			= $oOrgFmt->getCodCurso()->getCodigo();
-//$cidade			= $oOrgFmt->getCodCidade()->getCodigo();
-$numMeses		= $orcamento->getNumMeses();
-$dataConclusao	= ($oOrgFmt->getDataConclusao() != null) ? $oOrgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
+#################################################################################
+## LogoMarca
+#################################################################################
+$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+$logoOrg		= ($oFmtAdm) ? $oFmtAdm : $oOrg;	
 
+#################################################################################
+## Verifica se tem logomarca
+#################################################################################
+$temLogo		= $em->getRepository('Entidades\ZgadmOrganizacaoLogo')->findOneBy(array('codOrganizacao' => $logoOrg->getCodigo()));
+$logoUrl		= ($temLogo) ? ROOT_URL . "/Adm/mostraLogoOrganizacao.php?codOrganizacao=".$logoOrg->getCodigo() : null; 
+		
+#################################################################################
+## Formata as informações do Orçamento
+#################################################################################
+$nome			= $oOrg->getNome();
+$numMeses		= (int) $orcamento->getNumMeses();
+$dataConclusao	= ($oOrgFmt->getDataConclusao() != null) ? $oOrgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
 
 #################################################################################
 ## Criar o relatório
@@ -89,7 +99,10 @@ $rel	= new \Zage\App\Relatorio();
 #################################################################################
 ## Criação do cabeçalho
 #################################################################################
-//$rel->adicionaCabecalho("Orçamento");
+if ($logoUrl)		{
+	$rel->_logo		= $logoUrl;
+	$rel->adicionaCabecalho(null);
+}
 
 #################################################################################
 ## Criação do Rodapé
@@ -97,10 +110,21 @@ $rel	= new \Zage\App\Relatorio();
 $rel->adicionaRodape();
 
 #################################################################################
+## Inicia o html
+#################################################################################
+$html		= "";
+
+#################################################################################
+## Monta a logo marca
+#################################################################################
+//if ($logoUrl) $html		.= '<h6 align="center"><img src="'.$logoUrl.'" align="center" style=""/></h6>';
+
+#################################################################################
 ## Monta os dados iniciais
 #################################################################################
-$html		= '<h3 align="center"><b>'.$nome.'</b></h3>';
-$html		.= '<table align="center" class="table table-condensed" style="width: 70%; align: center;">';
+$html		.= '<h3 align="center"><b>'.$nome.'</b></h3>';
+$html		.= '<h6 align="center">Orçamento versão:&nbsp;'.$orcamento->getVersao().'</h6>';
+$html		.= '<table align="center" class="table table-condensed" style="width: 80%; align: center;">';
 $html		.= '<thead>';
 $html		.= '<tr>
 					<th style="text-align: center;"><strong>Número de Formandos</strong></th>
@@ -114,27 +138,6 @@ $html		.= '<tr>
 					<th style="text-align: center;">'.($numFormandos * $numConvidados).'</th>
 				</tr>
 				</tbody></table>';
-
-/*$html		.= '<tr>
-					<th style="text-align: left;"><strong>Número de Formandos:</strong></th>
-					<th style="text-align: left;">'.$numFormandos.'</th>
-				</tr>
-				<tr>
-					<th style="text-align: left;"><strong>Número de Convites por formando:</strong></th>
-					<th style="text-align: left;">'.$numConvidados.'</th>
-				</tr>
-				<tr>
-					<th style="text-align: left;"><strong>Número de Pessoas:</strong></th>
-					<th style="text-align: left;">'.($numFormandos * $numConvidados).'</th>
-				</tr>
-				<tr>
-					<th style="text-align: left;"><strong>Data de Conclusão:</strong></th>
-					<th style="text-align: left;">'.$dataConclusao.' ('.$numMeses.' meses previstos)</th>
-				</tr>
-				</table>
-				<br>
-				';
-*/				
 
 #################################################################################
 ## Carrega o orçamento salvo
@@ -154,15 +157,11 @@ for ($i = 0; $i < sizeof($orcItens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["TIPO"] 		= $item->getCodTipoItem()->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $item->getItem();
 	$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= $orcItens[$i]->getQuantidade();
-	$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= \Zage\App\Util::formataDinheiro($orcItens[$i]->getValorUnitario());
+	$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario());
 	$aItens[$codTipo]["ITENS"][$codigo]["OBS"] 			= $orcItens[$i]->getObservacao();
 	$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= \Zage\App\Util::to_float($orcItens[$i]->getQuantidade() * \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario()));
 	
 }
-
-
-//print_r($aItens);
-//exit;
 
 #################################################################################
 ## Cria o html dinâmico
@@ -170,7 +169,6 @@ for ($i = 0; $i < sizeof($orcItens); $i++) {
 $htmlForm	= '';
 $htmlForm	.= '<h5 align="center"><b>Detalhes dos eventos</b></h5>';
 $htmlForm	.= '<center>';
-//$htmlForm	.= '<div id="itensOrcamentoID" style="width: 98%;">';
 
 $w1			= "width: 30%;";
 $w2			= "width: 20%;";
@@ -208,11 +206,14 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$bdBottom	= "border-bottom: 1px solid #000000;";
 			}
 			
+			$valItem	= ($item["VALOR"]) ? \Zage\App\Util::to_money($item["VALOR"]) : "cortesia"; 
+			$totItem	= ($item["TOTAL"]) ? \Zage\App\Util::to_money($item["TOTAL"]) : "cortesia";
+			
 			$htmlForm	.= '<tr>';
 			$htmlForm	.= '<td style="text-align: left; '.$w1.' border-left: 1px solid #000000; '.$bdBottom.' border-top: 1px solid #000000;">'.$item["ITEM"].'</td>';
 			$htmlForm	.= '<td style="text-align: center; '.$w2.' '.$bdBottom.' border-top: 1px solid #000000;">'.$item["QTDE"].' </td>';
-			$htmlForm	.= '<td style="text-align: right; '.$w3.' '.$bdBottom.' border-top: 1px solid #000000;">'.\Zage\App\Util::to_money($item["VALOR"]).'</td>';
-			$htmlForm	.= '<td style="text-align: right; '.$w4.' border-right: 1px solid #000000; '.$bdBottom.' border-top: 1px solid #000000;">'.\Zage\App\Util::to_money($item["TOTAL"]).'</td>';
+			$htmlForm	.= '<td style="text-align: right; '.$w3.' '.$bdBottom.' border-top: 1px solid #000000;">'.$valItem.'</td>';
+			$htmlForm	.= '<td style="text-align: right; '.$w4.' border-right: 1px solid #000000; '.$bdBottom.' border-top: 1px solid #000000;">'.$totItem.'</td>';
 			$htmlForm	.= '</tr>';
 			
 			if ($item["OBS"]) {
@@ -233,12 +234,19 @@ foreach ($aItens as $codTipo => $aItem)	{
 		$aTotal[$aItem["DESCRICAO"]]["VALOR"]	= $totalTipo;
 		$aTotal[$aItem["DESCRICAO"]]["EVENTO"]	= $aItem["DESCRICAO"];
 	}
-
-	//$htmlForm	.= '</div>';
 }
 
-$htmlForm	.= '<br>';
-$htmlForm	.= '<table class="table table-bordered1" style="width: 50%;"><thead>';
+#################################################################################
+## Calculo final do custo
+#################################################################################
+$taxaSistema	= \Zage\App\Util::to_float($orcamento->getTaxaSistema());
+$totalSistema	= ($numMeses * $taxaSistema);
+$valorFinal		= ($valorTotal + ($totalSistema * $numFormandos)); 
+$totalFormando	= round(($valorFinal / $numFormandos),2);
+$mensalidade	= $totalFormando / $numMeses;
+
+$htmlForm	.= '<div style="float: left; width: 48%;">';
+$htmlForm	.= '<table class="table" style="width: 100%;"><thead>';
 $htmlForm	.= '<tr><th style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Evento</th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">Valor do Evento</th></tr>';
 $htmlForm	.= '</thead>';
 $htmlForm	.= '<tbody>';
@@ -247,11 +255,29 @@ foreach ($aTotal as $evento) {
 }
 $htmlForm	.= '</tbody>';
 $htmlForm	.= '<tfoot>';
-$htmlForm	.= '<tr><th style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Valor Total</th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">'.\Zage\App\Util::to_money($valorTotal).'</th></tr>';	
+$htmlForm	.= '<tr><th style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Total dos Eventos</th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">'.\Zage\App\Util::to_money($valorTotal).'</th></tr>';	
 $htmlForm	.= '</tfoot>';
 $htmlForm	.= '</table>';
+$htmlForm	.= '</div>';
+
+
+$htmlForm	.= '<div style="float: right; width: 48%;">';
+$htmlForm	.= '<table class="table" style="width: 100%;"><thead>';
+$htmlForm	.= '<tr><th colspan="2" style="text-align: center; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Resumo Geral</th></tr>';
+$htmlForm	.= '</thead>';
+$htmlForm	.= '<tbody>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Data de Conclusão<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.$dataConclusao.' ( '.$numMeses.' meses previstos)&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Sistema SuaFormatura.com<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($totalSistema).' por formando&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Total Por Formando<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($totalFormando).' (Total por formando)&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Mensalidade<b>		</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($mensalidade).' mensais por formando&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '</tbody>';
+$htmlForm	.= '<tfoot>';
+$htmlForm	.= '<tr><th style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Custo Final Total</th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">'.\Zage\App\Util::to_money($valorFinal).'</th></tr>';
+$htmlForm	.= '</tfoot>';
+$htmlForm	.= '</table>';
+$htmlForm	.= '</div>';
 
 $html		.= $htmlForm;
 
 $rel->WriteHTML($html);
-$rel->Output("Orcamento.pdf",'D');
+$rel->Output("Orçamento_Versao_".$orcamento->getVersao().".pdf",'D');

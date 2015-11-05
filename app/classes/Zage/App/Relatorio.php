@@ -16,19 +16,19 @@ class Relatorio extends \mPDF {
 	 * Filtros do relatório
 	 * @var array
 	 */
-	var $_filtros 	= array();
+	public $_filtros 	= array();
 	
 	/**
 	 * Logomarca / Info empresa
 	 * @var string
 	 */
-	var $_logo;
+	public $_logo;
 	
 	/**
 	 * Indicador de impressão de filtros sem valor
 	 * @var boolean
 	 */
-	var $_indExibeFiltrosNulos;
+	private $_indExibeFiltrosNulos;
 	
 	/**
 	 * Número de linhas do filtro
@@ -104,18 +104,35 @@ class Relatorio extends \mPDF {
 	 * @param string $nome
 	 */
 	public function adicionaCabecalho($nome) {
-		global $system,$_emp,$_user;
+		global $system,$_user,$log;
 		
 		/**
 		 * Monta a logo
 		 */
 		$this->_montaLogo();
 		
+		/** Verifica os filtros **/
+		$numFiltros			= sizeof($this->_filtros);
+		
+		if ($nome)	{
+			$orgName	= '<tr><td colspan="2" style="text-align: center;width: 100%; height: 15px;"><strong>'.$nome.'</strong></td></tr>';
+		}else{
+			$orgName	= null;
+		}
+		
+		if ($this->_logo) {
+			$logo		= '<td style="width: 200px; height: 80px;"><h6 align="center"><img src="'.$this->_logo.'" align="center" style=""/></h6></td>';
+			$filtro		= ($numFiltros) ? '<td style="width: 100%;  height: 80px;">'.$this->_montaFiltros().'</td>' : null;
+		}else{
+			$logo		= null;
+			$filtro		= ($numFiltros) ? '<td colspan="2" style="width: 100%;  height: 80px;">'.$this->_montaFiltros().'</td>' : null;
+		}
+
 		$header	= '<table class="table">
-		<tr><td colspan="2" style="text-align: center;width: 100%; height: 15px;"><strong>'.$nome.'</strong></td></tr>
+		'.$orgName.'
 		<tr>
-			<td style="width: 200px; height: 80px;">'.$this->_logo.'</td>
-			<td style="width: 100%;  height: 80px;">'.$this->_montaFiltros($nome).'</td>
+			'.$logo.'
+			'.$filtro.'
 		</tr>
 				
 		</table>';
@@ -138,20 +155,43 @@ class Relatorio extends \mPDF {
 	 * Montar a logo da empresa
 	 */
 	private function _montaLogo() {
-		global $system,$_emp,$_user;
+		global $system,$logoOrg,$_user,$log,$em;
 		
 		if (!empty($this->_logo)) return;
 		
-		if (isset($_emp) && (is_object($_emp))) {
-			$logo	= ($_emp->getLogomarca()) ? '<img src="'.IMG_URL.'/'.$_emp->getLogomarca().'">': null;
-			if (!$logo) {
-				$empre	= $_emp->getFantasia();
-				$end1	= $_emp->getEndereco() . ", " . $_emp->getNumero(). " - ".$_emp->getBairro();
-				$cidade	= ($_emp->getCodLogradouro()) ? $_emp->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome() : "";
-				$estado	= ($_emp->getCodLogradouro()) ? $_emp->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUf()->getCodUf() : "";
-				$end2	= "CEP: ".\Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CEP)->aplicaMascara($_emp->getCep()) . " " . $cidade. " - ".$estado;
+		/** Verifica o tipo de organização **/
+		$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+		if ($oOrg->getCodTipo()->getCodigo() == "FMT") {
+			$oFmtAdm				= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+			if ($oFmtAdm)	{
+				$logoOrg	= $oFmtAdm;
+			}else{
+				$logoOrg	= $oOrg;
+			}
+		}else{
+			$logoOrg	= $oOrg;
+		}
 		
+		if (!empty($this->_logo)) return;
 		
+		if (isset($logoOrg) && (is_object($logoOrg))) {
+			/** Verifica se a organização possui logo **/
+			$temLogo		= $em->getRepository('Entidades\ZgadmOrganizacaoLogo')->findOneBy(array('codOrganizacao' => $logoOrg->getCodigo()));
+			
+			if ($temLogo) {
+				$logoUrl		= ROOT_URL . "/Adm/mostraLogomarca.php";
+			}else{
+				$logoUrl		= null;
+			}
+			
+			if (!$logoUrl) {
+				$empre	= $logoOrg->getNome();
+				$end1	= $logoOrg->getEndereco() . ", " . $logoOrg->getNumero(). " - ".$logoOrg->getBairro();
+				$cidade	= ($logoOrg->getCodLogradouro()) ? $logoOrg->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome() : "";
+				$estado	= ($logoOrg->getCodLogradouro()) ? $logoOrg->getCodLogradouro()->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUf()->getCodUf() : "";
+				$end2	= "CEP: ".\Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CEP)->aplicaMascara($logoOrg->getCep()) . " " . $cidade. " - ".$estado;
+			
+			
 				$logo	= '
 				<table class="" style="border: none;">
 				<tr style="border: none;">
@@ -164,7 +204,8 @@ class Relatorio extends \mPDF {
 					<td style="width: 100%; 	height: 15px;"><h6>'.$end2.'</h6></td>
 				</tr>
 				</table>';
-		
+			}else{
+				$logo	= '<img src="'.$logoUrl.'" />';
 			}
 		}else{
 			$logo	= null;
