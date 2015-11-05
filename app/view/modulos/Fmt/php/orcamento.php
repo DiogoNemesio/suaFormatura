@@ -126,6 +126,8 @@ try {
 ## Url do script
 #################################################################################
 $urlReload			= ROOT_URL."/Fmt/orcamento.php?id=".$id;
+$urlMidia			= ROOT_URL."/Fmt/orcamentoPdf.php?id=".$id;
+$urlMail			= ROOT_URL."/Fmt/orcamentoMail.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -138,6 +140,8 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('URL_FORM'				,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URL_RELOAD'				,$urlReload);
+$tpl->set('URL_MIDIA'				,$urlMidia);
+$tpl->set('URL_MAIL'				,$urlMail);
 $tpl->set('ID'						,$id);
 
 $tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());

@@ -195,6 +195,5 @@ $htmlForm	.= "$('[zg-data-toggle=\"mask\"]').each(function( index ) {
 });
 ";
 $htmlForm	.= '</script>';
-$log->info("Terminei orcamentoDivItem");
 
 echo $htmlForm;

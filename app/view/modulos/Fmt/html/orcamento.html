@@ -147,20 +147,26 @@ function carregaVersaoOrc() {
 
 function orcImprime() {
 	
+	var $url	= '%URL_MIDIA%';
+	$url		+= '&codVersaoOrc='+$('#codVersaoOrcID').val();
+	
 	/** Verificar se pode imprimir **/
 	var $disabled	= $('#btnOrcPrintID').attr('zg-disabled');
-	if ($disabled)	return false;
+	if ($disabled == "disabled")	return false;
 	
-	$("#zgFormOrcamentoID").unbind( "submit" );
-	$('#zgFormOrcamentoID').submit();
-	return false; 
+	zgDownloadUrl($url);
+	
 }
 
 function orcEnviaEmail() {
+	var $url	= '%URL_MAIL%';
+	$url		+= '&codVersaoOrc='+$('#codVersaoOrcID').val();
 
 	/** Verificar se pode Enviar e-mails **/
 	var $disabled	= $('#btnOrcMailID').attr('zg-disabled');
-	if ($disabled)	return false;
+	if ($disabled == "disabled")	return false;
+	
+	zgAbreModal($url);
 	
 }
 
@@ -169,7 +175,7 @@ function orcAceite() {
 
 	/** Verificar se pode Aceitar o Orçamento **/
 	var $disabled	= $('#btnOrcAceiteID').attr('zg-disabled');
-	if ($disabled)	return false;
+	if ($disabled == "disabled")	return false;
 	
 }
 
@@ -199,6 +205,7 @@ function orcSalva() {
 		}).done(function( data, textStatus, jqXHR) {
 			
 			if (checaRetornoOK(data) == true) {
+				alert(zgGetCodRetorno(data));
 				zgMostraMsg('divMsgOrcID',"Orçamento salvo com sucesso !!!");
 			}else{
 				zgMostraErro('divMsgOrcID',zgGetMsgRetorno(data));
@@ -207,6 +214,9 @@ function orcSalva() {
 			//Voltar o botão de salvar
 			$('#btnSubmitID').html('Salvar');
 			$('#btnSubmitID').attr("disabled",false);
+			
+			/** Atualiza o código da versão gerada **/
+			$('#codVersaoID').val(zgGetCodRetorno(data));
 			
 			/**
 			 * Atualiza a flag de salvamento
@@ -217,6 +227,8 @@ function orcSalva() {
 			 * Controlar a ação dos botões 
 			 */
 			orcAtualizaBotoes();
+			
+			
 			
 			
 		}).fail(function( jqXHR, textStatus, errorThrown) {
