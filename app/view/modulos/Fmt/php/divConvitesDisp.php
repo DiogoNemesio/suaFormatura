@@ -79,14 +79,24 @@ for ($i = 0; $i < sizeof($info); $i++) {
 		$convDis 	= " - ";
 	}
 	
+	$valor = \Zage\App\Util::formataDinheiro( \Zage\App\Util::to_float($valor) );
+	
 	$html .= "<tr class=\"center\"><td class=\"center\" style=\"width: 20px;\"><div class=\"inline\" zg-type=\"zg-div-msg\"></div></td>
 				<td>".$eventoDesc."<input type='hidden' name='codTipoEvento[".$i."]' value='".$codEvento."' ></td>
-				<td>".$valor."<input type='hidden' name='valor[]' value='".$valor."' ></td>
+				<td>R$ ".$valor."<input type='hidden' name='valor[]' value='".$valor."' ></td>
 				<td>".$convDis."<input type='hidden' name='quantDisp[]' value='".$convDis."' ></td>
-				<td><input type='text' name='quantConv[]' id='quantConv' value='0' size='2' onchange='zgCalcularTotal();'></td>
+				<td><input type='text' name='quantConv[]' id='quantConv' value='0' size='2' zg-data-toggle=\"mask\" zg-data-mask=\"numero\" onchange='zgCalcularTotal();'></td>
 				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[".$i."]' value='0'><input type='hidden' name='codConvExtra[]' value='".$info[$i]->getCodigo()."'></td></tr>";
 }
 
-$html .= "<tr><td></td><td></td><td></td><td></td><td></td><td><div id='valorTotalID' name='valorTotal'>TOTAL: R$ 0,00</div></td></table>";
+$html 	.= "<tr><td></td><td></td><td></td><td></td><td></td><td class=\"center\"><div id='valorTotalID' name='valorTotal'>TOTAL: R$ 0,00</div></td></table>";
+
+$html	.= '<script type="text/javascript" charset="%CHARSET%">';
+$html	.= "$('[data-rel=popover]').popover({html:true});";
+$html	.= "$('[data-rel=select2]').css('width','100%').select2({allowClear:true});";
+$html	.= "$('[zg-data-toggle="."mask"."]').each(function( index ) {";
+$html	.= "zgMask($( this ), $( this ).attr('zg-data-mask'));";
+$html	.= "});";
+$html	.= '</script>';
 
 echo $html;

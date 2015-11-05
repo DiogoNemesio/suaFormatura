@@ -11,6 +11,7 @@
 		<input type="hidden" id="codConvVendaID" name="codConvVenda" value="%COD_CONV_VENDA%">
 		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
 		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
+		<input type="hidden" id="quantTotalID" name="quantTotal">
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
@@ -96,7 +97,42 @@ $('#btnSubmitID').on("click", function(e) {
 		
 		return false;
 	}else{
-		$('#zgFormID').submit();
+		var options = {
+			symbol : "R$ ",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+		
+		var $valorTotal	= $('#valorTotalID').val();
+		var $quantTotal	= $('#quantTotalID').val();
+
+		$valorTotal = "<span class='text-success'><b>"+$valorTotal+"</b></span>";
+	
+		bootbox.dialog({
+			title: "Tem certeza que deseja confirmar a venda?",
+			message: "Após está confirmação não será mais possível cancelar ou alterar a operação.<br><br><b>QUANTIDADE: </b>"+$quantTotal+" eventos<br><b>TOTAL: </b> "+$valorTotal,
+			
+			buttons: {
+				"Confirmar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+					"className" : "btn-sm btn-primary",
+					"callback": function() {
+						$('#zgFormID').submit();
+					}
+				},
+				"Cancelar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-down'></i>Cancelar",
+					"className" : "btn-sm btn-danger",
+					"callback": function() {
+						zgLoadUrl('');
+					}
+	
+				},
+				
+			}
+		});
 	}
 });
 
@@ -105,6 +141,11 @@ $('#zgFormID').submit(function() {
 	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
 	$('#btnSubmitID').attr("disabled","disabled");
 	$('#cancel').attr("disabled","disabled");
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
 
 	$.ajax({
 		type:	"POST", 
@@ -122,6 +163,12 @@ $('#zgFormID').submit(function() {
 			zgLimpaModalAviso();
 			$('#zgDivModalID').off('hidden.bs.modal');
 		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
 
 		//Voltar o botão de salvar
 		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
@@ -135,25 +182,45 @@ $('#zgFormID').submit(function() {
 });
 
 function zgCalcularTotal(){
+	
+	if (zgValidaQuantDisp() == false){
+		return false;
+	}
+	
 	var $valor		 = $("input[name='valor\\[\\]']");
 	var $quantConv   = $("input[name='quantConv\\[\\]']");
 	var $total		 = $("input[name='total\\[\\]']");
 	var vCount		 = 0;
 	var vValorTotal	 = 0;
 	
+	var options = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
 	for (i = 0; i < $quantConv.length; i++) {
-		var $td		= $quantConv.eq(i).parent();
-		var $tr		= $td.parent();
+		var $td		  = $quantConv.eq(i).parent();
+		var $tr		  = $td.parent();
+		var quantConv = parseInt( $quantConv.eq(i).val().replace(".", "").replace(",",".") );
+		var valor     = parseFloat( $valor.eq(i).val().replace(".", "").replace(",",".") );
 		
-		vCount = $quantConv.eq(i).val() * $valor.eq(i).val();
+		if (isNaN(quantConv)) {
+			quantConv = parseFloat(0);
+		}
+
+		if (isNaN(valor)) {
+			valor = parseInt(0);
+		}
+		
+		vCount = quantConv * valor;
 		vValorTotal += vCount;
-		$tr.find('[zg-name="total"]').html("R$ " + vCount);
+		$tr.find('[zg-name="total"]').html(accounting.formatMoney(vCount, options));
 	}
-	$('#valorTotalID').html("TOTAL: R$ " + vValorTotal);
-	
-	if (zgValidaQuantDisp() == false){
-		return false;
-	}
+	$('#valorTotalID').html(accounting.formatMoney(vValorTotal, options));
+	$('#valorTotalID').val(accounting.formatMoney(vValorTotal, options));
 }
 
 function zgConviteDisponivel(){
@@ -169,19 +236,41 @@ function zgConviteDisponivel(){
 function zgValidaQuantDisp(){
 	var $quantConv  	= $("input[name='quantConv\\[\\]']");
 	var $quantDisp  	= $("input[name='quantDisp\\[\\]']");
+	var vOK				= true;
+	var vNull			= 0;
+	var vCount			= 0;
+	
+	for (j = 0; j < $quantConv.length; j++) {
+		if( !$quantConv.eq(j).val() || $quantConv.eq(j).val() == 0 ){
+			vNull++;
+		}else{
+			vCount = vCount + 1;
+			$('#quantTotalID').val(vCount);
+		}
+	}
 	
 	for (i = 0; i < $quantConv.length; i++) {
 		var $td		= $quantConv.eq(i).parent();
 		var $tr		= $td.parent();
 		
-		if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
+		if( vNull == $quantConv.length ){
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("É necessário escolher pelo menos um convite"));
+			$tr.addClass("alert-danger");
+			vOK = false;
+		}else if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Quantidade da compra deve ser menor ou igual a disponível"));
 			$tr.addClass("alert-danger");
-			vOK		= false;
+			vOK = false;
 		}else{
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
 			$tr.removeClass("alert-danger");
 		}
+	}
+	
+	if( vOK == false ){
+		return false;
+	}else{
+		return true;
 	}
 }
 
@@ -189,7 +278,6 @@ function zgCheckConvite(){
 	var vFormando 		= $('#codFormandoID').val();
 	var vFormaPag 		= $('#codFormaPagID').val();
 	var vConta		 	= $('#codContaID').val();
-	
 	vOK					= true;
 	
 	if (!vFormando) {
@@ -229,66 +317,5 @@ function zgCheckConvite(){
 		return false;
 	}
 }
-
-/*
-orcAtualizaInfo();
-
-function orcAtualizaInfo() {
-	var $numFormando 		= $('#numFormandoID').val();
-	var $numConvidado 		= $('#numConvidadoID').val();
-	var $codVersaoOrc 		= $('#codVersaoOrcID').val();
-	var $dataConclusao		= $('#dataConclusaoID').val();
-	var $dataAnterior		= $('#dataAnteriorID').val();
-	var $mostraInfo			= 0;
-
-	
-	if ($numFormando && $numConvidado) {
-		$mostraInfo			= 1;
-
-		// Calculo dos nº de convidados
-		var $total				= parseInt($numFormando) * parseInt($numConvidado);
-		$('#orcNumConvidadoID').html("<span class=''>"+$total+" pessoas presentes</span>");
-	}else{
-		$('#orcNumConvidadoID').html("<span class=''>&nbsp;</span>");
-	}
-	
-	if ($dataConclusao) {
-		$mostraInfo			= 1;
-		
-		//alert("DataConc: "+$dataConclusao+" DataAnterior: "+$dataAnterior);
-		
-		if ($dataConclusao !== $dataAnterior) {
-			var $spIcon		= $('#spOrcIcNumMesesID');
-			
-			$spIcon.removeClass("hidden");
-			
-			$.ajax({
-				url: "%ROOT_URL%/Fin/getNumMesesAteData.dp.php",
-				data:  { dataRef: $dataConclusao},
-				async: false,
-				method: "POST",
-				success: function(data) {
-					var $meses	= data["MESES"];
-	
-					$meses		= parseInt($meses);
-					$('#spOrcInfoNumMesesID').html($meses+" meses previstos");
-					$('#dataAnteriorID').val($dataConclusao);
-					$('#numMesesID').val($meses);
-			    },
-				dataType: 'json'
-			});
-			
-			$spIcon.addClass("hidden");
-		}
-		
-	}
-	
-	/*if ($mostraInfo		== 1) {
-		$('#divInfoID').show();
-	}else{
-		$('#divInfoID').hide();
-	}*
-	
-}*/
 
 </script> 
