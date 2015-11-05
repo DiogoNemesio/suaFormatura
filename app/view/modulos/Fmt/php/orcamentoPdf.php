@@ -41,7 +41,7 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-$log->info("POST ORC: ".serialize($_POST));
+$log->info("GET ORC: ".serialize($_GET));
 
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario

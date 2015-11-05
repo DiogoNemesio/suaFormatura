@@ -1,0 +1,93 @@
+<form id="zgFormOrcMailID" class="form-horizontal" method="post" action="%URL_MIDIA%" target="_blank">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-check red"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 220px;">
+	<input type="hidden" name="id" value="%ID%">
+	<input type="hidden" name="tipoMidia" id="tipoMidiaID" value="MAIL">
+	<input type="hidden" name="codVersaoOrc" value="%COD_VERSAO_ORC%">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="form-group col-sm-12" id="divEmailID">
+				<label for="instrucaoID" class="col-sm-3 control-label">E-mail do destinatário</label>
+				<div class="input-group col-sm-8 pull-left">
+					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="E-mail que receberá o boleto, para enviar para mais de um, digite os e-mails separados por vírgula"></i></span>
+					<input type="text" id="emailID" name="email" maxlength="300" class="width-100" placeholder="Email" autocomplete="off"/>
+				</div>
+			<div class="help-block col-sm-1 inline" id="divHelpEmailID"></div>
+			</div>
+		</div>
+	</div>
+    
+    <div id="divMsgOrcMailID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-warning" id="orcMailEnviaEmailID">Enviar e-mail</button>
+	<button type="button" data-dismiss="modal" class="btn" id="btnOrcMailFecharID">Fechar</button>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({
+	"autoclose": true,
+}).on('show', function() {
+    var $input		= $(this);
+    var modalZIndex = $input.closest('.modal').css('z-index');
+    var zIndex		= 9000;
+    if (modalZIndex) {
+        zIndex = parseInt(modalZIndex) + 1;
+    }
+    $('.datepicker').css("z-index", zIndex);
+});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('#orcMailEnviaEmailID').click(function() {
+	var $email	= $('#emailID').val();
+	
+	if (!$email) {
+		$('#divEmailID').addClass('has-error');
+		$('#divHelpEmailID').html(zgCriaSpanErro('E-mail deve ser preenchido'));
+		return false;
+	}
+	
+	$('#tipoMidiaID').val('MAIL');
+	$('#orcMailEnviaEmailID').html("Enviando e-mail, aguarde ...");
+	$('#orcMailEnviaEmailID').attr("disabled","disabled");
+	
+	$('#zgFormOrcMailID').submit(function(e) {
+		$.ajax({
+			type:	"GET", 
+			url:	"%URL_MIDIA%",
+			data:	$('#zgFormOrcMailID').serialize(),
+		}).done(function( data, textStatus, jqXHR) {
+			$('#btnOrcMailFecharID').click();
+			$.gritter.add({
+				title: 'E-mail enviado com sucesso',
+				text: 'O E-mail com o orçamento foi enviado com sucesso para os destinatários informados.',
+				class_name: 'gritter-info',
+				time: '5000'
+			});
+			//zgMostraAviso("Fechar");
+		}).fail(function( jqXHR, textStatus, errorThrown) {
+			zgMostraAviso(null);
+		});
+		//
+		e.preventDefault();
+		return false; 
+	});
+	$('#zgFormOrcMailID').submit();
+	return false; 
+});
+
+</script>
