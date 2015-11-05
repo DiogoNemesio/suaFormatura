@@ -28,7 +28,7 @@ if (isset($_POST['aQtde'])) 			$aQtde				= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['aValor'])) 			$aValor				= \Zage\App\Util::antiInjection($_POST['aValor']);
 if (isset($_POST['aObs'])) 				$aObs				= \Zage\App\Util::antiInjection($_POST['aObs']);
 
-$log->info("POST ORC: ".serialize($_POST));
+//$log->info("POST ORC: ".serialize($_POST));
 
 #################################################################################
 ## Verificar parâmetro obrigatório
@@ -102,7 +102,7 @@ try {
 	$oOrc->setCodUsuario($oUser);
 	$oOrc->setDataCadastro(new \DateTime("now"));
 	$oOrc->setDataConclusao($oDataConc);
-	//$oOrc->setIndAceite($indAceite);
+	$oOrc->setIndAceite(0);
 	$oOrc->setNumMeses($numMeses);
 	$oOrc->setQtdeConvidados($numConvidado);
 	$oOrc->setQtdeFormandos($numFormando);

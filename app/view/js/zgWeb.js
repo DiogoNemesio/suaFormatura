@@ -268,3 +268,37 @@ function contaBancoDigito(codBanco){
 	
 	return valor;
 }
+
+function zgReplaceAll($str, $find, $replace){
+	try{
+		var $regexp	= new RegExp("["+$find+"]", "gi");
+	    return $str.replace( $regexp, $replace ) ;
+	} catch(ex){
+		return $str;
+	}
+}
+
+
+function zgConverteFloat($num) {
+	var $n			= String($num);
+	var $posPonto	= $n.indexOf(".");
+	var $posVirg	= $n.indexOf(",");
+	var $temp;
+
+	if ($posPonto == -1 && $posVirg == -1) {
+		return $num;
+	}else if ($posPonto != -1 && $posVirg != -1) {
+		if ($posPonto > $posVirg) {
+			$temp = zgReplaceAll($n,",","");
+		}else{
+			$temp = zgReplaceAll($n,".","");
+			$temp = zgReplaceAll($temp,",",".");
+		}
+	}else if ($posPonto == -1) {
+		$temp 	= zgReplaceAll($n,",",".");
+	}else{
+		$temp	= $n;
+	}
+	
+	return(parseFloat($temp));
+}

@@ -84,9 +84,16 @@ $aVersoesOrc			= $em->getRepository('Entidades\ZgfmtOrcamento')->findBy(array('c
 //$oVersoesOrc			= "";
 $oVersoesOrc			= '<option value="">'.$tr->trans("Novo Orçamento").'</option>';
 for ($i = 0; $i < sizeof($aVersoesOrc); $i++) {
+	
+	if ($aVersoesOrc[$i]->getIndAceite() == 1) {
+		$icon	= 'data-icon=\"fa-check-circle green\"';
+	}else{
+		$icon	= null;
+	}
+	
 	$selected 		= ($codVersaoOrc == $aVersoesOrc[$i]->getCodigo()) ?  "selected=\"true\"" : null;
 	$dataVersao		= ($aVersoesOrc[$i]->getDataCadastro()) ? $aVersoesOrc[$i]->getDataCadastro()->format($system->config["data"]["dateFormat"]) : null;
-	$oVersoesOrc	.= "<option data-icon=\"fa-check-circle green\" value=\"".$aVersoesOrc[$i]->getCodigo()."\" $selected>".$tr->trans("Versão").": ".$aVersoesOrc[$i]->getVersao().' ('.$dataVersao.')'.'</option>';
+	$oVersoesOrc	.= "<option ".$icon." value=\"".$aVersoesOrc[$i]->getCodigo()."\" $selected>".$tr->trans("Versão").": ".$aVersoesOrc[$i]->getVersao().' ('.$dataVersao.')'.'</option>';
 }
 //if (!$oVersoesOrc)	$oVersoesOrc	= '<option value="">'.$tr->trans("Novo Orçamento").'</option>';
 
@@ -123,6 +130,13 @@ try {
 
 
 #################################################################################
+## Buscar as configurações da formatura, onde será gravado os valores de previsão
+#################################################################################
+$oFmt				= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+
+$log->info("Valor Previsto: ".round($oFmt->getValorPrevistoTotal(),2));
+
+#################################################################################
 ## Url do script
 #################################################################################
 $urlReload			= ROOT_URL."/Fmt/orcamento.php?id=".$id;
@@ -145,6 +159,8 @@ $tpl->set('URL_MIDIA'				,$urlMidia);
 $tpl->set('URL_MAIL'				,$urlMail);
 $tpl->set('DP_ACEITE'				,$urlAceite);
 $tpl->set('ID'						,$id);
+
+$tpl->set('VALOR_PREVISTO'			,round($oFmt->getValorPrevistoTotal(),2));
 
 $tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());
 $tpl->set('IDENT'					,$ident);

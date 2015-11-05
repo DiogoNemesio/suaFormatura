@@ -52,72 +52,31 @@ class Orcamento {
 	}
 	
 	/**
-	 * Lista vendas por formando
-	 *
-	 * @param integer $codOrganizacao
-	 * @return array
+	 * Resgata o valor Total do Orçamento
+	 * @param unknown $codFormatura
 	 */
-	public static function listaVendaConviteFormando() {
+	public static function calculaValorTotal($codOrcamento) {
 		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
 	
 		try {
-			$qb->select('v')
-			->from('\Entidades\ZgfmtConviteExtraItem','i')
-			->leftJoin('\Entidades\ZgfmtConviteExtraVenda'	,'v',	\Doctrine\ORM\Query\Expr\Join::WITH, 'v.codigo 	= i.codVenda')
-			->leftJoin('\Entidades\ZgfmtConviteExtraConf'	,'c',	\Doctrine\ORM\Query\Expr\Join::WITH, 'c.codigo 	= i.codConviteConf')
-			->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= c.codOrganizacao')
+			$qb->select('sum(i.quantidade * i.valorUnitario) as total')
+			->from('\Entidades\ZgfmtOrcamentoItem','i')
 			->where($qb->expr()->andx(
-					$qb->expr()->eq('o.codigo'					, ':codOrganizacao')
-				)
-			)
+					$qb->expr()->eq('i.codOrcamento'		, ':codOrcamento')
+			))
 	
-			->setParameter('codOrganizacao', $system->getCodOrganizacao())
-				
-			->groupBy('v.codFormando');
-			//->orderBy('r.codigo', 'ASC');
-			
+			->setParameter('codOrcamento', $codOrcamento);
+	
 			$query 		= $qb->getQuery();
-			return($query->getResult());
+			$info		= $query->getSingleScalarResult();
+				
+			return ($info);
+				
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
 	}
 	
-	/**
-	* Lista Configuracoes validas
-	*
-	* @param integer $codOrganizacao
-	* @return array
-	*/
-	public static function listaConviteAptoVenda() {
-		global $em,$system, $log;
-	
-		$qb 	= $em->createQueryBuilder();
-		$hoje 	= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], date($system->config["data"]["dateFormat"]." 00:00:00"));
-		
-		try {
-			$qb->select('c')
-			->from('\Entidades\ZgfmtConviteExtraConf','c')
-				->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= c.codOrganizacao')
-				->where($qb->expr()->andx(
-						$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
-						$qb->expr()->lte('c.dataInicioPresencial'	, ':now'),
-						$qb->expr()->gte('c.dataFimPresencial'		, ':now')
-				)
-			)
-	
-			->setParameter('codOrganizacao', $system->getCodOrganizacao())
-			->setParameter('now', $hoje)
-				
-			->orderBy('c.codigo', 'ASC');
-				
-			$query 		= $qb->getQuery();
-			
-			return($query->getResult());
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
-		}
-	}
 }
