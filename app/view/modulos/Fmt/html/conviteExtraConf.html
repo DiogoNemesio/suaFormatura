@@ -214,6 +214,7 @@ function validaConviteExtraConf() {
 	var vCustoBoletoP	= $('#custoBoletoPadraoID').val();
 	var vDataIniPre		= $('#dataInicioPresencialID').val();
 	var vDataFimPre		= $('#dataFimPresencialID').val();
+	var vCodConviteConfID	= $('#codConviteConfID').val();
 	
 	var date = new Date();
 	var dataHoje = moment(date).format('YYYYMMDD');
@@ -249,7 +250,7 @@ function validaConviteExtraConf() {
 		}
 	}else{
 		var ComparaIniNet = parseInt(vDataIniNet.split("/")[2].toString() + vDataIniNet.split("/")[1].toString() + vDataIniNet.split("/")[0].toString());
-		if (dataHoje > ComparaIniNet){
+		if (dataHoje > ComparaIniNet && !vCodConviteConfID){
 			$('#divDataInicioInternetID').addClass('has-error');
 			$('#divHelpDataIniNetID').html(zgCriaSpanErro('A data do início da venda na internet não pode ser inferior a data de hoje.'));
 			vOK = false;
@@ -322,7 +323,7 @@ function validaConviteExtraConf() {
 		vOK = false;
 	}else{
 		var ComparaIniPre = parseInt(vDataIniPre.split("/")[2].toString() + vDataIniPre.split("/")[1].toString() + vDataIniPre.split("/")[0].toString());
-		if (dataHoje > ComparaIniPre){
+		if (dataHoje > ComparaIniPre && !vCodConviteConfID){
 			$('#divDataInicioPresencialID').addClass('has-error');
 			$('#divHelpDataIniPreID').html(zgCriaSpanErro('A data do início da venda presencial não pode ser inferior a data de hoje.'));
 			vOK = false;

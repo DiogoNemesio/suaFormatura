@@ -618,7 +618,7 @@ $('#zgFormID').submit(function() {
 		if (checaRetornoOK(data) == true) {
 			$('#codOrganizacaoID').val(zgGetCodRetorno(data));
 		}
-		zgMostraAviso("Fechar",'Novo Parceiro', '%URLNOVO%');
+		zgMostraAviso("Fechar");
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLimpaModalAviso();
