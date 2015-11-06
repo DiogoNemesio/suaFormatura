@@ -245,8 +245,8 @@ $valorFinal		= ($valorTotal + ($totalSistema * $numFormandos));
 $totalFormando	= round(($valorFinal / $numFormandos),2);
 $mensalidade	= $totalFormando / $numMeses;
 
-$htmlForm	.= '<div style="float: left; width: 48%;">';
-$htmlForm	.= '<table class="table" style="width: 100%;"><thead>';
+$htmlForm	.= '<div style="float: left; width: 48%; page-break-inside: avoid;">';
+$htmlForm	.= '<table class="table" style="width: 100%; page-break-inside: avoid;"><thead>';
 $htmlForm	.= '<tr><th style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Evento</th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">Valor do Evento</th></tr>';
 $htmlForm	.= '</thead>';
 $htmlForm	.= '<tbody>';
@@ -261,8 +261,8 @@ $htmlForm	.= '</table>';
 $htmlForm	.= '</div>';
 
 
-$htmlForm	.= '<div style="float: right; width: 48%;">';
-$htmlForm	.= '<table class="table" style="width: 100%;"><thead>';
+$htmlForm	.= '<div style="float: right; width: 48%; page-break-inside: avoid;">';
+$htmlForm	.= '<table class="table" style="width: 100%; page-break-inside: avoid;"><thead>';
 $htmlForm	.= '<tr><th colspan="2" style="text-align: center; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Resumo Geral</th></tr>';
 $htmlForm	.= '</thead>';
 $htmlForm	.= '<tbody>';

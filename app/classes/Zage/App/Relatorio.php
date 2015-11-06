@@ -121,23 +121,36 @@ class Relatorio extends \mPDF {
 		}
 		
 		if ($this->_logo) {
-			$logo		= '<td style="width: 200px; height: 80px;"><h6 align="center"><img src="'.$this->_logo.'" align="center" style=""/></h6></td>';
+			$w			= ($numFiltros) ? "200px" : "100%";
+			$logo		= '<td style="width: '.$w.'; height: 80px;"><h6 align="center"><img src="'.$this->_logo.'" align="center" style=""/></h6></td>';
 			$filtro		= ($numFiltros) ? '<td style="width: 100%;  height: 80px;">'.$this->_montaFiltros().'</td>' : null;
 		}else{
 			$logo		= null;
 			$filtro		= ($numFiltros) ? '<td colspan="2" style="width: 100%;  height: 80px;">'.$this->_montaFiltros().'</td>' : null;
 		}
 
-		$header	= '<table class="table">
-		'.$orgName.'
-		<tr>
-			'.$logo.'
-			'.$filtro.'
-		</tr>
-				
-		</table>';
 		
-		//echo $header;
+		if ($filtro) {
+			$header	= '<table class="table">
+			'.$orgName.'
+			<tr>
+				'.$logo.'
+				'.$filtro.'
+			</tr>
+			
+			</table>';
+				
+		}elseif ($orgName) {
+			$header	= '<table class="table">
+			'.$orgName.'
+			<tr>
+				'.$logo.'
+			</tr>
+		
+			</table>';
+		}else{
+			$header	= '<h6 align="center"><img src="'.$this->_logo.'" align="center" style=""/></h6>';
+		}
 		
 		
 		$this->SetHTMLHeader($header);
