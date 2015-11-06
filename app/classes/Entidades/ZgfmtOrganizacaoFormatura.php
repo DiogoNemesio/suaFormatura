@@ -71,6 +71,27 @@ class ZgfmtOrganizacaoFormatura
     private $qtdePrevistaConvidados;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_JUROS_TURMA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctJurosTurma;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_MORA_TURMA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctMoraTurma;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_CONVITE_EXTRA_TURMA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctConviteExtraTurma;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -280,6 +301,75 @@ class ZgfmtOrganizacaoFormatura
     public function getQtdePrevistaConvidados()
     {
         return $this->qtdePrevistaConvidados;
+    }
+
+    /**
+     * Set pctJurosTurma
+     *
+     * @param float $pctJurosTurma
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setPctJurosTurma($pctJurosTurma)
+    {
+        $this->pctJurosTurma = $pctJurosTurma;
+
+        return $this;
+    }
+
+    /**
+     * Get pctJurosTurma
+     *
+     * @return float 
+     */
+    public function getPctJurosTurma()
+    {
+        return $this->pctJurosTurma;
+    }
+
+    /**
+     * Set pctMoraTurma
+     *
+     * @param float $pctMoraTurma
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setPctMoraTurma($pctMoraTurma)
+    {
+        $this->pctMoraTurma = $pctMoraTurma;
+
+        return $this;
+    }
+
+    /**
+     * Get pctMoraTurma
+     *
+     * @return float 
+     */
+    public function getPctMoraTurma()
+    {
+        return $this->pctMoraTurma;
+    }
+
+    /**
+     * Set pctConviteExtraTurma
+     *
+     * @param float $pctConviteExtraTurma
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setPctConviteExtraTurma($pctConviteExtraTurma)
+    {
+        $this->pctConviteExtraTurma = $pctConviteExtraTurma;
+
+        return $this;
+    }
+
+    /**
+     * Get pctConviteExtraTurma
+     *
+     * @return float 
+     */
+    public function getPctConviteExtraTurma()
+    {
+        return $this->pctConviteExtraTurma;
     }
 
     /**
