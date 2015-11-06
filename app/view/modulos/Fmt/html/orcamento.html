@@ -431,8 +431,8 @@ function carregaPlanoOrc() {
 		}).done(function( data, textStatus, jqXHR) {
 			$("#divItem").empty();
 			$('#divItem').html(data);
-			corrigeQtdeFormandos();
-			corrigeQtdeConvidados();
+			corrigeQtdeFormandos(false);
+			corrigeQtdeConvidados(false);
 			orcAtualizaCustoFinal();
 			$('#divMsgOrcID').empty();
 			
@@ -503,7 +503,7 @@ function orcAlteraQtdeFormandos() {
 	/**
 	 * Corrigir a qtde de formandos
 	 */
-	 corrigeQtdeFormandos();
+	 corrigeQtdeFormandos(true);
 	
 	/**
 	 * Atualiza a flag de salvamento
@@ -519,13 +519,13 @@ function orcAlteraQtdeFormandos() {
 	orcAlteraQtdeConvidados();
 }
 
-function corrigeQtdeFormandos() {
+function corrigeQtdeFormandos($indChange) {
 
 	var $numFormando 		= $('#numFormandoID').val();
 	
 	$('input[zg-name="qtde"][zg-tipo="F"]').each(function() {
 		$(this).val($numFormando);
-		//$(this).trigger('change');
+		if ($indChange == true) $(this).trigger('change');
 	});
 }
 
@@ -534,7 +534,7 @@ function orcAlteraQtdeConvidados() {
 	/**
 	 * Corrigir a quantidade de convidados
 	 */
-	 corrigeQtdeConvidados();
+	 corrigeQtdeConvidados(true);
 
 	/**
 	 * Atualiza a flag de salvamento
@@ -550,7 +550,7 @@ function orcAlteraQtdeConvidados() {
 	orcAtualizaInfo();
 }
 
-function corrigeQtdeConvidados() {
+function corrigeQtdeConvidados($indChange) {
 	var $numFormando 		= $('#numFormandoID').val();
 	var $numConvidado 		= $('#numConvidadoID').val();
 	var $total				= parseInt($numFormando) * parseInt($numConvidado);
@@ -558,7 +558,7 @@ function corrigeQtdeConvidados() {
 	
 	$('input[zg-name="qtde"][zg-tipo="C"]').each(function() {
 		$(this).val($total);
-		//$(this).trigger('change');
+		if ($indChange == true) $(this).trigger('change');
 	});
 }
 
