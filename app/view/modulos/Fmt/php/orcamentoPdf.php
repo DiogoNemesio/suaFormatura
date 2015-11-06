@@ -310,9 +310,9 @@ if ($via == "PDF") {
 	## Define os valores das variáveis
 	#################################################################################
 	$tpl->set('ID'					,$id);
-	$tpl->set('TEXTO_PARCELA'		,$textoParcela);
-	$tpl->set('DESC_CONTA'			,$descConta);
-	$tpl->set('URL_ORG'				,$urlOrg);
+	//$tpl->set('TEXTO_PARCELA'		,$textoParcela);
+	//$tpl->set('DESC_CONTA'			,$descConta);
+	$tpl->set('URL_ORG'				,ROOT_URL);
 
 	#################################################################################
 	## Criar os objeto do email ,transporte e validador
@@ -339,7 +339,7 @@ if ($via == "PDF") {
 	#################################################################################
 	$body->setParts(array($htmlMail, $attachment));
 	$mail->setBody($body);
-	$mail->setSubject("<SF> Orçamento: ".$demonstrativo1);
+	$mail->setSubject("<SF> Orçamento versão ".$orcamento->getVersao());
 
 	#################################################################################
 	## Definir os destinatários
@@ -359,9 +359,11 @@ if ($via == "PDF") {
 		$transport->send($mail);
 	} catch (Exception $e) {
 		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
-		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
+		//throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getTraceAsString())));
 	}
 
+	echo '0'.\Zage\App\Util::encodeUrl('||');
 	//$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Email enviado com sucesso !!!"));
 }
 

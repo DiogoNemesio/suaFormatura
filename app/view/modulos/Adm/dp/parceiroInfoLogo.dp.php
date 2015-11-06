@@ -71,7 +71,7 @@ try {
 	$logoExt 		= pathinfo($logoNome, PATHINFO_EXTENSION);
 	$logoPath		= $tempLoc."_thumb.".$logoExt;
 	move_uploaded_file($tempLoc , $logoPath);
-	$ret			= resizeLogo($logoPath,$logoPath,280);
+	$ret			= resizeLogo($logoPath,$logoPath,170);
 	
 	#################################################################################
 	## LogoMarca
