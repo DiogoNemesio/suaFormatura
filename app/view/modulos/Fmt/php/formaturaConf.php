@@ -56,11 +56,24 @@ $valorPorFormando		= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorForman
 $valorPorBoleto			= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorBoleto());
 $taxaPorFormando		= \Zage\App\Util::formataDinheiro(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 $diaVencimento			= $oOrgFmt->getDiaVencimento();
+$pctJurosTurma			= $oOrgFmt->getPctJurosTurma();
+$pctMoraTurma			= $oOrgFmt->getPctMoraTurma();
+$pctConviteTurma		= $oOrgFmt->getPctConviteExtraTurma();
 
 if ($valorPorFormando	< 0) 	$valorPorFormando	= 0;
 if ($valorPorBoleto		< 0)	$valorPorBoleto		= 0;
 if ($taxaPorFormando	< 0)	$taxaPorFormando	= 0;
 if (!$diaVencimento)			$diaVencimento		= 5;
+if ($pctJurosTurma		< 0)	$pctJurosTurma		= 0;
+if ($pctMoraTurma		< 0)	$pctMoraTurma		= 0;
+if ($pctConviteTurma	< 0)	$pctConviteTurma	= 0;
+
+#################################################################################
+## Caso os percentuais não estejam definidos, usar 100 % para a turma
+#################################################################################
+if ($pctJurosTurma		=== null)		$pctJurosTurma	= 100;
+if ($pctMoraTurma		=== null)		$pctMoraTurma	= 100;
+if ($pctConviteTurma	=== null)		$pctConviteTurma	= 100;
 
 #################################################################################
 ## Montar o select do dia de vencimento
@@ -91,6 +104,9 @@ $tpl->set('VALOR_FORMANDO'			,$valorPorFormando);
 $tpl->set('VALOR_BOLETO'			,$valorPorBoleto);
 $tpl->set('TAXA_FORMANDO'			,$taxaPorFormando);
 $tpl->set('DIAS_VENC'				,$oDiaVenc);
+$tpl->set('PCT_JUROS_TURMA'			,$pctJurosTurma);
+$tpl->set('PCT_MORA_TURMA'			,$pctMoraTurma);
+$tpl->set('PCT_CONVITE_TURMA'		,$pctConviteTurma);
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
