@@ -542,7 +542,7 @@ if ($tipoMidia == "PDF") {
 	#################################################################################
 	$body->setParts(array($htmlMail, $attachment));
 	$mail->setBody($body);
-	$mail->setSubject("<ZageMail> Boleto referente a fatura: ".$demonstrativo1);
+	$mail->setSubject("<SF> Boleto referente a fatura: ".$demonstrativo1);
 	
 	#################################################################################
 	## Definir os destinatários

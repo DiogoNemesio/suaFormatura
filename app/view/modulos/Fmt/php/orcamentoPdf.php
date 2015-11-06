@@ -12,6 +12,12 @@ use \H2P\Converter\PhantomJS;
 use \H2P\TempFile;
 use \H2P\Request;
 use \H2P\Request\Cookie;
+use \Zend\Mail;
+use \Zend\Mail\Message;
+use \Zend\Mime\Message as MimeMessage;
+use \Zend\Mime\Part as MimePart;
+Use \Zend\Mime;
+
 
 #################################################################################
 ## Variáveis globais
@@ -45,11 +51,15 @@ $system->checaPermissao($_codMenu_);
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_GET['codVersaoOrc'])) 		$codVersaoOrc		= \Zage\App\Util::antiInjection($_GET['codVersaoOrc']);
+if (isset($_GET['via'])) 				$via				= \Zage\App\Util::antiInjection($_GET['via']);
+if (isset($_GET['email'])) 				$email				= \Zage\App\Util::antiInjection($_GET['email']);
 
 #################################################################################
 ## Valida os parâmetros
 #################################################################################
 if (!isset($codVersaoOrc) || (!$codVersaoOrc)) 	\Zage\App\Erro::halt('Parâmetro incorreto');
+if (!isset($via) || (!$via)) 	$via		= "PDF";
+
 
 #################################################################################
 ## Resgata as informações do orçamento
@@ -95,6 +105,7 @@ $dataConclusao	= ($oOrgFmt->getDataConclusao() != null) ? $oOrgFmt->getDataConcl
 ## Criar o relatório
 #################################################################################
 $rel	= new \Zage\App\Relatorio();
+$rel->use_kwt = true;
 
 #################################################################################
 ## Criação do cabeçalho
@@ -245,7 +256,8 @@ $valorFinal		= ($valorTotal + ($totalSistema * $numFormandos));
 $totalFormando	= round(($valorFinal / $numFormandos),2);
 $mensalidade	= $totalFormando / $numMeses;
 
-$htmlForm	.= '<div style="float: left; width: 48%; page-break-inside: avoid;">';
+$htmlForm	.= '<div style="width: 48%; page-break-inside: avoid;">';
+//$htmlForm	.= '<div style="float: left; width: 48%; page-break-inside: avoid;">';
 $htmlForm	.= '<table class="table" style="width: 100%; page-break-inside: avoid;"><thead>';
 $htmlForm	.= '<tr><th style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Evento</th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">Valor do Evento</th></tr>';
 $htmlForm	.= '</thead>';
@@ -261,9 +273,10 @@ $htmlForm	.= '</table>';
 $htmlForm	.= '</div>';
 
 
-$htmlForm	.= '<div style="float: right; width: 48%; page-break-inside: avoid;">';
+$htmlForm	.= '<div style="width: 48%; page-break-inside: avoid;">';
+//$htmlForm	.= '<div style="float: right; width: 48%; page-break-inside: avoid;">';
 $htmlForm	.= '<table class="table" style="width: 100%; page-break-inside: avoid;"><thead>';
-$htmlForm	.= '<tr><th colspan="2" style="text-align: center; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Resumo Geral</th></tr>';
+$htmlForm	.= '<tr><th colspan="2" style="text-align: center; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">Resumo Geral</th></tr>';
 $htmlForm	.= '</thead>';
 $htmlForm	.= '<tbody>';
 $htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Data de Conclusão<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.$dataConclusao.' ( '.$numMeses.' meses previstos)&nbsp;<i>&#10004</i></td></tr>';
@@ -272,7 +285,7 @@ $htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; b
 $htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Mensalidade<b>		</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($mensalidade).' mensais por formando&nbsp;<i>&#10004</i></td></tr>';
 $htmlForm	.= '</tbody>';
 $htmlForm	.= '<tfoot>';
-$htmlForm	.= '<tr><th style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Custo Final Total</th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">'.\Zage\App\Util::to_money($valorFinal).'</th></tr>';
+$htmlForm	.= '<tr><th style="text-align: right; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Custo Final Total: </th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">'.\Zage\App\Util::to_money($valorFinal).'</th></tr>';
 $htmlForm	.= '</tfoot>';
 $htmlForm	.= '</table>';
 $htmlForm	.= '</div>';
@@ -280,4 +293,76 @@ $htmlForm	.= '</div>';
 $html		.= $htmlForm;
 
 $rel->WriteHTML($html);
-$rel->Output("Orçamento_Versao_".$orcamento->getVersao().".pdf",'D');
+
+
+if ($via == "PDF") {
+	$rel->Output("Orçamento_Versao_".$orcamento->getVersao().".pdf",'D');
+}else{
+	
+	
+	#################################################################################
+	## Carregando o template html do email
+	#################################################################################
+	$tpl	= new \Zage\App\Template();
+	$tpl->load(MOD_PATH . "/Fin/html/boletoMail.html");
+
+	#################################################################################
+	## Define os valores das variáveis
+	#################################################################################
+	$tpl->set('ID'					,$id);
+	$tpl->set('TEXTO_PARCELA'		,$textoParcela);
+	$tpl->set('DESC_CONTA'			,$descConta);
+	$tpl->set('URL_ORG'				,$urlOrg);
+
+	#################################################################################
+	## Criar os objeto do email ,transporte e validador
+	#################################################################################
+	$mail 			= \Zage\App\Mail::getMail();
+	$transport 		= \Zage\App\Mail::getTransport();
+	$validator 		= new \Zend\Validator\EmailAddress();
+	$htmlMail 		= new MimePart($tpl->getHtml());
+	$htmlMail->type = "text/html";
+	$body 			= new MimeMessage();
+
+	#################################################################################
+	## Anexar o PDF
+	#################################################################################
+	$fileContent 				= $rel->Output("Orçamento_Versao_".$orcamento->getVersao()."_".$system->getCodOrganizacao().".pdf",'S');
+	$attachment 				= new Mime\Part($fileContent);
+	$attachment->type 			= 'application/pdf';
+	$attachment->filename 		= 'boleto.pdf';
+	$attachment->disposition 	= Mime\Mime::DISPOSITION_ATTACHMENT;
+	$attachment->encoding 		= Mime\Mime::ENCODING_BASE64;
+
+	#################################################################################
+	## Definir o conteúdo do e-mail
+	#################################################################################
+	$body->setParts(array($htmlMail, $attachment));
+	$mail->setBody($body);
+	$mail->setSubject("<SF> Orçamento: ".$demonstrativo1);
+
+	#################################################################################
+	## Definir os destinatários
+	#################################################################################
+	$emails		= explode(",",$email);
+	for ($j = 0; $j <sizeof($emails); $j++) {
+		$_to		= trim($emails[$j]);
+		if ($validator->isValid($_to)) {
+			$mail->addTo($_to);
+		}
+	}
+
+	#################################################################################
+	## Enviar o e-mail
+	#################################################################################
+	try {
+		$transport->send($mail);
+	} catch (Exception $e) {
+		$log->debug("Erro ao enviar o e-mail:". $e->getTraceAsString());
+		throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
+	}
+
+	//$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Email enviado com sucesso !!!"));
+}
+
+
