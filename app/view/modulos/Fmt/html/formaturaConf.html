@@ -8,9 +8,10 @@
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
 		<input type="hidden" id="valID" name="validado">
-		<input type="hidden" id="pctJurosTurmaID" name="pctJurosTurma">
-		<input type="hidden" id="pctMoraTurmaID" name="pctMoraTurma">
-		<input type="hidden" id="pctConviteExtraTurmaID" name="pctConviteExtraTurma">
+		<input type="hidden" id="pctJurosTurmaID" name="pctJurosTurma" value="%PCT_JUROS_TURMA%">
+		<input type="hidden" id="pctMoraTurmaID" name="pctMoraTurma" value="%PCT_MORA_TURMA%">
+		<input type="hidden" id="pctConviteExtraTurmaID" name="pctConviteExtraTurma" value="%PCT_CONVITE_TURMA%">
+		<input type="hidden" id="pctDevolucaoID" name="pctDevolucao" value="%PCT_DEVOLUCAO%">
 
 		<div class="row">
 			<div class="form-group col-sm-12" id="divDiaVencimentoID">
@@ -70,6 +71,14 @@
 	    			<div style="width: 80%;" id="pctConviteExtraTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctConviteExtraTurmaSpanID">%PCT_CONVITE_TURMA% %</span>
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpPctConviteExtraTurmaID"></div>
+			</div>
+		    <div class="form-group col-sm-12" id="divPctDevolucaoID">
+		    	<label class="col-sm-3 control-label" for="pctDevolucaoSliderID">Percentual de devolução em caso de desistência</label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de devolução das mensalidades pagas"></i></span>
+	    			<div style="width: 80%;" id="pctDevolucaoSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctDevolucaoSpanID">%PCT_DEVOLUCAO% %</span>
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpPctDevolucaoID"></div>
 			</div>
 	    </div>
 		<div id="divMsgFmtConfID"></div>
@@ -136,6 +145,18 @@ $( "#pctConviteExtraTurmaSliderID" ).slider({
 	slide: function( event, ui ) {
 		$("#pctConviteExtraTurmaID").val(ui.value);
 		$('#pctConviteExtraTurmaSpanID').html(ui.value + "&nbsp;%");
+	}
+});
+
+$( "#pctDevolucaoSliderID" ).slider({
+	range: "max",
+	min: 0,
+	max: 100,
+	value: %PCT_DEVOLUCAO%,
+	step: 1,
+	slide: function( event, ui ) {
+		$("#pctDevolucaoID").val(ui.value);
+		$('#pctDevolucaoSpanID').html(ui.value + "&nbsp;%");
 	}
 });
 

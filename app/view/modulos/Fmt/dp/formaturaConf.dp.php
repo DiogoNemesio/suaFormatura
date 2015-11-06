@@ -23,8 +23,7 @@ if (isset($_POST['diaVencimento']))			$diaVencimento			= \Zage\App\Util::antiInj
 if (isset($_POST['pctJurosTurma']))			$pctJurosTurma			= \Zage\App\Util::antiInjection($_POST['pctJurosTurma']);
 if (isset($_POST['pctMoraTurma']))			$pctMoraTurma			= \Zage\App\Util::antiInjection($_POST['pctMoraTurma']);
 if (isset($_POST['pctConviteExtraTurma']))	$pctConviteExtraTurma	= \Zage\App\Util::antiInjection($_POST['pctConviteExtraTurma']);
-
-$log->info("pctJurosTurma: ".$pctJurosTurma);
+if (isset($_POST['pctDevolucao']))			$pctDevolucao			= \Zage\App\Util::antiInjection($_POST['pctDevolucao']);
 
 $err	= null;
 
@@ -66,6 +65,7 @@ $valorPorBoleto			= \Zage\App\Util::toMysqlNumber($valorPorBoleto);
 $pctJurosTurma			= (int) $pctJurosTurma;
 $pctMoraTurma			= (int) $pctMoraTurma;
 $pctConviteExtraTurma	= (int) $pctConviteExtraTurma;
+$pctDevolucao			= (int) $pctDevolucao;
 
 
 #################################################################################
@@ -78,6 +78,7 @@ try {
 	$oOrgFmt->setPctJurosTurma($pctJurosTurma);
 	$oOrgFmt->setPctMoraTurma($pctMoraTurma);
 	$oOrgFmt->setPctConviteExtraTurma($pctConviteExtraTurma);
+	$oOrgFmt->setPctDevolucao($pctDevolucao);
 	$em->persist($oOrgFmt);
 	
 	$em->flush();
