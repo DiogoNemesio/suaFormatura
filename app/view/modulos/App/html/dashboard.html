@@ -5,14 +5,87 @@
 
 <div class="page-header">
 	<h1>
-		<i class="fa fa-graduation-cap">&nbsp;</i> Sua Formatura
-		
+		<img alt="" src="%IMG_URL%/logo_suaformatura_128x32.png" />
 		<div class="fb-like" data-href="https://www.facebook.com/Sua-Formatura-1028559723830618/" show_faces="false" data-share="false" data-layout="button_count"></div>
 	</h1>
-	
 </div><!-- /.page-header -->
 
+<div class="row col-sm-12">
+	<div class="col-sm-5">
+		<div class="widget-box transparent" id="dashOrcBoxID">
+			<div class="widget-header">
+				<h4 class="widget-title lighter smaller">
+					<i class="ace-icon fa fa-dashboard blue"></i>Previsões de Orçamento
+				</h4>
+			</div>
+			<div class="widget-body">
+				<div class="col-sm-8">
+					<div class="row">
+						<label class="col-sm-4" style="text-align: left;">Orçado</label>
+						<label class="col-sm-8" style="text-align: right;">R$ 123.456,23&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag grey bigger-130"></i></a></label>
+					</div>
+					<div class="row">
+						<label class="col-sm-4" style="text-align: left;">Arrecadado</label>
+						<label class="col-sm-8" style="text-align: right;">R$ 92.592,17&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag blue bigger-130"></i></a></label>
+					</div>
+					<div class="row">
+						<label class="col-sm-4" style="text-align: left;">Gasto</label>
+						<label class="col-sm-8" style="text-align: right;">R$ 43.209,68&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag red bigger-130"></i></a></label>
+					</div>
+					<div class="row">
+						<div class="progress pos-rel col-sm-12" >
+							<div class="progress-bar progress-bar-striped progress-bar-danger active" style="width: 35%;" role="progressbar" aria-valuenow="35"></div>
+							<div class="progress-bar progress-bar-striped progress-bar-info active" style="width: 40%;" role="progressbar" aria-valuenow="75"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="easy-pie-chart percentage col-sm-6" data-percent="75" data-color="#87CEEB">
+						<span class="percent">75</span>%
+					</div>
+					<div class="easy-pie-chart percentage col-sm-6" data-percent="35" data-color="#D15B47">
+						<span class="percent">35</span>%
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-2">&nbsp;</div>
+	<div class="col-sm-5">
+		<div class="widget-box transparent" id="dashFinBoxID">
+			<div class="widget-header">
+				<h4 class="widget-title lighter smaller">
+					<i class="ace-icon fa fa-money orange"></i>Financeiro
+				</h4>
+				<div class="widget-toolbar no-border">
+					<ul class="nav nav-tabs" id="recent-tab">
+						<li class="active">
+							<a data-toggle="tab" href="#task-tab">Receber</a>
+						</li>
 
+						<li>
+							<a data-toggle="tab" href="#member-tab">Pagar</a>
+						</li>
+
+						<li>
+							<a data-toggle="tab" href="#comment-tab">Saldo</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			
+			
+		</div>
+	</div>
+	
+	
+	
+	
+</div>
+
+</form>
 <!--
 <div class="row">
 	
@@ -122,82 +195,17 @@
 }(document, 'script', 'facebook-jssdk'));
 
 
-jQuery(function($) {
-	$('.easy-pie-chart.percentage').each(function(){
-		var $box = $(this).closest('.infobox');
-		var barColor = $(this).data('color') || (!$box.hasClass('infobox-dark') ? $box.css('color') : 'rgba(255,255,255,0.95)');
-		var trackColor = barColor == 'rgba(255,255,255,0.95)' ? 'rgba(255,255,255,0.25)' : '#E2E2E2';
-		var size = parseInt($(this).data('size')) || 50;
-		$(this).easyPieChart({
-			barColor: barColor,
-			trackColor: trackColor,
-			scaleColor: false,
-			lineCap: 'butt',
-			lineWidth: parseInt(size/10),
-			animate: /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase()) ? false : 1000,
-			size: size
-		});
-	})
-
-	$('.sparkline').each(function(){
-		var $box = $(this).closest('.infobox');
-		var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
-		$(this).sparkline('html',
-						 {
-							tagValuesAttribute:'data-values',
-							type: 'bar',
-							barColor: barColor ,
-							chartRangeMin:$(this).data('min') || 0
-						 });
-	});
-
-
-  
-	
-	
-	//Android's default browser somehow is confused when tapping on label which will lead to dragging the task
-	//so disable dragging when clicking on label
-	var agent = navigator.userAgent.toLowerCase();
-	if("ontouchstart" in document && /applewebkit/.test(agent) && /android/.test(agent))
-	  $('#tasks').on('touchstart', function(e){
-		var li = $(e.target).closest('#tasks li');
-		if(li.length == 0)return;
-		var label = li.find('label.inline').get(0);
-		if(label == e.target || $.contains(label, e.target)) e.stopImmediatePropagation() ;
-	});
-
-	$('#tasks').sortable({
-		opacity:0.8,
-		revert:true,
-		forceHelperSize:true,
-		placeholder: 'draggable-placeholder',
-		forcePlaceholderSize:true,
-		tolerance:'pointer',
-		stop: function( event, ui ) {
-			//just for Chrome!!!! so that dropdowns on items don't appear below other items after being moved
-			$(ui.item).css('z-index', 'auto');
-		}
-		}
-	);
-	$('#tasks').disableSelection();
-	$('#tasks input:checkbox').removeAttr('checked').on('click', function(){
-		if(this.checked) $(this).closest('li').addClass('selected');
-		else $(this).closest('li').removeClass('selected');
-	});
-
-
-	//show the dropdowns on top or bottom depending on window height and menu position
-	$('#task-tab .dropdown-hover').on('mouseenter', function(e) {
-		var offset = $(this).offset();
-
-		var $w = $(window)
-		if (offset.top > $w.scrollTop() + $w.innerHeight() - 100) 
-			$(this).addClass('dropup');
-		else $(this).removeClass('dropup');
-	});
-
-})
-
-
+var oldie = /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase());
+$('.easy-pie-chart.percentage').each(function(){
+	$(this).easyPieChart({
+		barColor: $(this).data('color'),
+		trackColor: '#EEEEEE',
+		scaleColor: false,
+		lineCap: 'butt',
+		lineWidth: 8,
+		animate: oldie ? false : 1000,
+		size:75
+	}).css('color', $(this).data('color'));
+});
 
 </script>
