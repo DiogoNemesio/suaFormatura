@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$_codMenu_;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -25,6 +30,41 @@ if (isset($_GET['id'])) {
 ## Descompacta o ID
 #################################################################################
 \Zage\App\Util::descompactaId($id);
+
+
+#################################################################################
+## Resgata os dados de previsão orcamentária
+#################################################################################
+try {
+	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+
+	if ($oOrgFmt)	{
+		$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+		$valorArrecadado		= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
+		$valorGasto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
+		$pctArrecadado			= round(($valorArrecadado * 100) / $valorOrcado,2); 
+		$pctGasto				= round(($valorGasto * 100) / $valorOrcado,2);
+		$diffPct				= round($pctArrecadado - $pctGasto,2);
+		$log->info("Dif Pct: ".$diffPct);
+		//if ($diffPct < 0) $diffPct = 1;
+		
+		$viewPrevOrc			= null;
+	}else{
+		$valorOrcado			= 0;
+		$valorArrecadado		= 0;
+		$valorGasto				= 0;
+		$pctArrecadado			= 0;
+		$pctGasto				= 0;
+		$diffPct				= 0;
+		$viewPrevOrc			= "hidden";
+	}
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+
+
 
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
@@ -64,16 +104,15 @@ $tpl->set('MES_FILTRO'			,$mesFiltro);
 $tpl->set('FILTER_URL'			,$urlFiltro);
 $tpl->set('DIVCENTRAL'			,$system->getDivCentral());
 $tpl->set('TEXTO_FILTRO'		,$texto);
-$tpl->set('URL_RESULTADO'		,$urlResultado);
-$tpl->set('URL_SALDO'			,$urlSaldo);
-$tpl->set('URL_CONTA_PAG'		,$urlContaPag);
-$tpl->set('URL_CONTA_REC'		,$urlContaRec);
-$tpl->set('URL_FLUXO_CAIXA'		,$urlFluxoCaixa);
-$tpl->set('URL_TRANSFERENCIA'	,$urlTransf);
-$tpl->set('URL_DESP_CAT'		,$urlDespCat);
-$tpl->set('URL_REC_CAT'			,$urlRecCat);
-$tpl->set('URL_DESP_CENTRO'		,$urlDespCentro);
-$tpl->set('URL_REC_CENTRO'		,$urlRecCentro);
+$tpl->set('VIEW_PREV_ORC'		,$viewPrevOrc);
+
+
+$tpl->set('VALOR_ORCADO'		,\Zage\App\Util::to_money($valorOrcado));
+$tpl->set('VALOR_ARRECADADO'	,\Zage\App\Util::to_money($valorArrecadado));
+$tpl->set('VALOR_GASTO'			,\Zage\App\Util::to_money($valorGasto));
+$tpl->set('PCT_ARRECADADO'		,$pctArrecadado);
+$tpl->set('PCT_GASTO'			,$pctGasto);
+$tpl->set('PCT_DIFF'			,$diffPct);
 
 
 #################################################################################
