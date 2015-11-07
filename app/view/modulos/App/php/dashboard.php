@@ -43,8 +43,8 @@ try {
 		$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
 		$valorArrecadado		= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
 		$valorGasto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
-		$pctArrecadado			= round(($valorArrecadado * 100) / $valorOrcado,2); 
-		$pctGasto				= round(($valorGasto * 100) / $valorOrcado,2);
+		$pctArrecadado			= ($valorOrcado) ? round(($valorArrecadado * 100) / $valorOrcado,2) : 0; 
+		$pctGasto				= ($valorOrcado) ? round(($valorGasto * 100) / $valorOrcado,2) : 0;
 		$diffPct				= round($pctArrecadado - $pctGasto,2);
 		$log->info("Dif Pct: ".$diffPct);
 		//if ($diffPct < 0) $diffPct = 1;
