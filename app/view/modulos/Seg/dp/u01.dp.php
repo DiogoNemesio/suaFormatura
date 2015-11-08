@@ -200,7 +200,7 @@ try {
 	$oUsuario->setIndEndCorreto($endCorreto);
 	$oUsuario->setCodStatus($oStatus);
 	$oUsuario->setSexo($oSexo);
-	
+	$log->debug($senha);
 	$senhaCrip	= \Zage\App\Crypt::crypt($oUsuario->getUsuario(), $senha);
 	$oUsuario->setSenha($senhaCrip);
 	

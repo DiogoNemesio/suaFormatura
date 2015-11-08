@@ -2263,5 +2263,40 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$this->codGrupoSubstituicao = $codGrupoSubstituicao;
 	}
 	
+	/**
+	 *
+	 * Listar contas de mensalidade de um formando
+	 */
+	public static function listaMensalidadeFormando ($cpf) {
+		global $em,$system,$log;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('cr')
+			->from('\Entidades\ZgfinContaReceber','cr')
+			->leftJoin('\Entidades\ZgfinContaReceberRateio', 'r', \Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo = r.codContaRec')
+			->leftJoin('\Entidades\ZgfinPessoa', 'p', \Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa = p.codigo')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
+					$qb->expr()->eq('p.cgc'				, ':cpf'),
+					$qb->expr()->eq('r.codCategoria'	, ':codCategoria')
+			))
+	
+			->orderBy('cr.dataVencimento','ASC')
+			->addOrderBy('cr.descricao,cr.parcela,cr.dataEmissao','ASC')
+			->setParameter('codCategoria', '1')
+			->setParameter('cpf', $cpf)
+			->setParameter('codOrganizacao', $system->getCodOrganizacao());
+	
+			$query 		= $qb->getQuery();
+	
+			return($query->getResult());
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 
 }
