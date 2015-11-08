@@ -128,7 +128,8 @@ class Orcamento {
 		## Array com as categorias que serão usados no calculo
 		#################################################################################
 		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
-		$aCat						= array($codCatMensalidade);
+		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
+		$aCat						= array($codCatMensalidade,$codCatSistema);
 		
 		#################################################################################
 		## Criação dos objetos do querybuilder
@@ -137,11 +138,30 @@ class Orcamento {
 		$qbEx	= $em->createQueryBuilder();
 		
 		try {
+
+			$qb->select('p','SUM(crr.valor) as total')
+			->from('\Entidades\ZgfinContaReceber'			,'cr')
+			->leftJoin('\Entidades\ZgfinPessoa'				,'p'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa 	= p.codigo')
+			->leftJoin('\Entidades\ZgfinContaReceberRateio'	,'crr'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo	 	= crr.codContaRec')
+			->where($qb->expr()->andx(
+					$qb->expr()->eq('cr.codOrganizacao'		, ':codOrganizacao'),
+					$qb->expr()->notIn('cr.codStatus'		, ':status'),
+					$qb->expr()->in('crr.codCategoria'		, ':categoria')
+			))
+			->groupBy("p.cgc")
+			->setParameter('codOrganizacao'	,$codFormatura)
+			->setParameter('status'			,$aStatusCanc)
+			->setParameter('categoria'		,$aCat);
+				
+			$query 		= $qb->getQuery();
+			$info		= $query->getResult();
+				
+			return ($info);
 			
 			#################################################################################
 			## SubQuery para filtrar apenas as contas que estão nas categorias configuradas acima
 			#################################################################################
-			$qbEx->select('crr')
+			/*$qbEx->select('crr')
 			->from('\Entidades\ZgfinContaReceberRateio','crr')
 			->where($qbEx->expr()->andx(
 				$qbEx->expr()->eq('crr.codContaRec'		, 'cr.codigo'),
@@ -166,7 +186,7 @@ class Orcamento {
 			$query 		= $qb->getQuery();
 			$info		= $query->getResult();
 	
-			return ($info);
+			return ($info);*/
 	
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());

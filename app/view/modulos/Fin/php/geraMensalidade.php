@@ -52,16 +52,30 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
+#################################################################################
+## Calcula a quantidade de formandos ativos
+#################################################################################
+$totalFormandos			= \Zage\Fmt\Formatura::getNumFormandos($system->getCodOrganizacao());
+
+#################################################################################
+## Variáveis usadas no cálculo das mensalidades
+#################################################################################
+$dataConclusao			= $oOrgFmt->getDataConclusao();
+if (!$dataConclusao)	throw new Exception("Data de Conclusão não informada");
+$hoje					= new DateTime('now');
+$interval				= $dataConclusao->diff($hoje);
+$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
+$diaVencimento			= ($oOrgFmt->getDiaVencimento()) ? $oOrgFmt->getDiaVencimento() : 5;
+$dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));
 
 #################################################################################
 ## Taxas / Configurações
 #################################################################################
 $indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
-$dataConclusao			= $oOrgFmt->getDataConclusao();
 $taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
 $taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
 $taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
-if (!$dataConclusao)	throw new Exception("Data de Conclusão não informada");
+$taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
 
 #################################################################################
 ## Formatar as taxas
@@ -69,13 +83,8 @@ if (!$dataConclusao)	throw new Exception("Data de Conclusão não informada");
 if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
 if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
 if ($taxaUso		< 0)		$taxaUso		= 0;
-$totalTaxa			= ($taxaAdmin + $taxaBoleto + $taxaUso);
+$totalTaxa			= ($taxaAdmin + $taxaBoleto);
 
-
-#################################################################################
-## Calcula a quantidade de formandos ativos
-#################################################################################
-$totalFormandos			= \Zage\Fmt\Formatura::getNumFormandos($system->getCodOrganizacao());
 
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
@@ -90,15 +99,6 @@ if ($orcamento)	{
 	$valorOrcado		= 0;
 	$qtdFormandosBase	= $totalFormandos;
 }
-
-#################################################################################
-## Variáveis usadas no cálculo das mensalidades
-#################################################################################
-$hoje					= new DateTime('now');
-$interval				= $dataConclusao->diff($hoje);
-$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
-$diaVencimento			= ($oOrgFmt->getDiaVencimento()) ? $oOrgFmt->getDiaVencimento() : 5; 
-$dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));
 
 #################################################################################
 ## Calcular o valor já provisionado por formando
@@ -248,8 +248,9 @@ $tpl->set('VALOR_RECEBER'			,\Zage\App\Util::formataDinheiro($valorJaProvisionad
 $tpl->set('VALOR_RECEBER_FMT'		,\Zage\App\Util::to_money($valorJaProvisionado));
 $tpl->set('SALDO_RECEBER'			,\Zage\App\Util::formataDinheiro($saldoAProvisionar));
 $tpl->set('SALDO_RECEBER_FMT'		,\Zage\App\Util::to_money($saldoAProvisionar));
-$tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUso));
-$tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUso));
+$tpl->set('SALDO_FORMANDO_FMT'		,\Zage\App\Util::to_money($saldo));
+$tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUsoTotalFormando));
+$tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUsoTotalFormando));
 $tpl->set('TAXA_BOLETO_FMT'			,\Zage\App\Util::to_money($taxaBoleto));
 $tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
 $tpl->set('TAXA_ADMIN_FMT'			,\Zage\App\Util::to_money($taxaAdmin));

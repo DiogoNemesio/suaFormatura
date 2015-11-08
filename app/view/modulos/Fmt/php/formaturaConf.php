@@ -60,7 +60,7 @@ $pctJurosTurma			= $oOrgFmt->getPctJurosTurma();
 $pctMoraTurma			= $oOrgFmt->getPctMoraTurma();
 $pctConviteTurma		= $oOrgFmt->getPctConviteExtraTurma();
 $pctDevolucao			= $oOrgFmt->getPctDevolucao();
-$indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema()) ? "checked" : null;
+$indRepTaxaSistema		= (($oOrgFmt->getIndRepassaTaxaSistema() === null)|| $oOrgFmt->getIndRepassaTaxaSistema() == 1) ? "checked" : null;
 
 if ($valorPorFormando	< 0) 	$valorPorFormando	= 0;
 if ($valorPorBoleto		< 0)	$valorPorBoleto		= 0;

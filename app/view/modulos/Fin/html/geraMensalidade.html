@@ -207,13 +207,19 @@
 				<div class="row">
 					<div class="col-sm-12">
 				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT% (RECEBER)</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
 			    	</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Total a Receber:</p>
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo a Provisionar:</p>
 				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Por Formando:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="pSaldoFormandoID">%SALDO_FORMANDO_FMT%</p>
 			    	</div>
 				</div>
 				<div class="row">
@@ -357,6 +363,13 @@ $('#fuelux-wizard-container')
 
 			e.preventDefault();
 		}else{
+
+			if ($numSel > 2) {
+				$('#pSaldoFormandoID').html(" - (vários selecionados)")
+			}else{
+				$('#pSaldoFormandoID').html();
+			}
+
 			var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
 			$('#lblNumFormadosSelID').html($lblFor);
 			var $divInfo	= $('#divInfoGeraMensalidadeID').html();
