@@ -52,6 +52,75 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
+
+#################################################################################
+## Taxas / Configurações
+#################################################################################
+$indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
+$dataConclusao			= $oOrgFmt->getDataConclusao();
+$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
+$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
+$taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
+if (!$dataConclusao)	throw new Exception("Data de Conclusão não informada");
+
+#################################################################################
+## Formatar as taxas
+#################################################################################
+if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
+if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
+if ($taxaUso		< 0)		$taxaUso		= 0;
+$totalTaxa			= ($taxaAdmin + $taxaBoleto + $taxaUso);
+
+
+#################################################################################
+## Calcula a quantidade de formandos ativos
+#################################################################################
+$totalFormandos			= \Zage\Fmt\Formatura::getNumFormandos($system->getCodOrganizacao());
+
+#################################################################################
+## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
+## Para calcular o valor pendente a ser gerado
+## Se não existir, apenas não sugerir os valores a serem gerados
+#################################################################################
+$orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
+if ($orcamento)	{
+	$valorOrcado		= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+	$qtdFormandosBase	= (int) $oOrgFmt->getQtdePrevistaFormandos();
+}else{
+	$valorOrcado		= 0;
+	$qtdFormandosBase	= $totalFormandos;
+}
+
+#################################################################################
+## Variáveis usadas no cálculo das mensalidades
+#################################################################################
+$hoje					= new DateTime('now');
+$interval				= $dataConclusao->diff($hoje);
+$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
+$diaVencimento			= ($oOrgFmt->getDiaVencimento()) ? $oOrgFmt->getDiaVencimento() : 5; 
+$dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));
+
+#################################################################################
+## Calcular o valor já provisionado por formando
+#################################################################################
+$oValorProv				= \Zage\Fmt\Orcamento::getValorProvisionadoPorFormando($system->getCodOrganizacao());
+
+#################################################################################
+## Montar o array para facilitar a impressão no grid dos valores provisionados
+#################################################################################
+$aValorProv				= array();
+$totalProvisionado		= 0;
+for ($i = 0; $i < sizeof($oValorProv); $i++) {
+	$aValorProv[$oValorProv[$i][0]->getCgc()]		= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
+	$totalProvisionado								+= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
+}
+
+#################################################################################
+## Calcular os valores totais e saldos
+#################################################################################
+$saldoAProvisionar			= ($valorOrcado - $totalProvisionado);
+$totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrcado / $qtdFormandosBase)) : 0;
+
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
@@ -60,11 +129,11 @@ $checkboxName	= "selItemGeracaoConta";
 $grid->adicionaCheckBox($checkboxName);
 $grid->adicionaTexto($tr->trans('USUÁRIO'),				15	,$grid::CENTER	,'usuario');
 $grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('CPF'),					12	,$grid::CENTER	,'cpf','cpf');
-$grid->adicionaTexto($tr->trans('RG'),					12	,$grid::CENTER	,'rg');
-$grid->adicionaData($tr->trans('NASCIMENTO'),			12	,$grid::CENTER	,'dataNascimento');
+$grid->adicionaTexto($tr->trans('CPF'),					10	,$grid::CENTER	,'cpf','cpf');
+$grid->adicionaData($tr->trans('NASCIMENTO'),			10	,$grid::CENTER	,'dataNascimento');
 $grid->adicionaTexto($tr->trans('STATUS'),				10	,$grid::CENTER	,'codStatus:descricao');
-$grid->adicionaTexto($tr->trans('SEXO'),				10	,$grid::CENTER	,'sexo:descricao');
+$grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		15	,$grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans('R$ PROVISIONAR'),		15	,$grid::CENTER	,'');
 $grid->importaDadosDoctrine($formandos);
 
 #################################################################################
@@ -77,40 +146,15 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	$grid->setValorCelula($i,0,$formandos[$i]->getCodigo());
 
+	#################################################################################
+	## Definir os valores totais
+	#################################################################################
+	$valProvisionado			= $aValorProv[$formandos[$i]->getCpf()];
+	$saldo						= ($totalPorFormando - $aValorProv[$formandos[$i]->getCpf()]); 
+	$grid->setValorCelula($i,6,$valProvisionado);
+	$grid->setValorCelula($i,7,$saldo);
 }
 
-
-#################################################################################
-## Faz o calculo dos valores
-#################################################################################
-$totalformandos			= \Zage\Fmt\Formatura::getNumFormandosAtivos($system->getCodOrganizacao());
-$dataConclusao			= $oOrgFmt->getDataConclusao();
-if (!$dataConclusao)		\Zage\App\Erro::halt($tr->trans('Data de conclusão da formatura não informada!!!'));
-
-$hoje					= new DateTime('now');
-$interval				= $dataConclusao->diff($hoje);
-$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
-$diaVencimento			= $oOrgFmt->getDiaVencimento();
-$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$taxaBoleto				= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
-$taxaUso				= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
-$valorTotalFormatura	= \Zage\App\Util::to_float(\Zage\Fmt\Formatura::getValorTotal($system->getCodOrganizacao()));
-$valorJaProvisionado	= \Zage\App\Util::to_float(\Zage\Fmt\Formatura::getValorAReceber($system->getCodOrganizacao()));
-$saldoAReceber			= ($valorTotalFormatura - $valorJaProvisionado);
-$totalPorFormando		= ($totalformandos) ? \Zage\App\Util::to_float(($valorTotalFormatura / $totalformandos)) : 0;
-//$saldoPorFormando		= ($totalPorFormando - ($valorJaProvisionado / $numFormandos));
-//$valorMensalidade		= \Zage\App\Util::to_float(((($valorTotalFormatura - $valorJaProvisionado) / $totalformandos) / $numMesesConc));
-$dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));
-
-
-#################################################################################
-## Calculo das taxas
-#################################################################################
-if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
-if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
-if ($taxaUso		< 0)		$taxaUso		= 0;
-if (!$diaVencimento)			$diaVencimento	= 5;
-$totalTaxa			= ($taxaAdmin + $taxaBoleto + $taxaUso);
 
 #################################################################################
 ## Select da Forma de Pagamento
@@ -193,17 +237,17 @@ $tpl->set('FILTER_URL'				,$url);
 $tpl->set('DIVCENTRAL'				,$system->getDivCentral());
 $tpl->set('CHECK_NAME'				,$checkboxName);
 $tpl->set('NUM_MESES_MAX'			,$numMesesConc);
-$tpl->set('TOTAL_FORMANDOS'			,$totalformandos);
+$tpl->set('TOTAL_FORMANDOS'			,$totalFormandos);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao->format($system->config["data"]["dateFormat"]));
 $tpl->set('DATA_VENC'				,$dataVenc);
-$tpl->set('VALOR_TOTAL_FORM_FMT'	,\Zage\App\Util::to_money($valorTotalFormatura));
-$tpl->set('VALOR_TOTAL_FORMATURA'	,\Zage\App\Util::formataDinheiro($valorTotalFormatura));
+$tpl->set('VALOR_TOTAL_FORM_FMT'	,\Zage\App\Util::to_money($valorOrcado));
+$tpl->set('VALOR_TOTAL_FORMATURA'	,\Zage\App\Util::formataDinheiro($valorOrcado));
 $tpl->set('TOTAL_POR_FORMANDO'		,\Zage\App\Util::formataDinheiro($totalPorFormando));
 $tpl->set('TOTAL_POR_FORMANDO_FMT'	,\Zage\App\Util::to_money($totalPorFormando));
 $tpl->set('VALOR_RECEBER'			,\Zage\App\Util::formataDinheiro($valorJaProvisionado));
 $tpl->set('VALOR_RECEBER_FMT'		,\Zage\App\Util::to_money($valorJaProvisionado));
-$tpl->set('SALDO_RECEBER'			,\Zage\App\Util::formataDinheiro($saldoAReceber));
-$tpl->set('SALDO_RECEBER_FMT'		,\Zage\App\Util::to_money($saldoAReceber));
+$tpl->set('SALDO_RECEBER'			,\Zage\App\Util::formataDinheiro($saldoAProvisionar));
+$tpl->set('SALDO_RECEBER_FMT'		,\Zage\App\Util::to_money($saldoAProvisionar));
 $tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUso));
 $tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUso));
 $tpl->set('TAXA_BOLETO_FMT'			,\Zage\App\Util::to_money($taxaBoleto));

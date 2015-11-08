@@ -99,6 +99,13 @@ class ZgfmtOrganizacaoFormatura
     private $pctDevolucao;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_REPASSA_TAXA_SISTEMA", type="integer", nullable=true)
+     */
+    private $indRepassaTaxaSistema;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -400,6 +407,29 @@ class ZgfmtOrganizacaoFormatura
     public function getPctDevolucao()
     {
         return $this->pctDevolucao;
+    }
+
+    /**
+     * Set indRepassaTaxaSistema
+     *
+     * @param integer $indRepassaTaxaSistema
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setIndRepassaTaxaSistema($indRepassaTaxaSistema)
+    {
+        $this->indRepassaTaxaSistema = $indRepassaTaxaSistema;
+
+        return $this;
+    }
+
+    /**
+     * Get indRepassaTaxaSistema
+     *
+     * @return integer 
+     */
+    public function getIndRepassaTaxaSistema()
+    {
+        return $this->indRepassaTaxaSistema;
     }
 
     /**

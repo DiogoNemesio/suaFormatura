@@ -92,6 +92,13 @@ class ZgfmtOrganizacaoFormatura
     private $pctConviteExtraTurma;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_DEVOLUCAO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctDevolucao;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -370,6 +377,29 @@ class ZgfmtOrganizacaoFormatura
     public function getPctConviteExtraTurma()
     {
         return $this->pctConviteExtraTurma;
+    }
+
+    /**
+     * Set pctDevolucao
+     *
+     * @param float $pctDevolucao
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setPctDevolucao($pctDevolucao)
+    {
+        $this->pctDevolucao = $pctDevolucao;
+
+        return $this;
+    }
+
+    /**
+     * Get pctDevolucao
+     *
+     * @return float 
+     */
+    public function getPctDevolucao()
+    {
+        return $this->pctDevolucao;
     }
 
     /**

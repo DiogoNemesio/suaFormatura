@@ -53,13 +53,14 @@ if (!$contrato)	\Zage\App\Erro::halt('Não foi localizado o contrato !!!');
 
 	
 $valorPorFormando		= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorFormando());
-$valorPorBoleto			= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorBoleto());
+$valorPorBoleto			= \Zage\App\Util::formataDinheiro(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
 $taxaPorFormando		= \Zage\App\Util::formataDinheiro(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 $diaVencimento			= $oOrgFmt->getDiaVencimento();
 $pctJurosTurma			= $oOrgFmt->getPctJurosTurma();
 $pctMoraTurma			= $oOrgFmt->getPctMoraTurma();
 $pctConviteTurma		= $oOrgFmt->getPctConviteExtraTurma();
 $pctDevolucao			= $oOrgFmt->getPctDevolucao();
+$indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema()) ? "checked" : null;
 
 if ($valorPorFormando	< 0) 	$valorPorFormando	= 0;
 if ($valorPorBoleto		< 0)	$valorPorBoleto		= 0;
@@ -113,6 +114,7 @@ $tpl->set('PCT_JUROS_TURMA'			,$pctJurosTurma);
 $tpl->set('PCT_MORA_TURMA'			,$pctMoraTurma);
 $tpl->set('PCT_CONVITE_TURMA'		,$pctConviteTurma);
 $tpl->set('PCT_DEVOLUCAO'			,$pctDevolucao);
+$tpl->set('IND_REPASSA_TAXA_SISTEMA',$indRepTaxaSistema);
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));

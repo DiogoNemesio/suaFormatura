@@ -86,7 +86,7 @@ $codTipoRec		= ($numMeses == 1)  ? "U" : "P";
 $parcela		= ($numMeses == 1)  ? 1 : null;
 $codRecPer		= "M";
 $taxaAdmin		= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$taxaBoleto		= ($codFormaPag == "BOL") ? \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto()) : 0;
+$taxaBoleto		= ($codFormaPag == "BOL") ? \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao())) : 0;
 $taxaUso		= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 $valorJuros		= 0;
 $valorMora		= 0;

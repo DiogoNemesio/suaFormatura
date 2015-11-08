@@ -74,7 +74,7 @@ $dataConclusao	= ($oOrgFmt->getDataConclusao() != null) ? $oOrgFmt->getDataConcl
 ## Taxas  
 #################################################################################
 $taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$taxaBoleto				= \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto());
+$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
 $taxaUso				= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 
 #################################################################################

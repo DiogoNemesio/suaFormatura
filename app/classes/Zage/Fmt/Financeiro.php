@@ -236,4 +236,28 @@ class Financeiro {
 	}
 	
 	
+	/**
+	 * Calcular o valor do boleto para aquela organização
+	 * @param int $codOrganizacao
+	 */
+	public static function getValorBoleto($codOrganizacao) {
+
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system;
+		
+		#################################################################################
+		## Resgatar o valor das configurações da formatura
+		#################################################################################
+		$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $codOrganizacao));
+		
+		if ($oOrgFmt)	{
+			return $oOrgFmt->getValorPorBoleto();
+		}else{
+			return 0;
+		}
+		
+	}
+	
 }

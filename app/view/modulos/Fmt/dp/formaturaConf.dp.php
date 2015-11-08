@@ -24,6 +24,7 @@ if (isset($_POST['pctJurosTurma']))			$pctJurosTurma			= \Zage\App\Util::antiInj
 if (isset($_POST['pctMoraTurma']))			$pctMoraTurma			= \Zage\App\Util::antiInjection($_POST['pctMoraTurma']);
 if (isset($_POST['pctConviteExtraTurma']))	$pctConviteExtraTurma	= \Zage\App\Util::antiInjection($_POST['pctConviteExtraTurma']);
 if (isset($_POST['pctDevolucao']))			$pctDevolucao			= \Zage\App\Util::antiInjection($_POST['pctDevolucao']);
+if (isset($_POST['indRepassaTaxaSistema']))	$indRepTaxaSistema		= \Zage\App\Util::antiInjection($_POST['indRepassaTaxaSistema']);
 
 $err	= null;
 
@@ -66,6 +67,7 @@ $pctJurosTurma			= (int) $pctJurosTurma;
 $pctMoraTurma			= (int) $pctMoraTurma;
 $pctConviteExtraTurma	= (int) $pctConviteExtraTurma;
 $pctDevolucao			= (int) $pctDevolucao;
+$indRepTaxaSistema		= (isset($indRepTaxaSistema) || $indRepTaxaSistema) ? 1 : 0;
 
 
 #################################################################################
@@ -79,6 +81,7 @@ try {
 	$oOrgFmt->setPctMoraTurma($pctMoraTurma);
 	$oOrgFmt->setPctConviteExtraTurma($pctConviteExtraTurma);
 	$oOrgFmt->setPctDevolucao($pctDevolucao);
+	$oOrgFmt->setIndRepassaTaxaSistema($indRepTaxaSistema);
 	$em->persist($oOrgFmt);
 	
 	$em->flush();

@@ -46,9 +46,6 @@ try {
 		$pctArrecadado			= ($valorOrcado) ? round(($valorArrecadado * 100) / $valorOrcado,2) : 0; 
 		$pctGasto				= ($valorOrcado) ? round(($valorGasto * 100) / $valorOrcado,2) : 0;
 		$diffPct				= round($pctArrecadado - $pctGasto,2);
-		$log->info("Dif Pct: ".$diffPct);
-		//if ($diffPct < 0) $diffPct = 1;
-		
 		$viewPrevOrc			= null;
 	}else{
 		$valorOrcado			= 0;
