@@ -9,12 +9,11 @@
 		
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" id="codConvVendaID" name="codConvVenda" value="%COD_CONV_VENDA%">
-		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
-		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
 		<input type="hidden" id="quantTotalID" name="quantTotal">
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
+		<div id="divMsg"></div>
 			<div class="col-sm-6">
 				<div class="form-group col-sm-12" id="divCodFormandoID">
 					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
@@ -112,7 +111,7 @@ $('#btnSubmitID').on("click", function(e) {
 	
 		bootbox.dialog({
 			title: "Tem certeza que deseja confirmar a venda?",
-			message: "Após está confirmação não será mais possível cancelar ou alterar a operação.<br><br><b>QUANTIDADE: </b>"+$quantTotal+" eventos<br><b>TOTAL: </b> "+$valorTotal,
+			message: "Após está confirmação não será mais possível cancelar ou alterar a operação.<br><br><b>QUANTIDADE: </b>"+$quantTotal+" evento(s)<br><b>TOTAL: </b> "+$valorTotal,
 			
 			buttons: {
 				"Confirmar" : {
@@ -138,8 +137,8 @@ $('#btnSubmitID').on("click", function(e) {
 
 //Submit formulário
 $('#zgFormID').submit(function() {
-	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-	$('#btnSubmitID').attr("disabled","disabled");
+	//$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	//$('#btnSubmitID').attr("disabled","disabled");
 	$('#cancel').attr("disabled","disabled");
 	
 	/** Retira a máscara para os campos que estão configurados para tal **/
@@ -153,8 +152,7 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			$('#codConvVendaID').val(zgGetCodRetorno(data));
-			zgMostraAviso("Fechar",'Nova Venda', '%URLNOVO%');
+			zgLoadUrl('%ROOT_URL%Fmt/conviteExtraVendaConf.php?id='+zgEncodeUrl('&codVenda='+zgGetCodRetorno(data)));
 		}else{
 			zgMostraAviso("Fechar");
 		}

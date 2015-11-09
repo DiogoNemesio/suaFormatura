@@ -51,6 +51,12 @@ if (!isset($codFormaPag) || empty($codFormaPag)) {
 	$err	= 1;
 }
 
+/** CONTA RECEBIMENTO **/
+if (!isset($codConta) || empty($codConta)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a conta de recebimento.");
+	$err	= 1;
+}
+
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  	exit;
@@ -60,6 +66,8 @@ if ($err != null) {
 ## Salvar no banco
 #################################################################################
 try {
+	$em->getConnection()->beginTransaction();
+	
 	if (isset($codConvVenda) && (!empty($codConvVenda))) {
 		$oConviteVenda	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findOneBy(array('codigo' => $codConvVenda));
 		if (!$oConviteVenda) $oConviteVenda	= new \Entidades\ZgfmtConviteExtraVenda();
@@ -112,6 +120,8 @@ try {
 	
 	$em->persist($oConviteVenda);
 	
+	$linha = 0;
+	$html  = null;
 	for ($i = 0; $i < sizeof($codConvExtra); $i++) {
 		#################################################################################
 		## Formatar os campos
@@ -141,17 +151,73 @@ try {
 		 	$oConviteItem->setValorUnitario($valor[$i]);
 		 	
 		 	$em->persist($oConviteItem);
+		 	
+		 	$linha = $i + 1;
+		 	$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
+		 	$html .= '<td style="padding: 10px;">'.$linha.'</td>';
+		 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getCodConviteConf()->getCodTipoEvento()->getDescricao().'</td>';
+		 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getQuantidade().'</td>';
+		 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getValorUnitario().'</td>';
+		 	$html .= '</tr>';
+		 	
 		}else{
 			continue;
 		}
 	}
+
 	#################################################################################
 	## SALVAR
 	#################################################################################
-	$em->flush();
-	$em->clear();
+	try {
+		$em->flush();
+		$em->clear();
+	} catch (Exception $e) {
+		$log->debug("Erro ao salvar o convite:". $e->getTraceAsString());
+		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
+	}
+	
+	#################################################################################
+	## Gerar a notificação
+	#################################################################################
+	/********** Enviar notificação *********/
+	### Gerar notificacao enviar email ###
+	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_CONF_COMPRA'));
+	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
+	$notificacao->setAssunto("Confirmação compra do convite");
+	$notificacao->setCodRemetente($oRemetente);
+		
+	//$notificacao->associaUsuario($oHistEmail->getCodUsuario()->getCodigo());
+	$notificacao->enviaSistema();
+	$notificacao->enviaEmail();
+	$notificacao->setEmail($oFormando->getEmail());
+	$notificacao->setCodTemplate($template);
+		
+	$notificacao->adicionaVariavel('COD_TRASACAO'		,$oConviteItem->getCodVenda()->getCodTransacao());
+	$notificacao->adicionaVariavel('FORMA_PAGAMENTO'	,$oConviteItem->getCodVenda()->getCodFormaPagamento()->getDescricao());
+	$notificacao->adicionaVariavel('CONTA_RECEBIMENTO'	,$oConviteItem->getCodVenda()->getCodContaRecebimento()->getNome());
+	$notificacao->adicionaVariavel('COD_VENDA'			,$oConviteVenda->getCodigo());
+	$notificacao->adicionaVariavel('TOTAL'				,$oConviteItem->getCodVenda()->getValorTotal());
+	$notificacao->adicionaVariavel('DATA_VENDA'			,$oConviteItem->getCodVenda()->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]));
+	$notificacao->adicionaVariavel('NOME'				,$oConviteItem->getCodVenda()->getCodFormando()->getNome());
+	$notificacao->adicionaVariavel('EMAIL'				,$oConviteItem->getCodVenda()->getCodFormando()->getEmail());
+	$notificacao->adicionaVariavel('HTML_TABLE'			,$html);
+		
+	$notificacao->salva();
 
+	#################################################################################
+	## SALVAR
+	#################################################################################
+	try {
+		$em->flush();
+		$em->getConnection()->commit();
+	} catch (Exception $e) {
+		$log->debug("Erro ao salvar o convite:". $e->getTraceAsString());
+		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
+	}
+	
 } catch (\Exception $e) {
+	$em->getConnection()->rollBack();
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;
