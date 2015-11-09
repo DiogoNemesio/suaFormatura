@@ -121,7 +121,7 @@ class Financeiro {
 				$rsm->addScalarResult('VALOR'					, 'VALOR');
 			
 				$query 	= $em->createNativeQuery("
-					SELECT	SUM(IF ((REC.VALOR > RAT.VALOR),RAT.VALOR,REC.VALOR)) VALOR   
+					SELECT	SUM(IF((REC.VALOR > RAT.VALOR),RAT.VALOR,REC.VALOR)) VALOR   
 					FROM 	ZGFIN_CONTA_RECEBER R,
 					        (SELECT		HR1.COD_CONTA_REC,SUM(HR1.VALOR_RECEBIDO - HR1.VALOR_DESCONTO + HR1.VALOR_OUTROS) VALOR
 					         FROM		ZGFIN_CONTA_RECEBER			R1,
@@ -240,12 +240,17 @@ class Financeiro {
 	 * Calcular o valor do boleto para aquela organização
 	 * @param int $codOrganizacao
 	 */
-	public static function getValorBoleto($codOrganizacao) {
+	public static function getValorBoleto($codOrganizacao,$codConta = null) {
 
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
 		global $em,$system;
+		
+		#################################################################################
+		## Validações
+		#################################################################################
+		if (!$codConta)	throw new \Exception('Parâmetro codConta não pode ser nulo');
 		
 		#################################################################################
 		## Resgatar o valor das configurações da formatura
@@ -283,31 +288,41 @@ class Financeiro {
 		$aCat						= array($codCatMensalidade,$codCatSistema);
 
 		#################################################################################
-		## Criação dos objetos do querybuilder
+		## Somar os valores dividos por categora
 		#################################################################################
-		$qb 	= $em->createQueryBuilder();
-		$qbEx	= $em->createQueryBuilder();
-
 		try {
-
-			$qb->select('p','SUM(crr.valor) as total')
-			->from('\Entidades\ZgfinContaReceber'			,'cr')
-			->leftJoin('\Entidades\ZgfinPessoa'				,'p'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa 	= p.codigo')
-			->leftJoin('\Entidades\ZgfinContaReceberRateio'	,'crr'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo	 	= crr.codContaRec')
-			->where($qb->expr()->andx(
-					$qb->expr()->eq('cr.codOrganizacao'		, ':codOrganizacao'),
-					$qb->expr()->notIn('cr.codStatus'		, ':status'),
-					$qb->expr()->in('crr.codCategoria'		, ':categoria')
-			))
-			->groupBy("p.cgc")
-			->setParameter('codOrganizacao'	,$codFormatura)
-			->setParameter('status'			,$aStatusCanc)
-			->setParameter('categoria'		,$aCat);
-
-			$query 		= $qb->getQuery();
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
+			$rsm->addFieldResult('P', 'CGC', 'cgc');
+			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('mensalidade'					, 'mensalidade');
+			$rsm->addScalarResult('sistema'						, 'sistema');
+				
+			$query 	= $em->createNativeQuery("
+					SELECT	P.CGC,P.CODIGO,SUM(IF((CRR.COD_CATEGORIA = :catMensalidade),CRR.VALOR,0)) as mensalidade, SUM(IF((CRR.COD_CATEGORIA = :catSistema),CRR.VALOR,0)) as sistema
+					FROM 	ZGFIN_CONTA_RECEBER 		CR,
+							ZGFIN_PESSOA				P,
+							ZGFIN_CONTA_RECEBER_RATEIO	CRR
+					WHERE   CR.CODIGO 				= CRR.COD_CONTA_REC
+					AND	    CR.COD_PESSOA			= P.CODIGO
+					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					AND		CR.COD_STATUS			NOT IN (:status)
+					AND		CRR.COD_CATEGORIA		IN (:categoria)
+					GROUP	BY P.CGC,P.CODIGO
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,$aStatusCanc);
+			$query->setParameter('catMensalidade'	,$codCatMensalidade);
+			$query->setParameter('catSistema'		,$codCatSistema);
+			$query->setParameter('categoria'		,$aCat);
+				
 			$info		= $query->getResult();
-
-			return ($info);
+				
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		return ($info);
 				
 			#################################################################################
 			## SubQuery para filtrar apenas as contas que estão nas categorias configuradas acima
@@ -338,10 +353,6 @@ class Financeiro {
 			$info		= $query->getResult();
 
 			return ($info);*/
-
-		} catch (\Exception $e) {
-			\Zage\App\Erro::halt($e->getMessage());
-		}
 	}
 	
 	/**

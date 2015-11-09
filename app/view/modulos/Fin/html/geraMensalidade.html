@@ -258,6 +258,8 @@
 
 <script>
 
+var $aCodigos	= '%JSON_CODIGOS%';
+
 $(document).one('ajaxloadstart.page', function(e) {
 	//in ajax mode, remove remaining elements before leaving page
 	$('[class*=select2]').remove();
@@ -335,6 +337,43 @@ $( document ).ready(function() {
 zgDesabilitaAcaoGeraMensalidade();
 
 function zgHabilitaAcaoGeraMensalidade($numFormandos) {
+	
+	var $jCodigos 		= jQuery.parseJSON($aCodigos);
+	var $aMensalidade	= [];
+	var	$aSistema		= [];
+	//alert("Jcodigos: "+JSON.stringify($jCodigos));
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		var $codigo	= $(this).val();
+		if ($jCodigos[$codigo] != undefined) {
+
+			/** Monta o array de Mensalidades **/
+			if ( $aMensalidade.indexOf($jCodigos[$codigo]["MENSALIDADE"]) == -1 ) {
+				$aMensalidade[$aMensalidade.length]	= $jCodigos[$codigo]["MENSALIDADE"];
+			}
+
+			/** Monta o array de Sistemas **/
+			if ( $aSistema.indexOf($jCodigos[$codigo]["SISTEMA"]) == -1 ) {
+				$aSistema[$aSistema.length]	= $jCodigos[$codigo]["SISTEMA"];
+			}
+		}else{
+			/** Monta o array de Mensalidades **/
+			if ( $aMensalidade.indexOf(0) == -1 ) {
+				$aMensalidade[$aMensalidade.length]	= 0;
+			}
+
+			/** Monta o array de Sistemas **/
+			if ( $aSistema.indexOf(0) == -1 ) {
+				$aSistema[$aSistema.length]	= 0;
+			}
+		}
+	});
+
+	/** Calcular as ações em lotes disponíveis, a partir do status das contas **/
+	if (($aMensalidade.length == 1) && ($aSistema.length == 1)) {
+		alert("Tudo OK");
+	}else{
+		alert("Tem algo diferente");
+	}
 	$('#numForSelID').val($numFormandos);
 }
 
@@ -495,9 +534,18 @@ function calculaValorTotalgeraMensalidade() {
 	var $taxaUso			= zgConverteFloat('%TAXA_USO%');
 	var $taxaBol			= zgConverteFloat('%TAXA_BOLETO%');
 	var $taxaAdm			= zgConverteFloat('%TAXA_ADMIN%');
-	var $valorParcela;
+	var $valorParcela,$valBaseSistema;
 	
 	var $valorBase			= getValorParcelaGeraMensalidade();
+	
+	if ($indTaxaSistema)	{
+		if ($codTipoValor  == "M") {
+			$valBaseSistema	= $taxaUso / $numParcelas;
+		}
+	}else{
+		$valBaseSistema		= 0;
+	}
+	
 
 	
 	

@@ -74,12 +74,7 @@ $dataConclusao	= ($oOrgFmt->getDataConclusao() != null) ? $oOrgFmt->getDataConcl
 ## Taxas  
 #################################################################################
 $indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
-$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
 $taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
-//$taxaUsoTotalFormando	= $taxaUso * $numMesesConc;
-
-
 
 #################################################################################
 ## Versões do orçamento
@@ -181,8 +176,6 @@ $tpl->set('COD_VERSAO'				,$codVersaoOrc);
 $tpl->set('VERSOES_ORC'				,$oVersoesOrc);
 $tpl->set('PLANO_ORC'				,$oPlanoOrc);
 
-$tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
-$tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
 $tpl->set('TAXA_SISTEMA'			,\Zage\App\Util::formataDinheiro($taxaUso));
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));

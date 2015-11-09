@@ -17,8 +17,7 @@ global $em,$log,$system,$tr;
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
 if (isset($_POST['codOrganizacao']))		$codOrganizacao			= \Zage\App\Util::antiInjection($_POST['codOrganizacao']);
-if (isset($_POST['valorPorFormando']))		$valorPorFormando		= \Zage\App\Util::antiInjection($_POST['valorPorFormando']);
-if (isset($_POST['valorPorBoleto']))		$valorPorBoleto			= \Zage\App\Util::antiInjection($_POST['valorPorBoleto']);
+if (isset($_POST['taxaAdministracao']))		$taxaAdministracao		= \Zage\App\Util::antiInjection($_POST['taxaAdministracao']);
 if (isset($_POST['diaVencimento']))			$diaVencimento			= \Zage\App\Util::antiInjection($_POST['diaVencimento']);
 if (isset($_POST['pctJurosTurma']))			$pctJurosTurma			= \Zage\App\Util::antiInjection($_POST['pctJurosTurma']);
 if (isset($_POST['pctMoraTurma']))			$pctMoraTurma			= \Zage\App\Util::antiInjection($_POST['pctMoraTurma']);
@@ -61,8 +60,7 @@ if ($err) {
 #################################################################################
 ## Ajuste dos valores
 #################################################################################
-$valorPorFormando		= \Zage\App\Util::toMysqlNumber($valorPorFormando);
-$valorPorBoleto			= \Zage\App\Util::toMysqlNumber($valorPorBoleto);
+$taxaAdministracao		= \Zage\App\Util::to_float($taxaAdministracao);
 $pctJurosTurma			= (int) $pctJurosTurma;
 $pctMoraTurma			= (int) $pctMoraTurma;
 $pctConviteExtraTurma	= (int) $pctConviteExtraTurma;
@@ -74,8 +72,7 @@ $indRepTaxaSistema		= (isset($indRepTaxaSistema) || $indRepTaxaSistema) ? 1 : 0;
 ## Salvar no banco
 #################################################################################
 try {
-	$oOrgFmt->setValorPorFormando($valorPorFormando);
-	$oOrgFmt->setValorPorBoleto($valorPorBoleto);
+	$oOrgFmt->setTaxaAdministracao($taxaAdministracao);
 	$oOrgFmt->setDiaVencimento($diaVencimento);
 	$oOrgFmt->setPctJurosTurma($pctJurosTurma);
 	$oOrgFmt->setPctMoraTurma($pctMoraTurma);

@@ -52,8 +52,7 @@ try {
 if (!$contrato)	\Zage\App\Erro::halt('Não foi localizado o contrato !!!');
 
 	
-$valorPorFormando		= \Zage\App\Util::formataDinheiro($oOrgFmt->getValorPorFormando());
-$valorPorBoleto			= \Zage\App\Util::formataDinheiro(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
+$taxaAdministracao		= \Zage\App\Util::formataDinheiro($oOrgFmt->getTaxaAdministracao());
 $taxaPorFormando		= \Zage\App\Util::formataDinheiro(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 $diaVencimento			= $oOrgFmt->getDiaVencimento();
 $pctJurosTurma			= $oOrgFmt->getPctJurosTurma();
@@ -62,8 +61,7 @@ $pctConviteTurma		= $oOrgFmt->getPctConviteExtraTurma();
 $pctDevolucao			= $oOrgFmt->getPctDevolucao();
 $indRepTaxaSistema		= (($oOrgFmt->getIndRepassaTaxaSistema() === null)|| $oOrgFmt->getIndRepassaTaxaSistema() == 1) ? "checked" : null;
 
-if ($valorPorFormando	< 0) 	$valorPorFormando	= 0;
-if ($valorPorBoleto		< 0)	$valorPorBoleto		= 0;
+if ($taxaAdministracao	< 0) 	$taxaAdministracao	= 0;
 if ($taxaPorFormando	< 0)	$taxaPorFormando	= 0;
 if (!$diaVencimento)			$diaVencimento		= 5;
 if ($pctJurosTurma		< 0)	$pctJurosTurma		= 0;
@@ -106,8 +104,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('ID'						,$id);
 $tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());
-$tpl->set('VALOR_FORMANDO'			,$valorPorFormando);
-$tpl->set('VALOR_BOLETO'			,$valorPorBoleto);
+$tpl->set('TAXA_ADMINISTRACAO'		,$taxaAdministracao);
 $tpl->set('TAXA_FORMANDO'			,$taxaPorFormando);
 $tpl->set('DIAS_VENC'				,$oDiaVenc);
 $tpl->set('PCT_JUROS_TURMA'			,$pctJurosTurma);

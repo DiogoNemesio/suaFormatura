@@ -72,8 +72,8 @@ $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('
 ## Taxas / Configurações
 #################################################################################
 $indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
-$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
+$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao());
+//$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
 $taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
 $taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
 $mostraIndTaxaSistema	= ($indRepTaxaSistema) ? null : "hidden";
@@ -115,19 +115,18 @@ $oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->
 
 #################################################################################
 ## Montar o array para facilitar a impressão no grid dos valores provisionados
+## Montar um array que será enviado ao Html para validar se os formandos
+## selecionados tem os mesmos valores de mensalidade e sistema
 #################################################################################
 $aValorProv				= array();
-//$totalProvisionado		= 0;
+$aCodigos				= array();
 for ($i = 0; $i < sizeof($oValorProv); $i++) {
-	$aValorProv[$oValorProv[$i][0]->getCgc()]		= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
-//	$totalProvisionado								+= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
+	$total														= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
+	$aCodigos[$oValorProv[$i][0]->getCgc()]["MENSALIDADE"]	= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]);
+	$aCodigos[$oValorProv[$i][0]->getCgc()]["SISTEMA"]		= \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
+	$aCodigos[$oValorProv[$i][0]->getCgc()]["TOTAL"]		= $total;
+	$aValorProv[$oValorProv[$i][0]->getCgc()]				= $total;
 }
-
-#################################################################################
-## Calcular os valores totais e saldos
-#################################################################################
-//$saldoAProvisionar			= ($valorOrcado - $totalProvisionado);
-//$totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrcado / $qtdFormandosBase)) : 0;
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
@@ -138,7 +137,6 @@ $grid->adicionaCheckBox($checkboxName);
 $grid->adicionaTexto($tr->trans('USUÁRIO'),				15	,$grid::CENTER	,'usuario');
 $grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					10	,$grid::CENTER	,'cpf','cpf');
-//$grid->adicionaData($tr->trans('NASCIMENTO'),			10	,$grid::CENTER	,'dataNascimento');
 $grid->adicionaTexto($tr->trans('STATUS'),				10	,$grid::CENTER	,'codStatus:descricao');
 $grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		15	,$grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('R$ PROVISIONAR'),		15	,$grid::CENTER	,'');
@@ -152,7 +150,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Definir o valor da Checkbox
 	#################################################################################
-	$grid->setValorCelula($i,0,$formandos[$i]->getCodigo());
+	$grid->setValorCelula($i,0,$formandos[$i]->getCpf());
 
 	#################################################################################
 	## Definir os valores totais
@@ -269,6 +267,7 @@ $tpl->set('FORMAS_PAG'				,$oFormaPag);
 $tpl->set('FORMATO_DATA'			,$system->config["data"]["jsDateFormat"]);
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('URL_VOLTAR'				,$urlVoltar);
+$tpl->set('JSON_CODIGOS'			,json_encode($aCodigos));
 
 
 #################################################################################
