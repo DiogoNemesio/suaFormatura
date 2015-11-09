@@ -93,6 +93,17 @@
 							    </div>
 							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
 							</div>
+							<div class="form-group col-sm-12 %MOSTRA_IND_TAXA_SISTEMA%">
+			    				<label class="col-sm-4 control-label">
+			    					<input name="indTaxaSistema" id="indTaxaSistemaID" class="ace ace-switch " value="1" %CHK_IND_TAXA_SISTEMA% type="checkbox" />
+			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+			    				</label>
+				    			<div class="input-group col-sm-7 pull-left">
+				    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores de uso do SuaFormatura.com no valor da mensalidade"></i></span>
+				    				<input readonly type="text" class="form-control" placeholder="Repassar a taxa de uso do sistema (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
+					    	</div>
 							
 							<div class="form-group col-sm-12" >
 			    				<label class="col-sm-4 control-label">
@@ -105,6 +116,16 @@
 							    </div>
 								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
 					    	</div>
+					    	
+							<div class="form-group col-sm-12" id="divValorTotalID">
+							    <label id='lblTipoValorTotalID' class="col-sm-4 control-label"></label>
+					    		<div class="input-group col-sm-7 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Mostra o valor total da conta ou da parcela (Somatório do valor informado + Taxas)"></i></span>
+						    		<input class="form-control" id="valorTotalID" type="text" name="valorTotal" readonly maxlength="60" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+							    </div>
+							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
+							</div>
+					    	
 							<div class="form-group col-sm-12" id="divFormaPagID">
 								<label class="col-sm-4 control-label">Forma de Pag.</label>
 				    			<div class="input-group col-sm-7 pull-left">
@@ -342,21 +363,20 @@ $('#fuelux-wizard-container')
 			});
 
 			e.preventDefault();
-		}else{
-			mostraQuadroGeraMensalidade('divInfoVencID');
 		}
+		mostraQuadroGeraMensalidade('divInfoVencID');
 	}else if (info.step == 2) {
 		var vOk 	= validaVencimentoGeraMensalidade();
 		if(!vOk) 	{
 			e.preventDefault();
-		}else{
-			mostraQuadroGeraMensalidade('divInfoValorID');
 		}
+		mostraQuadroGeraMensalidade('divInfoValorID');
 	}else if (info.step == 3) {
 		var vOk 	= validaValoresGeraMensalidade();
 		if(!vOk) 	{
 			e.preventDefault();
 		}else{
+			mostraQuadroGeraMensalidade('divInfoValorID');
 			criaTabelaValoresGeraMensalidade();
 		}
 	}
@@ -451,6 +471,8 @@ function selecionaValorMensalidadegeraMensalidade() {
 	$('#geraMensalidadeValorTotalID').removeClass("btn-primary");
 	$('#codTipoValorID').val("M");
 	$('#lblTipoValorID').html("Valor da Mensalidade");
+	$('#lblTipoValorTotalID').html("Total da Mensalidade");
+	
 }
 
 function selecionaValorTotalgeraMensalidade() {
@@ -459,7 +481,26 @@ function selecionaValorTotalgeraMensalidade() {
 	$('#geraMensalidadeValorMensalidadeID').addClass("btn-light");
 	$('#geraMensalidadeValorMensalidadeID').removeClass("btn-primary");
 	$('#codTipoValorID').val("T");
-	$('#lblTipoValorID').html("Valor Total do Formando");
+	$('#lblTipoValorID').html("Valor Total");
+	$('#lblTipoValorTotalID').html("Total do Formando");
+}
+
+function calculaValorTotalgeraMensalidade() {
+	
+	var $indTaxaSistema		= $('#indTaxaSistemaID:checked').length;
+	var $indValorExtra		= $('#indValorExtraID:checked').length;
+	var $codTipoValor		= $('#codTipoValorID').val();
+	var $valor				= zgConverteFloat($('#valorID').val());
+	var $numParcelas		= parseInt($('#numMesesID').val());
+	var $taxaUso			= zgConverteFloat('%TAXA_USO%');
+	var $taxaBol			= zgConverteFloat('%TAXA_BOLETO%');
+	var $taxaAdm			= zgConverteFloat('%TAXA_ADMIN%');
+	var $valorParcela;
+	
+	var $valorBase			= getValorParcelaGeraMensalidade();
+
+	
+	
 }
 
 function validaVencimentoGeraMensalidade() {

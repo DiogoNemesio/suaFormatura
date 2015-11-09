@@ -76,6 +76,8 @@ $taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
 $taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
 $taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
 $taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
+$mostraIndTaxaSistema	= ($indRepTaxaSistema) ? null : "hidden";
+$chkIndTaxaSistema		= ($indRepTaxaSistema) ? "checked" : null;
 
 #################################################################################
 ## Formatar as taxas
@@ -109,7 +111,7 @@ if ($orcamento)	{
 #################################################################################
 ## Calcular o valor já provisionado por formando
 #################################################################################
-$oValorProv				= \Zage\Fmt\Orcamento::getValorProvisionadoPorFormando($system->getCodOrganizacao());
+$oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
 
 #################################################################################
 ## Montar o array para facilitar a impressão no grid dos valores provisionados
@@ -259,6 +261,9 @@ $tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
 $tpl->set('TAXA_ADMIN_FMT'			,\Zage\App\Util::to_money($taxaAdmin));
 $tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
 $tpl->set('TOTAL_TAXA_FMT'			,\Zage\App\Util::to_money($totalTaxa));
+$tpl->set('MOSTRA_IND_TAXA_SISTEMA'	,$mostraIndTaxaSistema);
+$tpl->set('CHK_IND_TAXA_SISTEMA'	,$chkIndTaxaSistema);
+
 $tpl->set('CONTAS'					,$oConta);
 $tpl->set('FORMAS_PAG'				,$oFormaPag);
 $tpl->set('FORMATO_DATA'			,$system->config["data"]["jsDateFormat"]);
