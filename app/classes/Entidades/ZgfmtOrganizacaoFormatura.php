@@ -71,6 +71,41 @@ class ZgfmtOrganizacaoFormatura
     private $qtdePrevistaConvidados;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_JUROS_TURMA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctJurosTurma;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_MORA_TURMA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctMoraTurma;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_CONVITE_EXTRA_TURMA", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctConviteExtraTurma;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_DEVOLUCAO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctDevolucao;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_REPASSA_TAXA_SISTEMA", type="integer", nullable=true)
+     */
+    private $indRepassaTaxaSistema;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -280,6 +315,121 @@ class ZgfmtOrganizacaoFormatura
     public function getQtdePrevistaConvidados()
     {
         return $this->qtdePrevistaConvidados;
+    }
+
+    /**
+     * Set pctJurosTurma
+     *
+     * @param float $pctJurosTurma
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setPctJurosTurma($pctJurosTurma)
+    {
+        $this->pctJurosTurma = $pctJurosTurma;
+
+        return $this;
+    }
+
+    /**
+     * Get pctJurosTurma
+     *
+     * @return float 
+     */
+    public function getPctJurosTurma()
+    {
+        return $this->pctJurosTurma;
+    }
+
+    /**
+     * Set pctMoraTurma
+     *
+     * @param float $pctMoraTurma
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setPctMoraTurma($pctMoraTurma)
+    {
+        $this->pctMoraTurma = $pctMoraTurma;
+
+        return $this;
+    }
+
+    /**
+     * Get pctMoraTurma
+     *
+     * @return float 
+     */
+    public function getPctMoraTurma()
+    {
+        return $this->pctMoraTurma;
+    }
+
+    /**
+     * Set pctConviteExtraTurma
+     *
+     * @param float $pctConviteExtraTurma
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setPctConviteExtraTurma($pctConviteExtraTurma)
+    {
+        $this->pctConviteExtraTurma = $pctConviteExtraTurma;
+
+        return $this;
+    }
+
+    /**
+     * Get pctConviteExtraTurma
+     *
+     * @return float 
+     */
+    public function getPctConviteExtraTurma()
+    {
+        return $this->pctConviteExtraTurma;
+    }
+
+    /**
+     * Set pctDevolucao
+     *
+     * @param float $pctDevolucao
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setPctDevolucao($pctDevolucao)
+    {
+        $this->pctDevolucao = $pctDevolucao;
+
+        return $this;
+    }
+
+    /**
+     * Get pctDevolucao
+     *
+     * @return float 
+     */
+    public function getPctDevolucao()
+    {
+        return $this->pctDevolucao;
+    }
+
+    /**
+     * Set indRepassaTaxaSistema
+     *
+     * @param integer $indRepassaTaxaSistema
+     * @return ZgfmtOrganizacaoFormatura
+     */
+    public function setIndRepassaTaxaSistema($indRepassaTaxaSistema)
+    {
+        $this->indRepassaTaxaSistema = $indRepassaTaxaSistema;
+
+        return $this;
+    }
+
+    /**
+     * Get indRepassaTaxaSistema
+     *
+     * @return integer 
+     */
+    public function getIndRepassaTaxaSistema()
+    {
+        return $this->indRepassaTaxaSistema;
     }
 
     /**

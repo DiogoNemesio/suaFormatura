@@ -126,16 +126,17 @@ class Formatura {
 		try {
 			$qb->select('count(u.codigo)')
 			->from('\Entidades\ZgsegUsuario','u')
-			->leftJoin('\Entidades\ZgsegUsuarioOrganizacao'	,'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 	= uo.codUsuario')
-			->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= uo.codOrganizacao')
+			->leftJoin('\Entidades\ZgsegUsuarioOrganizacao'	,'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
+			->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
+			->leftJoin('\Entidades\ZgsegPerfil'				,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil 	= p.codigo')
 			->where($qb->expr()->andX(
-					$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao'),
-					$qb->expr()->in('uo.codPerfil'				, ':perfil'),
-					$qb->expr()->in('uo.codStatus'				, ':status')
+				$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao'),
+				$qb->expr()->in('p.codTipoUsuario'			, ':tipoUsuario'),
+				$qb->expr()->in('uo.codStatus'				, ':status')
 			))
 			->setParameter('codOrganizacao'	, $codOrganizacao)
 			->setParameter('status'			, array("A"))
-			->setParameter('perfil'			, array(4,5));
+			->setParameter('tipoUsuario'	, array("F"));
 	
 			$query 		= $qb->getQuery();
 			return($query->getSingleScalarResult());
@@ -144,6 +145,37 @@ class Formatura {
 		}
 			
 	}
+	
+	/**
+	 * Resgata o número de formandos de uma organização
+	 * @param number $codOrganizacao
+	 */
+	public static function getNumFormandos($codOrganizacao) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+			
+			try {
+			$qb->select('count(u.codigo)')
+			->from('\Entidades\ZgsegUsuario','u')
+			->leftJoin('\Entidades\ZgsegUsuarioOrganizacao'	,'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
+			->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
+			->leftJoin('\Entidades\ZgsegPerfil'				,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'uo.codPerfil 	= p.codigo')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('uo.codOrganizacao'			, ':codOrganizacao'),
+				$qb->expr()->in('p.codTipoUsuario'			, ':tipoUsuario')
+			))
+			->setParameter('codOrganizacao'	, $codOrganizacao)
+			->setParameter('tipoUsuario'	, array("F"));
+	
+			$query 		= $qb->getQuery();
+			return($query->getSingleScalarResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+	}
+	
 	
 	/**
 	 * Calcula o valor total da Formatura

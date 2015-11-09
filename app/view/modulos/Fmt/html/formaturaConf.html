@@ -8,6 +8,10 @@
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
 		<input type="hidden" id="valID" name="validado">
+		<input type="hidden" id="pctJurosTurmaID" name="pctJurosTurma" value="%PCT_JUROS_TURMA%">
+		<input type="hidden" id="pctMoraTurmaID" name="pctMoraTurma" value="%PCT_MORA_TURMA%">
+		<input type="hidden" id="pctConviteExtraTurmaID" name="pctConviteExtraTurma" value="%PCT_CONVITE_TURMA%">
+		<input type="hidden" id="pctDevolucaoID" name="pctDevolucao" value="%PCT_DEVOLUCAO%">
 
 		<div class="row">
 			<div class="form-group col-sm-12" id="divDiaVencimentoID">
@@ -37,13 +41,56 @@
 		    	<div class="col-sm-1 pull-left" id="divHelpValorPorBoletoID"></div>
 		    </div>
 		    <div class="form-group col-sm-12" id="divTaxaPorFormandoID">
-		    	<label class="col-sm-3 control-label" for="instituicaoID">Taxa de Uso do sistema (por Formando)</label>
+		    	<label class="col-sm-3 control-label" for="taxaPorFormandoID">Taxa de Uso do sistema (por Formando)</label>
 				<div class="input-group col-sm-5 pull-left">
 	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Taxa cobrada pelo (suaFormatura) para uso do sistema."></i></span>
 					<input class="form-control" id="taxaPorFormandoID" disabled readonly type="text" name="taxaPorFormando" placeholder="Valor Por Boleto" maxlength="100" value="%TAXA_FORMANDO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpTaxaPorFormandoID"></div>
 			</div>
+		    <div class="form-group col-sm-12" id="divPctJurosTurmaID">
+		    	<label class="col-sm-3 control-label" for="pctJurosTurmaSliderID">Percentual do Júros que fica com a turma</label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor de júros recebido que fica para a turma, a diferença fica para o cerimonial"></i></span>
+	    			<div style="width: 80%;" id="pctJurosTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctJurosTurmaSpanID">%PCT_JUROS_TURMA% %</span>
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpPctJurosTurmaID"></div>
+			</div>
+		    <div class="form-group col-sm-12" id="divPctMoraTurmaID">
+		    	<label class="col-sm-3 control-label" for="pctMoraTurmaSliderID">Percentual da Mora que fica com a turma</label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor da Mora (Multa) recebida que fica para a turma, a diferença fica para o cerimonial"></i></span>
+	    			<div style="width: 80%;" id="pctMoraTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctMoraTurmaSpanID">%PCT_MORA_TURMA% %</span>
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpPctMoraTurmaID"></div>
+			</div>
+		    <div class="form-group col-sm-12" id="divPctConviteExtraTurmaID">
+		    	<label class="col-sm-3 control-label" for="pctConviteExtraTurmaSliderID">Percentual do Convite extra que fica com a turma</label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor do Convite extra vendido que fica para a turma, a diferença fica para o cerimonial"></i></span>
+	    			<div style="width: 80%;" id="pctConviteExtraTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctConviteExtraTurmaSpanID">%PCT_CONVITE_TURMA% %</span>
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpPctConviteExtraTurmaID"></div>
+			</div>
+		    <div class="form-group col-sm-12" id="divPctDevolucaoID">
+		    	<label class="col-sm-3 control-label" for="pctDevolucaoSliderID">Percentual de devolução em caso de desistência</label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de devolução das mensalidades pagas"></i></span>
+	    			<div style="width: 80%;" id="pctDevolucaoSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctDevolucaoSpanID">%PCT_DEVOLUCAO% %</span>
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpPctDevolucaoID"></div>
+			</div>
+			<div class="form-group col-sm-12" >
+   				<label class="col-sm-3 control-label">
+   					<input name="indRepassaTaxaSistema" id="indRepassaTaxaSistemaID" class="ace ace-switch " value="1" %IND_REPASSA_TAXA_SISTEMA% type="checkbox" />
+   					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+   				</label>
+    			<div class="input-group col-sm-5 pull-left">
+    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar a taxa de uso do SuaFormatura.com as mensalidades geradas"></i></span>
+    				<input readonly type="text" class="form-control" placeholder="Repassar taxa do Sistema (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+			    </div>
+				<div class="help-block col-sm-1 inline" id="divHelpIndRepassaTaxaSistemaID"></div>
+	    	</div>
 	    </div>
 		<div id="divMsgFmtConfID"></div>
 	    
@@ -73,6 +120,54 @@ $('[data-rel="select2"]').each(function( index ) {
 	$(this).select2({allowClear: true});
 	if ($(this).hasClass('readonly')) {
 		$(this).select2("readonly", true);
+	}
+});
+
+$( "#pctJurosTurmaSliderID" ).slider({
+	range: "max",
+	min: 0,
+	max: 100,
+	value: %PCT_JUROS_TURMA%,
+	step: 1,
+	slide: function( event, ui ) {
+		$("#pctJurosTurmaID").val(ui.value);
+		$('#pctJurosTurmaSpanID').html(ui.value + "&nbsp;%");
+	}
+});
+
+$( "#pctMoraTurmaSliderID" ).slider({
+	range: "max",
+	min: 0,
+	max: 100,
+	value: %PCT_MORA_TURMA%,
+	step: 1,
+	slide: function( event, ui ) {
+		$("#pctMoraTurmaID").val(ui.value);
+		$('#pctMoraTurmaSpanID').html(ui.value + "&nbsp;%");
+	}
+});
+
+$( "#pctConviteExtraTurmaSliderID" ).slider({
+	range: "max",
+	min: 0,
+	max: 100,
+	value: %PCT_CONVITE_TURMA%,
+	step: 1,
+	slide: function( event, ui ) {
+		$("#pctConviteExtraTurmaID").val(ui.value);
+		$('#pctConviteExtraTurmaSpanID').html(ui.value + "&nbsp;%");
+	}
+});
+
+$( "#pctDevolucaoSliderID" ).slider({
+	range: "max",
+	min: 0,
+	max: 100,
+	value: %PCT_DEVOLUCAO%,
+	step: 1,
+	slide: function( event, ui ) {
+		$("#pctDevolucaoID").val(ui.value);
+		$('#pctDevolucaoSpanID').html(ui.value + "&nbsp;%");
 	}
 });
 

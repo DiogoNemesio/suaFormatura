@@ -20,7 +20,11 @@ if (isset($_POST['codOrganizacao']))		$codOrganizacao			= \Zage\App\Util::antiIn
 if (isset($_POST['valorPorFormando']))		$valorPorFormando		= \Zage\App\Util::antiInjection($_POST['valorPorFormando']);
 if (isset($_POST['valorPorBoleto']))		$valorPorBoleto			= \Zage\App\Util::antiInjection($_POST['valorPorBoleto']);
 if (isset($_POST['diaVencimento']))			$diaVencimento			= \Zage\App\Util::antiInjection($_POST['diaVencimento']);
-
+if (isset($_POST['pctJurosTurma']))			$pctJurosTurma			= \Zage\App\Util::antiInjection($_POST['pctJurosTurma']);
+if (isset($_POST['pctMoraTurma']))			$pctMoraTurma			= \Zage\App\Util::antiInjection($_POST['pctMoraTurma']);
+if (isset($_POST['pctConviteExtraTurma']))	$pctConviteExtraTurma	= \Zage\App\Util::antiInjection($_POST['pctConviteExtraTurma']);
+if (isset($_POST['pctDevolucao']))			$pctDevolucao			= \Zage\App\Util::antiInjection($_POST['pctDevolucao']);
+if (isset($_POST['indRepassaTaxaSistema']))	$indRepTaxaSistema		= \Zage\App\Util::antiInjection($_POST['indRepassaTaxaSistema']);
 
 $err	= null;
 
@@ -57,8 +61,13 @@ if ($err) {
 #################################################################################
 ## Ajuste dos valores
 #################################################################################
-$valorPorFormando	= \Zage\App\Util::toMysqlNumber($valorPorFormando);
-$valorPorBoleto		= \Zage\App\Util::toMysqlNumber($valorPorBoleto);
+$valorPorFormando		= \Zage\App\Util::toMysqlNumber($valorPorFormando);
+$valorPorBoleto			= \Zage\App\Util::toMysqlNumber($valorPorBoleto);
+$pctJurosTurma			= (int) $pctJurosTurma;
+$pctMoraTurma			= (int) $pctMoraTurma;
+$pctConviteExtraTurma	= (int) $pctConviteExtraTurma;
+$pctDevolucao			= (int) $pctDevolucao;
+$indRepTaxaSistema		= (isset($indRepTaxaSistema) || $indRepTaxaSistema) ? 1 : 0;
 
 
 #################################################################################
@@ -68,6 +77,11 @@ try {
 	$oOrgFmt->setValorPorFormando($valorPorFormando);
 	$oOrgFmt->setValorPorBoleto($valorPorBoleto);
 	$oOrgFmt->setDiaVencimento($diaVencimento);
+	$oOrgFmt->setPctJurosTurma($pctJurosTurma);
+	$oOrgFmt->setPctMoraTurma($pctMoraTurma);
+	$oOrgFmt->setPctConviteExtraTurma($pctConviteExtraTurma);
+	$oOrgFmt->setPctDevolucao($pctDevolucao);
+	$oOrgFmt->setIndRepassaTaxaSistema($indRepTaxaSistema);
 	$em->persist($oOrgFmt);
 	
 	$em->flush();

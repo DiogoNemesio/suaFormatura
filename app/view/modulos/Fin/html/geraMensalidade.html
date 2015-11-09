@@ -98,7 +98,7 @@
 			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
 			    				</label>
 				    			<div class="input-group col-sm-7 pull-left">
-				    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa de uso do Sistema, Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
+				    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
 				    				<input readonly type="text" class="form-control" placeholder="Adicionar os valores extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
 							    </div>
 								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
@@ -207,13 +207,19 @@
 				<div class="row">
 					<div class="col-sm-12">
 				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT% (RECEBER)</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
 			    	</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Total a Receber:</p>
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo a Provisionar:</p>
 				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Por Formando:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="pSaldoFormandoID">%SALDO_FORMANDO_FMT%</p>
 			    	</div>
 				</div>
 				<div class="row">
@@ -357,6 +363,13 @@ $('#fuelux-wizard-container')
 
 			e.preventDefault();
 		}else{
+
+			if ($numSel > 2) {
+				$('#pSaldoFormandoID').html(" - (vários selecionados)")
+			}else{
+				$('#pSaldoFormandoID').html();
+			}
+
 			var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
 			$('#lblNumFormadosSelID').html($lblFor);
 			var $divInfo	= $('#divInfoGeraMensalidadeID').html();

@@ -2,7 +2,7 @@
 	<div class="page-header col-sm-12">
 		<label class="pull-left col-sm-2 blue">Orçamento</label>
 		<div class="col-sm-8 center">
-			<select id="codVersaoOrcID" name="codVersaoOrc" class="select2" data-placeholder="Selecione a versão do Orçamento" onchange="javascript:carregaVersaoOrc();">
+			<select id="codVersaoOrcID" name="codVersaoOrc" class="select2" data-placeholder="Selecione a versão do Orçamento" onchange="javascript:carregaVersaoOrc(null);">
 				%VERSOES_ORC%
 			</select>
 		</div>
@@ -111,7 +111,7 @@
 	    <div class="row" id="divItem"></div>
 		<div class="clearfix form-actions col-sm-12">
 			<label class="col-sm-6 control-label">&nbsp;</label>
-			<button type="button" class="btn btn-primary" id="btnSubmitID" onclick="orcSalva();">
+			<button type="button" class="btn btn-primary" tabindex="1500" id="btnSubmitID" onclick="orcSalva();">
 				<i class="fa fa-check bigger-110"></i> Salvar
 			</button>
 		</div>
@@ -153,25 +153,30 @@ carregaPlanoOrc();
 orcAtualizaInfo();
 orcAtualizaBotoes();
 
-function carregaVersaoOrc() {
+function carregaVersaoOrc($codVersao) {
 	var $url	= '%URL_RELOAD%';
-	$url		+= '&codVersaoOrc='+$('#codVersaoOrcID').val();
+	
+	if ($codVersao) {
+		$url		+= '&codVersaoOrc='+$codVersao;
+	}else{
+		$url		+= '&codVersaoOrc='+$('#codVersaoOrcID').val();
+	}
 	zgLoadUrl($url);
 }
 
 function orcImprime() {
 
-	var $codVesaoOrc 		= $('#codVersaoOrcID').val();
+	var $codVersao 		= $('#codVersaoID').val();
 
 	var $url	= '%URL_MIDIA%';
-	$url		+= '&codVersaoOrc='+$('#codVersaoOrcID').val();
+	$url		+= '&codVersaoOrc='+$codVersao;
 	
 	/** Verificar se pode imprimir **/
 	var $disabled	= $('#btnOrcPrintID').attr('zg-disabled');
 	if ($disabled == "disabled")	return false;
 
 	
-	if (!$codVesaoOrc)	{
+	if (!$codVersao)	{
 		alert('Orçamento não salvo');
 	}
 	
@@ -208,9 +213,7 @@ function orcConfirmAceite() {
 				"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
 				"className" : "btn-sm btn-primary",
 				"callback": function() {
-					//zgWindowOpen('%ROOT_URL%'+$('#identID').val());
-					alert("Vou aceitar");
-					//$('#zgFormID').submit();
+					orcAceite();
 				}
 			},
 			"Cancelar" : {
@@ -227,17 +230,17 @@ function orcConfirmAceite() {
 }
 
 function orcAceite() {
-	var $codVesaoOrc 		= $('#codVersaoOrcID').val();
+	
+	var $codVersao 		= $('#codVersaoID').val();
 
-	if (!$codVesaoOrc)	{
+	if (!$codVersao)	{
 		alert('Orçamento não salvo');
 	}
 
-	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP_ACEITE%",
-		data:  { id: '%ID%', codVersaoOrc: $codVersaoOrc},
+		data:  { id: '%ID%', codVersaoOrc: $codVersao},
 	}).done(function( data, textStatus, jqXHR) {
 		
 		if (checaRetornoOK(data) == true) {
@@ -275,6 +278,9 @@ function orcAceite() {
 }
 
 function orcSalva() {
+	
+	var $indSalvo			= $('#indSalvoID').val();
+	
 	/**
 	 * Valida o Orçamento
 	 */
@@ -289,6 +295,17 @@ function orcSalva() {
 		return false;
 	 }
 	
+	if ($indSalvo == 1) {
+		$.gritter.add({
+			title: 'Orçamento já salvo !!!',
+			text: 'Este orçamento não foi alterado',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		
+		return false;
+	}
+	
 	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
 	$('#btnSubmitID').attr("disabled","disabled");
 	
@@ -299,31 +316,36 @@ function orcSalva() {
 			data:	$('#zgFormOrcamentoID').serialize(),
 		}).done(function( data, textStatus, jqXHR) {
 			
-			if (checaRetornoOK(data) == true) {
-				//alert(zgGetCodRetorno(data));
-				zgMostraMsg('divMsgOrcID',"Orçamento salvo com sucesso !!!");
-			}else{
-				zgMostraErro('divMsgOrcID',zgGetMsgRetorno(data));
-			}
 
 			//Voltar o botão de salvar
 			$('#btnSubmitID').html('Salvar');
 			$('#btnSubmitID').attr("disabled",false);
-			
-			/** Atualiza o código da versão gerada **/
-			$('#codVersaoID').val(zgGetCodRetorno(data));
-			
-			/**
-			 * Atualiza a flag de salvamento
-			 */
-			 orcIndSalvo();
 
-			/**
-			 * Controlar a ação dos botões 
-			 */
-			orcAtualizaBotoes();
-			
-			
+			if (checaRetornoOK(data) == true) {
+
+				/** Atualiza o código da versão gerada **/
+				$('#codVersaoID').val(zgGetCodRetorno(data));
+				
+				$.gritter.add({
+					title: 'Orçamento',
+					text: 'O Orçamento foi salvo com sucesso',
+					class_name: 'gritter-info',
+					time: '5000'
+				});
+			}else{
+
+				$.gritter.add({
+					title: 'Erro ao salvar o Orçamento',
+					text: zgGetMsgRetorno(data),
+					class_name: 'gritter-info gritter-error',
+					time: '5000'
+				});
+
+				return false;
+			}
+
+			/** Atualizar a tela, carregar a nova versão salva **/
+			carregaVersaoOrc(zgGetCodRetorno(data));
 			
 			
 		}).fail(function( jqXHR, textStatus, errorThrown) {
@@ -398,7 +420,6 @@ function carregaPlanoOrc() {
 
 	if ($codPlanoOrc){
 		$('#divMsgOrcID').html("<i class='ace-icon fa fa-spinner fa-spin orange bigger-125'></i>");
-		//var vUrl	= "%ROOT_URL%/Fmt/orcamentoDivItem.php?id=%ID%&codPlanoOrc="+$codPlanoOrc+"&codVersao="+$codVersao;
 		var vUrl	= "%ROOT_URL%/Fmt/orcamentoDivItem.php";
 
 		$.ajax({
@@ -410,6 +431,8 @@ function carregaPlanoOrc() {
 		}).done(function( data, textStatus, jqXHR) {
 			$("#divItem").empty();
 			$('#divItem').html(data);
+			corrigeQtdeFormandos(false);
+			corrigeQtdeConvidados(false);
 			orcAtualizaCustoFinal();
 			$('#divMsgOrcID').empty();
 			
@@ -436,6 +459,9 @@ function orcAlteraDataConclusao() {
 	/** Atualiza as informações da tela **/
 	orcAtualizaInfo();
 
+	/** Atualiza as informações da tela **/
+	orcAtualizaCustoFinal();
+	
 	/**
 	 * Controlar a ação dos botões 
 	 */
@@ -476,12 +502,11 @@ function orcCalculaNumMeses() {
 
 
 function orcAlteraQtdeFormandos() {
-	var $numFormando 		= $('#numFormandoID').val();
 	
-	$('input[zg-name="qtde"][zg-tipo="F"]').each(function() {
-		$(this).val($numFormando);
-		$(this).trigger('change');
-	});
+	/**
+	 * Corrigir a qtde de formandos
+	 */
+	 corrigeQtdeFormandos(true);
 	
 	/**
 	 * Atualiza a flag de salvamento
@@ -497,17 +522,22 @@ function orcAlteraQtdeFormandos() {
 	orcAlteraQtdeConvidados();
 }
 
+function corrigeQtdeFormandos($indChange) {
+
+	var $numFormando 		= $('#numFormandoID').val();
+	
+	$('input[zg-name="qtde"][zg-tipo="F"]').each(function() {
+		$(this).val($numFormando);
+		if ($indChange == true) $(this).trigger('change');
+	});
+}
 
 function orcAlteraQtdeConvidados() {
-	var $numFormando 		= $('#numFormandoID').val();
-	var $numConvidado 		= $('#numConvidadoID').val();
-	var $total				= parseInt($numFormando) * parseInt($numConvidado);
 
-	
-	$('input[zg-name="qtde"][zg-tipo="C"]').each(function() {
-		$(this).val($total);
-		$(this).trigger('change');
-	});
+	/**
+	 * Corrigir a quantidade de convidados
+	 */
+	 corrigeQtdeConvidados(true);
 
 	/**
 	 * Atualiza a flag de salvamento
@@ -523,6 +553,17 @@ function orcAlteraQtdeConvidados() {
 	orcAtualizaInfo();
 }
 
+function corrigeQtdeConvidados($indChange) {
+	var $numFormando 		= $('#numFormandoID').val();
+	var $numConvidado 		= $('#numConvidadoID').val();
+	var $total				= parseInt($numFormando) * parseInt($numConvidado);
+
+	
+	$('input[zg-name="qtde"][zg-tipo="C"]').each(function() {
+		$(this).val($total);
+		if ($indChange == true) $(this).trigger('change');
+	});
+}
 
 function orcAlteraQuantidade($codigo) {
 	var $oQtde		= $('input[zg-name="qtde"][zg-codigo="'+$codigo+'"]');
@@ -625,10 +666,12 @@ function orcAtualizaTotalItem($codigo) {
 	var $oTotal	= $('#total_'+$codigo+'_ID');
 	var $evento	= $oQtde.attr('zg-evento');
 	
-	var	$valor	= parseFloat($oValor.val().replace(".", "").replace(",","."));
+	
+	var	$valor	= zgConverteFloat($oValor.val());
 	var $qtde	= parseInt($oQtde.val());
 	var $total	= $valor * $qtde;
 	
+
 	var options = {
 		symbol : "R$ ",
 		decimal : ",",
@@ -651,7 +694,7 @@ function orcAtualizaInfoEvento($evento) {
 	$('input[zg-evento="'+$evento+'"][zg-name="qtde"]').each(function() {
 		var $qtde		= parseInt($(this).val()); 
 		var $codigo		= $(this).attr("zg-codigo");
-		var $valor		= parseFloat($('input[zg-evento="'+$evento+'"][zg-name="valor"][zg-codigo="'+$codigo+'"]').val().replace(".", "").replace(",","."));
+		var $valor		= zgConverteFloat($('input[zg-evento="'+$evento+'"][zg-name="valor"][zg-codigo="'+$codigo+'"]').val());
 		
 		if (isNaN($valor)) {
 			$valor 	= parseFloat(0);
@@ -684,8 +727,8 @@ function orcAtualizaInfoEvento($evento) {
 }
 
 function orcAtualizaCustoFinal() {
-	var $custoFinal	= 0;
-	var $taxaSistema		= parseFloat($('#taxaSistemaID').val().replace(".", "").replace(",","."));
+	var $custoFinal			= 0;
+	var $taxaSistema		= zgConverteFloat($('#taxaSistemaID').val());
 	var $numFormando		= parseInt($('#numFormandoID').val());
 
 	/** Validação das taxas **/
@@ -702,7 +745,7 @@ function orcAtualizaCustoFinal() {
 	};
 
 	$('span[zg-total-evento]').each(function() {
-		var $totalEvento	= parseFloat($(this).attr("zg-total-evento"));
+		var $totalEvento	= zgConverteFloat($(this).attr("zg-total-evento"));
 		if (isNaN($totalEvento)) {
 			$totalEvento 	= parseFloat(0);
 		}
@@ -858,11 +901,11 @@ function orcValidaOrcamento() {
 			$oChk		= $(this).find('[zg-name="selItem"]');
 
 			$qtde		= parseInt($oQtde.val());
-			$valor		= parseFloat($oValor.val());
+			$valor		= zgConverteFloat($oValor.val());
 			$chk		= $oChk.is(':checked');
 			
 			
-			if ((!$qtde || !$valor) && ($chk)) {
+			if ((!$qtde) && ($chk)) {
 				$(this).addClass('alert-danger');
 				$ok 	= false;
 			}else{

@@ -55,48 +55,54 @@ if (!$orcamento) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Orçamento não encontrado!"))));
 }
 
+#################################################################################
+## Buscar as configurações da formatura, onde será gravado os valores de previsão
+#################################################################################
+$oFmt				= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+
+if (!$oFmt) {
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Organização não é uma formatura, ou não está configurada!"))));
+}
+
+#################################################################################
+## Calcula o valor total do orcamento
+#################################################################################
+$valorOrcamento		= \Zage\App\Util::to_float(\Zage\Fmt\Orcamento::calculaValorTotal($codVersaoOrc));
+$valorSistema		= \Zage\App\Util::to_float($orcamento->getTaxaSistema()) * ((int) $orcamento->getQtdeFormandos()) * ( (int) $orcamento->getNumMeses());
+$valorTotal			= \Zage\App\Util::to_float($valorOrcamento + $valorSistema);
 
 #################################################################################
 ## Salvar no banco
 #################################################################################
 try {
-	$oOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 	$oUser			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
 	
+	#################################################################################
+	## Retirar o aceite dos outros orcamentos
+	#################################################################################
+	$orcs			= $em->getRepository('Entidades\ZgfmtOrcamento')->findBy(array('codOrganizacao' => $system->getCodorganizacao(),'indAceite' => 1));
+	for ($i = 0; $i < sizeof($orcs); $i++) {
+		$orcs[$i]->setIndAceite(0);
+		$em->persist($orcs[$i]);
+	}
+	
+	#################################################################################
+	## Atualiza o orcamento
+	#################################################################################
 	$orcamento->setIndAceite(1);
 	$orcamento->setCodUsuarioAceite($oUser);
-	$oOrc->setCodOrganizacao($oOrganizacao);
-	$oOrc->setCodPlanoOrc($oPlanoOrc);
-	$oOrc->setCodUsuario($oUser);
-	$oOrc->setDataCadastro(new \DateTime("now"));
-	$oOrc->setDataConclusao($oDataConc);
-	//$oOrc->setIndAceite($indAceite);
-	$oOrc->setNumMeses($numMeses);
-	$oOrc->setQtdeConvidados($numConvidado);
-	$oOrc->setQtdeFormandos($numFormando);
-	$oOrc->setTaxaSistema($taxaSistema);
-	$oOrc->setVersao($versao);
- 	 
- 	$em->persist($oOrc);
+	$orcamento->setDataAceite(new \DateTime("now"));
+ 	$em->persist($orcamento);
  	
  	#################################################################################
- 	## Itens
+ 	## Transpor os valores do orçamento para a previsão orcamentária da formatura
  	#################################################################################
- 	foreach ($codItemSel as $codItem => $item) {
- 		$oItem			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findOneBy(array('codigo' => $codItem));
- 		$valor			= \Zage\App\Util::to_float($aValor[$codItem]);
- 		$qtde			= (int) $aQtde[$codItem];
- 		$oOrcItem		= new \Entidades\ZgfmtOrcamentoItem();
- 		$oOrcItem->setCodItem($oItem);
- 		$oOrcItem->setCodOrcamento($oOrc);
- 		$oOrcItem->setIndHabilitado(1);
- 		$oOrcItem->setObservacao($aObs[$codItem]);
- 		$oOrcItem->setQuantidade($qtde);
- 		$oOrcItem->setValorUnitario($valor);
- 		$em->persist($oOrcItem);
- 	}
+ 	$oFmt->setValorPrevistoTotal($valorTotal);
+ 	$oFmt->setQtdePrevistaFormandos($orcamento->getQtdeFormandos());
+ 	$oFmt->setQtdePrevistaConvidados($orcamento->getQtdeConvidados());
+ 	$em->persist($oFmt);
  	
-	
+ 	
 	#################################################################################
  	## Salvar as informações
  	#################################################################################
@@ -110,4 +116,4 @@ try {
  	exit;
 }
  
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oOrc->getCodigo());
+echo '0'.\Zage\App\Util::encodeUrl('|'.$orcamento->getCodigo());

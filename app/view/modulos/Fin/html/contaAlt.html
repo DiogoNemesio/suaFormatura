@@ -394,21 +394,25 @@ zgCheckVerificador();
 function zgCheckVerificador() {
 	var vCheckAlt = $('#indCheckAltID').val();
 	var vAgencia  = $('#codAgenciaID').val();
-	var vBanco	  = JSON.parse('%ARRAY_BANCO%');
-	var length    = contaBancoDigito(vBanco[vAgencia]);
 
-	if(!vCheckAlt){
-		$('#ccorrenteID').val("");
-		$('#ccorrenteDVID').val("");
+	if (vAgencia){
+		var vBanco	  = JSON.parse('%ARRAY_BANCO%');
+		var length    = contaBancoDigito(vBanco[vAgencia]);
+		
+		if(!vCheckAlt){
+			$('#ccorrenteID').val("");
+			$('#ccorrenteDVID').val("");
+		}
+		
+		if ( length['CC'] != 0 ) {
+			$('#ccorrenteID').attr('maxlength', length['CC']);
+		}else{
+			$('#ccorrenteID').attr('maxlength', 20);
+		}
+		
+		$('#indCheckAltID').val(null);
 	}
 	
-	if ( length['CC'] != 0 ) {
-		$('#ccorrenteID').attr('maxlength', length['CC']);
-	}else{
-		$('#ccorrenteID').attr('maxlength', 20);
-	}
-	
-	$('#indCheckAltID').val(null);
 }
 
 function validaContaAlt() {

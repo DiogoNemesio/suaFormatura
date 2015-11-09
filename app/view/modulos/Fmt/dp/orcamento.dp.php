@@ -28,7 +28,7 @@ if (isset($_POST['aQtde'])) 			$aQtde				= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['aValor'])) 			$aValor				= \Zage\App\Util::antiInjection($_POST['aValor']);
 if (isset($_POST['aObs'])) 				$aObs				= \Zage\App\Util::antiInjection($_POST['aObs']);
 
-$log->info("POST ORC: ".serialize($_POST));
+//$log->info("POST ORC: ".serialize($_POST));
 
 #################################################################################
 ## Verificar parâmetro obrigatório
@@ -94,7 +94,6 @@ try {
 	$oDataConc		= \DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataConclusao);
 	$ultVersao		= \Zage\Fmt\Orcamento::getUltimoNumeroVersao($system->getCodOrganizacao());
 	$versao			= ($ultVersao) ? ($ultVersao + 1) : 1;
-	$log->info("Versão: ".$versao);
 	
 	$oOrc			= new \Entidades\ZgfmtOrcamento();
 	$oOrc->setCodOrganizacao($oOrganizacao);
@@ -102,7 +101,7 @@ try {
 	$oOrc->setCodUsuario($oUser);
 	$oOrc->setDataCadastro(new \DateTime("now"));
 	$oOrc->setDataConclusao($oDataConc);
-	//$oOrc->setIndAceite($indAceite);
+	$oOrc->setIndAceite(0);
 	$oOrc->setNumMeses($numMeses);
 	$oOrc->setQtdeConvidados($numConvidado);
 	$oOrc->setQtdeFormandos($numFormando);
@@ -116,7 +115,7 @@ try {
  	#################################################################################
  	foreach ($codItemSel as $codItem => $item) {
  		$oItem			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findOneBy(array('codigo' => $codItem));
- 		$valor			= \Zage\App\Util::to_float($aValor[$codItem]);
+ 		$valor			= ($aValor[$codItem]) ? \Zage\App\Util::to_float($aValor[$codItem]) : 0; 
  		$qtde			= (int) $aQtde[$codItem];
  		$oOrcItem		= new \Entidades\ZgfmtOrcamentoItem();
  		$oOrcItem->setCodItem($oItem);

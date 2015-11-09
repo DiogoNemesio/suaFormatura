@@ -78,6 +78,13 @@ class ZgfmtOrcamento
     private $taxaSistema;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ACEITE", type="datetime", nullable=true)
+     */
+    private $dataAceite;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -310,6 +317,29 @@ class ZgfmtOrcamento
     public function getTaxaSistema()
     {
         return $this->taxaSistema;
+    }
+
+    /**
+     * Set dataAceite
+     *
+     * @param \DateTime $dataAceite
+     * @return ZgfmtOrcamento
+     */
+    public function setDataAceite($dataAceite)
+    {
+        $this->dataAceite = $dataAceite;
+
+        return $this;
+    }
+
+    /**
+     * Get dataAceite
+     *
+     * @return \DateTime 
+     */
+    public function getDataAceite()
+    {
+        return $this->dataAceite;
     }
 
     /**

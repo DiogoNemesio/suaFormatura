@@ -50,7 +50,7 @@ if (!isset($qtdeMax) || empty($qtdeMax)) {
 /** DATA INICIO INTERNET **/
 if (!empty($dataInicioInternet)) {
 	$dataInicioInternet = DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataInicioInternet);
-	if ($dataInicioInternet < new \DateTime("now")) {
+	if ($dataInicioInternet < new \DateTime("now") && !$codConviteConf) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A data do início da venda na internet não pode ser inferior a data de hoje.");
 		$err	= 1;
 	}
@@ -99,7 +99,7 @@ if (!empty($custoBoleto)) {
 /** DATA INICIO PRESENCIAL **/
 if (!empty($dataInicioPresencial)) {
 	$dataInicioPresencial = DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataInicioPresencial);
-	if ($dataInicioPresencial < new \DateTime("now")) {
+	if ($dataInicioPresencial < new \DateTime("now") && !$codConviteConf) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A data do início da venda presencial não pode ser inferior a data de hoje.");
 		$err	= 1;
 	}

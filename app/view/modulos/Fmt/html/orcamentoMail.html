@@ -5,7 +5,7 @@
 </div>
 <div class="modal-body" style="overflow-y: scroll; height: 220px;">
 	<input type="hidden" name="id" value="%ID%">
-	<input type="hidden" name="tipoMidia" id="tipoMidiaID" value="MAIL">
+	<input type="hidden" name="via" value="MAIL">
 	<input type="hidden" name="codVersaoOrc" value="%COD_VERSAO_ORC%">
 	<div class="row">
 		<div class="col-sm-12">
@@ -61,7 +61,6 @@ $('#orcMailEnviaEmailID').click(function() {
 		return false;
 	}
 	
-	$('#tipoMidiaID').val('MAIL');
 	$('#orcMailEnviaEmailID').html("Enviando e-mail, aguarde ...");
 	$('#orcMailEnviaEmailID').attr("disabled","disabled");
 	
@@ -71,16 +70,29 @@ $('#orcMailEnviaEmailID').click(function() {
 			url:	"%URL_MIDIA%",
 			data:	$('#zgFormOrcMailID').serialize(),
 		}).done(function( data, textStatus, jqXHR) {
+			if (checaRetornoOK(data) == true) {
+				$.gritter.add({
+					title: 'E-mail enviado com sucesso',
+					text: 'O E-mail com o orçamento foi enviado com sucesso para os destinatários informados.',
+					class_name: 'gritter-info',
+					time: '5000'
+				});
+			}else{
+				$.gritter.add({
+					title: 'Erro ao enviar o Orçamento',
+					text: zgGetMsgRetorno(data),
+					class_name: 'gritter-info gritter-error',
+					time: '5000'
+				});
+			}
 			$('#btnOrcMailFecharID').click();
+		}).fail(function( jqXHR, textStatus, errorThrown) {
 			$.gritter.add({
-				title: 'E-mail enviado com sucesso',
-				text: 'O E-mail com o orçamento foi enviado com sucesso para os destinatários informados.',
-				class_name: 'gritter-info',
+				title: 'Erro ao enviar o Orçamento',
+				text: errorThrown,
+				class_name: 'gritter-info gritter-error',
 				time: '5000'
 			});
-			//zgMostraAviso("Fechar");
-		}).fail(function( jqXHR, textStatus, errorThrown) {
-			zgMostraAviso(null);
 		});
 		//
 		e.preventDefault();

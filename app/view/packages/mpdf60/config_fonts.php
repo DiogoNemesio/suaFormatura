@@ -297,6 +297,9 @@ $this->fontdata = array(
 		'R' => "UnBatang_0613.ttf",
 		),
 
+	"fontawesome" => array(
+		'R' => "fontawesome-webfont.ttf",
+	),
 
 );
 

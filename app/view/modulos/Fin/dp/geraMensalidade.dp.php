@@ -82,16 +82,41 @@ if ($codTipoValor == "M") {
 	$indValorParcela	= null;
 }
 
+
+#################################################################################
+## Variáveis usadas no cálculo das mensalidades
+#################################################################################
+$dataConclusao			= $oOrgFmt->getDataConclusao();
+if (!$dataConclusao)	throw new Exception("Data de Conclusão não informada");
+$hoje					= new DateTime('now');
+$interval				= $dataConclusao->diff($hoje);
+$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
+
+#################################################################################
+## Taxas / Configurações
+#################################################################################
+$indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
+$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
+$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
+$taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
+$taxaUsoFormando		= round(($taxaUso * $numMesesConc) / $numMeses,2);
+
+#################################################################################
+## Formatar as taxas
+#################################################################################
+if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
+if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
+if ($taxaUso		< 0)		$taxaUso		= 0;
+$totalTaxa			= ($taxaAdmin + $taxaBoleto);
+
+
 $codTipoRec		= ($numMeses == 1)  ? "U" : "P";
 $parcela		= ($numMeses == 1)  ? 1 : null;
 $codRecPer		= "M";
-$taxaAdmin		= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$taxaBoleto		= ($codFormaPag == "BOL") ? \Zage\App\Util::to_float($oOrgFmt->getValorPorBoleto()) : 0;
-$taxaUso		= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
 $valorJuros		= 0;
 $valorMora		= 0;
 $valorDesconto	= 0;
-$valorOutros	= ($indValorExtra)	? ($taxaAdmin + $taxaBoleto + $taxaUso) : 0;
+$valorOutros	= ($indValorExtra)	? ($totalTaxa + $taxaUsoFormando) : $taxaUsoFormando;
 $numParcelas	= $numMeses;
 $parcelaInicial	= 1;
 $obs			= null;
@@ -120,7 +145,13 @@ $valorParcela	= $valor + $valorMora + $valorJuros + $valorOutros - $valorDescont
 #################################################################################
 ## Ajustar o array de valores de rateio
 #################################################################################
-if (!$indValorExtra) {
+$pctRateio			= array();
+$valorRateio		= array();
+$codCategoria		= array();
+$codCentroCusto		= array();
+$codRateio			= array();
+
+/*if (!$indValorExtra) {
 	$pctRateio		= array(100);
 	$valorRateio	= array($valorParcela);
 	$codCategoria	= array($codCatMensalidade);
@@ -129,36 +160,37 @@ if (!$indValorExtra) {
 	
 
 }else{
-	$pctRateio[]		= round(100*$valor/$valorParcela,2);
-	$valorRateio[]		= $valor;
-	$codCategoria[]		= $codCatMensalidade;
+*/
+$pctRateio[]		= round(100*$valor/$valorParcela,2);
+$valorRateio[]		= $valor;
+$codCategoria[]		= $codCatMensalidade;
+$codCentroCusto[]	= null;
+$codRateio[]		= null;
+
+if ($taxaAdmin)		{
+	$pctRateio[]		= round(100*$taxaAdmin/$valorParcela,2);
+	$valorRateio[]		= $taxaAdmin;
+	$codCategoria[]		= $codCatOutrasTaxas;
 	$codCentroCusto[]	= null;
 	$codRateio[]		= null;
-	
-	if ($taxaAdmin)		{
-		$pctRateio[]		= round(100*$taxaAdmin/$valorParcela,2);
-		$valorRateio[]		= $taxaAdmin;
-		$codCategoria[]		= $codCatOutrasTaxas;
-		$codCentroCusto[]	= null;
-		$codRateio[]		= null;
-	}
-
-	if ($taxaBoleto)		{
-		$pctRateio[]		= round(100*$taxaBoleto/$valorParcela,2);
-		$valorRateio[]		= $taxaBoleto;
-		$codCategoria[]		= $codCatBoleto;
-		$codCentroCusto[]	= null;
-		$codRateio[]		= null;
-	}
-	
-	if ($taxaUso)		{
-		$pctRateio[]		= round(100*$taxaUso/$valorParcela,2);
-		$valorRateio[]		= $taxaUso;
-		$codCategoria[]		= $codCatPortal;
-		$codCentroCusto[]	= null;
-		$codRateio[]		= null;
-	}
 }
+
+if ($taxaBoleto)		{
+	$pctRateio[]		= round(100*$taxaBoleto/$valorParcela,2);
+	$valorRateio[]		= $taxaBoleto;
+	$codCategoria[]		= $codCatBoleto;
+	$codCentroCusto[]	= null;
+	$codRateio[]		= null;
+}
+
+if ($taxaUsoFormando)		{
+	$pctRateio[]		= round(100*$taxaUsoFormando/$valorParcela,2);
+	$valorRateio[]		= $taxaUsoFormando;
+	$codCategoria[]		= $codCatPortal;
+	$codCentroCusto[]	= null;
+	$codRateio[]		= null;
+}
+//}
 
 #################################################################################
 ## Ajustar os campos do tipo CheckBox
