@@ -261,7 +261,7 @@ class Financeiro {
 	}
 	
 	/**
-	 * Resgata o valor total já provisionado por formando
+	 * Resgata o valor total já provisionado para todos os formandos de uma formatura
 	 * @param unknown $codFormatura
 	 */
 	public static function getValorProvisionadoPorFormando($codFormatura) {
@@ -275,73 +275,129 @@ class Financeiro {
 		#################################################################################
 		$aStatusCanc	= array ("S","C");
 	
-				#################################################################################
-				## Array com as categorias que serão usados no calculo
-				#################################################################################
-				$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
-				$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
-				$aCat						= array($codCatMensalidade,$codCatSistema);
-	
-				#################################################################################
-				## Criação dos objetos do querybuilder
-				#################################################################################
-				$qb 	= $em->createQueryBuilder();
-				$qbEx	= $em->createQueryBuilder();
-	
-				try {
-	
-					$qb->select('p','SUM(crr.valor) as total')
-					->from('\Entidades\ZgfinContaReceber'			,'cr')
-					->leftJoin('\Entidades\ZgfinPessoa'				,'p'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa 	= p.codigo')
-					->leftJoin('\Entidades\ZgfinContaReceberRateio'	,'crr'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo	 	= crr.codContaRec')
-					->where($qb->expr()->andx(
-							$qb->expr()->eq('cr.codOrganizacao'		, ':codOrganizacao'),
-							$qb->expr()->notIn('cr.codStatus'		, ':status'),
-							$qb->expr()->in('crr.codCategoria'		, ':categoria')
-					))
-					->groupBy("p.cgc")
-					->setParameter('codOrganizacao'	,$codFormatura)
-					->setParameter('status'			,$aStatusCanc)
-					->setParameter('categoria'		,$aCat);
-	
-					$query 		= $qb->getQuery();
-					$info		= $query->getResult();
-	
-					return ($info);
-						
-					#################################################################################
-					## SubQuery para filtrar apenas as contas que estão nas categorias configuradas acima
-					#################################################################################
-					/*$qbEx->select('crr')
-					->from('\Entidades\ZgfinContaReceberRateio','crr')
-					->where($qbEx->expr()->andx(
-					$qbEx->expr()->eq('crr.codContaRec'		, 'cr.codigo'),
-					$qbEx->expr()->in('crr.codCategoria'	, ':categoria')
-					));
-						
-					$qb->select('p','SUM(cr.valor + cr.valorOutros - cr.valorDesconto) as total')
-					->from('\Entidades\ZgfinContaReceber','cr')
-					->leftJoin('\Entidades\ZgfinPessoa'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa 	= p.codigo')
-					->where($qb->expr()->andx(
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
+		$aCat						= array($codCatMensalidade,$codCatSistema);
+
+		#################################################################################
+		## Criação dos objetos do querybuilder
+		#################################################################################
+		$qb 	= $em->createQueryBuilder();
+		$qbEx	= $em->createQueryBuilder();
+
+		try {
+
+			$qb->select('p','SUM(crr.valor) as total')
+			->from('\Entidades\ZgfinContaReceber'			,'cr')
+			->leftJoin('\Entidades\ZgfinPessoa'				,'p'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa 	= p.codigo')
+			->leftJoin('\Entidades\ZgfinContaReceberRateio'	,'crr'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo	 	= crr.codContaRec')
+			->where($qb->expr()->andx(
 					$qb->expr()->eq('cr.codOrganizacao'		, ':codOrganizacao'),
 					$qb->expr()->notIn('cr.codStatus'		, ':status'),
-					$qb->expr()->exists($qbEx->getDql())
-					))
-					->groupBy("p.cgc")
-						
-					->setParameter('codOrganizacao'	,$codFormatura)
-					->setParameter('status'			,$aStatusCanc)
-					->setParameter('categoria'		,$aCat);
-						
+					$qb->expr()->in('crr.codCategoria'		, ':categoria')
+			))
+			->groupBy("p.cgc")
+			->setParameter('codOrganizacao'	,$codFormatura)
+			->setParameter('status'			,$aStatusCanc)
+			->setParameter('categoria'		,$aCat);
+
+			$query 		= $qb->getQuery();
+			$info		= $query->getResult();
+
+			return ($info);
+				
+			#################################################################################
+			## SubQuery para filtrar apenas as contas que estão nas categorias configuradas acima
+			#################################################################################
+			/*$qbEx->select('crr')
+			->from('\Entidades\ZgfinContaReceberRateio','crr')
+			->where($qbEx->expr()->andx(
+			$qbEx->expr()->eq('crr.codContaRec'		, 'cr.codigo'),
+			$qbEx->expr()->in('crr.codCategoria'	, ':categoria')
+			));
+				
+			$qb->select('p','SUM(cr.valor + cr.valorOutros - cr.valorDesconto) as total')
+			->from('\Entidades\ZgfinContaReceber','cr')
+			->leftJoin('\Entidades\ZgfinPessoa'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa 	= p.codigo')
+			->where($qb->expr()->andx(
+			$qb->expr()->eq('cr.codOrganizacao'		, ':codOrganizacao'),
+			$qb->expr()->notIn('cr.codStatus'		, ':status'),
+			$qb->expr()->exists($qbEx->getDql())
+			))
+			->groupBy("p.cgc")
+				
+			->setParameter('codOrganizacao'	,$codFormatura)
+			->setParameter('status'			,$aStatusCanc)
+			->setParameter('categoria'		,$aCat);
+				
+
+			$query 		= $qb->getQuery();
+			$info		= $query->getResult();
+
+			return ($info);*/
+
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
 	
-					$query 		= $qb->getQuery();
-					$info		= $query->getResult();
+	/**
+	 * Resgata o valor total já provisionado por formando
+	 * @param unknown $codFormatura
+	 */
+	public static function getValorProvisionadoUnicoFormando($codFormatura, $cpf) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
 	
-				return ($info);*/
+		#################################################################################
+		## Array de status que não serão calculados
+		#################################################################################
+		$aStatusCanc	= array ("S","C");
 	
-			} catch (\Exception $e) {
-				\Zage\App\Erro::halt($e->getMessage());
-			}
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
+		$aCat						= array($codCatMensalidade,$codCatSistema);
+
+		#################################################################################
+		## Criação dos objetos do querybuilder
+		#################################################################################
+		$qb 	= $em->createQueryBuilder();
+		$qbEx	= $em->createQueryBuilder();
+
+		try {
+
+			$qb->select('SUM(crr.valor) as total')
+			->from('\Entidades\ZgfinContaReceber'			,'cr')
+			->leftJoin('\Entidades\ZgfinPessoa'				,'p'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa 	= p.codigo')
+			->leftJoin('\Entidades\ZgfinContaReceberRateio'	,'crr'	,\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo	 	= crr.codContaRec')
+			->where($qb->expr()->andx(
+					$qb->expr()->eq('cr.codOrganizacao'		, ':codOrganizacao'),
+					$qb->expr()->eq('p.cgc'					, ':cpf'),
+					$qb->expr()->notIn('cr.codStatus'		, ':status'),
+					$qb->expr()->in('crr.codCategoria'		, ':categoria')
+			))
+			
+			->setParameter('codOrganizacao'	,$codFormatura)
+			->setParameter('cpf'			,$cpf)
+			->setParameter('status'			,$aStatusCanc)
+			->setParameter('categoria'		,$aCat);
+
+			$query 		= $qb->getQuery();
+			$info		= $query->getSingleScalarResult();
+
+			return ($info);
+				
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
 	}
 	
 }

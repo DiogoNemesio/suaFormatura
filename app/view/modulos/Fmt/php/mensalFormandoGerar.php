@@ -13,7 +13,6 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 global $system,$em,$tr;
 
-
 #################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
@@ -43,7 +42,7 @@ $system->checaPermissao($_codMenu_);
 $url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
-## Resgata informações do formando
+## Resgata informações do formando e da formatura
 #################################################################################
 if (!isset($codFormando)) \Zage\App\Erro::halt('FALTA PARÂMENTRO : COD_FORMANDO!');
 
@@ -52,6 +51,8 @@ $formando 		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('cod
 if (!$formando){
 	\Zage\App\Erro::halt($tr->trans('Ops! Não encontramos o formando selecionado. Por favor, tente novamente!').' (COD_FORMANDO)');
 }
+
+$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 
 #################################################################################
 ## Variáveis usadas no cálculo das mensalidades
@@ -87,8 +88,9 @@ $totalTaxa			= ($taxaAdmin + $taxaBoleto);
 #################################################################################
 $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
 if ($orcamento)	{
-	$valorOrcado		= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
-	$qtdFormandosBase	= (int) $oOrgFmt->getQtdePrevistaFormandos();
+	$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+	$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
+	$valorOrcadoFormando	= round($valorOrcado/$qtdFormandosBase,2);
 }else{
 	$valorOrcado		= 0;
 	$qtdFormandosBase	= $totalFormandos;
@@ -97,58 +99,18 @@ if ($orcamento)	{
 #################################################################################
 ## Calcular o valor já provisionado por formando
 #################################################################################
-$oValorProv				= \Zage\Fmt\Orcamento::getValorProvisionadoPorFormando($system->getCodOrganizacao());
-
-#################################################################################
-## Montar o array para facilitar a impressão no grid dos valores provisionados
-#################################################################################
-$aValorProv				= array();
-$totalProvisionado		= 0;
-for ($i = 0; $i < sizeof($oValorProv); $i++) {
-	$aValorProv[$oValorProv[$i][0]->getCgc()]		= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
-	$totalProvisionado								+= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
-}
+$valorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoUnicoFormando($system->getCodOrganizacao(), $formando->getCpf());
 
 #################################################################################
 ## Calcular os valores totais e saldos
 #################################################################################
-$saldoAProvisionar			= ($valorOrcado - $totalProvisionado);
-$totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrcado / $qtdFormandosBase)) : 0;
-
-#################################################################################
-## Cria o objeto do Grid (bootstrap)
-#################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GeraMensalidade");
-$checkboxName	= "selItemGeracaoConta";
-$grid->adicionaCheckBox($checkboxName);
-$grid->adicionaTexto($tr->trans('USUÁRIO'),				15	,$grid::CENTER	,'usuario');
-$grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('CPF'),					10	,$grid::CENTER	,'cpf','cpf');
-$grid->adicionaData($tr->trans('NASCIMENTO'),			10	,$grid::CENTER	,'dataNascimento');
-$grid->adicionaTexto($tr->trans('STATUS'),				10	,$grid::CENTER	,'codStatus:descricao');
-$grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		15	,$grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('R$ PROVISIONAR'),		15	,$grid::CENTER	,'');
-$grid->importaDadosDoctrine($formandos);
-
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($formandos); $i++) {
-
-	#################################################################################
-	## Definir o valor da Checkbox
-	#################################################################################
-	$grid->setValorCelula($i,0,$formandos[$i]->getCodigo());
-
-	#################################################################################
-	## Definir os valores totais
-	#################################################################################
-	$valProvisionado			= $aValorProv[$formandos[$i]->getCpf()];
-	$saldo						= ($totalPorFormando - $aValorProv[$formandos[$i]->getCpf()]); 
-	$grid->setValorCelula($i,6,$valProvisionado);
-	$grid->setValorCelula($i,7,$saldo);
+if ($valorProv < $valorOrcadoFormando){
+	$saldoAProvisionar = $valorOrcadoFormando - $valorProv;
+}else{
+	$saldoAProvisionar = null;
 }
 
+//$totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrcado / $qtdFormandosBase)) : 0;
 
 #################################################################################
 ## Select da Forma de Pagamento
@@ -200,16 +162,6 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
-
-#################################################################################
-## Gerar o código html do grid
-#################################################################################
-try {
-	$htmlGrid	= $grid->getHtmlCode();
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
-
 #################################################################################
 ## Url Voltar
 #################################################################################
@@ -231,6 +183,11 @@ $tpl->set('FILTER_URL'				,$url);
 $tpl->set('DIVCENTRAL'				,$system->getDivCentral());
 $tpl->set('CHECK_NAME'				,$checkboxName);
 $tpl->set('NUM_MESES_MAX'			,$numMesesConc);
+
+$tpl->set('SALDO_APROVISIONAR'		,\Zage\App\Util::formataDinheiro($saldoAProvisionar));
+
+
+
 $tpl->set('TOTAL_FORMANDOS'			,$totalFormandos);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao->format($system->config["data"]["dateFormat"]));
 $tpl->set('DATA_VENC'				,$dataVenc);

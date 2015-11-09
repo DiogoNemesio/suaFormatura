@@ -47,7 +47,7 @@
 							    <label id='lblTipoValorID' class="col-sm-5 control-label">Valor</label>
 					    		<div class="input-group col-sm-6 pull-left">
 				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-						    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+						    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="%SALDO_APROVISIONAR%" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 							    </div>
 							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
 							</div>
@@ -331,6 +331,15 @@ $('#fuelux-wizard-container')
 	//e.preventDefault();//this will prevent clicking and selecting steps
 });
 
+function mostraQuadroGeraMensalidade($divId) {
+	$('[zg-div-limpa="1"]').empty();
+	var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
+	var $divInfo	= $('#divInfoGeraMensalidadeID').html();
+	$('#'+$divId).html($divInfo);
+	$('#lblNumFormadosSelID').each( function() {
+		$(this).html($lblFor);
+	});
+}
 
 function selecionaValorMensalidadegeraMensalidade() {
 	$('#geraMensalidadeValorMensalidadeID').addClass("btn-primary");

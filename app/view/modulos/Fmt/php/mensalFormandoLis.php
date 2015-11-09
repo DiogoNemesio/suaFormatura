@@ -103,7 +103,7 @@ try {
 #################################################################################
 ## Resgata valores provisionados para cada formando
 #################################################################################
-$oValorProv				= \Zage\Fmt\Orcamento::getValorProvisionadoPorFormando($system->getCodOrganizacao());
+$oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
 $totalProvisionado		= 0;
 for ($i = 0; $i < sizeof($oValorProv); $i++) {
 	$aValorProv[$oValorProv[$i][0]->getCgc()]		= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
