@@ -43,7 +43,7 @@ $system->checaPermissao($_codMenu_);
 $url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
-## Resgata informações da rifa
+## Resgata informações do formando
 #################################################################################
 if (!isset($codFormando)) \Zage\App\Erro::halt('FALTA PARÂMENTRO : COD_FORMANDO!');
 
@@ -52,6 +52,36 @@ $formando 		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('cod
 if (!$formando){
 	\Zage\App\Erro::halt($tr->trans('Ops! Não encontramos o formando selecionado. Por favor, tente novamente!').' (COD_FORMANDO)');
 }
+
+#################################################################################
+## Resgata os dados de previsão orcamentária
+#################################################################################
+try {
+	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+
+	if ($oOrgFmt)	{
+		$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+		$valorArrecadado		= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
+		$valorGasto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
+		$pctArrecadado			= ($valorOrcado) ? round(($valorArrecadado * 100) / $valorOrcado,2) : 0;
+		$pctGasto				= ($valorOrcado) ? round(($valorGasto * 100) / $valorOrcado,2) : 0;
+		$diffPct				= round($pctArrecadado - $pctGasto,2);
+		$viewPrevOrc			= null;
+	}else{
+		$valorOrcado			= 0;
+		$valorArrecadado		= 0;
+		$valorGasto				= 0;
+		$pctArrecadado			= 0;
+		$pctGasto				= 0;
+		$diffPct				= 0;
+		$viewPrevOrc			= "hidden";
+	}
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+
 
 #################################################################################
 ## Resgata os dados do grid
@@ -307,6 +337,14 @@ $tpl->set('URLVOLTAR'		,$urlVoltar);
 $tpl->set('URLATUALIZAR'	,$urlAtualizar);
 $tpl->set('NOME_FORMANDO'	,$formando->getNome());
 $tpl->set('IC'				,$_icone_);
+
+
+$tpl->set('VALOR_ORCADO'		,\Zage\App\Util::to_money($valorOrcado));
+$tpl->set('VALOR_ARRECADADO'	,\Zage\App\Util::to_money($valorArrecadado));
+$tpl->set('VALOR_GASTO'			,\Zage\App\Util::to_money($valorGasto));
+$tpl->set('PCT_ARRECADADO'		,$pctArrecadado);
+$tpl->set('PCT_GASTO'			,$pctGasto);
+$tpl->set('PCT_DIFF'			,$diffPct);
 
 #################################################################################
 ## Por fim exibir a página HTML

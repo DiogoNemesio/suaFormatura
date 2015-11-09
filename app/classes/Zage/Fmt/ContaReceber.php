@@ -34,6 +34,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	public static function listaMensalidadeFormando ($cpf) {
 		global $em,$system,$log;
 	
+		
+		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$aCat						= array($codCatMensalidade);
+		
 		$qb 	= $em->createQueryBuilder();
 	
 		try {
@@ -44,12 +48,12 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
 					$qb->expr()->eq('p.cgc'				, ':cpf'),
-					$qb->expr()->eq('r.codCategoria'	, ':codCategoria')
+					$qb->expr()->in('r.codCategoria'	, ':codCategoria')
 			))
 				
 			->orderBy('cr.dataVencimento','ASC')
 			->addOrderBy('cr.descricao,cr.parcela,cr.dataEmissao','ASC')
-			->setParameter('codCategoria', '1')
+			->setParameter('codCategoria', $aCat)
 			->setParameter('cpf', $cpf)
 			->setParameter('codOrganizacao', $system->getCodOrganizacao());
 				

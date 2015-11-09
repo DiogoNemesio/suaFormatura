@@ -70,6 +70,35 @@ if ($orcamento)	{
 	$qtdFormandosBase	= $totalFormandos;
 }
 
+#################################################################################
+## Resgata os dados de previsão orcamentária
+#################################################################################
+try {
+	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+
+	if ($oOrgFmt)	{
+		$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+		$valorArrecadado		= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
+		$valorGasto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
+		$pctArrecadado			= ($valorOrcado) ? round(($valorArrecadado * 100) / $valorOrcado,2) : 0;
+		$pctGasto				= ($valorOrcado) ? round(($valorGasto * 100) / $valorOrcado,2) : 0;
+		$diffPct				= round($pctArrecadado - $pctGasto,2);
+	
+	}else{
+		$valorOrcado			= 0;
+		$valorArrecadado		= 0;
+		$valorGasto				= 0;
+		$pctArrecadado			= 0;
+		$pctGasto				= 0;
+		$diffPct				= 0;
+		
+	}
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+
 
 #################################################################################
 ## Resgata valores provisionados para cada formando
@@ -95,7 +124,7 @@ $grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					12	,$grid::CENTER	,'cpf','cpf');
 $grid->adicionaMoeda($tr->trans('VALOR GERADO'),		12	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('SALDO GERADO'),		10	,$grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('VALOR PAGO'),			12	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('STATUS'),				12	,$grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-sign-out red'			,$tr->trans('Desistir'));
 $grid->adicionaIcone(null,'fa fa-usd green'				,$tr->trans('Gerar conta'));
 $grid->adicionaIcone(null,'fa fa-search blue'			,$tr->trans('Visualizar contas'));
@@ -140,7 +169,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/mensalidadeFormandoConta.php?id='.$id);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fin/rifaResumo.php?id='.$id);
+	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$id);
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id);
 
 }
