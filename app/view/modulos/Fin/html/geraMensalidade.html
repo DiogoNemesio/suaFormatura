@@ -35,6 +35,8 @@
 			<input type="hidden" name="numForSel" id="numForSelID">
 			<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
 			<input type="hidden" name="aSelFormandos" id="aSelFormandosID">
+			<input type="hidden" name="taxaUsoTotalFormando" id="taxaUsoTotalFormandoID" value="%TAXA_USO_TOTAL_FORMANDO%">
+			<input type="hidden" name="parcelaUsoSistema" id="parcelaUsoSistemaID">
 			
 			<div class="step-content pos-rel">
 				<div class="step-pane active" data-step="1">
@@ -70,7 +72,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-4 pull-right" id="divInfoVencID"></div>
+					<div class="col-sm-4 pull-right" zg-div-limpa="1" id="divInfoVencID"></div>
 				</div>
 				<div class="step-pane" data-step="3">
 					<div class="col-sm-8 pull-left">
@@ -78,9 +80,9 @@
 							<div class="form-group col-sm-12" id="divIndValorTotalID">
 								<label class="col-sm-4 control-label">Valor se refere</label>
 								<div class="btn-group btn-corner col-sm-7 pull-left">
-									<span id='geraMensalidadeValorMensalidadeID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorMensalidadegeraMensalidade();">Valor da Mensalidade</span>
+									<span id='geraMensalidadeValorMensalidadeID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorMensalidadegeraMensalidade();">Mensalidade</span>
 									<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
-									<span id='geraMensalidadeValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalgeraMensalidade();">Valor Total do Formando</span>
+									<span id='geraMensalidadeValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalgeraMensalidade();">Total do Formando</span>
 								</div>
 							</div>
 							<div class="form-group col-sm-12" id="divValorID">
@@ -125,7 +127,7 @@
 					    	</div>
 						</div>
 					</div>
-					<div class="col-sm-4 pull-right" id="divInfoValorID"></div>
+					<div class="col-sm-4 pull-right" zg-div-limpa="1" id="divInfoValorID"></div>
 				</div>
 				<div class="step-pane" data-step="4" id="divStepParcelasGeraMensalidadeID">
 					<div class="row">
@@ -158,14 +160,14 @@
 			</div>
 		</form>
 	</div>
-	<div class="wizard-actions col-sm-2 pull-left" >
+	<div class="wizard-actions col-sm-2 pull-right" >
 	
 		<!-- #section:plugins/fuelux.wizard.buttons -->
-		<button class="btn btn-app btn-prev">
+		<button class="btn btn-app btn-prev pull-left">
 			Anterior
 			<i class="ace-icon fa fa-arrow-left"></i>
 		</button>
-		<button class="btn btn-app btn-success btn-next" data-last="Finalizar">
+		<button class="btn btn-app btn-success btn-next pull-right" data-last="Finalizar">
 			Próximo
 			<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
 		</button>
@@ -201,31 +203,13 @@
 				<div class="row">
 					<div class="col-sm-12">
 				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_POR_FORMANDO_FMT%</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%MENSALIDADE_FORMANDO_FMT%</p>
 			    	</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo a Provisionar:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Por Formando:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="pSaldoFormandoID">%SALDO_FORMANDO_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Uso do Sistema:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT%</p>
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Uso do SuaFormatura.com:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT% (Total por Formando)</p>
 			    	</div>
 				</div>
 				<div class="row">
@@ -246,10 +230,6 @@
 				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_TAXA_FMT%</p>
 			    	</div>
 				</div>
-				
-				
-				
-				
 			</div>
 		</div>
 	</div>
@@ -334,7 +314,6 @@ $( document ).ready(function() {
 zgDesabilitaAcaoGeraMensalidade();
 
 function zgHabilitaAcaoGeraMensalidade($numFormandos) {
-
 	$('#numForSelID').val($numFormandos);
 }
 
@@ -354,7 +333,8 @@ $('#fuelux-wizard-container')
 .on('actionclicked.fu.wizard' , function(e, info){
 	if(info.step == 1) {
 		var $numSel	= $('#numForSelID').val();
-		if($numSel == 0) 	{
+		
+		if ($numSel == 0) 	{
 			$.gritter.add({
 				title: 'Seleção de Formandos',
 				text: 'Pelo menos 1 formando deve ser selecionado',
@@ -363,25 +343,14 @@ $('#fuelux-wizard-container')
 
 			e.preventDefault();
 		}else{
-
-			if ($numSel > 2) {
-				$('#pSaldoFormandoID').html(" - (vários selecionados)")
-			}else{
-				$('#pSaldoFormandoID').html();
-			}
-
-			var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
-			$('#lblNumFormadosSelID').html($lblFor);
-			var $divInfo	= $('#divInfoGeraMensalidadeID').html();
-			$('#divInfoVencID').html($divInfo);
+			mostraQuadroGeraMensalidade('divInfoVencID');
 		}
 	}else if (info.step == 2) {
 		var vOk 	= validaVencimentoGeraMensalidade();
 		if(!vOk) 	{
 			e.preventDefault();
 		}else{
-			var $divInfo	= $('#divInfoGeraMensalidadeID').html();
-			$('#divInfoValorID').html($divInfo);
+			mostraQuadroGeraMensalidade('divInfoValorID');
 		}
 	}else if (info.step == 3) {
 		var vOk 	= validaValoresGeraMensalidade();
@@ -395,7 +364,6 @@ $('#fuelux-wizard-container')
 .on('finished.fu.wizard', function(e) {
 	var vOk 	= atualizaEValidaParcelasGeraMensalidade();
 	if(!vOk) 	{
-		
 		$.gritter.add({
 			title: 'Valores inconsistentes',
 			text: 'Ajuste os valores das parcelas !!!!',
@@ -412,6 +380,16 @@ $('#fuelux-wizard-container')
 	//e.preventDefault();//this will prevent clicking and selecting steps
 });
 
+
+function mostraQuadroGeraMensalidade($divId) {
+	$('[zg-div-limpa="1"]').empty();
+	var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
+	var $divInfo	= $('#divInfoGeraMensalidadeID').html();
+	$('#'+$divId).html($divInfo);
+	$('#lblNumFormadosSelID').each( function() {
+		$(this).html($lblFor);
+	});
+}
 
 $('#zgFormGeraMensalidadeID').submit(function() {
 	
@@ -646,12 +624,12 @@ function criaTabelaValoresGeraMensalidade() {
 function getValorParcelaGeraMensalidade() {
 	var vIndValorExtra	= $('#indValorExtraID:checked').length;
 	var vCodTipoValor	= $('#codTipoValorID').val();
-	var vValor			= parseFloat($('#valorID').val().replace(".", "").replace(",","."));
+	var vValor			= zgConverteFloat($('#valorID').val());
 	var vNumMeses		= parseInt($('#numMesesID').val());
 	var vCodFormaPag	= $('#codFormaPagID').val();
-	var vtaxaUso		= '%TAXA_USO%'.replace(".", "").replace(",",".");
-	var vtaxaBol		= '%TAXA_BOLETO%'.replace(".", "").replace(",",".");
-	var vtaxaAdm		= '%TAXA_ADMIN%'.replace(".", "").replace(",",".");
+	var vtaxaUso		= zgConverteFloat('%TAXA_USO%');
+	var vtaxaBol		= zgConverteFloat('%TAXA_BOLETO%');
+	var vtaxaAdm		= zgConverteFloat('%TAXA_ADMIN%');
 	var $valorParcela;
 	
 	var options = {

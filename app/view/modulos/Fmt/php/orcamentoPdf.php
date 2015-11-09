@@ -252,6 +252,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 #################################################################################
 $taxaSistema	= \Zage\App\Util::to_float($orcamento->getTaxaSistema());
 $totalSistema	= ($numMeses * $taxaSistema);
+$textoSistema	= ($totalSistema) ? \Zage\App\Util::to_money($totalSistema).' por formando' : "cortesia";
 $valorFinal		= ($valorTotal + ($totalSistema * $numFormandos)); 
 $totalFormando	= round(($valorFinal / $numFormandos),2);
 $mensalidade	= $totalFormando / $numMeses;
@@ -280,7 +281,7 @@ $htmlForm	.= '<tr><th colspan="2" style="text-align: center; border-left: 1px so
 $htmlForm	.= '</thead>';
 $htmlForm	.= '<tbody>';
 $htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Data de Conclusão<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.$dataConclusao.' ( '.$numMeses.' meses previstos)&nbsp;<i>&#10004</i></td></tr>';
-$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Sistema SuaFormatura.com<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($totalSistema).' por formando&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Sistema SuaFormatura.com<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.$textoSistema.'&nbsp;<i>&#10004</i></td></tr>';
 $htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Total Por Formando<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($totalFormando).' (Total por formando)&nbsp;<i>&#10004</i></td></tr>';
 $htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Mensalidade<b>		</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($mensalidade).' mensais por formando&nbsp;<i>&#10004</i></td></tr>';
 $htmlForm	.= '</tbody>';

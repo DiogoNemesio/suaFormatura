@@ -73,9 +73,13 @@ $dataConclusao	= ($oOrgFmt->getDataConclusao() != null) ? $oOrgFmt->getDataConcl
 #################################################################################
 ## Taxas  
 #################################################################################
+$indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
 $taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
 $taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
-$taxaUso				= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
+$taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
+//$taxaUsoTotalFormando	= $taxaUso * $numMesesConc;
+
+
 
 #################################################################################
 ## Versões do orçamento

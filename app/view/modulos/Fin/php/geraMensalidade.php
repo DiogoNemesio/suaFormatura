@@ -85,19 +85,25 @@ if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
 if ($taxaUso		< 0)		$taxaUso		= 0;
 $totalTaxa			= ($taxaAdmin + $taxaBoleto);
 
-
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
 ## Para calcular o valor pendente a ser gerado
 ## Se não existir, apenas não sugerir os valores a serem gerados
 #################################################################################
-$orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
+$orcamento					= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
+if(!$orcamento)				throw new Exception("Nenhum Orçamento aceito !!");
 if ($orcamento)	{
-	$valorOrcado		= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
-	$qtdFormandosBase	= (int) $oOrgFmt->getQtdePrevistaFormandos();
+	$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+	$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
+	$taxaTotalSistema		= $taxaUsoTotalFormando * $qtdFormandosBase;
+//	$totalMensalidade		= $valorOrcado - $taxaTotalSistema;
+	$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
 }else{
-	$valorOrcado		= 0;
-	$qtdFormandosBase	= $totalFormandos;
+	$valorOrcado			= 0;
+	$qtdFormandosBase		= $totalFormandos;
+	$taxaTotalSistema		= $taxaUsoTotalFormando * $totalFormandos;
+//	$totalMensalidade		= 0;
+	$mensalidadeFormando	= 0;
 }
 
 #################################################################################
@@ -109,17 +115,17 @@ $oValorProv				= \Zage\Fmt\Orcamento::getValorProvisionadoPorFormando($system->g
 ## Montar o array para facilitar a impressão no grid dos valores provisionados
 #################################################################################
 $aValorProv				= array();
-$totalProvisionado		= 0;
+//$totalProvisionado		= 0;
 for ($i = 0; $i < sizeof($oValorProv); $i++) {
 	$aValorProv[$oValorProv[$i][0]->getCgc()]		= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
-	$totalProvisionado								+= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
+//	$totalProvisionado								+= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
 }
 
 #################################################################################
 ## Calcular os valores totais e saldos
 #################################################################################
-$saldoAProvisionar			= ($valorOrcado - $totalProvisionado);
-$totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrcado / $qtdFormandosBase)) : 0;
+//$saldoAProvisionar			= ($valorOrcado - $totalProvisionado);
+//$totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrcado / $qtdFormandosBase)) : 0;
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
@@ -130,7 +136,7 @@ $grid->adicionaCheckBox($checkboxName);
 $grid->adicionaTexto($tr->trans('USUÁRIO'),				15	,$grid::CENTER	,'usuario');
 $grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					10	,$grid::CENTER	,'cpf','cpf');
-$grid->adicionaData($tr->trans('NASCIMENTO'),			10	,$grid::CENTER	,'dataNascimento');
+//$grid->adicionaData($tr->trans('NASCIMENTO'),			10	,$grid::CENTER	,'dataNascimento');
 $grid->adicionaTexto($tr->trans('STATUS'),				10	,$grid::CENTER	,'codStatus:descricao');
 $grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		15	,$grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('R$ PROVISIONAR'),		15	,$grid::CENTER	,'');
@@ -150,9 +156,9 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	## Definir os valores totais
 	#################################################################################
 	$valProvisionado			= $aValorProv[$formandos[$i]->getCpf()];
-	$saldo						= ($totalPorFormando - $aValorProv[$formandos[$i]->getCpf()]); 
-	$grid->setValorCelula($i,6,$valProvisionado);
-	$grid->setValorCelula($i,7,$saldo);
+	$saldo						= ($mensalidadeFormando - $aValorProv[$formandos[$i]->getCpf()]); 
+	$grid->setValorCelula($i,5,$valProvisionado);
+	$grid->setValorCelula($i,6,$saldo);
 }
 
 
@@ -242,15 +248,12 @@ $tpl->set('DATA_CONCLUSAO'			,$dataConclusao->format($system->config["data"]["da
 $tpl->set('DATA_VENC'				,$dataVenc);
 $tpl->set('VALOR_TOTAL_FORM_FMT'	,\Zage\App\Util::to_money($valorOrcado));
 $tpl->set('VALOR_TOTAL_FORMATURA'	,\Zage\App\Util::formataDinheiro($valorOrcado));
-$tpl->set('TOTAL_POR_FORMANDO'		,\Zage\App\Util::formataDinheiro($totalPorFormando));
-$tpl->set('TOTAL_POR_FORMANDO_FMT'	,\Zage\App\Util::to_money($totalPorFormando));
-$tpl->set('VALOR_RECEBER'			,\Zage\App\Util::formataDinheiro($valorJaProvisionado));
-$tpl->set('VALOR_RECEBER_FMT'		,\Zage\App\Util::to_money($valorJaProvisionado));
-$tpl->set('SALDO_RECEBER'			,\Zage\App\Util::formataDinheiro($saldoAProvisionar));
-$tpl->set('SALDO_RECEBER_FMT'		,\Zage\App\Util::to_money($saldoAProvisionar));
+$tpl->set('MENSALIDADE_FORMANDO'	,\Zage\App\Util::formataDinheiro($mensalidadeFormando));
+$tpl->set('MENSALIDADE_FORMANDO_FMT',\Zage\App\Util::to_money($mensalidadeFormando));
 $tpl->set('SALDO_FORMANDO_FMT'		,\Zage\App\Util::to_money($saldo));
 $tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUsoTotalFormando));
 $tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUsoTotalFormando));
+$tpl->set('TAXA_USO_TOTAL_FORMANDO'	,\Zage\App\Util::formataDinheiro($taxaUsoTotalFormando));
 $tpl->set('TAXA_BOLETO_FMT'			,\Zage\App\Util::to_money($taxaBoleto));
 $tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
 $tpl->set('TAXA_ADMIN_FMT'			,\Zage\App\Util::to_money($taxaAdmin));

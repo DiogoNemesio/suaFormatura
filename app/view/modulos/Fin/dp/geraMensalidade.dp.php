@@ -167,7 +167,7 @@ $codCategoria[]		= $codCatMensalidade;
 $codCentroCusto[]	= null;
 $codRateio[]		= null;
 
-if ($taxaAdmin)		{
+if ($indValorExtra && $taxaAdmin)		{
 	$pctRateio[]		= round(100*$taxaAdmin/$valorParcela,2);
 	$valorRateio[]		= $taxaAdmin;
 	$codCategoria[]		= $codCatOutrasTaxas;
@@ -175,7 +175,7 @@ if ($taxaAdmin)		{
 	$codRateio[]		= null;
 }
 
-if ($taxaBoleto)		{
+if ($indValorExtra && $taxaBoleto)		{
 	$pctRateio[]		= round(100*$taxaBoleto/$valorParcela,2);
 	$valorRateio[]		= $taxaBoleto;
 	$codCategoria[]		= $codCatBoleto;
