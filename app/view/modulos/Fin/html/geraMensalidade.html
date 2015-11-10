@@ -580,7 +580,6 @@ function atualizaInfoGeraMensalidade() {
 
 	
 	if ($codTipoValor == "M") {
-		
 		/** Salvar os valores que ficará de mensalidade **/
 		$valParcelaMensalidade	= $valor;
 		$valTotalMensalidade	= ($valor * $numMeses);
@@ -1009,7 +1008,7 @@ function atualizaEValidaParcelasGeraMensalidade() {
 		symbol : "",
 		decimal : ",",
 		thousand: ".",
-		precision : 2,
+		precision : 2,/
 		format: "%s%v"
 	};
 
@@ -1031,12 +1030,26 @@ function atualizaEValidaParcelasGeraMensalidade() {
 
 	/** Calcula a soma dos valores de Mensalidade e Sistema, para verificar se bate com o total de cada um **/
 	$('#GeraMensalidadeTableValorID > tbody > tr').each(function( index ) {
+		
+		var $_valMen,$_valSis,$_valTaxas,$_valTotal;
 		$(this).find('[name*="aValor[]"]').each(function( index2 ) {
-			$tValMensalidade += zgConverteFloat($(this).val());
+			$_valMen		 	= zgConverteFloat($(this).val());
+			$tValMensalidade	+= $_valMen;
 		});
 		$(this).find('[name*="aSistema[]"]').each(function( index3 ) {
-			$tValSistema += zgConverteFloat($(this).val());
+			$_valSis			= zgConverteFloat($(this).val());
+			$tValSistema 		+= $_valSis;
 		});
+		$(this).find('[name*="aTaxas[]"]').each(function( index4 ) {
+			$_valTaxas			= zgConverteFloat($(this).val());
+		});
+		
+		/** Atualiza o valor total com a soma dos outros valores **/
+		$(this).find('[name*="aTotal[]"]').each(function( index5 ) {
+			$_valTotal			= zgConverteFloat($_valMen + $_valSis + $_valTaxas);
+			$(this).val(accounting.formatMoney($_valTotal, opt));
+		});
+
 	});
 
 	/** Ajusta os valores totais **/

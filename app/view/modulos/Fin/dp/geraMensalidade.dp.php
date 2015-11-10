@@ -67,6 +67,12 @@ if ($numMeses > $numMesesMax) {
 	exit;
 }
 
+if ($numMeses != sizeof($aValor)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Número de meses deve ser igual ao tamanho do array de valores"));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Número de meses deve ser igual ao tamanho do array de valores")));
+	exit;
+}
+
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
@@ -79,8 +85,16 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
-if (sizeof($formandos) == 0) 	\Zage\App\Erro::halt($tr->trans('Formando[s] não encontrado !!!'));
-if (sizeof($formandos) != sizeof($aSelFormandos)) 	\Zage\App\Erro::halt($tr->trans('Alguns formandos não foram encontrados na base através do CPF informado!!!'));
+if (sizeof($formandos) == 0) 	{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Formando[s] não encontrado !!!'));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Formando[s] não encontrado !!!')));
+	exit;
+}
+
+if (sizeof($formandos) != sizeof($aSelFormandos)) 	{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Alguns formandos não foram encontrados na base através do CPF informado!!!'));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Alguns formandos não foram encontrados na base através do CPF informado!!!')));
+}
 
 
 #################################################################################
@@ -134,11 +148,20 @@ if ($codTipoValor != "M") {
 	$valor		= round($valor / $numMeses,2);
 }
 
+$valorTotal			= \Zage\App\Util::to_float($valorTotal);
+$totalGeral			= \Zage\App\Util::to_float($totalGeral);
+
 
 #################################################################################
 ## Valida o valor total
 #################################################################################
-if ($valorTotal		!= $totalGeral)	\Zage\App\Erro::halt($tr->trans('Somatório dos valores totais das parcelas difere do valor total informado'));
+if ($valorTotal		!= $totalGeral)	{
+	$log->info("Valor total calculado: ".$valorTotal);
+	$log->info("Valor total Informado: ".$totalGeral);
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Somatório dos valores totais das parcelas difere do valor total informado'));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Somatório dos valores totais das parcelas difere do valor total informado')));
+	exit;
+}
 
 
 #################################################################################
@@ -153,40 +176,58 @@ $codRateio			= array();
 #################################################################################
 ## Criar o array de acordo com o número de parcelas
 #################################################################################
-for ($i = 0; $i <= $numMeses; $i++) {
+for ($i = 0; $i < $numMeses; $i++) {
+	$_valor				= \Zage\App\Util::to_float($aValor[$i]);
+	$_taxaAdmin			= \Zage\App\Util::to_float($taxaAdmin);
+	$_taxaBol			= \Zage\App\Util::to_float($taxaBol);
+	$_sistema			= \Zage\App\Util::to_float($aSistema[$i]);
 	
+	$parcela			= ($_valor + $_taxaAdmin + $_taxaBol + $_sistema);
+	
+	$_pctRateio			= array();
+	$_valorRateio		= array();
+	$_codCategoria		= array();
+	$_codCentroCusto	= array();
+	$_codRateio			= array();
+	
+	$_pctRateio[]		= round(100*$_valor/$parcela,2);
+	$_valorRateio[]		= $_valor;
+	$_codCategoria[]	= $codCatMensalidade;
+	$_codCentroCusto[]	= null;
+	$_codRateio[]		= null;
+	
+	if ($indValorExtra && $_taxaAdmin)		{
+		$_pctRateio[]		= round(100*$_taxaAdmin/$parcela,2);
+		$_valorRateio[]		= $_taxaAdmin;
+		$_codCategoria[]	= $codCatOutrasTaxas;
+		$_codCentroCusto[]	= null;
+		$_codRateio[]		= null;
+	}
+	
+	if ($indValorExtra && $_taxaBol)		{
+		$_pctRateio[]		= round(100*$_taxaBol/$parcela,2);
+		$_valorRateio[]		= $_taxaBol;
+		$_codCategoria[]	= $codCatBoleto;
+		$_codCentroCusto[]	= null;
+		$_codRateio[]		= null;
+	}
+	
+	if ($_sistema)		{
+		$_pctRateio[]		= round(100*$_sistema/$parcela,2);
+		$_valorRateio[]		= $_sistema;
+		$_codCategoria[]	= $codCatPortal;
+		$_codCentroCusto[]	= null;
+		$_codRateio[]		= null;
+	}
+	
+	$pctRateio[$i]		= $_pctRateio;
+	$valorRateio[$i]	= $_valorRateio;
+	$codCategoria[$i]	= $_codCategoria;
+	$codCentroCusto[$i]	= $_codCentroCusto;
+	$codRateio[$i]		= $_codRateio;
 }
 
 
-$pctRateio[]		= round(100*$valParcelaMensalidade/$totalParcela,2);
-$valorRateio[]		= $valor;
-$codCategoria[]		= $codCatMensalidade;
-$codCentroCusto[]	= null;
-$codRateio[]		= null;
-
-if ($indValorExtra && $taxaAdmin)		{
-	$pctRateio[]		= round(100*$taxaAdmin/$totalParcela,2);
-	$valorRateio[]		= $taxaAdmin;
-	$codCategoria[]		= $codCatOutrasTaxas;
-	$codCentroCusto[]	= null;
-	$codRateio[]		= null;
-}
-
-if ($indValorExtra && $taxaBol)		{
-	$pctRateio[]		= round(100*$taxaBol/$totalParcela,2);
-	$valorRateio[]		= $taxaBol;
-	$codCategoria[]		= $codCatBoleto;
-	$codCentroCusto[]	= null;
-	$codRateio[]		= null;
-}
-
-if ($valParcelaSistema)		{
-	$pctRateio[]		= round(100*$valParcelaSistema/$totalParcela,2);
-	$valorRateio[]		= $valParcelaSistema;
-	$codCategoria[]		= $codCatPortal;
-	$codCentroCusto[]	= null;
-	$codRateio[]		= null;
-}
 
 #################################################################################
 ## Ajustar os campos do tipo CheckBox

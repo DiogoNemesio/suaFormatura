@@ -318,7 +318,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 		
 		if (\Zage\App\Util::toPHPNumber($_valorTotal) != \Zage\App\Util::toPHPNumber($this->_getValorTotal())) {
-			$log->debug("Valor informado: ".\Zage\App\Util::toPHPNumber($this->_getValorTotal())." Valor calculado: ".\Zage\App\Util::toPHPNumber($_valorTotal));
+			//$log->debug("Valor informado: ".\Zage\App\Util::toPHPNumber($this->_getValorTotal())." Valor calculado: ".\Zage\App\Util::toPHPNumber($_valorTotal));
 			return $tr->trans('Valor total difere da soma de valores do array !!!');
 		}
 		
@@ -430,38 +430,84 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Calcula o número de registros do rateio
 		#################################################################################
 		$numRateio		= sizeof($this->_valoresRateio);
+		$numParcelas	= sizeof($this->_valores);
+
+		#################################################################################
+		## Verificar se os arrays de rateios são multidimensionais, ou seja, se o rateio
+		## de cada parcela é diferente
+		#################################################################################
+		if (($numParcelas == $numRateio) && (isset($this->_valoresRateio[0])) && (is_array($this->_valoresRateio[0]))) {
+			$numItensRateio				= $numParcelas;
+			$numRateio					= sizeof($this->_valoresRateio[0]);
+			
+		}else{
+			$numItensRateio				= $numRateio;
+		}
 		
 		#################################################################################
 		## Validações dos valores
 		#################################################################################
-		for ($i = 0; $i < $numRateio; $i++) {
-			if ($this->_valoresRateio[$i] == 0) {
-				return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
-			}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i])) {
-				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
+		for ($i = 0; $i < $numItensRateio; $i++) {
+			if (is_array($this->_valoresRateio[$i])) {
+				for ($j = 0; $j < sizeof($numRateio); $j++) {
+					if ($this->_valoresRateio[$i][$j] == 0) {
+						return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$j.'"');
+					}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i][$j])) {
+						return $tr->trans('Array de valores tem registro inválido na posição "'.$j.'" !!!');
+					}
+				}
+			}else{
+				if ($this->_valoresRateio[$i] == 0) {
+					return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
+				}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i])) {
+					return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
+				}
 			}
 		}
 		
+
 		#################################################################################
-		## Validações dos percentuais
+		## Validações dos valores
 		#################################################################################
-		for ($i = 0; $i < $numRateio; $i++) {
-			$perc		= \Zage\App\Util::to_float(str_replace("%", "", $this->_pctRateio[$i]));
-			if ($perc == 0) {
-				return $tr->trans('Array de Percentuais tem registro com percentual = 0 na posição "'.$i.'" Percentual: '.$perc);
-			}elseif (!\Zage\App\Util::ehNumero($perc)) {
-				return $tr->trans('Array de Percentuais tem registro inválido na posição "'.$i.'" !!!');
+		for ($i = 0; $i < $numItensRateio; $i++) {
+			if (is_array($this->_pctRateio[$i])) {
+				for ($j = 0; $j < sizeof($numRateio); $j++) {
+					$perc		= \Zage\App\Util::to_float(str_replace("%", "", $this->_pctRateio[$i][$j]));
+					if ($perc == 0) {
+						return $tr->trans('Array de Percentuais tem registro com percentual = 0 na posição "'.$j.'" Percentual: '.$perc);
+					}elseif (!\Zage\App\Util::ehNumero($perc)) {
+						return $tr->trans('Array de Percentuais tem registro inválido na posição "'.$j.'" !!!');
+					}
+				}
+			}else{
+				$perc		= \Zage\App\Util::to_float(str_replace("%", "", $this->_pctRateio[$i]));
+				if ($perc == 0) {
+					return $tr->trans('Array de Percentuais tem registro com percentual = 0 na posição "'.$i.'" Percentual: '.$perc);
+				}elseif (!\Zage\App\Util::ehNumero($perc)) {
+					return $tr->trans('Array de Percentuais tem registro inválido na posição "'.$i.'" !!!');
+				}
 			}
 		}
 		
 		#################################################################################
 		## Validações das categorias
 		#################################################################################
-		for ($i = 0; $i < $numRateio; $i++) {
-			if (!empty($this->_categoriasRateio[$i])) {
-				$oCat		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $this->_categoriasRateio[$i]));
-				if (!$oCat) {
-					return $tr->trans('Array de Categorias tem categoria inexistente  na posição "'.$i.'" !!!');
+		for ($i = 0; $i < $numItensRateio; $i++) {
+			if (is_array($this->_categoriasRateio[$i])) {
+				for ($j = 0; $j < sizeof($numRateio); $j++) {
+					if (!empty($this->_categoriasRateio[$i][$j])) {
+						$oCat		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $this->_categoriasRateio[$i][$j]));
+						if (!$oCat) {
+							return $tr->trans('Array de Categorias tem categoria inexistente  na posição "'.$j.'" !!!');
+						}
+					}
+				}
+			}else{
+				if (!empty($this->_categoriasRateio[$i])) {
+					$oCat		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $this->_categoriasRateio[$i]));
+					if (!$oCat) {
+						return $tr->trans('Array de Categorias tem categoria inexistente  na posição "'.$i.'" !!!');
+					}
 				}
 			}
 		}
@@ -469,11 +515,22 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Validações dos Centros de Custo
 		#################################################################################
-		for ($i = 0; $i < $numRateio; $i++) {
-			if (!empty($this->_centroCustosRateio[$i])) {
-				$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codigo' => $this->_centroCustosRateio[$i]));
-				if (!$oCentro) {
-					return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$i.'" !!!');
+		for ($i = 0; $i < $numItensRateio; $i++) {
+			if (is_array($this->_centroCustosRateio[$i])) {
+				for ($j = 0; $j < sizeof($numRateio); $j++) {
+					if (!empty($this->_centroCustosRateio[$i][$j])) {
+						$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codigo' => $this->_centroCustosRateio[$i][$j]));
+						if (!$oCentro) {
+							return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$j.'" !!!');
+						}
+					}
+				}
+			}else{
+				if (!empty($this->_centroCustosRateio[$i])) {
+					$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codigo' => $this->_centroCustosRateio[$i]));
+					if (!$oCentro) {
+						return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$i.'" !!!');
+					}
 				}
 			}
 		}
@@ -642,7 +699,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			
 			//}
 			
-			$valorTotalParcela		= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto()) - \Zage\App\Util::to_float($this->getValorDescontoJuros()) - \Zage\App\Util::to_float($this->getValorDescontoMora());
+			$valorTotalParcela		= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($outrosValores[$i]) - \Zage\App\Util::to_float($this->getValorDesconto()) - \Zage\App\Util::to_float($this->getValorDescontoJuros()) - \Zage\App\Util::to_float($this->getValorDescontoMora());
 			
 			#################################################################################
 			## Guarda o código do grupo da conta caso a conta esteja sendo substituída
@@ -666,14 +723,31 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$rateio		= new \Zage\Fin\ContaReceberRateio();
 				
 				#################################################################################
+				## Criar os arrays de rateio
+				#################################################################################
+				if (is_array($this->_valoresRateio[$i])) {
+					$aCodRat		= $this->_codigosRateio[$i];
+					$aCadRat		= $this->_categoriasRateio[$i];
+					$aCenRat		= $this->_centroCustosRateio[$i];
+					$aValRat		= $this->_valoresRateio[$i];
+					$aPctRat		= $this->_pctRateio[$i];
+				}else{
+					$aCodRat		= $this->_codigosRateio;
+					$aCadRat		= $this->_categoriasRateio;
+					$aCenRat		= $this->_centroCustosRateio;
+					$aValRat		= $this->_valoresRateio;
+					$aPctRat		= $this->_pctRateio;
+				}
+				
+				#################################################################################
 				## Gravar as configurações de Rateio
 				#################################################################################
 				$rateio->setCodContaRec($object);
-				$rateio->_setArrayCodigosRateio($this->_codigosRateio);
-				$rateio->_setArrayCategoriasRateio($this->_categoriasRateio);
-				$rateio->_setArrayCentroCustoRateio($this->_centroCustosRateio);
-				$rateio->_setArrayValoresRateio($this->_valoresRateio);
-				$rateio->_setArrayPctRateio($this->_pctRateio);
+				$rateio->_setArrayCodigosRateio($aCodRat);
+				$rateio->_setArrayCategoriasRateio($aCadRat);
+				$rateio->_setArrayCentroCustoRateio($aCenRat);
+				$rateio->_setArrayValoresRateio($aValRat);
+				$rateio->_setArrayPctRateio($aPctRat);
 				$rateio->_setValorTotal($valorTotalParcela);
 				
 				$err = $rateio->salva();
