@@ -253,12 +253,12 @@ class Financeiro {
 		if (!$codConta)	throw new \Exception('Parâmetro codConta não pode ser nulo');
 		
 		#################################################################################
-		## Resgatar o valor das configurações da formatura
+		## Resgatar o valor do boleto 
 		#################################################################################
-		$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $codOrganizacao));
+		$oConta		= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codConta));
 		
-		if ($oOrgFmt)	{
-			return $oOrgFmt->getValorPorBoleto();
+		if ($oConta)	{
+			return \Zage\App\Util::to_float($oConta->getValorBoleto());
 		}else{
 			return 0;
 		}

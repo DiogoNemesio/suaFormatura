@@ -121,7 +121,7 @@ $oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->
 $aValorProv				= array();
 $aCodigos				= array();
 for ($i = 0; $i < sizeof($oValorProv); $i++) {
-	$total														= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
+	$total													= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
 	$aCodigos[$oValorProv[$i][0]->getCgc()]["MENSALIDADE"]	= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]);
 	$aCodigos[$oValorProv[$i][0]->getCgc()]["SISTEMA"]		= \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
 	$aCodigos[$oValorProv[$i][0]->getCgc()]["TOTAL"]		= $total;
@@ -155,8 +155,9 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Definir os valores totais
 	#################################################################################
-	$valProvisionado			= $aValorProv[$formandos[$i]->getCpf()];
-	$saldo						= ($mensalidadeFormando - $aValorProv[$formandos[$i]->getCpf()]); 
+	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
+	$saldo						= ($mensalidadeFormando - $valProvisionado); 
+	$aCodigos[$formandos[$i]->getCpf()]["SALDO"]	= $saldo;
 	$grid->setValorCelula($i,5,$valProvisionado);
 	$grid->setValorCelula($i,6,$saldo);
 }
@@ -167,7 +168,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 #################################################################################
 try {
 	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	null, '');
+	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	'BOL', '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -193,13 +194,15 @@ try {
 	if ($aCntCer) {
 		$oConta		= "<optgroup label='Contas do Cerimonial'>";
 		for ($i = 0; $i < sizeof($aCntCer); $i++) {
-			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."'>".$aCntCer[$i]->getNome()."</option>";
+			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($oFmtAdm->getCodigo(),$aCntCer[$i]->getCodigo()) : 0;
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
 		}
 		$oConta		.= '</optgroup>';
 		if ($aConta) {
 			$oConta		.= "<optgroup label='Contas da Formatura'>";
 			for ($i = 0; $i < sizeof($aConta); $i++) {
-				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."'>".$aConta[$i]->getNome()."</option>";
+				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao(),$aConta[$i]->getCodigo()) : 0;
+				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
 			}
 			$oConta		.= '</optgroup>';
 		}
@@ -253,12 +256,8 @@ $tpl->set('MENSALIDADE_FORMANDO_FMT',\Zage\App\Util::to_money($mensalidadeForman
 $tpl->set('SALDO_FORMANDO_FMT'		,\Zage\App\Util::to_money($saldo));
 $tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUsoTotalFormando));
 $tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUsoTotalFormando));
-$tpl->set('TAXA_USO_TOTAL_FORMANDO'	,\Zage\App\Util::formataDinheiro($taxaUsoTotalFormando));
-$tpl->set('TAXA_BOLETO_FMT'			,\Zage\App\Util::to_money($taxaBoleto));
-$tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
 $tpl->set('TAXA_ADMIN_FMT'			,\Zage\App\Util::to_money($taxaAdmin));
 $tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
-$tpl->set('TOTAL_TAXA_FMT'			,\Zage\App\Util::to_money($totalTaxa));
 $tpl->set('MOSTRA_IND_TAXA_SISTEMA'	,$mostraIndTaxaSistema);
 $tpl->set('CHK_IND_TAXA_SISTEMA'	,$chkIndTaxaSistema);
 
