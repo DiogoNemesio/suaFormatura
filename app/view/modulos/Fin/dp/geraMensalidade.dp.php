@@ -182,7 +182,7 @@ for ($i = 0; $i < $numMeses; $i++) {
 	$_taxaBol			= \Zage\App\Util::to_float($taxaBol);
 	$_sistema			= \Zage\App\Util::to_float($aSistema[$i]);
 	
-	$parcela			= ($_valor + $_taxaAdmin + $_taxaBol + $_sistema);
+	$_valParcela		= ($_valor + $_taxaAdmin + $_taxaBol + $_sistema);
 	
 	$_pctRateio			= array();
 	$_valorRateio		= array();
@@ -190,14 +190,14 @@ for ($i = 0; $i < $numMeses; $i++) {
 	$_codCentroCusto	= array();
 	$_codRateio			= array();
 	
-	$_pctRateio[]		= round(100*$_valor/$parcela,2);
+	$_pctRateio[]		= round(100*$_valor/$_valParcela,2);
 	$_valorRateio[]		= $_valor;
 	$_codCategoria[]	= $codCatMensalidade;
 	$_codCentroCusto[]	= null;
 	$_codRateio[]		= null;
 	
 	if ($indValorExtra && $_taxaAdmin)		{
-		$_pctRateio[]		= round(100*$_taxaAdmin/$parcela,2);
+		$_pctRateio[]		= round(100*$_taxaAdmin/$_valParcela,2);
 		$_valorRateio[]		= $_taxaAdmin;
 		$_codCategoria[]	= $codCatOutrasTaxas;
 		$_codCentroCusto[]	= null;
@@ -205,7 +205,7 @@ for ($i = 0; $i < $numMeses; $i++) {
 	}
 	
 	if ($indValorExtra && $_taxaBol)		{
-		$_pctRateio[]		= round(100*$_taxaBol/$parcela,2);
+		$_pctRateio[]		= round(100*$_taxaBol/$_valParcela,2);
 		$_valorRateio[]		= $_taxaBol;
 		$_codCategoria[]	= $codCatBoleto;
 		$_codCentroCusto[]	= null;
@@ -213,7 +213,7 @@ for ($i = 0; $i < $numMeses; $i++) {
 	}
 	
 	if ($_sistema)		{
-		$_pctRateio[]		= round(100*$_sistema/$parcela,2);
+		$_pctRateio[]		= round(100*$_sistema/$_valParcela,2);
 		$_valorRateio[]		= $_sistema;
 		$_codCategoria[]	= $codCatPortal;
 		$_codCentroCusto[]	= null;
