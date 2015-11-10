@@ -31,16 +31,9 @@ class ZgfmtOrganizacaoFormatura
     /**
      * @var float
      *
-     * @ORM\Column(name="VALOR_POR_FORMANDO", type="float", precision=10, scale=0, nullable=true)
+     * @ORM\Column(name="TAXA_ADMINISTRACAO", type="float", precision=10, scale=0, nullable=true)
      */
-    private $valorPorFormando;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="VALOR_POR_BOLETO", type="float", precision=10, scale=0, nullable=true)
-     */
-    private $valorPorBoleto;
+    private $taxaAdministracao;
 
     /**
      * @var integer
@@ -180,49 +173,26 @@ class ZgfmtOrganizacaoFormatura
     }
 
     /**
-     * Set valorPorFormando
+     * Set taxaAdministracao
      *
-     * @param float $valorPorFormando
+     * @param float $taxaAdministracao
      * @return ZgfmtOrganizacaoFormatura
      */
-    public function setValorPorFormando($valorPorFormando)
+    public function setTaxaAdministracao($taxaAdministracao)
     {
-        $this->valorPorFormando = $valorPorFormando;
+        $this->taxaAdministracao = $taxaAdministracao;
 
         return $this;
     }
 
     /**
-     * Get valorPorFormando
+     * Get taxaAdministracao
      *
      * @return float 
      */
-    public function getValorPorFormando()
+    public function getTaxaAdministracao()
     {
-        return $this->valorPorFormando;
-    }
-
-    /**
-     * Set valorPorBoleto
-     *
-     * @param float $valorPorBoleto
-     * @return ZgfmtOrganizacaoFormatura
-     */
-    public function setValorPorBoleto($valorPorBoleto)
-    {
-        $this->valorPorBoleto = $valorPorBoleto;
-
-        return $this;
-    }
-
-    /**
-     * Get valorPorBoleto
-     *
-     * @return float 
-     */
-    public function getValorPorBoleto()
-    {
-        return $this->valorPorBoleto;
+        return $this->taxaAdministracao;
     }
 
     /**
