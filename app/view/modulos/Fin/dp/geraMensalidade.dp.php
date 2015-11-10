@@ -16,18 +16,32 @@ global $em,$log,$system,$tr;
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-if (isset($_POST['valor']))				$valor				= \Zage\App\Util::antiInjection($_POST['valor']);
-if (isset($_POST['dataVenc']))			$dataVenc			= \Zage\App\Util::antiInjection($_POST['dataVenc']);
-if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
-if (isset($_POST['codContaRec']))		$codContaRec		= \Zage\App\Util::antiInjection($_POST['codContaRec']);
-if (isset($_POST['codTipoValor']))		$codTipoValor		= \Zage\App\Util::antiInjection($_POST['codTipoValor']);
-if (isset($_POST['numMeses']))			$numMeses			= \Zage\App\Util::antiInjection($_POST['numMeses']);
-if (isset($_POST['indValorExtra']))		$indValorExtra		= \Zage\App\Util::antiInjection($_POST['indValorExtra']);
-if (isset($_POST['numMesesMax']))		$numMesesMax		= \Zage\App\Util::antiInjection($_POST['numMesesMax']);
-if (isset($_POST['aSelFormandos']))		$aSelFormandos		= \Zage\App\Util::antiInjection($_POST['aSelFormandos']);
-if (isset($_POST['aValor']))			$aValor				= \Zage\App\Util::antiInjection($_POST['aValor']);
-if (isset($_POST['aData']))				$aData				= \Zage\App\Util::antiInjection($_POST['aData']);
+if (isset($_POST['valor']))					$valor					= \Zage\App\Util::antiInjection($_POST['valor']);
+if (isset($_POST['dataVenc']))				$dataVenc				= \Zage\App\Util::antiInjection($_POST['dataVenc']);
+if (isset($_POST['codFormaPag']))			$codFormaPag			= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
+if (isset($_POST['codContaRec']))			$codContaRec			= \Zage\App\Util::antiInjection($_POST['codContaRec']);
+if (isset($_POST['codTipoValor']))			$codTipoValor			= \Zage\App\Util::antiInjection($_POST['codTipoValor']);
+if (isset($_POST['numMeses']))				$numMeses				= \Zage\App\Util::antiInjection($_POST['numMeses']);
+if (isset($_POST['indValorExtra']))			$indValorExtra			= \Zage\App\Util::antiInjection($_POST['indValorExtra']);
+if (isset($_POST['numMesesMax']))			$numMesesMax			= \Zage\App\Util::antiInjection($_POST['numMesesMax']);
+if (isset($_POST['aSelFormandos']))			$aSelFormandos			= \Zage\App\Util::antiInjection($_POST['aSelFormandos']);
+if (isset($_POST['aValor']))				$aValor					= \Zage\App\Util::antiInjection($_POST['aValor']);
+if (isset($_POST['aData']))					$aData					= \Zage\App\Util::antiInjection($_POST['aData']);
+if (isset($_POST['aSistema']))				$aSistema				= \Zage\App\Util::antiInjection($_POST['aSistema']);
+if (isset($_POST['aTaxas']))				$aTaxas					= \Zage\App\Util::antiInjection($_POST['aTaxas']);
+if (isset($_POST['aTotal']))				$aTotal					= \Zage\App\Util::antiInjection($_POST['aTotal']);
+if (isset($_POST['totalGeral']))			$totalGeral				= \Zage\App\Util::antiInjection($_POST['totalGeral']);
+if (isset($_POST['totalParcela']))			$totalParcela			= \Zage\App\Util::antiInjection($_POST['totalParcela']);
+if (isset($_POST['valParcelaMensalidade']))	$valParcelaMensalidade	= \Zage\App\Util::antiInjection($_POST['valParcelaMensalidade']);
+if (isset($_POST['valParcelaSistema']))		$valParcelaSistema		= \Zage\App\Util::antiInjection($_POST['valParcelaSistema']);
+if (isset($_POST['valParcelaTaxa']))		$valParcelaTaxa			= \Zage\App\Util::antiInjection($_POST['valParcelaTaxa']);
+if (isset($_POST['taxaBol']))				$taxaBol				= \Zage\App\Util::antiInjection($_POST['taxaBol']);
+if (isset($_POST['taxaAdmin']))				$taxaAdmin				= \Zage\App\Util::antiInjection($_POST['taxaAdmin']);
+
+
 $aSelFormandos		= explode(",",$aSelFormandos);
+
+$log->info("POST GERA: ".serialize($_POST));
 
 #################################################################################
 ## Validar a data de vencimento
@@ -58,7 +72,7 @@ if ($numMeses > $numMesesMax) {
 #################################################################################
 try {
 
-	$formandos	= $em->getRepository('Entidades\ZgsegUsuario')->findBy(array('codigo' => $aSelFormandos));
+	$formandos	= $em->getRepository('Entidades\ZgsegUsuario')->findBy(array('cpf' => $aSelFormandos));
 	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 
 } catch (\Exception $e) {
@@ -66,6 +80,7 @@ try {
 }
 
 if (sizeof($formandos) == 0) 	\Zage\App\Erro::halt($tr->trans('Formando[s] não encontrado !!!'));
+if (sizeof($formandos) != sizeof($aSelFormandos)) 	\Zage\App\Erro::halt($tr->trans('Alguns formandos não foram encontrados na base através do CPF informado!!!'));
 
 
 #################################################################################
@@ -84,39 +99,14 @@ if ($codTipoValor == "M") {
 
 
 #################################################################################
-## Variáveis usadas no cálculo das mensalidades
+## Ajustar as variáveis Fixas
 #################################################################################
-$dataConclusao			= $oOrgFmt->getDataConclusao();
-if (!$dataConclusao)	throw new Exception("Data de Conclusão não informada");
-$hoje					= new DateTime('now');
-$interval				= $dataConclusao->diff($hoje);
-$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
-
-#################################################################################
-## Taxas / Configurações
-#################################################################################
-$indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
-$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
-$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
-$taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
-$taxaUsoFormando		= round(($taxaUso * $numMesesConc) / $numMeses,2);
-
-#################################################################################
-## Formatar as taxas
-#################################################################################
-if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
-if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
-if ($taxaUso		< 0)		$taxaUso		= 0;
-$totalTaxa			= ($taxaAdmin + $taxaBoleto);
-
-
 $codTipoRec		= ($numMeses == 1)  ? "U" : "P";
 $parcela		= ($numMeses == 1)  ? 1 : null;
 $codRecPer		= "M";
 $valorJuros		= 0;
 $valorMora		= 0;
 $valorDesconto	= 0;
-$valorOutros	= ($indValorExtra)	? ($totalTaxa + $taxaUsoFormando) : $taxaUsoFormando;
 $numParcelas	= $numMeses;
 $parcelaInicial	= 1;
 $obs			= null;
@@ -130,16 +120,25 @@ $codCatBoleto			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
 $codCatOutrasTaxas		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
 
 #################################################################################
-## Calcular valor Total e Valor da Parcela
+## Calcular valor Total e Valor da Parcela, e montar o array de outrosValores
 #################################################################################
-$valorTotal	= 0;
+$aOutrosValores		= array();
+$valorTotal			= 0;
 for ($i = 0; $i < sizeof($aValor); $i++) {
-	$valorTotal += (\Zage\App\Util::to_float($aValor[$i]) + \Zage\App\Util::to_float($valorOutros));
+	$valorOutros			= \Zage\App\Util::to_float($aSistema[$i]) + \Zage\App\Util::to_float($aTaxas[$i]);
+	$aOutrosValores[]		=  $valorOutros;
+	$valorTotal 			+= (\Zage\App\Util::to_float($aValor[$i]) + $valorOutros);
 }
+
 if ($codTipoValor != "M") {
 	$valor		= round($valor / $numMeses,2);
 }
-$valorParcela	= $valor + $valorMora + $valorJuros + $valorOutros - $valorDesconto;
+
+
+#################################################################################
+## Valida o valor total
+#################################################################################
+if ($valorTotal		!= $totalGeral)	\Zage\App\Erro::halt($tr->trans('Somatório dos valores totais das parcelas difere do valor total informado'));
 
 
 #################################################################################
@@ -151,46 +150,43 @@ $codCategoria		= array();
 $codCentroCusto		= array();
 $codRateio			= array();
 
-/*if (!$indValorExtra) {
-	$pctRateio		= array(100);
-	$valorRateio	= array($valorParcela);
-	$codCategoria	= array($codCatMensalidade);
-	$codCentroCusto	= array("");
-	$codRateio		= array("");
+#################################################################################
+## Criar o array de acordo com o número de parcelas
+#################################################################################
+for ($i = 0; $i <= $numMeses; $i++) {
 	
+}
 
-}else{
-*/
-$pctRateio[]		= round(100*$valor/$valorParcela,2);
+
+$pctRateio[]		= round(100*$valParcelaMensalidade/$totalParcela,2);
 $valorRateio[]		= $valor;
 $codCategoria[]		= $codCatMensalidade;
 $codCentroCusto[]	= null;
 $codRateio[]		= null;
 
 if ($indValorExtra && $taxaAdmin)		{
-	$pctRateio[]		= round(100*$taxaAdmin/$valorParcela,2);
+	$pctRateio[]		= round(100*$taxaAdmin/$totalParcela,2);
 	$valorRateio[]		= $taxaAdmin;
 	$codCategoria[]		= $codCatOutrasTaxas;
 	$codCentroCusto[]	= null;
 	$codRateio[]		= null;
 }
 
-if ($indValorExtra && $taxaBoleto)		{
-	$pctRateio[]		= round(100*$taxaBoleto/$valorParcela,2);
-	$valorRateio[]		= $taxaBoleto;
+if ($indValorExtra && $taxaBol)		{
+	$pctRateio[]		= round(100*$taxaBol/$totalParcela,2);
+	$valorRateio[]		= $taxaBol;
 	$codCategoria[]		= $codCatBoleto;
 	$codCentroCusto[]	= null;
 	$codRateio[]		= null;
 }
 
-if ($taxaUsoFormando)		{
-	$pctRateio[]		= round(100*$taxaUsoFormando/$valorParcela,2);
-	$valorRateio[]		= $taxaUsoFormando;
+if ($valParcelaSistema)		{
+	$pctRateio[]		= round(100*$valParcelaSistema/$totalParcela,2);
+	$valorRateio[]		= $valParcelaSistema;
 	$codCategoria[]		= $codCatPortal;
 	$codCentroCusto[]	= null;
 	$codRateio[]		= null;
 }
-//}
 
 #################################################################################
 ## Ajustar os campos do tipo CheckBox
@@ -272,18 +268,17 @@ for ($i = 0 ;$i < sizeof($formandos); $i++) {
 	$conta->setIndReceberAuto($flagReceberAuto);
 	$conta->_setflagRecebida($flagRecebida);
 	$conta->_setIndValorParcela($indValorParcela);
+	$conta->_setIndAlterarSeq($flagAlterarSeq);
 	$conta->_setValorTotal($valorTotal);
 	
 	$conta->_setArrayValores($aValor);
+	$conta->_setArrayOutrosValores($aOutrosValores);
 	$conta->_setArrayDatas($aData);
 	$conta->_setArrayCodigosRateio($codRateio);
 	$conta->_setArrayCategoriasRateio($codCategoria);
 	$conta->_setArrayCentroCustoRateio($codCentroCusto);
 	$conta->_setArrayValoresRateio($valorRateio);
 	$conta->_setArrayPctRateio($pctRateio);
-	
-	$conta->_setIndAlterarSeq(0);
-	
 	
 	#################################################################################
 	## Coloca na fila do doctrine

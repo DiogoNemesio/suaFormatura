@@ -280,13 +280,15 @@ function zgReplaceAll($str, $find, $replace){
 
 
 function zgConverteFloat($num) {
+	if (!$num)		return parseFloat(0);
+	
 	var $n			= String($num);
 	var $posPonto	= $n.indexOf(".");
 	var $posVirg	= $n.indexOf(",");
 	var $temp;
 
 	if ($posPonto == -1 && $posVirg == -1) {
-		return $num;
+		return parseFloat($num);
 	}else if ($posPonto != -1 && $posVirg != -1) {
 		if ($posPonto > $posVirg) {
 			$temp = zgReplaceAll($n,",","");

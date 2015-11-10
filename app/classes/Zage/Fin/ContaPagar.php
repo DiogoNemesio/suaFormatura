@@ -36,6 +36,12 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 	private $_valores;
 	
 	/**
+	 * Array com os outros valores
+	 * @var array
+	 */
+	private $_outrosValores;
+		
+	/**
 	 * Array com as datas
 	 * @var array
 	 */
@@ -294,6 +300,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		## Validações dos valores
 		#################################################################################
 		$valores		= array();
+		$outrosValores	= array();
 		$_valorTotal	= 0;
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_valores[$i] == 0) {
@@ -301,9 +308,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
-				$_val			= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto());
-				$_valorTotal	+= $_val;
-				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]);
+				$_valorOutros		= (isset($this->_outrosValores)) ? $this->_outrosValores[$i] : $this->getValorOutros();
+				$_val				= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($_valorOutros) - \Zage\App\Util::to_float($this->getValorDesconto());
+				$_valorTotal		+= $_val;
+				$valores[$i]		= \Zage\App\Util::toMysqlNumber($this->_valores[$i]);
+				$outrosValores[$i]	= \Zage\App\Util::toMysqlNumber($_valorOutros);
 			}
 		}
 		
@@ -627,6 +636,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			//	$object->setValor($this->getValor());
 			//}else{
 				$object->setValor($valores[$i]);
+				$object->setValorOutros($outrosValores[$i]);
 			//}
 			
 			$valorTotalParcela		= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto());
@@ -1594,6 +1604,10 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 
 	public function _setArrayValores($array) {
 		$this->_valores	= $array;
+	}
+	
+	public function _setArrayOutrosValores($array) {
+		$this->_outrosValores	= $array;
 	}
 	
 	public function _setArrayDatas($array) {

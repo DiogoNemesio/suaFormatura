@@ -36,6 +36,12 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	private $_valores;
 	
 	/**
+	 * Array com os outros valores
+	 * @var array
+	 */
+	private $_outrosValores;
+	
+	/**
 	 * Array com as datas
 	 * @var array
 	 */
@@ -294,6 +300,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Validações dos valores
 		#################################################################################
 		$valores		= array();
+		$outrosValores	= array();
 		$_valorTotal	= 0;
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_valores[$i] == 0) {
@@ -302,9 +309,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
 				//$log->debug("Valor: ".\Zage\App\Util::to_float($this->_valores[$i]).", Juros: ".\Zage\App\Util::to_float($this->getValorJuros()).", Mora: ".\Zage\App\Util::to_float($this->getValorMora()).", Outros: ".\Zage\App\Util::to_float($this->getValorOutros()).", Desconto: ".\Zage\App\Util::to_float($this->getValorDesconto()));
-				$_val			= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($this->getValorOutros()) - \Zage\App\Util::to_float($this->getValorDesconto()) - \Zage\App\Util::to_float($this->getValorDescontoJuros()) - \Zage\App\Util::to_float($this->getValorDescontoMora());
-				$_valorTotal	+= $_val;
-				$valores[$i]	= \Zage\App\Util::toMysqlNumber($this->_valores[$i]); 
+				$_valorOutros		= (isset($this->_outrosValores)) ? $this->_outrosValores[$i] : $this->getValorOutros(); 
+				$_val				= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($_valorOutros) - \Zage\App\Util::to_float($this->getValorDesconto()) - \Zage\App\Util::to_float($this->getValorDescontoJuros()) - \Zage\App\Util::to_float($this->getValorDescontoMora());
+				$_valorTotal		+= $_val;
+				$valores[$i]		= \Zage\App\Util::toMysqlNumber($this->_valores[$i]); 
+				$outrosValores[$i]	= \Zage\App\Util::toMysqlNumber($_valorOutros);
 			}
 		}
 		
@@ -584,7 +593,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$object->setValorDesconto($this->getValorDesconto());
 			$object->setValorJuros($this->getValorJuros());
 			$object->setValorMora($this->getValorMora());
-			$object->setValorOutros($this->getValorOutros());
+			//$object->setValorOutros($this->getValorOutros());
 			$object->setCodPeriodoRecorrencia($this->getCodPeriodoRecorrencia());
 			$object->setIntervaloRecorrencia($this->getIntervaloRecorrencia());
 			$object->setCodTipoRecorrencia($this->getCodTipoRecorrencia());
@@ -629,6 +638,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			//	$object->setValor($this->getValor());
 			//}else{
 				$object->setValor($valores[$i]);
+				$object->setValorOutros($outrosValores[$i]);
 			
 			//}
 			
@@ -2189,6 +2199,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	
 	public function _setArrayValores($array) {
 		$this->_valores	= $array;
+	}
+	
+	public function _setArrayOutrosValores($array) {
+		$this->_outrosValores	= $array;
 	}
 	
 	public function _setArrayDatas($array) {
