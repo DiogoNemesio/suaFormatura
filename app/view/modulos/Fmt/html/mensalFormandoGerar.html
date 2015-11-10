@@ -9,7 +9,7 @@
 		<div>
 			<!-- #section:plugins/fuelux.wizard.steps -->
 			<ul class="steps">
-				<li data-step="1">
+				<li data-step="1" class="active">
 					<span class="step">1</span>
 					<span class="title">Vencimentos</span>
 				</li>
@@ -55,13 +55,61 @@
 							    <label for="identID" class="col-sm-5 control-label">Número de parcelas</label>
 					    		<div class="input-group col-sm-6 pull-left">
 				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de Mensalidades a serem geradas"></i></span>
-									<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" placeholder="Número de parcelas" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+									<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" placeholder="Número de parcelas" onchange="calculaMensalidade();" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 							    </div>
-							    <div class="col-sm-1 pull-left" id="divHelpNumMesesID"></div>
+							    <div class="col-sm-1 pull-left" id="divHelpNumMesesID">
+							    </div>
+							</div>
+							<div class="form-group col-sm-12">
+								<label id='lblTipoValorID' class="col-sm-8 control-label">
+									<strong class="blue">
+										Mensalidade: 
+										<small>R$ 32.432,00</small>
+									</strong>
+								</label></div>
+							</div>
+					</div>
+					<div class="col-sm-4 pull-right" id="divInfoValID">
+						<div class="widget-box">
+							<div class="widget-header widget-header-flat widget-header-small center">
+								<h5 class="widget-title">Informações</h5>
+							</div>
+							<div class="widget-body">
+								<div class="widget-main small">
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formando:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" >%NOME_FORMANDO%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até conclusão:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_MAX% meses &nbsp;(%DATA_CONCLUSAO%)</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor por formando:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_ORC_FORMANDO%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já provisionado:</p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>Saldo a provisionar:</b></p>
+									    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;"><b>%SALDO_APROVISIONAR_FMT%</b></p>
+								    	</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-4 pull-right" id="divInfoVencID"></div>
 				</div>
 				<div class="step-pane" data-step="2">
 					<div class="col-sm-8 pull-left">
@@ -73,14 +121,6 @@
 									<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
 									<span id='geraMensalidadeValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalgeraMensalidade();">Valor Total do Formando</span>
 								</div>
-							</div>
-							<div class="form-group col-sm-12" id="divValorID">
-							    <label id='lblTipoValorID' class="col-sm-4 control-label"></label>
-					    		<div class="input-group col-sm-7 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-						    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
-							    </div>
-							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
 							</div>
 							
 							<div class="form-group col-sm-12" >
@@ -164,84 +204,7 @@
 	</div>
 </div>
 
-<div class="hidden" id="divInfoGeraMensalidadeID">
-	<div class="widget-box">
-		<div class="widget-header widget-header-flat widget-header-small center">
-			<h5 class="widget-title">Informações</h5>
-		</div>
-		<div class="widget-body">
-			<div class="widget-main small">
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblNumFormadosSelID"></p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até Conclusão:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_MAX% meses &nbsp;(%DATA_CONCLUSAO%)</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da Formatura:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_TOTAL_FORM_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_POR_FORMANDO_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total já Provisionado:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_RECEBER_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo a Provisionar:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_RECEBER_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo Por Formando:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="pSaldoFormandoID">%SALDO_FORMANDO_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Uso do Sistema:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de emissão do Boleto:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_BOLETO_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Administração:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_ADMIN_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total das Taxas:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TOTAL_TAXA_FMT%</p>
-			    	</div>
-				</div>
 
-			</div>
-		</div>
-	</div>
-</div>
 
 <script>
 
@@ -275,13 +238,19 @@ $('[data-rel=popover]').popover({html:true});
 $('[data-rel="select2"]').select2({allowClear: true});
 $('.datepicker').datepicker({"autoclose": true});
 
-$('textarea[class*=autosize]').autosize({append: "\n"});
-$('textarea.limited').inputlimiter({
-	remText: '%n caracteres restando...',
-	limitText: 'Máximo Permitido : %n.'
-});
+/*************** CALCULAR MENSALIDADE *************/
+function calculaMensalidade(){
+	var vValor			= $('#valorID').val();
+	var vParcela		= $('#numMesesID').val();
+	
+	nValor = zgConverteFloat(vValor);
+	vParcela = nValor / vParcela;
+	
+	alert(vParcela);
+}
 
-/********** WIZARD ************/
+
+/******************** WIZARD **********************/
 $('#fuelux-wizard-container')
 .ace_wizard({
 	
@@ -291,9 +260,6 @@ $('#fuelux-wizard-container')
 		var vOk 	= validaVencimentoGeraMensalidade();
 		if(!vOk) 	{
 			e.preventDefault();
-		}else{
-			var $divInfo	= $('#divInfoGeraMensalidadeID').html();
-			$('#divInfoValorID').html($divInfo);
 		}
 	}else if (info.step == 2) {
 		var vOk 	= validaValoresGeraMensalidade();
@@ -331,44 +297,28 @@ $('#fuelux-wizard-container')
 	//e.preventDefault();//this will prevent clicking and selecting steps
 });
 
-function mostraQuadroGeraMensalidade($divId) {
-	$('[zg-div-limpa="1"]').empty();
-	var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
-	var $divInfo	= $('#divInfoGeraMensalidadeID').html();
-	$('#'+$divId).html($divInfo);
-	$('#lblNumFormadosSelID').each( function() {
-		$(this).html($lblFor);
-	});
-}
-
-function selecionaValorMensalidadegeraMensalidade() {
-	$('#geraMensalidadeValorMensalidadeID').addClass("btn-primary");
-	$('#geraMensalidadeValorMensalidadeID').removeClass("btn-light");
-	$('#geraMensalidadeValorTotalID').addClass("btn-light");
-	$('#geraMensalidadeValorTotalID').removeClass("btn-primary");
-	$('#codTipoValorID').val("M");
-	$('#lblTipoValorID').html("Valor da Mensalidade");
-}
-
-function selecionaValorTotalgeraMensalidade() {
-	$('#geraMensalidadeValorTotalID').addClass("btn-primary");
-	$('#geraMensalidadeValorTotalID').removeClass("btn-light");
-	$('#geraMensalidadeValorMensalidadeID').addClass("btn-light");
-	$('#geraMensalidadeValorMensalidadeID').removeClass("btn-primary");
-	$('#codTipoValorID').val("T");
-	$('#lblTipoValorID').html("Valor Total do Formando");
-}
 
 function validaVencimentoGeraMensalidade() {
 	var vDataVenc		= $('#dataVencID').val();
 	var vNumMeses		= parseInt($('#numMesesID').val());
 	var vNumMesesMax	= parseInt($('#numMesesMaxID').val());
+	var vValor			= $('#valorID').val();
 	var vOK				= true;
 	
 	// Data de Vencimento
 	if (!vDataVenc) {
 		$('#divDataVencID').addClass('has-error');
-		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento deve ser informada !!!'));
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Informe a data do primeiro vencimento!'));
+		vOK		= false;
+	}else{
+		$('#divDataVencID').removeClass('has-error');
+		$('#divHelpDataVencID').html('&nbsp;');
+	}
+	
+	// Valor
+	if (!vValor) {
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Informe o valor da conta a ser gerada!'));
 		vOK		= false;
 	}else{
 		$('#divDataVencID').removeClass('has-error');
@@ -378,11 +328,11 @@ function validaVencimentoGeraMensalidade() {
 	// Número de meses
 	if (!vNumMeses) {
 		$('#divNumMesesID').addClass('has-error');
-		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser preenchido !!!'));
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Informe o número de parcelas!'));
 		vOK		= false;
 	}else if (vNumMeses > vNumMesesMax) {
 		$('#divNumMesesID').addClass('has-error');
-		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser no máximo '+vNumMesesMax+' !!!'));
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número parcelas deve ser no máximo '+vNumMesesMax+'!'));
 		vOK		= false;
 	}else{
 		$('#divNumMesesID').removeClass('has-error');

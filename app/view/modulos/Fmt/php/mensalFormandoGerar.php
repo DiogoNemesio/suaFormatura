@@ -68,7 +68,7 @@ $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('
 #################################################################################
 ## Taxas / Configurações
 #################################################################################
-$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getValorPorFormando());
+$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministrativa());
 $taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
 $taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
 $taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
@@ -185,7 +185,9 @@ $tpl->set('CHECK_NAME'				,$checkboxName);
 $tpl->set('NUM_MESES_MAX'			,$numMesesConc);
 
 $tpl->set('SALDO_APROVISIONAR'		,\Zage\App\Util::formataDinheiro($saldoAProvisionar));
-
+$tpl->set('SALDO_APROVISIONAR_FMT'	,\Zage\App\Util::to_money($saldoAProvisionar));
+$tpl->set('NOME_FORMANDO'			,$formando->getNome());
+$tpl->set('VALOR_ORC_FORMANDO'		,\Zage\App\Util::to_money($valorOrcadoFormando));
 
 
 $tpl->set('TOTAL_FORMANDOS'			,$totalFormandos);
