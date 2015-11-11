@@ -235,7 +235,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$desconto				= \Zage\App\Util::to_float($aValorDesconto[$codConta]);
 	$outros					= \Zage\App\Util::to_float($saldoDet["OUTROS"]);
 	$especie				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getCodInternacional() : null;
-	//$especieDoc				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getSimbolo() 	: null;
 	$especieDoc				= "DM"; # Duplicata Mercantil
 	
 	if (!$juros)			$juros		= 0;
@@ -378,6 +377,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$demonstrativo1		= $descConta;
 	$demonstrativo2		= "Parcela: ".$parcela;
 	$numeroDoc			= $oConta->getCodigo();
+	$valorBoleto		= $valor + $outros;
 
 	#################################################################################
 	## Instruções
@@ -428,11 +428,11 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$boleto->setSacadoNome($sacadoNome);
 	$boleto->setSacadoUF($sacadoUF);
 	$boleto->setUf($cedenteUF);
-	$boleto->setValor($valor);
+	$boleto->setValor($valorBoleto);
 	$boleto->setJuros($juros);
 	$boleto->setMora($mora);
 	$boleto->setDesconto($desconto);
-	$boleto->setOutrosValores($outros);
+	$boleto->setOutrosValores(0);
 	$boleto->setVencimento($vencimento);
 	$boleto->setInstrucao1($instrucao1);
 	$boleto->setInstrucao2($instrucao2);
