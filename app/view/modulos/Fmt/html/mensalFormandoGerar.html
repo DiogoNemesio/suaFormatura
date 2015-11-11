@@ -13,11 +13,11 @@
 					<span class="step">1</span>
 					<span class="title">Vencimentos</span>
 				</li>
-				<li data-step="3">
+				<li data-step="2">
 					<span class="step">2</span>
-					<span class="title">Valores</span>
+					<span class="title">Configurações</span>
 				</li>
-				<li data-step="4">
+				<li data-step="3">
 					<span class="step">3</span>
 					<span class="title">Parcelas</span>
 				</li>
@@ -30,44 +30,44 @@
 			<input type="hidden" name="numForSel" id="numForSelID">
 			<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
 			<input type="hidden" name="aSelFormandos" id="aSelFormandosID">
+			<input type="hidden" name="taxaAdmin" id="taxaAdminID" value="%TAXA_ADMIN%">
+			<input type="hidden" name="valorParcela" id="valorParcelaID">
 			
 			<div class="step-content pos-rel">				
 				<div class="step-pane active" data-step="1">
 					<div class="col-sm-8 pull-left">
 						<div class="row">
 							<div class="form-group col-sm-12" id="divDataVencID">
-							    <label for="identID" class="col-sm-5 control-label">1&ordf; vencimento</label>
+							    <label for="dataVencID" class="col-sm-5 control-label">1&ordf; vencimento</label>
 					    		<div class="input-group col-sm-6 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de vencimento da primeira mensalidade, as próximas mensalidades vão ser geradas no mesmo dia do mês subsequente."></i></span>
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data do primeiro vencimento, e as próximas mensalidades irão ser geradas no mesmo dia do mês subsequente."></i></span>
 				    				<input class="form-control datepicker" id="dataVencID" type="text" name="dataVenc" maxlength="10" value="%DATA_VENC%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 							    </div>
 							    <div class="col-sm-1 pull-left" id="divHelpDataVencID"></div>
 							</div>
 							<div class="form-group col-sm-12" id="divValorID">
-							    <label id='lblTipoValorID' class="col-sm-5 control-label">Valor</label>
+							    <label id='lblTipoValorID' class="col-sm-5 control-label" for="valorID">Valor</label>
 					    		<div class="input-group col-sm-6 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-						    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="%SALDO_APROVISIONAR%" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o valor da total da conta a ser gerada."></i></span>
+						    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="%SALDO_APROVISIONAR%" onchange="calcularMensalidade();" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 							    </div>
 							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
 							</div>
 							<div class="form-group col-sm-12" id="divNumMesesID">
-							    <label for="identID" class="col-sm-5 control-label">Número de parcelas</label>
+							    <label for="numMesesID" class="col-sm-5 control-label">Número de parcelas</label>
 					    		<div class="input-group col-sm-6 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de Mensalidades a serem geradas"></i></span>
-									<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" placeholder="Número de parcelas" onchange="calculaMensalidadeFormandoGerar();" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o número de parcelas."></i></span>
+									<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" placeholder="Número de parcelas" onchange="calcularMensalidade();" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 							    </div>
 							    <div class="col-sm-1 pull-left" id="divHelpNumMesesID">
 							    </div>
 							</div>
-							<div class="form-group col-sm-12 hidden">
-								<label id='lblTipoValorID' class="col-sm-8 control-label">
-									<strong class="blue">
-										Mensalidade: 
-										<small>R$ 32.432,00</small>
-									</strong>
-								</label></div>
+							<div class="form-group col-sm-12">
+								<label id='lblValorMensalidadeID' class="col-sm-8 control-label">
+									
+								</label>
 							</div>
+						</div>
 					</div>
 					<div class="col-sm-4 pull-right" id="divInfoValID">
 						<div class="widget-box">
@@ -112,33 +112,13 @@
 					</div>
 				</div>
 				<div class="step-pane" data-step="2">
-					<div class="col-sm-8 pull-left">
+				<div class="col-sm-8 pull-left">
 						<div class="row ">
-							<div class="form-group col-sm-12" id="divIndValorTotalID">
-								<label class="col-sm-4 control-label">Valor se refere</label>
-								<div class="btn-group btn-corner col-sm-7 pull-left">
-									<span id='geraMensalidadeValorMensalidadeID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorMensalidadegeraMensalidade();">Valor da Mensalidade</span>
-									<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
-									<span id='geraMensalidadeValorTotalID' style="width: 180px;" class="btn btn-sm" onclick="selecionaValorTotalgeraMensalidade();">Valor Total do Formando</span>
-								</div>
-							</div>
-							
-							<div class="form-group col-sm-12" >
-			    				<label class="col-sm-4 control-label">
-			    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch " value="1" checked type="checkbox" />
-			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
-			    				</label>
-				    			<div class="input-group col-sm-7 pull-left">
-				    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
-				    				<input readonly type="text" class="form-control" placeholder="Adicionar os valores extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
-							    </div>
-								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
-					    	</div>
 							<div class="form-group col-sm-12" id="divFormaPagID">
 								<label class="col-sm-4 control-label">Forma de Pag.</label>
 				    			<div class="input-group col-sm-7 pull-left">
-				    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Mensalidade"></i></span>
-									<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
+				    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a forma de pagamento da mensalidade."></i></span>
+									<select class="select2" style="width:100%;" onchange="montarResumo();" id="codFormaPagID" name="codFormaPag" data-rel="select2">
 									%FORMAS_PAG%
 									</select>
 							    </div>
@@ -147,16 +127,68 @@
 							<div class="form-group col-sm-12" id="divContaRecID">
 								<label class="col-sm-4 control-label">Conta de Recebebimento</label>
 				    			<div class="input-group col-sm-7 pull-left">
-				    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
-									<select class="select2" style="width:100%;" id="codContaRecID" name="codContaRec" data-rel="select2">
+				    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a conta onde que será creditado o valor da mensalidade."></i></span>
+									<select class="select2" style="width:100%;" onchange="montarResumo();" id="codContaRecID" name="codContaRec" data-rel="select2">
 									%CONTAS%
 									</select>
 							    </div>
 								<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
 					    	</div>
+					    	<div class="form-group col-sm-12" >
+			    				<label class="col-sm-4 control-label">
+			    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch " value="1" checked type="checkbox" onchange="montarResumo();"/>
+			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+			    				</label>
+				    			<div class="input-group col-sm-7 pull-left">
+				    				<label class="col-sm-7 control-label">Adicionar os valores extras <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque sim para adicionar os valores da taxa do boleto e taxa administrativa no valor de cada parcela."></i></label>
+				    				
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
+					    	</div>
 						</div>
 					</div>
-					<div class="col-sm-4 pull-right" id="divInfoValorID"></div>
+					<div class="col-sm-4 pull-right" id="divInfoResumoID">
+						<div class="widget-box">
+							<div class="widget-header widget-header-flat widget-header-small center">
+								<h5 class="widget-title">Resumo</h5>
+							</div>
+							<div class="widget-body">
+								<div class="widget-main small">
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor a gerar:</p>
+									    	<p id="lblValorTotalID" class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" ></p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Subtotal:</p>
+									    	<p id="lblNumParcelaID" class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_MAX% meses &nbsp;(%DATA_CONCLUSAO%)</p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa boleto:</p>
+									    	<p id="lblTaxaBoletoID"class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;"></p>
+								    	</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+									    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa adm:</p>
+									    	<p id="lblTaxaAdmID" class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;"></p>
+								    	</div>
+									</div>
+									<div class="row" id="divInfoCentroCustoID">
+										<h6 class="header blue bolder smaller"></h6>
+										<div class="col-sm-12">
+									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>TOTAL:</b></p>
+									    	<p id='lblTotalParcelaID' class="col-sm-8 pull-right align-left green" style="padding: 2px; margin:0;"><b></b></p>
+								    	</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="step-pane" data-step="3">
 					<div class="row">
@@ -166,6 +198,9 @@
 									<th class="col-sm-1 center" id="thInfoHelpTableParcelasFomandoGerarID"></th>
 									<th class="col-sm-2 center">Parcela</th>
 									<th class="col-sm-2 center">Valor</th>
+									<th class="col-sm-1 center">Portal</th>
+									<th class="col-sm-1 center">Taxas</th>
+									<th class="col-sm-2 center">Total</th>
 									<th class="col-sm-2 center">Data</th>
 								</tr>
 							</thead>
@@ -174,8 +209,11 @@
 							<tfoot>
 								<tr class="warning">
 									<th class="col-sm-1 center"></th>
-									<th class="col-sm-2 center" id="thInfoParcelaFomandoGerarID"></th>
-									<th class="col-sm-2 center" id="thInfoValorTotalFomandoGerarID"></th>
+									<th class="col-sm-2 center" id="thInfoParcelaGeraMensalidadeID"></th>
+									<th class="col-sm-2 center" id="thInfoValorMensalidadeGeraMensalidadeID"></th>
+									<th class="col-sm-1 center" id="thInfoValorSistemaGeraMensalidadeID"></th>
+									<th class="col-sm-1 center" id="thInfoValorTaxaGeraMensalidadeID"></th>
+									<th class="col-sm-2 center" id="thInfoValorTotalGeraMensalidadeID"></th>
 									<th class="col-sm-2 center"></th>
 								</tr>
 							</tfoot>
@@ -239,15 +277,78 @@ $('[data-rel="select2"]').select2({allowClear: true});
 $('.datepicker').datepicker({"autoclose": true});
 
 /*************** CALCULAR MENSALIDADE *************/
-function calculaMensalidadeFormandoGerar(){
+function calcularMensalidade(){
 	var vValor			= $('#valorID').val();
 	var vParcela		= $('#numMesesID').val();
 	
-	nValor 		= zgConverteFloat(vValor);
-	vParcela 	= nValor / vParcela;
+	// CALCULOS
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
 	
-	alert(vParcela);
+	if (vValor && vParcela > 0){
+		nValor = zgConverteFloat(vValor);
+		vParcela = nValor / vParcela;
+		$('#valorParcelaID').val(vParcela);
+		
+		$('#lblValorMensalidadeID').html('<strong class="blue">Mensalidade: <small>R$ '+accounting.formatMoney(vParcela,options)+'</small></strong>');
+	}else{
+		$('#lblValorMensalidadeID').html('');
+	}
 }
+
+/*************** MOSTRAR RESUMO *************/
+function montarResumo(){
+	var vValor			= $('#valorID').val();
+	var vParcela		= $('#numMesesID').val();
+	var vValorParcela	= $('#valorParcelaID').val();
+	var vFormaPag		= $('#codFormaPagID').val();
+	var vIndValorExtra	= $('#indValorExtraID').is(':checked');
+	
+	var vTaxaAdmin		= $('#taxaAdminID').val();
+	var vConta			= $("#codContaRecID option:selected");
+	var vValorBoleto	= zgConverteFloat(vConta.attr("zg-val-boleto"));
+	
+	// CALCULOS
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+	
+	$('#lblValorTotalID').html('R$ '+accounting.formatMoney(zgConverteFloat(vValor), options));
+	$('#lblNumParcelaID').html(vParcela+' x R$ '+accounting.formatMoney(vValorParcela, options));
+	
+	if (vIndValorExtra){
+		
+		if (vFormaPag == 'BOL'){
+			$('#lblTaxaAdmID').html('R$ '+vTaxaAdmin);
+			$('#lblTaxaBoletoID').html('R$ '+accounting.formatMoney(vValorBoleto, options));
+			
+			var vTotalParcela = zgConverteFloat(vValorParcela) + zgConverteFloat(vTaxaAdmin) + vValorBoleto;
+			$('#lblTotalParcelaID').html('<strong>'+vParcela+' x R$ '+accounting.formatMoney(vTotalParcela, options)+'</strong>');
+			
+		}else{
+			$('#lblTaxaAdmID').html('R$ '+vTaxaAdmin);
+			$('#lblTaxaBoletoID').html('R$ '+accounting.formatMoney(0, options));
+			
+			var vTotalParcela = zgConverteFloat(vValorParcela) + zgConverteFloat(vTaxaAdmin);
+			$('#lblTotalParcelaID').html('<strong>'+vParcela+' x R$ '+accounting.formatMoney(vTotalParcela, options)+'</strong>');
+		}
+	}else{
+		$('#lblTaxaAdmID').html('R$ '+accounting.formatMoney(0, options));
+		$('#lblTaxaBoletoID').html('R$ '+accounting.formatMoney(0, options));
+		$('#lblTotalParcelaID').html('<strong>'+vParcela+' x R$ '+accounting.formatMoney(vValorParcela, options)+'</strong>');
+	}
+	
+}
+
 
 
 /******************** WIZARD **********************/
@@ -260,9 +361,11 @@ $('#fuelux-wizard-container')
 		var vOk 	= validaVencimentoFormandoGerar();
 		if(!vOk) 	{
 			e.preventDefault();
+		}else{
+			montarResumo();
 		}
 	}else if (info.step == 2) {
-		var vOk 	= validaValoresFomandoGerar();
+		var vOk 	= validaVencimentoFormandoGerar();
 		if(!vOk) 	{
 			e.preventDefault();
 		}else{
