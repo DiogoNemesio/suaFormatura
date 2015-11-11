@@ -68,18 +68,18 @@ $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('
 #################################################################################
 ## Taxas / Configurações
 #################################################################################
-$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministrativa());
-$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
-$taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
-$taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
+$taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao());
+//$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
+//$taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
+//$taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
 
 #################################################################################
 ## Formatar as taxas
 #################################################################################
 if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
-if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
-if ($taxaUso		< 0)		$taxaUso		= 0;
-$totalTaxa			= ($taxaAdmin + $taxaBoleto);
+//if ($taxaBoleto	< 0)		$taxaBoleto		= 0;
+//if ($taxaUso		< 0)		$taxaUso		= 0;
+//$totalTaxa		= ($taxaAdmin + $taxaBoleto);
 
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
@@ -117,7 +117,7 @@ if ($valorProv < $valorOrcadoFormando){
 #################################################################################
 try {
 	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	null, '');
+	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	'BOL' , '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -143,13 +143,15 @@ try {
 	if ($aCntCer) {
 		$oConta		= "<optgroup label='Contas do Cerimonial'>";
 		for ($i = 0; $i < sizeof($aCntCer); $i++) {
-			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."'>".$aCntCer[$i]->getNome()."</option>";
+			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($oFmtAdm->getCodigo(),$aCntCer[$i]->getCodigo()) : 0;
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
 		}
 		$oConta		.= '</optgroup>';
 		if ($aConta) {
 			$oConta		.= "<optgroup label='Contas da Formatura'>";
 			for ($i = 0; $i < sizeof($aConta); $i++) {
-				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."'>".$aConta[$i]->getNome()."</option>";
+				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao(),$aConta[$i]->getCodigo()) : 0;
+				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
 			}
 			$oConta		.= '</optgroup>';
 		}
@@ -188,12 +190,13 @@ $tpl->set('SALDO_APROVISIONAR'		,\Zage\App\Util::formataDinheiro($saldoAProvisio
 $tpl->set('SALDO_APROVISIONAR_FMT'	,\Zage\App\Util::to_money($saldoAProvisionar));
 $tpl->set('NOME_FORMANDO'			,$formando->getNome());
 $tpl->set('VALOR_ORC_FORMANDO'		,\Zage\App\Util::to_money($valorOrcadoFormando));
+$tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
 
 
-$tpl->set('TOTAL_FORMANDOS'			,$totalFormandos);
+
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao->format($system->config["data"]["dateFormat"]));
 $tpl->set('DATA_VENC'				,$dataVenc);
-$tpl->set('VALOR_TOTAL_FORM_FMT'	,\Zage\App\Util::to_money($valorOrcado));
+
 $tpl->set('VALOR_TOTAL_FORMATURA'	,\Zage\App\Util::formataDinheiro($valorOrcado));
 $tpl->set('TOTAL_POR_FORMANDO'		,\Zage\App\Util::formataDinheiro($totalPorFormando));
 $tpl->set('TOTAL_POR_FORMANDO_FMT'	,\Zage\App\Util::to_money($totalPorFormando));
@@ -206,8 +209,7 @@ $tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUsoTotalFormando));
 $tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUsoTotalFormando));
 $tpl->set('TAXA_BOLETO_FMT'			,\Zage\App\Util::to_money($taxaBoleto));
 $tpl->set('TAXA_BOLETO'				,\Zage\App\Util::formataDinheiro($taxaBoleto));
-$tpl->set('TAXA_ADMIN_FMT'			,\Zage\App\Util::to_money($taxaAdmin));
-$tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
+
 $tpl->set('TOTAL_TAXA_FMT'			,\Zage\App\Util::to_money($totalTaxa));
 $tpl->set('CONTAS'					,$oConta);
 $tpl->set('FORMAS_PAG'				,$oFormaPag);
