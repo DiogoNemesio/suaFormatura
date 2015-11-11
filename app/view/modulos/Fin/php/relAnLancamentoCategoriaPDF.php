@@ -169,7 +169,7 @@ $qb2 	= $em->createQueryBuilder();
 
 try {
 
-	$qb1->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.fantasia as PESSOA_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor*-1 AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ca.codigo AS COD_CATEGORIA,ca.descricao AS CATEGORIA_DESCRICAO,cap.codigo AS COD_CATEGORIA_PAI,cap.descricao AS CATEGORIA_PAI_DESCRICAO')
+	$qb1->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.nome as PESSOA_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor*-1 AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ca.codigo AS COD_CATEGORIA,ca.descricao AS CATEGORIA_DESCRICAO,cap.codigo AS COD_CATEGORIA_PAI,cap.descricao AS CATEGORIA_PAI_DESCRICAO')
 	->from('\Entidades\ZgfinContaPagarRateio'	,'cr')
 	->leftJoin('\Entidades\ZgfinContaPagar'		,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codContaPag 		= p.codigo')
 	->leftJoin('\Entidades\ZgfinCategoria'		,'ca',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codCategoria 		= ca.codigo')
@@ -184,7 +184,7 @@ try {
 	->addOrderBy('p.dataVencimento','ASC')
 	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 	
-	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.fantasia as PESSOA_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ca.codigo AS COD_CATEGORIA,ca.descricao AS CATEGORIA_DESCRICAO,cap.codigo AS COD_CATEGORIA_PAI,cap.descricao AS CATEGORIA_PAI_DESCRICAO')
+	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.nome as PESSOA_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ca.codigo AS COD_CATEGORIA,ca.descricao AS CATEGORIA_DESCRICAO,cap.codigo AS COD_CATEGORIA_PAI,cap.descricao AS CATEGORIA_PAI_DESCRICAO')
 	->from('\Entidades\ZgfinContaReceberRateio'	,'cr')
 	->leftJoin('\Entidades\ZgfinContaReceber'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codContaRec 		= p.codigo')
 	->leftJoin('\Entidades\ZgfinCategoria'		,'ca',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codCategoria		= ca.codigo')

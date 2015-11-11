@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr,$log;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -37,6 +42,10 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 $info			= $em->getRepository('Entidades\ZgappMenu')->findOneBy(array('codigo' => $_codMenu_));
 
+#################################################################################
+## Resgata as informações da organização
+#################################################################################
+$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
@@ -77,8 +86,8 @@ try {
 ## Select da Categoria
 #################################################################################
 try {
-	$aCatDeb	= \Zage\Fin\Categoria::listaCombo("D");
-	$aCatCre	= \Zage\Fin\Categoria::listaCombo("C");
+	$aCatDeb	= \Zage\Fin\Categoria::listaCombo("D",$oOrg->getCodTipo()->getCodigo());
+	$aCatCre	= \Zage\Fin\Categoria::listaCombo("C",$oOrg->getCodTipo()->getCodigo());
 	$oCat   = "";
 	if ($aCatDeb) {
 		$aCatTemp	= array();

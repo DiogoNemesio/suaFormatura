@@ -169,7 +169,7 @@ $qb2 	= $em->createQueryBuilder();
 
 try {
 
-	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.fantasia as PESSOA_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO')
+	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.nome as PESSOA_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO')
 	->from('\Entidades\ZgfinContaReceberRateio'	,'cr')
 	->leftJoin('\Entidades\ZgfinContaReceber'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codContaRec 		= p.codigo')
 	->leftJoin('\Entidades\ZgfinPessoa'			,'pe',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codPessoa 			= pe.codigo')
