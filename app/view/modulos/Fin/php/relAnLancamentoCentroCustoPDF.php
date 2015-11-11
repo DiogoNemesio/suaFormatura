@@ -169,7 +169,7 @@ $qb2 	= $em->createQueryBuilder();
 
 try {
 
-	$qb1->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.fantasia as FORNEC_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor*-1 AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ce.codigo AS COD_CENTRO_CUSTO,ce.descricao AS CENTRO_DESCRICAO')
+	$qb1->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.nome as FORNEC_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor*-1 AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ce.codigo AS COD_CENTRO_CUSTO,ce.descricao AS CENTRO_DESCRICAO')
 	->from('\Entidades\ZgfinContaPagarRateio'	,'cr')
 	->leftJoin('\Entidades\ZgfinContaPagar'		,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codContaPag 		= p.codigo')
 	->leftJoin('\Entidades\ZgfinCentroCusto'	,'ce', \Doctrine\ORM\Query\Expr\Join::WITH,  'cr.codCentroCusto 	= ce.codigo')
@@ -182,7 +182,7 @@ try {
 	->addOrderBy('p.dataVencimento','ASC')
 	->setParameter('codOrganizacao', $system->getCodOrganizacao());
 	
-	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.fantasia as FORNEC_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ce.codigo AS COD_CENTRO_CUSTO,ce.descricao AS CENTRO_DESCRICAO')
+	$qb2->select('st.codigo as COD_STATUS, st.descricao AS STATUS_DESCRICAO, p.descricao AS DESCRICAO, pe.codigo AS COD_PESSOA,pe.nome as FORNEC_NOME,p.parcela AS PARCELA,p.numParcelas AS NUM_PARCELAS,cr.valor AS VALOR,p.dataVencimento AS DATA_VENCIMENTO,ce.codigo AS COD_CENTRO_CUSTO,ce.descricao AS CENTRO_DESCRICAO')
 	->from('\Entidades\ZgfinContaReceberRateio'	,'cr')
 	->leftJoin('\Entidades\ZgfinContaReceber'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codContaRec 		= p.codigo')
 	->leftJoin('\Entidades\ZgfinCentroCusto'	,'ce', \Doctrine\ORM\Query\Expr\Join::WITH,  'cr.codCentroCusto 	= ce.codigo')

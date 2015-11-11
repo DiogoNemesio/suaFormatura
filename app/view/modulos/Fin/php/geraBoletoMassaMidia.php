@@ -71,6 +71,17 @@ if (!is_array($codContaSel)) \Zage\App\Erro::halt('Parâmetros incorretos');
 $htmlBol	= '';
 
 #################################################################################
+## Instancia o objeto do contas a receber
+#################################################################################
+$contaRec	= new \Zage\Fin\ContaReceber();
+
+#################################################################################
+## Calcula a data de hoje
+#################################################################################
+$hoje		= date($system->config["data"]["dateFormat"]);
+
+
+#################################################################################
 ## Faz o loop nas parcelas das contas
 #################################################################################
 for ($i = 0; $i < sizeof($codContaSel); $i++) {
@@ -154,7 +165,6 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		$sacadoUF			= null;
 	
 	}
-
 	
 	#################################################################################
 	## Formata as informações de vencimento
@@ -212,6 +222,10 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	if (!$desconto)			$desconto	= 0;
 	if (!$outros)			$outros		= 0;
 	
+	#################################################################################
+	## Faz o controle de salvamento da conta
+	#################################################################################
+	$_salvar				= false;
 	
 	#################################################################################
 	## Verifica se a conta já gerou o Sequencial do nosso número
@@ -220,6 +234,13 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	if (!$sequencial)		{
 		$sequencial 		= \Zage\Fin\ContaReceber::geraNossoNumero($codConta);
 		$oConta->setSequencialNossoNumero($sequencial);
+		$_salvar			= true;
+	}
+	
+	#################################################################################
+	## Verifica se é necessário salvar
+	#################################################################################
+	if ($_salvar)	{
 		$em->persist($oConta);
 		$em->flush();
 	}
@@ -254,6 +275,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$demonstrativo1		= $descConta;
 	$demonstrativo2		= "Parcela: ".$parcela;
 	$numeroDoc			= $oConta->getCodigo();
+	$valorBoleto		= $valor + $outros;
 
 	#################################################################################
 	## Instruções
@@ -272,9 +294,9 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	}
 	
 	$instrucao1			= "Após o dia ".$vencimento." cobrar ".$textoMora." de Mora e ".$textoJuros." de júros ao dia";
-	$instrucao2			= "Não receber após o vencimento.";
-	$instrucao3			= $codContaRec->getInstrucao();
-	$instrucao4			= $instrucao;
+	$instrucao2			= $codContaRec->getInstrucao();
+	$instrucao3			= $instrucao;
+	$instrucao4			= null;
 	
 	
 	#################################################################################
@@ -304,11 +326,11 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$boleto->setSacadoNome($sacadoNome);
 	$boleto->setSacadoUF($sacadoUF);
 	$boleto->setUf($cedenteUF);
-	$boleto->setValor($valor);
+	$boleto->setValor($valorBoleto);
 	$boleto->setJuros($juros);
 	$boleto->setMora($mora);
 	$boleto->setDesconto($desconto);
-	$boleto->setOutrosValores($outros);
+	$boleto->setOutrosValores(0);
 	$boleto->setVencimento($vencimento);
 	$boleto->setInstrucao1($instrucao1);
 	$boleto->setInstrucao2($instrucao2);
