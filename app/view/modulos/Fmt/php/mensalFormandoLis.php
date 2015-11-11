@@ -62,49 +62,22 @@ $oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(
 ## Se não existir, apenas não sugerir os valores a serem gerados
 #################################################################################
 $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
-if ($orcamento)	{
-	$valorOrcado		= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
-	$qtdFormandosBase	= (int) $oOrgFmt->getQtdePrevistaFormandos();
-}else{
-	$valorOrcado		= 0;
-	$qtdFormandosBase	= $totalFormandos;
-}
-
-#################################################################################
-## Resgata os dados de previsão orcamentária
-#################################################################################
-try {
-	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	$contrato	= $em->getRepository('Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-
-	if ($oOrgFmt)	{
-		$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
-		$valorArrecadado		= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
-		$valorGasto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
-		$pctArrecadado			= ($valorOrcado) ? round(($valorArrecadado * 100) / $valorOrcado,2) : 0;
-		$pctGasto				= ($valorOrcado) ? round(($valorGasto * 100) / $valorOrcado,2) : 0;
-		$diffPct				= round($pctArrecadado - $pctGasto,2);
-	
-	}else{
-		$valorOrcado			= 0;
-		$valorArrecadado		= 0;
-		$valorGasto				= 0;
-		$pctArrecadado			= 0;
-		$pctGasto				= 0;
-		$diffPct				= 0;
-		
-	}
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
-
-
+if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
+$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
+$valorOrcadoFormando	= ($qtdFormandosBase) ? \Zage\App\Util::to_float(round(($valorOrcado / $qtdFormandosBase),2)) : 0;
+$valorArrecadado		= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
+$valorGasto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
+$pctArrecadado			= ($valorOrcado) ? round(($valorArrecadado * 100) / $valorOrcado,2) : 0;
+$pctGasto				= ($valorOrcado) ? round(($valorGasto * 100) / $valorOrcado,2) : 0;
+$diffPct				= round($pctArrecadado - $pctGasto,2);
 
 #################################################################################
 ## Resgata valores provisionados para cada formando
 #################################################################################
 $oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
 $totalProvisionado		= 0;
+$aValorProv				= array();
 for ($i = 0; $i < sizeof($oValorProv); $i++) {
 	$aValorProv[$oValorProv[$i][0]->getCgc()]		= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
 	$totalProvisionado								+= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
@@ -114,7 +87,6 @@ for ($i = 0; $i < sizeof($oValorProv); $i++) {
 ## Calcular os valores totais e saldos
 #################################################################################
 $saldoAProvisionar			= ($valorOrcado - $totalProvisionado);
-$totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrcado / $qtdFormandosBase)) : 0;
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
@@ -122,8 +94,8 @@ $totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrca
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"MensalidadeFormando");
 $grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					12	,$grid::CENTER	,'cpf','cpf');
-$grid->adicionaMoeda($tr->trans('VALOR GERADO'),		12	,$grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('SALDO GERADO'),		10	,$grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		12	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('R$ A PROVISIONAR'),	10	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('STATUS'),				12	,$grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-sign-out red'			,$tr->trans('Desistir'));
 $grid->adicionaIcone(null,'fa fa-usd green'				,$tr->trans('Gerar conta'));
@@ -140,7 +112,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Link no nome
 	#################################################################################
-	$linkNome = 'javascript:zgLoadUrl('.ROOT_URL.'Fin/mensalFormandoContaLis.php?id='.$id.');';
+	$linkNome = 'javascript:zgLoadUrl(\''.ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id.'\');';
 	$grid->setValorCelula($i,0,'<a href="'.$linkNome.'">'.$formandos[$i]->getNome().'</a>');
 	
 	#################################################################################
@@ -151,15 +123,15 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Déficit de geração
 	#################################################################################
-	if ($totalPorFormando > 0){
+	if ($valorOrcadoFormando > 0){
 		//Tem déficit
-		if ($totalPorFormando > $aValorProv[$formandos[$i]->getCpf()]){
-			$saldo	= \Zage\App\Util::to_money($totalPorFormando - $aValorProv[$formandos[$i]->getCpf()]);
+		if ($valorOrcadoFormando > $aValorProv[$formandos[$i]->getCpf()]){
+			$saldo	= \Zage\App\Util::to_money($valorOrcadoFormando - $aValorProv[$formandos[$i]->getCpf()]);
 			$grid->setValorCelula($i, 3, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".$saldo."</span>");
 		}
 		// Não déficit
-		elseif ($totalPorFormando < $aValorProv[$formandos[$i]->getCpf()]){
-			$saldo	= \Zage\App\Util::to_money($aValorProv[$formandos[$i]->getCpf()] - $totalPorFormando);
+		elseif ($valorOrcadoFormando < $aValorProv[$formandos[$i]->getCpf()]){
+			$saldo	= \Zage\App\Util::to_money($aValorProv[$formandos[$i]->getCpf()] - $valorOrcadoFormando);
 			$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-long-arrow-up green'></i> ".$saldo."</span>");
 		}
 	}
@@ -167,7 +139,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Definir o valores do botão
 	#################################################################################
-	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/mensalidadeFormandoConta.php?id='.$id);
 	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$id);
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id);

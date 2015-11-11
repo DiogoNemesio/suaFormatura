@@ -24,7 +24,7 @@
 			</ul>
 		</div>
 		<hr />
-		<form id="zgFormGeraMensalidadeID" class="form-horizontal">
+		<form id="zgFormFomandoGerarID" class="form-horizontal">
 			<input type="hidden" name="id" value="%ID%">
 			<input type="hidden" name="codTipoValor" id="codTipoValorID">
 			<input type="hidden" name="numForSel" id="numForSelID">
@@ -55,12 +55,12 @@
 							    <label for="identID" class="col-sm-5 control-label">Número de parcelas</label>
 					    		<div class="input-group col-sm-6 pull-left">
 				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de Mensalidades a serem geradas"></i></span>
-									<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" placeholder="Número de parcelas" onchange="calculaMensalidade();" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+									<input class="form-control" id="numMesesID" type="text" name="numMeses" maxlength="3" placeholder="Número de parcelas" onchange="calculaMensalidadeFormandoGerar();" max="%NUM_MESES_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 							    </div>
 							    <div class="col-sm-1 pull-left" id="divHelpNumMesesID">
 							    </div>
 							</div>
-							<div class="form-group col-sm-12">
+							<div class="form-group col-sm-12 hidden">
 								<label id='lblTipoValorID' class="col-sm-8 control-label">
 									<strong class="blue">
 										Mensalidade: 
@@ -160,10 +160,10 @@
 				</div>
 				<div class="step-pane" data-step="3">
 					<div class="row">
-						<table id="GeraMensalidadeTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+						<table id="FomandoGerarTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
 							<thead>
 								<tr class="warning">
-									<th class="col-sm-1 center" id="thInfoHelpTableParcelasGeraMensalidadeID"></th>
+									<th class="col-sm-1 center" id="thInfoHelpTableParcelasFomandoGerarID"></th>
 									<th class="col-sm-2 center">Parcela</th>
 									<th class="col-sm-2 center">Valor</th>
 									<th class="col-sm-2 center">Data</th>
@@ -174,15 +174,15 @@
 							<tfoot>
 								<tr class="warning">
 									<th class="col-sm-1 center"></th>
-									<th class="col-sm-2 center" id="thInfoParcelaGeraMensalidadeID"></th>
-									<th class="col-sm-2 center" id="thInfoValorTotalGeraMensalidadeID"></th>
+									<th class="col-sm-2 center" id="thInfoParcelaFomandoGerarID"></th>
+									<th class="col-sm-2 center" id="thInfoValorTotalFomandoGerarID"></th>
 									<th class="col-sm-2 center"></th>
 								</tr>
 							</tfoot>
 						</table>
 					</div>
 					<div class="row center">
-						<ul class="pagination" id="pagerValoresGeraMensalidadeID">
+						<ul class="pagination" id="pagerValoresFomandoGerarID">
 						</ul>
 					</div>
 				</div>
@@ -239,12 +239,12 @@ $('[data-rel="select2"]').select2({allowClear: true});
 $('.datepicker').datepicker({"autoclose": true});
 
 /*************** CALCULAR MENSALIDADE *************/
-function calculaMensalidade(){
+function calculaMensalidadeFormandoGerar(){
 	var vValor			= $('#valorID').val();
 	var vParcela		= $('#numMesesID').val();
 	
-	nValor = zgConverteFloat(vValor);
-	vParcela = nValor / vParcela;
+	nValor 		= zgConverteFloat(vValor);
+	vParcela 	= nValor / vParcela;
 	
 	alert(vParcela);
 }
@@ -257,28 +257,28 @@ $('#fuelux-wizard-container')
 })
 .on('actionclicked.fu.wizard' , function(e, info){
 	if(info.step == 1) {
-		var vOk 	= validaVencimentoGeraMensalidade();
+		var vOk 	= validaVencimentoFormandoGerar();
 		if(!vOk) 	{
 			e.preventDefault();
 		}
 	}else if (info.step == 2) {
-		var vOk 	= validaValoresGeraMensalidade();
+		var vOk 	= validaValoresFomandoGerar();
 		if(!vOk) 	{
 			e.preventDefault();
 		}else{
-			criaTabelaValoresGeraMensalidade();
+			criaTabelaValoresFomandoGerar();
 		}
 	}else if (info.step == 3) {
-		var vOk 	= validaValoresGeraMensalidade();
+		var vOk 	= validaValoresFomandoGerar();
 		if(!vOk) 	{
 			e.preventDefault();
 		}else{
-			criaTabelaValoresGeraMensalidade();
+			criaTabelaValoresFomandoGerar();
 		}
 	}
 })
 .on('finished.fu.wizard', function(e) {
-	var vOk 	= atualizaEValidaParcelasGeraMensalidade();
+	var vOk 	= atualizaEValidaParcelasFomandoGerar();
 	if(!vOk) 	{
 		
 		$.gritter.add({
@@ -290,7 +290,7 @@ $('#fuelux-wizard-container')
 		e.preventDefault();
 		return false;
 	}else{
-		$('#zgFormGeraMensalidadeID').submit();
+		$('#zgFormFomandoGerarID').submit();
 	}
 	
 }).on('stepclick.fu.wizard', function(e){
@@ -298,7 +298,7 @@ $('#fuelux-wizard-container')
 });
 
 
-function validaVencimentoGeraMensalidade() {
+function validaVencimentoFormandoGerar() {
 	var vDataVenc		= $('#dataVencID').val();
 	var vNumMeses		= parseInt($('#numMesesID').val());
 	var vNumMesesMax	= parseInt($('#numMesesMaxID').val());

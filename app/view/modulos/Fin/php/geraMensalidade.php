@@ -61,7 +61,7 @@ $totalFormandos			= \Zage\Fmt\Formatura::getNumFormandos($system->getCodOrganiza
 ## Variáveis usadas no cálculo das mensalidades
 #################################################################################
 $dataConclusao			= $oOrgFmt->getDataConclusao();
-if (!$dataConclusao)	throw new Exception("Data de Conclusão não informada");
+if (!$dataConclusao)	\Zage\App\Erro::halt("Data de Conclusão não informada");
 $hoje					= new DateTime('now');
 $interval				= $dataConclusao->diff($hoje);
 $numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
@@ -91,21 +91,12 @@ $totalTaxa			= ($taxaAdmin + $taxaBoleto);
 ## Para calcular o valor pendente a ser gerado
 ## Se não existir, apenas não sugerir os valores a serem gerados
 #################################################################################
-$orcamento					= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
-if(!$orcamento)				throw new Exception("Nenhum Orçamento aceito !!");
-if ($orcamento)	{
-	$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
-	$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-	$taxaTotalSistema		= $taxaUsoTotalFormando * $qtdFormandosBase;
-//	$totalMensalidade		= $valorOrcado - $taxaTotalSistema;
-	$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
-}else{
-	$valorOrcado			= 0;
-	$qtdFormandosBase		= $totalFormandos;
-	$taxaTotalSistema		= $taxaUsoTotalFormando * $totalFormandos;
-//	$totalMensalidade		= 0;
-	$mensalidadeFormando	= 0;
-}
+$orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
+if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
+$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
+$taxaTotalSistema		= $taxaUsoTotalFormando * $qtdFormandosBase;
+$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
 
 #################################################################################
 ## Calcular o valor já provisionado por formando

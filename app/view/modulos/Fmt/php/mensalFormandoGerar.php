@@ -58,7 +58,7 @@ $oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(
 ## Variáveis usadas no cálculo das mensalidades
 #################################################################################
 $dataConclusao			= $oOrgFmt->getDataConclusao();
-if (!$dataConclusao)	throw new Exception("Data de Conclusão não informada");
+if (!$dataConclusao)	\Zage\App\Erro::halt("Data de Conclusão não informada");
 $hoje					= new DateTime('now');
 $interval				= $dataConclusao->diff($hoje);
 $numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
@@ -69,17 +69,11 @@ $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('
 ## Taxas / Configurações
 #################################################################################
 $taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao());
-//$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
-//$taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
-//$taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
 
 #################################################################################
 ## Formatar as taxas
 #################################################################################
 if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
-//if ($taxaBoleto	< 0)		$taxaBoleto		= 0;
-//if ($taxaUso		< 0)		$taxaUso		= 0;
-//$totalTaxa		= ($taxaAdmin + $taxaBoleto);
 
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
@@ -87,30 +81,25 @@ if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
 ## Se não existir, apenas não sugerir os valores a serem gerados
 #################################################################################
 $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
-if ($orcamento)	{
-	$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
-	$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-	$valorOrcadoFormando	= round($valorOrcado/$qtdFormandosBase,2);
-}else{
-	$valorOrcado		= 0;
-	$qtdFormandosBase	= $totalFormandos;
-}
+if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
+$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
+$valorOrcadoFormando	= round($valorOrcado/$qtdFormandosBase,2);
 
 #################################################################################
 ## Calcular o valor já provisionado por formando
 #################################################################################
 $valorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoUnicoFormando($system->getCodOrganizacao(), $formando->getCpf());
+$totalProv				= \Zage\App\Util::to_float($valorProv["mensalidade"]) + \Zage\App\Util::to_float($valorProv["sistema"]);
 
 #################################################################################
 ## Calcular os valores totais e saldos
 #################################################################################
-if ($valorProv < $valorOrcadoFormando){
-	$saldoAProvisionar = $valorOrcadoFormando - $valorProv;
+if ($totalProv < $valorOrcadoFormando){
+	$saldoAProvisionar = $valorOrcadoFormando - $totalProv;
 }else{
-	$saldoAProvisionar = null;
+	$saldoAProvisionar = 0;
 }
-
-//$totalPorFormando			= ($qtdFormandosBase) ? \Zage\App\Util::to_float(($valorOrcado / $qtdFormandosBase)) : 0;
 
 #################################################################################
 ## Select da Forma de Pagamento
@@ -143,14 +132,14 @@ try {
 	if ($aCntCer) {
 		$oConta		= "<optgroup label='Contas do Cerimonial'>";
 		for ($i = 0; $i < sizeof($aCntCer); $i++) {
-			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($oFmtAdm->getCodigo(),$aCntCer[$i]->getCodigo()) : 0;
+			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aCntCer[$i]->getCodigo()) : 0;
 			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
 		}
 		$oConta		.= '</optgroup>';
 		if ($aConta) {
 			$oConta		.= "<optgroup label='Contas da Formatura'>";
 			for ($i = 0; $i < sizeof($aConta); $i++) {
-				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao(),$aConta[$i]->getCodigo()) : 0;
+				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
 				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
 			}
 			$oConta		.= '</optgroup>';
