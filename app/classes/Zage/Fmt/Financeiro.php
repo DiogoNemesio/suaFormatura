@@ -240,7 +240,7 @@ class Financeiro {
 	 * Calcular o valor do boleto para aquela organização
 	 * @param int $codOrganizacao
 	 */
-	public static function getValorBoleto($codOrganizacao,$codConta = null) {
+	public static function getValorBoleto($codConta) {
 
 		#################################################################################
 		## Variáveis globais

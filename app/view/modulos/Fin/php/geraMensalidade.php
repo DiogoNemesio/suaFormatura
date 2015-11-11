@@ -73,7 +73,6 @@ $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('
 #################################################################################
 $indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
 $taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao());
-//$taxaBoleto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao()));
 $taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
 $taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
 $mostraIndTaxaSistema	= ($indRepTaxaSistema) ? null : "hidden";
@@ -194,14 +193,14 @@ try {
 	if ($aCntCer) {
 		$oConta		= "<optgroup label='Contas do Cerimonial'>";
 		for ($i = 0; $i < sizeof($aCntCer); $i++) {
-			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($oFmtAdm->getCodigo(),$aCntCer[$i]->getCodigo()) : 0;
+			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aCntCer[$i]->getCodigo()) : 0;
 			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
 		}
 		$oConta		.= '</optgroup>';
 		if ($aConta) {
 			$oConta		.= "<optgroup label='Contas da Formatura'>";
 			for ($i = 0; $i < sizeof($aConta); $i++) {
-				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($system->getCodOrganizacao(),$aConta[$i]->getCodigo()) : 0;
+				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
 				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
 			}
 			$oConta		.= '</optgroup>';
