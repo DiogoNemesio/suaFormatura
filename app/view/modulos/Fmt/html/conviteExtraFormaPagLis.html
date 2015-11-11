@@ -1,0 +1,236 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Configurar Pagamentos
+	</h1>
+	</div><!-- /.page-header -->
+	<br />
+		
+	<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" id="codConvVendaID" name="codConvVenda" value="%COD_CONV_VENDA%">
+		<input type="hidden" id="quantTotalID" name="quantTotal">
+		<input type="hidden" id="valorCodTipoVendaID" name="valorCodTipoVenda">
+
+		<div class="row">
+		<div id="divMsg"></div>
+			<div class="col-sm-12">
+				<div class="col-sm-6 col-sm-offset-4">
+					<div class="form-group col-sm-12" id="divCodFormandoID">
+						<div class="input-group col-sm-6 pull-left">
+							<select id="codTipoVendaID" name="codTipoVenda" class="select2" data-placeholder="Selecione a forma da venda" onchange="selecionaTipo();" >
+								%TIPO_VENDA%
+							</select>
+						</div>
+						<div class="col-sm-1 pull-left" id="divHelpCodFormandoID"></div>
+					</div>		
+			   	</div>
+			</div>
+
+			<div class="col-sm-12" id="divConfID"></div>
+			
+				
+			</div>
+	    </div>
+	    <br>
+
+		<div class="clearfix form-actions">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<button type="button" class="btn btn-primary" id="btnSubmitID">
+				<i class="fa fa-check bigger-110"></i> Salvar
+			</button>
+		</div>
+	</form>
+</div>
+<script>
+
+//MASCARAS
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+//MENSAGENS
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+
+// SELECT2
+$('.select2').css('width','100%').select2({allowClear:true});
+
+
+function mostrarTaxaBoleto(){
+	var vConta			= $("#codContaRecID option:selected");
+	var vValorBoleto	= zgConverteFloat(vConta.attr("zg-val-boleto"));
+	
+	$("#taxaBoletoID").val(vValorBoleto);
+	
+}
+
+function mostrarConf(){
+	var vFormaPag			= $("#codFormaPagID option:selected");
+	
+	alert (vFormaPag.val());
+	
+}
+
+function selecionaTipo(){
+	var codTipoVenda  = $('#codTipoVendaID').val();
+	if(codTipoVenda){
+		$('#divConfID').html('<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+		$('#divConfID').load("%ROOT_URL%/Fmt/divConviteFormaPag.php?id=%ID%&codVendaTipo=" + codTipoVenda);
+		
+		//Salvar o codTipoVenda
+		$('#valorCodTipoVendaID').val(codTipoVenda);
+	}else{
+		$('#divConfID').html('');
+	}
+}
+
+
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	var vOK 	= zgCheckConvite();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{
+		var options = {
+			symbol : "R$ ",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+		
+		var $valorTotal	= $('#valorTotalID').val();
+		var $quantTotal	= $('#quantTotalID').val();
+
+		$valorTotal = "<span class='text-success'><b>"+$valorTotal+"</b></span>";
+	
+		bootbox.dialog({
+			title: "Tem certeza que deseja confirmar a venda?",
+			message: "Após está confirmação não será mais possível cancelar ou alterar a operação.<br><br><b>QUANTIDADE: </b>"+$quantTotal+" evento(s)<br><b>TOTAL: </b> "+$valorTotal,
+			
+			buttons: {
+				"Confirmar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+					"className" : "btn-sm btn-primary",
+					"callback": function() {
+						$('#zgFormID').submit();
+					}
+				},
+				"Cancelar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-down'></i>Cancelar",
+					"className" : "btn-sm btn-danger",
+					"callback": function() {
+						zgLoadUrl('');
+					}
+	
+				},
+				
+			}
+		});
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	//$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	//$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgLoadUrl('%ROOT_URL%Fmt/conviteExtraVendaConf.php?id='+zgEncodeUrl('&codVenda='+zgGetCodRetorno(data)));
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+function zgCheckConvite(){
+	var vFormando 		= $('#codFormandoID').val();
+	var vFormaPag 		= $('#codFormaPagID').val();
+	var vConta		 	= $('#codContaID').val();
+	vOK					= true;
+	
+	if (!$('#taxaBoletoID').val()){
+		alert ('taxa do boleto é obrigatŕio');
+	}
+	
+	if (!vFormando) {
+		$('#divCodFormandoID').addClass('has-error');
+		$('#divHelpCodFormandoID').html(zgCriaSpanErro('Formando deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divCodFormandoID').removeClass('has-error');
+		$('#divHelpCodFormandoID').html('&nbsp;');		
+	}
+	
+	if (!vFormaPag) {
+		$('#divCodFormaPagID').addClass('has-error');
+		$('#divHelpCodFormaPagID').html(zgCriaSpanErro('Forma de Pagamento deve ser preenchida !!'));
+		vOK		= false;
+	}else{
+		$('#divCodFormaPagID').removeClass('has-error');
+		$('#divHelpCodFormaPagID').html('&nbsp;');		
+	}
+	
+	if (!vConta) {
+		$('#divCodContaID').addClass('has-error');
+		$('#divHelpCodContaID').html(zgCriaSpanErro('Conta recebimento deve ser preenchida !!'));
+		vOK		= false;
+	}else{
+		$('#divCodContaID').removeClass('has-error');
+		$('#divHelpCodContaID').html('&nbsp;');		
+	}
+	
+	if (zgValidaQuantDisp() == false){
+		vOK = false;
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+</script> 
