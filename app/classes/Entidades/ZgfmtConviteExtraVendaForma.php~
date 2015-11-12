@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtConviteExtraVendaForma
  *
- * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA_FORMA", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_FORMA_1_idx", columns={"COD_VENDA_CONF"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_FORMA_2_idx", columns={"COD_FORMA_PAGAMENTO"})})
+ * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA_FORMA", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_CONVITE_EXTRA_VENDA_FORMA_UK01", columns={"COD_ORGANIZACAO", "COD_VENDA_TIPO", "COD_FORMA_PAGAMENTO"})}, indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_FORMA_2_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_FORMA_3_idx", columns={"COD_VENDA_TIPO"}), @ORM\Index(name="IDX_4A4618A29F83D42B", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfmtConviteExtraVendaForma
@@ -22,14 +22,14 @@ class ZgfmtConviteExtraVendaForma
     private $codigo;
 
     /**
-     * @var \Entidades\ZgfmtConviteExtraVendaConf
+     * @var \Entidades\ZgadmOrganizacao
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtConviteExtraVendaConf")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_VENDA_CONF", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
      * })
      */
-    private $codVendaConf;
+    private $codOrganizacao;
 
     /**
      * @var \Entidades\ZgfinFormaPagamento
@@ -40,6 +40,16 @@ class ZgfmtConviteExtraVendaForma
      * })
      */
     private $codFormaPagamento;
+
+    /**
+     * @var \Entidades\ZgfmtConviteExtraVendaTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtConviteExtraVendaTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_VENDA_TIPO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codVendaTipo;
 
 
     /**
@@ -53,26 +63,26 @@ class ZgfmtConviteExtraVendaForma
     }
 
     /**
-     * Set codVendaConf
+     * Set codOrganizacao
      *
-     * @param \Entidades\ZgfmtConviteExtraVendaConf $codVendaConf
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
      * @return ZgfmtConviteExtraVendaForma
      */
-    public function setCodVendaConf(\Entidades\ZgfmtConviteExtraVendaConf $codVendaConf = null)
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
     {
-        $this->codVendaConf = $codVendaConf;
+        $this->codOrganizacao = $codOrganizacao;
 
         return $this;
     }
 
     /**
-     * Get codVendaConf
+     * Get codOrganizacao
      *
-     * @return \Entidades\ZgfmtConviteExtraVendaConf 
+     * @return \Entidades\ZgadmOrganizacao 
      */
-    public function getCodVendaConf()
+    public function getCodOrganizacao()
     {
-        return $this->codVendaConf;
+        return $this->codOrganizacao;
     }
 
     /**
@@ -96,5 +106,28 @@ class ZgfmtConviteExtraVendaForma
     public function getCodFormaPagamento()
     {
         return $this->codFormaPagamento;
+    }
+
+    /**
+     * Set codVendaTipo
+     *
+     * @param \Entidades\ZgfmtConviteExtraVendaTipo $codVendaTipo
+     * @return ZgfmtConviteExtraVendaForma
+     */
+    public function setCodVendaTipo(\Entidades\ZgfmtConviteExtraVendaTipo $codVendaTipo = null)
+    {
+        $this->codVendaTipo = $codVendaTipo;
+
+        return $this;
+    }
+
+    /**
+     * Get codVendaTipo
+     *
+     * @return \Entidades\ZgfmtConviteExtraVendaTipo 
+     */
+    public function getCodVendaTipo()
+    {
+        return $this->codVendaTipo;
     }
 }

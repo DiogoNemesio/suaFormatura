@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtConviteExtraVendaConf
  *
- * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA_CONF", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_CONF_1_idx", columns={"COD_FORMATURA"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_CONF_2_idx", columns={"COD_VENDA_TIPO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_CONF_3_idx", columns={"COD_CONTA_BOLETO"})})
+ * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA_CONF", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_CONVITE_EXTRA_VENDA_CONF_UK01", columns={"COD_FORMATURA", "COD_VENDA_TIPO"})}, indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_CONF_1_idx", columns={"COD_FORMATURA"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_CONF_2_idx", columns={"COD_VENDA_TIPO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_CONF_3_idx", columns={"COD_CONTA_BOLETO"})})
  * @ORM\Entity
  */
 class ZgfmtConviteExtraVendaConf
@@ -36,16 +36,6 @@ class ZgfmtConviteExtraVendaConf
     private $indAdicionarTaxaBoleto;
 
     /**
-     * @var \Entidades\ZgfinConta
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinConta")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CONTA_BOLETO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codContaBoleto;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -64,6 +54,16 @@ class ZgfmtConviteExtraVendaConf
      * })
      */
     private $codVendaTipo;
+
+    /**
+     * @var \Entidades\ZgfinConta
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinConta")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_CONTA_BOLETO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codContaBoleto;
 
 
     /**
@@ -123,29 +123,6 @@ class ZgfmtConviteExtraVendaConf
     }
 
     /**
-     * Set codContaBoleto
-     *
-     * @param \Entidades\ZgfinConta $codContaBoleto
-     * @return ZgfmtConviteExtraVendaConf
-     */
-    public function setCodContaBoleto(\Entidades\ZgfinConta $codContaBoleto = null)
-    {
-        $this->codContaBoleto = $codContaBoleto;
-
-        return $this;
-    }
-
-    /**
-     * Get codContaBoleto
-     *
-     * @return \Entidades\ZgfinConta 
-     */
-    public function getCodContaBoleto()
-    {
-        return $this->codContaBoleto;
-    }
-
-    /**
      * Set codFormatura
      *
      * @param \Entidades\ZgadmOrganizacao $codFormatura
@@ -189,5 +166,28 @@ class ZgfmtConviteExtraVendaConf
     public function getCodVendaTipo()
     {
         return $this->codVendaTipo;
+    }
+
+    /**
+     * Set codContaBoleto
+     *
+     * @param \Entidades\ZgfinConta $codContaBoleto
+     * @return ZgfmtConviteExtraVendaConf
+     */
+    public function setCodContaBoleto(\Entidades\ZgfinConta $codContaBoleto = null)
+    {
+        $this->codContaBoleto = $codContaBoleto;
+
+        return $this;
+    }
+
+    /**
+     * Get codContaBoleto
+     *
+     * @return \Entidades\ZgfinConta 
+     */
+    public function getCodContaBoleto()
+    {
+        return $this->codContaBoleto;
     }
 }
