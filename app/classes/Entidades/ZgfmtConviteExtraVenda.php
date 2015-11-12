@@ -50,6 +50,16 @@ class ZgfmtConviteExtraVenda
     private $dataCadastro;
 
     /**
+     * @var \Entidades\ZgfinConta
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinConta")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_CONTA_RECEBIMENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codContaRecebimento;
+
+    /**
      * @var \Entidades\ZgfinPessoa
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
@@ -68,16 +78,6 @@ class ZgfmtConviteExtraVenda
      * })
      */
     private $codFormaPagamento;
-
-    /**
-     * @var \Entidades\ZgfinConta
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinConta")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CONTA_RECEBIMENTO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codContaRecebimento;
 
 
     /**
@@ -183,6 +183,29 @@ class ZgfmtConviteExtraVenda
     }
 
     /**
+     * Set codContaRecebimento
+     *
+     * @param \Entidades\ZgfinConta $codContaRecebimento
+     * @return ZgfmtConviteExtraVenda
+     */
+    public function setCodContaRecebimento(\Entidades\ZgfinConta $codContaRecebimento = null)
+    {
+        $this->codContaRecebimento = $codContaRecebimento;
+
+        return $this;
+    }
+
+    /**
+     * Get codContaRecebimento
+     *
+     * @return \Entidades\ZgfinConta 
+     */
+    public function getCodContaRecebimento()
+    {
+        return $this->codContaRecebimento;
+    }
+
+    /**
      * Set codFormando
      *
      * @param \Entidades\ZgfinPessoa $codFormando
@@ -226,28 +249,5 @@ class ZgfmtConviteExtraVenda
     public function getCodFormaPagamento()
     {
         return $this->codFormaPagamento;
-    }
-
-    /**
-     * Set codContaRecebimento
-     *
-     * @param \Entidades\ZgfinConta $codContaRecebimento
-     * @return ZgfmtConviteExtraVenda
-     */
-    public function setCodContaRecebimento(\Entidades\ZgfinConta $codContaRecebimento = null)
-    {
-        $this->codContaRecebimento = $codContaRecebimento;
-
-        return $this;
-    }
-
-    /**
-     * Get codContaRecebimento
-     *
-     * @return \Entidades\ZgfinConta 
-     */
-    public function getCodContaRecebimento()
-    {
-        return $this->codContaRecebimento;
     }
 }
