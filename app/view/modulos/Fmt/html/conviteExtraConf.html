@@ -10,7 +10,6 @@
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codConviteConfID" name="codConviteConf" value="%COD_CONVITE_CONF%">
 				<input type="hidden" id="codTipoEventoID" name="codTipoEvento" value="%COD_TIPO_EVENTO%">
-				<input type="hidden" id="custoBoletoPadraoID" name="custoBoletoPadrao" value="%CUSTO_BOLETO_PADRAO%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
 					<h5 class="header blue bolder smaller">Informações gerais</h5>
@@ -55,7 +54,7 @@
 						    	<label class="col-sm-3 control-label" for="dataInicioInternetID">Data Início</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de início do período de vendas na internet."></i></span>
-					    			<input class="form-control datepicker" id="dataInicioInternetID" type="text" name="dataInicioInternet" placeholder="Data do início" maxlength="10" value="%DATA_INI_NET%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+					    			<input class="form-control datepicker" id="dataInicioInternetID" type="text" %AUTORIZADO_NET% name="dataInicioInternet" placeholder="Data do início" maxlength="10" value="%DATA_INI_NET%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpDataIniNetID"></div>
 						    </div>															
@@ -63,28 +62,11 @@
 						    	<label class="col-sm-3 control-label" for="dataFimInternetID">Data Fim</label>
 									<div class="input-group col-sm-8 pull-left">
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de encerramento do período de vendas na internet."></i></span>
-					    			<input class="form-control datepicker" id="dataFimInternetID" type="text" name="dataFimInternet" placeholder="Data do encerramento" maxlength="10" value="%DATA_FIM_NET%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+					    			<input class="form-control datepicker" id="dataFimInternetID" type="text" %AUTORIZADO_NET% name="dataFimInternet" placeholder="Data do encerramento" maxlength="10" value="%DATA_FIM_NET%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 						    	</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpDataFimNetID"></div>
 						    </div>
-						    <div class="form-group col-sm-12" id="divContaRecID">
-								<label class="col-sm-3 control-label">Conta Corrente</label>
-				    			<div class="input-group col-sm-8 pull-left">
-				    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta bancária para receber os pagamentos das vendas pela internet. É necessário que a conta esteja configurada para emitir boleto."></i></span>
-									<select class="select2" style="width:100%;" id="codContaRecID" placeholder="Selecione a conta" name="codContaRec" data-rel="select2" onchange="buscaCustoBoleto();">
-									%CONTAS%
-									</select>
-							    </div>
-								<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
-					    	</div>
-					    	<div class="form-group col-sm-12" id="divCustoBoletoID">
-						    	<label class="col-sm-3 control-label" for="custoBoletoID">Custo Boleto</label>
-									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="O valor do custo do boleto será adicionado a uma venda como taxa de conveniência."></i></span>
-					    			<input class="form-control" id="custoBoletoID" type="text" name="custoBoleto" placeholder="Custo do boleto" maxlength="16" value="%CUSTO_BOLETO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
-						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpCustoBoletoID"></div>
-						    </div>							
+						    %AUTORIZADO_MSG%						
 						</div>
 						<div class="col-sm-6">
 							<h5 class="header blue bolder smaller" align="center">Compra presencial</h5>
@@ -209,9 +191,6 @@ function validaConviteExtraConf() {
 	var vValor			= $('#valorID').val();
 	var vDataIniNet		= $('#dataInicioInternetID').val();
 	var vDataFimNet		= $('#dataFimInternetID').val();
-	var vCC				= $('#codContaRecID').val();
-	var vCustoBoleto	= $('#custoBoletoID').val();
-	var vCustoBoletoP	= $('#custoBoletoPadraoID').val();
 	var vDataIniPre		= $('#dataInicioPresencialID').val();
 	var vDataFimPre		= $('#dataFimPresencialID').val();
 	var vCodConviteConfID	= $('#codConviteConfID').val();
@@ -240,7 +219,7 @@ function validaConviteExtraConf() {
 	
 	//DATA INÍCIO
 	if (!vDataIniNet){
-		if (vDataFimNet || vCC){
+		if (vDataFimNet){
 			$('#divDataInicioInternetID').addClass('has-error');
 			$('#divHelpDataIniNetID').html(zgCriaSpanErro('Para iniciar a venda na internet é necessário preencher uma data de início.'));
 			vOK = false;
@@ -284,36 +263,6 @@ function validaConviteExtraConf() {
 	}else{
 		$('#divDataFimInternetID').removeClass('has-error');
 		$('#divHelpDataFimNetID').html('&nbsp;');
-	}
-	
-	//CONTA BANCÁRIA
-	if ((!vCC) && (vDataIniNet || vCustoBoleto)){
-		$('#divContaRecID').addClass('has-error');
-		$('#divHelpContaRecID').html(zgCriaSpanErro('Selecione a conta bancária.'));
-		vOK = false;
-	}else{
-		$('#divContaRecID').removeClass('has-error');
-		$('#divHelpContaRecID').html('&nbsp;');
-	}
-	
-	//CUSTO
-	if (vCustoBoleto){
-		nCustoBoleto		= parseFloat($('#custoBoletoID').val().replace(".", "").replace(",","."));
-		if (vCustoBoleto > vCustoBoletoP){
-			$('#divCustoBoletoID').addClass('has-error');
-			$('#divHelpCustoBoletoID').html(zgCriaSpanErro('O custo do boleto não deve ser maior que R$ '+vCustoBoletoP));
-			vOK = false;
-		}else if (nCustoBoleto < 0){
-			$('#divCustoBoletoID').addClass('has-error');
-			$('#divHelpCustoBoletoID').html(zgCriaSpanErro('O custo do boleto não deve ser menor que 0.'));
-			vOK = false;
-		}else{
-			$('#divCustoBoletoID').removeClass('has-error');
-			$('#divHelpCustoBoletoID').html('&nbsp;');
-		}
-	}else{
-		$('#divCustoBoletoID').removeClass('has-error');
-		$('#divHelpCustoBoletoID').html('&nbsp;');
 	}
 	
 	//DATA INICIO PRESENCIAL
@@ -364,38 +313,6 @@ function validaConviteExtraConf() {
 	}else{
 		return vOK;
 	}
-}
-
-function buscaCustoBoleto(){
-	var vConta 			= $('#codContaRecID').val();
-	var vContaBoleto	= JSON.parse('%ARRAY_CONTA%');
-	var vCustoBoleto	= vContaBoleto[vConta];
-	var vCodConf		= $('#codConviteConfID').val();	
-	
-	if (vConta){
-		// CALCULOS
-		var options = {
-			symbol : "",
-			decimal : ",",
-			thousand: ".",
-			precision : 2,
-			format: "%s%v"
-		};
-		
-		$('#custoBoletoID').removeAttr("readonly");
-		$('#divCustoBoletoID').removeClass('has-error');
-		$('#divHelpCustoBoletoID').html('&nbsp;');
-		
-		var vValor	= accounting.formatMoney(vCustoBoleto, options);
-		$('#custoBoletoPadraoID').val(vValor);
-		$('#custoBoletoID').val(vValor);
-		
-		
-	}else{		
-		$('#custoBoletoID').val('');
-		$('#custoBoletoID').attr("readonly", true);
-	}
-	
 }
 
 </script>

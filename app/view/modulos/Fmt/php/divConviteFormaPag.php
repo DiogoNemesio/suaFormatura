@@ -38,13 +38,43 @@ $system->checaPermissao($_codMenu_);
 ## Resgata as variáveis postadas
 #################################################################################
 if (isset($_GET['codVendaTipo'])) 		$codVendaTipo		= \Zage\App\Util::antiInjection($_GET['codVendaTipo']);
+$oVendaTipo	= $em->getRepository('Entidades\ZgfmtConviteExtraVendaTipo')->findOneBy(array('codigo' => $codVendaTipo));
+#################################################################################
+## Verificar se já existe configuração de venda
+#################################################################################
+$oVendaConf	= $em->getRepository('Entidades\ZgfmtConviteExtraVendaConf')->findOneBy(array('codFormatura' => $system->getCodOrganizacao() , 'codVendaTipo' => $codVendaTipo));
+
+if ($oVendaConf){
+	$taxaAdm 			= ($oVendaConf->getTaxaAdministracao() != 0) ? \Zage\App\Util::formataDinheiro($oVendaConf->getTaxaAdministracao()) : null;
+	$indAddTaxaBoleto	= ($oVendaConf->getIndAdicionarTaxaBoleto()	== 1) ? "checked" : null;
+	$codConta			= ($oVendaConf->getCodContaBoleto()	!= null) ? $oVendaConf->getCodContaBoleto()->getCodigo() : null;
+	
+}else{
+	$taxaAdm 			= null;
+	$indAddTaxaBoleto	= "checked";
+	$codConta 			= null;
+}
 
 #################################################################################
 ## Select da Forma de Pagamento
 #################################################################################
 try {
-	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	null, null);
+	
+	
+	
+	$oFormaSel	= $em->getRepository('Entidades\ZgfmtConviteExtraVendaForma')->findBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codVendaTipo' => $codVendaTipo));
+	$aFormaSel  = array();
+	foreach($oFormaSel as $codTipo){
+		$aFormaSel[] = $codTipo->getCodFormaPagamento()->getCodigo();
+	}
+	
+	if ($codVendaTipo == 'I'){
+		$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array('codigo' => 'BOL'),array('descricao' => 'ASC'));
+	}else{
+		$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
+	}
+	
+	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	$aFormaSel , null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -70,20 +100,34 @@ try {
 	if ($aCntCer) {
 		$oConta		= "<optgroup label='Contas do Cerimonial'>";
 		for ($i = 0; $i < sizeof($aCntCer); $i++) {
+			
+			if ($aCntCer[$i]->getCodigo() == $codConta){
+				$selected = 'selected';
+			}else{
+				$selected = '';
+			}
+			
 			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aCntCer[$i]->getCodigo()) : 0;
-			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' ".$selected." zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
 		}
 		$oConta		.= '</optgroup>';
 		if ($aConta) {
 			$oConta		.= "<optgroup label='Contas da Formatura'>";
 			for ($i = 0; $i < sizeof($aConta); $i++) {
+				
+				if ($aConta[$i]->getCodigo() == $codConta){
+					$selected = 'selected';
+				}else{
+					$selected = '';
+				}
+				
 				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
-				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
+				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' ".$selected." zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
 			}
 			$oConta		.= '</optgroup>';
 		}
 	}else{
-		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME', $codConta ,'');
 	}
 
 
@@ -102,11 +146,11 @@ try {
 
 
 $html .= '<div class="col-sm-6">';
-$html .= '<h5 class="header blue bolder smaller">Formas de pagamento</h5>';
+$html .= '<h5 class="header blue bolder smaller" align="center">Pagamento</h5>';
 $html .= '<div class="form-group">';
 $html .= '<label class="col-sm-3 control-label" for="codFormaPagID">Forma de Pag.</label>';
 $html .= '<div class="input-group col-sm-5">';
-$html .= '<span class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Forma de Pagamento da Conta"><i class="fa fa-question-circle"></i></span>';
+$html .= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Selecione as formas de pagamento aceitas na venda do convite extra no tipo '.$oVendaTipo->getDescricao().'."></i></span>';
 $html .= '<select class="multiselect" multiple="multiple" onchange="mostrarConf();" name="codFormaPag[]" id="codFormaPagID">';
 $html .= $oFormaPag;
 $html .= '</select>';
@@ -116,8 +160,8 @@ $html .= '</div>';
 $html .= '<div class="form-group col-sm-12" id="divValorPorFormandoID">
 		 <label for="identID" class="col-sm-3 control-label">Taxa comodidade</label>
 		 <div class="input-group col-sm-5 pull-left">
-		 <span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title= Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-		 <input class="form-control" id="taxaAdministracaoID" type="text" name="taxaAdministracao" maxlength="60" value="" placeholder="Taxa de Administração" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+		 <span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="A taxa de comodidade é o valor fixo que será adicionado a uma venda de convite extra. Caso não seja preenchido, este valor será considerado como 0."></i></span>
+		 <input class="form-control" id="taxaAdministracaoID" type="text" name="taxaAdministracao" maxlength="60" value="'.$taxaAdm.'" placeholder="Taxa de administração" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 		 </div>
 		 <div class="col-sm-1 pull-left" id="divHelpValorPorFormandoID"></div>
 		 </div>';
@@ -126,13 +170,13 @@ $html .= '</div>';
 $html .= '</div>';
 
 $html .= '<div class="col-sm-6">';
-$html .= '<h5 class="header blue bolder smaller">Configurações</h5>';
+$html .= '<h5 class="header blue bolder smaller" align="center">Configuração do boleto</h5>';
 
 $html .=	'<div id="divBoletoConfID">';
 $html .=	'<div class="form-group col-sm-12" id="divContaRecID">
-			<label class="col-sm-3 control-label">Conta</label>
+			<label class="col-sm-3 control-label">Conta Corrente</label>
 			<div class="input-group col-sm-6 pull-left">
-			<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i Ajuda" data-content="Selecione a conta onde que será creditado o valor da mensalidade."></i></span>
+			<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Selecione a conta corrente que será utilizada para gerar os boletos da venda do convite extra."></i></span>
 			<select class="select2" style="width:100%;" onchange="mostrarTaxaBoleto();" id="codContaRecID" name="codContaRec" data-rel="select2">
 			'.$oConta.'
 			</select>
@@ -143,10 +187,20 @@ $html .=	'<div class="form-group col-sm-12" id="divContaRecID">
 $html .=	'<div class="form-group col-sm-12" id="divValorPorFormandoID">
 			<label for="identID" class="col-sm-3 control-label">Taxa boleto</label>
 			<div class="input-group col-sm-5 pull-left">
-			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title= Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-			<input class="form-control" id="taxaBoletoID" readonly type="text" name="taxaBoleto" maxlength="60" value="" placeholder="Taxa de Administração" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Custo do boleto para a conta selecionada."></i></span>
+			<input class="form-control" id="taxaBoletoID" readonly type="text" name="taxaBoleto" maxlength="60" value="" placeholder="Custo do boleto" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 			</div>
 			<div class="col-sm-1 pull-left" id="divHelpValorPorFormandoID"></div>
+			</div>';
+
+$html .=	'<div class="form-group col-sm-12" >
+			<label class="col-sm-3 control-label">
+			<input name="indAddTaxaBoleto" id="indAddTaxaBoletoID" class="ace ace-switch " value="1" '.$indAddTaxaBoleto.' type="checkbox" onchange="montarResumo();"/>
+			<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+			</label>
+			<div class="input-group col-sm-8 pull-left">
+			<span class="control-label pull-left">Adicionar o custo do boleto na taxa de comodidade <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Marque sim caso queira adicionar o custo do boleto na taxa de comodidade."></i></span>
+			</div>
 			</div>';
 
 $html .= '</div>';
@@ -154,6 +208,8 @@ $html .= '</div>';
 
 
 $html	.= '<script type="text/javascript" charset="%CHARSET%">';
+
+$html	.= 'mostrarTaxaBoleto();';
 
 $html	.= "$('#codFormaPagID').multiselect({
 			enableFiltering: false,

@@ -52,8 +52,6 @@ if ($codConviteExtraConf) {
 	$dataFimPresencial		= ($info->getDataFimPresencial() != null) ? $info->getDataFimPresencial()->format($system->config["data"]["dateFormat"]) : null;
 	$custoBoleto			= ($info->getTaxaConveniencia() != null) ? \Zage\App\Util::formataDinheiro($info->getTaxaConveniencia()) : null;
 	
-	$oContaCorrente		= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codConta));
-	$custoBoletoPadrao 	= ($oContaCorrente->getValorBoleto() != null) ? \Zage\App\Util::formataDinheiro($oContaCorrente->getValorBoleto()) : null;
 	
 } else {
 	$infoTipoEvento = $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipoEvento));
@@ -63,73 +61,25 @@ if ($codConviteExtraConf) {
 	$qtdeMax 				= null;
 	$dataInicioInternet 	= null;
 	$dataFimInternet		= null;
-	$codConta				= null;
 	$dataInicioPresencial	= null;
 	$dataFimPresencial		= null;
-	$custoBoleto			= null;
 }
 
-#################################################################################
-## Select da Conta de Crédito
-#################################################################################
-try {
+################################################################################
+# Verificar se as configurações de internet estão ativas
+################################################################################
+$oVendaConf = $em->getRepository('Entidades\ZgfmtConviteExtraVendaConf')->findOneBy(array('codVendaTipo' => 'I' , 'codFormatura' => $system->getCodOrganizacao()));
 
-	#################################################################################
-	## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
-	#################################################################################
-	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
-
-	if ($oFmtAdm)	{
-		$aCntCer	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('nome' => 'ASC'));
-		
-		for ($i = 0; $i < sizeof($aCntCer); $i++) {
-			$arrayConta[$aCntCer[$i]->getCodigo()] = \Zage\App\Util::toPHPNumber($aCntCer[$i]->getValorBoleto());
-		}
-		
-	}else{
-		$aCntCer	= null;
-	}
-
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
+if (!$oVendaConf){
+	$autorizadoNet = 'disabled';
 	
-	for ($i = 0; $i < sizeof($aConta); $i++) {
-		$arrayConta[$aConta[$i]->getCodigo()] = \Zage\App\Util::toPHPNumber($aConta[$i]->getValorBoleto());
-	}
-
-	if ($aCntCer) {
-		$oConta		.= "<option value=''></option>";
-		$oConta		.= "<optgroup label='Contas do Cerimonial'>";
-		
-		for ($i = 0; $i < sizeof($aCntCer); $i++) {
-			if ($aCntCer[$i]->getCodigo() == $codConta){
-				$selected = 'selected';
-			}else{
-				$selected = '';
-			}
-			
-			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."'".$selected.">".$aCntCer[$i]->getNome()."</option>";
-		}
-		$oConta		.= '</optgroup>';
-		if ($aConta) {
-			$oConta		.= "<optgroup label='Contas da Formatura'>";
-			for ($i = 0; $i < sizeof($aConta); $i++) {
-				if ($aConta[$i]->getCodigo() == $codConta){
-					$selected = 'selected';
-				}else{
-					$selected = '';
-				}
-				
-				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."'>".$aConta[$i]->getNome()."</option>";
-			}
-			$oConta		.= '</optgroup>';
-		}
-	}else{
-		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME', $codConta , '');
-	}
-
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+	$msgAutorizado .= '<div class="col-sm-12 alert alert-warning">';
+	$msgAutorizado .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Para inciar as vendas pela internet é necessário realizar as configurações de pagamento no menu: CONVIDADOS > CONFIGURAR PAGAMENTO';
+	$msgAutorizado .= '</div>';
+	
+}else{
+	$autorizadoNet = '';
+	$msgAutorizado = '';
 }
 
 ################################################################################
@@ -158,10 +108,10 @@ $tpl->set ('URLNOVO'		 	   , $urlNovo);
 $tpl->set ('ID'					   , $id);	
 $tpl->set ('COD_TIPO_EVENTO'	   , $codTipoEvento);
 $tpl->set ('COD_CONVITE_CONF'	   , $codConviteExtraConf);
-$tpl->set ('CUSTO_BOLETO_PADRAO'   , $custoBoletoPadrao);
 $tpl->set ('DESCRICAO_TIPO_EVENTO' , $tipoEventoDescricao);
 
-$tpl->set ('CONTAS'					,$oConta);
+$tpl->set ('AUTORIZADO_NET'			,$autorizadoNet);
+$tpl->set ('AUTORIZADO_MSG'			,$msgAutorizado);
 $tpl->set ('VALOR'					,$valor);
 $tpl->set ('QTDE_MAX'				,$qtdeMax);
 $tpl->set ('DATA_INI_NET'			,$dataInicioInternet);
@@ -169,8 +119,6 @@ $tpl->set ('DATA_FIM_NET'			,$dataFimInternet);
 $tpl->set ('CUSTO_BOLETO'			,$custoBoleto);
 $tpl->set ('DATA_INI_PRE'			,$dataInicioPresencial);
 $tpl->set ('DATA_FIM_PRE'			,$dataFimPresencial);
-
-$tpl->set('ARRAY_CONTA'				,json_encode($arrayConta));
 
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 

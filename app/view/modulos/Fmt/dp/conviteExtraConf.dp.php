@@ -18,8 +18,6 @@ if (isset($_POST['valor']))					$valor					= \Zage\App\Util::antiInjection($_POS
 if (isset($_POST['qtdeMax']))				$qtdeMax				= \Zage\App\Util::antiInjection($_POST['qtdeMax']);
 if (isset($_POST['dataInicioInternet']))	$dataInicioInternet		= \Zage\App\Util::antiInjection($_POST['dataInicioInternet']);
 if (isset($_POST['dataFimInternet']))		$dataFimInternet		= \Zage\App\Util::antiInjection($_POST['dataFimInternet']);
-if (isset($_POST['custoBoleto']))			$custoBoleto			= \Zage\App\Util::antiInjection($_POST['custoBoleto']);
-if (isset($_POST['codContaRec']))			$codContaRec			= \Zage\App\Util::antiInjection($_POST['codContaRec']);
 if (isset($_POST['dataInicioPresencial']))	$dataInicioPresencial	= \Zage\App\Util::antiInjection($_POST['dataInicioPresencial']);
 if (isset($_POST['dataFimPresencial']))		$dataFimPresencial		= \Zage\App\Util::antiInjection($_POST['dataFimPresencial']);
 
@@ -55,7 +53,7 @@ if (!empty($dataInicioInternet)) {
 		$err	= 1;
 	}
 }else{
-	if ($codContaRec || $dataFimInternet){
+	if ($dataFimInternet){
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Para iniciar a venda na internet é necessário preencher uma data de início.");
 		$err	= 1;
 	}else{
@@ -76,25 +74,6 @@ if (!empty($dataFimInternet)) {
 }else{
 	$dataFimInternet = null;
 }
-
-/** CONTA CORRENTE **/
-if ((empty($codContaRec)) && ($dataInicioInternet || $custoBoleto)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a conta corrente.");
-	$err	= 1;
-}
-
-/** CUSTO BOLETO **/
-if (!empty($custoBoleto)) {
-	if ($custoBoleto < 0) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"O custo do boleto não deve ser menor que 0.");
-		$err	= 1;
-	}elseif ($custoBoleto > $custoBoletoPadrao){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"O custo do boleto não deve ser maior que R$ ".$custoBoletoPadrao);
-		$err	= 1;
-	}
-	$custoBoleto 		= \Zage\App\Util::to_float($custoBoleto);
-}
-
 
 /** DATA INICIO PRESENCIAL **/
 if (!empty($dataInicioPresencial)) {
@@ -163,8 +142,6 @@ try {
  	$oConviteConf->setCodTipoEvento($oTipo);
  	$oConviteConf->setDataInicioInternet($dataInicioInternet);
  	$oConviteConf->setDataFimInternet($dataFimInternet);
- 	$oConviteConf->setContaRecebimentoInternet($oConta);
- 	$oConviteConf->setTaxaConveniencia($custoBoleto);
  	$oConviteConf->setDataInicioPresencial($dataInicioPresencial);
  	$oConviteConf->setDataFimPresencial($dataFimPresencial);
  	$oConviteConf->setQtdeMaxAluno($qtdeMax);

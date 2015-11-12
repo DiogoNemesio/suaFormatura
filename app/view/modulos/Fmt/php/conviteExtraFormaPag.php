@@ -41,9 +41,6 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 $url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
 
-
-
-
 #################################################################################
 ## Resgata os tipos de compra
 #################################################################################
@@ -69,16 +66,17 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('GRID'			,$htmlGrid);
 $tpl->set('NOME'			,$tr->trans("Configurar pagamentos"));
 $tpl->set('URLVOLTAR'		,$urlVoltar);
 $tpl->set('URLATUALIZAR'	,$urlAtualizar);
 $tpl->set('NOME_RIFA'		,$info->getNome());
 $tpl->set('IC'				,$_icone_);
-$tpl->set('ID'				,$id);
 
 $tpl->set('TIPO_VENDA'		,$otipoVenda);
 $tpl->set('FORMAS_PAG'		,$oFormaPag);
+
+$tpl->set('ID'				,$id);
+$tpl->set('DP'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML

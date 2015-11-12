@@ -1,0 +1,174 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Configurar Forma de Pagamento
+	</h1>
+	</div><!-- /.page-header -->
+	<br />
+		
+	<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" id="valorCodTipoVendaID" name="valorCodTipoVenda">
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="col-sm-6 col-sm-offset-4">
+					<div class="form-group col-sm-12" id="divCodTipoVendaID">
+						<div class="input-group col-sm-6 pull-left">
+							<select id="codTipoVendaID" name="codTipoVenda" class="select2" data-placeholder="Selecione a forma da venda" onchange="selecionaTipo();" >
+								%TIPO_VENDA%
+							</select>
+						</div>
+						<div class="col-sm-1 pull-left" id="divHelpCodTipoVendaID"></div>
+					</div>		
+			   	</div>
+			</div>
+			<div class="col-sm-12" id="divConfID"></div>
+		</div>
+		<div class="clearfix form-actions">
+			<label class="col-sm-5 control-label">&nbsp;</label>
+			<button type="button" class="btn btn-primary" id="btnSubmitID">
+				<i class="fa fa-check bigger-110"></i> Salvar
+			</button>
+		</div>
+	</form>
+</div>
+
+
+
+<script>
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Mascaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Mensagens
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+
+//Select2
+$('.select2').css('width','100%').select2({allowClear:true});
+
+//Carregar as informações de acordo com o tipo
+function selecionaTipo(){
+	var codTipoVenda  = $('#codTipoVendaID').val();
+	if(codTipoVenda){
+		
+		$('#divCodTipoVendaID').removeClass('has-error');
+		$('#divHelpCodTipoVendaID').html('&nbsp;');		
+		
+		$('#divConfID').html('<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+		$('#divConfID').load("%ROOT_URL%/Fmt/divConviteFormaPag.php?id=%ID%&codVendaTipo=" + codTipoVenda);
+	}else{
+		$('#divConfID').html('');
+	}
+}
+
+//Mostra custo boleto
+function mostrarTaxaBoleto(){
+	var vConta			= $("#codContaRecID option:selected");
+	var vValorBoleto	= zgConverteFloat(vConta.attr("zg-val-boleto"));
+	
+	// CALCULOS
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+	
+	if (vConta){
+		$('#taxaBoletoID').val(accounting.formatMoney(vValorBoleto,options));
+	}else{
+		$('#taxaBoletoID').val('');
+	}
+	
+}
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= validaFormaPag();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			zgMostraAviso("Fechar");
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+function validaFormaPag(){
+	var vCodTipoVenda	= $('#codTipoVendaID').val();
+	
+	vOK					= true;
+	
+	if (!vCodTipoVenda) {
+		$('#divCodTipoVendaID').addClass('has-error');
+		$('#divHelpCodTipoVendaID').html(zgCriaSpanErro('Selecione uma forma de venda!'));
+		vOK		= false;
+	}else{
+		$('#divCodTipoVendaID').removeClass('has-error');
+		$('#divHelpCodTipoVendaID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+</script> 
+	  
