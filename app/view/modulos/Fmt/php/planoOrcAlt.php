@@ -88,7 +88,8 @@ try {
 ## Select de Categoria
 #################################################################################
 try {
-	$aCategoria		= $em->getRepository('Entidades\ZgfinCategoria')->findBy(array('codTipo' => D , 'indAtiva' => 1 , 'codOrganizacao' => null ,  'codTipoOrganizacao' => FMT ));
+	$aCategoria		= $em->getRepository('Entidades\ZgfinCategoria')->findBy(array('codTipo' => D , 'indAtiva' => 1 , 'codOrganizacao' => null ,  'codTipoOrganizacao' => FMT), array('descricao' => ASC));
+		
 	$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	null, 	null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

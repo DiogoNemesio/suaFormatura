@@ -16,14 +16,10 @@
 				<input type="hidden" id="codVersaoID" name="codVersao" value="%COD_VERSAO%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
-				
-				
-		    	
-		    	
-				    	
+	
 					<div class="vspace-xs"></div>
 					<div class="row">
-						<h5 class="header blue bolder smaller">Nome do modelo</h5>
+						<h5 class="header blue bolder smaller">Informações do modelo</h5>
 						<div class="vspace-xs"></div>
 				    	<div class="col-sm-6">
 				    		<div class="form-group col-sm-12" id="divVersaoID">
@@ -56,7 +52,7 @@
 										<tr class="warning">
 											<th class="col-sm-1 center"></th>
 											<th class="col-sm-2 center">Item</th>
-											<th class="col-sm-2 center">Calcular por</th>
+											<th class="col-sm-2 center">Calcular</th>
 											<th class="col-sm-2 center">Categoria</th>
 											<th class="col-sm-1 center">Ativo</th>
 											<th class="col-sm-1 center"><span class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
@@ -164,7 +160,7 @@ function addRowOrcamentoLayReg() {
 	
 
 	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item['+$numRows+']" zg-name="item" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo['+$numRows+']" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
-	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="item"]').each(function( index ) {
+	$('#layRegTableOrcamentoID > tbody > tr:last [zg-name="item"]').each(function( index ) {
 		$( this ).focus();
 	});
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
@@ -213,7 +209,7 @@ function validaOrcamento () {
 		
 		$item		= $itemObj.val();
 		if (!$item) {
-			zgMostraErro('divAvisoLayoutOrcamentoID','Não pode haver uma linha sem nome do item preenchido!');
+			zgMostraErro('divAvisoLayoutOrcamentoID','Não pode haver uma linha sem um item preenchido!');
 			$ok 	= false;
 			$(this).addClass('alert-danger');
 		}else{
