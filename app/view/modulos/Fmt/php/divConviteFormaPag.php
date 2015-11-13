@@ -48,11 +48,13 @@ if ($oVendaConf){
 	$taxaAdm 			= ($oVendaConf->getTaxaAdministracao() != 0) ? \Zage\App\Util::formataDinheiro($oVendaConf->getTaxaAdministracao()) : null;
 	$indAddTaxaBoleto	= ($oVendaConf->getIndAdicionarTaxaBoleto()	== 1) ? "checked" : null;
 	$codConta			= ($oVendaConf->getCodContaBoleto()	!= null) ? $oVendaConf->getCodContaBoleto()->getCodigo() : null;
+	$diasVencimento		= $oVendaConf->getDiasVencimentoBoleto();
 	
 }else{
 	$taxaAdm 			= null;
 	$indAddTaxaBoleto	= "checked";
 	$codConta 			= null;
+	$diasVencimento		= null;
 }
 
 #################################################################################
@@ -147,18 +149,18 @@ try {
 
 $html .= '<div class="col-sm-6">';
 $html .= '<h5 class="header blue bolder smaller" align="center">Pagamento</h5>';
-$html .= '<div class="form-group">';
+$html .= '<div class="form-group col-sm-12" id="divValorPorFormandoID">';
 $html .= '<label class="col-sm-3 control-label" for="codFormaPagID">Forma de Pag.</label>';
-$html .= '<div class="input-group col-sm-5">';
+$html .= '<div class="input-group col-sm-5 pull-left">';
 $html .= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Selecione as formas de pagamento aceitas na venda do convite extra no tipo '.$oVendaTipo->getDescricao().'."></i></span>';
-$html .= '<select class="multiselect" multiple="multiple" onchange="mostrarConf();" name="codFormaPag[]" id="codFormaPagID">';
+$html .= '<select class="multiselect" multiple="multiple" name="codFormaPag[]" id="codFormaPagID">';
 $html .= $oFormaPag;
 $html .= '</select>';
 $html .= '</div>';
 $html .= '</div>';
 
 $html .= '<div class="form-group col-sm-12" id="divValorPorFormandoID">
-		 <label for="identID" class="col-sm-3 control-label">Taxa comodidade</label>
+		 <label for="taxaAdministracaoID" class="col-sm-3 control-label">Taxa comodidade</label>
 		 <div class="input-group col-sm-5 pull-left">
 		 <span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="A taxa de comodidade é o valor fixo que será adicionado a uma venda de convite extra. Caso não seja preenchido, este valor será considerado como 0."></i></span>
 		 <input class="form-control" id="taxaAdministracaoID" type="text" name="taxaAdministracao" maxlength="60" value="'.$taxaAdm.'" placeholder="Taxa de administração" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
@@ -185,12 +187,21 @@ $html .=	'<div class="form-group col-sm-12" id="divContaRecID">
 			</div>';
 
 $html .=	'<div class="form-group col-sm-12" id="divValorPorFormandoID">
-			<label for="identID" class="col-sm-3 control-label">Taxa boleto</label>
+			<label for="taxaBoletoID" class="col-sm-3 control-label">Taxa boleto</label>
 			<div class="input-group col-sm-5 pull-left">
 			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Custo do boleto para a conta selecionada."></i></span>
 			<input class="form-control" id="taxaBoletoID" readonly type="text" name="taxaBoleto" maxlength="60" value="" placeholder="Custo do boleto" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 			</div>
-			<div class="col-sm-1 pull-left" id="divHelpValorPorFormandoID"></div>
+			<div class="col-sm-1 pull-left" id="divHelpTaxaBoletoID"></div>
+			</div>';
+
+$html .=	'<div class="form-group col-sm-12" id="divDiasVencimentoID">
+			<label for="diasVencimentoID" class="col-sm-3 control-label">Prazo</label>
+			<div class="input-group col-sm-5 pull-left">
+			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Número de dias para o vencimento do boleto a partir da data da compra."></i></span>
+			<input class="form-control" id="diasVencimentoID" type="text" name="diasVencimento" maxlength="3" value="'.$diasVencimento.'" placeholder="Dias para o vencimento" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+			</div>
+			<div class="col-sm-1 pull-left" id="divHelpDiasVencimentoID"></div>
 			</div>';
 
 $html .=	'<div class="form-group col-sm-12" >

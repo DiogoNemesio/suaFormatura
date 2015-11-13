@@ -31,6 +31,13 @@ class ZgfmtConviteExtraVendaConf
     /**
      * @var integer
      *
+     * @ORM\Column(name="DIAS_VENCIMENTO_BOLETO", type="integer", nullable=true)
+     */
+    private $diasVencimentoBoleto;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="IND_ADICIONAR_TAXA_BOLETO", type="integer", nullable=true)
      */
     private $indAdicionarTaxaBoleto;
@@ -97,6 +104,29 @@ class ZgfmtConviteExtraVendaConf
     public function getTaxaAdministracao()
     {
         return $this->taxaAdministracao;
+    }
+
+    /**
+     * Set diasVencimentoBoleto
+     *
+     * @param integer $diasVencimentoBoleto
+     * @return ZgfmtConviteExtraVendaConf
+     */
+    public function setDiasVencimentoBoleto($diasVencimentoBoleto)
+    {
+        $this->diasVencimentoBoleto = $diasVencimentoBoleto;
+
+        return $this;
+    }
+
+    /**
+     * Get diasVencimentoBoleto
+     *
+     * @return integer 
+     */
+    public function getDiasVencimentoBoleto()
+    {
+        return $this->diasVencimentoBoleto;
     }
 
     /**

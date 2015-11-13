@@ -15,6 +15,7 @@ if (isset($_POST['codTipoVenda']))			$codTipoVenda			= \Zage\App\Util::antiInjec
 if (isset($_POST['taxaAdministracao']))		$taxaAdministracao		= \Zage\App\Util::antiInjection($_POST['taxaAdministracao']);
 if (isset($_POST['codContaRec']))			$codContaRec			= \Zage\App\Util::antiInjection($_POST['codContaRec']);
 if (isset($_POST['indAddTaxaBoleto']))		$indAddTaxaBoleto		= \Zage\App\Util::antiInjection($_POST['indAddTaxaBoleto']);
+if (isset($_POST['diasVencimento']))		$diasVencimento		= \Zage\App\Util::antiInjection($_POST['diasVencimento']);
 
 if (isset($_POST['codFormaPag'])) 			$formaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
 if (!isset($formaPag))						$formaPag		= array();
@@ -97,7 +98,8 @@ try {
  	$oConviteConf->setCodVendaTipo($oTipo);
  	$oConviteConf->setTaxaAdministracao($taxaAdministracao);
  	$oConviteConf->setCodContaBoleto($oConta);
- 	$oConviteConf->setIndAdicionarTaxaBoleto($indAddTaxaBoleto); 	
+ 	$oConviteConf->setIndAdicionarTaxaBoleto($indAddTaxaBoleto);
+ 	$oConviteConf->setDiasVencimentoBoleto($diasVencimento);
  	
  	$em->persist($oConviteConf);
  	
