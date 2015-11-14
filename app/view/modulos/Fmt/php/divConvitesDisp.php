@@ -43,7 +43,7 @@ if (isset($_GET['codFormando'])) 		$codFormando		= \Zage\App\Util::antiInjection
 # Resgata as informações do banco
 ################################################################################
 try {
-	$info = \Zage\Fmt\Convite::listaConviteAptoVenda();
+	$eventoConfApto = \Zage\Fmt\Convite::listaConviteAptoVenda();
 } catch ( \Exception $e ) {
 	\Zage\App\Erro::halt ( $e->getMessage () );
 }
@@ -60,36 +60,32 @@ echo '<table id="layRegTableConviteID" class="table table-striped table-bordered
 </tr>
 </thead>';
 
-for ($i = 0; $i < sizeof($info); $i++) {
-	$codEvento		 = ($info[$i]->getCodTipoEvento()) ? $info[$i]->getCodTipoEvento()->getCodigo() : null;
-	$eventoDesc		 = ($info[$i]->getCodTipoEvento()) ? $info[$i]->getCodTipoEvento()->getDescricao() : null;
-	$taxaConv		 = ($info[$i]->getTaxaConveniencia()) ? $info[$i]->getTaxaConveniencia() : null;
-	$valor			 = ($info[$i]->getValor()) ? $info[$i]->getValor() : null;
-	$dataCadastro	 = ($info[$i]->getDataCadastro() != null) ? $info[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
-	$convDis		 = null;
-	
+for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
+	$codEvento	 	= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodigo() : null;
+	$eventoDesc		= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodTipoEvento()->getDescricao() : null;
+	$valor			= ($eventoConfApto[$i]->getValor()) ? \Zage\App\Util::formataDinheiro($eventoConfApto[$i]->getValor()) : null;
+	$log->info($eventoConfApto[$i]->getCodigo());
 	if (isset($codFormando) && !empty($codFormando)) {
-		$convDis	= \Zage\Fmt\Convite::listaConviteDispFormando($codFormando, $codEvento);
-
-		if(empty($convDis) || $convDis == 0) {
-			$oConf = $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codTipoEvento' => $codEvento));
-			$convDis = $oConf->getQtdeMaxAluno();
+		$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodigo());
+		
+		if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
+			$qtdeDisponivel = 0;
 		}
+	
 	}else{
-		$convDis 	= " - ";
+		$qtdeDisponivel 	= 0;
 	}
 	
-	$valor = \Zage\App\Util::formataDinheiro( \Zage\App\Util::to_float($valor) );
-	
 	$html .= "<tr class=\"center\"><td class=\"center\" style=\"width: 20px;\"><div class=\"inline\" zg-type=\"zg-div-msg\"></div></td>
-				<td>".$eventoDesc."<input type='hidden' name='codTipoEvento[".$i."]' value='".$codEvento."' ></td>
+				<td>".$eventoDesc."<input type='hidden' name='codTipoEvento[".$i."]' value='".$codEvento."'></td>
 				<td>R$ ".$valor."<input type='hidden' name='valor[]' value='".$valor."' ></td>
-				<td>".$convDis."<input type='hidden' name='quantDisp[]' value='".$convDis."' ></td>
-				<td><input type='text' name='quantConv[]' id='quantConv' value='0' size='2' zg-data-toggle=\"mask\" zg-data-mask=\"numero\" onchange='zgCalcularTotal();'></td>
-				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[".$i."]' value='0'><input type='hidden' name='codConvExtra[]' value='".$info[$i]->getCodigo()."'></td></tr>";
+				<td>".$qtdeDisponivel."<input type='hidden' name='quantDisp[]' value='".$qtdeDisponivel."' ></td>
+				<td><input type='text' name='quantConv[]' id='quantConv' value='' size='2' zg-data-toggle=\"mask\" zg-data-mask=\"numero\" onchange='zgCalcularTotal();'></td>
+				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[".$i."]' value='0'><input type='hidden' name='codConvExtra[]' value='".$eventoConfApto[$i]->getCodigo()."'></td></tr>";
 }
 
-$html 	.= "<tr><td></td><td></td><td></td><td></td><td></td><td class=\"center\"><div id='valorTotalID' name='valorTotal'>TOTAL: R$ 0,00</div></td></table>";
+$html 	.= "<tr><td colspan='5' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID' name='valorTotal'>R$ 0,00</div></td>";
+$html 	.= "<tr><td colspan='5' align=\"right\"><strong>TOTAL</strong></td><td class=\"center\"><div id='valorTotalID' name='valorTotal'><strong>R$ 0,00</strong></div></td></table>";
 
 $html	.= '<script type="text/javascript" charset="%CHARSET%">';
 $html	.= "$('[data-rel=popover]').popover({html:true});";

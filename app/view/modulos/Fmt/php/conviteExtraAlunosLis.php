@@ -63,7 +63,7 @@ $grid->importaDadosDoctrine($convExtra);
 for ($i = 0; $i < sizeof($convExtra); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$convExtra[$i]->getCodFormando()->getCodigo().'&url='.$url);
 	
-	$itens		= $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findBy(array('codVenda' => $convExtra[$i]->getCodigo()), array());
+	$itens		= $em->getRepository('Entidades\ZgfmtConviteExtraVendaItem')->findBy(array('codVenda' => $convExtra[$i]->getCodigo()), array());
 	$convVenda	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findBy(array('codFormando' => $convExtra[$i]->getCodFormando()->getCodigo()), array());
 	
 	$valorTotal = null;

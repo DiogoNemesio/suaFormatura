@@ -12,8 +12,7 @@ if (defined('DOC_ROOT')) {
 ## Resgata os parâmetros passados pelo formulário
 #################################################################################
 if (isset($_POST['codConviteConf']))		$codConviteConf			= \Zage\App\Util::antiInjection($_POST['codConviteConf']);
-if (isset($_POST['codTipoEvento']))			$codTipoEvento			= \Zage\App\Util::antiInjection($_POST['codTipoEvento']);
-if (isset($_POST['custoBoletoPadrao']))		$custoBoletoPadrao		= \Zage\App\Util::antiInjection($_POST['custoBoletoPadrao']);
+if (isset($_POST['codEvento']))				$codEvento				= \Zage\App\Util::antiInjection($_POST['codEvento']);
 if (isset($_POST['valor']))					$valor					= \Zage\App\Util::antiInjection($_POST['valor']);
 if (isset($_POST['qtdeMax']))				$qtdeMax				= \Zage\App\Util::antiInjection($_POST['qtdeMax']);
 if (isset($_POST['dataInicioInternet']))	$dataInicioInternet		= \Zage\App\Util::antiInjection($_POST['dataInicioInternet']);
@@ -117,12 +116,12 @@ try {
 	#################################################################################
 	
 	if (isset($codConviteConf) && (!empty($codConviteConf))) {
- 		$oConviteConf	= $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codigo' => $codConviteConf));
- 		if (!$oConviteConf) $oConviteConf	= new \Entidades\ZgfmtConviteExtraConf();
+ 		$oConviteEventoConf	= $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codigo' => $codConviteConf));
+ 		if (!$oConviteEventoConf) $oConviteEventoConf	= new \Entidades\ZgfmtConviteExtraEventoConf();
  		//$assunto    = "Evento(".$local.") alterado(a)";
  	}else{
- 		$oConviteConf	= new \Entidades\ZgfmtConviteExtraConf();
- 		$oConviteConf->setDataCadastro(new DateTime(now));
+ 		$oConviteEventoConf	= new \Entidades\ZgfmtConviteExtraEventoConf();
+ 		$oConviteEventoConf->setDataCadastro(new DateTime(now));
  		//$assunto    = "Novo evento(".$local.") definido";
  	}
  	
@@ -131,23 +130,23 @@ try {
  	#################################################################################
  	
  	$oOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
- 	$oTipo			= $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipoEvento));
+ 	$oEvento		= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento));
  	$oConta			= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codContaRec));
  	
  	#################################################################################
  	## SETAR VALORES
  	#################################################################################
  	
- 	$oConviteConf->setCodOrganizacao($oOrganizacao); 
- 	$oConviteConf->setCodTipoEvento($oTipo);
- 	$oConviteConf->setDataInicioInternet($dataInicioInternet);
- 	$oConviteConf->setDataFimInternet($dataFimInternet);
- 	$oConviteConf->setDataInicioPresencial($dataInicioPresencial);
- 	$oConviteConf->setDataFimPresencial($dataFimPresencial);
- 	$oConviteConf->setQtdeMaxAluno($qtdeMax);
- 	$oConviteConf->setValor($valor);
+ 	$oConviteEventoConf->setCodOrganizacao($oOrganizacao); 
+ 	$oConviteEventoConf->setCodEvento($oEvento);
+ 	$oConviteEventoConf->setDataInicioInternet($dataInicioInternet);
+ 	$oConviteEventoConf->setDataFimInternet($dataFimInternet);
+ 	$oConviteEventoConf->setDataInicioPresencial($dataInicioPresencial);
+ 	$oConviteEventoConf->setDataFimPresencial($dataFimPresencial);
+ 	$oConviteEventoConf->setQtdeMaxAluno($qtdeMax);
+ 	$oConviteEventoConf->setValor($valor);
  	
- 	$em->persist($oConviteConf);
+ 	$em->persist($oConviteEventoConf);
 	
 	/**
 	 * ******** Enviar notificação ********
@@ -175,7 +174,7 @@ try {
 	//$notificacao->setEmail ( $email );
 	$notificacao->setCodTemplate ( $template );
 
-	$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipo->getDescricao());
+	$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oEvento->getDescricao());
  	$notificacao->adicionaVariavel("NOME"			, $local);
  	$notificacao->adicionaVariavel("DATA"			, $dataEvento);
  	$notificacao->adicionaVariavel("LOGRADOURO"		, $descLogradouro);
@@ -198,4 +197,4 @@ try {
 }
  
 $system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
-echo '0'.\Zage\App\Util::encodeUrl('|'.$oConviteConf->getCodigo());
+echo '0'.\Zage\App\Util::encodeUrl('|'.$oConviteEventoConf->getCodigo());

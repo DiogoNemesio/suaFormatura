@@ -34,29 +34,35 @@ $system->checaPermissao ( $_codMenu_ );
 ################################################################################
 # Resgata as informações do banco
 ################################################################################
-if ($codConviteExtraConf) {
+if ($codConviteEventoConf) {
 	try {
-		$info = $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codigo' => $codConviteExtraConf));
+		$info = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codigo' => $codConviteEventoConf));
 	} catch ( \Exception $e ) {
 		\Zage\App\Erro::halt ($e->getMessage());
 	}
 	
-	$codTipoEvento			= ($info->getCodTipoEvento()->getCodigo()) ? $info->getCodTipoEvento()->getCodigo() : null;
-	$tipoEventoDescricao	= ($info->getCodTipoEvento()->getDescricao()) ? $info->getCodTipoEvento()->getDescricao() : null;
+	$codEvento				= ($info->getCodEvento()->getCodigo()) ? $info->getCodEvento()->getCodigo() : null;
+	$dataEvento				= ($info->getCodEvento()->getData()) ? $info->getCodEvento()->getData()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
+	$tipoEventoDescricao	= ($info->getCodEvento()->getCodTipoEvento()->getDescricao()) ? $info->getCodEvento()->getCodTipoEvento()->getDescricao() : null;
 	$valor 					= ($info->getValor()) ? \Zage\App\Util::formataDinheiro($info->getValor()) : null;
 	$qtdeMax				= ($info->getQtdeMaxAluno()) ? $info->getQtdeMaxAluno() : null;
 	$dataInicioInternet		= ($info->getDataInicioInternet() != null) ? $info->getDataInicioInternet()->format($system->config["data"]["dateFormat"]) : null;
 	$dataFimInternet		= ($info->getDataFimInternet() != null) ? $info->getDataFimInternet()->format($system->config["data"]["dateFormat"]) : null;
-	$codConta				= ($info->getContaRecebimentoInternet()) ? $info->getContaRecebimentoInternet() : null;
 	$dataInicioPresencial	= ($info->getDataInicioPresencial() != null) ? $info->getDataInicioPresencial()->format($system->config["data"]["dateFormat"]) : null;
 	$dataFimPresencial		= ($info->getDataFimPresencial() != null) ? $info->getDataFimPresencial()->format($system->config["data"]["dateFormat"]) : null;
-	$custoBoleto			= ($info->getTaxaConveniencia() != null) ? \Zage\App\Util::formataDinheiro($info->getTaxaConveniencia()) : null;
 	
 	
 } else {
-	$infoTipoEvento = $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipoEvento));
+	$infoEvento				= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento));
 	
-	$tipoEventoDescricao = $infoTipoEvento->getDescricao();
+	if ($infoEvento){
+		$tipoEventoDescricao 	= $infoEvento->getCodTipoEvento()->getDescricao();
+		$dataEvento				= ($infoEvento->getData()) ? $infoEvento->getData()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
+	}else{
+		$tipoEventoDescricao	= null;
+		$dataEvento				= null;
+	}
+	
 	$valor 					= null;
 	$qtdeMax 				= null;
 	$dataInicioInternet 	= null;
@@ -106,9 +112,10 @@ $tpl->set ('URL_FORM'			   , $_SERVER ['SCRIPT_NAME']);
 $tpl->set ('URLVOLTAR'			   , $urlVoltar);
 $tpl->set ('URLNOVO'		 	   , $urlNovo);
 $tpl->set ('ID'					   , $id);	
-$tpl->set ('COD_TIPO_EVENTO'	   , $codTipoEvento);
-$tpl->set ('COD_CONVITE_CONF'	   , $codConviteExtraConf);
+$tpl->set ('COD_EVENTO'	   		   , $codEvento);
+$tpl->set ('COD_CONVITE_CONF'	   , $codConviteEventoConf);
 $tpl->set ('DESCRICAO_TIPO_EVENTO' , $tipoEventoDescricao);
+$tpl->set ('DATA_EVENTO' 		   , $dataEvento);
 
 $tpl->set ('AUTORIZADO_NET'			,$autorizadoNet);
 $tpl->set ('AUTORIZADO_MSG'			,$msgAutorizado);
@@ -116,7 +123,6 @@ $tpl->set ('VALOR'					,$valor);
 $tpl->set ('QTDE_MAX'				,$qtdeMax);
 $tpl->set ('DATA_INI_NET'			,$dataInicioInternet);
 $tpl->set ('DATA_FIM_NET'			,$dataFimInternet);
-$tpl->set ('CUSTO_BOLETO'			,$custoBoleto);
 $tpl->set ('DATA_INI_PRE'			,$dataInicioPresencial);
 $tpl->set ('DATA_FIM_PRE'			,$dataFimPresencial);
 
@@ -126,4 +132,3 @@ $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App
 # Por fim exibir a página HTML
 ################################################################################
 $tpl->show ();
-

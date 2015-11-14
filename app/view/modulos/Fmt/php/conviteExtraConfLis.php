@@ -41,7 +41,7 @@ $url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 #################################################################################
 try {
 	$evento			= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormatura' => $system->getCodOrganizacao()) , array('codTipoEvento' => 'ASC'));
-	$conviteConf	= $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()) , array('codigo' => 'ASC'));
+	$conviteEventoConf	= $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()) , array('codigo' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -50,18 +50,18 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GConviteExtraConf");
-$grid->adicionaTexto($tr->trans('EVENTO'),					30, $grid::CENTER	,'codTipoEvento:descricao');
+$grid->adicionaTexto($tr->trans('EVENTO'),					30, $grid::CENTER	,'codEvento:codTipoEvento:descricao');
 $grid->adicionaMoeda($tr->trans('VALOR'),					15, $grid::CENTER	,'valor');
 $grid->adicionaTexto($tr->trans('QTDE MÁXIMA'),				15, $grid::CENTER	,'qtdeMaxAluno');
 $grid->adicionaDataHora($tr->trans('CADASTRADO EM'),		15, $grid::CENTER	,'dataCadastro');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->importaDadosDoctrine($conviteConf);
+$grid->importaDadosDoctrine($conviteEventoConf);
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($conviteConf); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConviteExtraConf='.$conviteConf[$i]->getCodigo().'&url='.$url);
+for ($i = 0; $i < sizeof($conviteEventoConf); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConviteEventoConf='.$conviteEventoConf[$i]->getCodigo().'&url='.$url);
 	
 	$grid->setUrlCelula($i,4,ROOT_URL.'/Fmt/conviteExtraConf.php?id='.$uid);
 
@@ -72,13 +72,13 @@ for ($i = 0; $i < sizeof($conviteConf); $i++) {
 #################################################################################
 for ($i = 0; $i < sizeof($evento); $i++) {
 	
-	$existeConf	= $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codTipoEvento' => $evento[$i]->getCodTipoEvento()->getCodigo())); 
+	$existeConf	= $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codEvento' => $evento[$i]->getCodigo())); 
 	
 	if ($existeConf) {
 		$urlAdd			= "#";
 		$classe			= "disabled";
 	}else{
-		$urlAdd		   = ROOT_URL.'/Fmt/conviteExtraConf.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codTipoEvento='.$evento[$i]->getCodTipoEvento()->getCodigo().'&codConviteExtraConf=');
+		$urlAdd		   = ROOT_URL.'/Fmt/conviteExtraConf.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEvento='.$evento[$i]->getCodigo().'&codConviteEventoConf=');
 		$classe			= "";
 	}
 	$htmlButton	  .= "<li class='".$classe."'>

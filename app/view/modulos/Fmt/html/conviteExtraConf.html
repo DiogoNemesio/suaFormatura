@@ -1,7 +1,8 @@
 <div id="content">
 	<div class="page-header">
 	<h1><i class="fa fa-cog">&nbsp;</i>Convite Extra
-	<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>	
+	
+	<a id='a01ID' class='btn btn-white' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>	
 	</h1>
 	</div><!-- /.page-header -->
 
@@ -9,10 +10,10 @@
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
 				<input type="hidden" id="codConviteConfID" name="codConviteConf" value="%COD_CONVITE_CONF%">
-				<input type="hidden" id="codTipoEventoID" name="codTipoEvento" value="%COD_TIPO_EVENTO%">
+				<input type="hidden" id="codEventoID" name="codEvento" value="%COD_EVENTO%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
-					<h5 class="header blue bolder smaller">Informações gerais</h5>
+					<h5 class="header blue bolder smaller">Configurar evento</h5>
 					<div class="row">
 						<div class="col-sm-6">
 						    <div class="form-group col-sm-12" id="divValorID">
@@ -39,8 +40,8 @@
 									<div class="profile-info-value" id="orcNumConvidadoID">%DESCRICAO_TIPO_EVENTO%</div>
 								</div>
 								<div class="profile-info-row">
-									<div class="profile-info-name">Quantidade:</div>
-									<div class="profile-info-value" id="orcNumMesesID"><span id="spOrcInfoNumMesesID"></span>&nbsp;<span id='spOrcIcNumMesesID' class="hidden"><i class="fa fa-refresh fa-spin"></i></span></div>
+									<div class="profile-info-name">Data:</div>
+									<div class="profile-info-value" id="orcNumMesesID">%DATA_EVENTO%</div>
 								</div>				
 							</div>
 						</div>
@@ -94,6 +95,10 @@
 					<label class="col-sm-5 control-label">&nbsp;</label>
 					<button type="button" class="btn btn-primary" id="btnSubmitID">
 						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
 					</button>
 				</div>
 			</form>

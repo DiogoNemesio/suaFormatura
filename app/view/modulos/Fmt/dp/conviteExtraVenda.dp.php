@@ -1,4 +1,5 @@
 <?php
+use Entidades\ZgfinSeqCodTransacao;
 #################################################################################
 ## Includes
 #################################################################################
@@ -17,20 +18,20 @@ if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection
 if (isset($_POST['codConta']))			$codConta			= \Zage\App\Util::antiInjection($_POST['codConta']);
 
 if (isset($_POST['codConvExtra']))		$codConvExtra		= \Zage\App\Util::antiInjection($_POST['codConvExtra']);
-if (isset($_POST['codTipoEvento']))		$codTipoEvento		= \Zage\App\Util::antiInjection($_POST['codTipoEvento']);
+if (isset($_POST['codEvento']))		$codEvento		= \Zage\App\Util::antiInjection($_POST['codEvento']);
 if (isset($_POST['taxaConv']))			$taxaConv			= \Zage\App\Util::antiInjection($_POST['taxaConv']);
 if (isset($_POST['valor']))				$valor				= \Zage\App\Util::antiInjection($_POST['valor']);
 if (isset($_POST['quantDisp']))			$quantDisp			= \Zage\App\Util::antiInjection($_POST['quantDisp']);
 if (isset($_POST['quantConv']))			$quantConv			= \Zage\App\Util::antiInjection($_POST['quantConv']);
-if (isset($_POST['codTipoEvento']))		$codEvento			= \Zage\App\Util::antiInjection($_POST['codTipoEvento']);
 
 if (!isset($codConvExtra))				$codConvExtra		= array();
-if (!isset($codTipoEvento))				$codTipoEvento		= array();
+if (!isset($codEvento))				$codEvento		= array();
 if (!isset($taxaConv))					$taxaConv			= array();
 if (!isset($valor))						$valor				= array();
 if (!isset($quantDisp))					$quantDisp			= array();
 if (!isset($quantConv))					$quantConv			= array();
-if (!isset($codEvento))					$codEvento			= array();
+
+$valorTotal = 0;
 
 #################################################################################
 ## Limpar a variável de erro
@@ -57,6 +58,31 @@ if (!isset($codConta) || empty($codConta)) {
 	$err	= 1;
 }
 
+/** VALIDAR SE AS QUANTIDADES ESTÃO DE ACORDO COM O LIMITE **/
+for ($i = 0; $i < sizeof($codEvento); $i++) {
+	if (isset($quantConv[$i]) && !empty($quantConv[$i])) {
+		//Resgatar as configurações do tipo de evento
+		$oConviteConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento[$i] ));
+		
+		if (!$oConviteConf){
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Ops!! Não encontramos as configurações do convite extra. Caso o problema persista entre em contato com o nosso suporte.");
+			$err	= 1;
+		}else{
+			$quantConv[$i]	= (int) $quantConv[$i];
+			//Resgatar a quantidade de convites disponíveis para esse evento
+			$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oConviteConf->getCodigo());
+			
+			if ($qtdeConvDis < $quantConv[$i]){
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oConviteConf->getcodEvento()->getDescricao()." está maior que o disponível.");
+				$err	= 1;
+			}else{
+				$valorTotal = ($valorTotal) + ($quantConv[$i] * $oConviteConf->getValor());
+			}
+		}
+	}
+}
+
+
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  	exit;
@@ -68,12 +94,15 @@ if ($err != null) {
 try {
 	$em->getConnection()->beginTransaction();
 	
-	if (isset($codConvVenda) && (!empty($codConvVenda))) {
-		$oConviteVenda	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findOneBy(array('codigo' => $codConvVenda));
-		if (!$oConviteVenda) $oConviteVenda	= new \Entidades\ZgfmtConviteExtraVenda();
-	}else{
-		$oConviteVenda	= new \Entidades\ZgfmtConviteExtraVenda();
-	}
+	#################################################################################
+	## CODIGO DE TRANSAÇÃO
+	#################################################################################
+	$codTransacaoVenda = \Zage\Adm\Sequencial::proximoValor(ZgfinSeqCodTransacao);
+	
+	#################################################################################
+	## SALVAR CABEÇALHO DA VENDA
+	#################################################################################
+	$oConviteVenda	= new \Entidades\ZgfmtConviteExtraVenda();
 	 
 	#################################################################################
 	## RESGATAR OBJETOS
@@ -81,38 +110,13 @@ try {
 	$oFormando		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codFormando));
 	$oFormaPag		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
 	$oConta			= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codConta));
-
-	for ($i = 0; $i < sizeof($codConvExtra); $i++) {
-		#################################################################################
-		## Formatar os campos
-		#################################################################################
-		$valor[$i]			= \Zage\App\Util::to_float($valor[$i]);
-		$quantConv[$i]		= (int) $quantConv[$i];
-		
-		$valorTotal += $quantConv[$i] * $valor[$i];
-
-		if (isset($quantConv) || !empty($quantConv)) {
-			$convDis	= \Zage\Fmt\Convite::listaConviteDispFormando($codFormando, $codEvento[$i]);
-			if(empty($convDis) || $convDis == 0) {
-				$oConf = $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codTipoEvento' => $codEvento));
-				$convDis = $oConf->getQtdeMaxAluno();
-			}
-			
-			$validador = $convDis - $quantConv[$i];
-			if($validador < 0){
-				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Quantidade não pode ser maior que a disponível.");
-				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
- 				exit;
-			}
-		}
-	}
 	
 	#################################################################################
 	## SETAR VALORES
 	#################################################################################
 	$oConviteVenda->setCodFormando($oFormando);
-	$oConviteVenda->setCodTransacao(1);
 	$oConviteVenda->setCodFormaPagamento($oFormaPag);
+	$oConviteVenda->setCodTransacao($codTransacaoVenda);
 	$oConviteVenda->setCodContaRecebimento($oConta);
 	$oConviteVenda->setValorTotal($valorTotal);
 	$oConviteVenda->setTaxaConveniencia(null);
@@ -120,108 +124,184 @@ try {
 	
 	$em->persist($oConviteVenda);
 	
+	#################################################################################
+	## SALVAR OS ITENS DA VENDA
+	#################################################################################
+	
 	$linha = 0;
 	$html  = null;
-	for ($i = 0; $i < sizeof($codConvExtra); $i++) {
-		#################################################################################
-		## Formatar os campos
-		#################################################################################
-		$valor[$i]			= \Zage\App\Util::to_float($valor[$i]);
-		$quantConv[$i]		= (int) $quantConv[$i];
+	for ($i = 0; $i < sizeof($codEvento); $i++) {
+	 	//Resgatar as configurações do tipo de evento
+		$oConviteConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento[$i]));
+	 	 
+	 	#################################################################################
+	 	## SETAR VALORES
+	 	#################################################################################
+		$oConviteItem	= new \Entidades\ZgfmtConviteExtraVendaItem();
 		
-		if( isset($quantConv[$i]) && !empty($quantConv[$i]) && $quantConv[$i] != 0 ){
-			if (isset($codConvVenda) && (!empty($codConvVenda))) {
-		 		$oConviteItem	= $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findOneBy(array('codigo' => $codConvVenda));
-		 		if (!$oConviteItem) $oConviteItem	= new \Entidades\ZgfmtConviteExtraItem();
-		 	}else{
-		 		$oConviteItem	= new \Entidades\ZgfmtConviteExtraItem();
-		 	}
-		 	
-		 	#################################################################################
-		 	## RESGATAR OBJETOS
-		 	#################################################################################
-		 	$oConvConf			= $em->getRepository('Entidades\ZgfmtConviteExtraConf')->findOneBy(array('codTipoEvento' => $codTipoEvento[$i]));
-		 	 
-		 	#################################################################################
-		 	## SETAR VALORES
-		 	#################################################################################
-		 	$oConviteItem->setCodVenda($oConviteVenda);
-		 	$oConviteItem->setCodConviteConf($oConvConf);
-		 	$oConviteItem->setQuantidade($quantConv[$i]);
-		 	$oConviteItem->setValorUnitario($valor[$i]);
-		 	
-		 	$em->persist($oConviteItem);
-		 	
-		 	$linha = $i + 1;
-		 	$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
-		 	$html .= '<td style="padding: 10px;">'.$linha.'</td>';
-		 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getCodConviteConf()->getCodTipoEvento()->getDescricao().'</td>';
-		 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getQuantidade().'</td>';
-		 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getValorUnitario().'</td>';
-		 	$html .= '</tr>';
-		 	
-		}else{
-			continue;
-		}
+	 	$oConviteItem->setCodVenda($oConviteVenda);
+	 	$oConviteItem->setCodConviteConf($oConviteConf);
+	 	$oConviteItem->setQuantidade($quantConv[$i]);
+	 	$oConviteItem->setValorUnitario($oConviteConf->getValor());
+	 	
+	 	$em->persist($oConviteItem);
+	 	
+	 	//Montar tabela que será enviada por email
+	 	$linha = $i + 1;
+	 	$html .= '<tr style="background-color:#f9f9f9;padding:0; border:1px solid #ddd;text-align: center;">';
+	 	$html .= '<td style="padding: 10px;">'.$linha.'</td>';
+	 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getCodConviteConf()->getcodEvento()->getDescricao().'</td>';
+	 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getQuantidade().'</td>';
+	 	$html .= '<td style="padding: 10px;">'.$oConviteItem->getValorUnitario().'</td>';
+		$html .= '</tr>';
+		
 	}
+	
+	#################################################################################
+	## SALVAR NO FINANCEIRO
+	#################################################################################
+	#################################################################################
+	## Definir os valores fixos
+	#################################################################################
+	$codGrpAssociacao	= '1';
+	$dataVenc			= date($system->config["data"]["dateFormat"],strtotime("+5 days")); // Adicionar o número de dias configurado para geração de boleto
+	//$qtdeVendida		= ($qtdeVendida < $oRifa->getQtdeObrigatorio()) ? $oRifa->getQtdeObrigatorio() : $qtdeVendida;
+	//$valorTotal			= ($qtdeVendida * $oRifa->getValorUnitario());
+	$codTipoRec			= "U";
+	$parcela			= 1;
+	$codRecPer			= null;
+	$valorJuros			= 0;
+	$valorMora			= 0;
+	$valorDesconto		= 0;
+	$valorOutros		= 0;
+	$numParcelas		= 1;
+	$parcelaInicial		= 1;
+	$obs				= null;
+	$descricao			= 'Venda de convite extra';
+	$indValorParcela	= null;
+	$indSomenteVis		= 1;
+	
+	#################################################################################
+	## Resgatar os parâmetros da categoria
+	#################################################################################
+	$codCatConvite			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_CONVITE_EXTRA");
+	//$codCentroCustoConvite	= ($oRifa->getCodCentroCusto()) ? $oRifa->getCodCentroCusto()->getCodigo() : null;
+	
+	#################################################################################
+	## Ajustar o array de valores de rateio
+	#################################################################################
+	$pctRateio		= array(100);
+	$valorRateio	= array($valorTotal);
+	$codCategoria	= array($codCatConvite);
+	$codCentroCusto	= array("");
+	$codRateio		= array("");
+	$aValor			= array($valorTotal);
+	//$dataVenc		= date($system->config["data"]["dateFormat"]);
+	$aData			= array($dataVenc);
+	
+	#################################################################################
+	## Ajustar os campos do tipo CheckBox
+	#################################################################################
+	$flagRecebida		= 1;
+	$flagReceberAuto	= 0;
+	
+	#################################################################################
+	## Buscar a pessoa associada ao formando
+	#################################################################################
+	//$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$codUsuario);
+	
+	#################################################################################
+	## Criar o objeto do contas a Receber
+	#################################################################################
+	$conta		= new \Zage\Fin\ContaReceber();
+	
+	#################################################################################
+	## Resgata os objetos (chave estrangeiras)
+	#################################################################################
+	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
+	//$oForma		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
+	$oStatus	= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => "A"));
+	$oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
+	$oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codRecPer));
+	$oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
+	//$oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codContaRec));
+	
+	#################################################################################
+	## Ajustar os valores
+	#################################################################################
+	$valorTotal		= \Zage\App\Util::toPHPNumber($valorTotal);
+	
+	#################################################################################
+	## Escrever os valores no objeto
+	#################################################################################
+	$conta->setCodOrganizacao($oOrg);
+	$conta->setCodFormaPagamento($oFormaPag);
+	$conta->setCodStatus($oStatus);
+	$conta->setCodMoeda($oMoeda);
+	$conta->setCodPessoa($oFormando);
+	//$conta->setNumero($numero);
+	$conta->setDescricao($descricao);
+	$conta->setValor($valorTotal);
+	$conta->setValorJuros($valorJuros);
+	$conta->setValorMora($valorMora);
+	$conta->setValorDesconto($valorDesconto);
+	$conta->setValorOutros($valorOutros);
+	$conta->setDataVencimento($dataVenc);
+	$conta->setDocumento('dewdwe');
+	$conta->setObservacao($obs);
+	$conta->setNumParcelas($numParcelas);
+	$conta->setParcelaInicial($parcelaInicial);
+	$conta->setParcela($parcela);
+	$conta->setCodPeriodoRecorrencia($oPeriodo);
+	$conta->setCodTipoRecorrencia($oTipoRec);
+	//$conta->setIntervaloRecorrencia($intervaloRec);
+	$conta->setCodConta($oConta);
+	$conta->setIndReceberAuto($flagReceberAuto);
+	$conta->_setflagRecebida($flagRecebida);
+	$conta->_setIndValorParcela($indValorParcela);
+	$conta->_setValorTotal($valorTotal);
+	$conta->setCodGrupoAssociacao($codGrpAssociacao);
+	$conta->setIndSomenteVisualizar($indSomenteVis);
+	$conta->setCodTransacao($codTransacaoVenda);
+	
+	$conta->_setArrayValores($aValor);
+	$conta->_setArrayDatas($aData);
+	$conta->_setArrayCodigosRateio($codRateio);
+	$conta->_setArrayCategoriasRateio($codCategoria);
+	$conta->_setArrayCentroCustoRateio($codCentroCusto);
+	$conta->_setArrayValoresRateio($valorRateio);
+	$conta->_setArrayPctRateio($pctRateio);
 
 	#################################################################################
 	## SALVAR
 	#################################################################################
 	try {
-		$em->flush();
-		$em->clear();
+		$erro	= $conta->salva();
+	
+		if ($erro) {
+			$log->err("Erro ao salvar: ".$erro);
+			throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
+			$em->getConnection()->rollback();
+			$em->clear();			
+			exit;
+		}else{
+			$em->flush();
+			$em->clear();
+			$em->getConnection()->commit();
+		}
 	} catch (Exception $e) {
+		$em->getConnection()->rollback();
 		$log->debug("Erro ao salvar o convite:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
 	}
 	
-	#################################################################################
-	## Gerar a notificação
-	#################################################################################
-	/********** Enviar notificação *********/
-	### Gerar notificacao enviar email ###
-	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
-	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'RIFA_CONF_COMPRA'));
-	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
-	$notificacao->setAssunto("Confirmação compra do convite");
-	$notificacao->setCodRemetente($oRemetente);
-		
-	//$notificacao->associaUsuario($oHistEmail->getCodUsuario()->getCodigo());
-	$notificacao->enviaSistema();
-	$notificacao->enviaEmail();
-	$notificacao->setEmail($oFormando->getEmail());
-	$notificacao->setCodTemplate($template);
-		
-	$notificacao->adicionaVariavel('COD_TRASACAO'		,$oConviteItem->getCodVenda()->getCodTransacao());
-	$notificacao->adicionaVariavel('FORMA_PAGAMENTO'	,$oConviteItem->getCodVenda()->getCodFormaPagamento()->getDescricao());
-	$notificacao->adicionaVariavel('CONTA_RECEBIMENTO'	,$oConviteItem->getCodVenda()->getCodContaRecebimento()->getNome());
-	$notificacao->adicionaVariavel('COD_VENDA'			,$oConviteVenda->getCodigo());
-	$notificacao->adicionaVariavel('TOTAL'				,$oConviteItem->getCodVenda()->getValorTotal());
-	$notificacao->adicionaVariavel('DATA_VENDA'			,$oConviteItem->getCodVenda()->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]));
-	$notificacao->adicionaVariavel('NOME'				,$oConviteItem->getCodVenda()->getCodFormando()->getNome());
-	$notificacao->adicionaVariavel('EMAIL'				,$oConviteItem->getCodVenda()->getCodFormando()->getEmail());
-	$notificacao->adicionaVariavel('HTML_TABLE'			,$html);
-		
-	$notificacao->salva();
-
-	#################################################################################
-	## SALVAR
-	#################################################################################
-	try {
-		$em->flush();
-		$em->getConnection()->commit();
-	} catch (Exception $e) {
-		$log->debug("Erro ao salvar o convite:". $e->getTraceAsString());
-		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
-	}
+	
 	
 } catch (\Exception $e) {
-	$em->getConnection()->rollBack();
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;
 }
  
-$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,"Informações salvas com sucesso");
+
 echo '0'.\Zage\App\Util::encodeUrl('|'.$oConviteVenda->getCodigo());
