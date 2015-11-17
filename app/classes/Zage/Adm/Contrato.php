@@ -39,18 +39,18 @@ class Contrato {
 		#################################################################################
 		## Resgata o valor do Plano
 		#################################################################################
-		$planoValor		= $em->getRepository('\Entidades\ZgadmPlanoValor')->findOneBy(array('codPlano' => $contrato->getCodPlano()->getCodigo()),array('dataBase' => 'DESC'));
-		if (!$planoValor)	throw new \Exception($tr->trans("Configurações do plano não localizadas para o plano ".$contrato->getCodPlano()->getCodigo()));
+		//$planoValor		= $em->getRepository('\Entidades\ZgadmPlanoValor')->findOneBy(array('codPlano' => $contrato->getCodPlano()->getCodigo()),array('dataBase' => 'DESC'));
+		//if (!$planoValor)	throw new \Exception($tr->trans("Configurações do plano não localizadas para o plano ".$contrato->getCodPlano()->getCodigo()));
 		
 		#################################################################################
 		## Calcula o valor
 		#################################################################################
-		$valorDoPlano		= $planoValor->getValor();
+		$valorDoPlano		= $contrato->getValorPlano();
 		$valorDesconto		= $contrato->getValorDesconto();
 		$pctDesconto		= $contrato->getPctDesconto();
 		
 		if ($pctDesconto)	{
-			return ($valorDoPlano * (100 - $pctDesconto));
+			return ($valorDoPlano * (100 - $pctDesconto) / 100);
 		}
 		
 		if ($valorDesconto)	{
