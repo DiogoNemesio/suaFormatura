@@ -28,7 +28,7 @@ class Contrato {
 	 * @param int $codOrganizacao
 	 */
 	public static function getValorLicenca ($codOrganizacao) {
-		global $em,$system;
+		global $em,$system,$tr;
 		
 		#################################################################################
 		## Resgata as informações do contrato
