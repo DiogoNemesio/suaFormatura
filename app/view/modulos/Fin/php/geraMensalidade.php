@@ -188,16 +188,15 @@ try {
 			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
 		}
 		$oConta		.= '</optgroup>';
-		if ($aConta) {
-			$oConta		.= "<optgroup label='Contas da Formatura'>";
-			for ($i = 0; $i < sizeof($aConta); $i++) {
-				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
-				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
-			}
-			$oConta		.= '</optgroup>';
+	}
+	
+	if ($aConta) {
+		$oConta		.= ($aCntCer) ? "<optgroup label='Contas da Formatura'>" : '';
+		for ($i = 0; $i < sizeof($aConta); $i++) {
+			$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
+			$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
 		}
-	}else{
-		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+		$oConta		.= ($aCntCer) ? '</optgroup>' : '';
 	}
 
 
