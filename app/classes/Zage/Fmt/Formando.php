@@ -140,12 +140,12 @@ class Formando {
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
 					$qb->expr()->eq('p.cgc'				, ':cpf'),
-					$qb->expr()->notIn('cr.codStatus'		, ':codStatus')
+					$qb->expr()->in('cr.codStatus'		, ':codStatus')
 			))
 			->orderBy('cr.dataVencimento','ASC')
 			->addOrderBy('cr.descricao,cr.parcela,cr.dataEmissao','ASC')
 			->setParameter('codOrganizacao'	, $codOrganizacao)
-			->setParameter('codStatus'		, array("A","P"))
+			->setParameter('codStatus'		, array("L"))
 			->setParameter('cpf'			, $cpf);
 	
 			if (isset($aCategoria) && !empty($aCategoria)) {

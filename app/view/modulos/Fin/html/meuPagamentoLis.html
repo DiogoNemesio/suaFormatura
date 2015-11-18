@@ -109,7 +109,7 @@ function meuPagBoleto(pCodConta,pVenc,pValor,pJuros,pMora,pDesconto,pOutros,pTip
 	$('#emailID').val(pEmail);
 
 	if (pTipoMidia == "MAIL") {
-		zgMostraAviso('divMsgMeuPagID',"<i class='fa fa-cog fa-spin'></i>&nbsp;Aguarde e-mail sendo enviado !!!");
+		zgMostraMsg('divMsgMeuPagID',"<i class='fa fa-cog fa-spin'></i>&nbsp;Aguarde e-mail sendo enviado !!!");
 		$('#zgFormMeuPagID').submit(function(e) {
 			$.ajax({
 				type:	"POST", 

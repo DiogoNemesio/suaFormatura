@@ -514,6 +514,7 @@ if ($tipoMidia == "PDF") {
 	#################################################################################
 	$tpl->set('ID'					,$id);
 	$tpl->set('TEXTO_PARCELA'		,$textoParcela);
+	$tpl->set('NOME'				,$sacadoNome);
 	$tpl->set('DESC_CONTA'			,$descConta);
 	$tpl->set('URL_ORG'				,$urlOrg);
 	
