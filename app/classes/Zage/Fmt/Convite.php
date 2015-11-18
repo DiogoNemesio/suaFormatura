@@ -130,16 +130,19 @@ class Convite {
 		try {
 			$qb1->select('sum(i.quantidade) as qtde')
 			->from('\Entidades\ZgfmtConviteExtraVendaItem','i')
-			->leftJoin('\Entidades\ZgfmtConviteExtraVenda'		,'v',	\Doctrine\ORM\Query\Expr\Join::WITH, 'v.codigo 	= i.codVenda')
+			->leftJoin('\Entidades\ZgfmtConviteExtraVenda'		,'v',	\Doctrine\ORM\Query\Expr\Join::WITH, 'v.codigo 			= i.codVenda')
+			->leftJoin('\Entidades\ZgfinContaReceber'			,'cr',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codTransacao 	= v.codTransacao')
 			->where($qb1->expr()->andx(
 				$qb1->expr()->eq('v.codOrganizacao'		, ':codOrganizacao'),
 				$qb1->expr()->eq('v.codFormando'		, ':codFormando'),
-				$qb1->expr()->eq('i.codEvento'			, ':codEvento')
+				$qb1->expr()->eq('i.codEvento'			, ':codEvento'),
+				$qb1->expr()->notIn('cr.codStatus'		, ':codStatus')
 			))
 	
 			->setParameter('codOrganizacao'	,$system->getCodOrganizacao())
 			->setParameter('codFormando'  	,$codPessoa)
-			->setParameter('codEvento'		,$codEvento);
+			->setParameter('codEvento'		,$codEvento)
+			->setParameter('codStatus'		,array("C"));
 				
 			$query 			= $qb1->getQuery();
 			$qtdeVendida	= $query->getSingleScalarResult(); 
