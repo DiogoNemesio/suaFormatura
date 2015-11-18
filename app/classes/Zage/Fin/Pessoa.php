@@ -305,5 +305,66 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		return self::buscaPorCgc($codOrganizacao, $oUsuario->getCpf());
 	}
 	
+	/**
+	 * Lista as pessoas que podem ser vistas por uma determinada organização
+	 * @param unknown $codOrganizacao
+	 */
+	/**
+	 * 
+	 * @param int $codOrganizacao
+	 * @param array $codTipoPessoa
+	 * @param string $indTipo
+	 */
+	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system;
+		
+		#################################################################################
+		## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar os fornecedores do cerimonial tb
+		#################################################################################
+		$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($codOrganizacao);
+		$aOrg			= array($codOrganizacao);
+		if ($oFmtAdm && $indTipo != "indCliente")	{
+			$aOrg[]			= $oFmtAdm->getCodigo();			
+		}
+		
+		#################################################################################
+		## Objeto do query builder
+		#################################################################################
+		$qb 	= $em->createQueryBuilder();
+		
+		try {
+			$qb->select('distinct p')
+			->from('\Entidades\ZgfinPessoa','p')
+			->where($qb->expr()->andX(
+				$qb->expr()->orX(
+					$qb->expr()->in('p.codOrganizacao'	, ':codOrganizacao'),
+					$qb->expr()->isNull('p.codOrganizacao')
+				),
+				$qb->expr()->in('p.codTipoPessoa'	, ':codTipoPessoa'),
+				$qb->expr()->eq('p.'.$indTipo		, ':indTipo')
+			))
+
+			->orderBy('p.nome','ASC')
+			->setParameter('codOrganizacao'		,$aOrg)
+			->setParameter('codTipoPessoa'		,$codTipoPessoa);
+			
+				
+			if ($indTipo) 	{
+				$qb->andWhere($qb->expr()->andX(
+					$qb->expr()->eq('p.'.$indTipo, ':indTipo')
+				));
+				$qb->setParameter('indTipo'			,1);
+			}
+				
+			$query 		= $qb->getQuery();
+			return ($query->getResult()); 
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 }
 

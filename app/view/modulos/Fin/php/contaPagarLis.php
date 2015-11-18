@@ -260,6 +260,10 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	#################################################################################
 	$grid->setValorCelula($i,$colParcela,$contas[$i]->getParcela() . " / ".$contas[$i]->getNumParcelas());
 	
+	#################################################################################
+	## Indicador de somente visualização
+	#################################################################################
+	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
 	
 	#################################################################################
 	## Resgatar o status para controlar as ações
@@ -267,24 +271,26 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$status		= $contas[$i]->getCodStatus()->getCodigo();
 	
 	switch ($status) {
-		
+	
 		case "A":
-			$podeAlt	= true;
-			$podeExc	= true;
-			$podeCan	= true;
-			$podeCon	= true;
-			$podePls	= false;
-			$podeSub	= true;
+			$podeAlt	= ($indSomenteVis) ? false : true;
+			$podeExc	= ($indSomenteVis) ? false : true;
+			$podeCan	= ($indSomenteVis) ? false : true;
+			$podeCon	= ($indSomenteVis) ? false : true;
+			$podeRls	= false;
 			$podeImp	= true;
+			$podeSub	= ($indSomenteVis) ? false : true;
+			$podeBol	= true;
 			break;
 		case "C":
 			$podeAlt	= false;
-			$podeExc	= true;
+			$podeExc	= ($indSomenteVis) ? false : true;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podePls	= false;
-			$podeSub	= false;
+			$podeRls	= false;
 			$podeImp	= true;
+			$podeSub	= false;
+			$podeBol	= false;
 			break;
 		case "L":
 		case "EP":
@@ -292,54 +298,60 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podePls	= true;
-			$podeSub	= false;
+			$podeRls	= true;
 			$podeImp	= true;
+			$podeSub	= false;
+			$podeBol	= false;
 			break;
 		case "SC":
 			$podeAlt	= false;
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podePls	= true;
-			$podeSub	= false;
+			$podeRls	= true;
 			$podeImp	= true;
+			$podeSub	= false;
+			$podeBol	= false;
 			break;
 		case "S":
 			$podeAlt	= false;
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podePls	= false;
-			$podeSub	= false;
+			$podeRls	= false;
 			$podeImp	= true;
+			$podeSub	= false;
+			$podeBol	= false;
 			break;
 		case "SS":
 			$podeAlt	= false;
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podePls	= true;
-			$podeSub	= false;
+			$podeRls	= true;
 			$podeImp	= true;
+			$podeSub	= false;
+			$podeBol	= false;
 			break;
 		case "P":
 			$podeAlt	= false;
 			$podeExc	= false;
-			$podeCan	= true;
-			$podeCon	= true;
-			$podePls	= true;
-			$podeSub	= true;
+			$podeCan	= ($indSomenteVis) ? false : true;
+			$podeCon	= ($indSomenteVis) ? false : true;
+			$podeRls	= true;
 			$podeImp	= true;
+			$podeSub	= ($indSomenteVis) ? false : true;
+			$podeBol	= true;
 			break;
 		default:
 			$podeAlt	= false;
 			$podeExc	= false;
 			$podeCan	= false;
 			$podeCon	= false;
-			$podePls	= false;
-			$podeSub	= false;
+			$podeRls	= false;
 			$podeImp	= false;
+			$podeSub	= false;
+			$podeBol	= false;
 			break;
 	}
 	

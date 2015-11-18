@@ -86,6 +86,7 @@ $parcelaInicial	= $info->getParcelaInicial();
 $intervaloRec	= $info->getIntervaloRecorrencia();
 $codContaRec	= ($info->getCodConta() != null) 	? $info->getCodConta()->getCodigo() : null;
 $indRecAuto		= $info->getIndReceberAuto();
+$indSomenteVis	= $info->getIndSomenteVisualizar();
 
 if ($indRecAuto == 1) {
 	$indRecAuto		= 'checked="checked"';
@@ -135,7 +136,7 @@ switch ($codStatus) {
 		$view	= 1;
 		break;
 	default:
-		if (!isset($view)) $view = 0;
+		if (!isset($view)) 	$view 		= ($indSomenteVis) ? 1 : 0;
 		break;
 		
 }
@@ -354,7 +355,6 @@ $tpl->set('VALOR_OUTROS'		,\Zage\App\Util::formataDinheiro($valorOutros));
 $tpl->set('VALOR_TOTAL'			,$valorTotal);
 $tpl->set('VALOR_DESCONTO_JUROS',\Zage\App\Util::formataDinheiro($valorDescJuros));
 $tpl->set('VALOR_DESCONTO_MORA'	,\Zage\App\Util::formataDinheiro($valorDescMora));
-
 $tpl->set('DATA_EMISSAO'		,$dataEmissao);
 $tpl->set('DATA_LIQ'			,$dataLiq);
 $tpl->set('DATA_VENC'			,$dataVenc);
@@ -373,7 +373,7 @@ $tpl->set('CENTROS_CUSTO'		,$oCentroCusto);
 $tpl->set('CATEGORIAS'			,$oCat);
 $tpl->set('RATEIOS'				,$tabRateio);
 $tpl->set('COD_TIPO_REC'		,$codTipoRec);
-
+$tpl->set('IND_SOMENTE_VIS'		,$indSomenteVis);
 
 $tpl->set('INTERVALO_REC'		,$intervaloRec);
 $tpl->set('PARCELA_INICIAL'		,$parcelaInicial);

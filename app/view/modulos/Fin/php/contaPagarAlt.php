@@ -85,6 +85,7 @@ $parcelaInicial	= $info->getParcelaInicial();
 $intervaloRec	= $info->getIntervaloRecorrencia();
 $codContaPag	= ($info->getCodConta() != null) 	? $info->getCodConta()->getCodigo() : null;
 $indPagAuto		= $info->getIndPagarAuto();
+$indSomenteVis	= $info->getIndSomenteVisualizar();
 
 if ($indPagAuto == 1) {
 	$indPagAuto		= 'checked="checked"';
@@ -134,7 +135,7 @@ switch ($codStatus) {
 		$view	= 1;
 		break;
 	default:
-		if (!isset($view)) $view = 0;
+		if (!isset($view)) 	$view 		= ($indSomenteVis) ? 1 : 0;
 		break;
 		
 }
@@ -365,7 +366,7 @@ $tpl->set('CENTROS_CUSTO'		,$oCentroCusto);
 $tpl->set('CATEGORIAS'			,$oCat);
 $tpl->set('RATEIOS'				,$tabRateio);
 $tpl->set('COD_TIPO_REC'		,$codTipoRec);
-
+$tpl->set('IND_SOMENTE_VIS'		,$indSomenteVis);
 
 $tpl->set('INTERVALO_REC'		,$intervaloRec);
 $tpl->set('PARCELA_INICIAL'		,$parcelaInicial);

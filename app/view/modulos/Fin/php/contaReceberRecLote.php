@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -83,12 +88,23 @@ $aNaoPode	= array();
 for ($i = 0; $i < sizeof($contas); $i++) {
 
 	#################################################################################
+	## Indicador de somente visualização
+	#################################################################################
+	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
+	
+	#################################################################################
 	## Valida o status das contas
 	#################################################################################
 	switch ($contas[$i]->getCodStatus()->getCodigo()) {
 		case "A":
 		case "P":
-			$podeRec	= true;
+			if ($indSomenteVis) {
+				$aNaoPode[]	= $contas[$i]->getNumero();
+				$podeRec	= false;
+			}else{
+				$podeRec	= true;
+			}
+			
 			break;
 		default:
 			$aNaoPode[]	= $contas[$i]->getNumero();
@@ -129,9 +145,9 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 if (sizeof($aNaoPode) > 0) {
 	$podeRec	= "disabled";
 	if (sizeof($aNaoPode) > 1) {
-		$mensagem = $tr->trans('Contas não podem ser recebidas, status não permitido');
+		$mensagem = $tr->trans('Contas marcadas em vermelho não podem ser recebidas, status não permitido');
 	}else{
-		$mensagem = $tr->trans('Conta não pode ser recebida, status não permitido');
+		$mensagem = $tr->trans('Conta marcada em vermelho não pode ser recebida, status não permitido');
 	}
 }else{
 	

@@ -260,6 +260,10 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	#################################################################################
 	$grid->setValorCelula($i,$colParcela,$contas[$i]->getParcela() . " / ".$contas[$i]->getNumParcelas());
 	
+	#################################################################################
+	## Indicador de somente visualização
+	#################################################################################
+	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
 	
 	#################################################################################
 	## Resgatar o status para controlar as ações
@@ -269,18 +273,18 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	switch ($status) {
 		
 		case "A":
-			$podeAlt	= true;
-			$podeExc	= true;
-			$podeCan	= true;
-			$podeCon	= true;
+			$podeAlt	= ($indSomenteVis) ? false : true;
+			$podeExc	= ($indSomenteVis) ? false : true;
+			$podeCan	= ($indSomenteVis) ? false : true;
+			$podeCon	= ($indSomenteVis) ? false : true;
 			$podeRls	= false;
 			$podeImp	= true;
-			$podeSub	= true;
+			$podeSub	= ($indSomenteVis) ? false : true;
 			$podeBol	= true;
 			break;
 		case "C":
 			$podeAlt	= false;
-			$podeExc	= true;
+			$podeExc	= ($indSomenteVis) ? false : true;
 			$podeCan	= false;
 			$podeCon	= false;
 			$podeRls	= false;
@@ -332,11 +336,11 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 		case "P":
 			$podeAlt	= false;
 			$podeExc	= false;
-			$podeCan	= true;
-			$podeCon	= true;
+			$podeCan	= ($indSomenteVis) ? false : true;
+			$podeCon	= ($indSomenteVis) ? false : true;
 			$podeRls	= true;
 			$podeImp	= true;
-			$podeSub	= true;
+			$podeSub	= ($indSomenteVis) ? false : true;
 			$podeBol	= true;
 			break;
 		default:

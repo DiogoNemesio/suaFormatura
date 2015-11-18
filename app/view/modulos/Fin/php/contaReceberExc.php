@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -81,11 +86,21 @@ $aNaoPode	= array();
 for ($i = 0; $i < sizeof($contas); $i++) {
 	
 	#################################################################################
+	## Indicador de somente visualização
+	#################################################################################
+	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
+	
+	#################################################################################
 	## Valida o status das contas
 	#################################################################################
 	switch ($contas[$i]->getCodStatus()->getCodigo()) {
 		case "A":
-			$podeExc	= true;
+			if ($indSomenteVis) {
+				$aNaoPode[]	= $contas[$i]->getNumero();
+				$podeExc	= false;
+			}else{
+				$podeExc	= true;
+			}
 			break;
 		default:
 			$aNaoPode[]	= $contas[$i]->getNumero();
@@ -122,9 +137,9 @@ if (sizeof($aNaoPode) > 0) {
 	$podeExc	= "disabled";
 	
 	if (sizeof($aNaoPode) > 1) {
-		$texto = $tr->trans('Contas não podem ser excluídas, status não permitido');
+		$texto = $tr->trans('Contas marcadas em vermelho não podem ser excluídas, status não permitido');
 	}else{
-		$texto = $tr->trans('Conta não pode ser excluída, status não permitido');
+		$texto = $tr->trans('Conta marcada em vermelho não pode ser excluída, status não permitido');
 	}
 }else{
 	$podeExc	= "";

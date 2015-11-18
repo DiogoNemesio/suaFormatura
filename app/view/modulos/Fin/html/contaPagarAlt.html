@@ -25,6 +25,7 @@
 		<input type="hidden" id="valorTotalID" name="valorTotal">
 		<input type="hidden" id="aDataID" name="aData[]">
 		<input type="hidden" id="aValorID" name="aValor[]">
+		<input type="hidden" id="indSomenteVisID" name="indSomenteVis" value="%IND_SOMENTE_VIS%">
 		
 		
 		<div class="col-sm-9">
@@ -972,51 +973,52 @@ function getValorParcelaCPAlt() {
 
 function calculaAcoesBotoesCPAlt() {
 	var $podeImp,$podeCan,$podeCon,$podeHis,$podeExc;
+	var $indSomenteVis			= $('#indSomenteVisID').val();
 
 	switch ($('#codStatusID').val()) {
-		case "A":
-			$podeImp	= true;
-			$podeCan	= true;
-			$podeCon	= true;
-			$podeHis	= false;
-			$podeExc	= true;
-			break;
-		case "C":
-			$podeImp	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeHis	= true;
-			$podeExc	= true;
-			break;
-		case "L":
-			$podeImp	= true;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeHis	= true;
-			$podeExc	= false;
-			break;
-		case "S":
-			$podeImp	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeHis	= false;
-			$podeExc	= false;
-			break;
-		case "P":
-			$podeImp	= true;
-			$podeCan	= true;
-			$podeCon	= true;
-			$podeHis	= true;
-			$podeExc	= false;
-			break;
-		default:
-			$podeImp	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeHis	= false;
-			$podeExc	= false;
-			break;
-	}
+	case "A":
+		$podeImp	= true;
+		$podeCan	= ($indSomenteVis) ? false : true;
+		$podeCon	= ($indSomenteVis) ? false : true;
+		$podeHis	= false;
+		$podeExc	= ($indSomenteVis) ? false : true;
+		break;
+	case "C":
+		$podeImp	= false;
+		$podeCan	= false;
+		$podeCon	= false;
+		$podeHis	= true;
+		$podeExc	= ($indSomenteVis) ? false : true;
+		break;
+	case "L":
+		$podeImp	= true;
+		$podeCan	= false;
+		$podeCon	= false;
+		$podeHis	= true;
+		$podeExc	= false;
+		break;
+	case "S":
+		$podeImp	= false;
+		$podeCan	= false;
+		$podeCon	= false;
+		$podeHis	= false;
+		$podeExc	= false;
+		break;
+	case "P":
+		$podeImp	= true;
+		$podeCan	= ($indSomenteVis) ? false : true;
+		$podeCon	= ($indSomenteVis) ? false : true;
+		$podeHis	= true;
+		$podeExc	= false;
+		break;
+	default:
+		$podeImp	= false;
+		$podeCan	= false;
+		$podeCon	= false;
+		$podeHis	= false;
+		$podeExc	= false;
+		break;
+}
 	
 	var $urlImp		= "%ROOT_URL%/Fin/contaPagarImp.php?id="+zgEncodeUrl("_codMenu_=%COD_MENU%&_icone_=%IC%&urlVoltar=%URL_EDITAR%&codConta="+$('#codContaID').val());
 	var $urlCan		= "%ROOT_URL%/Fin/contaPagarCan.php?id="+zgEncodeUrl("_codMenu_=%COD_MENU%&_icone_=%IC%&urlVoltar=%URL_EDITAR%&codConta="+$('#codContaID').val());

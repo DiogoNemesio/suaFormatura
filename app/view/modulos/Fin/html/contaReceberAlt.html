@@ -25,6 +25,7 @@
 		<input type="hidden" id="valorTotalID" name="valorTotal">
 		<input type="hidden" id="aDataID" name="aData[]">
 		<input type="hidden" id="aValorID" name="aValor[]">
+		<input type="hidden" id="indSomenteVisID" name="indSomenteVis" value="%IND_SOMENTE_VIS%">
 		
 		
 		<div class="col-sm-9">
@@ -1002,21 +1003,22 @@ function getValorParcelaCRAlt() {
 
 function calculaAcoesBotoesCRAlt() {
 	var $podeImp,$podeCan,$podeCon,$podeHis,$podeExc;
-
+	var $indSomenteVis			= $('#indSomenteVisID').val();
+	
 	switch ($('#codStatusID').val()) {
 		case "A":
 			$podeImp	= true;
-			$podeCan	= true;
-			$podeCon	= true;
+			$podeCan	= ($indSomenteVis) ? false : true;
+			$podeCon	= ($indSomenteVis) ? false : true;
 			$podeHis	= false;
-			$podeExc	= true;
+			$podeExc	= ($indSomenteVis) ? false : true;
 			break;
 		case "C":
 			$podeImp	= false;
 			$podeCan	= false;
 			$podeCon	= false;
 			$podeHis	= true;
-			$podeExc	= true;
+			$podeExc	= ($indSomenteVis) ? false : true;
 			break;
 		case "L":
 			$podeImp	= true;
@@ -1034,8 +1036,8 @@ function calculaAcoesBotoesCRAlt() {
 			break;
 		case "P":
 			$podeImp	= true;
-			$podeCan	= true;
-			$podeCon	= true;
+			$podeCan	= ($indSomenteVis) ? false : true;
+			$podeCon	= ($indSomenteVis) ? false : true;
 			$podeHis	= true;
 			$podeExc	= false;
 			break;

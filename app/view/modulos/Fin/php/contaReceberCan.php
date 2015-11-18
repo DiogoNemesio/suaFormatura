@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -76,15 +81,30 @@ $aNaoPode	= array();
 for ($i = 0; $i < sizeof($contas); $i++) {
 	
 	#################################################################################
+	## Indicador de somente visualização
+	#################################################################################
+	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
+	
+	#################################################################################
 	## Valida o status das contas
 	#################################################################################
 	switch ($contas[$i]->getCodStatus()->getCodigo()) {
 		case "A":
-			$podeCan	= true;
+			if ($indSomenteVis) {
+				$podeCan	= false;
+				$aNaoPode[]	= $contas[$i]->getNumero();
+			}else{
+				$podeCan	= true;
+			}
 			break;
 		case "P":
-			$mensagem	= "Deseja realmente cancelar a conta abaixo, somente o saldo remanescente será cancelado, o status dessa ?";
-			$podeCan	= true;
+			$mensagem	= "Deseja realmente cancelar a conta abaixo ?, somente o saldo remanescente será cancelado !!";
+			if ($indSomenteVis) {
+				$podeCan	= false;
+				$aNaoPode[]	= $contas[$i]->getNumero();
+			}else{
+				$podeCan	= true;
+			}
 			break;
 		default:
 			$aNaoPode[]	= $contas[$i]->getNumero(); 
@@ -125,9 +145,9 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 if (sizeof($aNaoPode) > 0) {
 	$podeCan	= "disabled";
 	if (sizeof($aNaoPode) > 1) {
-		$mensagem = $tr->trans('Contas não podem ser cancelada, status não permitido');
+		$mensagem = $tr->trans('Contas marcadas em vermelho não podem ser cancelada, status não permitido');
 	}else{
-		$mensagem = $tr->trans('Conta não pode ser cancelada, status não permitido');
+		$mensagem = $tr->trans('Conta marcada em vermelho não pode ser cancelada, status não permitido');
 	}
 }else{
 	if (sizeof($contas) > 1) {

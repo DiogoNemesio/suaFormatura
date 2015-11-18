@@ -7,6 +7,10 @@ if (defined('DOC_ROOT')) {
 }else{
 	include_once('../include.php');
 }
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr,$tipoCadPessoa;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -53,7 +57,9 @@ try {
 		$nomeTipoPessoa	= "Transportadoras";
 	}
 	
-	$cliente	= $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), $indTipo => 1,'codTipoPessoa' => array("F","J")), array('nome' => 'ASC'));
+	$pessoas	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),$indTipo);
+	
+//	$pessoas	= $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), $indTipo => 1,'codTipoPessoa' => array("F","J")), array('nome' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -71,23 +77,46 @@ $grid->adicionaTexto($tr->trans('TIPO'), 				10, $grid::CENTER	,'codTipoPessoa:d
 $grid->adicionaStatus($tr->trans('STATUS'),'indAtivo');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($cliente);
+$grid->importaDadosDoctrine($pessoas);
+
+#################################################################################
+## Guarda numa variável o tipo da organização que está logada
+#################################################################################
+$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()), array('nome' => 'ASC')); 
+$tipoOrg	= $oOrg->getCodTipo()->getCodigo();
 
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($cliente); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPessoa='.$cliente[$i]->getCodigo().'&tipoCadPessoa='.$tipoCadPessoa.'&url='.$url);
-	if (strlen($cliente[$i]->getCgc()) == 14) {
-		$valor	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CNPJ)->aplicaMascara($cliente[$i]->getCgc());
+for ($i = 0; $i < sizeof($pessoas); $i++) {
+
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPessoa='.$pessoas[$i]->getCodigo().'&tipoCadPessoa='.$tipoCadPessoa.'&url='.$url);
+	if (strlen($pessoas[$i]->getCgc()) == 14) {
+		$valor	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CNPJ)->aplicaMascara($pessoas[$i]->getCgc());
 		$grid->setValorCelula($i,2,$valor);
-	}elseif (strlen($cliente[$i]->getCgc()) == 11) {
-		$valor	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($cliente[$i]->getCgc());
+	}elseif (strlen($pessoas[$i]->getCgc()) == 11) {
+		$valor	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($pessoas[$i]->getCgc());
 		$grid->setValorCelula($i,2,$valor);
 	}
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/pessoaAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fin/pessoaExc.php?id='.$uid);
+	
+	#################################################################################
+	## Verificar se a Pessoa pode ser alterada
+	#################################################################################
+	if ($tipoOrg == "ADM") {
+		$podeAlt		=  true;
+	}else{
+		$codOrgPessoa	= ($pessoas[$i]->getCodOrganizacao()) ? $pessoas[$i]->getCodOrganizacao()->getCodigo() : false;
+		$podeAlt		= ($codOrgPessoa && $codOrgPessoa == $system->getCodOrganizacao()) ? true : false;
+	}
+	 
+	if ($podeAlt) {
+		$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/pessoaAlt.php?id='.$uid);
+		$grid->setUrlCelula($i,6,ROOT_URL.'/Fin/pessoaExc.php?id='.$uid);
+	}else{
+		$grid->desabilitaCelula($i, 5);
+		$grid->desabilitaCelula($i, 6);
+	}
 }
 
 #################################################################################
