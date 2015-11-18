@@ -99,41 +99,104 @@ class Convite {
 	/**
 	 * Quantidade convite disponivel por configuração de evento
 	 *
-	 * @param integer $codFormando
+	 * @param integer $codPessoa (FORMANDO)
 	 * @param integer $codEvento
 	 * @return array
 	 */
-	public static function qtdeConviteDispFormando($codFormando, $codConviteConf) {
+	public static function qtdeConviteDispFormando($codPessoa, $codEvento) {
 		global $em,$system;
 	
-		$qb 	= $em->createQueryBuilder();
+		
+		#################################################################################
+		## O Cálculo de quantidade disponível será :a quantidade máxima de convites por formando do evento
+		## em questão, menos as vendas e as transferências de débito
+		## mais as transferências de crédito.
+		#################################################################################
+		
+		#################################################################################
+		## Resgatar as configurações do evento, onde está configurado a quantidade máxima
+		## por formando, caso não encontre retornar 0
+		#################################################################################
+		$oEveConf	= $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codEvento' => $codEvento));
+		if (!$oEveConf)	return 0;
+		$qtdeMax	= $oEveConf->getQtdeMaxAluno();
+		
+		
+		#################################################################################
+		## Calcular as vendas já efetuadas
+		#################################################################################
+		$qb1 	= $em->createQueryBuilder();
 	
 		try {
-			$qb->select('c.qtdeMaxAluno - sum(i.quantidade)')
+			$qb1->select('sum(i.quantidade) as qtde')
 			->from('\Entidades\ZgfmtConviteExtraVendaItem','i')
 			->leftJoin('\Entidades\ZgfmtConviteExtraVenda'		,'v',	\Doctrine\ORM\Query\Expr\Join::WITH, 'v.codigo 	= i.codVenda')
-			->leftJoin('\Entidades\ZgfmtConviteExtraEventoConf'	,'c',	\Doctrine\ORM\Query\Expr\Join::WITH, 'c.codigo 	= i.codConviteConf')
-			->leftJoin('\Entidades\ZgfinPessoa'					,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo 	= v.codFormando')
-			//->leftJoin('\Entidades\ZgadmOrganizacao'			,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= c.codOrganizacao')
-			->where($qb->expr()->andx(
-					//$qb->expr()->eq('o.codigo'			, ':codOrganizacao'),
-					$qb->expr()->eq('p.codigo'				, ':codFormando'),
-					$qb->expr()->eq('c.codigo'				, ':codConviteConf')
-				)
-			)
+			->where($qb1->expr()->andx(
+				$qb1->expr()->eq('v.codOrganizacao'		, ':codOrganizacao'),
+				$qb1->expr()->eq('v.codFormando'		, ':codFormando'),
+				$qb1->expr()->eq('i.codEvento'			, ':codEvento')
+			))
 	
-			//->setParameter('codOrganizacao', $system->getCodOrganizacao())
-			->setParameter('codFormando'  	, $codFormando)
-			->setParameter('codConviteConf'	, $codConviteConf)
-	
-			->groupBy('c.codEvento');
-			//->orderBy('i.codigo', 'ASC');
+			->setParameter('codOrganizacao'	,$system->getCodOrganizacao())
+			->setParameter('codFormando'  	,$codPessoa)
+			->setParameter('codEvento'		,$codEvento);
 				
-			$query 		= $qb->getQuery();
-			//return($query->getResult());
-			return($query->getSingleScalarResult());
+			$query 			= $qb1->getQuery();
+			$qtdeVendida	= $query->getSingleScalarResult(); 
+			
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
+		
+		#################################################################################
+		## Calcular as transferências de crédito
+		#################################################################################
+		$qb2 	= $em->createQueryBuilder();
+		
+		try {
+			$qb2->select('sum(t.quantidade) as qtde')
+			->from('\Entidades\ZgfmtConviteExtraTransf','t')
+			->where($qb2->expr()->andx(
+				$qb2->expr()->eq('t.codEvento'			, ':codEvento'),
+				$qb2->expr()->eq('t.codFormandoDestino'	, ':codFormando')
+			))
+		
+			->setParameter('codFormando'  	,$codPessoa)
+			->setParameter('codEvento'		,$codEvento);
+		
+			$query 			= $qb2->getQuery();
+			$qtdeRecebida	= $query->getSingleScalarResult();
+				
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		#################################################################################
+		## Calcular as transferências de Débito
+		#################################################################################
+		$qb3 	= $em->createQueryBuilder();
+		
+		try {
+			$qb3->select('sum(t.quantidade) as qtde')
+			->from('\Entidades\ZgfmtConviteExtraTransf','t')
+			->where($qb3->expr()->andx(
+				$qb3->expr()->eq('t.codEvento'			, ':codEvento'),
+				$qb3->expr()->eq('t.codFormandoOrigem'	, ':codFormando')
+			))
+		
+			->setParameter('codFormando'  	,$codPessoa)
+			->setParameter('codEvento'		,$codEvento);
+		
+			$query 			= $qb3->getQuery();
+			$qtdeCedida	= $query->getSingleScalarResult();
+		
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		$qtde		= $qtdeMax - $qtdeVendida - $qtdeCedida + $qtdeRecebida;
+		
+		return ($qtde);
+		
 	}
 }

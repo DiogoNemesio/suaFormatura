@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtConviteExtraVenda
  *
- * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA", indexes={@ORM\Index(name="fk_table1_1_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_table1_2_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_1_idx", columns={"COD_CONTA_RECEBIMENTO"})})
+ * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_1_idx", columns={"COD_CONTA_RECEBIMENTO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_2_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_3_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_4_idx", columns={"COD_FORMA_PAGAMENTO"})})
  * @ORM\Entity
  */
 class ZgfmtConviteExtraVenda
@@ -50,6 +50,26 @@ class ZgfmtConviteExtraVenda
     private $dataCadastro;
 
     /**
+     * @var \Entidades\ZgfinConta
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinConta")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_CONTA_RECEBIMENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codContaRecebimento;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrganizacao;
+
+    /**
      * @var \Entidades\ZgfinPessoa
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
@@ -68,16 +88,6 @@ class ZgfmtConviteExtraVenda
      * })
      */
     private $codFormaPagamento;
-
-    /**
-     * @var \Entidades\ZgfinConta
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinConta")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CONTA_RECEBIMENTO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codContaRecebimento;
 
 
     /**
@@ -183,6 +193,52 @@ class ZgfmtConviteExtraVenda
     }
 
     /**
+     * Set codContaRecebimento
+     *
+     * @param \Entidades\ZgfinConta $codContaRecebimento
+     * @return ZgfmtConviteExtraVenda
+     */
+    public function setCodContaRecebimento(\Entidades\ZgfinConta $codContaRecebimento = null)
+    {
+        $this->codContaRecebimento = $codContaRecebimento;
+
+        return $this;
+    }
+
+    /**
+     * Get codContaRecebimento
+     *
+     * @return \Entidades\ZgfinConta 
+     */
+    public function getCodContaRecebimento()
+    {
+        return $this->codContaRecebimento;
+    }
+
+    /**
+     * Set codOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
+     * @return ZgfmtConviteExtraVenda
+     */
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
+    {
+        $this->codOrganizacao = $codOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodOrganizacao()
+    {
+        return $this->codOrganizacao;
+    }
+
+    /**
      * Set codFormando
      *
      * @param \Entidades\ZgfinPessoa $codFormando
@@ -226,28 +282,5 @@ class ZgfmtConviteExtraVenda
     public function getCodFormaPagamento()
     {
         return $this->codFormaPagamento;
-    }
-
-    /**
-     * Set codContaRecebimento
-     *
-     * @param \Entidades\ZgfinConta $codContaRecebimento
-     * @return ZgfmtConviteExtraVenda
-     */
-    public function setCodContaRecebimento(\Entidades\ZgfinConta $codContaRecebimento = null)
-    {
-        $this->codContaRecebimento = $codContaRecebimento;
-
-        return $this;
-    }
-
-    /**
-     * Get codContaRecebimento
-     *
-     * @return \Entidades\ZgfinConta 
-     */
-    public function getCodContaRecebimento()
-    {
-        return $this->codContaRecebimento;
     }
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtConviteExtraVendaItem
  *
- * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_ITEM_1_idx", columns={"COD_VENDA"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_ITEM_2_idx", columns={"COD_CONVITE_CONF"})})
+ * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_ITEM_2_idx", columns={"COD_VENDA"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_ITEM_1_idx", columns={"COD_EVENTO"})})
  * @ORM\Entity
  */
 class ZgfmtConviteExtraVendaItem
@@ -36,6 +36,16 @@ class ZgfmtConviteExtraVendaItem
     private $valorUnitario;
 
     /**
+     * @var \Entidades\ZgfmtEvento
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEvento")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_EVENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codEvento;
+
+    /**
      * @var \Entidades\ZgfmtConviteExtraVenda
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtConviteExtraVenda")
@@ -44,16 +54,6 @@ class ZgfmtConviteExtraVendaItem
      * })
      */
     private $codVenda;
-
-    /**
-     * @var \Entidades\ZgfmtConviteExtraEventoConf
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtConviteExtraEventoConf")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CONVITE_CONF", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codConviteConf;
 
 
     /**
@@ -113,6 +113,29 @@ class ZgfmtConviteExtraVendaItem
     }
 
     /**
+     * Set codEvento
+     *
+     * @param \Entidades\ZgfmtEvento $codEvento
+     * @return ZgfmtConviteExtraVendaItem
+     */
+    public function setCodEvento(\Entidades\ZgfmtEvento $codEvento = null)
+    {
+        $this->codEvento = $codEvento;
+
+        return $this;
+    }
+
+    /**
+     * Get codEvento
+     *
+     * @return \Entidades\ZgfmtEvento 
+     */
+    public function getCodEvento()
+    {
+        return $this->codEvento;
+    }
+
+    /**
      * Set codVenda
      *
      * @param \Entidades\ZgfmtConviteExtraVenda $codVenda
@@ -133,28 +156,5 @@ class ZgfmtConviteExtraVendaItem
     public function getCodVenda()
     {
         return $this->codVenda;
-    }
-
-    /**
-     * Set codConviteConf
-     *
-     * @param \Entidades\ZgfmtConviteExtraEventoConf $codConviteConf
-     * @return ZgfmtConviteExtraVendaItem
-     */
-    public function setCodConviteConf(\Entidades\ZgfmtConviteExtraEventoConf $codConviteConf = null)
-    {
-        $this->codConviteConf = $codConviteConf;
-
-        return $this;
-    }
-
-    /**
-     * Get codConviteConf
-     *
-     * @return \Entidades\ZgfmtConviteExtraEventoConf 
-     */
-    public function getCodConviteConf()
-    {
-        return $this->codConviteConf;
     }
 }
