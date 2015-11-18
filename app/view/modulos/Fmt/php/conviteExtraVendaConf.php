@@ -38,7 +38,7 @@ if (isset($_GET['codVenda'])){
 #################################################################################
 ## Resgatar informações da da venda
 #################################################################################
-$infoVenda = $em->getRepository('Entidades\ZgfmtConviteExtraItem')->findBy(array('codVenda' => $codVenda));
+$infoVenda = $em->getRepository('Entidades\ZgfmtConviteExtraVendaItem')->findBy(array('codVenda' => $codVenda));
 
 $total = 0;
 for ($i = 0; $i < sizeof($infoVenda); $i++) {
@@ -47,7 +47,7 @@ for ($i = 0; $i < sizeof($infoVenda); $i++) {
 	
 	$html .= '<tr>';
 	$html .= '<td class="center">'.$linha.'</td>';
-	$html .= '<td class="center">'.$infoVenda[$i]->getCodConviteConf()->getCodTipoEvento()->getDescricao().'</td>';
+	$html .= '<td class="center">'.$infoVenda[$i]->getCodEvento()->getCodTipoEvento()->getDescricao().'</td>';
 	$html .= '<td class="center">'.$infoVenda[$i]->getQuantidade().'</td>';
 	$html .= '<td class="center">'.$infoVenda[$i]->getValorUnitario().'</td>';
 	$html .= '</tr>';
@@ -65,7 +65,6 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('ID'					,$id);
 $tpl->set('IC'					,$_icone_);
 
-$tpl->set('COD_RIFA'			,$codRifa);
 $tpl->set('COD_TRASACAO'		,$infoVenda[0]->getCodVenda()->getCodTransacao());
 $tpl->set('FORMA_PAGAMENTO'		,$infoVenda[0]->getCodVenda()->getCodFormaPagamento()->getDescricao());
 $tpl->set('CONTA_RECEBIMENTO'	,$infoVenda[0]->getCodVenda()->getCodContaRecebimento()->getNome());

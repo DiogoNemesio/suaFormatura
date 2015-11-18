@@ -86,7 +86,7 @@ try {
 #################################################################################
 try {
 
-	#################################################################################
+#################################################################################
 	## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
 	#################################################################################
 	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
@@ -102,34 +102,19 @@ try {
 	if ($aCntCer) {
 		$oConta		= "<optgroup label='Contas do Cerimonial'>";
 		for ($i = 0; $i < sizeof($aCntCer); $i++) {
-			
-			if ($aCntCer[$i]->getCodigo() == $codConta){
-				$selected = 'selected';
-			}else{
-				$selected = '';
-			}
-			
 			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aCntCer[$i]->getCodigo()) : 0;
-			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' ".$selected." zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
 		}
 		$oConta		.= '</optgroup>';
-		if ($aConta) {
-			$oConta		.= "<optgroup label='Contas da Formatura'>";
-			for ($i = 0; $i < sizeof($aConta); $i++) {
-				
-				if ($aConta[$i]->getCodigo() == $codConta){
-					$selected = 'selected';
-				}else{
-					$selected = '';
-				}
-				
-				$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
-				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' ".$selected." zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
-			}
-			$oConta		.= '</optgroup>';
+	}
+	
+	if ($aConta) {
+		$oConta		.= ($aCntCer) ? "<optgroup label='Contas da Formatura'>" : '';
+		for ($i = 0; $i < sizeof($aConta); $i++) {
+			$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
+			$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
 		}
-	}else{
-		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME', $codConta ,'');
+		$oConta		.= ($aCntCer) ? '</optgroup>' : '';
 	}
 
 

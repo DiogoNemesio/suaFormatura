@@ -66,22 +66,20 @@ for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 	$valor			= ($eventoConfApto[$i]->getValor()) ? \Zage\App\Util::formataDinheiro($eventoConfApto[$i]->getValor()) : null;
 	$log->info($eventoConfApto[$i]->getCodigo());
 	if (isset($codFormando) && !empty($codFormando)) {
-		$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodigo());
+		$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
 		
 		if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
 			$qtdeDisponivel = 0;
 		}
 	
-	}else{
-		$qtdeDisponivel 	= 0;
 	}
 	
 	$html .= "<tr class=\"center\"><td class=\"center\" style=\"width: 20px;\"><div class=\"inline\" zg-type=\"zg-div-msg\"></div></td>
-				<td>".$eventoDesc."<input type='hidden' name='codTipoEvento[".$i."]' value='".$codEvento."'></td>
+				<td>".$eventoDesc."<input type='hidden' name='codEvento[]' value='".$codEvento."'></td>
 				<td>R$ ".$valor."<input type='hidden' name='valor[]' value='".$valor."' ></td>
 				<td>".$qtdeDisponivel."<input type='hidden' name='quantDisp[]' value='".$qtdeDisponivel."' ></td>
 				<td><input type='text' name='quantConv[]' id='quantConv' value='' size='2' zg-data-toggle=\"mask\" zg-data-mask=\"numero\" onchange='zgCalcularTotal();'></td>
-				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[".$i."]' value='0'><input type='hidden' name='codConvExtra[]' value='".$eventoConfApto[$i]->getCodigo()."'></td></tr>";
+				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[]' value='0'><input type='hidden' name='codConvExtra[]' value='".$eventoConfApto[$i]->getCodigo()."'></td></tr>";
 }
 
 $html 	.= "<tr><td colspan='5' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID' name='valorTotal'>R$ 0,00</div></td>";
