@@ -52,14 +52,14 @@ class ZgfmtConviteExtraEventoConf
     /**
      * @var integer
      *
-     * @ORM\Column(name="QTDE_MAX_ALUNO", type="integer", nullable=true)
+     * @ORM\Column(name="QTDE_MAX_ALUNO", type="integer", nullable=false)
      */
     private $qtdeMaxAluno;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="VALOR", type="string", length=45, nullable=true)
+     * @ORM\Column(name="VALOR", type="string", length=45, nullable=false)
      */
     private $valor;
 
