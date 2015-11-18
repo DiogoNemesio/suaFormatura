@@ -41,7 +41,7 @@ class Convite {
 			$qb->select('v')
 			->from('\Entidades\ZgfmtConviteExtraVendaItem','i')
 			->leftJoin('\Entidades\ZgfmtConviteExtraVenda'		,'v',	\Doctrine\ORM\Query\Expr\Join::WITH, 'v.codigo 	= i.codVenda')
-			->leftJoin('\Entidades\ZgfmtConviteExtraEventoConf'	,'c',	\Doctrine\ORM\Query\Expr\Join::WITH, 'c.codigo 	= i.codConviteConf')
+			->leftJoin('\Entidades\ZgfmtConviteExtraEventoConf'	,'c',	\Doctrine\ORM\Query\Expr\Join::WITH, 'c.codEvento 	= i.codEvento')
 			->leftJoin('\Entidades\ZgadmOrganizacao'			,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= c.codOrganizacao')
 			->where($qb->expr()->andx(
 					$qb->expr()->eq('o.codigo'				, ':codOrganizacao')
