@@ -45,8 +45,19 @@ try {
 # Select de Forma de Pagamento
 ################################################################################
 try {
-	$aFormaPag = $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-	$oFormaPag = $system->geraHtmlCombo($aFormaPag, 'CODIGO', 'DESCRICAO', $codFormaPag, '');
+	$aFormaPag = $em->getRepository('Entidades\ZgfmtConviteExtraVendaForma')->findBy(array('codVendaTipo' => 'P', 'codOrganizacao' => $system->getCodOrganizacao()),array());
+	//$oFormaPag = $system->geraHtmlCombo($aFormaPag, 'CODIGO', 'DESCRICAO', $codFormaPag, '');
+	
+	if(!$aFormaPag){
+		$aFormaPag = $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
+		$oFormaPag = $system->geraHtmlCombo($aFormaPag, 'CODIGO', 'DESCRICAO', $codFormaPag, '');
+	}else{
+		$oFormaPag      = "<option value=\"\"></option>";
+		foreach ($aFormaPag as $info) {
+			$oFormaPag .= "<option value=\"".$info->getCodFormaPagamento()->getCodigo()."\">".$info->getCodFormaPagamento()->getDescricao().'</option>';
+		}
+	}
+	
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }

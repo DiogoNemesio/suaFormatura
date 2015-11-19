@@ -70,6 +70,9 @@ for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 		
 		if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
 			$qtdeDisponivel = 0;
+			$readonly = "readonly";
+		}else{
+			$readonly = "";
 		}
 	
 	}
@@ -77,8 +80,8 @@ for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 	$html .= "<tr class=\"center\"><td class=\"center\" style=\"width: 20px;\"><div class=\"inline\" zg-type=\"zg-div-msg\"></div></td>
 				<td>".$eventoDesc."<input type='hidden' name='codEvento[]' value='".$codEvento."'></td>
 				<td>R$ ".$valor."<input type='hidden' name='valor[]' value='".$valor."' ></td>
-				<td>".$qtdeDisponivel."<input type='hidden' name='quantDisp[]' value='".$qtdeDisponivel."' ></td>
-				<td><input type='text' name='quantConv[]' id='quantConv' value='' size='2' zg-data-toggle=\"mask\" zg-data-mask=\"numero\" onchange='zgCalcularTotal();zgValidaQuantDisp();'></td>
+				<td>".$qtdeDisponivel."<input type='hidden' name='quantDisp[]' value='".$qtdeDisponivel."'></td>
+				<td><input type='text' name='quantConv[]' id='quantConv' value='' ".$readonly." size='2' zg-data-toggle=\"mask\" zg-data-mask=\"numero\" onchange='zgCalcularTotal();zgValidaQuantDisp();'></td>
 				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[]' value='0'><input type='hidden' name='codConvExtra[]' value='".$eventoConfApto[$i]->getCodigo()."'></td></tr>";
 	}
 
