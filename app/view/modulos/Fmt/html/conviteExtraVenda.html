@@ -259,7 +259,7 @@ function zgValidaQuantDisp(){
 	var vCount			= 0;
 	
 	for (j = 0; j < $quantConv.length; j++) {
-		if( !$quantConv.eq(j).val() || $quantConv.eq(j).val() == 0 ){
+		if( !$quantConv.eq(j).val() || parseInt($quantConv.eq(j).val()) == 0 ){
 			vNull++;
 		}else{
 			vCount = vCount + 1;
@@ -271,17 +271,22 @@ function zgValidaQuantDisp(){
 		var $td		= $quantConv.eq(i).parent();
 		var $tr		= $td.parent();
 		
-		if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
+		if( vNull == $quantConv.length ){
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Necessário a escolha de pelo menos um evento."));
+			$tr.addClass("alert-danger");
+			vOK = false;
+		}else if( parseInt($quantDisp.eq(i).val()) - parseInt($quantConv.eq(i).val()) < 0 ){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Quantidade da compra deve ser menor ou igual a disponível"));
 			$tr.addClass("alert-danger");
 			vOK = false;
-		}else if($quantConv.eq(i).val() && $quantConv.eq(i).val() < $quantDisp.eq(i).val()){
+		}else if( parseInt($quantConv.eq(i).val()) < parseInt($quantDisp.eq(i).val()) ){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
 			$tr.removeClass("alert-danger");
 		}else{
 			$tr.find('[zg-type="zg-div-msg"]').html("");
 			$tr.removeClass("alert-danger");
 		}
+		
 	}
 	
 	if( vOK == false ){
