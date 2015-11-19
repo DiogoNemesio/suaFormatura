@@ -10,6 +10,9 @@
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" id="codConvVendaID" name="codConvVenda" value="%COD_CONV_VENDA%">
 		<input type="hidden" id="quantTotalID" name="quantTotal">
+		<input type="hidden" id="taxaAdmID" name="taxaAdm" value=%TAXA_ADM%>
+		<input type="hidden" id="indAddTaxaBoletoID" value=%IND_ADD_TAXA_BOLETO%>
+		
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
@@ -29,7 +32,7 @@
 					<label for="codFormaPagID" class="col-xs-12 col-sm-5 control-label">Forma de Pagamento</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a forma de pagamento."></i></span>
-						<select id="codFormaPagID" name="codFormaPag" class="select2" data-placeholder="Selecione a forma de pagamento" >
+						<select id="codFormaPagID" name="codFormaPag" class="select2" onchange="zgCalcularTotal();" data-placeholder="Selecione a forma de pagamento" >
 							%COD_FORMA_PAG%
 						</select>
 					</div>
@@ -39,7 +42,7 @@
 					<label for="codContaID" class="col-xs-12 col-sm-5 control-label">Conta Recebimento</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a conta de recebimento."></i></span>
-						<select id="codContaID" name="codConta" class="select2" data-placeholder="Selecione a conta de recebimento" >
+						<select id="codContaRecID" name="codConta" class="select2" onchange="zgCalcularTotal();" data-placeholder="Selecione a conta de recebimento" >
 							%COD_CONTA%
 						</select>
 					</div>
@@ -83,7 +86,7 @@ $('.select2').css('width','100%').select2({allowClear:true});
 SUBMIT FORMULARIO
 /******************************************************/
 $('#btnSubmitID').on("click", function(e) {
-	var vOK 	= true;
+	var vOK 	= zgCheckConvite();
 	
 	if(vOK == false) 	{
 		$.gritter.add({
@@ -179,12 +182,8 @@ $('#zgFormID').submit(function() {
 	return false; 
 });
 
-function zgCalcularTotal(){
-	
-	if (zgValidaQuantDisp() == false){
-		return false;
-	}
-	
+function zgCalcularTotal(){	
+
 	var $valor		 = $("input[name='valor\\[\\]']");
 	var $quantConv   = $("input[name='quantConv\\[\\]']");
 	var $total		 = $("input[name='total\\[\\]']");
@@ -217,6 +216,27 @@ function zgCalcularTotal(){
 		vValorTotal += vCount;
 		$tr.find('[zg-name="total"]').html(accounting.formatMoney(vCount, options));
 	}
+	
+	//TAXA CONVENIÊNCIA
+	var vTaxaAdm			= zgConverteFloat($('#taxaAdmID').val());
+	var vConta				= $("#codContaRecID option:selected");
+	var vValorBoleto		= zgConverteFloat(vConta.attr("zg-val-boleto"));
+	var vFormaPag 			= $('#codFormaPagID').val();
+	var vIndAddTaxaBoleto	= $('#indAddTaxaBoletoID').val();
+	
+	if (vFormaPag == 'BOL' && vIndAddTaxaBoleto == 1){
+		if (vConta.val()){
+			vTaxaConv = vTaxaAdm + vValorBoleto;
+		}
+	}else{
+		vTaxaConv = vTaxaAdm;
+	}
+	
+	$('#valorConvenienciaID').html(accounting.formatMoney(vTaxaConv, options));
+	
+	// Somar o valor total a taxa de conveniencia
+	vValorTotal = vValorTotal + vTaxaConv;	
+	
 	$('#valorTotalID').html(accounting.formatMoney(vValorTotal, options));
 	$('#valorTotalID').val(accounting.formatMoney(vValorTotal, options));
 }
@@ -275,7 +295,7 @@ function zgValidaQuantDisp(){
 function zgCheckConvite(){
 	var vFormando 		= $('#codFormandoID').val();
 	var vFormaPag 		= $('#codFormaPagID').val();
-	var vConta		 	= $('#codContaID').val();
+	var vConta		 	= $('#codContaRecID').val();
 	vOK					= true;
 	
 	if (!vFormando) {

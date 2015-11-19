@@ -54,11 +54,54 @@ try {
 ################################################################################
 # Select de Conta Recebimento
 ################################################################################
+	#################################################################################
+	## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
+	#################################################################################
+	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+
+	if ($oFmtAdm)	{
+		$aCntCer	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('nome' => 'ASC'));
+	}else{
+		$aCntCer	= null;
+	}
+
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
+
+	if ($aCntCer) {
+		$oConta		= "<optgroup label='Contas do Cerimonial'>";
+		for ($i = 0; $i < sizeof($aCntCer); $i++) {
+			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aCntCer[$i]->getCodigo()) : 0;
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
+		}
+		$oConta		.= '</optgroup>';
+	}
+	
+	if ($aConta) {
+		$oConta		.= ($aCntCer) ? "<optgroup label='Contas da Formatura'>" : '';
+		for ($i = 0; $i < sizeof($aConta); $i++) {
+			$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
+			$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
+		}
+		$oConta		.= ($aCntCer) ? '</optgroup>' : '';
+	}
+
+################################################################################
+# Resgatar as configurações de venda presencial
+################################################################################
 try {
-	$aConta = $em->getRepository('Entidades\ZgfinConta')->findBy(array(),array('nome' => 'ASC'));
-	$oConta = $system->geraHtmlCombo($aConta, 'CODIGO', 'NOME', $codConta, '');
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+	$oConfFormaPag = $em->getRepository('Entidades\ZgfmtConviteExtraVendaConf')->findOneBy(array('codFormatura' => $system->getCodOrganizacao(), 'codVendaTipo' => 'P'));
+
+	if ($oConfFormaPag){
+		$taxaAdm 			=($oConfFormaPag->getTaxaAdministracao()) ? $oConfFormaPag->getTaxaAdministracao() : 0;
+		$indAddTaxaBoleto	=($oConfFormaPag->getIndAdicionarTaxaBoleto()) ? $oConfFormaPag->getIndAdicionarTaxaBoleto() : 0;
+		$codContaBoleto		=($oConfFormaPag->getCodContaBoleto()) ? $oConfFormaPag->getCodContaBoleto()->getCodigo() : 0;
+	}else{
+		$taxaAdm = 0;
+		$indAddTaxaBoleto = 0;
+	}
+
+} catch ( \Exception $e ) {
+	\Zage\App\Erro::halt ( $e->getMessage () );
 }
 
 ################################################################################
@@ -89,6 +132,11 @@ $tpl->set ( 'COD_CONV_VENDA'	   , $codConvVenda);
 $tpl->set ( 'COD_FORMANDO'	   	   , $oFormando);
 $tpl->set ( 'COD_FORMA_PAG'	   	   , $oFormaPag);
 $tpl->set ( 'COD_CONTA'	   		   , $oConta);
+
+$tpl->set ( 'TAXA_ADM'	   		   , $taxaAdm);
+$tpl->set ( 'IND_ADD_TAXA_BOLETO'  , $indAddTaxaBoleto);
+
+
 
 $tpl->set ( 'IC'				   ,$_icone_);
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );

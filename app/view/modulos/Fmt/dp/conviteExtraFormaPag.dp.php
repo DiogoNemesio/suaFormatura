@@ -54,8 +54,15 @@ if (in_array('BOL', $formaPag)) {
 }
 
 /******* Taxa de adm *********/
-if ((!empty($taxaAdministracao))) {
+if (!empty($taxaAdministracao)) {
 	$taxaAdministracao = \Zage\App\Util::to_float($taxaAdministracao);
+}else{
+	$taxaAdministracao = 0;
+}
+
+/******* Dias para o vencimento *********/
+if (!isset($diasVencimento) && empty($diasVencimento)) {
+	$diasVencimento = 0;
 }
 
 /******* Ind adicionar custo do boleto na taxa de comodidade *********/

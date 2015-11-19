@@ -51,9 +51,9 @@ try {
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GConvAlunos");
 $grid->adicionaTexto($tr->trans('ALUNO'),		 		20, $grid::CENTER	,'codFormando:nome');
-$grid->adicionaTexto($tr->trans('TOTAL VENDAS'),	 	20, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('TOTAL ITENS'),	 		20, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('VALOR TOTAL'),		 	20, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('NÚMERO DE COMPRAS'), 	20, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('STATUS'),		 		20, $grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans('TOTAL COMPRADO'),		 	20, $grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-info-circle',$tr->trans('Detalhes'));
 $grid->importaDadosDoctrine($convExtra);
 
@@ -65,6 +65,13 @@ for ($i = 0; $i < sizeof($convExtra); $i++) {
 	
 	$itens		= $em->getRepository('Entidades\ZgfmtConviteExtraVendaItem')->findBy(array('codVenda' => $convExtra[$i]->getCodigo()), array());
 	$convVenda	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findBy(array('codFormando' => $convExtra[$i]->getCodFormando()->getCodigo()), array());
+	
+	#################################################################################
+	## Link no nome
+	#################################################################################
+	$linkNome = 'javascript:zgLoadUrl(\''.ROOT_URL.'/Fmt/conviteExtraVendaLis.php?id='.$uid.'\');';
+	$grid->setValorCelula($i,0,'<a href="'.$linkNome.'">'.$convExtra[$i]->getcodFormando()->getNome().'</a>');
+	
 	
 	$valorTotal = null;
 	for ($ii = 0; $ii < sizeof($convVenda); $ii++) {

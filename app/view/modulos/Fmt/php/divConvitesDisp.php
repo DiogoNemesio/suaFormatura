@@ -82,7 +82,7 @@ for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 				<td><div name='total[".$i."]' zg-name=\"total\">R$ 0,00</div><input type='hidden' name='total[]' value='0'><input type='hidden' name='codConvExtra[]' value='".$eventoConfApto[$i]->getCodigo()."'></td></tr>";
 }
 
-$html 	.= "<tr><td colspan='5' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID' name='valorTotal'>R$ 0,00</div></td>";
+$html 	.= "<tr><td colspan='5' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID'></div></td>";
 $html 	.= "<tr><td colspan='5' align=\"right\"><strong>TOTAL</strong></td><td class=\"center\"><div id='valorTotalID' name='valorTotal'><strong>R$ 0,00</strong></div></td></table>";
 
 $html	.= '<script type="text/javascript" charset="%CHARSET%">';
@@ -91,6 +91,7 @@ $html	.= "$('[data-rel=select2]').css('width','100%').select2({allowClear:true})
 $html	.= "$('[zg-data-toggle="."mask"."]').each(function( index ) {";
 $html	.= "zgMask($( this ), $( this ).attr('zg-data-mask'));";
 $html	.= "});";
+
 $html	.= '</script>';
 
 echo $html;

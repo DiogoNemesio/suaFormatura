@@ -86,7 +86,7 @@ try {
 #################################################################################
 try {
 
-#################################################################################
+	#################################################################################
 	## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
 	#################################################################################
 	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());

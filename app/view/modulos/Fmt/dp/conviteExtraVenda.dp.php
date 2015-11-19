@@ -19,14 +19,12 @@ if (isset($_POST['codConta']))			$codConta			= \Zage\App\Util::antiInjection($_P
 
 if (isset($_POST['codConvExtra']))		$codConvExtra		= \Zage\App\Util::antiInjection($_POST['codConvExtra']);
 if (isset($_POST['codEvento']))			$codEvento			= \Zage\App\Util::antiInjection($_POST['codEvento']);
-if (isset($_POST['taxaConv']))			$taxaConv			= \Zage\App\Util::antiInjection($_POST['taxaConv']);
 if (isset($_POST['valor']))				$valor				= \Zage\App\Util::antiInjection($_POST['valor']);
 if (isset($_POST['quantDisp']))			$quantDisp			= \Zage\App\Util::antiInjection($_POST['quantDisp']);
 if (isset($_POST['quantConv']))			$quantConv			= \Zage\App\Util::antiInjection($_POST['quantConv']);
 
 if (!isset($codConvExtra))				$codConvExtra		= array();
 if (!isset($codEvento))					$codEvento			= array();
-if (!isset($taxaConv))					$taxaConv			= array();
 if (!isset($valor))						$valor				= array();
 if (!isset($quantDisp))					$quantDisp			= array();
 if (!isset($quantConv))					$quantConv			= array();
@@ -57,31 +55,38 @@ if (!isset($codConta) || empty($codConta)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a conta de recebimento.");
 	$err	= 1;
 }
-$log->debug($codEvento);
+
 /** VALIDAR SE AS QUANTIDADES ESTÃO DE ACORDO COM O LIMITE **/
 for ($i = 0; $i < sizeof($codEvento); $i++) {
 	if (isset($quantConv[$i]) && !empty($quantConv[$i])) {
 		//Resgatar as configurações do tipo de evento
-		$oConviteConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento[$i] ));
+		$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento[$i] ));
 		
-		if (!$oConviteConf){
+		if (!$oEventoConf){
 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Ops!! Não encontramos as configurações do convite extra. Caso o problema persista entre em contato com o nosso suporte.");
 			$err	= 1;
 		}else{
 			$quantConv[$i]	= (int) $quantConv[$i];
 			//Resgatar a quantidade de convites disponíveis para esse evento
-			$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oConviteConf->getCodEvento());
-			$log->debug($qtdeConvDis);
+			$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oEventoConf->getCodEvento());
 			if ($qtdeConvDis < $quantConv[$i]){
-				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oConviteConf->getcodEvento()->getCodTipoEvento()->getDescricao()." está maior que o disponível.");
+				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oEventoConf->getcodEvento()->getCodTipoEvento()->getDescricao()." está maior que o disponível.");
 				$err	= 1;
 			}else{
 				
-				$valorTotal = ($valorTotal) + ($quantConv[$i] * $oConviteConf->getValor());
+				$valorTotalConv = ($valorTotal) + ($quantConv[$i] * $oEventoConf->getValor());
 			}
 		}
 	}
 }
+
+/** RESGATAR O VALOR DA TAXA DE CONVENIENCIA PARA O TIPO PRESENCIAL **/
+$taxas 		= \Zage\Fmt\Convite::calcTaxaConveniencia('P', $codConta, $codFormaPag);
+$taxaConv	= $taxas['COVENIENCIA'];
+$taxaBol 	= $taxas['BOLETO'];
+
+//Adicionar ao valor total a taxa de conveniencia
+$valorTotal = $valorTotalConv + $taxaAdm + $taxaBol;
 
 
 if ($err != null) {
@@ -135,7 +140,7 @@ try {
 	$html  = null;
 	for ($i = 0; $i < sizeof($codEvento); $i++) {
 	 	//Resgatar as configurações do tipo de evento
-		$oConviteConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento[$i]));
+		$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento[$i]));
 	 	 
 	 	#################################################################################
 	 	## SETAR VALORES
@@ -143,9 +148,9 @@ try {
 		$oConviteItem	= new \Entidades\ZgfmtConviteExtraVendaItem();
 		
 	 	$oConviteItem->setCodVenda($oConviteVenda);
-	 	$oConviteItem->setCodEvento($oConviteConf->getCodEvento());
+	 	$oConviteItem->setCodEvento($oEventoConf->getCodEvento());
 	 	$oConviteItem->setQuantidade($quantConv[$i]);
-	 	$oConviteItem->setValorUnitario($oConviteConf->getValor());
+	 	$oConviteItem->setValorUnitario($oEventoConf->getValor());
 	 	
 	 	$em->persist($oConviteItem);
 	 	
@@ -188,16 +193,43 @@ try {
 	## Resgatar os parâmetros da categoria
 	#################################################################################
 	$codCatConvite			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_CONVITE_EXTRA");
+	$codCatBoleto			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
+	$codCatConveniencia		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
 	//$codCentroCustoConvite	= ($oRifa->getCodCentroCusto()) ? $oRifa->getCodCentroCusto()->getCodigo() : null;
 	
 	#################################################################################
 	## Ajustar o array de valores de rateio
 	#################################################################################
-	$pctRateio		= array(100);
-	$valorRateio	= array($valorTotal);
-	$codCategoria	= array($codCatConvite);
-	$codCentroCusto	= array("");
-	$codRateio		= array("");
+	$_pctRateio			= array();
+	$_valorRateio		= array();
+	$_codCategoria		= array();
+	$codCentroCusto		= array();
+	$_codRateio			= array();
+	
+	//Convite
+	$pctConvite 		= round((100 * $valorTotalConv) / $valorTotal,2);
+	$_pctRateio[]		= $pctConvite;		
+	$_valorRateio[]		= $valorTotalConv;
+	$_codCategoria[]	= $codCatConvite;
+	$_codCentroCusto[]	= null;
+	$_codRateio[]		= null;
+	
+	
+	//Custo do boleto
+	if ($taxaBol > 0){
+		$pctBoleto	 		= round((100 * $taxaBol) / $valorTotal,2);
+		$_pctRateio[] 		= $pctBoleto;
+		$_valorRateio[]		= $taxaBol;
+		$_codCategoria[]	= $codCatBoleto;
+		$_codCentroCusto[]	= null;
+		$_codRateio[]		= null;
+	}
+	
+	$pctRateio		= $_pctRateio;
+	$valorRateio	= $_valorRateio;
+	$codCategoria	= $_codCategoria;
+	$codCentroCusto	= $_codCentroCusto;
+	$codRateio		= $_codRateio;
 	$aValor			= array($valorTotal);
 	//$dataVenc		= date($system->config["data"]["dateFormat"]);
 	$aData			= array($dataVenc);

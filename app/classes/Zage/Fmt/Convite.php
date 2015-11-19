@@ -202,4 +202,59 @@ class Convite {
 		return ($qtde);
 		
 	}
+	
+	/**
+	 * Valor da taxa de conveniência
+	 *
+	 * @param integer $codFormaVenda (Presencial ou internet)
+	 * @param integer $codContaRec   (Conta de recebimemento)
+	 * @param integer $codFormaPag   (Forma de pagamento)
+	 * @return array
+	 */
+	public static function calcTaxaConveniencia($codFormaVenda, $codContaRec, $codFormaPag) {
+		global $em,$system;
+	
+	
+		#################################################################################
+		## O Cálculo da taxa de convêniencia será: o valor da taxa de administração
+		## configurado para o forma da venda, mais o valor do custo do boleto, caso
+		## esteja configurado para adicionar.
+		#################################################################################
+	
+		#################################################################################
+		## Resgatar as configurações da venda para o tipo
+		#################################################################################
+		$oVendaConf	= $em->getRepository('Entidades\ZgfmtConviteExtraVendaConf')->findOneBy(array('codFormatura' => $system->getCodOrganizacao(),'codVendaTipo' => $codFormaVenda));
+		if (!$oVendaConf)	return 0;
+		
+		$taxaAdm 			=($oVendaConf->getTaxaAdministracao()) ? $oVendaConf->getTaxaAdministracao() : 0;
+		$indAddTaxaBoleto	=($oVendaConf->getIndAdicionarTaxaBoleto()) ? $oVendaConf->getIndAdicionarTaxaBoleto() : 0;
+		$codContaBoleto		=($oVendaConf->getCodContaBoleto()) ? $oVendaConf->getCodContaBoleto()->getCodigo() : 0;
+		
+		$taxaConv['COVENIENCIA'] = $taxaAdm;
+	
+		#################################################################################
+		## Analisar a conta de boleto
+		#################################################################################
+		if ($codFormaPag == 'BOL'){
+			if ($indAddTaxaBoleto == 1){
+				$oConta	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codContaRec));
+				
+				$taxaBol	= ($oConta->getValorBoleto()) ? $oConta->getValorBoleto() : 0;
+				$taxaConv['BOLETO'] = $taxaBol;
+			}else{
+				$taxaConv['BOLETO'] = 0;
+			}
+			
+		}else{
+			$taxaConv['BOLETO'] = 0;
+		}
+		
+		#################################################################################
+		## Retornar o valor da taxa de coveniência
+		#################################################################################
+		return ($taxaConv);
+	
+	}
+	
 }
