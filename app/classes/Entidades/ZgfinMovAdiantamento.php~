@@ -43,6 +43,13 @@ class ZgfinMovAdiantamento
     private $valor;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="COD_GRUPO_MOV", type="bigint", nullable=false)
+     */
+    private $codGrupoMov;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -180,6 +187,29 @@ class ZgfinMovAdiantamento
     public function getValor()
     {
         return $this->valor;
+    }
+
+    /**
+     * Set codGrupoMov
+     *
+     * @param integer $codGrupoMov
+     * @return ZgfinMovAdiantamento
+     */
+    public function setCodGrupoMov($codGrupoMov)
+    {
+        $this->codGrupoMov = $codGrupoMov;
+
+        return $this;
+    }
+
+    /**
+     * Get codGrupoMov
+     *
+     * @return integer 
+     */
+    public function getCodGrupoMov()
+    {
+        return $this->codGrupoMov;
     }
 
     /**
