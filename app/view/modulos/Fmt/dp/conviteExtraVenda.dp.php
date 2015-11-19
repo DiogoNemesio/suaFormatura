@@ -57,8 +57,14 @@ if (!isset($codConta) || empty($codConta)) {
 }
 
 /** VALIDAR SE AS QUANTIDADES ESTÃO DE ACORDO COM O LIMITE **/
+$indTemQtde = 0;
 for ($i = 0; $i < sizeof($codEvento); $i++) {
 	if (isset($quantConv[$i]) && !empty($quantConv[$i])) {
+		//Verificar se a quantidade não está nula
+		if ($quantConv[$i] != ''){
+			$indTemQtde = 1;
+		}
+		
 		//Resgatar as configurações do tipo de evento
 		$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento[$i] ));
 		
@@ -78,6 +84,13 @@ for ($i = 0; $i < sizeof($codEvento); $i++) {
 			}
 		}
 	}
+}
+
+
+/** QUANTIDADE CONVITES **/
+if ($indTemQtde == 0) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Nenhum evento foi selecionado!");
+	$err	= 1;
 }
 
 /** RESGATAR O VALOR DA TAXA DE CONVENIENCIA PARA O TIPO PRESENCIAL **/
@@ -142,7 +155,14 @@ try {
 	 	//Resgatar as configurações do tipo de evento
 		$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento[$i]));
 	 	 
-	 	#################################################################################
+		#################################################################################
+		## CASO A QUANTIDADE ESTEJA NULA PARA O EVENTO CONTINUAR
+		#################################################################################
+		if ($quantConv[$i] == ''){
+			continue;
+		}
+		
+		#################################################################################
 	 	## SETAR VALORES
 	 	#################################################################################
 		$oConviteItem	= new \Entidades\ZgfmtConviteExtraVendaItem();

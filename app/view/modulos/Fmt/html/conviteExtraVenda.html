@@ -271,16 +271,15 @@ function zgValidaQuantDisp(){
 		var $td		= $quantConv.eq(i).parent();
 		var $tr		= $td.parent();
 		
-		if( vNull == $quantConv.length ){
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("É necessário escolher pelo menos um convite"));
-			$tr.addClass("alert-danger");
-			vOK = false;
-		}else if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
+		if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Quantidade da compra deve ser menor ou igual a disponível"));
 			$tr.addClass("alert-danger");
 			vOK = false;
-		}else{
+		}else if($quantConv.eq(i).val() && $quantConv.eq(i).val() < $quantDisp.eq(i).val()){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html("");
 			$tr.removeClass("alert-danger");
 		}
 	}
@@ -296,8 +295,10 @@ function zgCheckConvite(){
 	var vFormando 		= $('#codFormandoID').val();
 	var vFormaPag 		= $('#codFormaPagID').val();
 	var vConta		 	= $('#codContaRecID').val();
+	var vQuantConv  	= $("input[name='quantConv\\[\\]']");
 	vOK					= true;
 	
+	//Formando
 	if (!vFormando) {
 		$('#divCodFormandoID').addClass('has-error');
 		$('#divHelpCodFormandoID').html(zgCriaSpanErro('Formando deve ser preenchido !!'));
@@ -307,6 +308,7 @@ function zgCheckConvite(){
 		$('#divHelpCodFormandoID').html('&nbsp;');		
 	}
 	
+	//Forma de pagamento
 	if (!vFormaPag) {
 		$('#divCodFormaPagID').addClass('has-error');
 		$('#divHelpCodFormaPagID').html(zgCriaSpanErro('Forma de Pagamento deve ser preenchida !!'));
@@ -316,6 +318,7 @@ function zgCheckConvite(){
 		$('#divHelpCodFormaPagID').html('&nbsp;');		
 	}
 	
+	//Conta
 	if (!vConta) {
 		$('#divCodContaID').addClass('has-error');
 		$('#divHelpCodContaID').html(zgCriaSpanErro('Conta recebimento deve ser preenchida !!'));
@@ -323,6 +326,13 @@ function zgCheckConvite(){
 	}else{
 		$('#divCodContaID').removeClass('has-error');
 		$('#divHelpCodContaID').html('&nbsp;');		
+	}
+	
+	//Convite
+	if(vQuantConv.length == 0){
+		$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("É necessário escolher pelo menos um convite"));
+		$tr.addClass("alert-danger");
+		vOK = false;
 	}
 	
 	if (zgValidaQuantDisp() == false){
