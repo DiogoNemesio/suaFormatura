@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinContaReceber
  *
- * @ORM\Table(name="ZGFIN_CONTA_RECEBER", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_RECEBER_UK01", columns={"COD_ORGANIZACAO", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_2_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_3_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_5_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_6_idx", columns={"COD_TIPO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_7_idx", columns={"COD_PERIODO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_8_idx", columns={"COD_CONTA"}), @ORM\Index(name="ZGFIN_CONTA_RECEBER_IX01", columns={"COD_ORGANIZACAO", "COD_GRUPO_CONTA"}), @ORM\Index(name="ZGFIN_CONTA_RECEBER_IX02", columns={"COD_TRANSACAO"}), @ORM\Index(name="ZGFIN_CONTA_RECEBER_IX03", columns={"COD_GRUPO_ASSOCIACAO"}), @ORM\Index(name="IDX_ED3945769F83D42B", columns={"COD_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGFIN_CONTA_RECEBER", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_RECEBER_UK01", columns={"COD_ORGANIZACAO", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_2_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_3_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_5_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_6_idx", columns={"COD_TIPO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_7_idx", columns={"COD_PERIODO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_8_idx", columns={"COD_CONTA"}), @ORM\Index(name="ZGFIN_CONTA_RECEBER_IX01", columns={"COD_ORGANIZACAO", "COD_GRUPO_CONTA"}), @ORM\Index(name="ZGFIN_CONTA_RECEBER_IX02", columns={"COD_TRANSACAO"}), @ORM\Index(name="ZGFIN_CONTA_RECEBER_IX03", columns={"COD_GRUPO_ASSOCIACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_9_idx", columns={"COD_CONTA_PERFIL"}), @ORM\Index(name="IDX_ED3945769F83D42B", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfinContaReceber
@@ -239,13 +239,6 @@ class ZgfinContaReceber
     private $codGrupoAssociacao;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="IND_SOMENTE_VISUALIZAR", type="integer", nullable=true)
-     */
-    private $indSomenteVisualizar;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -324,6 +317,16 @@ class ZgfinContaReceber
      * })
      */
     private $codConta;
+
+    /**
+     * @var \Entidades\ZgfinContaPerfil
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaPerfil")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_CONTA_PERFIL", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codContaPerfil;
 
 
     /**
@@ -1050,29 +1053,6 @@ class ZgfinContaReceber
     }
 
     /**
-     * Set indSomenteVisualizar
-     *
-     * @param integer $indSomenteVisualizar
-     * @return ZgfinContaReceber
-     */
-    public function setIndSomenteVisualizar($indSomenteVisualizar)
-    {
-        $this->indSomenteVisualizar = $indSomenteVisualizar;
-
-        return $this;
-    }
-
-    /**
-     * Get indSomenteVisualizar
-     *
-     * @return integer 
-     */
-    public function getIndSomenteVisualizar()
-    {
-        return $this->indSomenteVisualizar;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -1254,5 +1234,28 @@ class ZgfinContaReceber
     public function getCodConta()
     {
         return $this->codConta;
+    }
+
+    /**
+     * Set codContaPerfil
+     *
+     * @param \Entidades\ZgfinContaPerfil $codContaPerfil
+     * @return ZgfinContaReceber
+     */
+    public function setCodContaPerfil(\Entidades\ZgfinContaPerfil $codContaPerfil = null)
+    {
+        $this->codContaPerfil = $codContaPerfil;
+
+        return $this;
+    }
+
+    /**
+     * Get codContaPerfil
+     *
+     * @return \Entidades\ZgfinContaPerfil 
+     */
+    public function getCodContaPerfil()
+    {
+        return $this->codContaPerfil;
     }
 }

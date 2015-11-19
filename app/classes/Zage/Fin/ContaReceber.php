@@ -1061,6 +1061,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$saldo 			+= ($_valJuros + $_valMora);
 		//$_total			= self::calculaValorTotal($oConta);
 		//$log->info("Conta: ".$oConta->getNumero()." Saldo a receber: ".$saldo." ValorJuros: ".$_valJuros." ValorMora: ".$_valMora." _CalcTotal:".$_total." ValorTotal: ".$valorTotal);
+
+		#################################################################################
+		## Grupo de Movimentação
+		#################################################################################
+		$grupoMov	= \Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoMov");
 		
 		#################################################################################
 		## Calcular o novo status
@@ -1125,6 +1130,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$oAdiant->setDataAdiantamento(\DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataRec));
 				$oAdiant->setDataTransacao(new \DateTime());
 				$oAdiant->setValor($diferenca);
+				$oAdiant->setCodGrupoMov($grupoMov);
 				$em->persist($oAdiant);
 			}
 		}
@@ -1162,11 +1168,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}else{
 			$dataLiq		= null;
 		}
-		
-		#################################################################################
-		## Grupo de Movimentação
-		#################################################################################
-		$grupoMov	= \Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoMov");
 		
 		#################################################################################
 		## Criar o objeto do Histórico de Recebimento
