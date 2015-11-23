@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinContaPagar
  *
- * @ORM\Table(name="ZGFIN_CONTA_PAGAR", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_PAGAR_UK01", columns={"COD_ORGANIZACAO", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_2_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_4_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_5_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_6_idx", columns={"COD_TIPO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_7_idx", columns={"COD_PERIODO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_8_idx", columns={"COD_CONTA"}), @ORM\Index(name="ZGFIN_CONTA_PAGAR_IX01", columns={"COD_ORGANIZACAO", "COD_GRUPO_CONTA"}), @ORM\Index(name="ZGFIN_CONTA_PAGAR_IX02", columns={"COD_TRANSACAO"}), @ORM\Index(name="ZGFIN_CONTA_PAGAR_IX03", columns={"COD_GRUPO_ASSOCIACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_9_idx", columns={"COD_PERFIL_ACAO"}), @ORM\Index(name="IDX_96D3C4759F83D42B", columns={"COD_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGFIN_CONTA_PAGAR", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_CONTA_PAGAR_UK01", columns={"COD_ORGANIZACAO", "NUMERO"})}, indexes={@ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_2_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_4_idx", columns={"COD_MOEDA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_5_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_6_idx", columns={"COD_TIPO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_7_idx", columns={"COD_PERIODO_RECORRENCIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_8_idx", columns={"COD_CONTA"}), @ORM\Index(name="ZGFIN_CONTA_PAGAR_IX01", columns={"COD_ORGANIZACAO", "COD_GRUPO_CONTA"}), @ORM\Index(name="ZGFIN_CONTA_PAGAR_IX02", columns={"COD_TRANSACAO"}), @ORM\Index(name="ZGFIN_CONTA_PAGAR_IX03", columns={"COD_GRUPO_ASSOCIACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_PAGAR_9_idx", columns={"COD_CONTA_PERFIL"}), @ORM\Index(name="IDX_96D3C4759F83D42B", columns={"COD_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfinContaPagar
@@ -309,10 +309,10 @@ class ZgfinContaPagar
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaPerfil")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PERFIL_ACAO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_CONTA_PERFIL", referencedColumnName="CODIGO")
      * })
      */
-    private $codPerfilAcao;
+    private $codContaPerfil;
 
 
     /**
@@ -1177,25 +1177,25 @@ class ZgfinContaPagar
     }
 
     /**
-     * Set codPerfilAcao
+     * Set codContaPerfil
      *
-     * @param \Entidades\ZgfinContaPerfil $codPerfilAcao
+     * @param \Entidades\ZgfinContaPerfil $codContaPerfil
      * @return ZgfinContaPagar
      */
-    public function setCodPerfilAcao(\Entidades\ZgfinContaPerfil $codPerfilAcao = null)
+    public function setCodContaPerfil(\Entidades\ZgfinContaPerfil $codContaPerfil = null)
     {
-        $this->codPerfilAcao = $codPerfilAcao;
+        $this->codContaPerfil = $codContaPerfil;
 
         return $this;
     }
 
     /**
-     * Get codPerfilAcao
+     * Get codContaPerfil
      *
      * @return \Entidades\ZgfinContaPerfil 
      */
-    public function getCodPerfilAcao()
+    public function getCodContaPerfil()
     {
-        return $this->codPerfilAcao;
+        return $this->codContaPerfil;
     }
 }

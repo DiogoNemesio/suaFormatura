@@ -11,8 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$system,$tr;
-
+global $system,$em,$tr;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -41,32 +40,40 @@ $system->checaPermissao($_codMenu_);
 ## Verificar parâmetro obrigatório
 #################################################################################
 if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
-
+if (!isset($codHist)) \Zage\App\Erro::halt('Falta de Parâmetros 3');
 
 #################################################################################
-## Resgata as informações do banco
+## Resgata as informações da conta
 #################################################################################
 $oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
+if (!$oConta) \Zage\App\Erro::halt('Conta não encontrada');
 
-if (!$oConta) {
-	\Zage\App\Erro::halt($tr->trans('Conta %s não encontrada !!!',array('%s' => $codConta)));
-}
+#################################################################################
+## Resgata as informações da Baixa
+#################################################################################
+$oHist		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codHist));
+if (!$oHist) \Zage\App\Erro::halt('Recebimento não encontrado');
 
 #################################################################################
 ## Indicador de somente visualização
 #################################################################################
 $indSomenteVis		= $oConta->getIndSomenteVisualizar();
-
+if ($indSomenteVis)	\Zage\App\Erro::halt($tr->trans('Conta não pode ser confirmada, pois é somente de visualização (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
 
 #################################################################################
-## Resgata o Histórico
+## Gerenciar as URls
 #################################################################################
-$oHist		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codContaRec' => $codConta));
+if (!isset($urlVoltar) || (!$urlVoltar)) {
+	$urlVoltar			= ROOT_URL . "/Fin/contaReceberRecLis.php?id=".$id;
+}else{
+	$urlVoltar			= $urlVoltar . "&id=".$id;
+}
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GContaHis");
+$aHist			= array($oHist);
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GContaHisExc");
 $grid->setPagingType(\Zage\App\Grid\Tipo::PG_NONE);
 $grid->setFiltro(0);
 $grid->setMostraInfo(0);
@@ -79,38 +86,8 @@ $grid->adicionaMoeda($tr->trans('DESCONTO'),			10, $grid::CENTER	,'valorDesconto
 $grid->adicionaMoeda($tr->trans('OUTROS'),				10, $grid::CENTER	,'valorOutros');
 $grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome');
 $grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
-$grid->adicionaIcone("#", "fa fa-trash red", "Excluir o recebimento");
-$grid->importaDadosDoctrine($oHist);
+$grid->importaDadosDoctrine($aHist);
 
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($oHist); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$codConta.'&codHist='.$oHist[$i]->getCodigo());
-	$url		= "javascript:zgAbreModal('".ROOT_URL . "/Fin/contaReceberRecExc.php?id=".$uid."');";
-	
-	if ($indSomenteVis) {
-		$grid->desabilitaCelula($i, 9);
-	}else{
-		$grid->setUrlCelula($i, 9, $url);
-	}
-}
-
-
-$gHtml	= $grid->getHtmlCode();
-
-if (!isset($urlVoltar) || (!$urlVoltar)) {
-	$urlVoltar			= ROOT_URL . "/Fin/contaReceberLis.php?id=".$id;
-}else{
-	$urlVoltar			= $urlVoltar . "&id=".$id;
-}
-
-
-#################################################################################
-## Calculo dos valores
-#################################################################################
-$valorTotal			= \Zage\App\Util::to_money(\Zage\Fin\ContaReceber::calculaValorTotal($oConta));
-$valorRecebido		= \Zage\App\Util::to_money((new \Zage\Fin\ContaReceber())->getValorJaRecebido($codConta)); 
 
 #################################################################################
 ## Carregando o template html
@@ -122,17 +99,21 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('ID'					,$id);
-$tpl->set('TITULO'				,$tr->trans('Histórico de Recebimento'));
+$tpl->set('TITULO'				,'Exclusão de Recebimento de Conta');
 $tpl->set('COD_CONTA'			,$codConta);
-$tpl->set('MENSAGEM'			,$mensagem);
-$tpl->set('GRID'				,$gHtml);
-$tpl->set('VALOR_TOTAL'			,$valorTotal);
-$tpl->set('VALOR_RECEBIDO'		,$valorRecebido);
-$tpl->set('GRID'				,$gHtml);
+$tpl->set('CONTAS_CRE'			,$oConta);
+$tpl->set('DATA_REC'			,$dataRec);
+$tpl->set('VALOR'				,\Zage\App\Util::formataDinheiro($valor));
+$tpl->set('VALOR_JUROS'			,\Zage\App\Util::formataDinheiro($valorJuros));
+$tpl->set('VALOR_MORA'			,\Zage\App\Util::formataDinheiro($valorMora));
+$tpl->set('VALOR_DESCONTO'		,\Zage\App\Util::formataDinheiro($valorDesconto));
+$tpl->set('VALOR_OUTROS'		,\Zage\App\Util::formataDinheiro($valorOutros));
+$tpl->set('DOCUMENTO'			,$documento);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
+$tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
-

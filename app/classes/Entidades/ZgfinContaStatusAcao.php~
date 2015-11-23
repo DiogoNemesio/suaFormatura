@@ -5,12 +5,12 @@ namespace Entidades;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ZgfinContaPerfilAcao
+ * ZgfinContaStatusAcao
  *
- * @ORM\Table(name="ZGFIN_CONTA_PERFIL_ACAO", indexes={@ORM\Index(name="ZGFIN_CONTA_PERFIL_ACAO_UK01", columns={"COD_CONTA_PERFIL", "COD_ACAO"}), @ORM\Index(name="fk_ZGFIN_CONTA_PERFIL_ACAO_2_idx", columns={"COD_ACAO"}), @ORM\Index(name="IDX_27CB7B1F49E4CF1C", columns={"COD_CONTA_PERFIL"})})
+ * @ORM\Table(name="ZGFIN_CONTA_STATUS_ACAO", indexes={@ORM\Index(name="fk_ZGFIN_CONTA_STATUS_ACAO_1_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGFIN_CONTA_STATUS_ACAO_2_idx", columns={"COD_ACAO"})})
  * @ORM\Entity
  */
-class ZgfinContaPerfilAcao
+class ZgfinContaStatusAcao
 {
     /**
      * @var integer
@@ -22,14 +22,14 @@ class ZgfinContaPerfilAcao
     private $codigo;
 
     /**
-     * @var \Entidades\ZgfinContaPerfil
+     * @var \Entidades\ZgfinContaStatusTipo
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaPerfil")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaStatusTipo")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_CONTA_PERFIL", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
      * })
      */
-    private $codContaPerfil;
+    private $codStatus;
 
     /**
      * @var \Entidades\ZgfinContaAcaoTipo
@@ -53,33 +53,33 @@ class ZgfinContaPerfilAcao
     }
 
     /**
-     * Set codContaPerfil
+     * Set codStatus
      *
-     * @param \Entidades\ZgfinContaPerfil $codContaPerfil
-     * @return ZgfinContaPerfilAcao
+     * @param \Entidades\ZgfinContaStatusTipo $codStatus
+     * @return ZgfinContaStatusAcao
      */
-    public function setCodContaPerfil(\Entidades\ZgfinContaPerfil $codContaPerfil = null)
+    public function setCodStatus(\Entidades\ZgfinContaStatusTipo $codStatus = null)
     {
-        $this->codContaPerfil = $codContaPerfil;
+        $this->codStatus = $codStatus;
 
         return $this;
     }
 
     /**
-     * Get codContaPerfil
+     * Get codStatus
      *
-     * @return \Entidades\ZgfinContaPerfil 
+     * @return \Entidades\ZgfinContaStatusTipo 
      */
-    public function getCodContaPerfil()
+    public function getCodStatus()
     {
-        return $this->codContaPerfil;
+        return $this->codStatus;
     }
 
     /**
      * Set codAcao
      *
      * @param \Entidades\ZgfinContaAcaoTipo $codAcao
-     * @return ZgfinContaPerfilAcao
+     * @return ZgfinContaStatusAcao
      */
     public function setCodAcao(\Entidades\ZgfinContaAcaoTipo $codAcao = null)
     {

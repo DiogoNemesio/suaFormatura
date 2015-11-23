@@ -22,16 +22,6 @@ class ZgfmtConviteExtraVendaForma
     private $codigo;
 
     /**
-     * @var \Entidades\ZgfinFormaPagamento
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinFormaPagamento")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_FORMA_PAGAMENTO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codFormaPagamento;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -40,6 +30,16 @@ class ZgfmtConviteExtraVendaForma
      * })
      */
     private $codOrganizacao;
+
+    /**
+     * @var \Entidades\ZgfinFormaPagamento
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinFormaPagamento")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_FORMA_PAGAMENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codFormaPagamento;
 
     /**
      * @var \Entidades\ZgfmtConviteExtraVendaTipo
@@ -63,29 +63,6 @@ class ZgfmtConviteExtraVendaForma
     }
 
     /**
-     * Set codFormaPagamento
-     *
-     * @param \Entidades\ZgfinFormaPagamento $codFormaPagamento
-     * @return ZgfmtConviteExtraVendaForma
-     */
-    public function setCodFormaPagamento(\Entidades\ZgfinFormaPagamento $codFormaPagamento = null)
-    {
-        $this->codFormaPagamento = $codFormaPagamento;
-
-        return $this;
-    }
-
-    /**
-     * Get codFormaPagamento
-     *
-     * @return \Entidades\ZgfinFormaPagamento 
-     */
-    public function getCodFormaPagamento()
-    {
-        return $this->codFormaPagamento;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -106,6 +83,29 @@ class ZgfmtConviteExtraVendaForma
     public function getCodOrganizacao()
     {
         return $this->codOrganizacao;
+    }
+
+    /**
+     * Set codFormaPagamento
+     *
+     * @param \Entidades\ZgfinFormaPagamento $codFormaPagamento
+     * @return ZgfmtConviteExtraVendaForma
+     */
+    public function setCodFormaPagamento(\Entidades\ZgfinFormaPagamento $codFormaPagamento = null)
+    {
+        $this->codFormaPagamento = $codFormaPagamento;
+
+        return $this;
+    }
+
+    /**
+     * Get codFormaPagamento
+     *
+     * @return \Entidades\ZgfinFormaPagamento 
+     */
+    public function getCodFormaPagamento()
+    {
+        return $this->codFormaPagamento;
     }
 
     /**
