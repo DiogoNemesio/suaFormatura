@@ -130,12 +130,14 @@ try {
 	$oFormaPag		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
 	$oConta			= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codConta));
 	$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
+	$oTipoVenda		= $em->getRepository('Entidades\ZgfmtConviteExtraVendaTipo')->findOneBy(array('codigo' => P));
 	
 	#################################################################################
 	## SETAR VALORES
 	#################################################################################
 	$oConviteVenda->setCodOrganizacao($oOrg);
 	$oConviteVenda->setCodFormando($oFormando);
+	$oConviteVenda->setCodVendaTipo($oTipoVenda);
 	$oConviteVenda->setCodFormaPagamento($oFormaPag);
 	$oConviteVenda->setCodTransacao($codTransacaoVenda);
 	$oConviteVenda->setCodContaRecebimento($oConta);
@@ -315,7 +317,7 @@ try {
 	$conta->_setIndValorParcela($indValorParcela);
 	$conta->_setValorTotal($valorTotal);
 	$conta->setCodGrupoAssociacao($codGrpAssociacao);
-	$conta->setIndSomenteVisualizar($indSomenteVis);
+	//$conta->setIndSomenteVisualizar($indSomenteVis);
 	$conta->setCodTransacao($codTransacaoVenda);
 	
 	$conta->_setArrayValores($aValor);

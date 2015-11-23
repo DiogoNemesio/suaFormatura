@@ -632,7 +632,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 				$object->setValorCancelado(0);
 				$object->setCodTransacao($this->getCodTransacao());
 				$object->setCodGrupoAssociacao($this->getCodGrupoAssociacao());
-				$object->setIndSomenteVisualizar($this->getIndSomenteVisualizar());
+				$object->setCodContaPerfil($this->getCodContaPerfil());
 			}
 				
 			$object->setCodOrganizacao($this->getCodOrganizacao());

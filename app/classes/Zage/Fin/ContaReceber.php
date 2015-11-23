@@ -633,9 +633,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$object->setValorCancelado(0);
 				$object->setCodTransacao($this->getCodTransacao());
 				$object->setCodGrupoAssociacao($this->getCodGrupoAssociacao());
-				$object->setIndSomenteVisualizar($this->getIndSomenteVisualizar());
 				$object->setValorDescontoJuros(0);
 				$object->setValorDescontoMora(0);
+				$object->setCodContaPerfil($this->getCodContaPerfil());
 			}
 				
 			$object->setCodOrganizacao($this->getCodOrganizacao());
@@ -2262,6 +2262,37 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
+	}
+	
+	/**
+	 * Verificar se a conta pode emitir boleto
+	 * @param unknown $oConta
+	 */
+	public static function podeEmitirBoleto($oConta) {
+		
+		#################################################################################
+		## Verificar se a conta está configurada para emitir boleto
+		## Fazer isso verificando se a carteira da conta está preenchida e o status
+		## da conta seja aberta ou pendente
+		#################################################################################
+		try {
+			$contaRec	= $oConta->getCodConta();
+			$formaPag	= ($oConta->getCodFormaPagamento()) ? $oConta->getCodFormaPagamento()->getCodigo() : null;
+			$status		= ($oConta->getCodStatus()) ? $oConta->getCodStatus()->getCodigo() : null;
+			if ( ($contaRec) && ($formaPag == 'BOL') ) {
+				if ($contaRec->getCodTipo()->getCodigo() == 'CC' && ($contaRec->getCodCarteira() != null) && ($status == "A" || $status == "P")  ) {
+					$pode		= true;
+				}else{
+					$pode		= false;
+				}
+			}else{
+				$pode		= false;
+			}
+		} catch (\Exception $e) {
+			$pode		= false;
+		}
+		
+		return $pode;
 	}
 	
 	public function _setCodConta($codigo) {
