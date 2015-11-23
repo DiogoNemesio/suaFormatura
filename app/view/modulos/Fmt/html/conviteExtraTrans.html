@@ -1,0 +1,214 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="%IC%">&nbsp;</i>Transferência de Convites
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+	<br />
+		
+	<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" id="quantTotalID" name="quantTotal">
+		<input type="hidden" id="valID" name="validado">
+
+		<div class="row">
+		<div id="divMsg"></div>
+			<div class="col-sm-6">
+				<div class="form-group col-sm-12" id="divCodFormandoID">
+					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
+					<div class="input-group col-sm-6 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o formando."></i></span>
+						<select id="codFormandoID" name="codFormando" class="select2" data-placeholder="Selecione o formando" >
+							%COD_FORMANDO%
+						</select>
+					</div>
+					<div class="col-sm-1 pull-left" id="divHelpCodFormandoID"></div>
+				</div>
+				<div class="form-group col-sm-12" id="divCodEventoID">
+					<label for="codEventoID" class="col-xs-12 col-sm-5 control-label">Evento</label>
+					<div class="input-group col-sm-6 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o evento."></i></span>
+						<select id="codEventoID" name="codEvento" class="select2" data-placeholder="Selecione o evento" onchange="zgConviteDisponivel();" >
+							%COD_EVENTO%
+						</select>
+					</div>
+					<div class="col-sm-1 pull-left" id="divHelpCodEventoID"></div>
+				</div>
+		   	</div>
+		   	<div class="col-sm-6">
+			   	<div class="form-group col-sm-12" id="divDisponivelID">
+			   		<label class="col-xs-12 col-sm-5 control-label">Disponível: </label>
+					<div class="input-group col-sm-6 pull-left">
+						<div id="disponivelID"></div>
+					</div>
+				</div>
+				<div class="form-group col-sm-12" id="divTransferirID">
+			   		<label for="transID" class="col-xs-12 col-sm-5 control-label">Transferir:</label>
+					<div class="input-group col-sm-6 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade que deseja transferir."></i></span>
+						<input type="text" id="quantConvID" name="quantConv" class="width-100" placeholder="Quantidade" autocomplete="off" />
+					</div>
+				</div>
+			</div>
+			
+	    </div>
+	    <br>
+
+		<div class="clearfix form-actions">
+			<label class="col-sm-4 control-label">&nbsp;</label>
+			<button type="button" class="btn btn-primary" id="btnSubmitID">
+				<i class="fa fa-check bigger-110"></i> Transferir
+			</button>
+			<button type="button" class="btn btn-warning" id="cancel"
+				onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+				<i class="fa fa-undo bigger-110"></i> Voltar
+			</button>
+		</div>
+	</form>
+</div>
+<script>
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Mascaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Mensagens
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+
+// SELECT2
+$('.select2').css('width','100%').select2({allowClear:true});
+
+/******************************************************
+SUBMIT FORMULARIO
+/******************************************************/
+$('#btnSubmitID').on("click", function(e) {
+	var vOK 	= zgCheckConvite();
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{
+		bootbox.dialog({
+			title: "Tem certeza que deseja confirmar a transferência?",
+			message: "Após está confirmação não será mais possível cancelar ou alterar a operação.",
+			
+			buttons: {
+				"Confirmar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-up'></i>Confirmar",
+					"className" : "btn-sm btn-primary",
+					"callback": function() {
+						$('#zgFormID').submit();
+					}
+				},
+				"Cancelar" : {
+					"label" : "<i class='ace-icon fa fa-thumbs-o-down'></i>Cancelar",
+					"className" : "btn-sm btn-danger",
+					"callback": function() {
+						zgLoadUrl('');
+					}
+	
+				},
+				
+			}
+		});
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			//Falta mudar a tela de confirmacao
+			//zgLoadUrl('%ROOT_URL%Fmt/conviteExtraVendaConf.php?id='+zgEncodeUrl('&codVenda='+zgGetCodRetorno(data)));
+			zgMostraAviso("Sucesso");
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+function zgConviteDisponivel(){
+	var vEvento		= $("#codEventoID option:selected");
+	var vQuantDisp	= vEvento.attr("zg-val-quantidade");
+	
+	if(vQuantDisp){
+		$('#disponivelID').html(vQuantDisp);
+		console.log(vQuantDisp);
+	}
+}
+
+function zgCheckConvite(){
+	var vFormando 		= $('#codFormandoID').val();
+	var vQuantConv  	= $("#quantConvID").val();
+	vOK					= true;
+	
+	//Formando
+	if (!vFormando) {
+		$('#divCodFormandoID').addClass('has-error');
+		$('#divHelpCodFormandoID').html(zgCriaSpanErro('Formando deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divCodFormandoID').removeClass('has-error');
+		$('#divHelpCodFormandoID').html('&nbsp;');		
+	}
+	
+	//Convite
+	if (!vQuantConv) {
+		$('#divQuantConvID').addClass('has-error');
+		$('#divHelpQuantConvID').html(zgCriaSpanErro('Quantidade de convites deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divQuantConvID').removeClass('has-error');
+		$('#divHelpQuantConvID').html('&nbsp;');		
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+</script> 

@@ -61,6 +61,38 @@ class Convite {
 	}
 	
 	/**
+	 * Lista vendas por formando
+	 *
+	 * @param integer $codOrganizacao
+	 * @return array
+	 */
+	public static function getCodigoUsuarioPessoa() {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('p.codigo')
+			->from('\Entidades\ZgfinPessoa','p')
+			->leftJoin('\Entidades\ZgsegUsuario','u',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.cpf = p.cgc')
+			->leftJoin('\Entidades\ZgadmOrganizacao'	,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= p.codOrganizacao')
+			->where($qb->expr()->andx(
+					$qb->expr()->eq('o.codigo' , ':codOrganizacao'),
+					$qb->expr()->eq('u.codigo' , ':codFormando')
+				)
+			)
+	
+			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('codFormando', $system->getCodUsuario());
+	
+			$query 		= $qb->getQuery();
+			return($query->getSingleScalarResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	/**
 	* Lista Configuracoes validas
 	*
 	* @param integer $codOrganizacao
