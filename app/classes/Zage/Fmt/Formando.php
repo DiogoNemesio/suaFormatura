@@ -22,6 +22,44 @@ class Formando {
 		global $log;
 		$log->debug(__CLASS__.": nova Instância");
 	}
+	
+	
+	/**
+	 * Lista pessoas ativas do tipo formando retiranto o usuário passado com parâmetro
+	 *	
+	 * @param int $codUsuário (Úsuário do sistema)
+	 * @return array
+	 */
+	public static function ListaPessoaFormandoRetiraSelec($codFormando){
+		global $em,$system, $log;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('p')
+			->from('\Entidades\ZgfinPessoa','p')
+			->leftJoin('\Entidades\ZgfinPessoaTipo'		,'t',	\Doctrine\ORM\Query\Expr\Join::WITH, 't.codigo 	= p.codTipoPessoa')
+			->leftJoin('\Entidades\ZgsegUsuario'		,'u',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.cpf = p.cgc')
+			->leftJoin('\Entidades\ZgadmOrganizacao'	,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= p.codOrganizacao')
+			->where($qb->expr()->andx(
+					$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
+					$qb->expr()->eq('t.codigo'					, ':codTipoPessoa'),
+					$qb->expr()->eq('p.indAtivo'				, ':indAtivo'),
+					$qb->expr()->neq('p.codigo'					, ':codFormando')
+				)
+			)
+	
+			->setParameter('codOrganizacao'	, $system->getCodOrganizacao())
+			->setParameter('codTipoPessoa'	, 'O')
+			->setParameter('codFormando'	, $codFormando)
+			->setParameter('indAtivo'		, 1);
+	
+			$query 		= $qb->getQuery();
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
 
 	/**
 	 * Lista os pagamentos atrasado de um formando em uma determinada formatura

@@ -34,9 +34,21 @@ $system->checaPermissao ( $_codMenu_ );
 ################################################################################
 # Select de Formando
 ################################################################################
+$msg 	  = null;
+$hidden	  = null;
+$disabled = null;
 try {
-	$aFormando = $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codTipoPessoa' => 'O','indAtivo' => 1),array('nome' => 'ASC'));
-	$oFormando = $system->geraHtmlCombo($aFormando, 'CODIGO', 'NOME', $codFormando, '');
+	$aFormando = \Zage\Fmt\Formando::ListaPessoaFormandoRetiraSelec($system->getCodUsuario());
+	
+	if(!empty($aFormando) && $aFormando !=0){
+		$oFormando = $system->geraHtmlCombo($aFormando, 'CODIGO', 'NOME', $codFormando, '');
+	}else{
+		$hidden = "hidden";
+		$disabled = "disabled";
+		$msg .= '<div class="alert alert-warning">';
+		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i>Formatura não possui nenhum formando ativo!';
+		$msg .= '</div>';
+	}
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -56,8 +68,13 @@ $oEvento      = "<option value=\"\"></option>";
 for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 	$codEvento	 	= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodigo() : null;
 	$eventoDesc		= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodTipoEvento()->getDescricao() : null;
+	
+	$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento ));
+	$qtdeMaxima	 = ($oEventoConf->getQtdeMaxAluno()) ? $oEventoConf->getQtdeMaxAluno() : null;
+	
+	
 	if (isset($codFormando) && !empty($codFormando)) {
-		$qtdeDisponivel	= 10 /* \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento())*/;
+		$qtdeDisponivel	= 5 /* \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento())*/;
 
 		if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
 			$qtdeDisponivel = 0;
@@ -66,7 +83,7 @@ for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 			$readonly = "";
 		}
 	}
-	$oEvento 	.= "<option value='".$codEvento."' zg-val-quantidade='".$qtdeDisponivel."'>".$eventoDesc."</option>";
+	$oEvento 	.= "<option value='".$codEvento."' zg-val-quantidade='".$qtdeDisponivel."' zg-val-maxima='".$qtdeMaxima."'>".$eventoDesc."</option>";
 }
 ################################################################################
 # Url Voltar
@@ -95,6 +112,9 @@ $tpl->set ( 'ID'				   , $id );
 $tpl->set ( 'COD_FORMANDO'	   	   , $oFormando);
 $tpl->set ( 'COD_EVENTO'	   	   , $oEvento);
 $tpl->set ( 'TABLE_TRANS'	   	   , $html);
+$tpl->set ( 'MSG'		 	  	   , $msg);
+$tpl->set ( 'HIDDEN'		 	   , $hidden);
+$tpl->set ( 'DISABLED'		 	   , $disabled);
 
 $tpl->set ( 'IC'				   ,$_icone_);
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );

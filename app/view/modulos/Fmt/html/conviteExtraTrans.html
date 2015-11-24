@@ -12,8 +12,8 @@
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
-			
-			<div class="col-sm-6" align="center">
+			<div id="msgID">%MSG%</div>
+			<div class="col-sm-6 %HIDDEN%" align="center">
 				<div align="center">		
 				<div class="form-group col-sm-12" id="divCodFormandoID">
 					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
@@ -40,12 +40,9 @@
 					<div class="input-group col-sm-6 pull-left">
 						
 						<div class="progress progress-striped pos-rel">
-							<div class="progress-bar progress-bar-success" style="width: 90%;"></div>
-							<div class="progress-bar progress-bar-danger" style="width: 10%;"></div>
+							<div id="porcentagemID" class="progress-bar progress-bar-success" style="width: 0%;"></div>
 						</div>
 
-						
-						
 						<div align="center" id="disponivelID"></div>
 					</div>
 				</div>
@@ -63,7 +60,7 @@
 
 		<div class="clearfix form-actions">
 			<label class="col-sm-5 control-label">&nbsp;</label>
-			<button type="button" class="btn btn-primary" id="btnSubmitID">
+			<button type="button" class="btn btn-primary" id="btnSubmitID" %DISABLED%>
 				<i class="fa fa-check bigger-110"></i> Transferir
 			</button>
 		</div>
@@ -175,10 +172,17 @@ $('#zgFormID').submit(function() {
 function zgConviteDisponivel(){
 	var vEvento		= $("#codEventoID option:selected");
 	var vQuantDisp	= vEvento.attr("zg-val-quantidade");
+	var vQuantMax	= vEvento.attr("zg-val-maxima");
+	var vPorc		= 0;
+	
+	vPorc = (vQuantDisp / vQuantMax) * 100;
 	
 	if(vQuantDisp){
 		$('#disponivelID').html('<h3>'+vQuantDisp+'</h3>');
-		console.log(vQuantDisp);
+		$('#porcentagemID').attr('style', 'width: ' + vPorc + '%;');
+	}else{
+		$('#disponivelID').html('');
+		$('#porcentagemID').attr('style', 'width: 0%;');
 	}
 }
 
