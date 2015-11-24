@@ -73,7 +73,7 @@ for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 	$qtdeMaxima	 = ($oEventoConf->getQtdeMaxAluno()) ? $oEventoConf->getQtdeMaxAluno() : null;
 	
 	if (isset($codFormando) && !empty($codFormando)) {
-		//$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
+		$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
 
 		if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
 			$qtdeDisponivel = 0;
