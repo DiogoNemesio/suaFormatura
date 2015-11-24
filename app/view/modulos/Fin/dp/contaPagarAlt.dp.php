@@ -60,6 +60,24 @@ if (isset($_POST['aData']))				$aData				= $_POST['aData'];
 if (isset($_POST['aValor']))			$aValor				= $_POST['aValor'];
 
 #################################################################################
+## Resgata as informações do banco
+#################################################################################
+try {
+	$info 		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+#################################################################################
+## Verificar se a conta pode ser alterada
+#################################################################################
+if ($info) {
+	$codPerfil	= ($info->getCodContaPerfil()) ? $info->getCodContaPerfil()->getCodigo() : 0;
+	$aAcoes		= \Zage\Fin\ContaAcao::getArrayAcoes($codPerfil, $info->getCodStatus()->getCodigo(),null, null);
+	if (!$aAcoes["ALT"]) \Zage\App\Erro::halt('Conta não pode ser alterada!!!');
+}
+
+#################################################################################
 ## Criar o objeto do contas a pagar
 #################################################################################
 $conta		= new \Zage\Fin\ContaPagar();

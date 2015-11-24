@@ -52,6 +52,26 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
+#################################################################################
+## Resgata o perfil da conta
+#################################################################################
+$codPerfil	= ($info->getCodContaPerfil()) ? $info->getCodContaPerfil()->getCodigo() : 0;
+
+#################################################################################
+## Resgatar o array com as possíveis ações da conta
+#################################################################################
+$aAcoes		= \Zage\Fin\ContaAcao::getArrayAcoes($codPerfil, $info->getCodStatus()->getCodigo(),null, null);
+
+#################################################################################
+## Verificar se a conta pode ser alterada
+#################################################################################
+if (isset($view) && $view != 0) {
+	if (!$aAcoes["VIS"]) \Zage\App\Erro::halt('Conta não pode ser alterada!!!');
+}else{
+	if (!$aAcoes["ALT"]) \Zage\App\Erro::halt('Conta não pode ser alterada!!!');
+}
+
+
 $codConta		= $info->getCodigo();
 $numero			= $info->getNumero();
 $descricao		= $info->getDescricao();
@@ -86,7 +106,6 @@ $parcelaInicial	= $info->getParcelaInicial();
 $intervaloRec	= $info->getIntervaloRecorrencia();
 $codContaRec	= ($info->getCodConta() != null) 	? $info->getCodConta()->getCodigo() : null;
 $indRecAuto		= $info->getIndReceberAuto();
-$indSomenteVis	= $info->getIndSomenteVisualizar();
 
 if ($indRecAuto == 1) {
 	$indRecAuto		= 'checked="checked"';

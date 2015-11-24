@@ -7,6 +7,11 @@ if (defined('DOC_ROOT')) {
 }else{
 	include_once('./include.php');
 }
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $system,$em,$tr,$log;
+
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -223,6 +228,16 @@ $colAcao	= 12;
 #################################################################################
 $aCodigos	= array();
 
+#################################################################################
+## Resgatar as ações que podem ser feitas por status
+#################################################################################
+$aStatusAcao	= \Zage\Fin\ContaStatus::getArrayStatusAcao();
+
+#################################################################################
+## Resgatar as ações que podem ser feitas por Perfil de conta
+#################################################################################
+$aPerfilAcao	= \Zage\Fin\ContaPerfil::getArrayPerfilAcao();
+
 
 #################################################################################
 ## Popula os valores dos botões
@@ -261,99 +276,26 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$grid->setValorCelula($i,$colParcela,$contas[$i]->getParcela() . " / ".$contas[$i]->getNumParcelas());
 	
 	#################################################################################
-	## Indicador de somente visualização
+	## Resgata o perfil da conta
 	#################################################################################
-	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0;
 	
 	#################################################################################
-	## Resgatar o status para controlar as ações
+	## Resgatar o array com as possíveis ações da conta
 	#################################################################################
-	$status		= $contas[$i]->getCodStatus()->getCodigo();
+	$aAcoes		= \Zage\Fin\ContaAcao::getArrayAcoes($codPerfil, $contas[$i]->getCodStatus()->getCodigo(),$aStatusAcao, $aPerfilAcao);
 	
-	switch ($status) {
-	
-		case "A":
-			$podeAlt	= ($indSomenteVis) ? false : true;
-			$podeExc	= ($indSomenteVis) ? false : true;
-			$podeCan	= ($indSomenteVis) ? false : true;
-			$podeCon	= ($indSomenteVis) ? false : true;
-			$podeRls	= false;
-			$podeImp	= true;
-			$podeSub	= ($indSomenteVis) ? false : true;
-			$podeBol	= true;
-			break;
-		case "C":
-			$podeAlt	= false;
-			$podeExc	= ($indSomenteVis) ? false : true;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= false;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "L":
-		case "EP":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= true;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "SC":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= true;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "S":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= false;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "SS":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= true;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "P":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= ($indSomenteVis) ? false : true;
-			$podeCon	= ($indSomenteVis) ? false : true;
-			$podeRls	= true;
-			$podeImp	= true;
-			$podeSub	= ($indSomenteVis) ? false : true;
-			$podeBol	= true;
-			break;
-		default:
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= false;
-			$podeImp	= false;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-	}
+	#################################################################################
+	## Montar as flags das ações permitidas
+	#################################################################################
+	$podeAlt	= $aAcoes["ALT"];
+	$podeExc	= $aAcoes["EXC"];
+	$podeCan	= $aAcoes["CAN"];
+	$podeCon	= $aAcoes["CON"];
+	$podeHis	= $aAcoes["HIS"];
+	$podeImp	= $aAcoes["IMP"];
+	$podeSub	= $aAcoes["SUB"];
+	$podeBol	= $aAcoes["BOL"];
 	
 	
 	#################################################################################
