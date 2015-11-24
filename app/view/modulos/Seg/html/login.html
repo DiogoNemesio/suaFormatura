@@ -65,11 +65,13 @@
 			<div class="row">
 				<div class="col-sm-10 col-sm-offset-1">
 					<div>
+					<!--
 						<div class="left">
 							<h1>
 								<a class="brand" href="http://www.zage.com.br"><img src="%IMG_URL%/zageLogo.png" alt="Zage - Tecnologia"></a>
 							</h1>
 						</div>
+					-->
 					</div>
 					<div class="login-container">
 						<div class="space-6"></div>
@@ -84,16 +86,16 @@
 							<div id="login-box" class="login-box visible widget-box no-border">
 								<div class="widget-body">
 									<div class="widget-main">
-										<h4 class="header blue lighter bigger">
+										<h4 class="header blue lighter bigger" align="center">
 											<i class="icon-lock green"></i>
-											Informe os seus dados
+												<a class="brand"><img src="%IMG_URL%/logo_suaformatura.png" width="70%"></a>
 										</h4>
 										<div class="space-6"></div>
-										<form id="FormLoginID" class="form login-form" method="post" action="%URL_FORM%">
+										<form id="FormLoginID" class="login" method="post" action="%URL_FORM%">
 											<fieldset>
 												<label class="block clearfix">
 													<span class="block input-icon input-icon-right">
-														<input type="text" id= "usuarioID" name="zgUsuario" value="%USUARIO%" class="form-control" placeholder="Usuário" />
+														<input type="text" id= "usuarioID" name="zgUsuario" value="%USUARIO%" class="form-control" placeholder="E-mail" />
 														<i class="ace-icon fa fa-user"></i>
 													</span>
 												</label>
@@ -115,9 +117,9 @@
 												<div class="space"></div>
 
 												<div class="clearfix">
-													<button type="button" class="width-35 pull-right btn btn-sm btn-primary" onclick='$("#FormLoginID").submit();'>
+													<button type="submit" id="btnLoginSubmitID" class="width-35 pull-right btn btn-sm btn-primary">
 														<i class="ace-icon fa fa-key"></i>
-														Login
+														Entrar
 													</button>
 												</div>
 
@@ -184,10 +186,38 @@
 						</div><!-- /forgot-box -->
 					</div><!-- /position-relative -->
 				</div>
+				
 			</div><!-- /.col -->
 		</div><!-- /.row -->
 	</div>
 </div><!-- /.main-container -->
+<div class="footer">
+				<div class="footer-inner">
+					<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">Sua Formatura</span>
+							&copy; 2016
+						</span>
+
+						&nbsp; &nbsp;
+						<span class="action-buttons">
+							<a href="#">
+								<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
+							</a>
+
+							<a href="#">
+								<i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
+							</a>
+
+							<a href="#">
+								<i class="ace-icon fa fa-rss-square orange bigger-150"></i>
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+
+
 
 <script>
 function zgMostraAviso(pDescBT1,pDescBT2,pUrlBT2,pDescBT3,pUrlBT3,pDescBT4,pUrlBT4) {
@@ -227,7 +257,9 @@ function zgCriaSpanOK() {
 </script>
 
 	<script type="text/javascript">
-		// Submeter o formulário
+		
+	
+		// Submeter a solicitação de alterar senha
 		$('#zgFormAlteraSenhaID').submit(function() {
 			
 			$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');

@@ -12,8 +12,9 @@
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
-		<div id="divMsg"></div>
-			<div class="col-sm-6">
+			
+			<div class="col-sm-6" align="center">
+				<div align="center">		
 				<div class="form-group col-sm-12" id="divCodFormandoID">
 					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
 					<div class="input-group col-sm-6 pull-left">
@@ -34,12 +35,18 @@
 					</div>
 					<div class="col-sm-1 pull-left" id="divHelpCodEventoID"></div>
 				</div>
-		   	</div>
-		   	<div class="col-sm-6">
-			   	<div class="form-group col-sm-12" id="divDisponivelID">
+				<div class="form-group col-sm-12" id="divDisponivelID">
 			   		<label class="col-xs-12 col-sm-5 control-label">Disponível: </label>
 					<div class="input-group col-sm-6 pull-left">
-						<div id="disponivelID"></div>
+						
+						<div class="progress progress-striped pos-rel">
+							<div class="progress-bar progress-bar-success" style="width: 90%;"></div>
+							<div class="progress-bar progress-bar-danger" style="width: 10%;"></div>
+						</div>
+
+						
+						
+						<div align="center" id="disponivelID"></div>
 					</div>
 				</div>
 				<div class="form-group col-sm-12" id="divTransferirID">
@@ -49,19 +56,15 @@
 						<input type="text" id="quantConvID" name="quantConv" class="width-100" placeholder="Quantidade" autocomplete="off" />
 					</div>
 				</div>
-			</div>
-			
+				</div>
+		   	</div>
 	    </div>
 	    <br>
 
 		<div class="clearfix form-actions">
-			<label class="col-sm-4 control-label">&nbsp;</label>
+			<label class="col-sm-5 control-label">&nbsp;</label>
 			<button type="button" class="btn btn-primary" id="btnSubmitID">
 				<i class="fa fa-check bigger-110"></i> Transferir
-			</button>
-			<button type="button" class="btn btn-warning" id="cancel"
-				onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
-				<i class="fa fa-undo bigger-110"></i> Voltar
 			</button>
 		</div>
 	</form>
@@ -174,7 +177,7 @@ function zgConviteDisponivel(){
 	var vQuantDisp	= vEvento.attr("zg-val-quantidade");
 	
 	if(vQuantDisp){
-		$('#disponivelID').html(vQuantDisp);
+		$('#disponivelID').html('<h3>'+vQuantDisp+'</h3>');
 		console.log(vQuantDisp);
 	}
 }
