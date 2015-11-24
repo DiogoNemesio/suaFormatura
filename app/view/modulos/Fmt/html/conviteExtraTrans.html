@@ -38,20 +38,20 @@
 				<div class="form-group col-sm-12" id="divDisponivelID">
 			   		<label class="col-xs-12 col-sm-5 control-label">Disponível: </label>
 					<div class="input-group col-sm-6 pull-left">
-						
 						<div class="progress progress-striped pos-rel">
-							<div id="porcentagemID" class="progress-bar progress-bar-success" style="width: 0%;"></div>
+							<div id="porcentagemSucID" class="progress-bar progress-bar-success" style="width: 0%;"></div>
+							<div id="porcentagemDanID" class="progress-bar progress-bar-danger" style="width: 0%;"></div>
 						</div>
-
 						<div align="center" id="disponivelID"></div>
 					</div>
 				</div>
-				<div class="form-group col-sm-12" id="divTransferirID">
+				<div class="form-group col-sm-12" id="divQuantConvID">
 			   		<label for="transID" class="col-xs-12 col-sm-5 control-label">Transferir:</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade que deseja transferir."></i></span>
-						<input type="text" id="quantConvID" name="quantConv" class="width-100" placeholder="Quantidade" autocomplete="off" />
+						<input type="text" id="quantConvID" name="quantConv" class="width-100" placeholder="Quantidade" autocomplete="off" onchange="zgConviteDisponivel();"/>
 					</div>
+					<div class="col-sm-1 pull-left" id="divHelpQuantConvID"></div>
 				</div>
 				</div>
 		   	</div>
@@ -141,8 +141,8 @@ $('#zgFormID').submit(function() {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			//Falta mudar a tela de confirmacao
-			//zgLoadUrl('%ROOT_URL%Fmt/conviteExtraVendaConf.php?id='+zgEncodeUrl('&codVenda='+zgGetCodRetorno(data)));
-			zgMostraAviso("Sucesso");
+			zgLoadUrl('%ROOT_URL%Fmt/conviteExtraTransConf.php?id='+zgEncodeUrl('&codTrans='+zgGetCodRetorno(data)));
+			//zgMostraAviso("Sucesso");
 		}else{
 			zgMostraAviso("Fechar");
 		}
@@ -173,21 +173,31 @@ function zgConviteDisponivel(){
 	var vEvento		= $("#codEventoID option:selected");
 	var vQuantDisp	= vEvento.attr("zg-val-quantidade");
 	var vQuantMax	= vEvento.attr("zg-val-maxima");
+	var vQuantConv  = $("#quantConvID").val();
 	var vPorc		= 0;
 	
 	vPorc = (vQuantDisp / vQuantMax) * 100;
-	
-	if(vQuantDisp){
+	if(vQuantDisp && vQuantConv){
+		vPorcDimi = ((vQuantDisp - vQuantConv) / vQuantMax) * 100;
+		vPorcQuan = vPorc- vPorcDimi;
+		
 		$('#disponivelID').html('<h3>'+vQuantDisp+'</h3>');
-		$('#porcentagemID').attr('style', 'width: ' + vPorc + '%;');
-	}else{
+		$('#porcentagemSucID').attr('style', 'width: ' + vPorcDimi + '%;');
+		$('#porcentagemDanID').attr('style', 'width: ' + vPorcQuan + '%;');
+	}else if(vQuantDisp){
+		$('#disponivelID').html('<h3>'+vQuantDisp+'</h3>');
+		$('#porcentagemDanID').attr('style', 'width: 0%;');
+		$('#porcentagemSucID').attr('style', 'width: ' + vPorc + '%;');
+	}else {
 		$('#disponivelID').html('');
-		$('#porcentagemID').attr('style', 'width: 0%;');
+		$('#porcentagemSucID').attr('style', 'width: 0%;');
+		$('#porcentagemDanID').attr('style', 'width: 0%;');
 	}
 }
 
 function zgCheckConvite(){
 	var vFormando 		= $('#codFormandoID').val();
+	var vEvento 		= $('#codEventoID').val();
 	var vQuantConv  	= $("#quantConvID").val();
 	vOK					= true;
 	
@@ -201,10 +211,20 @@ function zgCheckConvite(){
 		$('#divHelpCodFormandoID').html('&nbsp;');		
 	}
 	
+	//Evento
+	if (!vEvento) {
+		$('#divCodEventoID').addClass('has-error');
+		$('#divHelpCodEventoID').html(zgCriaSpanErro('Evento deve ser preenchido !!'));
+		vOK		= false;
+	}else{
+		$('#divCodEventoID').removeClass('has-error');
+		$('#divHelpCodEventoID').html('&nbsp;');		
+	}
+	
 	//Convite
 	if (!vQuantConv) {
 		$('#divQuantConvID').addClass('has-error');
-		$('#divHelpQuantConvID').html(zgCriaSpanErro('Quantidade de convites deve ser preenchido !!'));
+		$('#divHelpQuantConvID').html(zgCriaSpanErro('Quantidade de convites deve ser preenchida !!'));
 		vOK		= false;
 	}else{
 		$('#divQuantConvID').removeClass('has-error');
