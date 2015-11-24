@@ -71,14 +71,26 @@ for ($i = 0; $i < sizeof($transRecebida); $i++) {
 }
 $hidEnv = null;
 $hidRec = null;
+$msnEnv = null;
+$msnRec = null;
 
-if(!$transEnviada) $hidEnv = "hidden";
-if(!$transRecebida) $hidRec = "hidden";
+if(!$transEnviada) {
+	$hidEnv = "hidden";
+	$msnEnv .= '<div class="alert alert-info">';
+	$msnEnv .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Nenhuma transferência realizada!';
+	$msnEnv .= '</div>';
+}
+if(!$transRecebida) {
+	$hidRec = "hidden";
+	$msnRec .= '<div class="alert alert-info">';
+	$msnRec .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Nenhuma transferência recebida!';
+	$msnRec .= '</div>';
+}
 
 #################################################################################
 ## Gerar a url de histórico de pagamentos
 #################################################################################
-$urlHist				= ROOT_URL."/Fmt/conviteExtraTransfLis.php?id=".$id;
+$urlVoltar				= ROOT_URL."/Fmt/conviteExtraTransf.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html
@@ -91,13 +103,15 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 $tpl->set('IC'				,$_icone_);
 $tpl->set('ID'				,$id);
-$tpl->set('URL_HIST'		,$urlHist);
+$tpl->set('URL_VOLTAR'		,$urlVoltar);
 $tpl->set('HID_ENV'			,$hidEnv);
 $tpl->set('HID_REC'			,$hidRec);
 
 $tpl->set('TAB_ENV'			,$tabEnv);
 $tpl->set('TAB_REC'			,$tabRec);
 
+$tpl->set('MSG_ENV'			,$msnEnv);
+$tpl->set('MSG_REC'			,$msnRec);
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################

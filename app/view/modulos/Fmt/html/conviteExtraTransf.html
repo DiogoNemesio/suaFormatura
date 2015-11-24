@@ -13,8 +13,7 @@
 
 		<div class="row">
 			<div id="msgID">%MSG%</div>
-			<div class="col-sm-6 %HIDDEN%" align="center">
-				<div align="center">		
+			<div class="col-sm-6 col-sm-offset-2 %HIDDEN%" >
 				<div class="form-group col-sm-12" id="divCodFormandoID">
 					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
 					<div class="input-group col-sm-6 pull-left">
@@ -52,7 +51,6 @@
 						<input type="text" id="quantConvID" name="quantConv" class="width-100" placeholder="Quantidade" autocomplete="off" onchange="zgConviteDisponivel();"/>
 					</div>
 					<div class="col-sm-1 pull-left" id="divHelpQuantConvID"></div>
-				</div>
 				</div>
 		   	</div>
 	    </div>
@@ -176,6 +174,32 @@ function zgConviteDisponivel(){
 	
 	vPorc = (vQuantDisp / vQuantMax) * 100;
 	if(vQuantDisp && vQuantConv){
+		vPorcQuan = ((vQuantDisp - vQuantConv) / vQuantMax) * 100;
+
+		$('#disponivelID').html('<h3>'+vQuantDisp+'</h3>');
+		$('#porcentagemSucID').attr('style', 'width: ' + vPorcQuan + '%;');
+		$('#porcentagemDanID').attr('style', 'width: ' + (100 - vPorcQuan) + '%;');
+	}else if(vQuantDisp){
+		$('#disponivelID').html('<h3>'+vQuantDisp+'</h3>');
+		$('#porcentagemSucID').attr('style', 'width: ' + vPorc + '%;');
+		$('#porcentagemDanID').attr('style', 'width: ' + (100 - vPorc) + '%;');
+	}else {
+		$('#disponivelID').html('');
+		$('#porcentagemSucID').attr('style', 'width: 0%;');
+		$('#porcentagemDanID').attr('style', 'width: 0%;');
+	}
+}
+
+/*
+function zgConviteDisponivel(){
+	var vEvento		= $("#codEventoID option:selected");
+	var vQuantDisp	= vEvento.attr("zg-val-quantidade");
+	var vQuantMax	= vEvento.attr("zg-val-maxima");
+	var vQuantConv  = $("#quantConvID").val();
+	var vPorc		= 0;
+	
+	vPorc = (vQuantDisp / vQuantMax) * 100;
+	if(vQuantDisp && vQuantConv){
 		vPorcDimi = ((vQuantDisp - vQuantConv) / vQuantMax) * 100;
 		vPorcQuan = vPorc- vPorcDimi;
 		
@@ -184,19 +208,22 @@ function zgConviteDisponivel(){
 		$('#porcentagemDanID').attr('style', 'width: ' + vPorcQuan + '%;');
 	}else if(vQuantDisp){
 		$('#disponivelID').html('<h3>'+vQuantDisp+'</h3>');
-		$('#porcentagemDanID').attr('style', 'width: 0%;');
 		$('#porcentagemSucID').attr('style', 'width: ' + vPorc + '%;');
+		$('#porcentagemDanID').attr('style', 'width: ' + (100 - vPorc) + '%;');
 	}else {
 		$('#disponivelID').html('');
 		$('#porcentagemSucID').attr('style', 'width: 0%;');
 		$('#porcentagemDanID').attr('style', 'width: 0%;');
 	}
-}
+}*/
 
 function zgCheckConvite(){
 	var vFormando 		= $('#codFormandoID').val();
 	var vEvento 		= $('#codEventoID').val();
 	var vQuantConv  	= $("#quantConvID").val();
+	
+	var vEvento			= $("#codEventoID option:selected");
+	var vQuantDisp		= vEvento.attr("zg-val-quantidade");
 	vOK					= true;
 	
 	//Formando
@@ -223,6 +250,10 @@ function zgCheckConvite(){
 	if (!vQuantConv) {
 		$('#divQuantConvID').addClass('has-error');
 		$('#divHelpQuantConvID').html(zgCriaSpanErro('Quantidade de convites deve ser preenchida !!'));
+		vOK		= false;
+	}else if (vQuantConv > vQuantDisp) {
+		$('#divQuantConvID').addClass('has-error');
+		$('#divHelpQuantConvID').html(zgCriaSpanErro('Quantidade de convites deve ser menor que a diponível !!'));
 		vOK		= false;
 	}else{
 		$('#divQuantConvID').removeClass('has-error');
