@@ -141,7 +141,7 @@ $('#zgFormID').submit(function() {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			//Falta mudar a tela de confirmacao
-			zgLoadUrl('%ROOT_URL%Fmt/conviteExtraTransConf.php?id='+zgEncodeUrl('&codTrans='+zgGetCodRetorno(data)));
+			zgLoadUrl('%ROOT_URL%Fmt/conviteExtraTransfConf.php?id='+zgEncodeUrl('&codTrans='+zgGetCodRetorno(data)));
 			//zgMostraAviso("Sucesso");
 		}else{
 			zgMostraAviso("Fechar");
