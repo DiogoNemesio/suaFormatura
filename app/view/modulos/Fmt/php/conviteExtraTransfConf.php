@@ -64,7 +64,7 @@ $tpl->set('DATA_TRANS'			,$infoTrans[0]->getDataCadastro()->format($system->conf
 $tpl->set('FORMANDO_ORIGEM'		,$infoTrans[0]->getCodFormandoOrigem()->getNome());
 $tpl->set('EMAIL_ORIGEM'		,$infoTrans[0]->getCodFormandoOrigem()->getEmail());
 $tpl->set('FORMANDO_DESTINO'	,$infoTrans[0]->getCodFormandoDestino()->getNome());
-$tpl->set('EMAIL_DESTINO'		,$infoTrans[0]->getCodFormandoOrigem()->getEmail());
+$tpl->set('EMAIL_DESTINO'		,$infoTrans[0]->getCodFormandoDestino()->getEmail());
 
 $tpl->set('HTML_TABLE'			,$html);
 

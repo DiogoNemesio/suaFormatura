@@ -72,9 +72,8 @@ for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 	$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento ));
 	$qtdeMaxima	 = ($oEventoConf->getQtdeMaxAluno()) ? $oEventoConf->getQtdeMaxAluno() : null;
 	
-	
 	if (isset($codFormando) && !empty($codFormando)) {
-		$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
+		//$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
 
 		if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
 			$qtdeDisponivel = 0;
@@ -94,7 +93,7 @@ $urlVoltar = ROOT_URL . "/Fmt/conviteExtraAlunosLis.php?id=" . $id;
 # Url Novo
 ################################################################################
 $uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ );
-$urlHist = ROOT_URL . "/Fin/transferenciaLis.php?id=" . $uid;
+$urlHist = ROOT_URL . "/Fmt/conviteExtraTransfLis.php?id=" . $uid;
 
 ################################################################################
 # Carregando o template html

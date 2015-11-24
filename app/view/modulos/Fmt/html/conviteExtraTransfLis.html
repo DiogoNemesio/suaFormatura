@@ -1,0 +1,53 @@
+<div id="content">
+	<div class="page-header">
+		<h1><i class="fa fa-history black">&nbsp;</i>Minhas Transferências&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="javascript:zgLoadUrl('%URL_HIST%');" class="btn btn-primary"><i class="ace-icon fa fa-history bigger-130"></i>Ver Histórico</a>
+		</h1>
+	</div><!-- /.page-header -->
+	
+	<div class="col-xs-12 %HID_ENV%" id="divGridTransfEnv">
+		<div class="vspace-xs"></div>
+		<h4 class="header blue bolder smaller">Transferências enviadas</h4>
+		<div class="vspace-xs"></div>
+		<div class="row">
+			<div class="box-content col-xs-10">
+				<table id="tableTransfEnvID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-3 center">Evento</th>
+							<th class="col-sm-1 center">Quantidade</th>
+							<th class="col-sm-2 center">Formando</th>
+							<th class="col-sm-2 center">Data</th>
+						</tr>
+					</thead>
+					<tbody>
+					%TAB_ENV%
+					</tbody>
+				</table>
+			</div><!--/span-->
+		</div>
+	</div>
+	
+	<div class="col-xs-12 %HID_REC%" id="divGridTransfRec">
+		<h4 class="header blue bolder smaller">Transferências recebidas</h4>
+		<div class="vspace-xs"></div>
+		<div class="row">
+			<div class="box-content col-xs-10">
+				<table id="tableTransfRecID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-3 center">Evento</th>
+							<th class="col-sm-1 center">Quantidade</th>
+							<th class="col-sm-2 center">Formando</th>
+							<th class="col-sm-2 center">Data</th>
+						</tr>
+					</thead>
+					<tbody>
+					%TAB_REC%
+					</tbody>
+				</table>
+			</div><!--/span-->
+		</div>
+	</div>
+</div>
+

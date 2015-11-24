@@ -127,7 +127,6 @@ $('#btnSubmitID').on("click", function(e) {
 $('#zgFormID').submit(function() {
 	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
 	$('#btnSubmitID').attr("disabled","disabled");
-	$('#cancel').attr("disabled","disabled");
 	
 	/** Retira a máscara para os campos que estão configurados para tal **/
 	$('[zg-data-mask-retira="1"]').each(function( index ) {
@@ -159,9 +158,8 @@ $('#zgFormID').submit(function() {
 		});
 
 		//Voltar o botão de salvar
-		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Transferir');
 		$('#btnSubmitID').attr("disabled",false);
-		$('#cancel').attr("disabled",false);
 		
 	}).fail(function( jqXHR, textStatus, errorThrown) {
 		zgMostraAviso(null);
