@@ -194,7 +194,22 @@ try {
 	## Definir os valores fixos
 	#################################################################################
 	$codGrpAssociacao	= '1';
-	$dataVenc			= date($system->config["data"]["dateFormat"],strtotime("+5 days")); // Adicionar o número de dias configurado para geração de boleto
+	
+	/** DATA DE VENCIMENTO **/
+	$oVendaConf = $em->getRepository('Entidades\ZgfmtConviteExtraVendaConf')->findOneBy(array('codFormatura' => $system->getCodOrganizacao() , 'codVendaTipo' => P));
+	
+	if ($oVendaConf && $codFormaPag == 'BOL'){
+		
+		if ($oVendaConf->getDiasVencimentoBoleto() > 0){
+			$dataVenc			= date($system->config["data"]["dateFormat"],strtotime("+".$oVendaConf->getDiasVencimentoBoleto()." days")); // Adicionar o número de dias configurado para geração de boleto
+		}else{
+			$dataVenc			= date($system->config["data"]["dateFormat"]); 
+		}
+		
+	}else{
+		$dataVenc			= date($system->config["data"]["dateFormat"]); 
+	}
+	
 	//$qtdeVendida		= ($qtdeVendida < $oRifa->getQtdeObrigatorio()) ? $oRifa->getQtdeObrigatorio() : $qtdeVendida;
 	//$valorTotal			= ($qtdeVendida * $oRifa->getValorUnitario());
 	$codTipoRec			= "U";

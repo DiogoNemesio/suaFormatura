@@ -56,6 +56,7 @@ try {
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GVendaLis");
 $grid->adicionaTexto($tr->trans('STATUS'),			5, $grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('TIPO'),			5, $grid::CENTER	,'codVendaTipo:descricao');
 $grid->adicionaTexto($tr->trans('NÚMERO'),			5, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('VALOR TOTAL'),		5, $grid::CENTER	,'');
 $grid->adicionaDataHora($tr->trans('EMISSÃO'),		5, $grid::CENTER	,'');
@@ -66,12 +67,12 @@ $grid->adicionaTexto($tr->trans('AÇÕES'),			5	,$grid::CENTER	,'');
 $grid->importaDadosDoctrine($conviteExtraVenda);
 
 $colStatus	= 0;
-$colNumero	= 1;
-$colValTot	= 2;
-$colEmissao	= 3;
-$colVenc	= 4;
-$colForma	= 5;
-$colAcao	= 6;
+$colNumero	= 2;
+$colValTot	= 3;
+$colEmissao	= 4;
+$colVenc	= 5;
+$colForma	= 6;
+$colAcao	= 7;
 
 #################################################################################
 ## Popula os valores dos botões

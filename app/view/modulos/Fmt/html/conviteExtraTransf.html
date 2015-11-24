@@ -1,23 +1,23 @@
 <div id="content">
 	<div class="page-header">
-	<h1><i class="%IC%">&nbsp;</i>Transferência de Convites&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<a href="javascript:zgLoadUrl('%URL_HIST%');" class="btn btn-primary"><i class="ace-icon fa fa-history bigger-130"></i>Ver Histórico</a>
+	<h1><i class="%IC%">&nbsp;</i>Transferir&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="javascript:zgLoadUrl('%URL_HIST%');" class="btn btn-success"><i class="ace-icon fa fa-history bigger-130"></i>Histórico</a>
 	</h1>
 	
 	</div><!-- /.page-header -->
 	<br />
-		
+	
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" id="quantTotalID" name="quantTotal">
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
 			<div id="msgID">%MSG%</div>
-			<div class="col-sm-6 col-sm-offset-2 %HIDDEN%" >
+			<div class="col-sm-6 %HIDDEN%" >
 				<div class="form-group col-sm-12" id="divCodFormandoID">
-					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
-					<div class="input-group col-sm-6 pull-left">
-						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o formando."></i></span>
+					<label for="codFormandoID" class="col-xs-12 col-sm-3 control-label">Formando</label>
+					<div class="input-group col-sm-8 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o formando que irá receber a trasnferência."></i></span>
 						<select id="codFormandoID" name="codFormando" class="select2" data-placeholder="Selecione o formando" >
 							%COD_FORMANDO%
 						</select>
@@ -25,9 +25,9 @@
 					<div class="col-sm-1 pull-left" id="divHelpCodFormandoID"></div>
 				</div>
 				<div class="form-group col-sm-12" id="divCodEventoID">
-					<label for="codEventoID" class="col-xs-12 col-sm-5 control-label">Evento</label>
-					<div class="input-group col-sm-6 pull-left">
-						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o evento."></i></span>
+					<label for="codEventoID" class="col-xs-12 col-sm-3 control-label">Evento</label>
+					<div class="input-group col-sm-8 pull-left">
+						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o evento da transferência."></i></span>
 						<select id="codEventoID" name="codEvento" class="select2" data-placeholder="Selecione o evento" onchange="zgConviteDisponivel();" >
 							%COD_EVENTO%
 						</select>
@@ -35,8 +35,8 @@
 					<div class="col-sm-1 pull-left" id="divHelpCodEventoID"></div>
 				</div>
 				<div class="form-group col-sm-12" id="divDisponivelID">
-			   		<label class="col-xs-12 col-sm-5 control-label">Disponível: </label>
-					<div class="input-group col-sm-6 pull-left">
+			   		<label class="col-xs-12 col-sm-3 control-label">Disponível: </label>
+					<div class="col-sm-8 pull-left">
 						<div class="progress progress-striped pos-rel">
 							<div id="porcentagemSucID" class="progress-bar progress-bar-success" style="width: 0%;"></div>
 							<div id="porcentagemDanID" class="progress-bar progress-bar-danger" style="width: 0%;"></div>
@@ -45,19 +45,35 @@
 					</div>
 				</div>
 				<div class="form-group col-sm-12" id="divQuantConvID">
-			   		<label for="transID" class="col-xs-12 col-sm-5 control-label">Transferir:</label>
-					<div class="input-group col-sm-6 pull-left">
+			   		<label for="quantConvID" class="col-xs-12 col-sm-3 control-label">Transferir:</label>
+					<div class="input-group col-sm-8 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade que deseja transferir."></i></span>
-						<input type="text" id="quantConvID" name="quantConv" class="width-100" placeholder="Quantidade" autocomplete="off" onchange="zgConviteDisponivel();"/>
+						<input type="text" id="quantConvID" name="quantConv" class="form-control" placeholder="Quantidade" autocomplete="off" onchange="zgConviteDisponivel();"/>
 					</div>
 					<div class="col-sm-1 pull-left" id="divHelpQuantConvID"></div>
 				</div>
 		   	</div>
+		   	<div class="col-sm-5 hidden-480">
+		   		<div class="well">
+					<h4 class="green smaller lighter"><strong>O que é?</strong></h4>
+						<ul class="list-unstyled spaced">
+							<li>
+								<i class="ace-icon fa fa-hand-o-right bigger-110 green"></i>
+								Caso você não tenha interesse em comprar todo o seu limite de convite extra, você pode transferir o direito de compra para um outro formando.
+							</li>
+							<li>
+								<i class="ace-icon fa fa-hand-o-right bigger-110 green"></i>
+								Basta selecionar o formando, o evento e informar a quantidade que deseja transerir, respeitando o limite disponível.
+							</li>
+						</ul>
+					</div>
+			</div>
+		   	
 	    </div>
 	    <br>
 
-		<div class="clearfix form-actions">
-			<label class="col-sm-5 control-label">&nbsp;</label>
+		<div class="clearfix form-actions %HIDDEN%">
+			<label class="col-sm-5">&nbsp;</label>
 			<button type="button" class="btn btn-primary" id="btnSubmitID" %DISABLED%>
 				<i class="fa fa-check bigger-110"></i> Transferir
 			</button>
@@ -229,7 +245,7 @@ function zgCheckConvite(){
 	//Formando
 	if (!vFormando) {
 		$('#divCodFormandoID').addClass('has-error');
-		$('#divHelpCodFormandoID').html(zgCriaSpanErro('Formando deve ser preenchido !!'));
+		$('#divHelpCodFormandoID').html(zgCriaSpanErro('Selecione o formando que irá receber a transferência do direito de compra.'));
 		vOK		= false;
 	}else{
 		$('#divCodFormandoID').removeClass('has-error');
@@ -237,23 +253,23 @@ function zgCheckConvite(){
 	}
 	
 	//Evento
-	if (!vEvento) {
+	if (!vEvento.val()) {
 		$('#divCodEventoID').addClass('has-error');
-		$('#divHelpCodEventoID').html(zgCriaSpanErro('Evento deve ser preenchido !!'));
+		$('#divHelpCodEventoID').html(zgCriaSpanErro('Selecione o evento da transferência.'));
 		vOK		= false;
 	}else{
 		$('#divCodEventoID').removeClass('has-error');
 		$('#divHelpCodEventoID').html('&nbsp;');		
 	}
 	
-	//Convite
+	//Quantidade de convite
 	if (!vQuantConv) {
 		$('#divQuantConvID').addClass('has-error');
-		$('#divHelpQuantConvID').html(zgCriaSpanErro('Quantidade de convites deve ser preenchida !!'));
+		$('#divHelpQuantConvID').html(zgCriaSpanErro('Informe a quantidade que deseja transferir.'));
 		vOK		= false;
 	}else if (vQuantConv > vQuantDisp) {
 		$('#divQuantConvID').addClass('has-error');
-		$('#divHelpQuantConvID').html(zgCriaSpanErro('Quantidade de convites deve ser menor que a diponível !!'));
+		$('#divHelpQuantConvID').html(zgCriaSpanErro('A quantidade de transferência deve ser menor ou igual a quantidade disponível.'));
 		vOK		= false;
 	}else{
 		$('#divQuantConvID').removeClass('has-error');

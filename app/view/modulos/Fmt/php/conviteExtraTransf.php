@@ -46,7 +46,7 @@ try {
 		$hidden = "hidden";
 		$disabled = "disabled";
 		$msg .= '<div class="alert alert-warning">';
-		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i>Formatura não possui nenhum formando ativo!';
+		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não alcançou a quantidade mínima de formandos para efetuar transferência.';
 		$msg .= '</div>';
 	}
 } catch (\Exception $e) {
@@ -54,7 +54,7 @@ try {
 }
 
 ################################################################################
-# Resgata as informações do banco
+# Resgatar os eventos aptos a transferência
 ################################################################################
 try {
 	$eventoConfApto = \Zage\Fmt\Convite::listaConviteAptoVenda();
@@ -62,26 +62,36 @@ try {
 	\Zage\App\Erro::halt ( $e->getMessage () );
 }
 
-$codFormando = \Zage\Fmt\Convite::getCodigoUsuarioPessoa();
+if ($eventoConfApto){
 
-$oEvento      = "<option value=\"\"></option>";
-for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
-	$codEvento	 	= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodigo() : null;
-	$eventoDesc		= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodTipoEvento()->getDescricao() : null;
-	
-	$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento ));
-	$qtdeMaxima	 = ($oEventoConf->getQtdeMaxAluno()) ? $oEventoConf->getQtdeMaxAluno() : null;
-	
-	if (isset($codFormando) && !empty($codFormando)) {
-		$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
-		if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
-			$qtdeDisponivel = 0;
-			$readonly = "readonly";
-		}else{
-			$readonly = "";
+	$codFormando = \Zage\Fmt\Convite::getCodigoUsuarioPessoa();
+
+	$oEvento      = "<option value=\"\"></option>";
+	for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
+		$codEvento	 	= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodigo() : null;
+		$eventoDesc		= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodTipoEvento()->getDescricao() : null;
+		
+		$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento ));
+		$qtdeMaxima	 = ($oEventoConf->getQtdeMaxAluno()) ? $oEventoConf->getQtdeMaxAluno() : null;
+		
+		if (isset($codFormando) && !empty($codFormando)) {
+			$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
+			if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
+				$qtdeDisponivel = 0;
+				$readonly = "readonly";
+			}else{
+				$readonly = "";
+			}
 		}
+		$oEvento 	.= "<option value='".$codEvento."' zg-val-quantidade='".$qtdeDisponivel."' zg-val-maxima='".$qtdeMaxima."'>".$eventoDesc."</option>";
 	}
-	$oEvento 	.= "<option value='".$codEvento."' zg-val-quantidade='".$qtdeDisponivel."' zg-val-maxima='".$qtdeMaxima."'>".$eventoDesc."</option>";
+}else{
+	$hidden = "hidden";
+	$disabled = "disabled";
+	$msg .= '<div class="alert alert-warning">';
+	$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum evento para transferência.';
+	$msg .= '</div>';
+	
 }
 ################################################################################
 # Url Voltar

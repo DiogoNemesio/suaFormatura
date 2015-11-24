@@ -57,7 +57,7 @@ for ($i = 0; $i < sizeof($transEnviada); $i++) {
 			<td style="text-align: center;">'.$transEnviada[$i]->getCodEvento()->getCodTipoEvento()->getDescricao().'</td>
 			<td style="text-align: center;">'.$transEnviada[$i]->getQuantidade().'</td>
 			<td style="text-align: center;">'.$transEnviada[$i]->getCodFormandoDestino()->getNome().'</td>
-			<td style="text-align: center;">'.$transEnviada[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]).'</td>
+			<td class="hidden-480" style="text-align: center;">'.$transEnviada[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]).'</td>
 			</tr>';
 }
 
@@ -66,7 +66,7 @@ for ($i = 0; $i < sizeof($transRecebida); $i++) {
 			<td style="text-align: center;">'.$transRecebida[$i]->getCodEvento()->getCodTipoEvento()->getDescricao().'</td>
 			<td style="text-align: center;">'.$transRecebida[$i]->getQuantidade().'</td>
 			<td style="text-align: center;">'.$transRecebida[$i]->getCodFormandoOrigem()->getNome().'</td>
-			<td style="text-align: center;">'.$transRecebida[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]).'</td>
+			<td class="hidden-480" style="text-align: center;">'.$transRecebida[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]).'</td>
 			</tr>';
 }
 $hidEnv = null;
@@ -76,13 +76,13 @@ $msnRec = null;
 
 if(!$transEnviada) {
 	$hidEnv = "hidden";
-	$msnEnv .= '<div class="alert alert-info">';
+	$msnEnv .= '<div align="center" class="alert alert-info">';
 	$msnEnv .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Nenhuma transferência realizada!';
 	$msnEnv .= '</div>';
 }
 if(!$transRecebida) {
 	$hidRec = "hidden";
-	$msnRec .= '<div class="alert alert-info">';
+	$msnRec .= '<div align="center" class="alert alert-info">';
 	$msnRec .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Nenhuma transferência recebida!';
 	$msnRec .= '</div>';
 }

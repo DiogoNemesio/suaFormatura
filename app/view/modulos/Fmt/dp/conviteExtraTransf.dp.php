@@ -24,9 +24,24 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-/** FORMANDO **/
+/** FORMANDO DESTINO **/
 if (!isset($codFormando) || empty($codFormando)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione o formando.");
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione o formando que irá receber a transferência do direito de compra.");
+	$err	= 1;
+}
+
+/** FORMANDO ORIGEM **/
+$oUsuario 	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
+$oPessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'cgc' => $oUsuario->getCpf()));
+
+if ($codFormando == $oPessoa->getCodigo()){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione um formando que não seja você para receber a transferência.");
+	$err	= 1;
+}
+
+/** QUANTIDADE **/
+if (!isset($quantConv) || empty($quantConv)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Informe a quantidade que deseja transferir.");
 	$err	= 1;
 }
 
@@ -41,14 +56,14 @@ if(isset($codEvento) && !empty($codEvento)) {
 	}else{
 		$quantConv	= (int) $quantConv;
 		//Resgatar a quantidade de convites disponíveis para esse evento
-		$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oEventoConf->getCodEvento());
+		$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($oPessoa->getCodigo(), $oEventoConf->getCodEvento());
 		if ($qtdeConvDis < $quantConv){
 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oEventoConf->getcodEvento()->getCodTipoEvento()->getDescricao()." está maior que o disponível.");
 			$err	= 1;
 		}
 	}
 }else{
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Nenhum evento foi selecionado.");
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione o evento da transferência.");
 	$err	= 1;
 }
 
