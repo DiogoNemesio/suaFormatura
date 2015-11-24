@@ -74,7 +74,7 @@ for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 	
 	
 	if (isset($codFormando) && !empty($codFormando)) {
-		$qtdeDisponivel	= 5 /* \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento())*/;
+		$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
 
 		if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
 			$qtdeDisponivel = 0;
@@ -94,7 +94,7 @@ $urlVoltar = ROOT_URL . "/Fmt/conviteExtraAlunosLis.php?id=" . $id;
 # Url Novo
 ################################################################################
 $uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ );
-$urlNovo = ROOT_URL . "/Fmt/conviteExtraTrans.php?id=" . $uid;
+$urlHist = ROOT_URL . "/Fin/transferenciaLis.php?id=" . $uid;
 
 ################################################################################
 # Carregando o template html
@@ -107,7 +107,7 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 ################################################################################
 $tpl->set ( 'URL_FORM'			   , $_SERVER ['SCRIPT_NAME'] );
 $tpl->set ( 'URLVOLTAR'			   , $urlVoltar );
-$tpl->set ( 'URLNOVO'		 	   , $urlNovo );
+$tpl->set ( 'URL_HIST'		 	   , $urlHist );
 $tpl->set ( 'ID'				   , $id );
 $tpl->set ( 'COD_FORMANDO'	   	   , $oFormando);
 $tpl->set ( 'COD_EVENTO'	   	   , $oEvento);

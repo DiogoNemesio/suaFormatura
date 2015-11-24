@@ -41,7 +41,7 @@ if(isset($codEvento) && !empty($codEvento)) {
 	}else{
 		$quantConv	= (int) $quantConv;
 		//Resgatar a quantidade de convites disponíveis para esse evento
-		$qtdeConvDis	= 10; /* \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oEventoConf->getCodEvento());*/
+		$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oEventoConf->getCodEvento());
 		if ($qtdeConvDis < $quantConv){
 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oEventoConf->getcodEvento()->getCodTipoEvento()->getDescricao()." está maior que o disponível.");
 			$err	= 1;
