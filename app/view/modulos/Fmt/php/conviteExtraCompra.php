@@ -108,7 +108,7 @@ try {
 # Url Historico
 ################################################################################
 $uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ );
-$urlHist = ROOT_URL . "/Fmt/minhaCompraLis.php?id=" . $uid;
+$urlHist = ROOT_URL . "/Fmt/conviteExtraCompraHis.php?id=" . $uid;
 
 ################################################################################
 # Carregando o template html
