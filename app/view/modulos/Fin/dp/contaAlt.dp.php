@@ -69,16 +69,16 @@ if ($codTipoMora == 'V'){
 	if ($valorMora){ 
 		$valorMora	= \Zage\App\Util::toMysqlNumber($valorMora);
 	}else{
-		$valorMora = null;
+		$valorMora = 0;
 	}
-	$pctMora = null;
+	$pctMora = 0;
 }elseif ($codTipoMora == 'P'){
-	$valorMora = null;
 	if ($pctMora)	{
 		$pctMora		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctMora));
 	}else{
-		$pctMora = null;
+		$pctMora = 0;
 	}
+	$valorMora = 0;
 }
 
 /** AJUSTANDO O VALOR DO JUROS **/
@@ -86,16 +86,16 @@ if ($codTipoJuros == 'V'){
 	if ($valorJuros){
 		$valorJuros		= \Zage\App\Util::toMysqlNumber($valorJuros);
 	}else{
-		$valorJuros = null;
+		$valorJuros = 0;
 	}
-	$pctJuros = null;
+	$pctJuros = 0;
 }elseif ($codTipoJuros == 'P'){
-	$valorJuros = null;
 	if ($pctJuros)	{
 		$pctJuros		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctJuros));
 	}else{
-		$pctJuros = null;
+		$pctJuros = 0;
 	}
+	$valorJuros = 0;
 }
 
 /** SALDO INICIAL **/
@@ -150,10 +150,6 @@ if ($codTipo	!== "CC") {
 	$codAgencia		= null;
 	$ccorrente		= null;
 	$ccorrenteDV	= null;
-	$valorJuros		= 0;
-	$valorMora		= 0;
-	$pctMora		= 0;
-	$pctJuros		= 0;
 	$instrucao		= null;
 }
 
