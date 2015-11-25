@@ -222,7 +222,7 @@ try {
 	$numParcelas		= 1;
 	$parcelaInicial		= 1;
 	$obs				= null;
-	$descricao			= 'Venda de convite extra';
+	$descricao			= 'Convite extra';
 	$indValorParcela	= null;
 	$indSomenteVis		= 1;
 	
@@ -318,7 +318,7 @@ try {
 	$conta->setValorDesconto($valorDesconto);
 	$conta->setValorOutros($valorOutros);
 	$conta->setDataVencimento($dataVenc);
-	$conta->setDocumento('dewdwe');
+	$conta->setDocumento('');
 	$conta->setObservacao($obs);
 	$conta->setNumParcelas($numParcelas);
 	$conta->setParcelaInicial($parcelaInicial);
