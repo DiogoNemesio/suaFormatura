@@ -1,0 +1,33 @@
+<div id="content">
+	<div class="page-header">
+		<h1><i class="fa fa-history black">&nbsp;</i>Histórico de Comrpas&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="javascript:zgLoadUrl('%URL_VOLTAR%');" class="btn btn-yellow"><i class="ace-icon fa fa-arrow-left bigger-130"></i>Comprar</a>
+		</h1>
+	</div><!-- /.page-header -->
+	
+	<div class="col-xs-12" id="divGridCompra">
+		<div class="vspace-xs"></div>
+		<h5 class="header blue bolder smaller"><i class="ace-icon fa fa-sign-out bigger-130"></i> Compras efetuadas</h5>
+		<div class="vspace-xs"></div>
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<div id="msgSemCompras">%MSG_COM%</div>
+			</div>
+			<div class="box-content col-sm-10 col-sm-offset-1 %HIDDEN%">
+				<table id="tableCompraID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-2 center">Cod. Transação</th>
+							<th class="col-sm-2 center">Forma de Pagamento</th>
+							<th class="col-sm-2 center">Valor Total</th>
+							<th class="col-sm-2 center hidden-480">Data Compra</th>
+						</tr>
+					</thead>
+					<tbody>
+					%TAB_COMPRA%
+					</tbody>
+				</table>
+			</div><!--/span-->
+		</div>
+	</div>
+</div>

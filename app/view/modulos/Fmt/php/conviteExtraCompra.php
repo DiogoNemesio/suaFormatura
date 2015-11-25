@@ -105,15 +105,10 @@ try {
 }
 
 ################################################################################
-# Url Voltar
-################################################################################
-$urlVoltar = ROOT_URL . "/Fmt/conviteExtraAlunosLis.php?id=" . $id;
-
-################################################################################
-# Url Novo
+# Url Historico
 ################################################################################
 $uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ );
-$urlNovo = ROOT_URL . "/Fmt/conviteExtraCompra.php?id=" . $uid;
+$urlHist = ROOT_URL . "/Fmt/minhaCompraLis.php?id=" . $uid;
 
 ################################################################################
 # Carregando o template html
@@ -125,8 +120,7 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 # Define os valores das variáveis
 ################################################################################
 $tpl->set ( 'URL_FORM'			   , $_SERVER ['SCRIPT_NAME'] );
-$tpl->set ( 'URLVOLTAR'			   , $urlVoltar );
-$tpl->set ( 'URLNOVO'		 	   , $urlNovo );
+$tpl->set ( 'URL_HIST'		 	   , $urlHist );
 $tpl->set ( 'ID'				   , $id );
 $tpl->set ( 'COD_FORMANDO'	   	   , \Zage\Fmt\Convite::getCodigoUsuarioPessoa());
 $tpl->set ( 'TABLE'				   , $html);
