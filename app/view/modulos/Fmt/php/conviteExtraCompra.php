@@ -105,6 +105,25 @@ try {
 }
 
 ################################################################################
+# Resgatar as configurações de venda internet
+################################################################################
+try {
+	$oConfFormaPag = $em->getRepository('Entidades\ZgfmtConviteExtraVendaConf')->findOneBy(array('codFormatura' => $system->getCodOrganizacao(), 'codVendaTipo' => 'I'));
+
+	if ($oConfFormaPag){
+		$taxaAdm 			= ($oConfFormaPag->getTaxaAdministracao()) ? $oConfFormaPag->getTaxaAdministracao() : 0;
+		$indAddTaxaBoleto	= ($oConfFormaPag->getIndAdicionarTaxaBoleto()) ? $oConfFormaPag->getIndAdicionarTaxaBoleto() : 0;
+		$codContaBoleto		= ($oConfFormaPag->getCodContaBoleto()) ? $oConfFormaPag->getCodContaBoleto()->getCodigo() : 0;
+	}else{
+		$taxaAdm = 0;
+		$indAddTaxaBoleto = 0;
+	}
+
+} catch ( \Exception $e ) {
+	\Zage\App\Erro::halt ( $e->getMessage () );
+}
+
+################################################################################
 # Url Historico
 ################################################################################
 $uid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ );
@@ -128,6 +147,9 @@ $tpl->set ( 'DISABLED'			   , $disabled);
 $tpl->set ( 'HIDDEN'			   , $hidden);
 $tpl->set ( 'MSG'			  	   , $msg);
 $tpl->set ( 'COD_FORMA_PAG'		   , $oFormaPag);
+
+$tpl->set ( 'TAXA_ADM'	   		   , $taxaAdm);
+$tpl->set ( 'IND_ADD_TAXA_BOLETO'  , $indAddTaxaBoleto);
 
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 
