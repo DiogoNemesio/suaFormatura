@@ -10,6 +10,7 @@
 		<input type="hidden" id="codFormandoID" name="codFormando" value="%COD_FORMANDO%">
 		<input type="hidden" id="quantTotalID" name="quantTotal">
 		<input type="hidden" id="taxaAdmID" name="taxaAdm" value=%TAXA_ADM%>
+		<input type="hidden" id="valorBoletoID" name="valorBoleto" value=%VALOR_BOLETO%>
 		<input type="hidden" id="indAddTaxaBoletoID" value=%IND_ADD_TAXA_BOLETO%>
 		<input type="hidden" id="valID" name="validado">
 
@@ -213,15 +214,14 @@ function zgCalcularTotal(){
 	
 	//TAXA CONVENIÊNCIA
 	var vTaxaAdm			= zgConverteFloat($('#taxaAdmID').val());
-	var vConta				= $("#codContaRecID option:selected");
-	var vValorBoleto		= zgConverteFloat(vConta.attr("zg-val-boleto"));
+	var vValorBoleto		= zgConverteFloat($('#valorBoletoID').val());
 	var vFormaPag 			= $('#codFormaPagID').val();
 	var vIndAddTaxaBoleto	= $('#indAddTaxaBoletoID').val();
 	
 	if (vFormaPag == 'BOL' && vIndAddTaxaBoleto == 1){
-		if (vConta.val()){
-			vTaxaConv = vTaxaAdm + vValorBoleto;
-		}
+		
+		vTaxaConv = vTaxaAdm + vValorBoleto;
+		
 	}else{
 		vTaxaConv = vTaxaAdm;
 	}

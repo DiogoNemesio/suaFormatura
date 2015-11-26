@@ -52,7 +52,7 @@ if ($eventoConfApto){
 		$valor			= ($eventoConfApto[$i]->getValor()) ? \Zage\App\Util::formataDinheiro($eventoConfApto[$i]->getValor()) : null;
 		
 		if (isset($codFormando) && !empty($codFormando)) {
-			$qtdeDisponivel	= 10;//\Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
+			$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
 			if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
 				$qtdeDisponivel = 0;
 				$readonly = "readonly";
@@ -82,16 +82,13 @@ if ($eventoConfApto){
 # Select de Forma de Pagamento
 ################################################################################
 try {
-	$aFormaPag = $em->getRepository('Entidades\ZgfmtConviteExtraVendaForma')->findBy(array('codVendaTipo' => 'I', 'codOrganizacao' => $system->getCodOrganizacao()),array());
-	//$oFormaPag = $system->geraHtmlCombo($aFormaPag, 'CODIGO', 'DESCRICAO', $codFormaPag, '');
+	$aFormaPag = $em->getRepository('Entidades\ZgfmtConviteExtraVendaForma')->findBy(array('codVendaTipo' => 'I', 'codOrganizacao' => $system->getCodOrganizacao()));
 
 	if(!$aFormaPag){
-		//$aFormaPag = $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-		//$oFormaPag = $system->geraHtmlCombo($aFormaPag, 'CODIGO', 'DESCRICAO', $codFormaPag, '');
 		$hidden = "hidden";
 		$disabled = "disabled";
 		$msg .= '<div class="alert alert-warning">';
-		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum forma de pagamento para compra de convites.';
+		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum convite para venda.';
 		$msg .= '</div>';
 	}else{
 		$oFormaPag      = "<option value=\"\"></option>";
@@ -115,13 +112,37 @@ try {
 		$indAddTaxaBoleto	= ($oConfFormaPag->getIndAdicionarTaxaBoleto()) ? $oConfFormaPag->getIndAdicionarTaxaBoleto() : 0;
 		$codContaBoleto		= ($oConfFormaPag->getCodContaBoleto()) ? $oConfFormaPag->getCodContaBoleto()->getCodigo() : 0;
 	}else{
-		$taxaAdm = 0;
-		$indAddTaxaBoleto = 0;
+		$hidden = "hidden";
+		$disabled = "disabled";
+		$msg .= '<div class="alert alert-warning">';
+		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum convite para venda.';
+		$msg .= '</div>';
 	}
 
 } catch ( \Exception $e ) {
 	\Zage\App\Erro::halt ( $e->getMessage () );
 }
+
+################################################################################
+# Resgatar as informações da conta (custo boleto)
+################################################################################
+try {
+	$oConta = $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codContaBoleto));
+
+	if ($oConta){
+		$valorBoleto			= ($oConta->getValorBoleto()) ? $oConta->getValorBoleto() : 0;
+	}else{
+		$hidden = "hidden";
+		$disabled = "disabled";
+		$msg .= '<div class="alert alert-warning">';
+		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum convite para venda.';
+		$msg .= '</div>';
+	}
+
+} catch ( \Exception $e ) {
+	\Zage\App\Erro::halt ( $e->getMessage () );
+}
+
 
 ################################################################################
 # Url Historico
@@ -148,6 +169,7 @@ $tpl->set ( 'HIDDEN'			   , $hidden);
 $tpl->set ( 'MSG'			  	   , $msg);
 $tpl->set ( 'COD_FORMA_PAG'		   , $oFormaPag);
 
+$tpl->set ( 'VALOR_BOLETO'	   	   , $valorBoleto);
 $tpl->set ( 'TAXA_ADM'	   		   , $taxaAdm);
 $tpl->set ( 'IND_ADD_TAXA_BOLETO'  , $indAddTaxaBoleto);
 

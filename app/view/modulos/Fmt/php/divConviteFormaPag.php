@@ -61,9 +61,7 @@ if ($oVendaConf){
 ## Select da Forma de Pagamento
 #################################################################################
 try {
-	
-	
-	
+
 	$oFormaSel	= $em->getRepository('Entidades\ZgfmtConviteExtraVendaForma')->findBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codVendaTipo' => $codVendaTipo));
 	$aFormaSel  = array();
 	foreach($oFormaSel as $codTipo){
@@ -102,8 +100,13 @@ try {
 	if ($aCntCer) {
 		$oConta		= "<optgroup label='Contas do Cerimonial'>";
 		for ($i = 0; $i < sizeof($aCntCer); $i++) {
+			if ($codConta == $aCntCer[$i]->getCodigo()){
+				$selected = 'selected';
+			}else{
+				$selected = '';
+			}
 			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aCntCer[$i]->getCodigo()) : 0;
-			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."'".$selected." zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
 		}
 		$oConta		.= '</optgroup>';
 	}
@@ -111,8 +114,13 @@ try {
 	if ($aConta) {
 		$oConta		.= ($aCntCer) ? "<optgroup label='Contas da Formatura'>" : '';
 		for ($i = 0; $i < sizeof($aConta); $i++) {
+			if ($codConta == $aConta[$i]->getCodigo()){
+				$selected = 'selected';
+			}else{
+				$selected = '';
+			}
 			$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
-			$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
+			$oConta	.= "<option value='".$aConta[$i]->getCodigo()."'".$selected." zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
 		}
 		$oConta		.= ($aCntCer) ? '</optgroup>' : '';
 	}

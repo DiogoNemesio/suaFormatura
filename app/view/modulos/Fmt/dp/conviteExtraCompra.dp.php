@@ -64,7 +64,7 @@ for ($i = 0; $i < sizeof($codEvento); $i++) {
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oEventoConf->getcodEvento()->getCodTipoEvento()->getDescricao()." está maior que o disponível.");
 				$err	= 1;
 			}else{
-				$valorTotalConv = ($valorTotal) + ($quantConv[$i] * $oEventoConf->getValor());
+				$valorTotalConv = ($valorTotalConv) + ($quantConv[$i] * $oEventoConf->getValor());
 			}
 		}
 	}
@@ -110,7 +110,7 @@ try {
 	$taxaBol 	= $taxas['BOLETO'];
 	
 	//Adicionar ao valor total a taxa de conveniencia
-	$valorTotal = $valorTotalConv + $taxaAdm + $taxaBol;
+	$valorTotal = $valorTotalConv + $taxaConv + $taxaBol;
 	
 	#################################################################################
 	## RESGATAR OBJETOS
@@ -219,7 +219,7 @@ try {
 	#################################################################################
 	$codCatConvite			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_CONVITE_EXTRA");
 	$codCatBoleto			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
-	$codCatConveniencia		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
+	$codCatConveniencia		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_CONVENIENCIA");
 	//$codCentroCustoConvite	= ($oRifa->getCodCentroCusto()) ? $oRifa->getCodCentroCusto()->getCodigo() : null;
 	
 	#################################################################################
@@ -239,13 +239,22 @@ try {
 	$_codCentroCusto[]	= null;
 	$_codRateio[]		= null;
 	
-	
 	//Custo do boleto
 	if ($taxaBol > 0){
 		$pctBoleto	 		= round((100 * $taxaBol) / $valorTotal,2);
 		$_pctRateio[] 		= $pctBoleto;
 		$_valorRateio[]		= $taxaBol;
 		$_codCategoria[]	= $codCatBoleto;
+		$_codCentroCusto[]	= null;
+		$_codRateio[]		= null;
+	}
+	
+	//Custo do boleto
+	if ($taxaConv > 0){
+		$pctConv	 		= round((100 * $taxaConv) / $valorTotal,2);
+		$_pctRateio[] 		= $pctConv;
+		$_valorRateio[]		= $taxaConv;
+		$_codCategoria[]	= $codCatConveniencia;
 		$_codCentroCusto[]	= null;
 		$_codRateio[]		= null;
 	}
