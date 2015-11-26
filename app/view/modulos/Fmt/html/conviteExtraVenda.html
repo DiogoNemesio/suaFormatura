@@ -279,7 +279,7 @@ function zgValidaQuantDisp(){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Quantidade da compra deve ser menor ou igual a disponível"));
 			$tr.addClass("alert-danger");
 			vOK = false;
-		}else if( parseInt($quantConv.eq(i).val()) < parseInt($quantDisp.eq(i).val()) ){
+		}else if( parseInt($quantConv.eq(i).val()) <= parseInt($quantDisp.eq(i).val()) ){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
 			$tr.removeClass("alert-danger");
 		}else{

@@ -256,15 +256,18 @@ function zgValidaQuantDisp(){
 		var $tr		= $td.parent();
 		
 		if( vNull == $quantConv.length ){
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("É necessário escolher pelo menos um convite"));
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Necessário a escolha de pelo menos um evento."));
 			$tr.addClass("alert-danger");
 			vOK = false;
-		}else if( $quantDisp.eq(i).val() - $quantConv.eq(i).val() < 0 ){
+		}else if( parseInt($quantDisp.eq(i).val()) - parseInt($quantConv.eq(i).val()) < 0 ){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Quantidade da compra deve ser menor ou igual a disponível"));
 			$tr.addClass("alert-danger");
 			vOK = false;
-		}else{
+		}else if( parseInt($quantConv.eq(i).val()) <= parseInt($quantDisp.eq(i).val()) ){
 			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+			$tr.removeClass("alert-danger");
+		}else{
+			$tr.find('[zg-type="zg-div-msg"]').html("");
 			$tr.removeClass("alert-danger");
 		}
 	}
