@@ -977,8 +977,6 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 				#################################################################################
 				## Converte o número do celular para o formato do whatsapp
 				#################################################################################
-				$celulares	= \Zage\Wap\Chip::buscaNumeroComWa($codDest);
-				if (!$celulares || sizeof($celulares) ==  0)	continue;
 			
 				try {
 						
@@ -990,6 +988,9 @@ class Notificacao extends \Entidades\ZgappNotificacao {
 						$chips[$c->getCodigo()]	= $chip;
 			
 					}
+					
+					$celulares	= \Zage\Wap\Chip::buscaNumeroComWa($codDest);
+					if (!$celulares || sizeof($celulares) ==  0)	continue;
 						
 					for ($n = 0; $n < sizeof($celulares); $n++) {
 						$log->debug("Convertendo o número : ".$celulares[$n]->getTelefone());

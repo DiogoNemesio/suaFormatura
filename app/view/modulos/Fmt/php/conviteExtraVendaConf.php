@@ -36,9 +36,17 @@ if (isset($_GET['codVenda'])){
 }
 
 #################################################################################
-## Resgatar informações da da venda
+## Resgatar informações da venda
 #################################################################################
 $infoVenda = $em->getRepository('Entidades\ZgfmtConviteExtraVendaItem')->findBy(array('codVenda' => $codVenda));
+
+// Cálculo do valor total
+$valorTotal = $infoVenda[0]->getCodVenda()->getValorTotal() + $infoVenda[0]->getCodVenda()->getTaxaConveniencia();
+
+#################################################################################
+## Resgatar informações da conta
+#################################################################################
+$infoContaRec = $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codTransacao' => $infoVenda[0]->getCodVenda()->getCodTransacao()));
 
 $total = 0;
 for ($i = 0; $i < sizeof($infoVenda); $i++) {
@@ -49,7 +57,7 @@ for ($i = 0; $i < sizeof($infoVenda); $i++) {
 	$html .= '<td class="center">'.$linha.'</td>';
 	$html .= '<td class="center">'.$infoVenda[$i]->getCodEvento()->getCodTipoEvento()->getDescricao().'</td>';
 	$html .= '<td class="center">'.$infoVenda[$i]->getQuantidade().'</td>';
-	$html .= '<td class="center">'.$infoVenda[$i]->getValorUnitario().'</td>';
+	$html .= '<td class="center">'.\Zage\App\Util::to_money($infoVenda[$i]->getValorUnitario()).'</td>';
 	$html .= '</tr>';
 }
 
@@ -65,11 +73,11 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('ID'					,$id);
 $tpl->set('IC'					,$_icone_);
 
-$tpl->set('COD_TRASACAO'		,$infoVenda[0]->getCodVenda()->getCodTransacao());
+$tpl->set('DATA_VENCIMENTO'		,$infoContaRec->getDataVencimento()->format($system->config["data"]["dateFormat"]));
 $tpl->set('FORMA_PAGAMENTO'		,$infoVenda[0]->getCodVenda()->getCodFormaPagamento()->getDescricao());
 $tpl->set('CONTA_RECEBIMENTO'	,$infoVenda[0]->getCodVenda()->getCodContaRecebimento()->getNome());
 $tpl->set('COD_VENDA'			,$codVenda);
-$tpl->set('TOTAL'				,$infoVenda[0]->getCodVenda()->getValorTotal());
+$tpl->set('TOTAL'				,\Zage\App\Util::to_money($valorTotal));
 $tpl->set('DATA_VENDA'			,$infoVenda[0]->getCodVenda()->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]));
 
 $tpl->set('NOME'				,$infoVenda[0]->getCodVenda()->getCodFormando()->getNome());

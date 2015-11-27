@@ -97,9 +97,10 @@ if ($indTemQtde == 0) {
 $taxas 		= \Zage\Fmt\Convite::calcTaxaConveniencia('P', $codConta, $codFormaPag);
 $taxaConv	= $taxas['COVENIENCIA'];
 $taxaBol 	= $taxas['BOLETO'];
+$valorTaxa  = $taxaConv + $taxaBol;
 
 //Adicionar ao valor total a taxa de conveniencia
-$valorTotal = $valorTotalConv + $taxaConv + $taxaBol;
+$valorTotal = $valorTotalConv + $valorTaxa;
 
 
 if ($err != null) {
@@ -141,8 +142,8 @@ try {
 	$oConviteVenda->setCodFormaPagamento($oFormaPag);
 	$oConviteVenda->setCodTransacao($codTransacaoVenda);
 	$oConviteVenda->setCodContaRecebimento($oConta);
-	$oConviteVenda->setValorTotal($valorTotal);
-	$oConviteVenda->setTaxaConveniencia(null);
+	$oConviteVenda->setValorTotal($valorTotalConv);
+	$oConviteVenda->setTaxaConveniencia($valorTaxa);
 	$oConviteVenda->setDataCadastro(new DateTime(now));
 	
 	$em->persist($oConviteVenda);

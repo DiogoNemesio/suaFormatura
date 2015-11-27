@@ -93,9 +93,9 @@ class Convite {
 	}
 	
 	/**
-	* Lista Configuracoes validas
+	* Lista os eventos que estão aptp para a venda presencial
 	*
-	* @param integer $codOrganizacao
+	* @param 
 	* @return array
 	*/
 	public static function listaConviteAptoVenda() {
@@ -127,6 +127,44 @@ class Convite {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
 	}
+	
+	
+	/**
+	 * Lista os eventos que estão aptp para a venda na internet
+	 *
+	 * @param
+	 * @return array
+	 */
+	public static function listaConviteAptoVendaInternet() {
+		global $em,$system, $log;
+	
+		$qb 	= $em->createQueryBuilder();
+		$hoje 	= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], date($system->config["data"]["dateFormat"]." 00:00:00"));
+	
+		try {
+			$qb->select('c')
+			->from('\Entidades\ZgfmtConviteExtraEventoConf','c')
+			->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= c.codOrganizacao')
+			->where($qb->expr()->andx(
+					$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
+					$qb->expr()->lte('c.dataInicioInternet'	, ':now'),
+					$qb->expr()->gte('c.dataFimInternet'	, ':now')
+			)
+			)
+	
+			->setParameter('codOrganizacao', $system->getCodOrganizacao())
+			->setParameter('now', $hoje)
+	
+			->orderBy('c.codigo', 'ASC');
+	
+			$query 		= $qb->getQuery();
+				
+			return($query->getResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 	
 	/**
 	 * Quantidade convite disponivel por configuração de evento

@@ -32,13 +32,13 @@ if (isset ( $_GET ['id'] )) {
 $system->checaPermissao ( $_codMenu_ );
 
 ################################################################################
-# Resgatar os eventos aptos a transferência
+# Resgatar os eventos aptos a compra
 ################################################################################
 $msg 	  = null;
 $hidden	  = null;
 $disabled = null;
 try {
-	$eventoConfApto = \Zage\Fmt\Convite::listaConviteAptoVenda();
+	$eventoConfApto = \Zage\Fmt\Convite::listaConviteAptoVendaInternet();
 } catch ( \Exception $e ) {
 	\Zage\App\Erro::halt ( $e->getMessage () );
 }
@@ -73,7 +73,7 @@ if ($eventoConfApto){
 	$hidden = "hidden";
 	$disabled = "disabled";
 	$msg .= '<div class="alert alert-warning">';
-	$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum evento para transferência.';
+	$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum evento para venda.';
 	$msg .= '</div>';
 }
 
