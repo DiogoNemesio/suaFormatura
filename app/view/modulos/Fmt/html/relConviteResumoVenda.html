@@ -1,0 +1,59 @@
+<div id="content">
+	<div class="page-header">
+		<h1><i class="fa fa-history black">&nbsp;</i>Histórico&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="javascript:zgLoadUrl('%URL_VOLTAR%');" class="btn btn-yellow"><i class="ace-icon fa fa-arrow-left bigger-130"></i>Transferir</a>
+		</h1>
+	</div><!-- /.page-header -->
+	
+	<div class="col-xs-12" id="divGridTransfEnv">
+		<div class="vspace-xs"></div>
+		<h5 class="header blue bolder smaller"><i class="ace-icon fa fa-sign-out bigger-130"></i> Transferências enviadas</h5>
+		<div class="vspace-xs"></div>
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<div id="msgSemTransfEnv">%MSG_ENV%</div>
+			</div>
+			<div class="box-content col-sm-10 col-sm-offset-1 %HID_ENV%">
+				<table id="tableTransfEnvID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-3 center">Evento</th>
+							<th class="col-sm-1 center">Quantidade</th>
+							<th class="col-sm-2 center">Formando</th>
+							<th class="col-sm-2 center hidden-480">Data</th>
+						</tr>
+					</thead>
+					<tbody>
+					%TAB_ENV%
+					</tbody>
+				</table>
+			</div><!--/span-->
+		</div>
+	</div>
+	
+	<div class="col-xs-12" id="divGridTransfRec">
+		<h5 class="header blue bolder smaller"><i class="ace-icon fa fa-sign-in bigger-130"></i> Transferências recebidas</h5>
+		<div class="vspace-xs"></div>
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<div id="msgSemTransfRec">%MSG_REC%</div>
+			</div>
+			<div class="box-content col-sm-10 col-sm-offset-1 %HID_REC%">
+				<table id="tableTransfRecID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-3 center">Evento</th>
+							<th class="col-sm-1 center">Quantidade</th>
+							<th class="col-sm-2 center">Formando</th>
+							<th class="col-sm-2 center hidden-480">Data</th>
+						</tr>
+					</thead>
+					<tbody>
+					%TAB_REC%
+					</tbody>
+				</table>
+			</div><!--/span-->
+		</div>
+	</div>
+</div>
+
