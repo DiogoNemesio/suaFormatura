@@ -384,7 +384,7 @@ $converter->addSearchPath(CLASS_PATH . "/H2P/bin/phantomjs");
 $converter->convert($input, $output);
 
 if ($tipoMidia == "PDF") {
-	\Zage\App\Util::sendHeaderPDF("boleto.pdf");
+	\Zage\App\Util::sendHeaderDownload("boleto.pdf","PDF");
 	echo $output->getContent();
 }else{
 	#################################################################################
