@@ -53,6 +53,7 @@ class Endereco {
 	 * @param string $bairro
 	 */
 	public static function formataEndereco($endereco,$numero,$bairro,$complemento = null) {
+		if (!$endereco && !$numero && !$bairro && !$complemento) return null;
 		return trim($endereco . " ".$numero. ", ".$bairro." ".$complemento);
 	}
 }
