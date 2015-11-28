@@ -48,23 +48,17 @@ $oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('c
 if (!$oConta) \Zage\App\Erro::halt('Conta não encontrada');
 
 #################################################################################
-## Indicador de somente visualização
+## Resgata o perfil da conta
 #################################################################################
-$indSomenteVis		= $oConta->getIndSomenteVisualizar();
-
-if ($indSomenteVis)	\Zage\App\Erro::halt($tr->trans('Conta não pode ser confirmada, pois é somente de visualização (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
+$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
 
 #################################################################################
-## Valida o status da conta
+## Verifica se a conta pode ser confirmada
 #################################################################################
-switch ($oConta->getCodStatus()->getCodigo()) {
-	case "A":
-	case "P":
-		$podePag	= ($indSomenteVis) ? false : true;
-		break;
-	default:
-		$podePag	= false;
-		break;
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "CON")) {
+	$podePag	= false;
+}else{
+	$podePag	= true;
 }
 
 #################################################################################

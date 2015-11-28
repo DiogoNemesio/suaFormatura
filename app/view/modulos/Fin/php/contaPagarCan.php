@@ -36,7 +36,6 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-
 #################################################################################
 ## Verificar parâmetro obrigatório
 #################################################################################
@@ -80,6 +79,19 @@ $aNaoPode	= array();
 
 for ($i = 0; $i < sizeof($contas); $i++) {
 	
+	
+	#################################################################################
+	## Resgata o perfil da conta
+	#################################################################################
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0;
+	
+	if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $contas[$i]->getCodStatus()->getCodigo(), "CAN")) {
+		$aNaoPode[]	= $contas[$i]->getNumero();
+		$podeCan	= false;
+	}else{
+		$podeCan	= true;
+	}
+	
 	#################################################################################
 	## Indicador de somente visualização
 	#################################################################################
@@ -89,26 +101,10 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	## Valida o status das contas
 	#################################################################################
 	switch ($contas[$i]->getCodStatus()->getCodigo()) {
-		case "A":
-			if ($indSomenteVis) {
-				$podeCan	= false;
-				$aNaoPode[]	= $contas[$i]->getNumero();
-			}else{
-				$podeCan	= true;
-			}
-			break;
 		case "P":
 			$mensagem	= "Deseja realmente cancelar a conta abaixo ?, somente o saldo remanescente será cancelado !!";
-			if ($indSomenteVis) {
-				$podeCan	= false;
-				$aNaoPode[]	= $contas[$i]->getNumero();
-			}else{
-				$podeCan	= true;
-			}
 			break;
 		default:
-			$aNaoPode[]	= $contas[$i]->getNumero(); 
-			$podeCan	= false;
 			break;
 	}
 	

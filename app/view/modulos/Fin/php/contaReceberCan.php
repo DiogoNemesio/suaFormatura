@@ -81,36 +81,28 @@ $aNaoPode	= array();
 for ($i = 0; $i < sizeof($contas); $i++) {
 	
 	#################################################################################
-	## Indicador de somente visualização
+	## Resgata o perfil da conta
 	#################################################################################
-	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0;
+	
+	if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $contas[$i]->getCodStatus()->getCodigo(), "CAN")) {
+		$aNaoPode[]	= $contas[$i]->getNumero();
+		$podeCan	= false;
+	}else{
+		$podeCan	= true;
+	}
 	
 	#################################################################################
 	## Valida o status das contas
 	#################################################################################
 	switch ($contas[$i]->getCodStatus()->getCodigo()) {
-		case "A":
-			if ($indSomenteVis) {
-				$podeCan	= false;
-				$aNaoPode[]	= $contas[$i]->getNumero();
-			}else{
-				$podeCan	= true;
-			}
-			break;
 		case "P":
 			$mensagem	= "Deseja realmente cancelar a conta abaixo ?, somente o saldo remanescente será cancelado !!";
-			if ($indSomenteVis) {
-				$podeCan	= false;
-				$aNaoPode[]	= $contas[$i]->getNumero();
-			}else{
-				$podeCan	= true;
-			}
 			break;
 		default:
-			$aNaoPode[]	= $contas[$i]->getNumero(); 
-			$podeCan	= false;
 			break;
 	}
+	
 	
 	#################################################################################
 	## Definir o valor do campo Número

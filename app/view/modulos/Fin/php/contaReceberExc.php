@@ -86,26 +86,15 @@ $aNaoPode	= array();
 for ($i = 0; $i < sizeof($contas); $i++) {
 	
 	#################################################################################
-	## Indicador de somente visualização
+	## Resgata o perfil da conta
 	#################################################################################
-	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0;
 	
-	#################################################################################
-	## Valida o status das contas
-	#################################################################################
-	switch ($contas[$i]->getCodStatus()->getCodigo()) {
-		case "A":
-			if ($indSomenteVis) {
-				$aNaoPode[]	= $contas[$i]->getNumero();
-				$podeExc	= false;
-			}else{
-				$podeExc	= true;
-			}
-			break;
-		default:
-			$aNaoPode[]	= $contas[$i]->getNumero();
-			$podeExc	= false;
-			break;
+	if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $contas[$i]->getCodStatus()->getCodigo(), "EXC")) {
+		$aNaoPode[]	= $contas[$i]->getNumero();
+		$podeExc	= false;
+	}else{
+		$podeExc	= true;
 	}
 	
 	#################################################################################

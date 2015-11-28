@@ -39,6 +39,25 @@ if ($err) {
 #################################################################################
 $contas		= $em->getRepository('Entidades\ZgfinContaReceber')->findBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $aSelContas));
 
+#################################################################################
+## Validação, verificar se as contas podem ser excluídas
+#################################################################################
+$podeCan	= true;
+for ($i = 0; $i < sizeof($contas); $i++) {
+
+	#################################################################################
+	## Resgata o perfil da conta
+	#################################################################################
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0;
+
+	if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $contas[$i]->getCodStatus()->getCodigo(), "CAN")) {
+		$podeCan	= false;
+	}
+}
+if (!$podeCan)	{
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Erro de violação de acesso, tentativa de exclusão indevida")));
+	exit;
+}
 
 #################################################################################
 ## Salvar no banco

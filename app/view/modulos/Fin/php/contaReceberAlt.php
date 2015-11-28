@@ -58,18 +58,20 @@ try {
 $codPerfil	= ($info->getCodContaPerfil()) ? $info->getCodContaPerfil()->getCodigo() : 0;
 
 #################################################################################
-## Resgatar o array com as possíveis ações da conta
-#################################################################################
-$aAcoes		= \Zage\Fin\ContaAcao::getArrayAcoes($codPerfil, $info->getCodStatus()->getCodigo(),null, null);
-
-#################################################################################
-## Verificar se a conta pode ser alterada
+## Verificar se a conta pode ser alterada / Visualizada
 #################################################################################
 if (isset($view) && $view != 0) {
-	if (!$aAcoes["VIS"]) \Zage\App\Erro::halt('Conta não pode ser alterada!!!');
+	$codAcao			= "VIS";
+	$mensagemErro		= $tr->trans("Conta não pode ser visualizada");
 }else{
-	if (!$aAcoes["ALT"]) \Zage\App\Erro::halt('Conta não pode ser alterada!!!');
+	$codAcao			= "ALT";
+	$mensagemErro		= $tr->trans("Conta não pode ser alterada");
 }
+
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $info->getCodStatus()->getCodigo(), $codAcao)) {
+	\Zage\App\Erro::halt($mensagemErro);
+}
+
 
 
 $codConta		= $info->getCodigo();
@@ -223,9 +225,6 @@ try {
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
-
-
-
 
 
 #################################################################################

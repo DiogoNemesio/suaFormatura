@@ -85,27 +85,18 @@ $grid->importaDadosDoctrine($contas);
 $aNaoPode	= array();
 for ($i = 0; $i < sizeof($contas); $i++) {
 	
-	#################################################################################
-	## Indicador de somente visualização
-	#################################################################################
-	$indSomenteVis		= $contas[$i]->getIndSomenteVisualizar();
+	
 	
 	#################################################################################
-	## Valida o status das contas
+	## Resgata o perfil da conta
 	#################################################################################
-	switch ($contas[$i]->getCodStatus()->getCodigo()) {
-		case "A":
-			if ($indSomenteVis) {
-				$aNaoPode[]	= $contas[$i]->getNumero();
-				$podeExc	= false;
-			}else{
-				$podeExc	= true;
-			}
-			break;
-		default:
-			$aNaoPode[]	= $contas[$i]->getNumero();
-			$podeExc	= false;
-			break;
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0;
+	
+	if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $contas[$i]->getCodStatus()->getCodigo(), "EXC")) {
+		$aNaoPode[]	= $contas[$i]->getNumero();
+		$podeExc	= false;
+	}else{
+		$podeExc	= true;
 	}
 	
 	#################################################################################

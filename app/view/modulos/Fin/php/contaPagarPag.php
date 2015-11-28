@@ -50,24 +50,19 @@ if (!$oConta) {
 	\Zage\App\Erro::halt('Conta não encontrada');
 }
 
-#################################################################################
-## Indicador de somente visualização
-#################################################################################
-$indSomenteVis		= $oConta->getIndSomenteVisualizar();
-
-if ($indSomenteVis)	\Zage\App\Erro::halt($tr->trans('Conta não pode ser confirmada, pois é somente de visualização (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
 
 #################################################################################
-## Valida o status da conta
+## Resgata o perfil da conta
 #################################################################################
-switch ($oConta->getCodStatus()->getCodigo()) {
-	case "A":
-	case "P":
-		$podePag	= ($indSomenteVis) ? false : true;
-		break;
-	default:
-		$podePag	= false;
-		break;
+$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
+
+#################################################################################
+## Verifica se a conta pode ser confirmada
+#################################################################################
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "CON")) {
+	$podePag	= false;
+}else{
+	$podePag	= true;
 }
 
 if (!$podePag) {
