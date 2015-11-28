@@ -99,7 +99,7 @@ class PhantomJS extends ConverterAbstract
      * 
      * @var string
      */
-    protected $binPath = CLASS_PATH . '/H2P/bin/';
+    protected $binPath = '/srv/www/htdocs/suaFormatura/app/classes/H2P/bin/';
     
     /**
      * Paths to search PhantomJS binary file
