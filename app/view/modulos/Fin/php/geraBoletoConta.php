@@ -46,17 +46,17 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata os parâmetros passados pelo formulario
-#################################################################################
-if (isset($_POST['codConta']))			$codConta		= \Zage\App\Util::antiInjection($_POST['codConta']);
-if (isset($_POST['tipoMidia'])) 		$tipoMidia		= \Zage\App\Util::antiInjection($_POST['tipoMidia']);
-if (isset($_POST['instrucao'])) 		$instrucao		= \Zage\App\Util::antiInjection($_POST['instrucao']);
-if (isset($_POST['email'])) 			$email			= \Zage\App\Util::antiInjection($_POST['email']);
-
-#################################################################################
 ## Verificar parâmetro obrigatório
 #################################################################################
 if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
+
+#################################################################################
+## Resgata os parâmetros passados pelo id
+#################################################################################
+if (!isset($tipoMidia)) 		$tipoMidia		= "PDF";
+if (!isset($instrucao)) 		$instrucao		= null;
+if (!isset($email)) 			$email			= null;
+
 
 #################################################################################
 ## Inicializa o html
