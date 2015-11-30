@@ -12,12 +12,16 @@
 				<input type="hidden" name="_alterarGrupo" id="_alterarGrupoID">
 				<input type="hidden" id="codGrupoID" name="codGrupo" value="%COD_GRUPO%">
 				<input type="hidden" id="codConvidadoID" name="codConvidado" value="%COD_CONVIDADO%">
+				<input type='hidden' id='qtdeListaID' value="%QTDE_LISTA%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
-					<div class="btn-group">
+					<div class="btn-group col-sm-10">
 						%BOTOES%
 					</div>
 					<div class="vspace-xs"></div>
+					<div class="col-sm-2">
+						<span id="listaContID" name="listaCont" class="badge badge-success">%LISTA_COUNT% - convidados</span>
+					</div>
 					<div class="row">
 				    	<div class="col-sm-12">
 							<div>
@@ -72,7 +76,7 @@ $('.select2').css('width','100%').select2({allowClear:true});
 $('#btnSubmitListaConvID').on("click", function(e) {
 	
 	var vOk 	= validaConvidado();
-	
+
 	if(vOk == false) 	{
 		$.gritter.add({
 			title: 'Está faltando alguma coisa !!!',
@@ -129,7 +133,7 @@ function addRowConvidadoLayReg() {
 
 	if ($return == true) return $return;
 
-	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><input type="text" name="nome[]" value="%NOME%" zg-data-toggle="nome" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" onchange="verificaAlteracao($(this));"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
+	$('#layRegTableConvidadoID > tbody:last').append('<tr><td class="col-sm-2 center"><input type="text" name="nome[]" value="%NOME%" zg-data-toggle="nome" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));calculaCountLista();"></td><td class="col-sm-1 center"><input type="text" name="telefone[]" value="%TELEFONE%" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" onchange="verificaAlteracao($(this));"></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_FAIXA_ETARIA%</select></td><td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">%SEXO%</select></td><td class="col-sm-1 center"><input type="text" name="email[]" value="%EMAIL%" maxlength="100" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td class="col-sm-1 center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowConvidadoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codConvidado[]"></td></tr>');
 	$('#layRegTableConvidadoID > tbody > tr:last [zg-data-toggle="nome"]').each(function( index ) {
 		$( this ).focus();
 	});
@@ -150,7 +154,21 @@ function delRowConvidadoLayReg(pObj) {
 	$tr.addClass("danger");
 	$tr.fadeOut(500, function(){
 		$tr.remove();
+		calculaCountLista();
 	});
+}
+
+calculaCountLista();
+function calculaCountLista(){
+	var listaCount = $('#qtdeListaID').val();
+	var lista 	   = $("input[name='nome\\[\\]']");
+	
+	if(listaCount != 0){
+		listaCount = parseInt(listaCount) + parseInt(lista.length);
+		$('#listaContID').html(listaCount + " - convidados");
+	}else{
+		$('#listaContID').html(lista.length + " - convidados");
+	}
 }
 
 function verificaAlteracao(pObj) {
@@ -159,7 +177,6 @@ function verificaAlteracao(pObj) {
 
 function validaConvidado () {
 	var $return,$ok;
-	
 	$ok	= true;
 	
 	$('#layRegTableConvidadoID > tbody > tr').each(function( index ) {
@@ -174,7 +191,6 @@ function validaConvidado () {
 		}else{
 			$(this).removeClass('alert-danger');
 		}
-	
 	});
 
 	if (!$ok)	return false;
@@ -185,7 +201,6 @@ function validaConvidado () {
 function zgLoadUrlSeSalvouConv($url) {
 	
 	var vOk 	= validaConvidado();
-	
 	if(vOk == false) 	{
 		$.gritter.add({
 			title: 'Está faltando alguma coisa !!!',

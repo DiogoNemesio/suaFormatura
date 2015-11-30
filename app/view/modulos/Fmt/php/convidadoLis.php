@@ -54,6 +54,17 @@ if (sizeof($grupos) > 0) {
 	if (!isset($codGrupo)) $codGrupo	 = null;
 }
 
+
+#################################################################################
+## Contador de convidados
+#################################################################################
+try {
+	$aLista	= \Zage\Fmt\Convidado::zgCountLista($codGrupo);
+	$log->debug($aLista);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
 #################################################################################
 ## Select da Faixa Etaria
 #################################################################################
@@ -103,7 +114,7 @@ for ($i = 0; $i < sizeof($convidados); $i++) {
 	
 	$htmlReg	.= '
 	<tr>
-			<td class="col-sm-2 center"><input type="text" name="nome[]" value="'.$convidados[$i]->getNome().'" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
+			<td class="col-sm-2 center"><input type="text" name="nome[]" value="'.$convidados[$i]->getNome().'" maxlength="100" style="width:100%;" autocomplete="off" onchange="verificaAlteracao($(this));calculaCountLista();"></td>
 			<td class="col-sm-1 center"><input type="text" name="telefone[]" value="'.$convidados[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1" onchange="verificaAlteracao($(this));"></td>
 			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="codFaixaEtaria[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oFaixaEtariaInt.'</select></td>
 			<td class="col-sm-2 center"><select class="select2" style="width:100%;" name="sexo[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oSexoInt.'</select></td>
@@ -151,6 +162,7 @@ $tpl->set ( 'COD_FAIXA_ETARIA'	   , $oFaixaEtaria);
 $tpl->set ( 'EMAIL'				   , $email);
 $tpl->set ( 'CONVIDADOS'		   , $htmlReg);
 $tpl->set ( 'BOTOES'			   , $htmlBotoes);
+$tpl->set ( 'QTDE_LISTA'	  	   , $aLista);
 
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 
