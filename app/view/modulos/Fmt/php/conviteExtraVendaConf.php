@@ -62,7 +62,6 @@ for ($i = 0; $i < sizeof($infoVenda); $i++) {
 }
 
 $html 	.= "<tr><td colspan='3' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID'>".\Zage\App\Util::to_money($infoVenda[0]->getCodVenda()->getTaxaConveniencia())."</div></td>";
-$html 	.= "<tr><td colspan='3' align=\"right\"><strong>TOTAL</strong></td><td class=\"center\"><div id='valorTotalID' name='valorTotal'><strong>".\Zage\App\Util::to_money($infoVenda[0]->getCodVenda()->getValorTotal())."</strong></div></td></table>";
 
 #################################################################################
 ## Carregando o template html
