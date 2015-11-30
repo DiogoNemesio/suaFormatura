@@ -71,15 +71,12 @@ $valorSub		= 0;
 for ($i = 0; $i < sizeof($contas); $i++) {
 
 	#################################################################################
-	## Valida o status das contas
+	## Resgata o perfil da conta
 	#################################################################################
-	switch ($contas[$i]->getCodStatus()->getCodigo()) {
-		case "A":
-		case "P":
-			break;
-		default:
-			$indPodeSub	= false;
-			break;
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0;
+	
+	if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $contas[$i]->getCodStatus()->getCodigo(), "SUB")) {
+		$indPodeSub	= false;
 	}
 	
 	#################################################################################
@@ -93,14 +90,12 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	#################################################################################
 	$codPessoa	= ($contas[$i]->getCodPessoa()) ? $contas[$i]->getCodPessoa()->getCodigo() : null;
 	
-
 }
 
 #################################################################################
 ## Verifica se as contas podem ser substituídas
 #################################################################################
 if ($indPodeSub	== false) \Zage\App\Erro::halt($tr->trans('Existe alguma conta com o status que não permite substituição !!!'));
-
 
 #################################################################################
 ## Url anterior
@@ -135,8 +130,38 @@ try {
 ## Select da Conta de Débito
 #################################################################################
 try {
+
+	#################################################################################
+	## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
+	#################################################################################
+	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+
+	if ($oFmtAdm)	{
+		$aCntCer	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('nome' => 'ASC'));
+	}else{
+		$aCntCer	= null;
+	}
+
 	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+
+	if ($aCntCer) {
+		$oConta		= "<optgroup label='Contas do Cerimonial'>";
+		for ($i = 0; $i < sizeof($aCntCer); $i++) {
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."'>".$aCntCer[$i]->getNome()."</option>";
+		}
+		$oConta		.= '</optgroup>';
+		if ($aConta) {
+			$oConta		.= "<optgroup label='Contas da Formatura'>";
+			for ($i = 0; $i < sizeof($aConta); $i++) {
+				$oConta	.= "<option value='".$aConta[$i]->getCodigo()."'>".$aConta[$i]->getNome()."</option>";
+			}
+			$oConta		.= '</optgroup>';
+		}
+	}else{
+		$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	'', '');
+	}
+
+
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -146,9 +171,8 @@ try {
 #################################################################################
 try {
 	$aCat	= \Zage\Fin\Categoria::listaCombo("D",$oOrg->getCodTipo()->getCodigo());
-	$oCat    	= "<option value=\"\"></option>";
+	$oCat   = "<option value=\"\"></option>";
 	if ($aCat) {
-		
 		$aCatTemp	= array();
 		$i 			= 0;
 				
@@ -163,6 +187,10 @@ try {
 		foreach ($aCatTemp as $cDesc => $cCod) {
 			$oCat .= "<option value=\"".$cCod."\">".$cDesc.'</option>';
 		}
+		
+		
+	}else{
+		$aCatTemp	= array();
 	}
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

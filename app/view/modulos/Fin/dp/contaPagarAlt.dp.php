@@ -72,9 +72,17 @@ try {
 ## Verificar se a conta pode ser alterada
 #################################################################################
 if ($info) {
+	#################################################################################
+	## Resgata o perfil da conta
+	#################################################################################
 	$codPerfil	= ($info->getCodContaPerfil()) ? $info->getCodContaPerfil()->getCodigo() : 0;
-	$aAcoes		= \Zage\Fin\ContaAcao::getArrayAcoes($codPerfil, $info->getCodStatus()->getCodigo(),null, null);
-	if (!$aAcoes["ALT"]) \Zage\App\Erro::halt('Conta não pode ser alterada!!!');
+
+	#################################################################################
+	## Verifica se a conta pode ser alterada
+	#################################################################################
+	if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $info->getCodStatus()->getCodigo(), "ALT")) {
+		\Zage\App\Erro::halt('Conta não pode ser alterada!!!');
+	}
 }
 
 #################################################################################

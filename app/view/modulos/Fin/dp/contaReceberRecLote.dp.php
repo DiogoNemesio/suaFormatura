@@ -59,6 +59,33 @@ if (!isset($usaOrigConta) || (empty($usaOrigConta))) {
 #################################################################################
 $contas		= $em->getRepository('Entidades\ZgfinContaReceber')->findBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $aSelContas));
 
+#################################################################################
+## Validação
+#################################################################################
+$podePag	= true;
+for ($i = 0; $i < sizeof($contas); $i++) {
+
+	#################################################################################
+	## Resgata o perfil da conta
+	#################################################################################
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0;
+
+	#################################################################################
+	## Verifica se a conta pode ser confirmada
+	#################################################################################
+	if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $contas[$i]->getCodStatus()->getCodigo(), "CON")) {
+		$podePag	= false;
+	}
+}
+
+#################################################################################
+## Verifica se a alguma conta não pode ser recebida
+#################################################################################
+if (!$podePag)	{
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Erro de violação de acesso, tentativa de confirmação indevida")));
+	exit;
+}
+
 
 #################################################################################
 ## Salvar no banco

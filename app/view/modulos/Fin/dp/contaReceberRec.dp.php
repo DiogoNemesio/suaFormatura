@@ -72,6 +72,27 @@ if (!$oConta) {
 	$err = 1;
 }
 
+#################################################################################
+## Resgata o perfil da conta
+#################################################################################
+$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
+
+#################################################################################
+## Verifica se a conta pode ser confirmada
+#################################################################################
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "CON")) {
+	$podePag	= false;
+}else{
+	$podePag	= true;
+}
+
+#################################################################################
+## Verifica se a conta pode ser recebida
+#################################################################################
+if (!$podePag) {
+	\Zage\App\Erro::halt($tr->trans('Conta não pode ser confirmada, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
+}
+
 
 if ($err) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));

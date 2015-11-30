@@ -65,5 +65,41 @@ class ContaAcao {
 		
 		return $return;
 	}
+	
+	/**
+	 * Verificar se a ação informada é permitida para o Perfil / Status
+	 * @param integer $codPerfil
+	 * @param string $codStatus
+	 * @param string $codAcao
+	 */
+	public static function verificaAcaoPermitida($codPerfil,$codStatus,$codAcao) {
+
+
+		#################################################################################
+		## Ajustar o codPerfil para 0, caso não seja informado
+		#################################################################################
+		$codPerfil	= (!isset($codPerfil) || !$codPerfil) ? 0 : $codPerfil;
+		
+		#################################################################################
+		## Resgatar as ações que podem ser feitas por status
+		#################################################################################
+		$aStatusAcao	= \Zage\Fin\ContaStatus::getArrayStatusAcao();
+		
+		#################################################################################
+		## Resgatar as ações que podem ser feitas por Perfil de conta
+		#################################################################################
+		$aPerfilAcao	= \Zage\Fin\ContaPerfil::getArrayPerfilAcao();
+		
+		#################################################################################
+		## Fazer a verificação da seguinte forma:
+		## 
+		## Para a ação ser permitida, precisa existir no array de Status 
+		## e no array de perfil
+		##
+		#################################################################################
+		$pode				= ( (isset($aStatusAcao[$codStatus][$codAcao])) && (isset($aPerfilAcao[$codPerfil][$codAcao])) ) ? 1 : 0;
+		return ($pode);
+		
+	}
 
 }

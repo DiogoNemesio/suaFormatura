@@ -53,10 +53,35 @@ if (!$oConta) {
 }
 
 #################################################################################
-## Indicador de somente visualização
+## Resgata o perfil da conta
 #################################################################################
-$indSomenteVis		= $oConta->getIndSomenteVisualizar();
+$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
 
+#################################################################################
+## Verifica se a conta pode ser confirmada
+#################################################################################
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "HIS")) {
+	$podeHis	= false;
+}else{
+	$podeHis	= true;
+}
+
+#################################################################################
+## Verifica se pode Excluir baixa da conta
+#################################################################################
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "EXB")) {
+	$podeExb	= false;
+}else{
+	$podeExb	= true;
+}
+
+
+#################################################################################
+## Verifica se pode ser visualizado o histórico
+#################################################################################
+if (!$podeHis) {
+	\Zage\App\Erro::halt($tr->trans('Conta não pode ter o histórico visualizado, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
+}
 
 #################################################################################
 ## Resgata o Histórico
@@ -89,7 +114,7 @@ for ($i = 0; $i < sizeof($oHist); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$codConta.'&codHist='.$oHist[$i]->getCodigo());
 	$url		= "javascript:zgAbreModal('".ROOT_URL . "/Fin/contaReceberRecExc.php?id=".$uid."');";
 	
-	if ($indSomenteVis) {
+	if (!$podeExb) {
 		$grid->desabilitaCelula($i, 9);
 	}else{
 		$grid->setUrlCelula($i, 9, $url);

@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -47,6 +52,37 @@ if (!$oConta) {
 }
 
 #################################################################################
+## Resgata o perfil da conta
+#################################################################################
+$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
+
+#################################################################################
+## Verifica se a conta pode ser confirmada
+#################################################################################
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "HIS")) {
+	$podeHis	= false;
+}else{
+	$podeHis	= true;
+}
+
+#################################################################################
+## Verifica se pode ser visualizado o histórico
+#################################################################################
+if (!$podeHis) {
+	\Zage\App\Erro::halt($tr->trans('Conta não pode ter o histórico visualizado, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
+}
+
+#################################################################################
+## Verifica se pode Excluir baixa da conta
+#################################################################################
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "EXB")) {
+	$podeExb	= false;
+}else{
+	$podeExb	= true;
+}
+
+
+#################################################################################
 ## Resgata o Histórico
 #################################################################################
 $oHist		= $em->getRepository('Entidades\ZgfinHistoricoPag')->findBy(array('codContaPag' => $codConta));
@@ -67,7 +103,22 @@ $grid->adicionaMoeda($tr->trans('DESCONTO'),			10, $grid::CENTER	,'valorDesconto
 $grid->adicionaMoeda($tr->trans('OUTROS'),				10, $grid::CENTER	,'valorOutros');
 $grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome');
 $grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
+$grid->adicionaIcone("#", "fa fa-trash red", "Excluir o pagamento");
 $grid->importaDadosDoctrine($oHist);
+
+#################################################################################
+## Popula os valores dos botões
+#################################################################################
+for ($i = 0; $i < sizeof($oHist); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$codConta.'&codHist='.$oHist[$i]->getCodigo());
+	$url		= "javascript:zgAbreModal('".ROOT_URL . "/Fin/contaPagarPagExc.php?id=".$uid."');";
+
+	if (!$podeExb) {
+		$grid->desabilitaCelula($i, 9);
+	}else{
+		$grid->setUrlCelula($i, 9, $url);
+	}
+}
 
 $gHtml	= $grid->getHtmlCode();
 
