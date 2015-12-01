@@ -35,6 +35,9 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
+/** RESGATAR O COD_FORMANDO **/
+$codFormando = \Zage\Fmt\Convite::getCodigoUsuarioPessoa();
+
 /** FORMA PAGAMENTO **/
 if (!isset($codFormaPag) || empty($codFormaPag)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a forma de pagamento.");
@@ -59,7 +62,8 @@ for ($i = 0; $i < sizeof($codEvento); $i++) {
 		}else{
 			$quantConv[$i]	= (int) $quantConv[$i];
 			//Resgatar a quantidade de convites disponíveis para esse evento
-			$qtdeConvDis	= 10;//\Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oEventoConf->getCodEvento());
+			$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oEventoConf->getCodEvento());
+			$log->info($qtdeConvDis);
 			if ($qtdeConvDis < $quantConv[$i]){
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oEventoConf->getcodEvento()->getCodTipoEvento()->getDescricao()." está maior que o disponível.");
 				$err	= 1;
@@ -211,7 +215,7 @@ try {
 	$numParcelas		= 1;
 	$parcelaInicial		= 1;
 	$obs				= null;
-	$descricao			= 'Venda de convite extra';
+	$descricao			= 'Convite extra';
 	$indValorParcela	= null;
 	$indSomenteVis		= 1;
 	
@@ -294,6 +298,7 @@ try {
 	$oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codRecPer));
 	$oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
 	//$oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codContaRec));
+	$oContaPerfil	= $em->getRepository('Entidades\ZgfinContaPerfil')->findOneBy(array('codigo' => "1"));
 	
 	#################################################################################
 	## Ajustar os valores
@@ -316,7 +321,7 @@ try {
 	$conta->setValorDesconto($valorDesconto);
 	$conta->setValorOutros($valorOutros);
 	$conta->setDataVencimento($dataVenc);
-	$conta->setDocumento('dewdwe');
+	$conta->setDocumento('');
 	$conta->setObservacao($obs);
 	$conta->setNumParcelas($numParcelas);
 	$conta->setParcelaInicial($parcelaInicial);
@@ -332,6 +337,7 @@ try {
 	$conta->setCodGrupoAssociacao($codGrpAssociacao);
 	//$conta->setIndSomenteVisualizar($indSomenteVis);
 	$conta->setCodTransacao($codTransacaoVenda);
+	$conta->setCodContaPerfil($oContaPerfil);
 	
 	$conta->_setArrayValores($aValor);
 	$conta->_setArrayDatas($aData);

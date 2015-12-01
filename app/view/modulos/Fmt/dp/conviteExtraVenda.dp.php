@@ -301,12 +301,12 @@ try {
 	## Resgata os objetos (chave estrangeiras)
 	#################################################################################
 	//$oForma		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
-	$oStatus	= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => "A"));
-	$oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
-	$oPeriodo	= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codRecPer));
-	$oTipoRec	= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
+	$oStatus		= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => "A"));
+	$oMoeda			= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
+	$oPeriodo		= $em->getRepository('Entidades\ZgfinContaRecorrenciaPeriodo')->findOneBy(array('codigo' => $codRecPer));
+	$oTipoRec		= $em->getRepository('Entidades\ZgfinContaRecorrenciaTipo')->findOneBy(array('codigo' => $codTipoRec));
 	//$oContaRec	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'codigo' => $codContaRec));
-	
+	$oContaPerfil	= $em->getRepository('Entidades\ZgfinContaPerfil')->findOneBy(array('codigo' => "1"));
 	#################################################################################
 	## Ajustar os valores
 	#################################################################################
@@ -344,6 +344,7 @@ try {
 	$conta->setCodGrupoAssociacao($codGrpAssociacao);
 	//$conta->setIndSomenteVisualizar($indSomenteVis);
 	$conta->setCodTransacao($codTransacaoVenda);
+	$conta->setCodContaPerfil($oContaPerfil);
 	
 	$conta->_setArrayValores($aValor);
 	$conta->_setArrayDatas($aData);

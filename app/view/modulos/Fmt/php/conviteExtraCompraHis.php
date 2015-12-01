@@ -43,6 +43,11 @@ $system->checaPermissao($_codMenu_);
 $url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
+## Buscar o usuário para conseguir o email
+#################################################################################
+$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario())); 
+
+#################################################################################
 ## Instancia o objeto do contas a receber
 #################################################################################
 $contaRec	= new \Zage\Fin\ContaReceber();
@@ -71,64 +76,87 @@ if(!$oCompras) {
 		## Resgata informação da conta de recebimento
 		#################################################################################
 		$oContaRec	= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codTransacao' => $oCompras[$i]->getCodTransacao()));
-		
+
 		#################################################################################
-		## Formatar campos da conta
+		## Verificar se pode imprimir boleto
 		#################################################################################
-		$podeBol			= true;
-		$codFormaPag		= ($oContaRec->getCodFormaPagamento() 	!= null) ? $oContaRec->getCodFormaPagamento()->getCodigo() : null;
-		$codContaRec		= ($oContaRec->getCodConta() 			!= null) ? $oContaRec->getCodConta() 						: null;
-		$vencimento			= ($oContaRec->getDataVencimento() 		!= null) ? $oContaRec->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
-		
-		if (!$vencimento) 										$podeBol	= false;
-		if ($codFormaPag	!== "BOL")							$podeBol	= false;
-		if (!$codContaRec) 										$podeBol	= false;
-		if ($codContaRec->getCodTipo()->getCodigo() !== "CC")	$podeBol	= false;
-		if (!$codContaRec->getCodCarteira()) 					$podeBol	= false;
-		
-		
-		#################################################################################
-		## Verificar se a conta está atrasada
-		#################################################################################
-		$vencBol			= \Zage\Fin\Data::proximoDiaUtil(date($system->config["data"]["dateFormat"]));
-		$numDias			= \Zage\Fin\Data::numDiasAtraso($vencimento,$vencBol);
-		$htmlAtraso			= "<i class='fa fa-check-circle green bigger-120'></i>";
-		
-		#################################################################################
-		## Calcular o valor
-		#################################################################################
-		if (!$contaRec->getValorJaRecebido($oContaRec->getCodigo())) {
-			$valor				= ($oContaRec->getValor() + $oContaRec->getValorJuros() + $oContaRec->getValorMora() + $oContaRec->getValorOutros() - $oContaRec->getValorDesconto() - $oContaRec->getValorCancelado());
-		}else{
-			$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($oContaRec->getCodigo()));
+		if($oContaRec && \Zage\Fin\ContaReceber::podeEmitirBoleto($oContaRec) == true){
+			//URL da geração de boleto
+			$eid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$oContaRec->getCodigo().'&tipoMidia=EMAIL'.'&email='.$oUsuario->getUsuario().'&instrucao=');
+			$pid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$oContaRec->getCodigo().'&tipoMidia=PDF'.'&instrucao=');
+			
+			$urlEmail 	= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $eid;
+			$urlPdf 	= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $pid;
+			
+			$htmlBol			= '
+			<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
+				<span class="btn btn-sm btn-white btn-info center" onclick="javascript:zgDownloadUrl(\''.$urlPdf.'\');"><i class="fa fa-file-pdf-o bigger-120"></i></span>
+				<span id="enviaEmailID_'.$i.'" class="btn btn-sm btn-white btn-info center" onclick="javascript:enviaEmail('.$i.',\''.$urlEmail.'\');"><i class="fa fa-envelope bigger-120"></i></span>
+			</div>
+			';
 		}
 		
 		#################################################################################
-		## Calcular o Juros e Mora
+		## Verifica se está vencida
 		#################################################################################
-		$_juros				= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($oContaRec->getCodigo(), date($system->config["data"]["dateFormat"]));
-		$_mora				= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($oContaRec->getCodigo(), date($system->config["data"]["dateFormat"]));
-		
-		$urlDown			= "meuPagBoleto('".$oContaRec->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','PDF','".$instrucao."','');";
-		$urlMail			= "meuPagBoleto('".$oContaRec->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','MAIL','".$instrucao."','".$email."');";
-		$htmlBol			= '
-		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
-			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlDown.'"><i class="fa fa-file-pdf-o bigger-120"></i></span>
-			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlMail.'"><i class="fa fa-envelope bigger-120"></i></span>
-		</div>
-		';
-		
-		
+		$vencimento			= $oContaRec->getDataVencimento()->format($system->config["data"]["dateFormat"]);
+		$numDiasAtraso		= \Zage\Fin\Data::numDiasAtraso($vencimento);
+		if ($numDiasAtraso > 0 && $oContaRec->getCodStatus()->getCodigo() == 'A') {
+			$vencida 	= 1;
+			$statusDesc	= '<span class="label label-danger">
+								<i class="ace-icon fa fa-exclamation-triangle bigger-120"></i>
+								'.$oContaRec->getCodStatus()->getDescricao().'
+							</span>';
+		}else{
+			$statusDesc	= '<span class="label label-'.$oContaRec->getCodStatus()->getEstiloNormal().'">
+								'.$oContaRec->getCodStatus()->getDescricao().'
+							</span>';
+		}
+			
 		$tabCompra	.= '<tr>
-			<td style="text-align: center;">'.$oCompras[$i]->getCodTransacao().'</td>
+			<td style="text-align: center;">'.$statusDesc.'</td>
 			<td style="text-align: center;">'.$oCompras[$i]->getCodVendaTipo()->getDescricao().'</td>
 			<td style="text-align: center;">'.$oContaRec->getCodFormaPagamento()->getDescricao().'</td>
 			<td style="text-align: center;">'.$oContaRec->getDataVencimento()->format($system->config["data"]["dateFormat"]).'</td>
-			<td style="text-align: center;">R$ '.\Zage\App\Util::formataDinheiro($oCompras[$i]->getValorTotal()).'</td>
+			<td style="text-align: center;">R$ '.\Zage\App\Util::formataDinheiro($oCompras[$i]->getValorTotal()+$oCompras[$i]->getTaxaConveniencia()).'</td>
 			<td class="hidden-480" style="text-align: center;">'.$oCompras[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]).'</td>
 			<td style="text-align: center;">'.$htmlBol.'</td>
 			</tr>';
 	}
+}
+
+$tabCompra .= ' <script>
+				function enviaEmail(i,$urlEmail){
+					$(\'#enviaEmailID_\'+i).html(\'<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>\');
+					$(\'#enviaEmailID_\'+i).attr("disabled","disabled");
+					$.ajax({
+						type:	"GET", 
+						url:	$urlEmail,
+						data:	$(\'zgFormMeuPagID\').serialize(),
+						}).done(function( data, textStatus, jqXHR) {
+							$.gritter.add({
+								title: "Email enviado com sucesso",
+								text: "Enviado para o mesmo email utilizado para acessar o portal",
+								class_name: "gritter-info gritter-info",
+								time: "5000"
+							});
+								
+							$(\'#enviaEmailID_\'+i).html(\'<i class="fa fa-envelope bigger-120"></i>\');
+							$(\'#enviaEmailID_\'+i).attr("disabled",false);
+								
+						}).fail(function( jqXHR, textStatus, errorThrown) {
+							alert("errado");
+						});
+								
+						
+					}
+				</script>				
+			';
+
+if ($vencida == 1){
+	$msnVenc = '<div class="well well-sm"> Caso já tenha realizado o pagamento da conta sinalizada como vencida, desconsidere e aguarde a compensação. </div>';
+}else{
+	$msnVenc = '';
 }
 
 #################################################################################
@@ -150,7 +178,7 @@ $tpl->set('ID'				,$id);
 $tpl->set('URL_VOLTAR'		,$urlVoltar);
 $tpl->set('HIDDEN'			,$hidden);
 $tpl->set('TAB_COMPRA'		,$tabCompra);
-
+$tpl->set('MSG_VENCIDO'		,$msnVenc);
 $tpl->set('MSG_COM'			,$msnCom);
 #################################################################################
 ## Por fim exibir a página HTML

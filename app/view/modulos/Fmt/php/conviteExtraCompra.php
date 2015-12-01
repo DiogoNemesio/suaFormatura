@@ -72,7 +72,7 @@ if ($eventoConfApto){
 }else{
 	$hidden = "hidden";
 	$disabled = "disabled";
-	$msg .= '<div class="alert alert-warning">';
+	$msg = '<div class="alert alert-warning">';
 	$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum evento para venda.';
 	$msg .= '</div>';
 }
@@ -87,11 +87,11 @@ try {
 	if(!$aFormaPag){
 		$hidden = "hidden";
 		$disabled = "disabled";
-		$msg .= '<div class="alert alert-warning">';
+		$msg = '<div class="alert alert-warning">';
 		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum convite para venda.';
 		$msg .= '</div>';
 	}else{
-		$oFormaPag      = "<option value=\"\"></option>";
+		
 		foreach ($aFormaPag as $info) {
 			$oFormaPag .= "<option value=\"".$info->getCodFormaPagamento()->getCodigo()."\">".$info->getCodFormaPagamento()->getDescricao().'</option>';
 		}
@@ -114,7 +114,7 @@ try {
 	}else{
 		$hidden = "hidden";
 		$disabled = "disabled";
-		$msg .= '<div class="alert alert-warning">';
+		$msg = '<div class="alert alert-warning">';
 		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum convite para venda.';
 		$msg .= '</div>';
 	}
@@ -134,7 +134,7 @@ try {
 	}else{
 		$hidden = "hidden";
 		$disabled = "disabled";
-		$msg .= '<div class="alert alert-warning">';
+		$msg = '<div class="alert alert-warning">';
 		$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum convite para venda.';
 		$msg .= '</div>';
 	}
@@ -161,6 +161,7 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 ################################################################################
 $tpl->set ( 'URL_FORM'			   , $_SERVER ['SCRIPT_NAME'] );
 $tpl->set ( 'URL_HIST'		 	   , $urlHist );
+$tpl->set ( 'IC'			 	   , $_icone_);
 $tpl->set ( 'ID'				   , $id );
 $tpl->set ( 'COD_FORMANDO'	   	   , \Zage\Fmt\Convite::getCodigoUsuarioPessoa());
 $tpl->set ( 'TABLE'				   , $html);

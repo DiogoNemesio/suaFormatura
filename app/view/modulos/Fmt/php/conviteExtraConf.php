@@ -79,8 +79,8 @@ $oVendaConf = $em->getRepository('Entidades\ZgfmtConviteExtraVendaConf')->findOn
 if (!$oVendaConf){
 	$autorizadoNet = 'disabled';
 	
-	$msgAutorizado .= '<div class="col-sm-12 alert alert-warning">';
-	$msgAutorizado .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Para inciar as vendas pela internet é necessário realizar as configurações de pagamento no menu: CONVIDADOS > CONFIGURAR PAGAMENTO';
+	$msgAutorizado = '<div class="col-sm-12 alert alert-warning">';
+	$msgAutorizado .= '<i class="fa fa-exclamation-triangle bigger-125"></i> Para inciar as vendas pela internet é necessário realizar as configurações de pagamento no menu: CONVIDADOS > CONVITE EXTRA > FORMA DE PAGAMENTO';
 	$msgAutorizado .= '</div>';
 	
 }else{

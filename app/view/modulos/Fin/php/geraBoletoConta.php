@@ -57,7 +57,6 @@ if (!isset($tipoMidia)) 		$tipoMidia		= "PDF";
 if (!isset($instrucao)) 		$instrucao		= null;
 if (!isset($email)) 			$email			= null;
 
-
 #################################################################################
 ## Inicializa o html
 #################################################################################
@@ -82,7 +81,6 @@ $oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('c
 if (!$oConta) {
 	\Zage\App\Erro::halt('Conta não encontrada');
 }
-	
 	
 #################################################################################
 ## Resgata as informaçoes da conta corrente
@@ -178,7 +176,6 @@ if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $hoje) == true) {
 	$valorJuros		= \Zage\App\Util::to_float($oConta->getValorJuros());
 	$valorMora		= \Zage\App\Util::to_float($oConta->getValorMora());
 }
-	
 	
 #################################################################################
 ## Atualiza o saldo a receber

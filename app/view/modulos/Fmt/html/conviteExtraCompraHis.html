@@ -1,7 +1,7 @@
 <div id="content">
 	<div class="page-header">
-		<h1><i class="fa fa-history black">&nbsp;</i>Histórico de Comrpas&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a href="javascript:zgLoadUrl('%URL_VOLTAR%');" class="btn btn-yellow"><i class="ace-icon fa fa-arrow-left bigger-130"></i>Comprar</a>
+		<h1><i class="fa fa-history black">&nbsp;</i>Histórico&nbsp;&nbsp;
+			<a href="javascript:zgLoadUrl('%URL_VOLTAR%');" class="btn btn-sm btn-yellow"><i class="ace-icon fa fa-arrow-left bigger-130"></i>Comprar</a>
 		</h1>
 	</div><!-- /.page-header -->
 	
@@ -30,44 +30,12 @@
 					%TAB_COMPRA%
 					</tbody>
 				</table>
+				%MSG_VENCIDO%
 			</div><!--/span-->
 		</div>
 	</div>
 </div>
 
 <script type="text/javascript" charset="%CHARSET%">
-function meuPagBoleto(pCodConta,pVenc,pValor,pJuros,pMora,pDesconto,pOutros,pTipoMidia,pInstrucao,pEmail) {
-	$('#codContaSelID').eq(0).val(pCodConta);
-	$('#vencimentoID').val(pVenc);
-	$('#valorID').val(pValor);
-	$('#valorJurosID').val(pJuros);
-	$('#valorMoraID').val(pMora);
-	$('#valorDescontoID').val(pDesconto);
-	$('#valorOutrosID').val(pOutros);
-	$('#tipoMidiaID').val(pTipoMidia);
-	$('#instrucaoID').val(pInstrucao);
-	$('#emailID').val(pEmail);
 
-	if (pTipoMidia == "MAIL") {
-		zgMostraMsg('divMsgMeuPagID',"<i class='fa fa-cog fa-spin'></i>&nbsp;Aguarde e-mail sendo enviado !!!");
-		$('#zgFormMeuPagID').submit(function(e) {
-			$.ajax({
-				type:	"POST", 
-				url:	"%DP%",
-				data:	$('#zgFormMeuPagID').serialize(),
-			}).done(function( data, textStatus, jqXHR) {
-				zgMostraMsg('divMsgMeuPagID',"Email enviado com sucesso !!!");
-			}).fail(function( jqXHR, textStatus, errorThrown) {
-				zgMostraAviso(null);
-			});
-			return false; 
-		});
-	}else{
-		$( "#zgFormMeuPagID").unbind( "submit" );
-	}
-	
-	$('#zgFormMeuPagID').submit();
-	e.preventDefault();
-	return false; 
-}
 </script>
