@@ -56,18 +56,26 @@ try {
 ## Verifica se precisa mostrar a tabela de pagamentos em atraso
 #################################################################################
 if (sizeof($pagamentosAtr) == 0) {
-	$hidAtr		= "hidden";
+	$hidAtr		= 'hidden';
+	$tabAtr		= '<tr>
+						<td style="text-align: center;" colspan="6"> Nenhum registro encotrado </td>
+					</tr>
+				';
 }else{
-	$hidAtr		= null;
+	$hidAtr		= '';
+	$tabAtr		= '';
 }
 
 #################################################################################
 ## Verifica se precisa mostrar a tabela de pagamentos futuros
 #################################################################################
 if (sizeof($pagamentosFut) == 0) {
-	$hidFut		= "hidden";
+	$tabFut		= '<tr>
+						<td style="text-align: center;" colspan="6"> Nenhum registro encotrado </td>
+					</tr>
+				';
 }else{
-	$hidFut		= null;
+	$tabFut		= '';
 }
 
 #################################################################################
@@ -79,7 +87,6 @@ $contaRec	= new \Zage\Fin\ContaReceber();
 #################################################################################
 ## Popula a tabela de pagamentos em atraso
 #################################################################################
-$tabAtr		= "";
 $totalAtr	= 0;
 for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 	
@@ -146,10 +153,10 @@ for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 	
 	$tabAtr	.= '<tr>
 			<td>'.$pagamentosAtr[$i]->getDescricao().'</td>
-			<td style="text-align: center;">'.$parcela.'</td>
+			<td class="hidden-480" style="text-align: center;">'.$parcela.'</td>
 			<td style="text-align: center;">'.$vencimento.'</td>
-			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
-			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
+			<td style="text-align: center;">'.\Zage\App\Util::to_money($valor).'</td>
+			<td style="text-align: center;">'.\Zage\App\Util::to_money($juros).'</td>
 			<td style="text-align: center;">'.$htmlBol.'</td>
 			</tr>
 	';
@@ -158,7 +165,6 @@ for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 #################################################################################
 ## Popula a tabela de pagamentos futuros
 #################################################################################
-$tabFut		= "";
 $numFut		= sizeof($pagamentosFut);
 if ($numFut > 5) $numFut = 5;
 for ($i = 0; $i < $numFut; $i++) {
@@ -219,10 +225,10 @@ for ($i = 0; $i < $numFut; $i++) {
 	$juros				= 0;
 	$tabFut	.= '<tr>
 			<td>'.$pagamentosFut[$i]->getDescricao().'</td>
-			<td style="text-align: center;">'.$parcela.'</td>
+			<td class="hidden-480" style="text-align: center;">'.$parcela.'</td>
 			<td style="text-align: center;">'.$vencimento.'</td>
-			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
-			<td style="text-align: right;">'.\Zage\App\Util::to_money($juros).'</td>
+			<td style="text-align: center;">'.\Zage\App\Util::to_money($valor).'</td>
+			<td class="hidden-480"style="text-align: center;">'.\Zage\App\Util::to_money($juros).'</td>
 			<td style="text-align: center;">'.$htmlBol.'</td>
 			</tr>
 	';
@@ -233,7 +239,7 @@ for ($i = 0; $i < $numFut; $i++) {
 #################################################################################
 ## Gerar a url de histórico de pagamentos
 #################################################################################
-$urlHist				= ROOT_URL."/Fin/meuPagamentoHistorico.php?id=".$id;
+$urlHist				= ROOT_URL."/Fin/meuPagamentoHis.php?id=".$id;
 
 #################################################################################
 ## Carregando o template html

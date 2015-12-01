@@ -55,15 +55,17 @@ try {
 ## Verifica se precisa mostrar a tabela de pagamentos em atraso
 #################################################################################
 if (sizeof($pagamentosHis) == 0) {
-	$hidHis		= "hidden";
+	$tabHis	.= '<tr>
+					<td style="text-align: center;" colspan="5"> Nenhum registro encotrado </td>
+				</tr>
+			';
 }else{
-	$hidHis		= null;
+	$tabHis		= '';
 }
 
 #################################################################################
 ## Popula a tabela de pagamentos em atraso
 #################################################################################
-$tabHis		= "";
 for ($i = 0; $i < sizeof($pagamentosHis); $i++) {
 	$venc		= $pagamentosHis[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
 	$valor		= ($pagamentosHis[$i]->getValor() + $pagamentosHis[$i]->getValorJuros() + $pagamentosHis[$i]->getValorMora() + $pagamentosHis[$i]->getValorOutros() - $pagamentosHis[$i]->getValorDesconto() - $pagamentosHis[$i]->getValorCancelado());
@@ -74,21 +76,19 @@ for ($i = 0; $i < sizeof($pagamentosHis); $i++) {
 	$hist		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codContaRec' => $pagamentosHis[$i]->getCodigo()));
 	if (!$hist)	{
 		$dataPag	= "??/??/????";
+		
 	}else{
 		$dataPag	= "";
 		for ($h = 0 ; $h < sizeof($hist); $h++) {
 			$dataPag .= $hist[$h]->getDataRecebimento()->format($system->config["data"]["dateFormat"]);
 		}
 	}
-	
-	
-	
-	
+
 	$tabHis	.= '<tr>
 			<td>'.$pagamentosHis[$i]->getDescricao().'</td>
-			<td style="text-align: center;">('.$pagamentosHis[$i]->getParcela().'/'.$pagamentosHis[$i]->getNumParcelas().')</td>
+			<td class="hidden-480" style="text-align: center;">('.$pagamentosHis[$i]->getParcela().'/'.$pagamentosHis[$i]->getNumParcelas().')</td>
 			<td style="text-align: center;">'.$venc.'</td>
-			<td style="text-align: right;">'.\Zage\App\Util::to_money($valor).'</td>
+			<td style="text-align: center;">'.\Zage\App\Util::to_money($valor).'</td>
 			<td style="text-align: center;">'.$dataPag.'</td>
 	';
 }

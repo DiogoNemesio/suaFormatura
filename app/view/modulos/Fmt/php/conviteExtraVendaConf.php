@@ -31,13 +31,13 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
+#################################################################################
+## Resgatar informações da venda
+#################################################################################
 if (isset($_GET['codVenda'])){
 	$codVenda		= \Zage\App\Util::antiInjection($_GET['codVenda']);
 }
 
-#################################################################################
-## Resgatar informações da venda
-#################################################################################
 $infoVenda = $em->getRepository('Entidades\ZgfmtConviteExtraVendaItem')->findBy(array('codVenda' => $codVenda));
 
 // Cálculo do valor total

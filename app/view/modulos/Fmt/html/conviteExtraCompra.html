@@ -152,7 +152,7 @@ $('#zgFormID').submit(function() {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			zgLoadUrl('%ROOT_URL%Fmt/conviteExtraVendaConf.php?id=%ID%'+zgEncodeUrl('&codVenda='+zgGetCodRetorno(data)));
+			zgLoadUrl('%ROOT_URL%Fmt/conviteExtraVendaConf.php?id=%ID%'+'&codVenda='+zgGetCodRetorno(data));
 		}else{
 			zgMostraAviso("Fechar");
 		}
