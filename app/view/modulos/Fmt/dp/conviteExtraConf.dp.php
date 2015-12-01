@@ -41,7 +41,13 @@ if (!isset($valor) || empty($valor)) {
 
 /** QUANTIDADE MAXIMA **/
 if (!isset($qtdeMax) || empty($qtdeMax)) {
-	$qtdeMax = null;
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Informe a quantidade máxima de convites por formando."));
+	$err	= 1;
+}else{
+	if ($qtdeMax < 0){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A quantidade de convite por aluno deve ser maior que 0."));
+		$err	= 1;
+	}
 }
 
 /** DATA INICIO INTERNET **/

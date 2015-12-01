@@ -128,7 +128,7 @@ for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 	$juros				= ($_juros + $_mora);
 	$totalAtr			+= $valor + $juros;
 	$instrucao			= "";
-	$email				= ($pagamentosAtr[$i]->getCodPessoa()) ? $pagamentosFut[$i]->getCodPessoa()->getEmail() : null;
+	$email				= ($pagamentosAtr[$i]->getCodPessoa()) ? $pagamentosAtr[$i]->getCodPessoa()->getEmail() : null;
 	
 	if ($podeBol) {
 		$urlDown			= "meuPagBoleto('".$pagamentosAtr[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','PDF','".$instrucao."','');";

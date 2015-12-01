@@ -13,7 +13,6 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 global $system,$em,$tr,$_user;
 
-
 #################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
@@ -115,8 +114,7 @@ if(!$oCompras) {
 			
 		$tabCompra	.= '<tr>
 			<td style="text-align: center;">'.$statusDesc.'</td>
-			<td style="text-align: center;">'.$oCompras[$i]->getCodVendaTipo()->getDescricao().'</td>
-			<td style="text-align: center;">'.$oContaRec->getCodFormaPagamento()->getDescricao().'</td>
+			<td class="hidden-480" style="text-align: center;">'.$oContaRec->getCodFormaPagamento()->getDescricao().'</td>
 			<td style="text-align: center;">'.$oContaRec->getDataVencimento()->format($system->config["data"]["dateFormat"]).'</td>
 			<td style="text-align: center;">R$ '.\Zage\App\Util::formataDinheiro($oCompras[$i]->getValorTotal()+$oCompras[$i]->getTaxaConveniencia()).'</td>
 			<td class="hidden-480" style="text-align: center;">'.$oCompras[$i]->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]).'</td>

@@ -30,7 +30,7 @@
 					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade máxima de convites extras por aluno."></i></span>
 					    			<input class="form-control" id="qtdeMaxID" type="text" name="qtdeMax" placeholder="Quantidade máxima por aluno" maxlength="16" value="%QTDE_MAX%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 						    	</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+						    	<div class="col-sm-1 pull-left" id="divHelpQtdeMaxID"></div>
 						    </div>
 						</div>
 						<div class="col-sm-4">
@@ -198,7 +198,10 @@ function validaConviteExtraConf() {
 	var vDataFimNet		= $('#dataFimInternetID').val();
 	var vDataIniPre		= $('#dataInicioPresencialID').val();
 	var vDataFimPre		= $('#dataFimPresencialID').val();
+	var vQtdeMaxID		= $('#qtdeMaxID').val();
 	var vCodConviteConfID	= $('#codConviteConfID').val();
+	
+	
 	
 	var date = new Date();
 	var dataHoje = moment(date).format('YYYYMMDD');
@@ -220,6 +223,22 @@ function validaConviteExtraConf() {
 			$('#divValorID').removeClass('has-error');
 			$('#divHelpValorID').html('&nbsp;');
 		}
+	}
+	
+	//QUANTIDADE MÁXIMA
+	if (!vQtdeMaxID){
+		$('#divQtdeMaxID').addClass('has-error');
+		$('#divHelpQtdeMaxID').html(zgCriaSpanErro('Informe a quantidade máxima de convites por formando.'));
+		vOK = false;
+	}else{
+		if (vQtdeMaxID <= 0){
+			$('#divQtdeMaxID').addClass('has-error');
+			$('#divHelpQtdeMaxID').html(zgCriaSpanErro('A quantidade de convite por aluno deve ser maior que 0.'));
+			vOK = false;
+		}else{
+			$('#divQtdeMaxID').removeClass('has-error');
+			$('#divHelpQtdeMaxID').html('&nbsp;');
+		}		
 	}
 	
 	//DATA INÍCIO
