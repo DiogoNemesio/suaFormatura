@@ -142,7 +142,9 @@ for ($i = 0; $i < sizeof($conviteExtraVenda); $i++) {
 	#################################################################################
 	## Liquidado
 	#################################################################################
-	$grid->setValorCelula($i,$colPago,$oContaRec->getDataLiquidacao()->format($system->config["data"]["datetimeSimplesFormat"]));
+	if ($oContaRec->getDataLiquidacao()){
+		$grid->setValorCelula($i,$colPago,$oContaRec->getDataLiquidacao()->format($system->config["data"]["datetimeSimplesFormat"]));
+	}
 	
 	#################################################################################
 	## Forma de pagamento

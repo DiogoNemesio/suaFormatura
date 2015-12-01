@@ -61,10 +61,10 @@ class Convite {
 	}
 	
 	/**
-	 * Lista vendas por formando
+	 * Resgata o código da Pessoa de um formando
 	 *
-	 * @param integer $codOrganizacao
-	 * @return array
+	 * @param 
+	 * @return código
 	 */
 	public static function getCodigoUsuarioPessoa() {
 		global $em,$system;
