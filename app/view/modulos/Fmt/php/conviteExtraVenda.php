@@ -146,10 +146,9 @@ $tpl->set ( 'COD_CONTA'	   		   , $oConta);
 
 $tpl->set ( 'TAXA_ADM'	   		   , $taxaAdm);
 $tpl->set ( 'IND_ADD_TAXA_BOLETO'  , $indAddTaxaBoleto);
+$tpl->set ( 'COD_MENU'			   , $_codMenu_);
 
-
-
-$tpl->set ( 'IC'				   ,$_icone_);
+$tpl->set ( 'IC'				   , $_icone_);
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 
 ################################################################################

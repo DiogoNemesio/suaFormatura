@@ -29,7 +29,7 @@ if (isset($_GET['id'])) {
 #################################################################################
 ## Verifica se o usuário tem permissão no menu
 #################################################################################
-//$system->checaPermissao($_codMenu_);
+$system->checaPermissao($_codMenu_);
 
 if (isset($_GET['codVenda'])){
 	$codVenda		= \Zage\App\Util::antiInjection($_GET['codVenda']);
@@ -48,6 +48,52 @@ $valorTotal = $infoVenda[0]->getCodVenda()->getValorTotal() + $infoVenda[0]->get
 #################################################################################
 $infoContaRec = $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codTransacao' => $infoVenda[0]->getCodVenda()->getCodTransacao()));
 
+#################################################################################
+## Verificar se pode imprimir boleto
+#################################################################################
+if($infoContaRec && \Zage\Fin\ContaReceber::podeEmitirBoleto($infoContaRec) == true){
+	//URL da geração de boleto
+	$eid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$infoContaRec->getCodigo().'&tipoMidia=EMAIL'.'&email='.$infoVenda[0]->getCodVenda()->getCodFormando()->getEmail().'&instrucao=');
+	$pid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$infoContaRec->getCodigo().'&tipoMidia=PDF'.'&instrucao=');
+		
+	$urlEmail 	= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $eid;
+	$urlPdf 	= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $pid;
+		
+	$htmlBol = '<div data-toggle="buttons" class="btn-group btn-corner pull-right col-sm-2">
+					<span class="btn btn-grey tooltip-info" id="btnOrcPrintID" zg-disabled="disabled" onclick="javascript:zgDownloadUrl(\''.$urlPdf.'\');" data-rel="tooltip" data-placement="top" data-original-title="Salve o Boleto para poder imprimir" title="">
+						<i class="ace-icon fa fa-print bigger-120 white" id="icOrcPrintID"></i>
+					</span>
+					<span class="btn btn-grey tooltip-success" id="enviaEmailID" zg-disabled="disabled" onclick="javascript:enviaEmail(\''.$urlEmail.'\');" data-rel="tooltip" data-placement="top" data-original-title="Enviar boleto por e-mail" title="">
+						<i class="ace-icon fa fa-envelope bigger-120 white" id="icOrcMailID"></i>
+					</span>
+				</div>';
+	
+	$htmlBol .= ' <script>
+				function enviaEmail($urlEmail){
+					$(\'#enviaEmailID\').html(\'<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>\');
+					$(\'#enviaEmailID\').attr("disabled","disabled");
+					$.ajax({
+						type:	"GET",
+						url:	$urlEmail,
+						data:	$(\'zgFormMeuPagID\').serialize(),
+						}).done(function( data, textStatus, jqXHR) {
+							$.gritter.add({
+								title: "Email enviado com sucesso",
+								text: "Enviado para o mesmo email utilizado para acessar o portal",
+								class_name: "gritter-info gritter-info",
+								time: "5000"
+							});
+	
+							$(\'#enviaEmailID\').html(\'<i class="fa fa-envelope bigger-120"></i>\');
+							$(\'#enviaEmailID\').attr("disabled",false);
+	
+						}).fail(function( jqXHR, textStatus, errorThrown) {
+							alert("errado");
+						});
+					}
+				</script>';
+}
+
 $total = 0;
 for ($i = 0; $i < sizeof($infoVenda); $i++) {
 	//$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
@@ -58,10 +104,11 @@ for ($i = 0; $i < sizeof($infoVenda); $i++) {
 	$html .= '<td class="center">'.$infoVenda[$i]->getCodEvento()->getCodTipoEvento()->getDescricao().'</td>';
 	$html .= '<td class="center">'.$infoVenda[$i]->getQuantidade().'</td>';
 	$html .= '<td class="center">'.\Zage\App\Util::to_money($infoVenda[$i]->getValorUnitario()).'</td>';
+	$html .= '<td class="center">'.\Zage\App\Util::to_money($infoVenda[$i]->getCodVenda()->getValorTotal()).'</td>';
 	$html .= '</tr>';
 }
 
-$html 	.= "<tr><td colspan='3' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID'>".\Zage\App\Util::to_money($infoVenda[0]->getCodVenda()->getTaxaConveniencia())."</div></td>";
+$html 	.= "<tr><td colspan='4' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID'>".\Zage\App\Util::to_money($infoVenda[0]->getCodVenda()->getTaxaConveniencia())."</div></td>";
 
 #################################################################################
 ## Carregando o template html
@@ -85,6 +132,7 @@ $tpl->set('DATA_VENDA'			,$infoVenda[0]->getCodVenda()->getDataCadastro()->forma
 $tpl->set('NOME'				,$infoVenda[0]->getCodVenda()->getCodFormando()->getNome());
 $tpl->set('EMAIL'				,$infoVenda[0]->getCodVenda()->getCodFormando()->getEmail());
 $tpl->set('HTML_TABLE'			,$html);
+$tpl->set('HTML_BOL'			,$htmlBol);
 
 #################################################################################
 ## Por fim exibir a página HTML

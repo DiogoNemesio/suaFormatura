@@ -162,6 +162,7 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 $tpl->set ( 'URL_FORM'			   , $_SERVER ['SCRIPT_NAME'] );
 $tpl->set ( 'URL_HIST'		 	   , $urlHist );
 $tpl->set ( 'IC'			 	   , $_icone_);
+$tpl->set ( 'COD_MENU'		 	   , $_codMenu_);
 $tpl->set ( 'ID'				   , $id );
 $tpl->set ( 'COD_FORMANDO'	   	   , \Zage\Fmt\Convite::getCodigoUsuarioPessoa());
 $tpl->set ( 'TABLE'				   , $html);
