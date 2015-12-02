@@ -760,13 +760,13 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				## maior ou igual a hoje
 				#################################################################################
 				if ($this->_getFlagRecebida()) {
-					if ($object->getDataVencimento() <= \DateTime::createFromFormat($system->config["data"]["dateFormat"],date($system->config["data"]["dateFormat"]))) {
+					//if ($object->getDataVencimento() <= \DateTime::createFromFormat($system->config["data"]["dateFormat"],date($system->config["data"]["dateFormat"]))) {
 						$erro = $this->recebe($object, $object->getCodConta(), $object->getCodFormaPagamento(), $object->getDataVencimento()->format($system->config["data"]["dateFormat"]), \Zage\App\Util::toPHPNumber($object->getValor()), \Zage\App\Util::toPHPNumber($object->getValorJuros()), \Zage\App\Util::toPHPNumber($object->getValorMora()), \Zage\App\Util::toPHPNumber($object->getValorDesconto()), \Zage\App\Util::toPHPNumber($object->getValorOutros()),0,0,$object->getDocumento(),"MAN");
 						if ($erro) {
 							$log->debug("Erro ao salvar: ".$erro);
 							return $erro;
 						}
-					}
+					//}
 				}
 				
 					
@@ -2269,6 +2269,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param unknown $oConta
 	 */
 	public static function podeEmitirBoleto($oConta) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $log;
+		
 		
 		#################################################################################
 		## Verificar se a conta está configurada para emitir boleto
@@ -2279,8 +2284,12 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$contaRec	= $oConta->getCodConta();
 			$formaPag	= ($oConta->getCodFormaPagamento()) ? $oConta->getCodFormaPagamento()->getCodigo() : null;
 			$status		= ($oConta->getCodStatus()) ? $oConta->getCodStatus()->getCodigo() : null;
+			
+			//$log->info("ContaRec: ".$contaRec->getCodigo()." FormaPag: ".$formaPag." Status: $status");
+			
 			if ( ($contaRec) && ($formaPag == 'BOL') ) {
-				if ($contaRec->getCodTipo()->getCodigo() == 'CC' && ($contaRec->getCodCarteira() != null) && ($status == "A" || $status == "P")  ) {
+				if (($contaRec->getCodTipo()->getCodigo() == 'CC') && ($contaRec->getCodCarteira() != null) && (($status == "A") || ($status == "P"))  ) {
+					//$log->info("Conta: ".$oConta->getCodigo()." pode emitir boleto");
 					$pode		= true;
 				}else{
 					$pode		= false;

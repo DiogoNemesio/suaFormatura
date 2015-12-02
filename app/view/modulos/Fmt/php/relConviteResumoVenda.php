@@ -163,7 +163,7 @@ for ($i = 0; $i < sizeof($vendas); $i++) {
 	$dadosRes[$vendas[$i]["COD_FORMANDO"]]["VENDAS"][$vendas[$i]["COD_TIPO_EVENTO"]]["TAXA"]			= $vendas[$i]["TAXA_CONVENIENCIA"];
 	$dadosRes[$vendas[$i]["COD_FORMANDO"]]["VENDAS"][$vendas[$i]["COD_TIPO_EVENTO"]]["VALOR_TOTAL"]		= $vendas[$i]["VALOR_TOTAL"];
 	//$dadosRes[$vendas[$i]["COD_FORMANDO"]]["VALOR_APAGAR"]										+= ($vendas[$i]["VALOR"] - $vendas[$i]["VALOR_PAGO"]);
-	$valTotal																							+= $vendas[$i]["VALOR_TOTAL"];
+	//$valTotal																							+= $vendas[$i]["VALOR_TOTAL"];
 
 }
 
@@ -175,13 +175,13 @@ $table	= '<table class="table table-condensed">';
 
 foreach ($dadosRes as $dados) {
 	$table .= '<thead><tr style="background-color:#EEEEEE">
-					<th style="text-align: left; colspan="5"><strong>&nbsp;'.$dados["NOME"].'</strong></th>
-			   </tr></thead><tbody>';
+					<th style="text-align: left;" colspan="5"><strong>&nbsp;'.$dados["NOME"].'</strong></th>
+			   </tr></thead>';
 	
 	//Tabela de eventos
-	$table .= '<tr><th style="#F5A9D0text-align: center;" colspan="5">';
-	$table .= '<table class="table table-condensed">';
-	$table .= '<thead>';
+	//$table .= '<tr><th style="text-align: center;" colspan="5">';
+	//$table .= '<table class="table table-condensed">';
+	//$table .= '<thead>';
 	$table .= '<tr style="background-color:#FDF5E6">
 					<th style="text-align: center; width: 30%;"><strong>EVENTO</strong></th>
 					<th style="text-align: center; width: 10%;"><strong>QUANTIDADE</strong></th>
@@ -193,22 +193,20 @@ foreach ($dadosRes as $dados) {
 	
 	foreach ($dados["VENDAS"] as $info) {
 		
-		$table .= '<tr>					
+		$table .= '<tr>
 					<td style="text-align: center; width: 30%;">'.$info["DESCRICAO"].'</td>
 					<td style="text-align: center; width: 10%;">'.$info["QTDE"].'</td>
 					<td style="text-align: center; width: 20%;">'.\Zage\App\Util::to_money($info["VALOR_TOTAL"] + $info["TAXA"]).'</td>
-					<td style="text-align: center; width: 20%;"></td>
-					<td style="text-align: center; width: 20%;"></td>
+					<td style="text-align: center; width: 20%;">&nbsp;</td>
+					<td style="text-align: center; width: 20%;">&nbsp;</td>
 					</tr>';
 	}
 	
 	//Fechar tabele de eventos
-	$table .= '</tbody></table>';
-	$table .= '</th></tr>';
+	//$table .= '</tbody></table>';
+	//$table .= '</th></tr>';
 }
-$table .= '
-			</tbody>
-			</table>';
+$table .= '</table>';
 
 //Formulário
 if ($geraPdf == 1) {

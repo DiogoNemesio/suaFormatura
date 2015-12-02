@@ -159,14 +159,14 @@ $vencimento				= ($oConta->getDataVencimento() != null) 		? $oConta->getDataVenc
 #################################################################################
 ## Verificar se a conta está atrasada e calcular o júros e mora caso existam
 #################################################################################
-$saldoDet			= $contaRec->getSaldoAReceberDetalhado($codConta);
+$saldoDet			= $contaRec->getSaldoAReceberDetalhado($oConta->getCodigo());
 if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $hoje) == true) {
-
+	
 	#################################################################################
 	## Calcula os valor através da data de referência
 	#################################################################################
-	$valorJuros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($oConta->getCodigo(), $vencimento);
-	$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($oConta->getCodigo(), $vencimento);
+	$valorJuros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($oConta->getCodigo(), $hoje);
+	$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($oConta->getCodigo(), $hoje);
 
 }else{
 
@@ -215,7 +215,7 @@ $_salvar				= false;
 #################################################################################
 $sequencial			= $oConta->getSequencialNossoNumero();
 if (!$sequencial)		{
-	$sequencial 		= \Zage\Fin\ContaReceber::geraNossoNumero($codConta);
+	$sequencial 		= \Zage\Fin\ContaReceber::geraNossoNumero($oConta->getCodigo());
 	$oConta->setSequencialNossoNumero($sequencial);
 	$_salvar			= true;
 }
@@ -364,11 +364,7 @@ $em->flush();
 
 $parcelas		= substr($parcelas,0 ,-1);
 $textoParcela	= "Boleto referente ";
-if (sizeof($codConta) > 1) {
-	$textoParcela .= "as parcelas (".$parcelas .") ";
-}else{
-	$textoParcela .= "a parcela ".$parcelas;
-}
+$textoParcela .= "a parcela ".$parcelas;
 
 $textoParcela	.= " de ".$oConta->getNumParcelas()."";
 $oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
