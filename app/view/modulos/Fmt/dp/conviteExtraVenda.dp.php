@@ -16,6 +16,7 @@ if (isset($_POST['codConvVenda']))		$codConvVenda		= \Zage\App\Util::antiInjecti
 if (isset($_POST['codFormando']))		$codFormando		= \Zage\App\Util::antiInjection($_POST['codFormando']);
 if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
 if (isset($_POST['codConta']))			$codConta			= \Zage\App\Util::antiInjection($_POST['codConta']);
+if (isset($_POST['indRecebido']))		$indRecebido		= \Zage\App\Util::antiInjection($_POST['indRecebido']);
 
 if (isset($_POST['codConvExtra']))		$codConvExtra		= \Zage\App\Util::antiInjection($_POST['codConvExtra']);
 if (isset($_POST['codEvento']))			$codEvento			= \Zage\App\Util::antiInjection($_POST['codEvento']);
@@ -44,16 +45,32 @@ if (!isset($codFormando) || empty($codFormando)) {
 	$err	= 1;
 }
 
-/** FORMA PAGAMENTO **/
-if (!isset($codFormaPag) || empty($codFormaPag)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a forma de pagamento.");
-	$err	= 1;
-}
-
 /** CONTA RECEBIMENTO **/
 if (!isset($codConta) || empty($codConta)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a conta de recebimento.");
 	$err	= 1;
+}
+
+$oConta			= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codConta));
+
+/** FORMA PAGAMENTO **/
+if (!isset($codFormaPag) || empty($codFormaPag)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione a forma de pagamento.");
+	$err	= 1;
+}else{
+	if ($codFormaPag == 'BOL'){
+		$flagRecebida = 0;
+		if (!$oConta->getCodCarteira()){
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A conta selecionada não está configurada para emtir boleto.");
+			$err	= 1;
+		}
+	}else{
+		if (isset($indRecebido) && (!empty($indRecebido))) {
+			$flagRecebida	= 1;
+		}else{
+			$flagRecebida	= 0;
+		}
+	}
 }
 
 /** VALIDAR SE AS QUANTIDADES ESTÃO DE ACORDO COM O LIMITE **/
@@ -129,7 +146,7 @@ try {
 	#################################################################################
 	$oFormando		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codFormando));
 	$oFormaPag		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
-	$oConta			= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codConta));
+	//$oConta			= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codigo' => $codConta));
 	$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
 	$oTipoVenda		= $em->getRepository('Entidades\ZgfmtConviteExtraVendaTipo')->findOneBy(array('codigo' => P));
 	
@@ -232,7 +249,7 @@ try {
 	#################################################################################
 	$codCatConvite			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_CONVITE_EXTRA");
 	$codCatBoleto			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
-	$codCatConveniencia		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
+	$codCatConveniencia		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_CONVENIENCIA");
 	//$codCentroCustoConvite	= ($oRifa->getCodCentroCusto()) ? $oRifa->getCodCentroCusto()->getCodigo() : null;
 	
 	#################################################################################
@@ -284,7 +301,7 @@ try {
 	#################################################################################
 	## Ajustar os campos do tipo CheckBox
 	#################################################################################
-	$flagRecebida		= 1;
+	$flagRecebida		= $flagRecebida;
 	$flagReceberAuto	= 0;
 	
 	#################################################################################

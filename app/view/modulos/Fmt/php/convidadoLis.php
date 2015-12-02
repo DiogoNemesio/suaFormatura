@@ -152,7 +152,8 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 $tpl->set ( 'URL_FORM'			   , $_SERVER ['SCRIPT_NAME'] );
 $tpl->set ( 'URLVOLTAR'			   , $urlVoltar );
 $tpl->set ( 'URLNOVO'		 	   , $urlNovo );
-$tpl->set ( 'ID'				   , $id );
+$tpl->set ( 'ID'				   , $id);
+$tpl->set ( 'IC'				   , $_icone_);
 $tpl->set ( 'COD_CONVIDADO'	  	   , $codConvidado);
 $tpl->set ( 'COD_GRUPO'	  		   , $codGrupo);
 $tpl->set ( 'NOME'				   , $nome);

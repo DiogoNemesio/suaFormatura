@@ -93,7 +93,9 @@ if(!$oCompras) {
 				<span id="enviaEmailID_'.$i.'" class="btn btn-sm btn-white btn-info center" onclick="javascript:enviaEmail('.$i.',\''.$urlEmail.'\');"><i class="fa fa-envelope bigger-120"></i></span>
 			</div>
 			';
-		}
+		}else{
+			$htmlBol	= '';
+ 		}
 		
 		#################################################################################
 		## Verifica se está vencida

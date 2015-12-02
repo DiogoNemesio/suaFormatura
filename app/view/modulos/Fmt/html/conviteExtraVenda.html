@@ -17,7 +17,7 @@
 
 		<div class="row">
 		<div id="divMsg"></div>
-			<div class="col-sm-6">
+			<div class="col-sm-7">
 				<div class="form-group col-sm-12" id="divCodFormandoID">
 					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
 					<div class="input-group col-sm-6 pull-left">
@@ -29,17 +29,17 @@
 					<div class="col-sm-1 pull-left" id="divHelpCodFormandoID"></div>
 				</div>
 				<div class="form-group col-sm-12" id="divCodFormaPagID">
-					<label for="codFormaPagID" class="col-xs-12 col-sm-5 control-label">Forma de Pagamento</label>
+					<label for="codFormaPagID" class="col-xs-12 col-sm-5 control-label">Forma de Pag.</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a forma de pagamento."></i></span>
-						<select id="codFormaPagID" name="codFormaPag" class="select2" onchange="zgCalcularTotal();" data-placeholder="Selecione a forma de pagamento" >
+						<select id="codFormaPagID" name="codFormaPag" class="select2" onchange="javascript:zgCalcularTotal(); mostraIndRecebido();" data-placeholder="Selecione a forma de pagamento" >
 							%COD_FORMA_PAG%
 						</select>
 					</div>
 					<div class="col-sm-1 pull-left" id="divHelpCodFormaPagID"></div>
 				</div>
 				<div class="form-group col-sm-12" id="divCodContaID">
-					<label for="codContaID" class="col-xs-12 col-sm-5 control-label">Conta Recebimento</label>
+					<label for="codContaID" class="col-xs-12 col-sm-5 control-label">Conta</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a conta de recebimento."></i></span>
 						<select id="codContaRecID" name="codConta" class="select2" onchange="zgCalcularTotal();" data-placeholder="Selecione a conta de recebimento" >
@@ -48,9 +48,20 @@
 					</div>
 					<div class="col-sm-1 pull-left" id="divHelpCodContaID"></div>
 				</div>
+				<div class="form-group col-sm-12" id="divIndRecebidoID">
+	    			<div class="input-group col-sm-8 pull-left">
+	    				<label class="col-sm-12 control-label">Confirmar o pagamento?  <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM caso o pagamento seja realizado no momento da compra, e NÃO para o pagamento posterior."></i></label>    				
+				    </div>
+				    <label class="col-sm-1 control-label pull-left">
+    					<input name="indRecebido" id="indRecebidoID" class="ace ace-switch " value="1" checked type="checkbox"/>
+    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+    				</label>
+					<div class="help-block col-sm-1 inline" id="divHelpIndRecebidoID"></div>
+				</div>
+					
 		   	</div>
 
-			<div class="col-sm-9 col-sm-offset-1">
+			<div class="col-sm-10 col-sm-offset-1">
 				<div id="divConvitesID"></div>
 			</div>
 	    </div>
@@ -293,6 +304,16 @@ function zgValidaQuantDisp(){
 		return false;
 	}else{
 		return true;
+	}
+}
+
+function mostraIndRecebido(){
+	var vFormaPag 		= $('#codFormaPagID').val();
+	
+	if (vFormaPag == 'BOL'){
+		$('#divIndRecebidoID').addClass('hidden');
+	}else{
+		$('#divIndRecebidoID').removeClass('hidden');
 	}
 }
 
