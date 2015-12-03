@@ -22,6 +22,20 @@ class ZgfmtEvento
     private $codigo;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="QTDE_CONVIDADO", type="integer", nullable=true)
+     */
+    private $qtdeConvidado;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_AVULSO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorAvulso;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="DATA", type="datetime", nullable=true)
@@ -85,16 +99,6 @@ class ZgfmtEvento
     private $longitude;
 
     /**
-     * @var \Entidades\ZgadmOrganizacao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_LOCAL", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codLocal;
-
-    /**
      * @var \Entidades\ZgfmtEventoTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEventoTipo")
@@ -124,6 +128,16 @@ class ZgfmtEvento
      */
     private $codLogradouro;
 
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_LOCAL", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codLocal;
+
 
     /**
      * Get codigo
@@ -133,6 +147,52 @@ class ZgfmtEvento
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set qtdeConvidado
+     *
+     * @param integer $qtdeConvidado
+     * @return ZgfmtEvento
+     */
+    public function setQtdeConvidado($qtdeConvidado)
+    {
+        $this->qtdeConvidado = $qtdeConvidado;
+
+        return $this;
+    }
+
+    /**
+     * Get qtdeConvidado
+     *
+     * @return integer 
+     */
+    public function getQtdeConvidado()
+    {
+        return $this->qtdeConvidado;
+    }
+
+    /**
+     * Set valorAvulso
+     *
+     * @param float $valorAvulso
+     * @return ZgfmtEvento
+     */
+    public function setValorAvulso($valorAvulso)
+    {
+        $this->valorAvulso = $valorAvulso;
+
+        return $this;
+    }
+
+    /**
+     * Get valorAvulso
+     *
+     * @return float 
+     */
+    public function getValorAvulso()
+    {
+        return $this->valorAvulso;
     }
 
     /**
@@ -343,29 +403,6 @@ class ZgfmtEvento
     }
 
     /**
-     * Set codLocal
-     *
-     * @param \Entidades\ZgadmOrganizacao $codLocal
-     * @return ZgfmtEvento
-     */
-    public function setCodLocal(\Entidades\ZgadmOrganizacao $codLocal = null)
-    {
-        $this->codLocal = $codLocal;
-
-        return $this;
-    }
-
-    /**
-     * Get codLocal
-     *
-     * @return \Entidades\ZgadmOrganizacao 
-     */
-    public function getCodLocal()
-    {
-        return $this->codLocal;
-    }
-
-    /**
      * Set codTipoEvento
      *
      * @param \Entidades\ZgfmtEventoTipo $codTipoEvento
@@ -432,5 +469,28 @@ class ZgfmtEvento
     public function getCodLogradouro()
     {
         return $this->codLogradouro;
+    }
+
+    /**
+     * Set codLocal
+     *
+     * @param \Entidades\ZgadmOrganizacao $codLocal
+     * @return ZgfmtEvento
+     */
+    public function setCodLocal(\Entidades\ZgadmOrganizacao $codLocal = null)
+    {
+        $this->codLocal = $codLocal;
+
+        return $this;
+    }
+
+    /**
+     * Get codLocal
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodLocal()
+    {
+        return $this->codLocal;
     }
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtConviteExtraVenda
  *
- * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_1_idx", columns={"COD_CONTA_RECEBIMENTO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_2_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_3_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_4_idx", columns={"COD_FORMA_PAGAMENTO"})})
+ * @ORM\Table(name="ZGFMT_CONVITE_EXTRA_VENDA", indexes={@ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_1_idx", columns={"COD_CONTA_RECEBIMENTO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_2_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_3_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_4_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFMT_CONVITE_EXTRA_VENDA_5_idx", columns={"COD_VENDA_TIPO"})})
  * @ORM\Entity
  */
 class ZgfmtConviteExtraVenda
@@ -88,6 +88,16 @@ class ZgfmtConviteExtraVenda
      * })
      */
     private $codFormaPagamento;
+
+    /**
+     * @var \Entidades\ZgfmtConviteExtraVendaTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtConviteExtraVendaTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_VENDA_TIPO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codVendaTipo;
 
 
     /**
@@ -282,5 +292,28 @@ class ZgfmtConviteExtraVenda
     public function getCodFormaPagamento()
     {
         return $this->codFormaPagamento;
+    }
+
+    /**
+     * Set codVendaTipo
+     *
+     * @param \Entidades\ZgfmtConviteExtraVendaTipo $codVendaTipo
+     * @return ZgfmtConviteExtraVenda
+     */
+    public function setCodVendaTipo(\Entidades\ZgfmtConviteExtraVendaTipo $codVendaTipo = null)
+    {
+        $this->codVendaTipo = $codVendaTipo;
+
+        return $this;
+    }
+
+    /**
+     * Get codVendaTipo
+     *
+     * @return \Entidades\ZgfmtConviteExtraVendaTipo 
+     */
+    public function getCodVendaTipo()
+    {
+        return $this->codVendaTipo;
     }
 }

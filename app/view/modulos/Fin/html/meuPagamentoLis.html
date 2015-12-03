@@ -7,16 +7,6 @@
 	
 	<form id="zgFormMeuPagID" class="form-horizontal" method="post" action="%DP%" target="_blank">
 	<input type="hidden" name="id" 				value="%ID%">
-	<input type="hidden" name="codContaSel[]" 	id="codContaSelID">
-	<input type="hidden" name="vencimento" 		id="vencimentoID">
-	<input type="hidden" name="valor" 			id="valorID">
-	<input type="hidden" name="valorJuros" 		id="valorJurosID">
-	<input type="hidden" name="valorMora" 		id="valorMoraID">
-	<input type="hidden" name="valorDesconto" 	id="valorDescontoID">
-	<input type="hidden" name="valorOutros" 	id="valorOutrosID">
-	<input type="hidden" name="tipoMidia" 		id="tipoMidiaID">
-	<input type="hidden" name="instrucao" 		id="instrucaoID">
-	<input type="hidden" name="email" 			id="emailID">
 	
 	<div class="col-xs-12 %HID_ATR%" id="divGridAtr">
 		<div id="divMsgMeuPagID"></div>
@@ -90,45 +80,6 @@ $('.datepicker').datepicker({
 });
 
 $(".select2").select2("destroy").select2({});
-/*$(document).ready(function() {
-	$("#codFormaPagID").select2("destroy").select2({});
-	$("#codContaCreID").select2("destroy").select2({});
-});*/
 
-
-function meuPagBoleto(pCodConta,pVenc,pValor,pJuros,pMora,pDesconto,pOutros,pTipoMidia,pInstrucao,pEmail) {
-	$('#codContaSelID').eq(0).val(pCodConta);
-	$('#vencimentoID').val(pVenc);
-	$('#valorID').val(pValor);
-	$('#valorJurosID').val(pJuros);
-	$('#valorMoraID').val(pMora);
-	$('#valorDescontoID').val(pDesconto);
-	$('#valorOutrosID').val(pOutros);
-	$('#tipoMidiaID').val(pTipoMidia);
-	$('#instrucaoID').val(pInstrucao);
-	$('#emailID').val(pEmail);
-
-	if (pTipoMidia == "MAIL") {
-		zgMostraMsg('divMsgMeuPagID',"<i class='fa fa-cog fa-spin'></i>&nbsp;Aguarde e-mail sendo enviado !!!");
-		$('#zgFormMeuPagID').submit(function(e) {
-			$.ajax({
-				type:	"POST", 
-				url:	"%DP%",
-				data:	$('#zgFormMeuPagID').serialize(),
-			}).done(function( data, textStatus, jqXHR) {
-				zgMostraMsg('divMsgMeuPagID',"Email enviado com sucesso !!!");
-			}).fail(function( jqXHR, textStatus, errorThrown) {
-				zgMostraAviso(null);
-			});
-			return false; 
-		});
-	}else{
-		$( "#zgFormMeuPagID").unbind( "submit" );
-	}
-	
-	$('#zgFormMeuPagID').submit();
-	e.preventDefault();
-	return false; 
-}
 </script>
 

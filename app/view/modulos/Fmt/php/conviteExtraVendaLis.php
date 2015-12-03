@@ -263,7 +263,7 @@ $tpl->set('NOME'			,$tr->trans("Venda dos Convites"));
 $tpl->set('URLVENDA'		,$urlVenda);
 $tpl->set('URLVOLTAR'		,$urlVoltar);
 $tpl->set('URLATUALIZAR'	,$urlAtualizar);
-$tpl->set('ASSUNTO'			,"Venda dos Convites");
+$tpl->set('NOME_FORMANDO'	,$conviteExtraVenda[0]->getCodFormando()->getNome());
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################

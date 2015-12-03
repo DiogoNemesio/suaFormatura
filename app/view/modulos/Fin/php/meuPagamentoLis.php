@@ -13,7 +13,6 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 global $system,$em,$tr,$_user;
 
-
 #################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
@@ -41,6 +40,11 @@ $system->checaPermissao($_codMenu_);
 ## Resgata a url desse script
 #################################################################################
 $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
+
+#################################################################################
+## Resgata usuário logado
+#################################################################################
+$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
 
 #################################################################################
 ## Resgata os dados do grid
@@ -83,28 +87,18 @@ if (sizeof($pagamentosFut) == 0) {
 #################################################################################
 $contaRec	= new \Zage\Fin\ContaReceber();
 
-
 #################################################################################
 ## Popula a tabela de pagamentos em atraso
 #################################################################################
 $totalAtr	= 0;
 for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 	
-	
 	#################################################################################
 	## Formatar campos da conta
 	#################################################################################
-	$podeBol			= true;
 	$codFormaPag		= ($pagamentosAtr[$i]->getCodFormaPagamento() 	!= null) ? $pagamentosAtr[$i]->getCodFormaPagamento()->getCodigo() : null;
 	$codContaRec		= ($pagamentosAtr[$i]->getCodConta() 			!= null) ? $pagamentosAtr[$i]->getCodConta() 						: null;
 	$vencimento			= ($pagamentosAtr[$i]->getDataVencimento() 		!= null) ? $pagamentosAtr[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
-	
-	if (!$vencimento) 										$podeBol	= false;
-	if ($codFormaPag	!== "BOL")							$podeBol	= false;
-	if (!$codContaRec) 										$podeBol	= false;
-	if ($codContaRec->getCodTipo()->getCodigo() !== "CC")	$podeBol	= false;
-	if (!$codContaRec->getCodCarteira()) 					$podeBol	= false;
-	
 	
 	#################################################################################
 	## Verificar se a conta está atrasada
@@ -137,20 +131,30 @@ for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 	$instrucao			= "";
 	$email				= ($pagamentosAtr[$i]->getCodPessoa()) ? $pagamentosAtr[$i]->getCodPessoa()->getEmail() : null;
 	
-	if ($podeBol) {
-		$urlDown			= "meuPagBoleto('".$pagamentosAtr[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','PDF','".$instrucao."','');";
-		$urlMail			= "meuPagBoleto('".$pagamentosAtr[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','MAIL','".$instrucao."','".$email."');";
+	#################################################################################
+	## Verificar se pode imprimir boleto
+	#################################################################################
+	if($pagamentosAtr[$i] && \Zage\Fin\ContaReceber::podeEmitirBoleto($pagamentosAtr[$i]) == true){
+		//URL da geração de boleto
+		$eid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$pagamentosAtr[$i]->getCodigo().'&tipoMidia=EMAIL'.'&email='.$oUsuario->getUsuario().'&instrucao=');
+		$pid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$pagamentosAtr[$i]->getCodigo().'&tipoMidia=PDF'.'&instrucao=');
+			
+		$urlEmailAtr 	= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $eid;
+		$urlPdfAtr 		= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $pid;
+			
 		$htmlBol			= '
-		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
-			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlDown.'"><i class="fa fa-file-pdf-o bigger-120"></i></span>
-			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlMail.'"><i class="fa fa-envelope bigger-120"></i></span>
-		</div>
-		';
+			<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
+				<span class="btn btn-sm btn-white btn-info center" onclick="javascript:zgDownloadUrl(\''.$urlPdfAtr.'\');"><i class="fa fa-file-pdf-o bigger-120"></i></span>
+				<span id="enviaEmailAtrID_'.$i.'" class="btn btn-sm btn-white btn-info center" onclick="javascript:enviaEmailAtr('.$i.',\''.$urlEmailAtr.'\');"><i class="fa fa-envelope bigger-120"></i></span>
+			</div>
+			';
 	}else{
 		$htmlBol		= '<i class="icon-only ace-icon fa fa-minus bigger-110"></i>';
 	}
-	
-	
+
+	#################################################################################
+	## Contar tabela
+	#################################################################################
 	$tabAtr	.= '<tr>
 			<td>'.$pagamentosAtr[$i]->getDescricao().'</td>
 			<td class="hidden-480" style="text-align: center;">'.$parcela.'</td>
@@ -162,6 +166,34 @@ for ($i = 0; $i < sizeof($pagamentosAtr); $i++) {
 	';
 }
 
+$tabAtr .= ' <script>
+				function enviaEmailAtr(i,$urlEmailAtr){
+					$(\'#enviaEmailAtrID_\'+i).html(\'<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>\');
+					$(\'#enviaEmailAtrID_\'+i).attr("disabled","disabled");
+					$.ajax({
+						type:	"GET",
+						url:	$urlEmailAtr,
+						data:	$(\'zgFormMeuPagID\').serialize(),
+						}).done(function( data, textStatus, jqXHR) {
+							$.gritter.add({
+								title: "Email enviado com sucesso",
+								text: "Enviado para o mesmo email utilizado para acessar o portal",
+								class_name: "gritter-info gritter-info",
+								time: "5000"
+							});
+
+							$(\'#enviaEmailAtrID_\'+i).html(\'<i class="fa fa-envelope bigger-120"></i>\');
+							$(\'#enviaEmailAtrID_\'+i).attr("disabled",false);
+
+						}).fail(function( jqXHR, textStatus, errorThrown) {
+							alert("errado");
+						});
+
+
+					}
+				</script>
+			';
+
 #################################################################################
 ## Popula a tabela de pagamentos futuros
 #################################################################################
@@ -169,51 +201,23 @@ $numFut		= sizeof($pagamentosFut);
 if ($numFut > 5) $numFut = 5;
 for ($i = 0; $i < $numFut; $i++) {
 
+	################################################################################
+	## Verificar se pode imprimir boleto
 	#################################################################################
-	## Formatar campos da conta
-	#################################################################################
-	$podeBol			= true;
-	$codFormaPag		= ($pagamentosFut[$i]->getCodFormaPagamento() 	!= null) ? $pagamentosFut[$i]->getCodFormaPagamento()->getCodigo() : null;
-	$codContaRec		= ($pagamentosFut[$i]->getCodConta() 			!= null) ? $pagamentosFut[$i]->getCodConta() 						: null;
-	$vencimento			= ($pagamentosFut[$i]->getDataVencimento() 		!= null) ? $pagamentosFut[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
-	
-	if (!$vencimento) 										$podeBol	= false;
-	if ($codFormaPag	!== "BOL")							$podeBol	= false;
-	if (!$codContaRec) 										$podeBol	= false;
-	if ($codContaRec->getCodTipo()->getCodigo() !== "CC")	$podeBol	= false;
-	if (!$codContaRec->getCodCarteira()) 					$podeBol	= false;
-	
-	
-	#################################################################################
-	## Contas futuras, não precisa de júros
-	#################################################################################
-	$vencBol			= $vencimento;
-	$numDias			= 0;
-	$_juros				= 0;
-	$_mora				= 0;
-	$instrucao			= "";
-	$email				= ($pagamentosFut[$i]->getCodPessoa()) ? $pagamentosFut[$i]->getCodPessoa()->getEmail() : null;
-	
-	#################################################################################
-	## Calcular o valor
-	#################################################################################
-	if (!$contaRec->getValorJaRecebido($pagamentosFut[$i]->getCodigo())) {
-		$valor				= ($pagamentosFut[$i]->getValor() + $pagamentosFut[$i]->getValorJuros() + $pagamentosFut[$i]->getValorMora() + $pagamentosFut[$i]->getValorOutros() - $pagamentosFut[$i]->getValorDesconto() - $pagamentosFut[$i]->getValorCancelado());
-	}else{
-		$valor				= \Zage\App\Util::to_float($contaRec->getSaldoAReceber($pagamentosFut[$i]->getCodigo()));
-	}
-	
-	
-	
-	if ($podeBol) {
-		$urlDown			= "meuPagBoleto('".$pagamentosFut[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','PDF','".$instrucao."','');";
-		$urlMail			= "meuPagBoleto('".$pagamentosFut[$i]->getCodigo()."','".$vencBol."','".$valor."','".$_juros."','".$_mora."','0','0','MAIL','".$instrucao."','".$email."');";
+	if($pagamentosFut[$i] && \Zage\Fin\ContaReceber::podeEmitirBoleto($pagamentosFut[$i]) == true){
+		//URL da geração de boleto
+		$eid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$pagamentosFut[$i]->getCodigo().'&tipoMidia=EMAIL'.'&email='.$oUsuario->getUsuario().'&instrucao=');
+		$pid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$pagamentosFut[$i]->getCodigo().'&tipoMidia=PDF'.'&instrucao=');
+			
+		$urlEmailFut 	= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $eid;
+		$urlPdfFut 		= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $pid;
+			
 		$htmlBol			= '
-		<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
-			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlDown.'"><i class="fa fa-file-pdf-o bigger-120"></i></span>
-			<span class="btn btn-sm btn-white btn-info center" onclick="'.$urlMail.'"><i class="fa fa-envelope bigger-120"></i></span>
-		</div>
-		';
+			<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
+				<span class="btn btn-sm btn-white btn-info center" onclick="javascript:zgDownloadUrl(\''.$urlPdfFut.'\');"><i class="fa fa-file-pdf-o bigger-120"></i></span>
+				<span id="enviaEmailFutID_'.$i.'" class="btn btn-sm btn-white btn-info center" onclick="javascript:enviaEmailFut('.$i.',\''.$urlEmailFut.'\');"><i class="fa fa-envelope bigger-120"></i></span>
+			</div>
+			';
 	}else{
 		$htmlBol		= '<i class="icon-only ace-icon fa fa-minus bigger-110"></i>';
 	}
@@ -234,6 +238,33 @@ for ($i = 0; $i < $numFut; $i++) {
 	';
 }
 
+$tabFut .= ' <script>
+				function enviaEmailFut(i,$urlEmailFut){
+					$(\'#enviaEmailFutID_\'+i).html(\'<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>\');
+					$(\'#enviaEmailFutID_\'+i).attr("disabled","disabled");
+					$.ajax({
+						type:	"GET",
+						url:	$urlEmailFut,
+						data:	$(\'zgFormMeuPagID\').serialize(),
+						}).done(function( data, textStatus, jqXHR) {
+							$.gritter.add({
+								title: "Email enviado com sucesso",
+								text: "Enviado para o mesmo email utilizado para acessar o portal",
+								class_name: "gritter-info gritter-info",
+								time: "5000"
+							});
+
+							$(\'#enviaEmailFutID_\'+i).html(\'<i class="fa fa-envelope bigger-120"></i>\');
+							$(\'#enviaEmailFutID_\'+i).attr("disabled",false);
+
+						}).fail(function( jqXHR, textStatus, errorThrown) {
+							alert("errado");
+						});
+
+
+					}
+				</script>
+			';
 
 
 #################################################################################
