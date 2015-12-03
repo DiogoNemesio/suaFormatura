@@ -137,6 +137,16 @@ class ZgsegUsuario
     private $avatar;
 
     /**
+     * @var \Entidades\ZgsegSexoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegSexoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="SEXO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $sexo;
+
+    /**
      * @var \Entidades\ZgadmLogradouro
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmLogradouro")
@@ -155,16 +165,6 @@ class ZgsegUsuario
      * })
      */
     private $codStatus;
-
-    /**
-     * @var \Entidades\ZgsegSexoTipo
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegSexoTipo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="SEXO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $sexo;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -556,6 +556,29 @@ class ZgsegUsuario
     }
 
     /**
+     * Set sexo
+     *
+     * @param \Entidades\ZgsegSexoTipo $sexo
+     * @return ZgsegUsuario
+     */
+    public function setSexo(\Entidades\ZgsegSexoTipo $sexo = null)
+    {
+        $this->sexo = $sexo;
+
+        return $this;
+    }
+
+    /**
+     * Get sexo
+     *
+     * @return \Entidades\ZgsegSexoTipo 
+     */
+    public function getSexo()
+    {
+        return $this->sexo;
+    }
+
+    /**
      * Set codLogradouro
      *
      * @param \Entidades\ZgadmLogradouro $codLogradouro
@@ -599,29 +622,6 @@ class ZgsegUsuario
     public function getCodStatus()
     {
         return $this->codStatus;
-    }
-
-    /**
-     * Set sexo
-     *
-     * @param \Entidades\ZgsegSexoTipo $sexo
-     * @return ZgsegUsuario
-     */
-    public function setSexo(\Entidades\ZgsegSexoTipo $sexo = null)
-    {
-        $this->sexo = $sexo;
-
-        return $this;
-    }
-
-    /**
-     * Get sexo
-     *
-     * @return \Entidades\ZgsegSexoTipo 
-     */
-    public function getSexo()
-    {
-        return $this->sexo;
     }
 
     /**

@@ -22,16 +22,6 @@ class ZgfmtConviteExtraVendaForma
     private $codigo;
 
     /**
-     * @var \Entidades\ZgadmOrganizacao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codOrganizacao;
-
-    /**
      * @var \Entidades\ZgfinFormaPagamento
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinFormaPagamento")
@@ -40,6 +30,16 @@ class ZgfmtConviteExtraVendaForma
      * })
      */
     private $codFormaPagamento;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrganizacao;
 
     /**
      * @var \Entidades\ZgfmtConviteExtraVendaTipo
@@ -63,29 +63,6 @@ class ZgfmtConviteExtraVendaForma
     }
 
     /**
-     * Set codOrganizacao
-     *
-     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
-     * @return ZgfmtConviteExtraVendaForma
-     */
-    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
-    {
-        $this->codOrganizacao = $codOrganizacao;
-
-        return $this;
-    }
-
-    /**
-     * Get codOrganizacao
-     *
-     * @return \Entidades\ZgadmOrganizacao 
-     */
-    public function getCodOrganizacao()
-    {
-        return $this->codOrganizacao;
-    }
-
-    /**
      * Set codFormaPagamento
      *
      * @param \Entidades\ZgfinFormaPagamento $codFormaPagamento
@@ -106,6 +83,29 @@ class ZgfmtConviteExtraVendaForma
     public function getCodFormaPagamento()
     {
         return $this->codFormaPagamento;
+    }
+
+    /**
+     * Set codOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
+     * @return ZgfmtConviteExtraVendaForma
+     */
+    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
+    {
+        $this->codOrganizacao = $codOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodOrganizacao()
+    {
+        return $this->codOrganizacao;
     }
 
     /**
