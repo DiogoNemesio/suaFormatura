@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinCentroCusto
  *
- * @ORM\Table(name="ZGFIN_CENTRO_CUSTO", indexes={@ORM\Index(name="fk_ZGFIN_CENTRO_CUSTO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_CENTRO_CUSTO_2_idx", columns={"COD_TIPO_CENTRO_CUSTO"})})
+ * @ORM\Table(name="ZGFIN_CENTRO_CUSTO", indexes={@ORM\Index(name="fk_ZGFIN_CENTRO_CUSTO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_CENTRO_CUSTO_2_idx", columns={"COD_TIPO_CENTRO_CUSTO"}), @ORM\Index(name="fk_ZGFIN_CENTRO_CUSTO_3_idx", columns={"COD_TIPO_ORGANIZACAO"})})
  * @ORM\Entity
  */
 class ZgfinCentroCusto
@@ -61,6 +61,16 @@ class ZgfinCentroCusto
      * })
      */
     private $codTipoCentroCusto;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacaoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_ORGANIZACAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoOrganizacao;
 
 
     /**
@@ -186,5 +196,28 @@ class ZgfinCentroCusto
     public function getCodTipoCentroCusto()
     {
         return $this->codTipoCentroCusto;
+    }
+
+    /**
+     * Set codTipoOrganizacao
+     *
+     * @param \Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao
+     * @return ZgfinCentroCusto
+     */
+    public function setCodTipoOrganizacao(\Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao = null)
+    {
+        $this->codTipoOrganizacao = $codTipoOrganizacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoOrganizacao
+     *
+     * @return \Entidades\ZgadmOrganizacaoTipo 
+     */
+    public function getCodTipoOrganizacao()
+    {
+        return $this->codTipoOrganizacao;
     }
 }
