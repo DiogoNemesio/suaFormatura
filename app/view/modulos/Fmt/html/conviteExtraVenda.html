@@ -12,11 +12,13 @@
 		<input type="hidden" id="quantTotalID" name="quantTotal">
 		<input type="hidden" id="taxaAdmID" name="taxaAdm" value=%TAXA_ADM%>
 		<input type="hidden" id="indAddTaxaBoletoID" value=%IND_ADD_TAXA_BOLETO%>
-		
 		<input type="hidden" id="valID" name="validado">
 
 		<div class="row">
-		<div id="divMsg"></div>
+			<div id="msgID">%MSG%</div>
+		</div>
+		
+		<div class="row %HIDDEN%">
 			<div class="col-sm-7">
 				<div class="form-group col-sm-12" id="divCodFormandoID">
 					<label for="codFormandoID" class="col-xs-12 col-sm-5 control-label">Formando</label>
@@ -67,7 +69,7 @@
 	    </div>
 	    <br>
 
-		<div class="clearfix form-actions">
+		<div class="clearfix form-actions %HIDDEN%">
 			<label class="col-sm-4 control-label">&nbsp;</label>
 			<button type="button" class="btn btn-primary" id="btnSubmitID">
 				<i class="fa fa-check bigger-110"></i> Salvar

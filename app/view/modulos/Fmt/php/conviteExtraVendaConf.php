@@ -60,11 +60,11 @@ if($infoContaRec && \Zage\Fin\ContaReceber::podeEmitirBoleto($infoContaRec) == t
 	$urlPdf 	= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $pid;
 		
 	$htmlBol = '<div data-toggle="buttons" class="btn-group btn-corner pull-right col-sm-2">
-					<span class="btn btn-grey tooltip-info" id="btnOrcPrintID" zg-disabled="disabled" onclick="javascript:zgDownloadUrl(\''.$urlPdf.'\');" data-rel="tooltip" data-placement="top" data-original-title="Salve o Boleto para poder imprimir" title="">
-						<i class="ace-icon fa fa-print bigger-120 white" id="icOrcPrintID"></i>
+					<span class="btn btn-white btn-info center" id="btnOrcPrintID" onclick="javascript:zgDownloadUrl(\''.$urlPdf.'\');" data-rel="tooltip" data-placement="top" data-original-title="Salve o Boleto para poder imprimir" title="">
+						<i class="fa fa-file-pdf-o bigger-120" id="icOrcPrintID"></i>
 					</span>
-					<span class="btn btn-grey tooltip-success" id="enviaEmailID" zg-disabled="disabled" onclick="javascript:enviaEmail(\''.$urlEmail.'\');" data-rel="tooltip" data-placement="top" data-original-title="Enviar boleto por e-mail" title="">
-						<i class="ace-icon fa fa-envelope bigger-120 white" id="icOrcMailID"></i>
+					<span class="btn btn-white btn-info center" id="enviaEmailID" onclick="javascript:enviaEmail(\''.$urlEmail.'\');" data-rel="tooltip" data-placement="top" data-original-title="Enviar boleto por e-mail" title="">
+						<i class="fa fa-envelope bigger-120" id="icOrcMailID"></i>
 					</span>
 				</div>';
 	
@@ -111,6 +111,23 @@ for ($i = 0; $i < sizeof($infoVenda); $i++) {
 $html 	.= "<tr><td colspan='4' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID'>".\Zage\App\Util::to_money($infoVenda[0]->getCodVenda()->getTaxaConveniencia())."</div></td>";
 
 #################################################################################
+## Verifica se está vencida
+#################################################################################
+$vencimento			= $infoContaRec->getDataVencimento()->format($system->config["data"]["dateFormat"]);
+$numDiasAtraso		= \Zage\Fin\Data::numDiasAtraso($vencimento);
+if ($numDiasAtraso > 0 && $infoContaRec->getCodStatus()->getCodigo() == 'A') {
+	$vencida 	= 1;
+	$statusDesc	= '<span class="label label-danger">
+								<i class="ace-icon fa fa-exclamation-triangle bigger-120"></i>
+								'.$infoContaRec->getCodStatus()->getDescricao().'
+							</span>';
+}else{
+	$statusDesc	= '<span class="label label-'.$infoContaRec->getCodStatus()->getEstiloNormal().'">
+								'.$infoContaRec->getCodStatus()->getDescricao().'
+							</span>';
+}
+
+#################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
@@ -122,6 +139,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('ID'					,$id);
 $tpl->set('IC'					,$_icone_);
 
+$tpl->set('STATUS'				,$statusDesc);
 $tpl->set('DATA_VENCIMENTO'		,$infoContaRec->getDataVencimento()->format($system->config["data"]["dateFormat"]));
 $tpl->set('FORMA_PAGAMENTO'		,$infoVenda[0]->getCodVenda()->getCodFormaPagamento()->getDescricao());
 $tpl->set('CONTA_RECEBIMENTO'	,$infoVenda[0]->getCodVenda()->getCodContaRecebimento()->getNome());

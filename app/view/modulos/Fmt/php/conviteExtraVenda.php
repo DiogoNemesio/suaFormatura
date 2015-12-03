@@ -31,6 +31,21 @@ if (isset ( $_GET ['id'] )) {
 ################################################################################
 $system->checaPermissao ( $_codMenu_ );
 
+try {
+	$eventoConfApto = \Zage\Fmt\Convite::listaConviteAptoVenda();
+} catch ( \Exception $e ) {
+	\Zage\App\Erro::halt ( $e->getMessage () );
+}
+
+$hidden	= null;
+$msg	= null;
+if(!$eventoConfApto){
+	$hidden = "hidden";
+	$msg = '<div class="alert alert-warning">';
+	$msg .= '<i class="fa fa-exclamation-triangle bigger-125"></i> A formatura ainda não disponibilizou nenhum evento para venda.';
+	$msg .= '</div>';
+}
+
 ################################################################################
 # Select de Formando
 ################################################################################
@@ -146,6 +161,9 @@ $tpl->set ( 'COD_CONTA'	   		   , $oConta);
 
 $tpl->set ( 'TAXA_ADM'	   		   , $taxaAdm);
 $tpl->set ( 'IND_ADD_TAXA_BOLETO'  , $indAddTaxaBoleto);
+
+$tpl->set ( 'MSG'	   		 	   , $msg);
+$tpl->set ( 'HIDDEN'	   		   , $hidden);
 
 $tpl->set ( 'IC'				   , $_icone_);
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
