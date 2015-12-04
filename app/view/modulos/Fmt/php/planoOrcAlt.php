@@ -7,6 +7,11 @@ if (defined('DOC_ROOT')) {
 }else{
 	include_once('../include.php');
 }
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$log,$system;
+
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -89,40 +94,42 @@ try {
 #################################################################################
 $dadosCat		= array();
 try {
-	$aCategoria		= $em->getRepository('Entidades\ZgfinCategoria')->findBy(array('codTipo' => D , 'indAtiva' => 1 , 'codOrganizacao' => null ,  'codTipoOrganizacao' => FMT), array('descricao' => ASC));
+	$aCategoria		= $em->getRepository('Entidades\ZgfinCategoria')->findBy(array('codTipo' => 'D' , 'indAtiva' => 1 , 'codOrganizacao' => null ,  'codTipoOrganizacao' => 'FMT'), array('descricao' => 'ASC'));
 	//$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	null, 	null);
 	
 	//Formatar dados
 	$dadosCat = array();
 	for ($i = 0; $i < sizeof($aCategoria); $i++) {
-		if ($aCategoria[$i]->getCodCategoriaPai() == null) {
-			
-			$dadosCat[$aCategoria[$i]->getDescricao()]["CATEGORIA"]	= $aCategoria[$i]->getDescricao();
-			
+		if ($aCategoria[$i]->getCodCategoriaPai() != null) {
+			$descPai	= $aCategoria[$i]->getCodCategoriaPai()->getDescricao();
+			$dadosCat["SUB"][$descPai][$aCategoria[$i]->getCodigo()]	= $aCategoria[$i]->getDescricao(); 
 		}else{	
-			$dadosCat[$aCategoria[$i]->getCodCategoriaPai()->getDescricao()][$i]["SUBCATEGORIA"] 	= $aCategoria[$i]->getDescricao();
-			$dadosCat[$aCategoria[$i]->getCodCategoriaPai()->getDescricao()][$i]["CODIGO"]		= $aCategoria[$i]->getCodigo();
+			$dadosCat["CAT"][$aCategoria[$i]->getCodigo()]				= $aCategoria[$i]->getDescricao();
 		}
 	}
 	
 	$oCategoria = '';
-	foreach ($dadosCat as $info ){
-		$oCategoria		.= '<optgroup label="'.$info["CATEGORIA"].'">';
+	foreach ($dadosCat["SUB"] as $desc => $aCatItens ){
+		$oCategoria		.= '<optgroup label="'.$desc.'">';
 		
-		foreach ($info["CATEGORIA"] as $cat => $sub) {
-			$oCategoria		.= '<option>'.$sub["SUBCATEGORIA"].'</option>';
+		foreach ($aCatItens as $codCat => $descCat) {
+			$oCategoria		.= '<option value="'.$codCat.'">'.$descCat.'</option>';
 		}
 		
 		$oCategoria		.= '</optgroup>';
 	}
 	
+	foreach ($dadosCat["CAT"] as $codCat => $descCat ){
+		$oCategoria		.= '<option value="'.$codCat.'">'.$descCat.'</option>';
+	}
 	
 		
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
-$log->debug($dadosCat);
+$log->debug(serialize($dadosCat));
+
 #################################################################################
 ## Resgatar os dados dos valores
 #################################################################################
