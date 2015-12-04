@@ -87,18 +87,34 @@ try {
 #################################################################################
 ## Select de Categoria
 #################################################################################
+$dadosCat		= array();
 try {
 	$aCategoria		= $em->getRepository('Entidades\ZgfinCategoria')->findBy(array('codTipo' => D , 'indAtiva' => 1 , 'codOrganizacao' => null ,  'codTipoOrganizacao' => FMT), array('descricao' => ASC));
-		
 	$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	null, 	null);
+	
+	for ($i = 0; $i < sizeof($aCategoria); $i++) {
+		if ( $aCategoria[$i]->getCodCategoriaPai() != null){
+			$dadosCat["CATEGORIA"][$aCategoria[$i]->getCodCategoriaPai()->getDescricao()][$i] = $aCategoria[$i]->getDescricao();
+		}
+	}
+	
+	//foreach ($dadosCat as $info) {
+		//$log->debug($info["CATEGORIA"]);
+		
+		////$oC		.= ($aCategoria) ? "<optgroup label='".$info[]."'>" : '';
+		//$oC		.= "<option value='".$info[]."'>".$info[]."</option>";
+		//$oC		.= ($aCategoria) ? '</optgroup>' : '';
+	//}
+		
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
+$log->debug($dadosCat);
 #################################################################################
 ## Resgatar os dados dos valores
 #################################################################################
-$aOrcItem		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codPlano' => $codVersao, 'codGrupoItem' => $codEvento));
+$aOrcItem		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codPlano' => $codVersao, 'codGrupoItem' => $codEvento),array('ordem' => "ASC"));
 $tabOrcamento	= "";
 
 for ($i = 0; $i < sizeof($aOrcItem); $i++) {
@@ -110,11 +126,19 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 	$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	$codCategoria, '');
 	
 	$tabOrcamento	.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg" onchange="verificaAlteracao($(this));"></div></td>
+				<td class="col-sm-1 center"><input type="text" name="ordem['.$i.']" zg-name="ordem" class="col-xs-6" readonly value="'.$aOrcItem[$i]->getOrdem().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
 				<td><input type="text" class="width-100" name="item['.$i.']" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
 				<td><select class="select2" style="width:100%;" name="codTipoItem['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oTipoItem.'</select></td>
 				<td><select class="select2" style="width:100%;" name="codCategoria['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCategoria.'</select></td>
 				<td align="center"><label><input name="indAtivo['.$i.']" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
-				<td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'"></td></tr>';
+				<td class="center">
+						<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
+							<span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span>
+							<span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span>
+							<span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span>
+						</div>
+						<input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'">
+				</td></tr>';
 }
 
 #################################################################################
@@ -151,6 +175,8 @@ $tpl->set('URL_BOTOES'			  	,$urlBotao);
 
 $tpl->set('VERSAO'					,$versao);
 $tpl->set('IND_VERSAO'				,$indVersao);
+
+$tpl->set('COD_CONTA'				,$oC);
 
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'						,$_icone_);

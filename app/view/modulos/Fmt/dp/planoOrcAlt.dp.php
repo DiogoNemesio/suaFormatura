@@ -19,6 +19,7 @@ global $em,$system,$log,$tr;
 if (isset($_POST['codVersao']))				$codPlano			= \Zage\App\Util::antiInjection($_POST['codVersao']);
 if (isset($_POST['codEvento']))				$codEvento			= \Zage\App\Util::antiInjection($_POST['codEvento']);
 if (isset($_POST['codOrcamento']))			$codOrcamento		= \Zage\App\Util::antiInjection($_POST['codOrcamento']);
+if (isset($_POST['ordem']))					$ordem				= \Zage\App\Util::antiInjection($_POST['ordem']);
 if (isset($_POST['item']))					$item				= \Zage\App\Util::antiInjection($_POST['item']);
 if (isset($_POST['codTipoItem']))			$codTipoItem		= \Zage\App\Util::antiInjection($_POST['codTipoItem']);
 if (isset($_POST['codCategoria']))			$codCategoria		= \Zage\App\Util::antiInjection($_POST['codCategoria']);
@@ -30,11 +31,14 @@ if (isset($_POST['indVersao']))				$indVersao			= \Zage\App\Util::antiInjection(
 #################################################################################
 ## Caso não venha as variáveis (ARRAY) inicializar eles
 #################################################################################
+if (!isset($ordem))				$ordem			= array();
 if (!isset($item))				$item			= array();
 if (!isset($codTipoItem))		$codTipoItem	= array();
 if (!isset($codCategoria))		$codCategoria	= array();
 if (!isset($indAtivo))			$indAtivo		= array();
 
+$log->debug($ordem);
+$log->debug($item);
 if ($codOrcamento == null){
 	$codOrcamento	= array();
 }
@@ -62,6 +66,13 @@ if (!empty($item)){
 	}
 }
 
+/** Ordem **/
+if (!is_array($ordem)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo ORDEM inválido !!!"));
+	$err 	= 1;
+}
+
+
 /** item **/
 if (!is_array($item)) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Item não é um array!"))));
@@ -71,6 +82,12 @@ if (!is_array($item)) {
 ## Validar o tamanho dos arrays
 #################################################################################
 $numCon	= sizeof($codOrcamento);
+
+/** Ordem **/
+if (sizeof($ordem) != $numCon) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo ORDEM com tamanho inválido !!!"));
+	$err 	= 1;
+}
 
 #################################################################################
 ## Salvar no banco
@@ -151,8 +168,10 @@ try {
 		$oOrcamento->setCodCategoria($oCodCategoria);
 		$oOrcamento->setCodTipoItem($oCodTipoItem);
 		$oOrcamento->setItem($item[$i]);
+		$oOrcamento->setOrdem($ordem[$i]);
 		$oOrcamento->setIndAtivo($indAtivoLinha);
 		
+		$log->debug("ordem - ".$ordem[$i]." / item - ".$item[$i] );
 		$em->persist($oOrcamento);
 	}
 
