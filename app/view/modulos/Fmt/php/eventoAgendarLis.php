@@ -106,7 +106,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Agendar Evento'));
+$tpl->set('NOME'			,$tr->trans('Eventos'));
 $tpl->set('URLADD'			,$urlAdd);
 $tpl->set('HTML_BUTTON'		,$htmlButton);
 $tpl->set('IC'				,$_icone_);

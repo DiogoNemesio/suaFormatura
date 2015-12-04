@@ -15,6 +15,8 @@ if (isset($_POST['codEvento']))				$codEvento			= \Zage\App\Util::antiInjection(
 if (isset($_POST['codTipo']))				$codTipo			= \Zage\App\Util::antiInjection($_POST['codTipo']);
 if (isset($_POST['codLocal']))				$codLocal			= \Zage\App\Util::antiInjection($_POST['codLocal']);
 if (isset($_POST['dataEvento']))			$dataEvento			= \Zage\App\Util::antiInjection($_POST['dataEvento']);
+if (isset($_POST['numConvite']))			$qtdeConvite			= \Zage\App\Util::antiInjection($_POST['numConvite']);
+if (isset($_POST['valorAvulso']))			$valorAvulso		= \Zage\App\Util::antiInjection($_POST['valorAvulso']);
 if (isset($_POST['local']))					$local				= \Zage\App\Util::antiInjection($_POST['local']);
 if (isset($_POST['codLogradouro']))			$codLogradouro		= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
 if (isset($_POST['cep']))					$cep				= \Zage\App\Util::antiInjection($_POST['cep']);
@@ -24,33 +26,37 @@ if (isset($_POST['complemento']))			$complemento		= \Zage\App\Util::antiInjectio
 if (isset($_POST['numero']))				$numero				= \Zage\App\Util::antiInjection($_POST['numero']);
 if (isset($_POST['latitude']))				$latitude			= \Zage\App\Util::antiInjection($_POST['latitude']);
 if (isset($_POST['longitude']))				$longitude			= \Zage\App\Util::antiInjection($_POST['longitude']);
+
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
 $err	= false;
+
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
-/******* Verificar se existe formandos ativos *********/
+/** Tipo de envento **/
+if (!isset($codTipo) || empty($codTipo)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Ops, encontramos um problema para identificar o tipo do evento. Tente novamente em instantes e caso o problema persita entre em contato com o suporte."));
+	$err	= 1;
+}
+
+/** Verificar se existe formandos ativos **/
 $formandos		= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
 if (sizeof($formandos) == 0)	{
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O evento não pode ser criado pois não existe formando ativo!"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O evento não pode ser criado pois não existe formando ativo."));
 	$err	= 1;
 }
 
+/** Local do evento **/
 if (!isset($local) || empty($local)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo LOCAL é obrigatório !!"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Informe o local aonde será realizado o evento."));
 	$err	= 1;
 }
 
+/** Analisar se o local é parceiro do sistema  **/
 if (!isset($codLocal) || empty($codLocal)) {
 	$codLocal = null;
-}
-
-/** Tipo **/
-if (!isset($codTipo) || empty($codTipo)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo TIPO é obrigatório !!"));
-	$err	= 1;
 }
 
 if ($err != null) {
@@ -89,6 +95,8 @@ try {
  	
  	$oEvento->setCodFormatura($oOrganizacao); 
  	$oEvento->setCodTipoEvento($oTipo);
+ 	$oEvento->setQtdeConvidado($qtdeConvidado)
+ 	$oEvento->setValorAvulso($valorAvulso)
  	$oEvento->setCodLocal($oLocal);
  	$oEvento->setData($dataEvento);
  	$oEvento->setLocal($local);

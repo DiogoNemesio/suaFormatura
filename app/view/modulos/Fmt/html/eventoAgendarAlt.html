@@ -1,6 +1,6 @@
 <div id="content">
 	<div class="page-header">
-	<h1><i class="fa fa-calendar">&nbsp;</i>Agendar Evento
+	<h1><i class="fa fa-calendar">&nbsp;</i>Agendar Evento&nbsp;&nbsp;
 		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
 	</h1>
 	</div><!-- /.page-header -->
@@ -51,15 +51,15 @@
 								    </div>
 								</div>
 							</div>
-								<div class="row">
+							<div class="row">
 								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divNumConviteID">
-								    	<label class="col-sm-3 control-label" for="numConviteID">Valor avulso</label>
+									<div class="form-group col-sm-12" id="divValorAvulsoID">
+								    	<label class="col-sm-3 control-label" for="valorAvulsoID">Valor avulso</label>
 											<div class="input-group col-sm-8 pull-left">
 							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor para participação avulsa de um formando neste evento."></i></span>
-							    			<input class="form-control" id="numConviteID" type="text" name="numConvite" placeholder="Valor para participação avulsa" maxlength="11" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+							    			<input class="form-control" id="valorAvulsoID" type="text" name="valorAvulso" placeholder="Valor para participação avulsa" maxlength="11" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 								    	</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpNumConviteID"></div>
+								    	<div class="col-sm-1 pull-left" id="divHelpValorAvulsoID"></div>
 								    </div>
 								</div>
 							</div>
@@ -73,7 +73,7 @@
 								    	<label class="col-sm-3 control-label" for="localID">Local</label>
 											<div class="input-group col-sm-8 pull-left">
 							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do local do evento."></i></span>
-						   					<input type="text" class="width-100" name="local" id="localID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
+						   					<input type="text" class="form-control" name="local" id="localID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
 						    			</div>
 								    	<div class="col-sm-1 pull-left" id="divHelplocalID"></div>
 								    	<div class="col-sm-1 pull-left" id="spinID"></div>
@@ -155,7 +155,7 @@
 					</div>
 				</div>
 				<div class="clearfix form-actions">
-					<label class="col-sm-4 control-label">&nbsp;</label>
+					<label class="col-sm-5 control-label">&nbsp;</label>
 					<button type="button" class="btn btn-primary" id="btnSubmitID">
 						<i class="fa fa-check bigger-110"></i> Salvar
 					</button>
