@@ -24,9 +24,9 @@ class ZgfmtEvento
     /**
      * @var integer
      *
-     * @ORM\Column(name="QTDE_CONVIDADO", type="integer", nullable=true)
+     * @ORM\Column(name="QTDE_CONVITE", type="integer", nullable=true)
      */
-    private $qtdeConvidado;
+    private $qtdeConvite;
 
     /**
      * @var float
@@ -150,26 +150,26 @@ class ZgfmtEvento
     }
 
     /**
-     * Set qtdeConvidado
+     * Set qtdeConvite
      *
-     * @param integer $qtdeConvidado
+     * @param integer $qtdeConvite
      * @return ZgfmtEvento
      */
-    public function setQtdeConvidado($qtdeConvidado)
+    public function setQtdeConvite($qtdeConvite)
     {
-        $this->qtdeConvidado = $qtdeConvidado;
+        $this->qtdeConvite = $qtdeConvite;
 
         return $this;
     }
 
     /**
-     * Get qtdeConvidado
+     * Get qtdeConvite
      *
      * @return integer 
      */
-    public function getQtdeConvidado()
+    public function getQtdeConvite()
     {
-        return $this->qtdeConvidado;
+        return $this->qtdeConvite;
     }
 
     /**

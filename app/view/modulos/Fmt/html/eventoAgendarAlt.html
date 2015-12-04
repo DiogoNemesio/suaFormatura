@@ -14,146 +14,122 @@
 				<input type="hidden" id="codLocalID" name="codLocal" value="%COD_LOCAL%">
 				<input type='hidden' id='valID'>
 				
-				<div class="tabbable">
-					<ul class="nav nav-tabs padding-16" id='tabID'>
-						<li class="active"><a data-toggle="tab" href="#geral">
-								<i class="green fa fa-edit bigger-125"></i> Pricipal
-						</a></li>
-						<li><a data-toggle="tab" href="#endereco"> 
-								<i class="blue fa fa-file-text bigger-125"></i> Local
-						</a></li>
-					</ul>
-
-					<div class="tab-content profile-edit-tab-content">
-						<div id="geral" class="tab-pane in active">
-							<h5 class="header blue bolder smaller">Informações gerais</h5>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divDataEventoID">
-								    	<label class="col-sm-3 control-label" for="date-timepicker">Data</label>
-											<div class="input-group col-sm-8 pull-left">
-							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data do Evento."></i></span>
-							    			<input class="form-control datepicker" id="date-timepicker" type="text" name="dataEvento" placeholder="Data do Evento" maxlength="16" value="%DATA_EVENTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples">
-								    	</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
-								    </div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divNumConviteID">
-								    	<label class="col-sm-3 control-label" for="numConviteID">Convites</label>
-											<div class="input-group col-sm-8 pull-left">
-							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número de convites que o formando irá receber."></i></span>
-							    			<input class="form-control" id="numConviteID" type="text" name="numConvite" placeholder="Número de convites" maxlength="4" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
-								    	</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpNumConviteID"></div>
-								    </div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divValorAvulsoID">
-								    	<label class="col-sm-3 control-label" for="valorAvulsoID">Valor avulso</label>
-											<div class="input-group col-sm-8 pull-left">
-							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor para participação avulsa de um formando neste evento."></i></span>
-							    			<input class="form-control" id="valorAvulsoID" type="text" name="valorAvulso" placeholder="Valor para participação avulsa" maxlength="11" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
-								    	</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpValorAvulsoID"></div>
-								    </div>
-								</div>
-							</div>
-						</div>
-						<div id="endereco" class="tab-pane">
-							<h5 class="header blue bolder smaller">Local</h5>
-							<div class="vspace-xs"></div>
-							<div class="row">
-								<div class="col-sm-6">
-								    <div class="form-group col-sm-12" id="divlocalID">
-								    	<label class="col-sm-3 control-label" for="localID">Local</label>
-											<div class="input-group col-sm-8 pull-left">
-							    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do local do evento."></i></span>
-						   					<input type="text" class="form-control" name="local" id="localID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
-						    			</div>
-								    	<div class="col-sm-1 pull-left" id="divHelplocalID"></div>
-								    	<div class="col-sm-1 pull-left" id="spinID"></div>
-						    		</div>
-								</div>
-							</div>
-							<h5 class="header blue bolder smaller">Endereço</h5>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12" id="divCepID">
-										<label for="cepID" class="col-sm-3 control-label">CEP</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
-											<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
-										</div>
-										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
-									</div>																	
-									<div class="form-group col-sm-12" id="divDescLogradouroID">
-										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
-											<input type="text" id="descLogradouroID" %READONLY% name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
-										</div>
-										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
-									</div>	
-									<div class="form-group col-sm-12">
-										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
-											<input type="text" %READONLY% id="bairroID" name="bairro" class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
-										</div>
-									</div>
-									<div class="form-group col-sm-12">
-										<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
-											<input type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" class="width-100" placeholder="Cidade" />
-										</div>
-									</div>
-									
-								</div>
-								<div class="col-sm-6">
-									<div class="form-group col-sm-12">
-										<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
-											<input type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" class="width-100" placeholder="Estado" />
-										</div>
-									</div>									
-									<div class="form-group col-sm-12" id="divNumeroID">
-										<label for="NumeroID" class="col-sm-3 control-label">Número</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
-											<input type="text" id="numeroID" name="numero" value="%NUMERO%" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
-										</div>
-									</div>							
-									<div class="form-group col-sm-12" id="divComplementoID">
-										<label for="ComplementoID" class="col-sm-3 control-label">Complemento</label>
-										<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
-											<input type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
-										</div>
-									</div>	
-																									
-								</div>
-								<div class="hidden" id="divEndCorretoID">
-									<div class="col-sm-12">
-										<div class="form-group col-sm-12">
-											<div class="alert alert-info">	
-												Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
-												<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" checked type="checkbox"/>
-												<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
-											</div>		
-										</div>	
-									</div>
-						    	</div>
-							</div>
-						</div>
+				<h5 class="header blue bolder smaller">Informações gerais</h5>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group col-sm-12" id="divDataEventoID">
+					    	<label class="col-sm-3 control-label" for="date-timepicker">Data</label>
+								<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data do Evento."></i></span>
+				    			<input class="form-control datepicker" id="date-timepicker" type="text" name="dataEvento" placeholder="Data do Evento" maxlength="16" value="%DATA_EVENTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+					    </div>
+					    <div class="form-group col-sm-12" id="divNumCQtdeConviteID">
+					    	<label class="col-sm-3 control-label" for="qtdeConviteID">Convites</label>
+								<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de convites que os formandos irá receber, já incluindo o dele próprio. Caso não seja preenchido iremos entender que não existe limite."></i></span>
+				    			<input class="form-control" id="qtdeConviteID" type="text" name="qtdeConvite" placeholder="Número de convites" maxlength="4" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpQtdeConviteID"></div>
+					    </div>
+					    <div class="form-group col-sm-12" id="divValorAvulsoID">
+					    	<label class="col-sm-3 control-label" for="valorAvulsoID">Valor avulso</label>
+								<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor para participação avulsa de um formando neste evento. Caso não seja preenchido iremos entender que não terá custo."></i></span>
+				    			<input class="form-control" id="valorAvulsoID" type="text" name="valorAvulso" placeholder="Valor para participação avulsa" maxlength="11" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpValorAvulsoID"></div>
+					    </div>
 					</div>
 				</div>
+				<h5 class="header blue bolder smaller">Local - Endereço</h5>
+				<div class="vspace-xs"></div>
+				<div class="row">
+					<div class="col-sm-6">
+					    <div class="form-group col-sm-12" id="divlocalID">
+					    	<label class="col-sm-3 control-label" for="localID">Local</label>
+								<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do local do evento."></i></span>
+			   					<input type="text" class="form-control" name="local" id="localID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
+			    			</div>
+					    	<div class="col-sm-1 pull-left" id="divHelplocalID"></div>
+					    	<div class="col-sm-1 pull-left" id="spinID"></div>
+			    		</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group col-sm-12" id="divCepID">
+							<label for="cepID" class="col-sm-3 control-label">CEP</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
+								<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+							</div>
+							<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+						</div>																	
+						<div class="form-group col-sm-12" id="divDescLogradouroID">
+							<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
+								<input type="text" id="descLogradouroID" %READONLY% name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
+							</div>
+							<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
+						</div>	
+						<div class="form-group col-sm-12">
+							<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
+								<input type="text" %READONLY% id="bairroID" name="bairro" class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
+							</div>
+						</div>
+						<div class="form-group col-sm-12">
+							<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
+								<input type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" class="width-100" placeholder="Cidade" />
+							</div>
+						</div>
+						
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group col-sm-12">
+							<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
+								<input type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" class="width-100" placeholder="Estado" />
+							</div>
+						</div>									
+						<div class="form-group col-sm-12" id="divNumeroID">
+							<label for="NumeroID" class="col-sm-3 control-label">Número</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
+								<input type="text" id="numeroID" name="numero" value="%NUMERO%" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
+							</div>
+						</div>							
+						<div class="form-group col-sm-12" id="divComplementoID">
+							<label for="ComplementoID" class="col-sm-3 control-label">Complemento</label>
+							<div class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
+								<input type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
+							</div>
+						</div>	
+																						
+					</div>
+					<div class="hidden" id="divEndCorretoID">
+						<div class="col-sm-12">
+							<div class="form-group col-sm-12">
+								<div class="alert alert-info">	
+									Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+									<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" checked type="checkbox"/>
+									<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+								</div>		
+							</div>	
+						</div>
+			    	</div>
+				</div>
+				
+				
 				<div class="clearfix form-actions">
 					<label class="col-sm-5 control-label">&nbsp;</label>
 					<button type="button" class="btn btn-primary" id="btnSubmitID">

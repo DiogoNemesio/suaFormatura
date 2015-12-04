@@ -15,7 +15,7 @@ if (isset($_POST['codEvento']))				$codEvento			= \Zage\App\Util::antiInjection(
 if (isset($_POST['codTipo']))				$codTipo			= \Zage\App\Util::antiInjection($_POST['codTipo']);
 if (isset($_POST['codLocal']))				$codLocal			= \Zage\App\Util::antiInjection($_POST['codLocal']);
 if (isset($_POST['dataEvento']))			$dataEvento			= \Zage\App\Util::antiInjection($_POST['dataEvento']);
-if (isset($_POST['numConvite']))			$qtdeConvite			= \Zage\App\Util::antiInjection($_POST['numConvite']);
+if (isset($_POST['qtdeConvite']))			$qtdeConvite		= \Zage\App\Util::antiInjection($_POST['qtdeConvite']);
 if (isset($_POST['valorAvulso']))			$valorAvulso		= \Zage\App\Util::antiInjection($_POST['valorAvulso']);
 if (isset($_POST['local']))					$local				= \Zage\App\Util::antiInjection($_POST['local']);
 if (isset($_POST['codLogradouro']))			$codLogradouro		= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
@@ -59,6 +59,18 @@ if (!isset($codLocal) || empty($codLocal)) {
 	$codLocal = null;
 }
 
+/** Valor Avulso **/
+if (!isset($valorAvulso) || empty($valorAvulso)) {
+	$valorAvulso = null;
+}else{
+	$valorAvulso = \Zage\App\Util::to_float($valorAvulso);
+}
+
+/** Quantidade de convidados **/
+if (!isset($qtdeConvite) || empty($qtdeConvite)) {
+	$qtdeConvite = null;
+}
+
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
  	exit;
@@ -95,8 +107,8 @@ try {
  	
  	$oEvento->setCodFormatura($oOrganizacao); 
  	$oEvento->setCodTipoEvento($oTipo);
- 	$oEvento->setQtdeConvidado($qtdeConvidado)
- 	$oEvento->setValorAvulso($valorAvulso)
+ 	$oEvento->setQtdeConvite($qtdeConvite);
+ 	$oEvento->setValorAvulso($valorAvulso);
  	$oEvento->setCodLocal($oLocal);
  	$oEvento->setData($dataEvento);
  	$oEvento->setLocal($local);
