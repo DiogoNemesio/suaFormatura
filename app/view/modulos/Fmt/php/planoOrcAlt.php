@@ -90,21 +90,33 @@ try {
 $dadosCat		= array();
 try {
 	$aCategoria		= $em->getRepository('Entidades\ZgfinCategoria')->findBy(array('codTipo' => D , 'indAtiva' => 1 , 'codOrganizacao' => null ,  'codTipoOrganizacao' => FMT), array('descricao' => ASC));
-	$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	null, 	null);
+	//$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	null, 	null);
 	
+	//Formatar dados
+	$dadosCat = array();
 	for ($i = 0; $i < sizeof($aCategoria); $i++) {
-		if ( $aCategoria[$i]->getCodCategoriaPai() != null){
-			$dadosCat["CATEGORIA"][$aCategoria[$i]->getCodCategoriaPai()->getDescricao()][$i] = $aCategoria[$i]->getDescricao();
+		if ($aCategoria[$i]->getCodCategoriaPai() == null) {
+			
+			$dadosCat[$aCategoria[$i]->getDescricao()]["CATEGORIA"]	= $aCategoria[$i]->getDescricao();
+			
+		}else{	
+			$dadosCat[$aCategoria[$i]->getCodCategoriaPai()->getDescricao()][$i]["SUBCATEGORIA"] 	= $aCategoria[$i]->getDescricao();
+			$dadosCat[$aCategoria[$i]->getCodCategoriaPai()->getDescricao()][$i]["CODIGO"]		= $aCategoria[$i]->getCodigo();
 		}
 	}
 	
-	//foreach ($dadosCat as $info) {
-		//$log->debug($info["CATEGORIA"]);
+	$oCategoria = '';
+	foreach ($dadosCat as $info ){
+		$oCategoria		.= '<optgroup label="'.$info["CATEGORIA"].'">';
 		
-		////$oC		.= ($aCategoria) ? "<optgroup label='".$info[]."'>" : '';
-		//$oC		.= "<option value='".$info[]."'>".$info[]."</option>";
-		//$oC		.= ($aCategoria) ? '</optgroup>' : '';
-	//}
+		foreach ($info["CATEGORIA"] as $cat => $sub) {
+			$oCategoria		.= '<option>'.$sub["SUBCATEGORIA"].'</option>';
+		}
+		
+		$oCategoria		.= '</optgroup>';
+	}
+	
+	
 		
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

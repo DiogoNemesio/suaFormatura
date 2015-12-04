@@ -85,6 +85,7 @@ if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) 
 		$inscMunicipal	= $info->getInscMunicipal();
 		$datInicio 		= ($info->getDataNascimento() != null) ? $info->getDataNascimento()->format($system->config["data"]["dateFormat"]) : null;	
 		$nome			= '';
+		$nomeComercial	= '';
 		$cpf			= '';
 		$rg				= '';
 		$sexo			= '';
@@ -98,6 +99,7 @@ if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) 
 		$inscEstadual	= '';
 		$inscMunicipal	= '';
 		$datInicio 		= '';
+		$nomeComercial	= $info->getFantasia();
 		$nome			= $info->getNome();
 		$cpf			= $info->getCgc();
 		$rg				= $info->getRg();
@@ -110,6 +112,7 @@ if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) 
 	
 	$tipo			= 'J';
 	$nome			= '';
+	$nomeComercial	= '';
 	$cpf			= '';
 	$rg				= '';
 	$sexo			= '';
@@ -285,6 +288,7 @@ $tpl->set('COD_PESSOA'				,$codPessoa);
 $tpl->set('ATIVO'					,$ativo);
 $tpl->set('IND_ESTRANGEIRO'			,$indEst);
 $tpl->set('NOME'					,$nome);
+$tpl->set('NOME_COMERCIAL'			,$nomeComercial);
 $tpl->set('SEXO'					,$oSexo);
 $tpl->set('TIPO'					,$oTipo);
 $tpl->set('RAZAO'					,$razao);

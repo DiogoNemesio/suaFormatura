@@ -34,11 +34,11 @@ if ($tipo == 'J'){
 }elseif ($tipo == 'F'){
 	
 	if (isset($_POST['nome'])) 			$nome				= \Zage\App\Util::antiInjection($_POST['nome']);
+	if (isset($_POST['nomeComercial']))	$fantasia			= \Zage\App\Util::antiInjection($_POST['nomeComercial']);
 	if (isset($_POST['cpf']))	 		$cgc				= \Zage\App\Util::antiInjection($_POST['cpf']);
 	if (isset($_POST['rg']))	 		$rg					= \Zage\App\Util::antiInjection($_POST['rg']);
 	if (isset($_POST['dataNas'])) 		$dataNascimento		= \Zage\App\Util::antiInjection($_POST['dataNas']);
 	if (isset($_POST['sexo']))	 		$sexo				= \Zage\App\Util::antiInjection($_POST['sexo']);
-	$fantasia		= '';
 	$inscEstadual	= '';
 	$inscMunicipal	= '';
 }
@@ -81,8 +81,6 @@ if (!isset($codCidade))					$codCidade			= array();
 if (!isset($codLogradouro))				$codLogradouro		= array();
 if (!isset($codEndereco))				$codEndereco		= array();
 
-
-
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -94,78 +92,73 @@ $err	= false;
 if ($tipo == 'J'){
 	/******* Nome *********/
 	if (!isset($nome) || (empty($nome))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Campo RAZÃO é obrigatório");
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Informe a razão social da pessoa jurídica.");
 		$err	= 1;
-	}
-	
-	if ((!empty($nome)) && (strlen($nome) > 100)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Campo RAZÃO não deve conter mais de 100 caracteres");
+	}elseif ((!empty($nome)) && (strlen($nome) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," A razão social não deve conter mais de 100 caracteres.");
 		$err	= 1;
 	}
 	
 	/******* Fantasia *********/
 	if (!isset($fantasia) || (empty($fantasia))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo FANTASIA é obrigatório");
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Informe o nome fantasia da pessoa jurídica.");
 		$err	= 1;
-	}
-	
-	if ((!empty($fantasia)) && (strlen($fantasia) > 60)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo FANTASIA não deve conter mais de 60 caracteres");
+	}elseif ((!empty($fantasia)) && (strlen($fantasia) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"O nome fantasia não deve conter mais de 100 caracteres.");
 		$err	= 1;
 	}
 	
 	/******** Início de Atividade ***********/
 	if (!empty($dataNascimento)) {
 		if (\Zage\App\Util::validaData($dataNascimento, $system->config["data"]["dateFormat"]) == false) {
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Início de Atividade inválido"));
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A data de abertura está com formato inválido."));
 			$err	= 1;
 		}
 	}
-	
-	
 }
 
 if ($tipo == 'F'){
 	/******* Nome *********/
 	if (!isset($nome) || (empty($nome))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Campo NOME é obrigatório");
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Informe o nome completo da pessoa física.");
+		$err	= 1;
+	}elseif ((!empty($nome)) && (strlen($nome) > 100)){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," O nome completo não deve conter mais de 100 caracteres.");
 		$err	= 1;
 	}
-
-	if ((!empty($nome)) && (strlen($nome) > 100)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Campo NOME não deve conter mais de 100 caracteres");
+	
+	/******* Nome Comercial *********/
+	if (!isset($fantasia) || (empty($fantasia))) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Informe o nome comercial da pessoa física.");
+		$err	= 1;
+	}elseif ((!empty($fantasia)) && (strlen($fantasia) > 100)){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," O nome comercial não deve ter mais que 100 caracteres.");
 		$err	= 1;
 	}
 
 	/******* RG *********/
-	/*if (!isset($rg) || (empty($rg))) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Campo RG é obrigatório");
-		$err	= 1;
-	}*/
-
 	if ((!empty($rg)) && (strlen($rg) > 14)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," Campo RG não deve conter mais de 14 caracteres");
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," O RG não deve conter mais de 14 caracteres.");
 		$err	= 1;
 	}
 	
+	/******* Data de nascimento *********/
 	if (!empty($dataNascimento)) {
 		if (\Zage\App\Util::validaData($dataNascimento, $system->config["data"]["dateFormat"]) == false) {
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo Data de Nascimento inválido"));
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A data de nascimento está inválido."));
 			$err	= 1;
 		}
 	}
-	
 }
 
-
-
-
+/******* Status *********/
 if (isset($ativo) && (!empty($ativo))) {
 	$ativo	= 1;
 }else{
 	$ativo	= 0;
 }
 
+/******* IND Estrangeiro *********/
 if (isset($indEstrangeiro) && (!empty($indEstrangeiro))) {
 	$indEstrangeiro	= 1;
 }else{
@@ -183,16 +176,15 @@ if ($indEstrangeiro == 0) {
 	}
 	
 	if (empty($cgc)) {
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo %s deve ser preenchido",array('%s' => $nomeCampoMen)));
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O %s deve ser preenchido",array('%s' => $nomeCampoMen)));
 		$err	= 1;
 	}else{
 		if ($valCgc->isValid($cgc) == false) {
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo %s inválido",array('%s' => $nomeCampoMen)));
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O %s inválido",array('%s' => $nomeCampoMen)));
 			$err	= 1;
 		}
 	}
 }
-
 
 /** Fonte de Recurso (CONTA) **/
 if (  (isset($codBanco) && !empty($codBanco)) || (isset($agencia) && !empty($agencia)) || (isset($ccorrente) && !empty($ccorrente))) {
@@ -286,9 +278,6 @@ try {
  	
  	$em->persist($oPessoa);
  	$em->flush();
- 	//$em->detach($oPessoa);
- 	
- 	
  	
  	#################################################################################
  	## Contato
@@ -342,9 +331,7 @@ try {
  		}
  	
  	}
- 	 	
-
- 	
+ 	 
  	if (!isset($codTipoEnd))				$codTipoEnd			= array();
  	if (!isset($cep))						$cep				= array();
  	if (!isset($bairro))					$bairro				= array();
@@ -354,7 +341,6 @@ try {
  	if (!isset($codCidade))					$codCidade			= array();
  	if (!isset($codLogradouro))				$codLogradouro		= array();
  	if (!isset($codEndereco))				$codEndereco		= array();
- 	
  	
  	#################################################################################
  	## Endereço
@@ -376,7 +362,6 @@ try {
  			}
  		}
  	}
- 	
  	
  	#################################################################################
  	## Criação / Alteração
@@ -419,8 +404,6 @@ try {
  	}else{
  		$arraySeg = array();
  	}
- 	
- 	//$log->debug("ArraySeg:".serialize($arraySeg));
  		
  	#################################################################################
  	## Lista de segmentos já associados
@@ -476,7 +459,6 @@ try {
 		}
 	}
 
-	
 	#################################################################################
 	## Fonte de Recurso
 	#################################################################################
@@ -525,7 +507,6 @@ try {
 		}
 	}
 	
-	 	
 } catch (\Exception $e) {
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));

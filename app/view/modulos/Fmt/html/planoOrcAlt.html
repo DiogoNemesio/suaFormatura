@@ -18,19 +18,7 @@
 				<div id="indice" class="tab-pane in active">
 	
 					<div class="vspace-xs"></div>
-					<div class="row">
-				<div class="form-group col-sm-12" id="divCodContaID">
-					<label for="codContaID" class="col-xs-12 col-sm-5 control-label">Conta</label>
-					<div class="input-group col-sm-6 pull-left">
-						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a conta de recebimento."></i></span>
-						<select id="codContaRecID" name="codConta" class="select2" data-placeholder="Selecione a conta de recebimento" >
-							%COD_CONTA%
-						</select>
-					</div>
-					<div class="col-sm-1 pull-left" id="divHelpCodContaID"></div>
-				</div>
-					
-					
+					<div class="row">					
 						<h5 class="header blue bolder smaller">Informações do modelo</h5>
 						<div class="vspace-xs"></div>
 				    	<div class="col-sm-6">
@@ -68,7 +56,7 @@
 											<th class="col-sm-2 center">Calcular</th>
 											<th class="col-sm-2 center">Categoria</th>
 											<th class="col-sm-1 center">Ativo</th>
-											<th class="col-sm-1 center"><span class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+											<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -77,7 +65,7 @@
 									<tfoot>
 										<tr>
 											<th colspan="6" style="text-align: left;"></th>
-											<th class="col-sm-1 center"><span class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+											<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 										</tr>
 									</tfoot>
 								</table>

@@ -104,12 +104,13 @@ if ($codEvento) {
 ################################################################################
 # Parceiros
 ################################################################################
-$oParceiros		= \Zage\Adm\Organizacao::buscaOrganizacaoParceiro(null);
-$vNomeParceiros	= "";
-for ($i = 0; $i < sizeof($oParceiros); $i++) {
-	$vNomeParceiros .= "'".$oParceiros[$i]->getNome()."',";
+$oFornecedor	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),"indFornecedor");
+$vFornecedor	= "";
+for ($i = 0; $i < sizeof($oFornecedor); $i++) {
+	$log->info($oFornecedor[$i]->getNome());
+	$vFornecedor .= "'".$oFornecedor[$i]->getNome()."',";
 }
-//$vNomeParceiros = substr($vNomeParceiros, -1);
+//$vFornecedor = substr($vFornecedor, -1);
 
 ################################################################################
 # Select de Local
@@ -162,7 +163,7 @@ $tpl->set ( 'BAIRRO'		       , $bairroPadrao);
 $tpl->set ( 'CIDADE'			   , $cidade);
 $tpl->set ( 'ESTADO'			   , $estado);
 $tpl->set ( 'READONLY'			   , $readonly);
-$tpl->set ( 'PARCEIROS' 		   , $vNomeParceiros);
+$tpl->set ( 'PARCEIROS' 		   , $vFornecedor);
 
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 
