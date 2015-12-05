@@ -148,16 +148,15 @@ if ($codTipoValor != "M") {
 	$valor		= round($valor / $numMeses,2);
 }
 
-$valorTotal			= \Zage\App\Util::to_float($valorTotal);
-$totalGeral			= \Zage\App\Util::to_float($totalGeral);
-
+$valorTotal			= round(\Zage\App\Util::to_float($valorTotal),2);
+$totalGeral			= round(\Zage\App\Util::to_float($totalGeral),2);
 
 #################################################################################
 ## Valida o valor total
 #################################################################################
-if ($valorTotal		!= $totalGeral)	{
-	$log->info("Valor total calculado: ".$valorTotal);
-	$log->info("Valor total Informado: ".$totalGeral);
+if (floatval($valorTotal)	!= floatval($totalGeral))	{
+	$log->err("Valor total calculado: ".$valorTotal);
+	$log->err("Valor total Informado: ".$totalGeral);
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Somatório dos valores totais das parcelas difere do valor total informado'));
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Somatório dos valores totais das parcelas difere do valor total informado')));
 	exit;

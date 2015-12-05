@@ -51,14 +51,22 @@ if (!$oConta) \Zage\App\Erro::halt('Conta não encontrada');
 #################################################################################
 ## Resgata as informações da Baixa
 #################################################################################
-$oHist		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codHist));
+$oHist		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findOneBy(array('codigo' => $codHist));
 if (!$oHist) \Zage\App\Erro::halt('Recebimento não encontrado');
 
 #################################################################################
-## Indicador de somente visualização
+## Verificar se a baixa pertence a conta informada
 #################################################################################
-$indSomenteVis		= $oConta->getIndSomenteVisualizar();
-if ($indSomenteVis)	\Zage\App\Erro::halt($tr->trans('Conta não pode ser confirmada, pois é somente de visualização (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
+if ($codConta != $oHist->getCodContaRec()->getCodigo()) \Zage\App\Erro::halt('Exclusão de baixa indevida, ERR: 01x947');
+
+#################################################################################
+## Resgata o perfil da conta
+#################################################################################
+$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
+
+if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "EXB")) {
+	\Zage\App\Erro::halt('Recebimento não pode ser excluído');
+}
 
 #################################################################################
 ## Gerenciar as URls
@@ -99,17 +107,10 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('ID'					,$id);
-$tpl->set('TITULO'				,'Exclusão de Recebimento de Conta');
+$tpl->set('TITULO'				,'Exclusão de Baixa');
 $tpl->set('COD_CONTA'			,$codConta);
-$tpl->set('CONTAS_CRE'			,$oConta);
-$tpl->set('DATA_REC'			,$dataRec);
-$tpl->set('VALOR'				,\Zage\App\Util::formataDinheiro($valor));
-$tpl->set('VALOR_JUROS'			,\Zage\App\Util::formataDinheiro($valorJuros));
-$tpl->set('VALOR_MORA'			,\Zage\App\Util::formataDinheiro($valorMora));
-$tpl->set('VALOR_DESCONTO'		,\Zage\App\Util::formataDinheiro($valorDesconto));
-$tpl->set('VALOR_OUTROS'		,\Zage\App\Util::formataDinheiro($valorOutros));
-$tpl->set('DOCUMENTO'			,$documento);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
+$tpl->set('GRID'				,$grid->getHtmlCode());
 $tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 

@@ -2427,5 +2427,108 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 	}
 	
+	
+	public function excluiBaixa ($oConta,$oHist) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$tr,$log;
+	
+		#################################################################################
+		## Valida se os parâmetros são objetos
+		#################################################################################
+		if (!is_object($oConta))	throw new \Exception("Parâmetro 1 passado a função: ".__FUNCTION__." é inconsistente");
+		if (!is_object($oHist))		throw new \Exception("Parâmetro 2 passado a função: ".__FUNCTION__." é inconsistente");
+		
+		#################################################################################
+		## Verifica se o perfil / status da conta permite a exclusão
+		#################################################################################
+		$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
+		if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "EXB")) {
+			throw new \Exception($tr->trans("Recebimento não pode ser excluído"));
+		}
+		
+		#################################################################################
+		## Grupo de Movimentação
+		#################################################################################
+		$grupoMov	= \Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoMov");
+	
+		#################################################################################
+		## Calcular o novo status
+		#################################################################################
+
+		#################################################################################
+		## Calcula o saldo de adiantamento dessa pessoa, para saber se a baixa pode ser 
+		## Excluída
+		#################################################################################
+		$saldoAdiant	= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao()->getCodigo(),$oConta->getCodPessoa()->getCodigo());
+		
+		#################################################################################
+		## Verifica se foi cadastrado adiantamento para essa baixa
+		#################################################################################
+		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaRec' => $oHist->getCodContaRec()->getCodigo(), 'codGrupoMov' => $oHist->getCodGrupoMov()));
+
+		#################################################################################
+		## Soma os valores de adiantamentos pra saber se poderá excluir
+		#################################################################################
+		$valAdiantaExc	= 0;
+		for ($i = 0; $i < sizeof($aAdiant); $i++) {
+			$valAdiantaExc	+= \Zage\App\Util::to_float($aAdiant[$i]->getValor());
+		}
+		
+		if (($valAdiantaExc > 0) && ($saldoAdiant < $valAdiantaExc)) {
+			throw new \Exception("Baixa com adiantamento já utilizado !!!");
+		}
+		
+		#################################################################################
+		## Excluir os adiatamentos
+		#################################################################################
+		if (($valAdiantaExc > 0) && ($saldoAdiant >= $valAdiantaExc)) {
+			for ($i = 0; $i < sizeof($aAdiant); $i++) {
+				$em->remove($aAdiant[$i]);
+			}
+		}
+		
+		#################################################################################
+		## Excluir o Histórico 
+		#################################################################################
+		$aHist	=  $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codigo' => $oHist->getCodigo()));		
+		for ($i = 0; $i < sizeof($aHist); $i++) {
+			$em->remove($aHist[$i]);
+		}
+
+		#################################################################################
+		## Excluir a movimentação bancária
+		#################################################################################
+		$aMov	=  $em->getRepository('Entidades\ZgfinMovBancaria')->findBy(array('codOrganizacao' => $oConta->getCodOrganizacao()->getCodigo(),'codGrupoMov' => $oHist->getCodGrupoMov()));
+		for ($i = 0; $i < sizeof($aMov); $i++) {
+			$em->remove($aMov[$i]);
+		}
+		
+		
+		/***
+		 * 
+		 * 
+		 * 
+		 *       RECALCULAR O STATUS DA CONTA, LEMBRAR DE ATUALIZAR ALÉM DO STATUS, A DATA DE LIQUIDAÇÃO
+		 *       
+		 *        
+		 *        
+		 *       VERIFICAR COMO RECALCULAR O JÚROS DA CONTA, CASO A BAIXA TENHA AGREGADO JÚROS NA CONTA
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 */
+		
+		return null;
+	}
+	
 
 }
