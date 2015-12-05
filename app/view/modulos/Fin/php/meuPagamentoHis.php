@@ -56,7 +56,7 @@ try {
 #################################################################################
 if (sizeof($pagamentosHis) == 0) {
 	$tabHis	.= '<tr>
-					<td style="text-align: center;" colspan="5"> Nenhum registro encotrado </td>
+					<td style="text-align: center;" colspan="5"> Nenhum registro encontrado </td>
 				</tr>
 			';
 }else{

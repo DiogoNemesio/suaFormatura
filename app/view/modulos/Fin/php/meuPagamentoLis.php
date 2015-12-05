@@ -62,7 +62,7 @@ try {
 if (sizeof($pagamentosAtr) == 0) {
 	$hidAtr		= 'hidden';
 	$tabAtr		= '<tr>
-						<td style="text-align: center;" colspan="6"> Nenhum registro encotrado </td>
+						<td style="text-align: center;" colspan="6"> Nenhum registro encontrado </td>
 					</tr>
 				';
 }else{
@@ -75,7 +75,7 @@ if (sizeof($pagamentosAtr) == 0) {
 #################################################################################
 if (sizeof($pagamentosFut) == 0) {
 	$tabFut		= '<tr>
-						<td style="text-align: center;" colspan="6"> Nenhum registro encotrado </td>
+						<td style="text-align: center;" colspan="6"> Nenhum registro encontrado </td>
 					</tr>
 				';
 }else{
