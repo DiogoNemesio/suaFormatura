@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtEvento
  *
- * @ORM\Table(name="ZGFMT_EVENTO", indexes={@ORM\Index(name="fk_ZGFOR_EVENTO_1_idx", columns={"COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFOR_EVENTO_2_idx", columns={"COD_FORMATURA"}), @ORM\Index(name="fk_ZGFOR_EVENTO_3_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="ZGFOR_EVENTO_1_UN", columns={"COD_FORMATURA", "COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_1_idx", columns={"COD_LOCAL"})})
+ * @ORM\Table(name="ZGFMT_EVENTO", indexes={@ORM\Index(name="fk_ZGFOR_EVENTO_1_idx", columns={"COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFOR_EVENTO_2_idx", columns={"COD_FORMATURA"}), @ORM\Index(name="ZGFOR_EVENTO_1_UN", columns={"COD_FORMATURA", "COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_1_idx", columns={"COD_PESSOA"})})
  * @ORM\Entity
  */
 class ZgfmtEvento
@@ -20,6 +20,13 @@ class ZgfmtEvento
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $codigo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA", type="datetime", nullable=false)
+     */
+    private $data;
 
     /**
      * @var integer
@@ -36,67 +43,14 @@ class ZgfmtEvento
     private $valorAvulso;
 
     /**
-     * @var \DateTime
+     * @var \Entidades\ZgfinPessoa
      *
-     * @ORM\Column(name="DATA", type="datetime", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
+     * })
      */
-    private $data;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="LOCAL", type="string", length=60, nullable=true)
-     */
-    private $local;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="CEP", type="string", length=8, nullable=true)
-     */
-    private $cep;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ENDERECO", type="string", length=100, nullable=true)
-     */
-    private $endereco;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="BAIRRO", type="string", length=60, nullable=true)
-     */
-    private $bairro;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="COMPLEMENTO", type="string", length=100, nullable=true)
-     */
-    private $complemento;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="NUMERO", type="string", length=10, nullable=true)
-     */
-    private $numero;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="LATITUDE", type="string", length=15, nullable=true)
-     */
-    private $latitude;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="LONGITUDE", type="string", length=15, nullable=true)
-     */
-    private $longitude;
+    private $codPessoa;
 
     /**
      * @var \Entidades\ZgfmtEventoTipo
@@ -118,26 +72,6 @@ class ZgfmtEvento
      */
     private $codFormatura;
 
-    /**
-     * @var \Entidades\ZgadmLogradouro
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmLogradouro")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_LOGRADOURO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codLogradouro;
-
-    /**
-     * @var \Entidades\ZgadmOrganizacao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_LOCAL", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codLocal;
-
 
     /**
      * Get codigo
@@ -147,6 +81,29 @@ class ZgfmtEvento
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set data
+     *
+     * @param \DateTime $data
+     * @return ZgfmtEvento
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Get data
+     *
+     * @return \DateTime 
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**
@@ -196,210 +153,26 @@ class ZgfmtEvento
     }
 
     /**
-     * Set data
+     * Set codPessoa
      *
-     * @param \DateTime $data
+     * @param \Entidades\ZgfinPessoa $codPessoa
      * @return ZgfmtEvento
      */
-    public function setData($data)
+    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
     {
-        $this->data = $data;
+        $this->codPessoa = $codPessoa;
 
         return $this;
     }
 
     /**
-     * Get data
+     * Get codPessoa
      *
-     * @return \DateTime 
+     * @return \Entidades\ZgfinPessoa 
      */
-    public function getData()
+    public function getCodPessoa()
     {
-        return $this->data;
-    }
-
-    /**
-     * Set local
-     *
-     * @param string $local
-     * @return ZgfmtEvento
-     */
-    public function setLocal($local)
-    {
-        $this->local = $local;
-
-        return $this;
-    }
-
-    /**
-     * Get local
-     *
-     * @return string 
-     */
-    public function getLocal()
-    {
-        return $this->local;
-    }
-
-    /**
-     * Set cep
-     *
-     * @param string $cep
-     * @return ZgfmtEvento
-     */
-    public function setCep($cep)
-    {
-        $this->cep = $cep;
-
-        return $this;
-    }
-
-    /**
-     * Get cep
-     *
-     * @return string 
-     */
-    public function getCep()
-    {
-        return $this->cep;
-    }
-
-    /**
-     * Set endereco
-     *
-     * @param string $endereco
-     * @return ZgfmtEvento
-     */
-    public function setEndereco($endereco)
-    {
-        $this->endereco = $endereco;
-
-        return $this;
-    }
-
-    /**
-     * Get endereco
-     *
-     * @return string 
-     */
-    public function getEndereco()
-    {
-        return $this->endereco;
-    }
-
-    /**
-     * Set bairro
-     *
-     * @param string $bairro
-     * @return ZgfmtEvento
-     */
-    public function setBairro($bairro)
-    {
-        $this->bairro = $bairro;
-
-        return $this;
-    }
-
-    /**
-     * Get bairro
-     *
-     * @return string 
-     */
-    public function getBairro()
-    {
-        return $this->bairro;
-    }
-
-    /**
-     * Set complemento
-     *
-     * @param string $complemento
-     * @return ZgfmtEvento
-     */
-    public function setComplemento($complemento)
-    {
-        $this->complemento = $complemento;
-
-        return $this;
-    }
-
-    /**
-     * Get complemento
-     *
-     * @return string 
-     */
-    public function getComplemento()
-    {
-        return $this->complemento;
-    }
-
-    /**
-     * Set numero
-     *
-     * @param string $numero
-     * @return ZgfmtEvento
-     */
-    public function setNumero($numero)
-    {
-        $this->numero = $numero;
-
-        return $this;
-    }
-
-    /**
-     * Get numero
-     *
-     * @return string 
-     */
-    public function getNumero()
-    {
-        return $this->numero;
-    }
-
-    /**
-     * Set latitude
-     *
-     * @param string $latitude
-     * @return ZgfmtEvento
-     */
-    public function setLatitude($latitude)
-    {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    /**
-     * Get latitude
-     *
-     * @return string 
-     */
-    public function getLatitude()
-    {
-        return $this->latitude;
-    }
-
-    /**
-     * Set longitude
-     *
-     * @param string $longitude
-     * @return ZgfmtEvento
-     */
-    public function setLongitude($longitude)
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    /**
-     * Get longitude
-     *
-     * @return string 
-     */
-    public function getLongitude()
-    {
-        return $this->longitude;
+        return $this->codPessoa;
     }
 
     /**
@@ -446,51 +219,5 @@ class ZgfmtEvento
     public function getCodFormatura()
     {
         return $this->codFormatura;
-    }
-
-    /**
-     * Set codLogradouro
-     *
-     * @param \Entidades\ZgadmLogradouro $codLogradouro
-     * @return ZgfmtEvento
-     */
-    public function setCodLogradouro(\Entidades\ZgadmLogradouro $codLogradouro = null)
-    {
-        $this->codLogradouro = $codLogradouro;
-
-        return $this;
-    }
-
-    /**
-     * Get codLogradouro
-     *
-     * @return \Entidades\ZgadmLogradouro 
-     */
-    public function getCodLogradouro()
-    {
-        return $this->codLogradouro;
-    }
-
-    /**
-     * Set codLocal
-     *
-     * @param \Entidades\ZgadmOrganizacao $codLocal
-     * @return ZgfmtEvento
-     */
-    public function setCodLocal(\Entidades\ZgadmOrganizacao $codLocal = null)
-    {
-        $this->codLocal = $codLocal;
-
-        return $this;
-    }
-
-    /**
-     * Get codLocal
-     *
-     * @return \Entidades\ZgadmOrganizacao 
-     */
-    public function getCodLocal()
-    {
-        return $this->codLocal;
     }
 }

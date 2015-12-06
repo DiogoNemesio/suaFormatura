@@ -15,65 +15,65 @@
 				<input type="hidden" id="codEventoID" name="codEvento" value="%COD_EVENTO%">
 				<input type="hidden" id="codVersaoID" name="codVersao" value="%COD_VERSAO%">
 				<input type='hidden' id='valID'>
-				<div id="indice" class="tab-pane in active">
-	
-					<div class="vspace-xs"></div>
-					<div class="row">					
+				
+				<div class="vspace-xs"></div>
+				<div class="row">
+					<div class="col-sm-12">					
 						<h5 class="header blue bolder smaller">Informações do modelo</h5>
-						<div class="vspace-xs"></div>
-				    	<div class="col-sm-6">
-				    		<div class="form-group col-sm-12" id="divVersaoID">
-						    	<label class="col-sm-2 control-label" for="versaoID">Versão</label>
-									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da versão."></i></span>
-				   					<input class="form-control" id="versaoID" type="text" name="versao" placeholder="Versão" maxlength="60" value="%VERSAO%" onchange="verificaAlteracao($(this));" required autocomplete="off">
-				    			</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpVersaoID"></div>
-				    		</div>
-				    	</div>
-				    	<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divIndVersaoID">
-						    	<label class="col-xs-12 col-sm-5 control-label" for="indVersaoID">Status</label>
-						    	<label>
-						    		<input name="indVersao" id="indVersaoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_VERSAO% />
-									<span class="lbl"></span>
-								</label>
-						    </div>
+					</div>
+					<div class="vspace-xs"></div>
+			    	<div class="col-sm-6">
+			    		<div class="form-group col-sm-12" id="divVersaoID">
+					    	<label class="col-sm-2 control-label" for="versaoID">Versão</label>
+								<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a versão de orçamento."></i></span>
+			   					<input class="form-control" id="versaoID" type="text" name="versao" placeholder="Nome da versão" maxlength="60" value="%VERSAO%" onchange="verificaAlteracao($(this));" required autocomplete="off">
+			    			</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpVersaoID"></div>
 			    		</div>
-				    	<div class="col-sm-12">
-				    		<h5 class="header blue bolder smaller">Ítens do modelo</h5>
-							<div class="vspace-xs"></div>
-							<div class="btn-group">
-								%BOTOES%
-							</div>
-							<div>
-								<table id="layRegTableOrcamentoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
-									<thead>
-										<tr class="warning">
-											<th class="col-sm-1 center"></th>
-											<th class="col-sm-1 center">Ordem</th>
-											<th class="col-sm-2 center">Item</th>
-											<th class="col-sm-2 center">Calcular</th>
-											<th class="col-sm-2 center">Categoria</th>
-											<th class="col-sm-1 center">Ativo</th>
-											<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-										</tr>
-									</thead>
-									<tbody>
-									%TAB_ORCAMENTO%
-									</tbody>
-									<tfoot>
-										<tr>
-											<th colspan="6" style="text-align: left;"></th>
-											<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-										</tr>
-									</tfoot>
-								</table>
-							</div>
-							<div class="clearfix form-actions">
-								<label class="col-sm-5 control-label" >&nbsp;</label>
-				   				<button type="button" class="btn btn-primary" id="btnSubmitListaOrcID"><i class="fa fa-check bigger-110"></i> Salvar</button>
-							</div>
+			    	</div>
+			    	<div class="col-sm-6">
+						<div class="form-group col-sm-12" id="divIndVersaoID">
+					    	<label class="col-xs-12 col-sm-5 control-label" for="indVersaoID">Status</label>
+					    	<label>
+					    		<input name="indVersao" id="indVersaoID" class="ace ace-switch ace-switch-6" type="checkbox" %IND_VERSAO% />
+								<span class="lbl"></span>
+							</label>
+					    </div>
+		    		</div>
+			    	<div class="col-sm-12">
+			    		<h5 class="header blue bolder smaller">Ítens do modelo</h5>
+						<div class="vspace-xs"></div>
+						<div class="btn-group">
+							%BOTOES%
+						</div>
+						<div>
+							<table id="layRegTableOrcamentoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display ">
+								<thead>
+									<tr class="warning">
+										<th class="col-sm-1 center"></th>
+										<th class="col-sm-1 center">Ordem</th>
+										<th class="col-sm-2 center">Item</th>
+										<th class="col-sm-2 center">Calcular</th>
+										<th class="col-sm-2 center">Categoria</th>
+										<th class="col-sm-1 center">Ativo</th>
+										<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+									</tr>
+								</thead>
+								<tbody>
+								%TAB_ORCAMENTO%
+								</tbody>
+								<tfoot>
+									<tr>
+										<th colspan="6" style="text-align: left;"></th>
+										<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+						<div class="clearfix form-actions">
+							<label class="col-sm-5 control-label" >&nbsp;</label>
+			   				<button type="button" class="btn btn-primary" id="btnSubmitListaOrcID"><i class="fa fa-check bigger-110"></i> Salvar</button>
 						</div>
 					</div>
 				</div>
@@ -155,7 +155,7 @@ function addRowOrcamentoLayReg() {
 	
 	$ultOrdem	= 0;
 	
-	$('#layRegTableOrcamentoID > tbody > tr:last [zg-name="ordem"]').each(function( index ) {
+	$('#layRegTableOrcamentoID > tbody > tr:last [name*="ordem[]"]').each(function( index ) {
 		$ultOrdem	= parseInt($(this).val());
 	});
 	
@@ -167,7 +167,7 @@ function addRowOrcamentoLayReg() {
 	
 	$ordem		= parseInt($ultOrdem) + 1;
 
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="col-sm-1 center"><input type="text" name="ordem['+$numRows+']" class="col-xs-6" readonly value="'+$ordem+'" zg-name="ordem" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td><input type="text" class="width-100" name="item['+$numRows+']" zg-name="item" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo['+$numRows+']" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="col-sm-1 center"><input type="text" name="ordem['+$numRows+']" class="col-xs-6" readonly value="'+$numRows+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td><input type="text" class="width-100" name="item['+$numRows+']" zg-name="item" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo['+$numRows+']" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-name="item"]').each(function( index ) {
 		$( this ).focus();
 	});
@@ -183,6 +183,11 @@ function delRowOrcamentoLayReg(pObj) {
 	var $div	= pObj.parent();
 	var $td		= $div.parent();
 	var $tr		= $td.parent();
+	
+	/** Encontra a ordem que está sendo removida **/
+	$ordemObj 	= $tr.find('[name*="ordem[]"]');
+	$ordem		= parseInt($ordemObj.val());
+	alert($ordem);
 
 	$tr.addClass("danger");
 	$tr.fadeOut(500, function(){
@@ -199,11 +204,15 @@ function moveUpOrcamentoLayReg(pObj) {
 	var $tr		= $td.parent();
 	
 	/** Encontra a ordem e posição que está sendo movida **/
-	$ordObj 	= $tr.find('[zg-name="ordem"]');
+	$ordObj 	= $tr.find('[name*="ordem[]"]');
 	
 	$ordem		= parseInt($ordObj.val());
+	alert($ordem);
 	
 	if ($ordem == 1) return false;
+	
+	/** Resgata a posição inicial do registro anterior **/
+	var $index	= $ordem - 2;
 	
 	/** Move o registro **/
 	$tr.insertBefore($tr.prev());
@@ -223,11 +232,12 @@ function moveDownOrcamentoLayReg(pObj) {
 	var $tr		= $td.parent();
 	
 	/** Encontra a ordem e posição que está sendo movida **/
-	$ordObj 	= $tr.find('[zg-name="ordem"]');
+	$ordObj 	= $tr.find('[name*="ordem[]"]');
 	
 	$ordem		= parseInt($ordObj.val());
 	
 	if ($ordem == $numRows) return false;
+	alert($ordem);
 	
 	/** Move o registro **/
 	$tr.insertAfter($tr.next());
@@ -239,7 +249,7 @@ function moveDownOrcamentoLayReg(pObj) {
 function recalculaOrdemLayReg() {
 	var $ordem	= 1;
 	$('#layRegTableOrcamentoID > tbody > tr').each(function( index ) {
-		$ordObj 	= $(this).find('[zg-name="ordem"]');
+		$ordObj 	= $(this).find('[name*="ordem[]"]');
 		$ordObj.val($ordem);
 		$ordem += 1;
 	});

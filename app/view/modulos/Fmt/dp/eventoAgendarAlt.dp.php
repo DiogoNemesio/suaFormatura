@@ -17,15 +17,7 @@ if (isset($_POST['codLocal']))				$codLocal			= \Zage\App\Util::antiInjection($_
 if (isset($_POST['dataEvento']))			$dataEvento			= \Zage\App\Util::antiInjection($_POST['dataEvento']);
 if (isset($_POST['qtdeConvite']))			$qtdeConvite		= \Zage\App\Util::antiInjection($_POST['qtdeConvite']);
 if (isset($_POST['valorAvulso']))			$valorAvulso		= \Zage\App\Util::antiInjection($_POST['valorAvulso']);
-if (isset($_POST['local']))					$local				= \Zage\App\Util::antiInjection($_POST['local']);
-if (isset($_POST['codLogradouro']))			$codLogradouro		= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
-if (isset($_POST['cep']))					$cep				= \Zage\App\Util::antiInjection($_POST['cep']);
-if (isset($_POST['descLogradouro']))		$descLogradouro		= \Zage\App\Util::antiInjection($_POST['descLogradouro']);
-if (isset($_POST['bairro']))				$bairro				= \Zage\App\Util::antiInjection($_POST['bairro']);
-if (isset($_POST['complemento']))			$complemento		= \Zage\App\Util::antiInjection($_POST['complemento']);
-if (isset($_POST['numero']))				$numero				= \Zage\App\Util::antiInjection($_POST['numero']);
-if (isset($_POST['latitude']))				$latitude			= \Zage\App\Util::antiInjection($_POST['latitude']);
-if (isset($_POST['longitude']))				$longitude			= \Zage\App\Util::antiInjection($_POST['longitude']);
+if (isset($_POST['fornecedor']))			$codLocal				= \Zage\App\Util::antiInjection($_POST['fornecedor']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -43,20 +35,34 @@ if (!isset($codTipo) || empty($codTipo)) {
 
 /** Verificar se existe formandos ativos **/
 $formandos		= \Zage\Fmt\Formatura::listaFormandosAtivos($system->getCodOrganizacao());
-if (sizeof($formandos) == 0)	{
+if (sizeof($formandos) == 0) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O evento não pode ser criado pois não existe formando ativo."));
 	$err	= 1;
 }
 
-/** Local do evento **/
-if (!isset($local) || empty($local)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Informe o local aonde será realizado o evento."));
+/** Data do evento **/
+if (!isset($dataEvento) || empty($dataEvento)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Informe a data do evento."));
 	$err	= 1;
+}else{
+	$dataEvento = DateTime::createFromFormat($system->config["data"]["datetimeSimplesFormat"], $dataEvento);
+	
+	if ($dataEvento < new \DateTime("now") && !$codEvento) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A data do evento deve ser maior que a data de hoje.");
+		$err	= 1;
+	}
 }
 
-/** Analisar se o local é parceiro do sistema  **/
-if (!isset($codLocal) || empty($codLocal)) {
-	$codLocal = null;
+/** Local do evento (validar apenas se o tipo não for APOSIÇÃO DE PLACA) **/
+if ($codTipo != 5){
+	if (!isset($codLocal) || empty($codLocal)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Informe o local aonde será realizado o evento."));
+		$err	= 1;
+	}else{
+		$oFornecedor	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codLocal));
+	}
+}else{
+	$oFornecedor = null;
 }
 
 /** Valor Avulso **/
@@ -85,63 +91,38 @@ try {
 	if (isset($codEvento) && (!empty($codEvento))) {
  		$oEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento));
  		if (!$oEvento) $oEvento	= new \Entidades\ZgfmtEvento();
- 		$assunto    = "Evento(".$local.") alterado(a)";
+ 		$assunto    = "O evento ".$local." foi alterado";
  	}else{
  		$oEvento	= new \Entidades\ZgfmtEvento();
- 		$assunto    = "Novo evento(".$local.") definido";
+ 		$assunto    = $local."foi definido";
  	}
  	
  	#################################################################################
  	## Configurações da data
- 	#################################################################################
- 	if (!empty($dataEvento)) {
- 		$dataEvento		= DateTime::createFromFormat($system->config["data"]["datetimeSimplesFormat"], $dataEvento);
- 	}else{
- 		$dataEvento		= null;
- 	}
- 	
+ 	################################################################################# 	
  	$oOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
- 	$oTipo			= $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipo));
- 	$oLocal			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codLocal));
- 	$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+ 	$oTipoEvento	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipo));
  	
- 	$oEvento->setCodFormatura($oOrganizacao); 
- 	$oEvento->setCodTipoEvento($oTipo);
+ 	$oEvento->setCodFormatura($oOrganizacao);
+ 	$oEvento->setData($dataEvento);
+ 	$oEvento->setCodTipoEvento($oTipoEvento);
  	$oEvento->setQtdeConvite($qtdeConvite);
  	$oEvento->setValorAvulso($valorAvulso);
- 	$oEvento->setCodLocal($oLocal);
- 	$oEvento->setData($dataEvento);
- 	$oEvento->setLocal($local);
- 	$oEvento->setCodLogradouro($oLogradouro);
- 	$oEvento->setCep($cep);
- 	$oEvento->setEndereco($descLogradouro);
- 	$oEvento->setBairro($bairro);
- 	$oEvento->setComplemento($complemento);
- 	$oEvento->setNumero($numero);
- 	$oEvento->setLatitude($latitude);
- 	$oEvento->setLongitude($longitude);
+ 	$oEvento->setCodPessoa($oFornecedor);
  	
  	$em->persist($oEvento);
 	
 	/**
 	 * ******** Enviar notificação ********
 	 **/
-	$oRemetente = $em->getReference ( '\Entidades\ZgsegUsuario', $system->getCodUsuario () );
-	$template = $em->getRepository ( '\Entidades\ZgappNotificacaoTemplate' )->findOneBy ( array (
-			'template' => 'EVENTO_CONF' 
-	) );
+	$oRemetente 	= $em->getReference ('\Entidades\ZgsegUsuario', $system->getCodUsuario());
+	$template 		= $em->getRepository ('\Entidades\ZgappNotificacaoTemplate' )->findOneBy (array('template' => 'EVENTO_CONF'));
 	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
-	$notificacao->setAssunto ( $assunto );
-	$notificacao->setCodRemetente ( $oRemetente );
+	$notificacao->setAssunto($assunto);
+	$notificacao->setCodRemetente($oRemetente);
 	
 	for ($i = 0; $i < sizeof($formandos); $i++) {
 		$notificacao->associaUsuario($formandos[$i]->getCodigo());
-	}
-	
-	if (!empty($dataEvento)) {
-		$dataEvento		= $dataEvento->format($system->config["data"]["datetimeSimplesFormat"]);
-	}else{
-		$dataEvento		= null;
 	}
 	
 	$notificacao->enviaSistema();
@@ -149,13 +130,13 @@ try {
 	//$notificacao->setEmail ( $email );
 	$notificacao->setCodTemplate ( $template );
 
-	$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipo->getDescricao());
- 	$notificacao->adicionaVariavel("NOME"			, $local);
- 	$notificacao->adicionaVariavel("DATA"			, $dataEvento);
- 	$notificacao->adicionaVariavel("LOGRADOURO"		, $descLogradouro);
- 	$notificacao->adicionaVariavel("BAIRRO"			, $bairro);
- 	$notificacao->adicionaVariavel("NUMERO"			, $numero);
- 	$notificacao->adicionaVariavel("COMPLEMENTO"	, $complemento);
+	$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipoEvento->getDescricao());
+ 	//$notificacao->adicionaVariavel("NOME"			, $local);
+ 	///$notificacao->adicionaVariavel("DATA"			, $dataEvento);
+ 	//$notificacao->adicionaVariavel("LOGRADOURO"		, $descLogradouro);
+ 	///$notificacao->adicionaVariavel("BAIRRO"			, $bairro);
+ 	//$notificacao->adicionaVariavel("NUMERO"			, $numero);
+ 	//$notificacao->adicionaVariavel("COMPLEMENTO"	, $complemento);
  	
 	$notificacao->salva ();
  	/********** Salvar as informações *******/

@@ -118,11 +118,6 @@ try {
 		
 		$oCategoria		.= '</optgroup>';
 	}
-	
-	foreach ($dadosCat["CAT"] as $codCat => $descCat ){
-		$oCategoria		.= '<option value="'.$codCat.'">'.$descCat.'</option>';
-	}
-	
 		
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
@@ -142,13 +137,27 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 	$codTipoItem	= ($aOrcItem[$i]->getCodTipoItem()) ? $aOrcItem[$i]->getCodTipoItem()->getCodigo() : null;
 	$oTipoItem		= $system->geraHtmlCombo($aTipoItem,	'CODIGO', 'DESCRICAO',	$codTipoItem, '');
 	$codCategoria	= ($aOrcItem[$i]->getCodCategoria()) ? $aOrcItem[$i]->getCodCategoria()->getCodigo() : null;
-	$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	$codCategoria, '');
+	//$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	$codCategoria, '');
+	// Gera combo
+	foreach ($dadosCat["SUB"] as $desc => $aCatItens ){
+		$oCatExiste		.= '<optgroup label="'.$desc.'">';
+		foreach ($aCatItens as $codCat => $descCat) {
+			if ($codCat == $codCategoria){
+				$selected = 'selected';
+			}else{
+				$selected = '';
+			}
+			$oCatExiste		.= '<option value="'.$codCat.'" '.$selected.'>'.$descCat.'</option>';
+		}
+		$oCatExiste		.= '</optgroup>';
+	}
+	
+	
 	
 	$tabOrcamento	.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg" onchange="verificaAlteracao($(this));"></div></td>
-				<td class="col-sm-1 center"><input type="text" name="ordem['.$i.']" zg-name="ordem" class="col-xs-6" readonly value="'.$aOrcItem[$i]->getOrdem().'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td>
 				<td><input type="text" class="width-100" name="item['.$i.']" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
 				<td><select class="select2" style="width:100%;" name="codTipoItem['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oTipoItem.'</select></td>
-				<td><select class="select2" style="width:100%;" name="codCategoria['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCategoria.'</select></td>
+				<td><select class="select2" style="width:100%;" name="codCategoria['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCatExiste.'</select></td>
 				<td align="center"><label><input name="indAtivo['.$i.']" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
 				<td class="center">
 						<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">

@@ -50,9 +50,10 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GEventoA");
-$grid->adicionaTexto($tr->trans('TIPO EVENTO'),			20, $grid::CENTER	,'codTipoEvento:descricao');
-$grid->adicionaTexto($tr->trans('LOCAL'),				30, $grid::CENTER	,'local');
-$grid->adicionaDataHora($tr->trans('DATA'),				10, $grid::CENTER	,'data');
+$grid->adicionaTexto($tr->trans('EVENTO'),				30, $grid::CENTER	,'codTipoEvento:descricao');
+$grid->adicionaTexto($tr->trans('LOCAL'),				30, $grid::CENTER	,'codPessoa:fantasia');
+$grid->adicionaTexto($tr->trans('CONVITES'),			10, $grid::CENTER	,'qtdeConvite');
+$grid->adicionaDataHora($tr->trans('DATA'),				20, $grid::CENTER	,'data');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($evento);
@@ -63,8 +64,8 @@ $grid->importaDadosDoctrine($evento);
 for ($i = 0; $i < sizeof($evento); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codEvento='.$evento[$i]->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/eventoAgendarAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,4,"javascript:zgAbreModal('".ROOT_URL."/Fmt/eventoAgendarExc.php?id=".$uid."');");
+	$grid->setUrlCelula($i,4,ROOT_URL.'/Fmt/eventoAgendarAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL."/Fmt/eventoAgendarExc.php?id=".$uid."');");
 }
 
 #################################################################################

@@ -20,16 +20,29 @@
 						<div class="form-group col-sm-12" id="divDataEventoID">
 					    	<label class="col-sm-3 control-label" for="date-timepicker">Data</label>
 								<div class="input-group col-sm-8 pull-left">
-				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data do Evento."></i></span>
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data do evento."></i></span>
 				    			<input class="form-control datepicker" id="date-timepicker" type="text" name="dataEvento" placeholder="Data do Evento" maxlength="16" value="%DATA_EVENTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="datetimesimples">
 					    	</div>
 					    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
 					    </div>
+					    <div class="form-group col-sm-12" id="divFornecedorID">
+							<label for="codFornecedorID" class="col-xs-12 col-sm-3 control-label">Local</label>
+							<div id="divFornecedorInputID" class="input-group col-sm-8 pull-left">
+								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o local onde será realizado o evento. Caso não encontre o local desejado será necessário cadastrá-lo como seu fornecedor."></i></span>
+								<select id="fornecedorID" name="fornecedor" class="select2" onchange="" data-placeholder="Selecione o local do evento" >
+									%FORNECEDOR%
+								</select>
+							</div>
+							<div id="divFornecedorInstituicaoID" class="col-sm-8 hidden">
+								<input class="form-control" readonly type="text" value="%INSTITUICAO%">  
+							</div>
+							<div class="col-sm-1 pull-left" id="divHelpFornecedorID"></div>
+						</div>
 					    <div class="form-group col-sm-12" id="divNumCQtdeConviteID">
 					    	<label class="col-sm-3 control-label" for="qtdeConviteID">Convites</label>
 								<div class="input-group col-sm-8 pull-left">
 				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de convites que os formandos irá receber, já incluindo o dele próprio. Caso não seja preenchido iremos entender que não existe limite."></i></span>
-				    			<input class="form-control" id="qtdeConviteID" type="text" name="qtdeConvite" placeholder="Número de convites" maxlength="4" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    			<input class="form-control" id="qtdeConviteID" type="text" name="qtdeConvite" placeholder="Número de convites" maxlength="4" value="%QTDE_CONVITE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 					    	</div>
 					    	<div class="col-sm-1 pull-left" id="divHelpQtdeConviteID"></div>
 					    </div>
@@ -37,99 +50,27 @@
 					    	<label class="col-sm-3 control-label" for="valorAvulsoID">Valor avulso</label>
 								<div class="input-group col-sm-8 pull-left">
 				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor para participação avulsa de um formando neste evento. Caso não seja preenchido iremos entender que não terá custo."></i></span>
-				    			<input class="form-control" id="valorAvulsoID" type="text" name="valorAvulso" placeholder="Valor para participação avulsa" maxlength="11" value="" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+				    			<input class="form-control" id="valorAvulsoID" type="text" name="valorAvulso" placeholder="Valor para participação avulsa" maxlength="11" value="%VALOR_AVULSO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 					    	</div>
 					    	<div class="col-sm-1 pull-left" id="divHelpValorAvulsoID"></div>
 					    </div>
 					</div>
-				</div>
-				<h5 class="header blue bolder smaller">Local - Endereço</h5>
-				<div class="vspace-xs"></div>
-				<div class="row">
 					<div class="col-sm-6">
-					    <div class="form-group col-sm-12" id="divlocalID">
-					    	<label class="col-sm-3 control-label" for="localID">Local</label>
-								<div class="input-group col-sm-8 pull-left">
-				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Nome do local do evento."></i></span>
-			   					<input type="text" class="form-control" name="local" id="localID" data-provide="typeahead" value="%NOME%" maxlength="60" placeholder="Nome do local" autocomplete="off"/>
-			    			</div>
-					    	<div class="col-sm-1 pull-left" id="divHelplocalID"></div>
-					    	<div class="col-sm-1 pull-left" id="spinID"></div>
-			    		</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="form-group col-sm-12" id="divCepID">
-							<label for="cepID" class="col-sm-3 control-label">CEP</label>
-							<div class="input-group col-sm-8 pull-left">
-								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Busca do endereço do funcionário pelo CEP"></i></span>
-								<input type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" class="width-100" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
-							</div>
-							<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
-						</div>																	
-						<div class="form-group col-sm-12" id="divDescLogradouroID">
-							<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
-							<div class="input-group col-sm-8 pull-left">
-								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro do funcionário"></i></span>
-								<input type="text" id="descLogradouroID" %READONLY% name="descLogradouro" class="width-100" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" required />
-							</div>
-							<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
-						</div>	
-						<div class="form-group col-sm-12">
-							<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
-							<div class="input-group col-sm-8 pull-left">
-								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro do funcionário"></i></span>
-								<input type="text" %READONLY% id="bairroID" name="bairro" class="width-100" value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
-							</div>
+						<div class="well">
+							<h4 class="green smaller lighter"><strong>%DESCRICAO_EVENTO%</strong></h4>
+							<ul class="list-unstyled spaced">
+								<li>
+									<i class="ace-icon fa fa-hand-o-right bigger-110 green"></i>
+									Para agendar um evento é necessário informar a data que ocorrerá e o local onde será realizado o evento. Se o local desejado não estiver sendo listado, será necessário cadastrá-lo como fornecedor.
+								</li>
+								<li>
+									<i class="ace-icon fa fa-hand-o-right bigger-110 green"></i>
+									É importante também preencher a quantidade de convites disponibilizado para cada formando e o valor para particupação avulsa de um formando apenas neste evento.
+								</li>
+							</ul>
 						</div>
-						<div class="form-group col-sm-12">
-							<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
-							<div class="input-group col-sm-8 pull-left">
-								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade do funcionário"></i></span>
-								<input type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" class="width-100" placeholder="Cidade" />
-							</div>
-						</div>
-						
 					</div>
-					<div class="col-sm-6">
-						<div class="form-group col-sm-12">
-							<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
-							<div class="input-group col-sm-8 pull-left">
-								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF) do funcionário"></i></span>
-								<input type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" class="width-100" placeholder="Estado" />
-							</div>
-						</div>									
-						<div class="form-group col-sm-12" id="divNumeroID">
-							<label for="NumeroID" class="col-sm-3 control-label">Número</label>
-							<div class="input-group col-sm-8 pull-left">
-								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Número do endereço do funcionário"></i></span>
-								<input type="text" id="numeroID" name="numero" value="%NUMERO%" class="width-100" autocomplete="off" placeholder="Número" maxlength="10" />
-							</div>
-						</div>							
-						<div class="form-group col-sm-12" id="divComplementoID">
-							<label for="ComplementoID" class="col-sm-3 control-label">Complemento</label>
-							<div class="input-group col-sm-8 pull-left">
-								<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Complemento do endereço do funcionário"></i></span>
-								<input type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" class="width-100" autocomplete="off" placeholder="Complemento" maxlength="100" />
-							</div>
-						</div>	
-																						
-					</div>
-					<div class="hidden" id="divEndCorretoID">
-						<div class="col-sm-12">
-							<div class="form-group col-sm-12">
-								<div class="alert alert-info">	
-									Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
-									<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" checked type="checkbox"/>
-									<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
-								</div>		
-							</div>	
-						</div>
-			    	</div>
-				</div>
-				
-				
+				</div>				
 				<div class="clearfix form-actions">
 					<label class="col-sm-5 control-label">&nbsp;</label>
 					<button type="button" class="btn btn-primary" id="btnSubmitID">
@@ -158,6 +99,9 @@ $('#date-timepicker').datetimepicker({
 	 
 });
 
+//SELECT2
+$('.select2').css('width','100%').select2({allowClear:true});
+
 /******************************************************
 MASCARA - Inserir as mascaras no campo
 /******************************************************/
@@ -165,87 +109,21 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 
-/*********************************************************
-* Busca Select2 typehead Nome
-*********************************************************/
-var vNomeParceiros	= [%PARCEIROS%];
-
-var fLocalizaParceiro = function(strs) {
-	return function findMatches(q, cb) {
-		var matches, substringRegex;
-
-	    // an array that will be populated with substring matches
-	    matches = [];
-
-	    // regex used to determine if a string contains the substring `q`
-	    substrRegex = new RegExp(q, 'i');
-
-	    // iterate through the pool of strings and for any string that
-	    // contains the substring `q`, add it to the `matches` array
-	    $.each(strs, function(i, str) {
-			if (substrRegex.test(str)) {
-				matches.push(str);
-			}
-		});
-
-		cb(matches);
-	};
-};
-
-$('#localID').typeahead({
-	hint: true,
-	highlight: true,
-	minLength: 1,
-	source: fLocalizaParceiro(vNomeParceiros),
-    updater:function (item) {
-    	$('#spinID').html('<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-    	$.ajax({
-            type: "GET",
-    	    url: "%ROOT_URL%/Adm/getParceiro.dp.php",
-        	dataType: "json",
-			data: { q: item },
-        	async: false,
-        	success: function(data) {
-        		$('#codLocalID').val(data[0]["id"]);
-        		$('#cepID').val(data[0]["cep"]);
-        		$('#descLogradouroID').val(data[0]["endereco"]);
-        		$('#codLogradouroID').val(data[0]["codLogradouro"]);
-        		$('#bairroID').val(data[0]["bairro"]);
-        		$('#numeroID').val(data[0]["numero"]);
-        		$('#complementoID').val(data[0]["complemento"]);
-        		buscaRua();
-            }
-    	});
-		$('#spinID').html("");
-
-		return item;
-    }
-}).keyup(function(e) {
-	var vCodLocal		= $('#codLocalID').val();
-	if (vCodLocal) {
-		$('#cepID').removeAttr("readonly");
-		$('#numeroID').removeAttr("readonly");
-		$('#complementoID').removeAttr("readonly");
-		
-		$('#codLocalID').val('');
-		$('#cepID').val('');
-		$('#codLogradouroID').val('');
-		$('#descLogradouroID').val('');
-		$('#codCidadeID').val('');
-		$('#descCidadeID').val('');
-		$('#descEstadoID').val('');
-		$('#codBairroID').val('');
-		$('#bairroID').val('');
-		$('#numeroID').val('');
-		$('#complementoID').val('');
+aposicaoPlaca();
+function aposicaoPlaca() {
+	var vCodTipo = $('#codTipoID').val();
+	
+	if (vCodTipo == 5){
+		$('#divFornecedorInputID').addClass('hidden');
+		$('#divFornecedorInstituicaoID').removeClass('hidden');
 	}
-});
+}
 
 /************************* Submit Formulário *************************/
 //Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
 	
-	var vOk 	= true;
+	var vOk 	= validaEvento();
 	
 	if(vOk == false) 	{
 		$.gritter.add({
@@ -279,7 +157,7 @@ $('#zgFormID').submit(function(e) {
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			$('#codEventoID').val(zgGetCodRetorno(data));
-			zgMostraAviso("Fechar",'Novo Evento', '%URLNOVO%');
+			zgMostraAviso("Fechar",'Voltar', '%URLVOLTAR%');
 		}else{
 			zgMostraAviso("Fechar");
 		}
@@ -307,143 +185,57 @@ $('#zgFormID').submit(function(e) {
 	return false; 
 });
 
-function validaTipoEventoAlt() {
-	$('#valID').val(0);
-		
-	//Verificar se o paramentro já existe para no módulo
-	 jQuery.ajax({
-   		url: "%ROOT_URL%/Fmt/eventoVerifica.dp.php",
-   		data: {  codTipo: $('#codTipoID').val() , codEvento: $('#codEventoID').val()},
-   		success: function(ret) {
-   			var vData	= JSON.parse(ret);
-   	    	if (vData.existe == 0) {
-   	    		$('#valID').val(1);
-   	    	}else{
-   	    		$('#valID').val(0);
-   	    	}
-   		},
-   		method: 'get',
-   		cache: false,
-   		async:false
-    });
+function validaEvento() {
+	var vData 		= $('#date-timepicker').val();
+	var vFornecedor = $('#fornecedorID').val();
+	var vCodTipo 	= $('#codTipoID').val();
+	var vCodEvento 	= $('#codEventoID').val();
 	
-	if ($('#valID').val() == 0) {
-		$('#divCodTipoID').addClass('has-error');
-		$('#divHelpCodTipoID').html(zgCriaSpanErro('Este evento já existe !!!'));
-		return false;
-	}else{
-		$('#divCodTipoID').removeClass('has-error');
-		$('#divHelpCodTipoID').html('&nbsp;');
-		return true;
-	}
-}
-
-/******************************************************
-BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
-/******************************************************/
-//Busca ENDEREÇO
-function buscaRua() {
-	var vCodLocal		= $('#codLocalID').val();
-	var vCep			= $('#cepID').cleanVal();
+	var vOK 		= true;
 	
-	if(!vCep){
-		$('#codLogradouroID').val('');
-		$('#descLogradouroID').val('');
-		$('#codCidadeID').val('');
-		$('#descCidadeID').val('');
-		$('#descEstadoID').val('');
-		$('#codBairroID').val('');
-		$('#bairroID').val('');
-	}else if (validaCep() !== true) {
-		return false;
-	}else{
-		/** Buscar o cep no banco **/
-		jQuery.ajax({
-    		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
-    		data: { cep: vCep},
-    		success: function(ret) {
-    			var vData	= JSON.parse(ret);
-    	    	if (vData.codLogradouro) {
-    	    		$('#codCidadeID').val(vData.codCidade);
-    	    		$('#descCidadeID').val(vData.descCidade);
-    	    		$('#descEstadoID').val(vData.descUf);
-    	    		
-    	    		$('#divHelpCepID').html('');
-    	    		$('#divCepID').removeClass('has-error');
-    	    		$('#divLogradouroID').removeClass('has-error');
-    	    		$('#divNumeroID').removeClass('has-error');
-    	    		$('#divHelpLogradouroID').html('');
-    	    		$('#divHelpNumeroID').html('');
-
-    	    		$('#divEndID').removeClass('hidden');
-    	    		
-    	    		$('#descLogradouroID').attr("readonly", true);
-    	    		$('#bairroID').attr("readonly", true);
-    	    		
-    	    		if(vCodLocal){
-    	    			$('#cepID').attr("readonly", true);
-    	    			$('#numeroID').attr("readonly", true);
-    	    			$('#complementoID').attr("readonly", true);
-    	    		}else{
-        	    		$('#codBairroID').val(vData.codBairro);
-        	    		$('#bairroID').val(vData.descBairro);
-        	    		
-    	    			$('#codLogradouroID').val(vData.codLogradouro);
-        	    		$('#descLogradouroID').val(vData.descLogradouro);
-        	    		
-        	    		zgMostraDivs();
-        	    		$('#numeroID').focus();
-    	    		}
-    	    		
-    	    	}else{
-    	    		$('#divHelpCepID').html(zgCriaSpanErro('Cep não encontrado !!!'));
-    	    		$('#divCepID').addClass('has-error');
-    	    		$('#divEndID').addClass('hidden');
-    	    	}
-    		},
-    		method: 'get',
-    		cache: false,
-    		async:false
-  		});
-		
+	var date = new Date();
+	var dataHoje = moment(date).format('YYYYMMDD');
+	
+	if (vData){
+		var dataString = vData.split(" ").shift();
+		var comparaData = parseInt(dataString.split("/")[2].toString() + dataString.split("/")[1].toString() + dataString.split("/")[0].toString());
 	}
-}
-
-//Valida CEP
-function validaCep() {
-	var vCep	= $('#cepID').cleanVal();
-	if (vCep.length != 8) {
-		$('#divCepID').addClass('has-error');
-		$('#divEndCorretoID').addClass("hidden");//Caso de erro, esconder a mensagem de edição de endereço
-		$('#divHelpCepID').html(zgCriaSpanErro('Cep Inválido !!!'));
-		
+	
+	//DATA DO EVENTO
+	if (!vData){
+		$('#divDataEventoID').addClass('has-error');
+		$('#divHelpDataEventoID').html(zgCriaSpanErro('Informe a data do evento.'));
+		vOK		= false;
+	}else{
+		if (dataHoje >= comparaData && !vCodEvento){
+			$('#divDataEventoID').addClass('has-error');
+			$('#divHelpDataEventoID').html(zgCriaSpanErro('A data do evento deve ser maior que a data de hoje.'));
+			vOK		= false;		
+		}else{
+			$('#divDataEventoID').removeClass('has-error');
+			$('#divHelpDataEventoID').html('&nbsp;');
+		}
+	}
+	
+	//FORNECEDOR
+	if (vCodTipo != 5){
+		if (!vFornecedor){
+			$('#divFornecedorID').addClass('has-error');
+			$('#divHelpFornecedorID').html(zgCriaSpanErro('Selecione o local do evento.'));
+			vOK		= false;
+		}else{
+			$('#divFornecedorID').removeClass('has-error');
+			$('#divHelpFornecedorID').html('&nbsp;');
+		}
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
 		return false;
 	}
-	return true;
-}
-
-/******************************************************
-MOSTRAR DIV - Mostrar div para editar logradouro
-/******************************************************/
-function zgMostraDivs() {
-	$('#divEndCorretoID').removeClass("hidden");
-}
-
-/******************************************************
-COLOCAR O CAMPO LOGRADOURO E BAIRRO PARA EDIÇÃO
-/******************************************************/
-function mudaEndereco() {
-	var vEndCorreto		= $('#endCorretoID').is(':checked');
 	
-	if (vEndCorreto == false) {
-		$('#descLogradouroID').removeAttr("readonly");
-		$('#bairroID').removeAttr("readonly");
-
-	}else{
-		buscaRua();
-		$('#descLogradouroID').attr("readonly", true);
-		$('#bairroID').attr("readonly", true);
-	}
 }
+
 </script>
 

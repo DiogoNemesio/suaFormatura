@@ -36,88 +36,55 @@ $system->checaPermissao ( $_codMenu_ );
 ################################################################################
 if ($codEvento) {
 	try {
-		$info = $em->getRepository ( 'Entidades\ZgfmtEvento' )->findOneBy (array ('codigo' => $codEvento));
-	} catch ( \Exception $e ) {
-		\Zage\App\Erro::halt ( $e->getMessage () );
+		$info 			= $em->getRepository ('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento));
+	} catch (\Exception $e) {
+		\Zage\App\Erro::halt ($e->getMessage());
 	}
 	
 	$codTipo		 = ($info->getCodTipoEvento()) ? $info->getCodTipoEvento()->getCodigo() : null;
-	$codLocal		 = ($info->getCodLocal()) ? $info->getCodLocal()->getCodigo() : null;
+	$tipoEventoDesc	 = ($info->getCodTipoEvento()) ? $info->getCodTipoEvento()->getDescricao() : null;
+	$codFornecedor	 = ($info->getCodPessoa()) ? $info->getCodPessoa()->getCodigo() : null;
 	$dataEvento		 = ($info->getData() != null) ? $info->getData()->format($system->config["data"]["datetimeSimplesFormat"]) : null;
-	$nome			 = ($info->getLocal()) ? $info->getLocal() : null;
-	$cep			 = ($info->getCep()) ? $info->getCep() : null;
-	$codLogradouro	 = ($info->getCodLogradouro()) ? $info->getCodLogradouro()->getCodigo() : null;
-	$endereco		 = ($info->getEndereco()) ? $info->getEndereco() : null;
-	$bairro			 = ($info->getBairro()) ? $info->getBairro() : null;
-	$complemento	 = ($info->getComplemento()) ? $info->getComplemento() : null;
-	$numero			 = ($info->getNumero()) ? $info->getNumero() : null;
-	$latitude		 = ($info->getLatitude()) ? $info->getLatitude() : null;
-	$longitude		 = ($info->getLongitude()) ? $info->getLongitude() : null;
+	$qtdeConvite	 = ($info->getQtdeConvite()) ? $info->getQtdeConvite() : null;
+	$valorAvulso	 = ($info->getValorAvulso()) ? \Zage\App\Util::formataDinheiro($info->getValorAvulso()) : null;
 	
-	if($codLogradouro != null){
+}else {
+	$info = $em->getRepository ('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipo));
 	
-		$infoLogradouro = $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
-	
-		if($infoLogradouro->getDescricao() == $endereco){
-			$endPadrao 	  = $infoLogradouro->getDescricao();
-			$bairroPadrao = $infoLogradouro->getCodBairro()->getDescricao();
-			$readonly 	  = 'readonly';
-		}else{
-			$endPadrao 	  = $endereco;
-			$bairroPadrao = $bairro;
-			$readonly 	  = '';
-		}
-	
-		$cidade = $infoLogradouro->getCodBairro()->getCodLocalidade()->getDescricao();
-		$estado = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodUF()->getNome();
-	
-	}else{
-	
-		$endPadrao 		= '';
-		$bairroPadrao 	= '';
-		$cidade	 		= '';
-		$estado 		= '';
-		$readonly 	  = 'readonly';
-	
-	}
-} else {
-	$codLocal		 = null;
+	$tipoEventoDesc	 = $info->getDescricao();
 	$dataEvento		 = null;
-	$nome			 = null;
-	$cep			 = null;
-	$codLogradouro	 = null;
-	$endereco		 = null;
-	$bairro			 = null;
-	$complemento 	 = null;
-	$numero			 = null;
-	$latitude		 = null;
-	$longitude		 = null;
-	
-	$endPadrao 	 	= '';
-	$bairroPadrao 	= '';
-	$cidade 		= '';
-	$estado 		= '';
-	$readonly		= 'readonly';
+	$codFornecedor	 = null;
+	$qtdeConvite 	 = null;
+	$valorAvulso 	 = null;
 }
 
+################################################################################
+# Resgatar informações da formatura
+################################################################################
+$oOrfFmt = $em->getRepository ('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+
+$instituicao = $oOrfFmt->getCodInstituicao()->getNome();
 
 ################################################################################
 # Parceiros
 ################################################################################
-$oFornecedor	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),"indFornecedor");
-$vFornecedor	= "";
+/**$oFornecedor	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),"indFornecedor");
+$vFornecedor	= array();
 for ($i = 0; $i < sizeof($oFornecedor); $i++) {
-	$log->info($oFornecedor[$i]->getNome());
-	$vFornecedor .= "'".$oFornecedor[$i]->getNome()."',";
+	//$vFornecedor .= "'".$oFornecedor[$i]->getNome()."',";
+	$vFornecedor[$i]['FANTASIA'] = $oFornecedor[$i]->getFantasia();
+	$vFornecedor[$i]['CODIGO'] = $oFornecedor[$i]->getCodigo();
 }
-//$vFornecedor = substr($vFornecedor, -1);
+
+$vFornecedor = json_encode($vFornecedor);
+**/
 
 ################################################################################
 # Select de Local
 ################################################################################
 try {
-	$aLocal = $em->getRepository('Entidades\ZgadmOrganizacao')->findBy(array(),array('nome' => 'ASC'));
-	$oLocal = $system->geraHtmlCombo($aLocal, 'CODIGO', 'NOME', $codLocal, '');
+	$aFornecedor	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),"indFornecedor");
+	$oFornecedor 	= $system->geraHtmlCombo($aFornecedor, 'CODIGO', 'FANTASIA', $codFornecedor, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -142,28 +109,22 @@ $tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS:
 ################################################################################
 # Define os valores das variáveis
 ################################################################################
-$tpl->set ( 'URL_FORM'			   , $_SERVER ['SCRIPT_NAME'] );
-$tpl->set ( 'URLVOLTAR'			   , $urlVoltar );
-$tpl->set ( 'URLNOVO'		 	   , $urlNovo );
-$tpl->set ( 'ID'				   , $id );
-$tpl->set ( 'COD_EVENTO'		   , $codEvento);
-$tpl->set ( 'COD_TIPO'		   	   , $codTipo);
-$tpl->set ( 'COD_LOCAL'		   	   , $codLocal);
-$tpl->set ( 'DATA_EVENTO'	   	   , $dataEvento);
-$tpl->set ( 'NOME'			   	   , $nome);
-$tpl->set ( 'CEP'  			 	   , $cep);
-$tpl->set ( 'COD_LOGRADOURO'   	   , $codLogradouro);
-$tpl->set ( 'COMPLEMENTO' 		   , $complemento);
-$tpl->set ( 'NUMERO' 			   , $numero);
-$tpl->set ( 'LATITUDE' 			   , $latitude);
-$tpl->set ( 'LONGITUDE' 		   , $longitude);
+$tpl->set ( 'URL_FORM'			  , $_SERVER ['SCRIPT_NAME'] );
+$tpl->set ( 'URLVOLTAR'			  , $urlVoltar );
+$tpl->set ( 'URLNOVO'		 	  , $urlNovo );
+$tpl->set ( 'ID'				  , $id );
+$tpl->set ( 'COD_EVENTO'		  , $codEvento);
+$tpl->set ( 'COD_TIPO'		   	  , $codTipo);
+$tpl->set ( 'DESCRICAO_EVENTO' 	  , $tipoEventoDesc);
+$tpl->set ( 'INSTITUICAO' 	   	  , $instituicao);
+$tpl->set ( 'QTDE_CONVITE' 	   	  , $qtdeConvite);
+$tpl->set ( 'VALOR_AVULSO' 	   	  , $valorAvulso);
 
-$tpl->set ( 'LOGRADOURO'		   , $endPadrao);
-$tpl->set ( 'BAIRRO'		       , $bairroPadrao);
-$tpl->set ( 'CIDADE'			   , $cidade);
-$tpl->set ( 'ESTADO'			   , $estado);
-$tpl->set ( 'READONLY'			   , $readonly);
-$tpl->set ( 'PARCEIROS' 		   , $vFornecedor);
+$tpl->set ( 'COD_LOCAL'		   	  , $codLocal);
+$tpl->set ( 'DATA_EVENTO'	   	  , $dataEvento);
+
+$tpl->set ( 'READONLY'			  , $readonly);
+$tpl->set ( 'FORNECEDOR' 		  , $oFornecedor);
 
 $tpl->set ( 'DP', \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_DP, \Zage\App\ZWS::CAMINHO_RELATIVO ) );
 

@@ -36,7 +36,7 @@ if (!isset($codPessoa) || empty($codPessoa)) {
 $pessoa			= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
 
 if ($pessoa) {
-	$array["nome"]		= $pessoa->getNome();
+	$array["nome"]		= $pessoa->getFantasia();
 	$array["dataCad"]	= ($pessoa->getDataCadastro() != null) 		? $pessoa->getDataCadastro()->format($system->config["data"]["dateFormat"]) : null;
 	
 	if ($pessoa->getCodTipoPessoa()->getCodigo() == "F") {

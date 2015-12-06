@@ -374,11 +374,11 @@ function pessoaAltCarregaEndereco(pObj) {
 	var $td		= pObj.parent();
 	var $tr		= $td.parent();
 	var $cep	= pObj.cleanVal();
-
-	if (validaCep($cep) !== true) {
-		alert('Cep inválido !!!');
-		return false;
-	}
+	
+	//if (validaCep($cep) !== true) {
+	//	alert('Cep inválido !!!');
+	//	return false;
+	//}
 	
 	jQuery.ajax({
 		url: "%ROOT_URL%/Adm/buscaCep.dp.php",

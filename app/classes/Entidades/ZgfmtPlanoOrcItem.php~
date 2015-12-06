@@ -43,6 +43,13 @@ class ZgfmtPlanoOrcItem
     private $indAtivo;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="ORDEM", type="integer", nullable=true)
+     */
+    private $ordem;
+
+    /**
      * @var \Entidades\ZgfmtPlanoOrcamentario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcamentario")
@@ -160,6 +167,29 @@ class ZgfmtPlanoOrcItem
     public function getIndAtivo()
     {
         return $this->indAtivo;
+    }
+
+    /**
+     * Set ordem
+     *
+     * @param integer $ordem
+     * @return ZgfmtPlanoOrcItem
+     */
+    public function setOrdem($ordem)
+    {
+        $this->ordem = $ordem;
+
+        return $this;
+    }
+
+    /**
+     * Get ordem
+     *
+     * @return integer 
+     */
+    public function getOrdem()
+    {
+        return $this->ordem;
     }
 
     /**
