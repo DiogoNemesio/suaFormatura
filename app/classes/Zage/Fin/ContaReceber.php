@@ -213,14 +213,14 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			}
 	
 			if (!empty($aCategoria)) {
-				$qb2 	= $em->createQueryBuilder();
+				$qb3 	= $em->createQueryBuilder();
 				$qb->andWhere(
 					$qb->expr()->exists(
-						$qb2->select('cpr2')
+						$qb3->select('cpr2')
 							->from('\Entidades\ZgfinContaReceberRateio','cpr2')
-							->where($qb2->expr()->andX(
-								$qb2->expr()->eq('cpr2.codContaRec'		, 'cr.codigo'),
-								$qb2->expr()->in('cpr2.codCategoria'		, $aCategoria)
+							->where($qb3->expr()->andX(
+								$qb3->expr()->eq('cpr2.codContaRec'		, 'cr.codigo'),
+								$qb3->expr()->in('cpr2.codCategoria'		, $aCategoria)
 							)
 						)->getDQL()
 					)
