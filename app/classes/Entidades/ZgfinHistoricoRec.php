@@ -99,6 +99,20 @@ class ZgfinHistoricoRec
     private $seqRetornoBancario;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_DESCONTO_JUROS", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $valorDescontoJuros;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_DESCONTO_MORA", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $valorDescontoMora;
+
+    /**
      * @var \Entidades\ZgfinContaReceber
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaReceber")
@@ -410,6 +424,52 @@ class ZgfinHistoricoRec
     public function getSeqRetornoBancario()
     {
         return $this->seqRetornoBancario;
+    }
+
+    /**
+     * Set valorDescontoJuros
+     *
+     * @param float $valorDescontoJuros
+     * @return ZgfinHistoricoRec
+     */
+    public function setValorDescontoJuros($valorDescontoJuros)
+    {
+        $this->valorDescontoJuros = $valorDescontoJuros;
+
+        return $this;
+    }
+
+    /**
+     * Get valorDescontoJuros
+     *
+     * @return float 
+     */
+    public function getValorDescontoJuros()
+    {
+        return $this->valorDescontoJuros;
+    }
+
+    /**
+     * Set valorDescontoMora
+     *
+     * @param float $valorDescontoMora
+     * @return ZgfinHistoricoRec
+     */
+    public function setValorDescontoMora($valorDescontoMora)
+    {
+        $this->valorDescontoMora = $valorDescontoMora;
+
+        return $this;
+    }
+
+    /**
+     * Get valorDescontoMora
+     *
+     * @return float 
+     */
+    public function getValorDescontoMora()
+    {
+        return $this->valorDescontoMora;
     }
 
     /**

@@ -22,6 +22,13 @@ class ZgfmtEvento
     private $codigo;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA", type="datetime", nullable=false)
+     */
+    private $data;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="QTDE_CONVITE", type="integer", nullable=true)
@@ -34,6 +41,16 @@ class ZgfmtEvento
      * @ORM\Column(name="VALOR_AVULSO", type="float", precision=10, scale=0, nullable=true)
      */
     private $valorAvulso;
+
+    /**
+     * @var \Entidades\ZgfinPessoa
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPessoa;
 
     /**
      * @var \Entidades\ZgfmtEventoTipo
@@ -55,16 +72,6 @@ class ZgfmtEvento
      */
     private $codFormatura;
 
-    /**
-     * @var \Entidades\ZgfinPessoa
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPessoa;
-
 
     /**
      * Get codigo
@@ -74,6 +81,29 @@ class ZgfmtEvento
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set data
+     *
+     * @param \DateTime $data
+     * @return ZgfmtEvento
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Get data
+     *
+     * @return \DateTime 
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**
@@ -123,6 +153,29 @@ class ZgfmtEvento
     }
 
     /**
+     * Set codPessoa
+     *
+     * @param \Entidades\ZgfinPessoa $codPessoa
+     * @return ZgfmtEvento
+     */
+    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
+    {
+        $this->codPessoa = $codPessoa;
+
+        return $this;
+    }
+
+    /**
+     * Get codPessoa
+     *
+     * @return \Entidades\ZgfinPessoa 
+     */
+    public function getCodPessoa()
+    {
+        return $this->codPessoa;
+    }
+
+    /**
      * Set codTipoEvento
      *
      * @param \Entidades\ZgfmtEventoTipo $codTipoEvento
@@ -166,28 +219,5 @@ class ZgfmtEvento
     public function getCodFormatura()
     {
         return $this->codFormatura;
-    }
-
-    /**
-     * Set codPessoa
-     *
-     * @param \Entidades\ZgfinPessoa $codPessoa
-     * @return ZgfmtEvento
-     */
-    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
-    {
-        $this->codPessoa = $codPessoa;
-
-        return $this;
-    }
-
-    /**
-     * Get codPessoa
-     *
-     * @return \Entidades\ZgfinPessoa 
-     */
-    public function getCodPessoa()
-    {
-        return $this->codPessoa;
     }
 }
