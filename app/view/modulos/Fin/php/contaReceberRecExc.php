@@ -72,7 +72,8 @@ if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatu
 ## Gerenciar as URls
 #################################################################################
 if (!isset($urlVoltar) || (!$urlVoltar)) {
-	$urlVoltar			= ROOT_URL . "/Fin/contaReceberRecLis.php?id=".$id;
+	$urlVoltar			= ROOT_URL . "/Fin/contaReceberLis.php?id=".$id;
+	//$urlVoltar			= ROOT_URL . "/Fin/contaReceberRecLis.php?id=".$id;
 }else{
 	$urlVoltar			= $urlVoltar . "&id=".$id;
 }
@@ -96,12 +97,13 @@ $grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome')
 $grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
 $grid->importaDadosDoctrine($aHist);
 
-for ($i = 0; $i < sizeof($oHist); $i++) {
+for ($i = 0; $i < sizeof($aHist); $i++) {
+	
 	#################################################################################
 	## Calcula o valor de Júros e mora
 	#################################################################################
-	$grid->setValorCelula($i,3,\Zage\App\Util::to_money(floatval($oHist[$i]->getValorJuros()) - floatval($oHist[$i]->getValorDescJuros()) ));
-	$grid->setValorCelula($i,4,\Zage\App\Util::to_money(floatval($oHist[$i]->getValorMora()) - floatval($oHist[$i]->getValorDescMora()) ));
+	$grid->setValorCelula($i,3,floatval($aHist[$i]->getValorJuros()) - floatval($aHist[$i]->getValorDescontoJuros()) );
+	$grid->setValorCelula($i,4,floatval($aHist[$i]->getValorMora()) - floatval($aHist[$i]->getValorDescontoMora()) );
 }
 
 
@@ -118,6 +120,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('ID'					,$id);
 $tpl->set('TITULO'				,'Exclusão de Baixa');
 $tpl->set('COD_CONTA'			,$codConta);
+$tpl->set('COD_HIST'			,$codHist);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('GRID'				,$grid->getHtmlCode());
 $tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));

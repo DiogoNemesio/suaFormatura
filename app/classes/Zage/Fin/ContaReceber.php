@@ -139,7 +139,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Busca
 	 */
 	public static function busca ($dataIni = null, $dataFim = null, $dataTipo = null,$valorIni = null, $valorFim = null,$aCategoria = array(),$aStatus = array(),$aCentroCusto = array(),$aForma = array(),$aContaDeb = array(),$descricao = null,$cliente = null) {
-		global $em,$system,$log;
+		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
 	
@@ -594,8 +594,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Fazer o loop para cadastrar as parcelas
 		#################################################################################
 		$i				= 0;
-		$valorInicial	= $this->getValor();
-		$vencInicial	= $this->getDataVencimento();
 		
 		for ($p	= $parcelaIni; $p <= $parcelaFim; $p++) {
 			
@@ -789,32 +787,17 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Cancelar uma conta
 	 */
 	public function cancela($oConta,$motivo) {
-		global $em,$_user,$log,$system,$tr;
-		
+		global $em,$_user,$tr;
+	
 		#################################################################################
-		## Valida o status da conta
+		## Verifica se o perfil / status da conta permite o cancelamento
 		#################################################################################
-		$status 	= $oConta->getCodStatus()->getCodigo(); 
-		switch ($status) {
-			case "A":
-			case "P":
-				$podeCan	= true;
-				break;
-			case "L":
-			case "S":
-			case "C":
-				$podeCan	= false;
-				break;
-			default:
-				$podeCan	= false;
-				break;
-		}
-		
-		if (!$podeCan) {
+		$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
+		if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "CAN")) {
 			return($tr->trans('Conta não pode ser cancelada, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
 		}
 		
-		
+		$status 	= $oConta->getCodStatus()->getCodigo();
 		if ($status == "A") {
 
 			#################################################################################
@@ -929,7 +912,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$tr,$log;
+		global $em,$system,$tr;
 		
 		#################################################################################
 		## Resgata o perfil da conta
@@ -1056,7 +1039,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$saldo 			+= ($_valJuros + $_valMora);
 		$saldo			= round(floatval($saldo),2);
 		//$_total			= self::calculaValorTotal($oConta);
-		$log->info("Conta: ".$oConta->getNumero()." Saldo a receber: ".$saldo." ValorJuros: ".$_valJuros." ValorMora: ".$_valMora." _CalcTotal:".$_total." ValorTotal: ".$valorTotal);
+		//$log->info("Conta: ".$oConta->getNumero()." Saldo a receber: ".$saldo." ValorJuros: ".$_valJuros." ValorMora: ".$_valMora." _CalcTotal:".$_total." ValorTotal: ".$valorTotal);
 
 		#################################################################################
 		## Grupo de Movimentação
@@ -1232,7 +1215,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$tr,$log;
+		global $em;
 		
 		#################################################################################
 		## Resgata as informações da conta
@@ -1267,7 +1250,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$tr,$log;
+		global $em;
 	
 		#################################################################################
 		## Resgata as informações da conta
@@ -1320,7 +1303,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param int $codConta
 	 */
 	public static function getValorJaRecebido($codConta) {
-		global $em,$system,$tr,$log;
+		global $em,$system;
 		
 		#################################################################################
 		## Resgata as informações da conta
@@ -1352,7 +1335,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$_user,$log,$system,$tr;
+		global $em,$system,$tr;
 	
 		#################################################################################
 		## Verifica se a conta existe
@@ -1405,7 +1388,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$log;
+		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
 	
@@ -1542,7 +1525,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$log;
+		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
 	
@@ -1683,7 +1666,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$log;
+		global $em;
 		
 		
 		#################################################################################
@@ -1731,7 +1714,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$log;
+		global $em,$system;
 		
 		#################################################################################
 		## Resgata as informaçoes da conta
@@ -1766,7 +1749,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$log;
+		global $em,$system;
 				
 		#################################################################################
 		## Resgata as informaçoes da conta
@@ -1879,7 +1862,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$log;
+		global $em,$system;
 		
 		#################################################################################
 		## Resgata as informaçoes da conta
@@ -1999,7 +1982,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system;
+		global $em;
 	
 		$qb 	= $em->createQueryBuilder();
 	
@@ -2029,7 +2012,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$log,$tr;
+		global $em,$system,$tr;
 	
 		#################################################################################
 		## Validações de campos
@@ -2080,27 +2063,18 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$_user,$log,$system,$tr;
-	
+		global $em,$_user,$tr;
+
+		
 		#################################################################################
-		## Valida o status da conta
+		## Verifica se o perfil / status da conta permite o cancelamento
 		#################################################################################
-		$status 	= $oConta->getCodStatus()->getCodigo();
-		switch ($status) {
-			case "A":
-			case "P":
-				$podeSub	= true;
-				break;
-			default:
-				$podeSub	= false;
-				break;
-		}
-	
-		if (!$podeSub) {
+		$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
+		if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "SUB")) {
 			return($tr->trans('Conta não pode ser substituída, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
 		}
-	
-	
+		
+		$status 	= $oConta->getCodStatus()->getCodigo();
 		if ($status == "A") {
 	
 			#################################################################################
@@ -2228,7 +2202,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$log;
+		global $em;
 	
 		$qb 	= $em->createQueryBuilder();
 	
@@ -2263,8 +2237,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $log;
-		
+		//global $log;
 		
 		#################################################################################
 		## Verificar se a conta está configurada para emitir boleto
@@ -2388,7 +2361,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * Listar contas de mensalidade de um formando
 	 */
 	public static function listaMensalidadeFormando ($cpf) {
-		global $em,$system,$log;
+		global $em,$system;
 	
 		$qb 	= $em->createQueryBuilder();
 	
@@ -2419,12 +2392,19 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	}
 	
 	
-	public function excluiBaixa ($oConta,$oHist) {
+	/**
+	 * Excluir uma baixa, retornar ao estado anterior da baixa
+	 * @param \Entidades\ZgfinContaReceber $oConta
+	 * @param \Entidades\ZgfinHistoricoRec $oHist
+	 * @throws \Exception
+	 */
+	public function excluiBaixa (\Entidades\ZgfinContaReceber $oConta,\Entidades\ZgfinHistoricoRec $oHist) {
 	
+		
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$tr,$log;
+		global $em,$tr,$log;
 		
 		#################################################################################
 		## Valida se os parâmetros são objetos
@@ -2441,14 +2421,14 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 		
 		#################################################################################
-		## Salva o status atual da conta
-		#################################################################################
-		$codStatusAtual		= $oConta->getCodStatus()->getCodigo();
-		
-		#################################################################################
 		## Resgata o grupo de movimentação
 		#################################################################################
 		$grupoMov			= $oHist->getCodGrupoMov();
+
+		#################################################################################
+		## Controlar se será necessário salvar
+		#################################################################################
+		$_indSalvar			= false;
 		
 		#################################################################################
 		## Calcula o saldo de adiantamento dessa pessoa, para saber se a baixa pode ser 
@@ -2460,7 +2440,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Verifica se foi cadastrado adiantamento para essa baixa
 		#################################################################################
 		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaRec' => $oHist->getCodContaRec()->getCodigo(), 'codGrupoMov' => $grupoMov));
-
+		
 		#################################################################################
 		## Soma os valores de adiantamentos pra saber se poderá excluir
 		#################################################################################
@@ -2472,6 +2452,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		if (($valAdiantaExc > 0) && ($saldoAdiant < $valAdiantaExc)) {
 			throw new \Exception("Baixa com adiantamento já utilizado !!!");
 		}
+			
 		
 		#################################################################################
 		## Verificar se houve cancelamento de saldo, para não deixar remover a baixa,
@@ -2487,6 +2468,36 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			for ($i = 0; $i < sizeof($aAdiant); $i++) {
 				$em->remove($aAdiant[$i]);
 			}
+		}
+
+		#################################################################################
+		## Verificar se a baixa que foi excluída agregou júros a conta
+		#################################################################################
+		$valJurosBaixa		= round(floatval($oHist->getValorJuros())			,2); 
+		$valMoraBaixa		= round(floatval($oHist->getValorMora()) 			,2);
+		$valJurosConta		= round(floatval($oConta->getValorJuros()) 			,2);
+		$valMoraConta		= round(floatval($oConta->getValorMora()) 			,2);
+		$valDescJurosBaixa	= round(floatval($oHist->getValorDescontoJuros())	,2);
+		$valDescMoraBaixa	= round(floatval($oHist->getValorDescontoJuros())	,2);
+		$valDescJurosConta	= round(floatval($oConta->getValorDescontoJuros())	,2);
+		$valDescMoraConta	= round(floatval($oConta->getValorDescontoJuros())	,2);
+		
+		if (($valJurosBaixa > 0) && ($valJurosBaixa <= $valJurosConta) ) {
+			$oConta->setValorJuros($valJurosConta - $valJurosBaixa);
+			$_indSalvar			= true;
+		}
+		if ($valDescJurosBaixa <= $valDescJurosConta) {
+			$oConta->setValorDescontoJuros($valDescJurosConta - $valDescJurosBaixa);
+			$_indSalvar			= true;
+		}
+		
+		if (($valMoraBaixa > 0) && ($valMoraBaixa <= $valMoraConta) ) {
+			$oConta->setValorMora($valMoraConta - $valMoraBaixa);
+			$_indSalvar			= true;
+		}
+		if ($valDescMoraBaixa <= $valDescMoraConta) {
+			$oConta->setValorDescontoMora($valDescMoraConta - $valDescMoraBaixa);
+			$_indSalvar			= true;
 		}
 		
 		#################################################################################
@@ -2505,49 +2516,28 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$em->remove($aMov[$i]);
 		}
 		
-		#################################################################################
-		## Resgata o novo status
-		#################################################################################
-		$codStatusNovo		= self::recalculaStatus($oConta);
 		
-		/***
-		 * 
-		 * 
-		 * 
-		 *       RECALCULAR O STATUS DA CONTA, LEMBRAR DE ATUALIZAR ALÉM DO STATUS, A DATA DE LIQUIDAÇÃO
-		 *       
-		 *        
-		 *        
-		 *       VERIFICAR COMO RECALCULAR O JÚROS DA CONTA, CASO A BAIXA TENHA AGREGADO JÚROS NA CONTA
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 */
+		#################################################################################
+		## Verificar se precisa salvar alguma alteração
+		#################################################################################
+		if ($_indSalvar		== true) {
+			$em->persist($oConta);
+		}
 		
 		return null;
 	}
-	
-	/**
-	 * 
-	 * @param Object \Zage\Fin\ContaReceber $oConta
-	 */
 	
 	/**
 	 * Calcular o status da conta e retornar
 	 * @param \Zage\Fin\ContaReceber $oConta
 	 * @return string $codStatus
 	 */
-	public static function recalculaStatus (\Zage\Fin\ContaReceber $oConta) {
+	public static function recalculaStatus (\Entidades\ZgfinContaReceber $oConta) {
+		
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em;
+		global $em,$log;
 		
 		#################################################################################
 		## Iremos tentar detectar qual o status que a conta deve ter a partir das tabelas
@@ -2565,6 +2555,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		$aBaixa	=  $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codContaRec' => $oConta->getCodigo()));
 
+		if ($aBaixa) {
+			$log->info("Baixa: ".$aBaixa[0]->getCodigo()." encontrada !!!");
+		}
+
 		#################################################################################
 		## Verificar se Existem baixas
 		#################################################################################
@@ -2573,13 +2567,13 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Calculo do novo status
 		#################################################################################
-		if ($oSub)				{
+		if ($oSub) {
 			$codStatus			= "S";
-		}elseif ($oCanc && $aBaixa)		{
+		}elseif ($oCanc && $aBaixa)	{
 			$codStatus			= "L";
-		}elseif ($oCanc)		{
+		}elseif ($oCanc) {
 			$codStatus			= "C";
-		}elseif ($aBaixa)		{
+		}elseif ($aBaixa) {
 			$codStatus			= "P";
 		}else{
 			$codStatus			= "A";
