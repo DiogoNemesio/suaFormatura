@@ -2,6 +2,7 @@
 
 namespace Zage\Fin;
 
+use Zend\Form\Annotation\Object;
 /**
  * Gerenciar as Contas a Receber
  * 
@@ -1105,9 +1106,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 						throw new \Exception("Valor pago a maior !!!, não conseguimos descobrir a origem da diferença");
 					}
 				}else{
-					$valor			= $valor - $difPrincipal;
-					$valorJuros		= $valorJuros - $difJuros;
-					$valorMora		= $valorMora - $difMora;
+					$valor			= $valor 		- $difPrincipal;
+					$valorJuros		= $valorJuros 	- $difJuros;
+					$valorMora		= $valorMora 	- $difMora;
 				}
 				
 				#################################################################################
@@ -2434,7 +2435,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Variáveis globais
 		#################################################################################
 		global $em,$system,$tr,$log;
-	
+		
 		#################################################################################
 		## Valida se os parâmetros são objetos
 		#################################################################################
@@ -2450,14 +2451,15 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 		
 		#################################################################################
-		## Grupo de Movimentação
+		## Salva o status atual da conta
 		#################################################################################
-		$grupoMov	= \Zage\Adm\Sequencial::proximoValor("ZgfinSeqCodGrupoMov");
-	
+		$codStatusAtual		= $oConta->getCodStatus()->getCodigo();
+		
 		#################################################################################
-		## Calcular o novo status
+		## Resgata o grupo de movimentação
 		#################################################################################
-
+		$grupoMov			= $oHist->getCodGrupoMov();
+		
 		#################################################################################
 		## Calcula o saldo de adiantamento dessa pessoa, para saber se a baixa pode ser 
 		## Excluída
@@ -2467,7 +2469,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Verifica se foi cadastrado adiantamento para essa baixa
 		#################################################################################
-		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaRec' => $oHist->getCodContaRec()->getCodigo(), 'codGrupoMov' => $oHist->getCodGrupoMov()));
+		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaRec' => $oHist->getCodContaRec()->getCodigo(), 'codGrupoMov' => $grupoMov));
 
 		#################################################################################
 		## Soma os valores de adiantamentos pra saber se poderá excluir
@@ -2480,6 +2482,13 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		if (($valAdiantaExc > 0) && ($saldoAdiant < $valAdiantaExc)) {
 			throw new \Exception("Baixa com adiantamento já utilizado !!!");
 		}
+		
+		#################################################################################
+		## Verificar se houve cancelamento de saldo, para não deixar remover a baixa,
+		## Antes da exclusão do cancelamento
+		#################################################################################
+		$aCanc		=  $em->getRepository('Entidades\ZgfinContaRecHistCanc')->findBy(array('codConta' => $oHist->getCodContaRec()->getCodigo()));
+		if ($aCanc)	throw new \Exception("Houve cancelamento de saldo na conta, para excluir a baixa, primeiro desfaça o cancelamento !!!");
 		
 		#################################################################################
 		## Excluir os adiatamentos
@@ -2506,6 +2515,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$em->remove($aMov[$i]);
 		}
 		
+		#################################################################################
+		## Resgata o novo status
+		#################################################################################
+		$codStatusNovo		= self::recalculaStatus($oConta);
 		
 		/***
 		 * 
@@ -2530,5 +2543,60 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param Object \Zage\Fin\ContaReceber $oConta
+	 */
+	
+	/**
+	 * Calcular o status da conta e retornar
+	 * @param \Zage\Fin\ContaReceber $oConta
+	 * @return string $codStatus
+	 */
+	public static function recalculaStatus (\Zage\Fin\ContaReceber $oConta) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em;
+		
+		#################################################################################
+		## Iremos tentar detectar qual o status que a conta deve ter a partir das tabelas
+		## de movimentação das ações, levando em conta as datas de acontecimento das ações
+		#################################################################################
+		
+		#################################################################################
+		## Verificar se houve Cancelamento,Caso haja alguma baixa o status deve ser 
+		## Liquidada, caso contrário cancelar a conta
+		#################################################################################
+		$oCanc	=  $em->getRepository('Entidades\ZgfinContaRecHistCanc')->findOneBy(array('codConta' => $oConta->getCodigo()));
+		
+		#################################################################################
+		## Verificar se Existem baixas
+		#################################################################################
+		$aBaixa	=  $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codContaRec' => $oConta->getCodigo()));
 
+		#################################################################################
+		## Verificar se Existem baixas
+		#################################################################################
+		$oSub	=  $em->getRepository('Entidades\ZgfinContaRecHistSub')->findBy(array('codConta' => $oConta->getCodigo()));
+			
+		#################################################################################
+		## Calculo do novo status
+		#################################################################################
+		if ($oSub)				{
+			$codStatus			= "S";
+		}elseif ($oCanc && $aBaixa)		{
+			$codStatus			= "L";
+		}elseif ($oCanc)		{
+			$codStatus			= "C";
+		}elseif ($aBaixa)		{
+			$codStatus			= "P";
+		}else{
+			$codStatus			= "A";
+		}
+		
+		return $codStatus;
+		
+	}
+	
 }
