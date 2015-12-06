@@ -19,7 +19,6 @@ global $em,$system,$log,$tr;
 if (isset($_POST['codVersao']))				$codPlano			= \Zage\App\Util::antiInjection($_POST['codVersao']);
 if (isset($_POST['codEvento']))				$codEvento			= \Zage\App\Util::antiInjection($_POST['codEvento']);
 if (isset($_POST['codOrcamento']))			$codOrcamento		= \Zage\App\Util::antiInjection($_POST['codOrcamento']);
-if (isset($_POST['ordem']))					$ordem				= \Zage\App\Util::antiInjection($_POST['ordem']);
 if (isset($_POST['item']))					$item				= \Zage\App\Util::antiInjection($_POST['item']);
 if (isset($_POST['codTipoItem']))			$codTipoItem		= \Zage\App\Util::antiInjection($_POST['codTipoItem']);
 if (isset($_POST['codCategoria']))			$codCategoria		= \Zage\App\Util::antiInjection($_POST['codCategoria']);
@@ -31,14 +30,13 @@ if (isset($_POST['indVersao']))				$indVersao			= \Zage\App\Util::antiInjection(
 #################################################################################
 ## Caso não venha as variáveis (ARRAY) inicializar eles
 #################################################################################
-if (!isset($ordem))				$ordem			= array();
 if (!isset($item))				$item			= array();
 if (!isset($codTipoItem))		$codTipoItem	= array();
 if (!isset($codCategoria))		$codCategoria	= array();
 if (!isset($indAtivo))			$indAtivo		= array();
 
-$log->debug($ordem);
-$log->debug($item);
+//$log->info("Array de Itens: ".serialize($item));
+
 if ($codOrcamento == null){
 	$codOrcamento	= array();
 }
@@ -66,12 +64,6 @@ if (!empty($item)){
 	}
 }
 
-/** Ordem **/
-if (!is_array($ordem)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo ORDEM inválido !!!"));
-	$err 	= 1;
-}
-
 
 /** item **/
 if (!is_array($item)) {
@@ -81,13 +73,7 @@ if (!is_array($item)) {
 #################################################################################
 ## Validar o tamanho dos arrays
 #################################################################################
-$numCon	= sizeof($codOrcamento);
-
-/** Ordem **/
-if (sizeof($ordem) != $numCon) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo ORDEM com tamanho inválido !!!"));
-	$err 	= 1;
-}
+$numItens	= sizeof($codOrcamento);
 
 #################################################################################
 ## Salvar no banco
@@ -120,7 +106,7 @@ try {
 	#################################################################################
 	## Apagar os itens do orçamento
 	#################################################################################
-	$orcamentos			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codGrupoItem' => $codEvento, 'codPlano' => $codPlano));
+	$orcamentos			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codPlano' => $codPlano, 'codGrupoItem' => $codEvento));
 
 	for ($i = 0; $i < sizeof($orcamentos); $i++) {
 		
@@ -128,8 +114,7 @@ try {
 			try {
 				$em->remove($orcamentos[$i]);
 			} catch (\Exception $e) {
-				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o Orcamento de item: ".$orcamentos[$i]->getItem()." Erro: ".$e->getMessage());
-				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities("Não foi possível excluir o Orcamento de item: ".$orcamentos[$i]->getItem()." Erro: ".$e->getMessage()));
 				exit;
 			}
 		}
@@ -138,7 +123,7 @@ try {
 	#################################################################################
 	## Criar / Alterar
 	#################################################################################
-	for ($i = 0; $i < $numCon; $i++) {
+	for ($i = 0; $i < $numItens; $i++) {
 
 		#################################################################################
 		## Verifica se o registro já existe no banco
@@ -148,6 +133,8 @@ try {
 		if (!$oOrcamento) {
 			$oOrcamento	= new \Entidades\ZgfmtPlanoOrcItem();
 			$oOrcamento->setDataCadastro(new \DateTime("now"));
+		}else{
+			$log->info("Achei o registro: ".$oOrcamento->getCodigo());
 		}
 		
 		if (isset($indAtivo [$i])) {
@@ -168,10 +155,9 @@ try {
 		$oOrcamento->setCodCategoria($oCodCategoria);
 		$oOrcamento->setCodTipoItem($oCodTipoItem);
 		$oOrcamento->setItem($item[$i]);
-		$oOrcamento->setOrdem($ordem[$i]);
+		$oOrcamento->setOrdem(($i+1));
 		$oOrcamento->setIndAtivo($indAtivoLinha);
 		
-		$log->debug("ordem - ".$ordem[$i]." / item - ".$item[$i] );
 		$em->persist($oOrcamento);
 	}
 
@@ -179,7 +165,6 @@ try {
 	$em->clear();
 
 } catch (\Exception $e) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
 }

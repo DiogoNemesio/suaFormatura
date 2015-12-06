@@ -154,19 +154,20 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 	
 	
 	
-	$tabOrcamento	.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg" onchange="verificaAlteracao($(this));"></div></td>
-				<td><input type="text" class="width-100" name="item['.$i.']" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
-				<td><select class="select2" style="width:100%;" name="codTipoItem['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oTipoItem.'</select></td>
-				<td><select class="select2" style="width:100%;" name="codCategoria['.$i.']" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCatExiste.'</select></td>
-				<td align="center"><label><input name="indAtivo['.$i.']" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
+	$tabOrcamento	.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td>
+				<td><input type="text" class="width-100" name="item[]" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
+				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oTipoItem.'</select></td>
+				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCatExiste.'</select></td>
+				<td align="center"><label><input name="indAtivo[]" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
 				<td class="center">
 						<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
-							<span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span>
-							<span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span>
-							<span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span>
+							<span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span>
+							<span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span>
+							<span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span>
 						</div>
 						<input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'">
-				</td></tr>';
+				</td></tr>
+				';
 }
 
 #################################################################################

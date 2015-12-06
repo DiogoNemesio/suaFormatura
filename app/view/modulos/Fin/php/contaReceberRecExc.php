@@ -96,6 +96,15 @@ $grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome')
 $grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
 $grid->importaDadosDoctrine($aHist);
 
+for ($i = 0; $i < sizeof($oHist); $i++) {
+	#################################################################################
+	## Calcula o valor de Júros e mora
+	#################################################################################
+	$grid->setValorCelula($i,3,\Zage\App\Util::to_money(floatval($oHist[$i]->getValorJuros()) - floatval($oHist[$i]->getValorDescJuros()) ));
+	$grid->setValorCelula($i,4,\Zage\App\Util::to_money(floatval($oHist[$i]->getValorMora()) - floatval($oHist[$i]->getValorDescMora()) ));
+}
+
+
 
 #################################################################################
 ## Carregando o template html

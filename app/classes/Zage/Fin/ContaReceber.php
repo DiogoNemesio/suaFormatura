@@ -932,19 +932,14 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		global $em,$system,$tr,$log;
 		
 		#################################################################################
-		## Valida o status da conta
+		## Resgata o perfil da conta
 		#################################################################################
-		switch ($oConta->getCodStatus()->getCodigo()) {
-			case "A":
-			case "P":
-				$podeRec	= true;
-				break;
-			default:
-				$podeRec	= false;
-				break;
-		}
+		$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
 		
-		if (!$podeRec) {
+		#################################################################################
+		## Verifica se a conta pode receber baixa
+		#################################################################################
+		if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "CON")) {
 			return($tr->trans('Conta não pode ser confirmada, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
 		}
 		
@@ -994,7 +989,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Calcular o valor total recebido
 		#################################################################################
-		$valorTotal			= $valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto;
+		$valorTotal			= round(floatval($valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto),2);
 		
 		#################################################################################
 		## Atualiza o valor de desconto na conta
@@ -1009,7 +1004,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$oOrigem	= $em->getRepository('Entidades\ZgadmOrigem')->findOneBy(array('codigo' => 2));
 		$oTipoOper	= $em->getRepository('Entidades\ZgfinOperacaoTipo')->findOneBy(array('codigo' => "C"));
 		$oBaixa		= $em->getRepository('Entidades\ZgfinBaixaTipo')->findOneBy(array('codigo' => $codTipoBaixa));
-		
 		
 		#################################################################################
 		## Resgatar o saldo da conta
@@ -1060,8 +1054,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Atualiza o saldo
 		#################################################################################
 		$saldo 			+= ($_valJuros + $_valMora);
+		$saldo			= round(floatval($saldo),2);
 		//$_total			= self::calculaValorTotal($oConta);
-		//$log->info("Conta: ".$oConta->getNumero()." Saldo a receber: ".$saldo." ValorJuros: ".$_valJuros." ValorMora: ".$_valMora." _CalcTotal:".$_total." ValorTotal: ".$valorTotal);
+		$log->info("Conta: ".$oConta->getNumero()." Saldo a receber: ".$saldo." ValorJuros: ".$_valJuros." ValorMora: ".$_valMora." _CalcTotal:".$_total." ValorTotal: ".$valorTotal);
 
 		#################################################################################
 		## Grupo de Movimentação
@@ -1183,10 +1178,12 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$oHist->setDataTransacao(new \DateTime("now"));
 		$oHist->setDocumento($documento);
 		$oHist->setValorDesconto($valorDesconto);
-		$oHist->setValorJuros($valorJuros);
-		$oHist->setValorMora($valorMora);
+		$oHist->setValorJuros($valorJuros + $valorDescJuros);
+		$oHist->setValorMora($valorMora + $valorDescMora);
 		$oHist->setValorOutros($valorOutros);
 		$oHist->setValorRecebido($valor);
+		$oHist->setValorDescontoJuros($valorDescJuros);
+		$oHist->setValorDescontoMora($valorDescMora);
 		$oHist->setCodGrupoMov($grupoMov);
 		$oHist->setCodTipoBaixa($oBaixa);
 		$oHist->setSeqRetornoBancario($seqRetorno);
@@ -1251,7 +1248,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$valorRec		= 0;
 			
 		for ($i = 0; $i < sizeof($histRec); $i++) {
-			$valorRec += floatval($histRec[$i]->getValorRecebido()) + floatval($histRec[$i]->getValorJuros()) + floatval($histRec[$i]->getValorMora()) + floatval($histRec[$i]->getValorOutros()) - floatval($histRec[$i]->getValorDesconto());
+			$valorRec += floatval($histRec[$i]->getValorRecebido()) + floatval($histRec[$i]->getValorJuros()) + floatval($histRec[$i]->getValorMora()) + floatval($histRec[$i]->getValorOutros()) - (floatval($histRec[$i]->getValorDesconto()) + floatval($histRec[$i]->getValorDescontoJuros()) + floatval($histRec[$i]->getValorDescontoMora()));
 		}
 		
 		$valorTotal		= self::calculaValorTotal($oConta);
@@ -1291,8 +1288,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			
 		for ($i = 0; $i < sizeof($histRec); $i++) {
 			$valRecPrinc	+= floatval($histRec[$i]->getValorRecebido()) - floatval($histRec[$i]->getValorDesconto());
-			$valRecJuros	+= floatval($histRec[$i]->getValorJuros());
-			$valRecMora		+= floatval($histRec[$i]->getValorMora());
+			$valRecJuros	+= floatval($histRec[$i]->getValorJuros()) - floatval($histRec[$i]->getValorDescontoJuros());
+			$valRecMora		+= floatval($histRec[$i]->getValorMora()) - floatval($histRec[$i]->getValorDescontoMora());
 			$valRecOutros	+= floatval($histRec[$i]->getValorOutros());
 		}
 	
@@ -1339,7 +1336,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$valorRec		= 0;
 			
 		for ($i = 0; $i < sizeof($histRec); $i++) {
-			$valorRec += floatval($histRec[$i]->getValorRecebido()) + floatval($histRec[$i]->getValorJuros()) + floatval($histRec[$i]->getValorMora()) + floatval($histRec[$i]->getValorOutros()) - floatval($histRec[$i]->getValorDesconto());
+			$valorRec += floatval($histRec[$i]->getValorRecebido()) + floatval($histRec[$i]->getValorJuros()) + floatval($histRec[$i]->getValorMora()) + floatval($histRec[$i]->getValorOutros()) - (floatval($histRec[$i]->getValorDesconto()) + floatval($histRec[$i]->getValorDescontoJuros()) + floatval($histRec[$i]->getValorDescontoMora()));
 		}
 	
 		return round($valorRec,2);
@@ -1367,21 +1364,14 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 	
 		#################################################################################
-		## Valida o status da conta
+		## Resgata o perfil da conta
 		#################################################################################
-		$status 	= $oConta->getCodStatus()->getCodigo();
+		$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
 		
-		switch ($status) {
-			case "A":
-			case "C":
-				$podeExc	= true;
-				break;
-			default:
-				$podeExc	= false;
-				break;
-		}
-	
-		if (!$podeExc) {
+		#################################################################################
+		## Verifica se a conta pode ser excluída
+		#################################################################################
+		if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "EXC")) {
 			return($tr->trans('Conta não pode ser excluída, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
 		}
 	

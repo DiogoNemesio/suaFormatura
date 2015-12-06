@@ -52,12 +52,11 @@
 								<thead>
 									<tr class="warning">
 										<th class="col-sm-1 center"></th>
-										<th class="col-sm-1 center">Ordem</th>
 										<th class="col-sm-2 center">Item</th>
 										<th class="col-sm-2 center">Calcular</th>
 										<th class="col-sm-2 center">Categoria</th>
 										<th class="col-sm-1 center">Ativo</th>
-										<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -65,8 +64,8 @@
 								</tbody>
 								<tfoot>
 									<tr>
-										<th colspan="6" style="text-align: left;"></th>
-										<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoLayReg();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										<th colspan="5" style="text-align: left;"></th>
+										<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 									</tr>
 								</tfoot>
 							</table>
@@ -150,7 +149,7 @@ $('#zgFormID').submit(function() {
 	return false; 
 });
 
-function addRowOrcamentoLayReg() {
+function addRowOrcamentoOrcAlt() {
 	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;
 	
 	$ultOrdem	= 0;
@@ -167,7 +166,7 @@ function addRowOrcamentoLayReg() {
 	
 	$ordem		= parseInt($ultOrdem) + 1;
 
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="col-sm-1 center"><input type="text" name="ordem['+$numRows+']" class="col-xs-6" readonly value="'+$numRows+'" maxlength="3" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero"></td><td><input type="text" class="width-100" name="item['+$numRows+']" zg-name="item" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria['+$numRows+']" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo['+$numRows+']" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoLayReg($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoLayReg($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item[]" zg-name="item" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo[]" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></td><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-name="item"]').each(function( index ) {
 		$( this ).focus();
 	});
@@ -178,7 +177,7 @@ function addRowOrcamentoLayReg() {
 	$('#layRegTableOrcamentoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
 }
 
-function delRowOrcamentoLayReg(pObj) {
+function delRowOrcamentoOrcAlt(pObj) {
 	$('#_precisaSalvarID').val(1);
 	var $div	= pObj.parent();
 	var $td		= $div.parent();
@@ -187,27 +186,25 @@ function delRowOrcamentoLayReg(pObj) {
 	/** Encontra a ordem que está sendo removida **/
 	$ordemObj 	= $tr.find('[name*="ordem[]"]');
 	$ordem		= parseInt($ordemObj.val());
-	alert($ordem);
 
 	$tr.addClass("danger");
 	$tr.fadeOut(500, function(){
 		$tr.remove();
-		recalculaOrdemLayReg();
+		recalculaOrdemOrcAlt();
 	});
 }
 
 
-function moveUpOrcamentoLayReg(pObj) {
+function moveUpOrcamentoOrcAlt(pObj) {
 	$('#_precisaSalvarID').val(1);
 	var $div	= pObj.parent();
 	var $td		= $div.parent();
 	var $tr		= $td.parent();
 	
 	/** Encontra a ordem e posição que está sendo movida **/
-	$ordObj 	= $tr.find('[name*="ordem[]"]');
+	$ordObj 	= $tr.find('[zg-name="ordem"]');
 	
 	$ordem		= parseInt($ordObj.val());
-	alert($ordem);
 	
 	if ($ordem == 1) return false;
 	
@@ -218,10 +215,10 @@ function moveUpOrcamentoLayReg(pObj) {
 	$tr.insertBefore($tr.prev());
 	
 	/** Recalcula a ordem **/
-	recalculaOrdemLayReg();
+	recalculaOrdemOrcAlt();
 }
 
-function moveDownOrcamentoLayReg(pObj) {
+function moveDownOrcamentoOrcAlt(pObj) {
 	$('#_precisaSalvarID').val(1);
 
 	/** Calcula o número de registros da tabela **/
@@ -232,24 +229,23 @@ function moveDownOrcamentoLayReg(pObj) {
 	var $tr		= $td.parent();
 	
 	/** Encontra a ordem e posição que está sendo movida **/
-	$ordObj 	= $tr.find('[name*="ordem[]"]');
+	$ordObj 	= $tr.find('[zg-name="ordem"]');
 	
 	$ordem		= parseInt($ordObj.val());
 	
 	if ($ordem == $numRows) return false;
-	alert($ordem);
 	
 	/** Move o registro **/
 	$tr.insertAfter($tr.next());
 
 	/** Recalcula a ordem **/
-	recalculaOrdemLayReg();
+	recalculaOrdemOrcAlt();
 }
 
-function recalculaOrdemLayReg() {
+function recalculaOrdemOrcAlt() {
 	var $ordem	= 1;
 	$('#layRegTableOrcamentoID > tbody > tr').each(function( index ) {
-		$ordObj 	= $(this).find('[name*="ordem[]"]');
+		$ordObj 	= $(this).find('[zg-name="ordem"]');
 		$ordObj.val($ordem);
 		$ordem += 1;
 	});
