@@ -66,16 +66,17 @@ try {
 	/**** Cancelar usuario ****/
 	$oUsuario->_setCodOrganizacao($codOrganizacao);
 	$oUsuario->_setCodUsuario($codUsuario);
-	$oUsuario->excluir();
+	$oUsuario->cancelar();
 	
-	/**** Cancelar usuario ****/
+	/**** Inativar pessoa ****/
 	$oCli = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsu->getCpf() , 'codOrganizacao' => $codOrganizacao));
 	
 	if ($oCli){
 		\Zage\Fin\Pessoa::inativa($oCli->getCodigo());
 	}
-	
-	/***** Flush *****/
+	$em->flush();
+	$em->clear();
+	/***** Flush ***
 	try {
 		$em->flush();
 		$em->clear();
@@ -83,7 +84,7 @@ try {
 		$log->debug("Erro ao excluir o formando:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
 	}	
-
+**/
 } catch (\Exception $e) {
 	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage())));
 	exit;

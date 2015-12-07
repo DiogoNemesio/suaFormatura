@@ -112,7 +112,7 @@ try {
 	$oCliente->setCodTipoPessoa($clienteTipo);
 	$oCliente->setIndContribuinte(0);
 	$oCliente->setIndCliente(1);
-	$oCliente->setIndFornecedor(0);
+	$oCliente->setIndFornecedor(1);
 	$oCliente->setIndTransportadora(0);
 	$oCliente->setIndEstrangeiro(0);
 	$oCliente->setIndAtivo(1);
@@ -194,7 +194,6 @@ try {
 	#################################################################################
 	## Criar notificação
 	#################################################################################
-	
 	if ($enviarEmail) {
 	
 		$cid 		= \Zage\App\Util::encodeUrl('_cdu01='.$oUsuOrg->getCodigo().'&_cdu02='.$oUsuario->getCodigo().'&_cdu03='.$codOrganizacao.'&_cdu04='.$convite->_getCodigo().'&_cdsenha='.$convite->getSenha());

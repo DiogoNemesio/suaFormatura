@@ -42,14 +42,15 @@ if (!isset($codOrganizacao)) \Zage\App\Erro::halt('Falta de Parâmetros : COD_OR
 #################################################################################
 if ($codUsuario) {
 	
-	$podeAlterar = 'readonly';
-	
 	try {
 		$info			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 		$oPerfil		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codUsuario, 'codOrganizacao'=> $codOrganizacao));
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
+	
+	$podeAlterar = 'readonly';
+	
 	$usuario		= $info->getUsuario();
 	$nome			= $info->getNome();
 	$apelido		= $info->getApelido();

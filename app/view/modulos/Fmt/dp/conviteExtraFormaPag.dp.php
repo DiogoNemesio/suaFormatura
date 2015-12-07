@@ -30,7 +30,7 @@ $err	= false;
 ## Fazer validação dos campos
 #################################################################################
 /******* Tipo de venda *********/
-if (!isset($codTipoVenda) && (empty($codTipoVenda))) {
+if (!isset($codTipoVenda) || empty($codTipoVenda)) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Selecione uma forma de venda!"));
 	$err	= 1;
 }
@@ -61,12 +61,12 @@ if (!empty($taxaAdministracao)) {
 }
 
 /******* Dias para o vencimento *********/
-if (!isset($diasVencimento) && empty($diasVencimento)) {
+if (!isset($diasVencimento) || empty($diasVencimento)) {
 	$diasVencimento = 0;
 }
 
 /******* Ind adicionar custo do boleto na taxa de comodidade *********/
-if (isset($indAddTaxaBoleto) && (!empty($indAddTaxaBoleto))) {
+if (!empty($indAddTaxaBoleto)) {
 	$indAddTaxaBoleto	= 1;
 }else{
 	$indAddTaxaBoleto	= 0;

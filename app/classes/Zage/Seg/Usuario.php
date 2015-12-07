@@ -729,15 +729,40 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		#################################################################################
 		## Cancelar usuário
 		#################################################################################
-		//Cancelar usuário principal
-		Usuario::cancelarUsuOrg($this->_usuario, $oUsuOrg);
+		$aUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $this->_getCodUsuario()));
 		
-		//Cancelar acesso as formaturas ativas
-		Usuario::cancelarAceUsuFmt($this->_getCodUsuario(), $this->_getCodOrganizacao());
-		
+		if ($oUsuOrg->getCodStatus()->getCodigo() == "P" && $this->_usuario->getCodStatus()->getCodigo() == "P" && sizeof($aUsuOrg) == 1){
+			//Remover Usuário
+			$em->remove($this->_usuario);
+			
+			//Remover associação
+			$em->remove($oUsuOrg);
+			
+			//Remover convites
+			$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $this->_getCodUsuario()));
+			if($oConvite){			
+				for ($i = 0; $i < sizeof($oConvite); $i++) {
+					$em->remove($oConvite[$i]);
+				}
+			}
+			
+			//Remover notificação
+			$oNotificacao = $em->getRepository('Entidades\ZgappNotificacaoUsuario')->findBy(array('codUsuario' => $this->_getCodUsuario()));
+			if($oNotificacao){
+				for ($i = 0; $i < sizeof($oNotificacao); $i++) {
+					$em->remove($oNotificacao[$i]);
+				}
+			}
+			
+		}else{
+			//Cancelar usuário principal
+			Usuario::cancelarUsuOrg($this->_usuario, $oUsuOrg);
+			
+			//Cancelar acesso as formaturas ativas
+			Usuario::cancelarAceUsuFmt($this->_getCodUsuario(), $this->_getCodOrganizacao());
+		}
 		
 	}
-	
 	
 	/**
 	 * Cancelar acesso a do usuário a organizacao
