@@ -3,8 +3,9 @@
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 	<h4 class=""><i class="fa fa-history yellow"></i>&nbsp;%TITULO%</h4>
 </div>
-<div class="modal-body" style="overflow-y: scroll; height: 320px;">
+<div class="modal-body" style="overflow-y: scroll; height: 280px;">
 	<input type="hidden" name="codConta" value="%COD_CONTA%">
+	<input type="hidden" name="codHist" value="%COD_HIST%">
 	<input type="hidden" name="id" value="%ID%">
 	<div class="row">
 		<div class="col-sm-12">
@@ -15,23 +16,12 @@
     </div>
 </div>
 <div class="modal-footer">
-	<button type="submit" %PODE_EXC% class="btn btn-danger" id="submit">Desejo realmente <strong>REMOVER</strong></button>
+	<button type="submit" class="btn btn-danger" id="submit">Desejo realmente <strong>REMOVER</strong></button>
 	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
 </div>
 </form>
 
 <script type="text/javascript" charset="%CHARSET%">
-$('[data-rel="select2"]').select2();
-
-/** Desabilitar os selects para a tela de View **/
-$('[data-rel="select2"]').each(function( index ) {
-	if ($(this).hasClass('readonly')) {
-		$(this).select2("readonly", true);
-	}else{
-		$(this).select2();
-	}
-});
-
 $('[data-toggle="popover"]').popover();
 
 $('[zg-data-toggle="mask"]').each(function( index ) {
@@ -40,8 +30,6 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 
 $('.datepicker').datepicker();
 
-
-<script type="text/javascript" charset="%CHARSET%">
 $('#zgFormModalID').submit(function() {
 	$.ajax({
 		type:	"POST", 
@@ -56,7 +44,8 @@ $('#zgFormModalID').submit(function() {
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			$('#zgDivModalID').off('hidden.bs.modal');
-			zgAbreModal('%URL_VOLTAR%');
+			zgLoadUrl('%URL_VOLTAR%');
+			//zgAbreModal('%URL_VOLTAR%');
 		});
 
 		

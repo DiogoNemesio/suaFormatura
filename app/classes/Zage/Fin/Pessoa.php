@@ -307,15 +307,12 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	
 	/**
 	 * Lista as pessoas que podem ser vistas por uma determinada organização
-	 * @param unknown $codOrganizacao
-	 */
-	/**
-	 * 
 	 * @param int $codOrganizacao
 	 * @param array $codTipoPessoa
 	 * @param string $indTipo
 	 */
-	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo) {
+	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo,$aCodSegMerc = null) {
+		
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
@@ -329,6 +326,12 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		if ($oFmtAdm && $indTipo != "indCliente")	{
 			$aOrg[]			= $oFmtAdm->getCodigo();			
 		}
+
+		
+		#################################################################################
+		## Segmento de Mercado, caso seja informado, deve ser um array
+		#################################################################################
+		if ($aCodSegMerc && !is_array($aCodSegMerc)) throw new \Exception("Parâmetro aCodSegMerc deve ser um array");
 		
 		#################################################################################
 		## Objeto do query builder
@@ -357,6 +360,22 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 					$qb->expr()->eq('p.'.$indTipo, ':indTipo')
 				));
 				$qb->setParameter('indTipo'			,1);
+			}
+			
+			
+			if (!empty($aCodSegMerc)) {
+				$qb2 	= $em->createQueryBuilder();
+				$qb->andWhere(
+					$qb->expr()->exists(
+						$qb2->select('ps1')
+						->from('\Entidades\ZgfinPessoaSegmento','ps1')
+						->where($qb2->expr()->andX(
+							$qb2->expr()->eq('ps1.codPessoa'		, 'p.codigo'),
+							$qb2->expr()->in('ps1.codSegmento'		, $aCodSegMerc)
+						)
+						)->getDQL()
+					)
+				);
 			}
 				
 			$query 		= $qb->getQuery();

@@ -19,7 +19,6 @@ global $em,$log,$system,$tr;
 if (isset($_POST['codConta']))			$codConta			= \Zage\App\Util::antiInjection($_POST['codConta']);
 if (isset($_POST['codHist']))			$codHist			= \Zage\App\Util::antiInjection($_POST['codHist']);
 
-
 #################################################################################
 ## Verifica se os parâmetros foram passados corretamente
 #################################################################################
@@ -37,6 +36,13 @@ if (!$oConta) die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("C
 #################################################################################
 $oHist		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findOneBy(array('codigo' => $codHist));
 if (!$oHist) die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Recebimento não encontrado"))));
+
+#################################################################################
+## Verificar se a conta e histórico informados são da Organização atual
+#################################################################################
+if ($oConta->getCodOrganizacao()->getCodigo() !== $system->getCodOrganizacao()) {
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Exclusão de baixa indevida, ERR: 01x941"))));	
+}
 
 #################################################################################
 ## Verificar se a baixa pertence a conta informada
@@ -57,6 +63,11 @@ if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatu
 $em->getConnection()->beginTransaction();
 try {
 
+	#################################################################################
+	## Salva o status atual da conta
+	#################################################################################
+	$codStatusAtual		= $oConta->getCodStatus()->getCodigo();
+	
 	$conta		= new \Zage\Fin\ContaReceber();
 	$erro		= $conta->excluiBaixa($oConta,$oHist);
 	
@@ -65,9 +76,54 @@ try {
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($erro));
 		exit;
 	}
+	
 	$em->flush();
 	$em->clear();
-	$em->getConnection()->commit();	
+	$em->getConnection()->commit();
+	
+	
+	#################################################################################
+	## Resgata as informações da conta
+	#################################################################################
+	$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
+	
+	#################################################################################
+	## Controle de gravação
+	#################################################################################
+	$_indSalvar			= false;
+	
+	#################################################################################
+	## Resgata o novo status
+	#################################################################################
+	$codStatusNovo		= \Zage\Fin\ContaReceber::recalculaStatus($oConta);
+	
+	#################################################################################
+	## Apagar a data de liquidação caso a conta estiver liquidada
+	#################################################################################
+	if ($codStatusAtual	== "L" && $codStatusNovo !== "L") {
+		$oConta->setDataLiquidacao(null);
+		$_indSalvar			= true;
+	}
+	
+	#################################################################################
+	## Mudar o status
+	#################################################################################
+	if ($codStatusAtual	!= $codStatusNovo) {
+		//$log->info("RecExc.dp: codStatusAtual: ".$codStatusAtual. " codStatusNovo: ".$codStatusNovo);
+		$oStatusNovo		= $em->getRepository('Entidades\ZgfinContaStatusTipo')->findOneBy(array('codigo' => $codStatusNovo));
+		$oConta->setCodStatus($oStatusNovo);
+		$_indSalvar			= true;
+	}
+	
+	if ($_indSalvar	== true) {
+		//$log->info("RecExc.dp: Irei salvar e dar commit ");
+		$em->getConnection()->beginTransaction();
+		$em->flush();
+		$em->clear();
+		$em->getConnection()->commit();
+	}
+	
+	
 	
 	$mensagem	= $tr->trans("Baixa excluída com sucesso");
 	

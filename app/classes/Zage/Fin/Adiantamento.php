@@ -45,9 +45,10 @@ class Adiantamento {
 			->where($qb1->expr()->andX(
 				$qb1->expr()->eq('h.codOrganizacao'	, ':codOrganizacao'),
 				$qb1->expr()->eq('h.codPessoa'		, ':codPessoa'),
-				$qb1->expr()->eq('h.codTipoOperacao'	, 'C')
+				$qb1->expr()->eq('h.codTipoOperacao', ':codTipoOperacao')
 			))
 			->setParameter('codOrganizacao'		, $codOrganizacao)
+			->setParameter('codTipoOperacao'	, "C")
 			->setParameter('codPessoa'			, $codPessoa);
 			$query 		= $qb1->getQuery();
 			$creditos	= $query->getSingleScalarResult();
@@ -62,16 +63,17 @@ class Adiantamento {
 		## Calcular os Débitos de adiantamento
 		#################################################################################
 		try {
-			$qb1->select('sum(h.valor) as valor')
+			$qb2->select('sum(h.valor) as valor')
 			->from('\Entidades\ZgfinMovAdiantamento','h')
 			->where($qb1->expr()->andX(
-					$qb1->expr()->eq('h.codOrganizacao'	, ':codOrganizacao'),
-					$qb1->expr()->eq('h.codPessoa'		, ':codPessoa'),
-					$qb1->expr()->eq('h.codTipoOperacao'	, 'D')
+				$qb2->expr()->eq('h.codOrganizacao'	, ':codOrganizacao'),
+				$qb2->expr()->eq('h.codPessoa'		, ':codPessoa'),
+				$qb2->expr()->eq('h.codTipoOperacao', ':codTipoOperacao')
 			))
 			->setParameter('codOrganizacao'		, $codOrganizacao)
+			->setParameter('codTipoOperacao'	, "D")
 			->setParameter('codPessoa'			, $codPessoa);
-			$query 		= $qb1->getQuery();
+			$query 		= $qb2->getQuery();
 			$debitos	= $query->getSingleScalarResult();
 		
 		
