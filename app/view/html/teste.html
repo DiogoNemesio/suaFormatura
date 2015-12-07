@@ -1,271 +1,235 @@
-<!DOCTYPE html>
-<html lang="pt-BR" >
-<head>
-	<title>[1] Zage Tecnologia</title>
-	<link rel="shortcut icon" href="http://dbapp/imgs/Icones//favicon.ico" />
-	<!-- Carregado dinamicamente através do dinamicHtmlLoad -->
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<link href="http://dbapp/packages//bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/bootstrap-timepicker.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//bootstrap/css/datepicker3.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/chosen.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/dropzone.css" media="screen" rel="stylesheet" type="text/css" >
-<link rel="stylesheet" href="http://dbapp/packages//ace/assets/css/colorbox.css" />
-<link href="http://dbapp/packages//ace/assets/css/ace-fonts.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//bootstrap/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/ace.min.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/ace-rtl.min.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/ace-skins.min.css" media="screen" rel="stylesheet" type="text/css" >
-<!--[if lte IE 8]><link rel="stylesheet" href="http://dbapp/packages//ace/assets/css/ace-ie.min.css" /><![endif]-->
-<link href="http://dbapp/packages//ace/assets/css/jquery-ui-1.10.3.full.min.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/jquery.gritter.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//bootstrap/css/select2.css" media="screen" rel="stylesheet" type="text/css" >
-<link href="http://dbapp/packages//ace/assets/css/jquery-ui-1.10.3.custom.min.css" media="screen" rel="stylesheet" type="text/css" >
-<style type="text/css" media="all">@import "http://dbapp/css//zgWeb.css";</style>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/js//zgWeb.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/ace-extra.min.js"></script>
-<!--[if !IE]> --><script type="text/javascript">window.jQuery || document.write("<script type='text/javascript' charset='UTF-8' src='http://dbapp/packages//ace/assets/js/jquery-2.1.0.min.js'>"+"<"+"/script>");</script><!-- <![endif]-->
-<!--[if lt IE 9]><script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/html5shiv.js"></script><script type='text/javascript' charset='UTF-8' src="http://dbapp/packages//ace/assets/js/respond.min.js"></script><![endif]-->
-<!--[if IE]><script type="text/javascript">window.jQuery || document.write("<script type='text/javascript' charset='UTF-8' src='http://dbapp/packages//ace/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");</script><![endif]-->
-<script type="text/javascript">if("ontouchend" in document) document.write("<script type='text/javascript' charset='UTF-8' src='http://dbapp/packages//ace/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");</script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/typeahead-bs2.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/jqBootstrapValidation.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/dropzone.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/ace-elements.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/ace.min.js"></script>
-<!--[if lte IE 8]><script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/excanvas.min.js"></script><![endif]-->
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.dataTables.bootstrap.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/date-time/moment.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.knob.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.autosize.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.inputlimiter.1.3.1.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/jquery.mask.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/bootstrap-tag.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery-ui-1.10.3.full.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.ui.touch-punch.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.slimscroll.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.easy-pie-chart.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.sparkline.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/flot/jquery.flot.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/flot/jquery.flot.pie.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/flot/jquery.flot.resize.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/bootbox.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.gritter.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/spin.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/chosen.jquery.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/jquery.base64.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/bootstrap-filestyle.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/fuelux/fuelux.tree.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/bootstrap-contextmenu.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//ace/assets/js/jquery.colorbox-min.js"></script>
-<script src="http://dbapp/packages//ace/assets/js/bootstrap-tag.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/select2.min.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/locales/select2_locale_pt-BR.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/pdfobject.js"></script>
-<script type="text/javascript" charset="UTF-8" src="http://dbapp/packages//bootstrap/js/locales/jquery.ui.datepicker-pt-BR.js"></script>
-<!-- Fim do carregamento dinâmico (dinamicHtmlLoad) -->
+<!doctype html>
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
+  <title></title>
+  <style type="text/css">
+body {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	-webkit-font-smoothing: antialiased;
+}
 
-		
-	<style type="text/css" media="all">
-		.navbar{
-  			min-height:46px;
-			height:46px;
-		}
-		.DIFrame {
-			border: none;
-        	padding: 0px;
-			width: %WIDTH%px;
-			height: %HEIGHT%px;
-		}
-	</style>
-	<script>
-	function zgLoadUrl(pUrl) {
-		if (pUrl !== '#' && pUrl !== '') {
-			$("#zgDivCentralID").load(pUrl);
-		}
+@media only screen and (max-width: 600px) {
+	table[class="table-row"] {
+		float: none !important;
+		width: 98% !important;
+		padding-left: 20px !important;
+		padding-right: 20px !important;
 	}
-	function zgLoadMenu(pUrl,pId) {
-		if (pUrl !== '#' && pUrl !== '') {
-			$("#zgDivCentralID").load("http://dbapp/bin//loadMenu.php?id="+pId+"&url="+pUrl);
-			$("#breadcrumbs").load("http://dbapp/bin//breadcrumb.php?id="+pId);
-		}
+	table[class="table-row-fixed"] {
+		float: none !important;
+		width: 98% !important;
 	}
-	function zgDownloadUrl(pUrl) {
-		if (pUrl !== '#' && pUrl !== '') {
-			$("#zgWindowDownID").attr("src", pUrl);
-		}
+	table[class="table-col"], table[class="table-col-border"] {
+		float: none !important;
+		width: 100% !important;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+		table-layout: fixed;
 	}
+	td[class="table-col-td"] {
+		width: 100% !important;
+	}
+	table[class="table-col-border"]+table[class="table-col-border"] {
+		padding-top: 12px;
+		margin-top: 12px;
+		border-top: 1px solid #E8E8E8;
+	}
+	table[class="table-col"]+table[class="table-col"] {
+		margin-top: 15px;
+	}
+	td[class="table-row-td"] {
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
+	table[class="navbar-row"], td[class="navbar-row-td"] {
+		width: 100% !important;
+	}
+	img {
+		max-width: 100% !important;
+		display: inline !important;
+	}
+	img[class="pull-right"] {
+		float: right;
+		margin-left: 11px;
+		max-width: 125px !important;
+		padding-bottom: 0 !important;
+	}
+	img[class="pull-left"] {
+		float: left;
+		margin-right: 11px;
+		max-width: 125px !important;
+		padding-bottom: 0 !important;
+	}
+	table[class="table-space"], table[class="header-row"] {
+		float: none !important;
+		width: 98% !important;
+	}
+	td[class="header-row-td"] {
+		width: 100% !important;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	table[class="table-row"] {
+		padding-left: 16px !important;
+		padding-right: 16px !important;
+	}
+}
+
+@media only screen and (max-width: 320px) {
+	table[class="table-row"] {
+		padding-left: 12px !important;
+		padding-right: 12px !important;
+	}
+}
+
+@media only screen and (max-width: 608px) {
+	td[class="table-td-wrap"] {
+		width: 100% !important;
+	}
+}
+
+/* Tabela */
+
+</style>
+  </head>
+  
+<body style="font-family: Arial, sans-serif; font-size:13px; color: #444444; min-height: 200px;" bgcolor="#E4E6E9" leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+<table width="100%" height="100%" bgcolor="#E4E6E9" cellspacing="0" cellpadding="0" border="0">
+<tr><td width="100%" align="center" valign="top" bgcolor="#E4E6E9" style="background-color:#E4E6E9; min-height: 200px;">
+<table style="table-layout: auto; width: 100%; background-color: ;" width="100%" bgcolor="" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td width="100%" align="center" style="width: 100%; background-color: ;" bgcolor="" valign="top"><table class="table-row-fixed" height="50" width="600" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td class="navbar-row-td" valign="middle" height="50" width="600" data-skipstyle="true" align="left">
+<br>
+<table class="table-row" style="table-layout: auto; padding-right: 16px; padding-left: 16px; width: 600px;" width="600" cellspacing="0" cellpadding="0" border="0"><tbody><tr style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px;">
+   <td class="table-row-td" style="padding-right: 16px; font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; vertical-align: middle;" valign="middle" align="left">
+     <a href="#" style="color: #ffffff; text-decoration: none; padding: 10px 0px; font-size: 18px; line-height: 20px; height: auto; background-color: transparent;">
+	  <img src="http://suaformatura/imgs/logo_suaformatura.png" height="42" width="195">
+	 </a>
+   </td>
+   <td class="table-row-td" align="right" valign="middle" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; text-align: right; vertical-align: middle;">
+     <a href="#" style="color: #428bca; text-decoration: none; font-size: 15px; background-color: transparent;">
+	   Sobre
+	 </a>
+	 &nbsp;
+	 <a href="#" style="color: #428bca; text-decoration: none; font-size: 15px; background-color: transparent;">
+	   Contato
+	 </a>
+   </td>
+ </tr></tbody></table><br>
+</td></tr></tbody></table></td></tr></tbody></table>
+
+
+<table class="table-space" height="8" style="height: 8px; font-size: 0px; line-height: 0; width: 600px; background-color: #ffffff;" width="600" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="8" style="height: 8px; width: 600px; background-color: #ffffff;" width="600" bgcolor="#FFFFFF" align="left">&nbsp;</td></tr></tbody></table>
+
+<table class="table-row" width="600px" bgcolor="#FFFFFF" style="table-layout: fixed; background-color: #ffffff;" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-row-td" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding-left: 36px; padding-right: 36px;" valign="top" align="left">
+  <table class="table-col" align="left" width="550px" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td class="table-col-td" width="378" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; width: 378px;" valign="top" align="left">
+    <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 13px;">
+       <br><br>
+      <font size="6" color="#428bca" face="Times"><strong>Novidade!</strong></font>
+      <br>
+       <font size="4" color="#428bca" face="Times">AULA DA SAUDADE</font>
+      <br>
+    </div>
+  </td></tr></tbody></table>
+</td></tr></tbody></table>
+	    
+<table class="table-space" height="12" style="height: 12px; font-size: 0px; line-height: 0; width: 600px; background-color: #ffffff;" width="450" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="12" style="height: 12px; width: 450px; background-color: #ffffff;" width="450" bgcolor="#FFFFFF" align="left">&nbsp;</td></tr></tbody></table>
+<table class="table-space" height="12" style="height: 12px; font-size: 0px; line-height: 0; width: 600px; background-color: #ffffff;" width="450" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="12" style="height: 12px; width: 450px; padding-left: 16px; padding-right: 16px; background-color: #ffffff;" width="450" bgcolor="#FFFFFF" align="center">&nbsp;<table bgcolor="#E8E8E8" height="0" width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td bgcolor="#E8E8E8" height="1" width="100%" style="height: 1px; font-size:0;" valign="top" align="left">&nbsp;</td></tr></tbody></table></td></tr></tbody></table>
+<table class="table-space" height="16" style="height: 16px; font-size: 0px; line-height: 0; width: 600px; background-color: #ffffff;" width="450" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="16" style="height: 16px; width: 450px; background-color: #ffffff;" width="450" bgcolor="#FFFFFF" align="left">&nbsp;</td></tr></tbody></table>
+
+	<table class="table-row" width="600px" bgcolor="#FFFFFF" style="table-layout: fixed; background-color: #ffffff;" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-row-td" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding-left: 36px; padding-right: 36px;" valign="top" align="left">
+ 		<table class="table-col" align="left" width="500px" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;">
+ 			<tbody><tr><td class="table-col-td" width="378" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; width: 378px;" valign="top" align="left">
+   			 <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 13px;">
+		      Olá,
+		      <br><br>
+		      Sua turma acabou de definir novo um evento. Salve a data e preste atenção em todos os detalhes.
+		      <br><br>
+   			</div>
+		    <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 13px;">
+			  <b style="color: #777777;">INFORMAÇõES DO EVENTO:</b>
+			  <br> 
+			   <b>Evento:</b> %EVENTO_TIPO%
+			  <br> 
+			   <b>Data:</b> %DATA%
+		      <br> 
+			   <b>Local:</b> %LOCAL%
+		      <br><br>
+
+			  <b style="color: #777777;">ENDEREÇO:</b>
+			   <br> 
+			   <b>Rua:</b> %LOGRADOURO%
+		      <br>
+			   <b>Bairro:</b> %BAIRRO%
+			   <br>
+			   <b>Número:</b> %NUMERO%
+			   <br>
+			   <b>Complemento:</b> %COMPLEMENTO%
+		    </div>
+
+			</td></tr></tbody>
+  		</table>
+			</td></tr></tbody>
+	</table>
+
+
+
+<table class="table-row" width="600px" bgcolor="#FFFFFF" style="table-layout: fixed; background-color: #ffffff;" cellspacing="0" cellpadding="0" border="0">
+	<tbody><tr><td class="table-row-td" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding-left: 36px; padding-right: 36px;" valign="top" align="left">
+ 	<table class="table-col" align="left" width="378" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;">
+  		<tbody><tr><td class="table-col-td" width="378" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; width: 378px;" valign="top" align="left">
+    
+   		 <table class="table-space" height="16" style="height: 16px; font-size: 0px; line-height: 0; width: 378px; background-color: #ffffff;" width="378" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="16" style="height: 16px; width: 378px; background-color: #ffffff;" width="378" bgcolor="#FFFFFF" align="left">&nbsp;</td></tr></tbody></table>
+  
+  		</td></tr></tbody></table>
+	</td></tr></tbody></table>
+
+	<table class="table-row" width="600px" bgcolor="#FFFFFF" style="table-layout: fixed; background-color: #ffffff;" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-row-td" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding-left: 36px; padding-right: 36px;" valign="top" align="left">
+	<table class="table-col" align="left" width="500px" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;">
+		<tbody><tr><td class="table-col-td" width="378" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; width: 378px;" valign="top" align="left">
+ 
+	    <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 13px;">
+		  
+		  <br> 
+		   Atenciosamente,
+	      <br>
+	      Equipe suaformatura.
+	      <br>
+	      <br>
+	    </div>
+	    <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 11px;">
+	      Caso não tenha feito esta solicitação, é possível que outro usuário tenha inserido o seu endereço de e-mail acidentalmente. Você pode desconsiderar este e-mail.
+	      <br>
+		  Este é um email automático e as respostas enviadas não poderão ser respondidas. Se quiser entrar em contato com nossa equipe, envie um email para contato@suaformatura.com. Se quiser reportar algum problema do site, envie um email para suporte@suaformatura.com.
+	     
+	    </div>
+	    
+		</td></tr></tbody>
+	</table>
+	</td></tr></tbody>
+	</table>
 	
-	function zgMostraAviso(pDescBT1,pDescBT2,pUrlBT2,pDescBT3,pUrlBT3,pDescBT4,pUrlBT4) {
-		/** Definir valor padrão para os parâmetros **/
-		
-		if(typeof(pDescBT1)==='undefined')	pDescBT1	= '';
-		if(typeof(pDescBT2)==='undefined')	pDescBT2	= '';
-		if(typeof(pUrlBT2)==='undefined')	pUrlBT2		= '';
-		if(typeof(pDescBT3)==='undefined')	pDescBT3	= '';
-		if(typeof(pUrlBT3)==='undefined')	pUrlBT3		= '';
-		if(typeof(pDescBT4)==='undefined')	pDescBT4	= '';
-		if(typeof(pUrlBT4)==='undefined')	pUrlBT4		= '';
-		
-		var vUrl = 'http://dbapp//App/aviso.php?pDescBT1='+encodeURIComponent(pDescBT1)+'&pDescBT2='+encodeURIComponent(pDescBT2)+'&pDescBT3='+encodeURIComponent(pDescBT3)+'&pDescBT4='+encodeURIComponent(pDescBT4)+'&pUrlBT2='+pUrlBT2+'&pUrlBT3='+pUrlBT3+'&pUrlBT4='+pUrlBT4;
-		
-		$("#zgDivModalID").load(vUrl);
-		$("#zgDivModalID").modal({
-			keyboard: true,
-			replace: true
-		});
-	}
+<table class="table-space" height="32" style="height: 32px; font-size: 0px; line-height: 0; width: 600px; background-color: #ffffff;" width="600" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="32" style="height: 32px; width: 600px; padding-left: 18px; padding-right: 18px; background-color: #ffffff;" width="600" bgcolor="#FFFFFF" align="center">&nbsp;<table bgcolor="#E8E8E8" height="0" width="100%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td bgcolor="#E8E8E8" height="1" width="100%" style="height: 1px; font-size:0;" valign="top" align="left">&nbsp;</td></tr></tbody></table></td></tr></tbody></table>
 
-	var zgMasksData = {
-		'fone': { mascara: '(00) 00009-0000'  },'cpf': { mascara: '000.000.000-00'  },'cnpj': { mascara: '00.000.000/0000-00'  },'data': { mascara: '30/10/3000'  },'cep': { mascara: '00000-000'  },'tempo': { mascara: '50:50:50'  },'cartao': { mascara: '0000 0000 0000 0000'  },'money': { mascara: '#.##0,00' ,reverse: true ,maxlength: false},'numero': { mascara: '#'  },'porcentagem': { mascara: '##0,00%' ,reverse: true ,maxlength: false}
-	}
-	var zgMaskOptions = {
-		byPassKeys: [9, 16, 17, 18, 36, 37, 38, 39, 40, 91],
-		translation: {
-			'0': {pattern: /[0-9]/}, 
-			'1': {pattern: /[0-1]/},
-			'2': {pattern: /[0-2]/},
-			'3': {pattern: /[0-3]/},
-			'4': {pattern: /[0-4]/},
-			'5': {pattern: /[0-5]/},
-			'6': {pattern: /[0-6]/},
-			'7': {pattern: /[0-7]/},
-			'8': {pattern: /[0-8]/},
-			'9': {pattern: /[0-9]/, optional: true}, 
-			'#': {pattern: /[0-9]/, recursive: true}, 
-			'A': {pattern: /[A-Z]/},
-			'a': {pattern: /[a-z]/},
-			'S': {pattern: /[a-zA-Z]/},
-			'@': {pattern: /[a-zA-Z0-9]/},
-			'*': {pattern: /[0-9a-zA-ZçÇáàãâéèêíìóòôõúùü]/}
-		}
-	};
-	
-	function zgMask (pElement,pMask) {
-		$el = $(pElement);
-		
-		if (zgMasksData && pMask in zgMasksData) {
-			var opt = zgMaskOptions;
-			if (zgMasksData[pMask].reverse !== undefined) {
-				opt.reverse = true;
-			}
-			
-			if (zgMasksData[pMask].maxlength !== undefined) {
-				opt.maxlength = zgMasksData[pMask].maxlength;
-			}
-			
-			$el.mask(zgMasksData[pMask].mascara,opt);
-		}else{
-			$el.mask(pMask,zgMaskOptions);
-		}
-		
-	}
-	</script>
-</head>
-<body class="navbar-fixed breadcrumbs-fixed">
-<div class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar">
-	<script type="text/javascript">try{ace.settings.check('navbar' , 'fixed')}catch(e){}</script>
-	<div class="collapse navbar-collapse pull-left" >
-			<a class="navbar-brand" target="_blank" href="#"></a>
-	</div>
-	<div class="collapse navbar-collapse pull-left" >
-		<ul class="nav ace-nav">
-		</ul>
-	</div>
-	<div class="navbar-header pull-right" role="navigation">
-		<ul class="nav ace-nav">
-			<li class="grey">
-				<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="fa fa-building-o"></i><span class="badge badge-grey">1</span></a>
-				<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
-					<li class="dropdown-header"><i class="fa fa-building-o"></i>Selecione a Empresa</li>
-					<li><a href="http://dbapp//index.php?zid=Y29kRW1wcmVzYT0y"><div class="clearfix"><span class="pull-left"><i class="  fa fa-circle-o"></i>2 - Testes</span></div></a></li>
-					<li><a href="http://dbapp//index.php?zid=Y29kRW1wcmVzYT0x"><div class="clearfix"><span class="pull-left"><i class="  fa fa-circle"></i><b>1 - Zage Tecnologia</b></span><span class="pull-right"><i class="fa fa-check"></i></span></div></a></li>
-				</ul>
-			</li>
-			<li class="purple" id="zgNotificacoesID">
-			</li>
-			<li class="green" id="zgMensagensID">
-			</li>
-			<li class="light-blue">
-				<a data-toggle="dropdown" href="#" class="dropdown-toggle"><img class="nav-user-photo" src="http://dbapp/imgs//avatars/M_Avatar1.png" alt="Administrador" /><span class="user-info"><small>Bem Vindo,</small>Administrador</span><i class="fa fa-caret-down"></i></a>
-				<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-					<li><a href="javascript:zgLoadMenu('http://dbapp//App/configuracaophp?id=X2NvZE1lbnVfPTk5OTk5OTEmX2ljb25lXz1mYSBmYS1jb2c=','X2NvZE1lbnVfPTk5OTk5OTEmX2ljb25lXz1mYSBmYS1jb2cmaWQ9WDJOdlpFMWxiblZmUFRrNU9UazVPVEVtWDJsamIyNWxYejFtWVNCbVlTMWpiMmM9');" ><i class="fa fa-cog"></i>Configurações</a></li>
-					<li><a href="javascript:zgLoadMenu('http://dbapp//App/perfil.php?id=X2NvZE1lbnVfPTk5OTk5OTImX2ljb25lXz1mYSBmYS11c2Vy','X2NvZE1lbnVfPTk5OTk5OTImX2ljb25lXz1mYSBmYS11c2VyJmlkPVgyTnZaRTFsYm5WZlBUazVPVGs1T1RJbVgybGpiMjVsWHoxbVlTQm1ZUzExYzJWeQ==');" ><i class="fa fa-user"></i>Perfil</a></li>
-					<li><a href="javascript:zgLoadMenu('http://dbapp//App/alteraSenha.php?id=X2NvZE1lbnVfPTk5OTk5OTMmX2ljb25lXz1mYSBmYS1rZXk=','X2NvZE1lbnVfPTk5OTk5OTMmX2ljb25lXz1mYSBmYS1rZXkmaWQ9WDJOdlpFMWxiblZmUFRrNU9UazVPVE1tWDJsamIyNWxYejFtWVNCbVlTMXJaWGs9');" ><i class="fa fa-key"></i>Mudar senha</a></li>
-					<li class="divider"></li>
-					<li><a href="http://dbapp//Seg/logoff.php" target="_top" ><i class="fa fa-off"></i>Sair</a></li>
-				</ul>
-			</li>
-		</ul>
-	</div>
-</div><!-- /#ace-settings-container -->
-<div class="main-container" id="main-container">
-	<script type="text/javascript">
-		try{ace.settings.check('main-container' , 'fixed')}catch(e){}
-	</script>
-	<div class="main-container-inner">
-		<a class="menu-toggler" id="menu-toggler" href="#">
-			<span class="menu-text"></span>
-		</a>
-		<div class="sidebar sidebar-fixed" id="sidebar">
-			<script type="text/javascript">
-				try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
-			</script>
-			<div class="sidebar-shortcuts" id="sidebar-shortcuts">
-				<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-					<button class="btn btn-success"><i class="fa fa-signal"></i></button>
-					<button class="btn btn-info"><i class="fa fa-pencil"></i></button>
-					<button class="btn btn-warning"><i class="fa fa-group"></i></button>
-					<button class="btn btn-danger" data-rel="tooltip" title="Configurações"><i class="fa fa-cog"></i></button>
-				</div>
-				<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-					<span class="btn btn-success"></span>
-					<span class="btn btn-info"></span>
-					<span class="btn btn-warning"></span>
-					<span class="btn btn-danger"></span>
-				</div>
-			</div><!-- #sidebar-shortcuts -->
-			<ul class="nav nav-list">
-			</ul>
-	<div class="sidebar-collapse" id="sidebar-collapse">
-		<i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
-	</div>
-	<script type="text/javascript">
-		try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
-	</script>
-		</div>
-		<div class="main-content">
-			<div class="breadcrumbs breadcrumbs-fixed" id="breadcrumbs">
-				<script type="text/javascript">
-					try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
-				</script>
-				<ul class="breadcrumb">
-					<li>
-						<i class="icon-home home-icon"></i><a href="/?id=X2NvZE1vZHVsb189NA==" target="_top">Início</a>
-					</li>
-				</ul>
-				<div style="margin-right:-8px;" class="pull-right">
-					<div class="pull-right"><h5 class="lighter">[&nbsp;Doc&nbsp;]&nbsp;<a href="#"><img width="16" height="16" src="http://dbapp/imgs/Icones//Doc_24x24.png" /></a></h5></div>
-						<div style="position: relative;margin-right:-18px;" class="nav-search minimized pull-right" data-rel="tooltip" title="Mudar de Módulo"><form action="http://dbapp/?id=" method="POST" class="form-search"><span class="input-icon"><input type="text" autocomplete="off" class="input-xs nav-search-input" placeholder="Módulo" name="modApelido" maxlength="3" /><i class="icon-th nav-search-icon" style="cursor: pointer;" onclick="javascript:zgLoadUrl('http://dbapp//App/modulo.php?id=');"></i></span></form></div>
-					</div> 
-			</div>
-				<div class="page-content" name="zgDivCentral" id="zgDivCentralID"></div>
-	</div>
-	<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-		<i class="icon-double-angle-up icon-only bigger-110"></i>
-	</a>
-</div>
-</div>
-
-
-<div class="modal fade" id="zgDivModalID" tabindex="-1" role="dialog" aria-hidden="true" data-replace="true">
-<iframe id="zgWindowDownID" src="" style="display:none; visibility:hidden;"></iframe>
-<script>
-	zgLoadUrl('#');
-</script>
-</body>
-</html>
+<table class="table-row" width="600" bgcolor="#FFFFFF" style="table-layout: fixed; background-color: #ffffff;" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-row-td" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding-left: 36px; padding-right: 36px;" valign="top" align="left">
+ <table class="table-col" align="left" width="528" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td class="table-col-td" width="528" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal;" valign="top" align="left">
+	 <div style="font-family: Arial, sans-serif; line-height: 19px; color: #777777; font-size: 14px; text-align: center;">&copy; Suaformatura.com</div>
+	 <table class="table-space" height="8" style="height: 8px; font-size: 0px; line-height: 0; width: 528px; background-color: #ffffff;" width="528" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="8" style="height: 8px; width: 528px; background-color: #ffffff;" width="528" bgcolor="#FFFFFF" align="left">&nbsp;</td></tr></tbody></table>
+	 <div style="font-family: Arial, sans-serif; line-height: 19px; color: #bbbbbb; font-size: 13px; text-align: center;">
+		<a href="#" style="color: #428bca; text-decoration: none; background-color: transparent;">Termos</a>
+		&nbsp;|&nbsp;
+		<a href="#" style="color: #428bca; text-decoration: none; background-color: transparent;">Sobre</a>
+		&nbsp;|&nbsp;
+		<a href="#" style="color: #428bca; text-decoration: none; background-color: transparent;">Contato</a>
+	 </div>
+ </td></tr></tbody></table>
+</td></tr></tbody></table>
+<table class="table-space" height="14" style="height: 14px; font-size: 0px; line-height: 0; width: 600px; background-color: #ffffff;" width="600" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-space-td" valign="middle" height="14" style="height: 14px; width: 600px; background-color: #ffffff;" width="600" bgcolor="#FFFFFF" align="left">&nbsp;</td></tr></tbody></table>
+</td></tr>
+ </table>
+ </body>
+ </html>

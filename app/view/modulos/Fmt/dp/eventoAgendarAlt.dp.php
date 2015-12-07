@@ -67,7 +67,7 @@ if ($codTipo != 5){
 
 /** Valor Avulso **/
 if (!isset($valorAvulso) || empty($valorAvulso)) {
-	$valorAvulso = null;
+	$valorAvulso = 0;
 }else{
 	$valorAvulso = \Zage\App\Util::to_float($valorAvulso);
 }
@@ -88,20 +88,24 @@ if ($err != null) {
 //$em->getConnection()->beginTransaction();
 try {
 	
+	#################################################################################
+	## Resgatar objetos
+	#################################################################################
+	$oOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+	$oTipoEvento	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipo));
+	
 	if (isset($codEvento) && (!empty($codEvento))) {
  		$oEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento));
  		if (!$oEvento) $oEvento	= new \Entidades\ZgfmtEvento();
- 		$assunto    = "O evento ".$local." foi alterado";
+ 		//Noteficação
+ 		$assunto    = "Evento alterado";
+ 		$texto 		= 'Sua turma acabou de alterar um evento. Fique atento à programação da sua formatura.';
  	}else{
  		$oEvento	= new \Entidades\ZgfmtEvento();
- 		$assunto    = $local."foi definido";
+ 		//Notificação
+ 		$assunto    = "Definição de um novo evento";
+ 		$texto 		= 'Sua turma acabou de definir um novo evento. Fique atento à programação da sua formatura.';
  	}
- 	
- 	#################################################################################
- 	## Configurações da data
- 	################################################################################# 	
- 	$oOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
- 	$oTipoEvento	= $em->getRepository('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipo));
  	
  	$oEvento->setCodFormatura($oOrganizacao);
  	$oEvento->setData($dataEvento);
@@ -112,11 +116,11 @@ try {
  	
  	$em->persist($oEvento);
 	
-	/**
-	 * ******** Enviar notificação ********
-	 **/
-	$oRemetente 	= $em->getReference ('\Entidades\ZgsegUsuario', $system->getCodUsuario());
-	$template 		= $em->getRepository ('\Entidades\ZgappNotificacaoTemplate' )->findOneBy (array('template' => 'EVENTO_CONF'));
+	#################################################################################
+	## Enviar notificação
+	#################################################################################
+ 	$oRemetente 	= $em->getReference('\Entidades\ZgsegUsuario', $system->getCodUsuario());
+	$template 		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'EVENTO_CONF'));
 	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_USUARIO);
 	$notificacao->setAssunto($assunto);
 	$notificacao->setCodRemetente($oRemetente);
@@ -127,16 +131,76 @@ try {
 	
 	$notificacao->enviaSistema();
 	$notificacao->enviaEmail ();
-	//$notificacao->setEmail ( $email );
-	$notificacao->setCodTemplate ( $template );
-
-	$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipoEvento->getDescricao());
- 	//$notificacao->adicionaVariavel("NOME"			, $local);
- 	///$notificacao->adicionaVariavel("DATA"			, $dataEvento);
- 	//$notificacao->adicionaVariavel("LOGRADOURO"		, $descLogradouro);
- 	///$notificacao->adicionaVariavel("BAIRRO"			, $bairro);
- 	//$notificacao->adicionaVariavel("NUMERO"			, $numero);
- 	//$notificacao->adicionaVariavel("COMPLEMENTO"	, $complemento);
+	$notificacao->setCodTemplate($template);
+	
+	//Analisar o tipo do evento
+	if ($codTipo == 5){
+		$oOrfFmt 		= $em->getRepository('\Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+		
+		$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipoEvento->getDescricao());
+		$notificacao->adicionaVariavel("TEXTO"			, $texto);
+		$notificacao->adicionaVariavel("LOCAL"			, $oOrfFmt->getCodInstituicao()->getNome());
+		$notificacao->adicionaVariavel("DATA"			, $dataEvento->format($system->config["data"]["datetimeSimplesFormat"]));
+		$notificacao->adicionaVariavel("TAG_END"		, "");
+		$notificacao->adicionaVariavel("LOGRADOURO"		, "");
+		$notificacao->adicionaVariavel("BAIRRO"			, "");
+		$notificacao->adicionaVariavel("NUMERO"			, "");
+		$notificacao->adicionaVariavel("COMPLEMENTO"	, "");
+		
+		//Qtde de convite
+		if ($qtdeConvite == null){
+			$notificacao->adicionaVariavel("QTDE_CONVITE"	, "Sem limite");
+		}else{
+			$notificacao->adicionaVariavel("QTDE_CONVITE"	, $qtdeConvite." (incluindo o formando)");
+		}
+		
+		//Valor Avulso
+		if ($valorAvulso == 0){
+			$notificacao->adicionaVariavel("VALOR_AVULSO"	, "");
+		}else{
+			$notificacao->adicionaVariavel("VALOR_AVULSO"	, "<b>Participação avulsa:</b> ".\Zage\App\Util::to_money($valorAvulso)."<br>");
+		}
+		
+		
+		
+	}else{
+		$oForEnd 		= $em->getRepository('\Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oFornecedor->getCodigo(), 'codTipoEndereco' => "F"));
+			
+		$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipoEvento->getDescricao());
+		$notificacao->adicionaVariavel("TEXTO"			, $texto);
+		$notificacao->adicionaVariavel("LOCAL"			, $oFornecedor->getFantasia());
+		$notificacao->adicionaVariavel("DATA"			, $dataEvento->format($system->config["data"]["datetimeSimplesFormat"]));
+		
+		//Qtde de convite
+		if ($qtdeConvite == null){
+			$notificacao->adicionaVariavel("QTDE_CONVITE"	, "Sem limite");
+		}else{
+			$notificacao->adicionaVariavel("QTDE_CONVITE"	, $qtdeConvite." (incluindo o formando)");
+		}
+		
+		//Valor Avulso
+		if ($valorAvulso == 0){
+			$notificacao->adicionaVariavel("VALOR_AVULSO"	, "");
+		}else{
+			$notificacao->adicionaVariavel("VALOR_AVULSO"	, "<b>Participação avulsa:</b> ".\Zage\App\Util::to_money($valorAvulso)."<br>");
+		}
+		
+		//Verificar se tem endereço
+		if ($oForEnd){
+			$notificacao->adicionaVariavel("TAG_END"		, "ENDEREÇO:");
+			$notificacao->adicionaVariavel("LOGRADOURO"		, "<b>Rua:</b> ".$oForEnd->getEndereco());
+			$notificacao->adicionaVariavel("BAIRRO"			, "<b>Bairro:</b> ".$oForEnd->getBairro());
+			$notificacao->adicionaVariavel("NUMERO"			, "<b>Número:</b> ".$oForEnd->getNumero());
+			$notificacao->adicionaVariavel("COMPLEMENTO"	, "<b>Complemento:</b> ".$oForEnd->getComplemento());
+		}else{
+			$notificacao->adicionaVariavel("TAG_END"		, "");
+			$notificacao->adicionaVariavel("LOGRADOURO"		, "");
+			$notificacao->adicionaVariavel("BAIRRO"			, "");
+			$notificacao->adicionaVariavel("NUMERO"			, "");
+			$notificacao->adicionaVariavel("COMPLEMENTO"	, "");
+		}
+		
+	}
  	
 	$notificacao->salva ();
  	/********** Salvar as informações *******/

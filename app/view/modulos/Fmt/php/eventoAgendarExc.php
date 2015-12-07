@@ -46,10 +46,10 @@ try {
 	$info 	 = $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento));
 	
 	if (!$info) 	{
-		\Zage\App\Erro::halt($tr->trans('Tipo Evento não existe'));
+		\Zage\App\Erro::halt($tr->trans('Tipo de evento não existe.'));
 	}else{
 		$podeRemover	= null;
-		$mensagem		= $tr->trans('Deseja realmente excluir o Evento').': <em><b>'.$info->getNome().'</b></em> ?';
+		$mensagem		= $tr->trans('Deseja realmente excluir o evento').': <b>'.$info->getCodTipoEvento()->getDescricao().'</b> ?';
 		$classe			= "text-warning";
 	}
 	
@@ -74,14 +74,14 @@ $tpl->load(HTML_PATH . '/templateModalExc.html');
 $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('PODE_REMOVER'		,$podeRemover);
-$tpl->set('TITULO'				,$tr->trans('Exclusão de Evento'));
+$tpl->set('TITULO'				,$tr->trans('Excluir'));
 $tpl->set('ID'					,$id);
 $tpl->set('TEXTO'				,$mensagem);
 $tpl->set('MENSAGEM'			,$mensagem);
 $tpl->set('CLASSE'				,$classe);
 $tpl->set('VAR'					,'codEvento');
 $tpl->set('VAR_VALUE'			,$info->getCodigo());
-$tpl->set('NOME'				,$info->getNome());
+$tpl->set('NOME'				,$info->getCodTipoEvento()->getDescricao());
 $tpl->set('OBSERVACAO'			,$observacao);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
