@@ -7,7 +7,12 @@ if (defined('DOC_ROOT')) {
 }else{
  	include_once('../include.php');
 }
- 
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$log,$tr;
+
+
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
@@ -67,14 +72,14 @@ if ( ($codTipo == "CC") && ( !isset($codAgencia) || empty($codAgencia) )   ) {
 /** AJUSTANDO O VALOR DA MORA **/
 if ($codTipoMora == 'V'){
 	if ($valorMora){ 
-		$valorMora	= \Zage\App\Util::toMysqlNumber($valorMora);
+		$valorMora	= \Zage\App\Util::to_float($valorMora);
 	}else{
 		$valorMora = 0;
 	}
 	$pctMora = 0;
 }elseif ($codTipoMora == 'P'){
 	if ($pctMora)	{
-		$pctMora		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctMora));
+		$pctMora		= \Zage\App\Util::to_float(str_replace("%", "", $pctMora));
 	}else{
 		$pctMora = 0;
 	}
@@ -84,14 +89,14 @@ if ($codTipoMora == 'V'){
 /** AJUSTANDO O VALOR DO JUROS **/
 if ($codTipoJuros == 'V'){
 	if ($valorJuros){
-		$valorJuros		= \Zage\App\Util::toMysqlNumber($valorJuros);
+		$valorJuros		= \Zage\App\Util::to_float($valorJuros);
 	}else{
 		$valorJuros = 0;
 	}
 	$pctJuros = 0;
 }elseif ($codTipoJuros == 'P'){
 	if ($pctJuros)	{
-		$pctJuros		= \Zage\App\Util::toMysqlNumber(str_replace("%", "", $pctJuros));
+		$pctJuros		= \Zage\App\Util::to_float(str_replace("%", "", $pctJuros));
 	}else{
 		$pctJuros = 0;
 	}
@@ -100,7 +105,7 @@ if ($codTipoJuros == 'V'){
 
 /** SALDO INICIAL **/
 if ($saldoInicial){
-	$saldo		= \Zage\App\Util::toMysqlNumber($saldoInicial);
+	$saldo		= \Zage\App\Util::to_float($saldoInicial);
 }else{
 	$saldo = 0;
 }
@@ -140,7 +145,7 @@ if (isset($codCarteira) && (!empty($codCarteira))) {
 
 /** VALOR BOLETO **/
 if ($valorBoleto){
-	$valorBoleto		= \Zage\App\Util::toMysqlNumber($valorBoleto);
+	$valorBoleto		= \Zage\App\Util::to_float($valorBoleto);
 }else{
 	$valorBoleto = null;
 }
