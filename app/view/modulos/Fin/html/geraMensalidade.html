@@ -502,6 +502,8 @@ function atualizaSaldosGeraMensalidade() {
 	if ($saldoSistema < 0)		$saldoSistema 	= 0;
 	var $saldoMensalidade		= $saldoTotal - $saldoSistema;
 	
+	if ($saldoMensalidade < 0 )	$saldoMensalidade	= 0;
+	
 	$("#saldoTotalFormandoID").val($saldoTotal.toFixed(2));
 	$("#saldoSistemaFormandoID").val($saldoSistema.toFixed(2));
 	$("#saldoMensalidadeFormandoID").val($saldoMensalidade.toFixed(2));

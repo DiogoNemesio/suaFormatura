@@ -245,7 +245,7 @@
 				});
 			}else if (pMask == "dinheiro") {
 				//$el.mask(zgMasksData[pMask].mascara,opt);
-				$el.maskMoney({prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+				$el.maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: false});
 			}else{
 				if (zgMasksData[pMask].reverse != undefined) {
 					opt.reverse = true;
