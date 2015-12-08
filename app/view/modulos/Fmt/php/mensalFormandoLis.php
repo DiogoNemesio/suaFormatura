@@ -47,46 +47,47 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 #################################################################################
 try {
 	$formandos	= \Zage\Fmt\Formatura::listaFormandos($system->getCodOrganizacao());
+	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
 #################################################################################
-## Resgata as informações da formatura
+## Variáveis usadas no cálculo das mensalidades
 #################################################################################
-$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+$dataConclusao			= $oOrgFmt->getDataConclusao();
+if (!$dataConclusao)	\Zage\App\Erro::halt("Data de Conclusão não informada");
 
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
 ## Para calcular o valor pendente a ser gerado
-## Se não existir, apenas não sugerir os valores a serem gerados
+## Se não existir, emitir um erro
 #################################################################################
 $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
 if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
 $valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
 $qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-$valorOrcadoFormando	= ($qtdFormandosBase) ? \Zage\App\Util::to_float(round(($valorOrcado / $qtdFormandosBase),2)) : 0;
-$valorArrecadado		= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
-$valorGasto				= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
-$pctArrecadado			= ($valorOrcado) ? round(($valorArrecadado * 100) / $valorOrcado,2) : 0;
-$pctGasto				= ($valorOrcado) ? round(($valorGasto * 100) / $valorOrcado,2) : 0;
-$diffPct				= round($pctArrecadado - $pctGasto,2);
+$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
 
 #################################################################################
-## Resgata valores provisionados para cada formando
+## Calcular o valor já provisionado por formando
 #################################################################################
 $oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
-$totalProvisionado		= 0;
-$aValorProv				= array();
-for ($i = 0; $i < sizeof($oValorProv); $i++) {
-	$aValorProv[$oValorProv[$i][0]->getCgc()]		= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
-	$totalProvisionado								+= \Zage\App\Util::to_float($oValorProv[$i]["total"]);
-}
 
 #################################################################################
-## Calcular os valores totais e saldos
+## Montar o array para facilitar a impressão no grid dos valores provisionados
+## Montar um array que será enviado ao Html para validar se os formandos
+## selecionados tem os mesmos valores de mensalidade e sistema
 #################################################################################
-$saldoAProvisionar			= ($valorOrcado - $totalProvisionado);
+$aValorProv				= array();
+$aCodigos				= array();
+for ($i = 0; $i < sizeof($oValorProv); $i++) {
+	$total													= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
+	$aCodigos[$oValorProv[$i][0]->getCgc()]["MENSALIDADE"]	= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]);
+	$aCodigos[$oValorProv[$i][0]->getCgc()]["SISTEMA"]		= \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
+	$aCodigos[$oValorProv[$i][0]->getCgc()]["TOTAL"]		= $total;
+	$aValorProv[$oValorProv[$i][0]->getCgc()]				= $total;
+}
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
@@ -116,33 +117,93 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$grid->setValorCelula($i,0,'<a href="'.$linkNome.'">'.$formandos[$i]->getNome().'</a>');
 	
 	#################################################################################
-	## Valor já gerado
-	#################################################################################			
-	$grid->setValorCelula($i, 2, $aValorProv[$formandos[$i]->getCpf()]);
+	## Atualizar a coluna status com o status da associação do formando a Organização (Formatura)
+	#################################################################################
+	$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $formandos[$i]->getCodigo(),'codOrganizacao' => $system->getCodOrganizacao()));
+	$codStatus	= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getCodigo() : null;
+	$status		= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getDescricao() : null;
+	$grid->setValorCelula($i,4,$status);
+	
+
+	#################################################################################
+	## Verificar o status da associação a Formatura, para definir se poderá ou não
+	## Gerar mensalidade para o Formando
+	#################################################################################
+	switch ($codStatus) {
+		case "A":
+		case "P":
+		case "B":
+			$podeGerar		= true;
+			$podeDesistir	= true;
+			break;
+		case "D":
+			$podeGerar		= true;
+			$podeDesistir	= false;
+			break;
+		case "T":
+			$podeGerar		= false;
+			$podeDesistir	= false;
+			break;
+		default:
+			$podeGerar		= false;
+			$podeDesistir	= false;
+			break;
+	
+	}
+	
+	#################################################################################
+	## Definir a ação do botão de desistência
+	#################################################################################
+	if ($podeDesistir	== true) {
+	
+		#################################################################################
+		## Definir o link do botão de geração de conta
+		#################################################################################
+		$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/desistenciaCad.php?id='.$id);
+	
+	}else{
+		$grid->desabilitaCelula($i, 5);
+	}
+	
+	#################################################################################
+	## Definir a ação do botão de geração de conta
+	#################################################################################
+	if ($podeGerar	== true) {
+
+		#################################################################################
+		## Definir o link do botão de geração de conta
+		#################################################################################
+		$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$id);
+		
+	}else{
+		$grid->desabilitaCelula($i, 6);
+	}
+	
+
+	#################################################################################
+	## Definir o link do botão de visualização das contas
+	#################################################################################
+	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id);
+	
+	
+	#################################################################################
+	## Definir os valores
+	#################################################################################
+	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
+	$saldo						= round($mensalidadeFormando - $valProvisionado,2);
+	$aCodigos[$formandos[$i]->getCpf()]["SALDO"]	= $saldo;
+	$grid->setValorCelula($i,2,$valProvisionado);
 	
 	#################################################################################
 	## Déficit de geração
 	#################################################################################
-	if ($valorOrcadoFormando > 0){
-		//Tem déficit
-		if ($valorOrcadoFormando > $aValorProv[$formandos[$i]->getCpf()]){
-			$saldo	= \Zage\App\Util::to_money($valorOrcadoFormando - $aValorProv[$formandos[$i]->getCpf()]);
-			$grid->setValorCelula($i, 3, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".$saldo."</span>");
-		}
-		// Não déficit
-		elseif ($valorOrcadoFormando < $aValorProv[$formandos[$i]->getCpf()]){
-			$saldo	= \Zage\App\Util::to_money($aValorProv[$formandos[$i]->getCpf()] - $valorOrcadoFormando);
-			$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-long-arrow-up green'></i> ".$saldo."</span>");
-		}
+	if ($saldo > 0){
+		$grid->setValorCelula($i, 3, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+	}else if ($saldo == 0) {
+		$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+	}else{
+		$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 	}
-	
-	#################################################################################
-	## Definir o valores do botão
-	#################################################################################
-	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/mensalidadeFormandoConta.php?id='.$id);
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$id);
-	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id);
-
 }
 
 #################################################################################
@@ -167,7 +228,6 @@ $tpl->set('GRID'					,$htmlGrid);
 $tpl->set('IC'						,$_icone_);
 $tpl->set('ID'						,$id);
 $tpl->set('TITULO'					,'Gerenciar Mensalidades');
-
 
 #################################################################################
 ## Por fim exibir a página HTML

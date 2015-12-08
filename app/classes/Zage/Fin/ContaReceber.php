@@ -313,12 +313,14 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$_valorOutros		= (isset($this->_outrosValores)) ? $this->_outrosValores[$i] : $this->getValorOutros(); 
 				$_val				= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($_valorOutros) - \Zage\App\Util::to_float($this->getValorDesconto()) - \Zage\App\Util::to_float($this->getValorDescontoJuros()) - \Zage\App\Util::to_float($this->getValorDescontoMora());
 				$_valorTotal		+= $_val;
-				$valores[$i]		= \Zage\App\Util::toMysqlNumber($this->_valores[$i]); 
-				$outrosValores[$i]	= \Zage\App\Util::toMysqlNumber($_valorOutros);
+				$valores[$i]		= \Zage\App\Util::to_float($this->_valores[$i]); 
+				$outrosValores[$i]	= \Zage\App\Util::to_float($_valorOutros);
 			}
 		}
 		
-		if (\Zage\App\Util::toPHPNumber($_valorTotal) != \Zage\App\Util::toPHPNumber($this->_getValorTotal())) {
+		$_valorTotal				= round($_valorTotal,2);
+		
+		if (floatval($_valorTotal) != floatval($this->_getValorTotal())) {
 			//$log->debug("Valor informado: ".\Zage\App\Util::toPHPNumber($this->_getValorTotal())." Valor calculado: ".\Zage\App\Util::toPHPNumber($_valorTotal));
 			return $tr->trans('Valor total difere da soma de valores do array !!!');
 		}
@@ -912,7 +914,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system,$tr;
+		global $em,$system,$tr,$log;
 		
 		#################################################################################
 		## Resgata o perfil da conta
@@ -975,11 +977,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$valorTotal			= round(floatval($valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto),2);
 		
 		#################################################################################
-		## Atualiza o valor de desconto na conta
-		#################################################################################
-		$oConta->setValorDesconto($oConta->getValorDesconto() + $valorDesconto);
-
-		#################################################################################
 		## Resgatar os objetos das chaves estrangeiras
 		#################################################################################
 		$oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
@@ -993,8 +990,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		if ($oConta->getCodigo()) {
 			$saldo		= self::getSaldoAReceber($oConta->getCodigo());
+			$aplDesc	= true;
 		}else{
 			$saldo		= $valorTotal;
+			$aplDesc	= false;
 		}
 		
 		#################################################################################
@@ -1034,10 +1033,17 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 		
 		#################################################################################
+		## Atualiza o valor de desconto na conta
+		#################################################################################
+		$oConta->setValorDesconto($oConta->getValorDesconto() + $valorDesconto);
+		
+		#################################################################################
 		## Atualiza o saldo
 		#################################################################################
+		if ($aplDesc)	$saldo	-= $valorDesconto;
 		$saldo 			+= ($_valJuros + $_valMora);
 		$saldo			= round(floatval($saldo),2);
+		
 		//$_total			= self::calculaValorTotal($oConta);
 		//$log->info("Conta: ".$oConta->getNumero()." Saldo a receber: ".$saldo." ValorJuros: ".$_valJuros." ValorMora: ".$_valMora." _CalcTotal:".$_total." ValorTotal: ".$valorTotal);
 
@@ -2400,7 +2406,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 */
 	public function excluiBaixa (\Entidades\ZgfinContaReceber $oConta,\Entidades\ZgfinHistoricoRec $oHist) {
 	
-		
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
@@ -2471,7 +2476,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 
 		#################################################################################
-		## Verificar se a baixa que foi excluída agregou júros a conta
+		## Verificar se a baixa que foi excluída agregou júros, mora e desconto a conta
 		#################################################################################
 		$valJurosBaixa		= round(floatval($oHist->getValorJuros())			,2); 
 		$valMoraBaixa		= round(floatval($oHist->getValorMora()) 			,2);
@@ -2481,6 +2486,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$valDescMoraBaixa	= round(floatval($oHist->getValorDescontoJuros())	,2);
 		$valDescJurosConta	= round(floatval($oConta->getValorDescontoJuros())	,2);
 		$valDescMoraConta	= round(floatval($oConta->getValorDescontoJuros())	,2);
+		$valDescontoBaixa	= round(floatval($oHist->getValorDesconto())		,2);
+		$valDescontoConta	= round(floatval($oConta->getValorDesconto())		,2);
 		
 		if (($valJurosBaixa > 0) && ($valJurosBaixa <= $valJurosConta) ) {
 			$oConta->setValorJuros($valJurosConta - $valJurosBaixa);
@@ -2500,12 +2507,25 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			$_indSalvar			= true;
 		}
 		
+		if (($valDescontoBaixa > 0) && ($valDescontoBaixa >= $valDescontoConta) ) {
+			$oConta->setValorDesconto($valDescontoConta - $valDescontoBaixa);
+			$_indSalvar			= true;
+		}
+		
 		#################################################################################
 		## Excluir o Histórico 
 		#################################################################################
-		$aHist	=  $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codigo' => $oHist->getCodigo()));		
+		$aHist	=  $em->getRepository('Entidades\ZgfinContaReceberHistorico')->findBy(array('codConta' => $oConta->getCodigo()));
 		for ($i = 0; $i < sizeof($aHist); $i++) {
 			$em->remove($aHist[$i]);
+		}
+		
+		#################################################################################
+		## Excluir a Baixa 
+		#################################################################################
+		$aBaixa	=  $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codigo' => $oHist->getCodigo()));		
+		for ($i = 0; $i < sizeof($aBaixa); $i++) {
+			$em->remove($aBaixa[$i]);
 		}
 
 		#################################################################################
@@ -2515,7 +2535,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		for ($i = 0; $i < sizeof($aMov); $i++) {
 			$em->remove($aMov[$i]);
 		}
-		
 		
 		#################################################################################
 		## Verificar se precisa salvar alguma alteração

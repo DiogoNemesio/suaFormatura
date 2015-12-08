@@ -53,7 +53,7 @@ try {
 }
 
 #################################################################################
-## Calcula a quantidade de formandos ativos
+## Calcula a quantidade de formandos
 #################################################################################
 $totalFormandos			= \Zage\Fmt\Formatura::getNumFormandos($system->getCodOrganizacao());
 
@@ -82,20 +82,19 @@ $chkIndTaxaSistema		= ($indRepTaxaSistema) ? "checked" : null;
 ## Formatar as taxas
 #################################################################################
 if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
-if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
+//if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
 if ($taxaUso		< 0)		$taxaUso		= 0;
-$totalTaxa			= ($taxaAdmin + $taxaBoleto);
+//$totalTaxa			= ($taxaAdmin + $taxaBoleto);
 
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
 ## Para calcular o valor pendente a ser gerado
-## Se não existir, apenas não sugerir os valores a serem gerados
+## Se não existir, emitir um erro
 #################################################################################
 $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
 if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
 $valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
 $qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-$taxaTotalSistema		= $taxaUsoTotalFormando * $qtdFormandosBase;
 $mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
 
 #################################################################################
@@ -127,9 +126,9 @@ $grid->adicionaCheckBox($checkboxName);
 $grid->adicionaTexto($tr->trans('USUÁRIO'),				15	,$grid::CENTER	,'usuario');
 $grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					10	,$grid::CENTER	,'cpf','cpf');
-$grid->adicionaTexto($tr->trans('STATUS'),				10	,$grid::CENTER	,'codStatus:descricao');
+$grid->adicionaTexto($tr->trans('STATUS'),				10	,$grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		15	,$grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('R$ PROVISIONAR'),		15	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('R$ PROVISIONAR'),		15	,$grid::CENTER	,'');
 $grid->importaDadosDoctrine($formandos);
 
 #################################################################################
@@ -138,18 +137,63 @@ $grid->importaDadosDoctrine($formandos);
 for ($i = 0; $i < sizeof($formandos); $i++) {
 
 	#################################################################################
-	## Definir o valor da Checkbox
+	## Atualizar a coluna status com o status da associação do formando a Organização (Formatura)
 	#################################################################################
-	$grid->setValorCelula($i,0,$formandos[$i]->getCpf());
+	$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $formandos[$i]->getCodigo(),'codOrganizacao' => $system->getCodOrganizacao()));
+	$codStatus	= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getCodigo() : null;
+	$status		= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getDescricao() : null;
+	$grid->setValorCelula($i,4,$status);
+	
+	#################################################################################
+	## Verificar o status da associação a Formatura, para definir se poderá ou não 
+	## Gerar mensalidade para o Formando
+	#################################################################################
+	switch ($codStatus) {
+		case "A":
+		case "P":
+		case "B":
+		case "D":
+			$podeGerar	= true;
+			break;
+		default:
+			$podeGerar	= false;
+			break;
+				
+	}
 
+	if ($podeGerar	== true) {
+		
+		#################################################################################
+		## Definir o valor da Checkbox
+		#################################################################################
+		$grid->setValorCelula($i,0,$formandos[$i]->getCpf());
+		
+	}else{
+		
+		#################################################################################
+		## Desabilitar a checkBox
+		#################################################################################
+		$grid->desabilitaCelula($i, 0);
+	}
+	
 	#################################################################################
 	## Definir os valores totais
 	#################################################################################
 	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
-	$saldo						= ($mensalidadeFormando - $valProvisionado); 
+	$saldo						= round($mensalidadeFormando - $valProvisionado,2);
 	$aCodigos[$formandos[$i]->getCpf()]["SALDO"]	= $saldo;
 	$grid->setValorCelula($i,5,$valProvisionado);
-	$grid->setValorCelula($i,6,$saldo);
+	
+	#################################################################################
+	## Valor a provisionar
+	#################################################################################
+	if ($saldo > 0){
+		$grid->setValorCelula($i, 6, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+	}else if ($saldo == 0) {
+		$grid->setValorCelula($i, 6, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+	}else{
+		$grid->setValorCelula($i, 6, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+	}
 }
 
 

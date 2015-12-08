@@ -415,4 +415,103 @@ class Financeiro {
 	
 	}
 	
+
+
+	/**
+	 * Resgata o valor de mensalidades já pago por um Formando
+	 * @param unknown $codFormatura
+	 */
+	public static function getValorPagoFormando($codFormatura, $cpf) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		#################################################################################
+		## Array de status que serão calculados
+		#################################################################################
+		$aStatus					= array ("L","P");
+	
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
+		$aCat						= array($codCatMensalidade);
+
+		#################################################################################
+		## Somar os valores recebidos de contas que possuam a categora de mensalidades
+		## calcular os juros e mora separados
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addScalarResult('mensalidade'			, 'mensalidade');
+			$rsm->addScalarResult('juros'				, 'juros');
+			$rsm->addScalarResult('mora'				, 'mora');
+	
+			$query 	= $em->createNativeQuery("
+					SELECT	SUM(HR.VALOR_RECEBIDO - HR.VALOR_DESCONTO) as mensalidade, SUM(HR.VALOR_JUROS) as juros,SUM(HR.VALOR_MORA) as mora
+					FROM 	ZGFIN_CONTA_RECEBER 	CR,
+							ZGFIN_PESSOA			P,
+							ZGFIN_HISTORICO_REC		HR
+					WHERE   CR.CODIGO 				= HR.COD_CONTA_REC
+					AND		EXISTS	(
+							SELECT	1
+							FROM	ZGFIN_CONTA_RECEBER_RATEIO CRR
+							WHERE	CRR.COD_CONTA_REC			= CR.CODIGO
+							AND		CRR.COD_CATEGORIA			IN (:categoria)
+					)
+					AND	    CR.COD_PESSOA			= P.CODIGO
+					AND		CR.COD_STATUS			IN (:status)
+					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					AND		P.CGC					= :cpf
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,$aStatus);
+			$query->setParameter('categoria'		,$aCat);
+			$query->setParameter('cpf'				,$cpf);
+	
+			//$log->info("SQL:".$query->getSQL());
+			$return		= $query->getOneOrNullResult();
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+
+		
+		#################################################################################
+		## Somar os valores da categora de sistema
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addScalarResult('sistema'						, 'sistema');
+		
+			$query 	= $em->createNativeQuery("
+					SELECT	SUM(CRR.VALOR) as sistema
+					FROM 	ZGFIN_CONTA_RECEBER 		CR,
+							ZGFIN_PESSOA				P,
+							ZGFIN_CONTA_RECEBER_RATEIO	CRR
+					WHERE   CR.CODIGO 				= CRR.COD_CONTA_REC
+					AND	    CR.COD_PESSOA			= P.CODIGO
+					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					AND		CR.COD_STATUS			= :status
+					AND		CRR.COD_CATEGORIA		= :categoria
+					AND		P.CGC					= :cpf
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,"L");
+			$query->setParameter('categoria'		,$codCatSistema);
+			$query->setParameter('cpf'				,$cpf);
+		
+			$valSistema		= $query->getSingleScalarResult();
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		$return["sistema"]	 	= floatval($valSistema);
+		return $return;
+		
+	
+	}
+	
 }
