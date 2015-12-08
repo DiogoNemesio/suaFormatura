@@ -311,12 +311,14 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 				$_valorOutros		= (isset($this->_outrosValores)) ? $this->_outrosValores[$i] : $this->getValorOutros();
 				$_val				= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($_valorOutros) - \Zage\App\Util::to_float($this->getValorDesconto());
 				$_valorTotal		+= $_val;
-				$valores[$i]		= \Zage\App\Util::toMysqlNumber($this->_valores[$i]);
-				$outrosValores[$i]	= \Zage\App\Util::toMysqlNumber($_valorOutros);
+				$valores[$i]		= \Zage\App\Util::to_float($this->_valores[$i]);
+				$outrosValores[$i]	= \Zage\App\Util::to_float($_valorOutros);
 			}
 		}
 		
-		if (\Zage\App\Util::toPHPNumber($_valorTotal) != \Zage\App\Util::toPHPNumber($this->_getValorTotal())) {
+		$_valorTotal		= round($_valorTotal,2);
+		
+		if (floatval($_valorTotal) != floatval($this->_getValorTotal())) {
 			$log->debug("Valor informado: ".$this->_getValorTotal()." Valor calculado: ".$_valorTotal);
 			return $tr->trans('Valor total difere da soma de valores do array !!!');
 		}
