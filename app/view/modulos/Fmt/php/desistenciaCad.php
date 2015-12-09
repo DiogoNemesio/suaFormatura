@@ -57,7 +57,7 @@ if (!$codPerfil) \Zage\App\Erro::halt('Perfil inválido para o Formando');
 
 #################################################################################
 ## Verificar o status da associação a Formatura, para definir se poderá ou não
-## Gerar mensalidade para o Formando
+## desistir da formatura
 #################################################################################
 switch ($codStatus) {
 	case "A":
@@ -105,11 +105,12 @@ if ($eventos){
 	
 	for ($i = 0; $i < sizeof($eventos); $i++){
 		
+		$checked		= "";
 		
 		$htmlEventos	.= '<tr>';
-		$htmlEventos	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codItemSel['.$eventos[$i]->getCodigo().']" zg-name="selItem" class="ace" value="'.$item["CODIGO"].'" onchange="orcAlteraSel(\''.$eventos[$i]->getCodigo().'\');" /><span class="lbl"></span></label></td>';
+		$htmlEventos	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codEventoSel[]" zg-name="selItem" class="ace" value="'.$eventos[$i]->getCodigo().'" onchange="desCadCalculaValorTotalEvento();" /><span class="lbl"></span></label></td>';
 		$htmlEventos	.= '<td class="col-sm-1">'.$eventos[$i]->getCodTipoEvento()->getDescricao().'</td>';
-		$htmlEventos	.= '<td class="col-sm-1 left"><span></span><input class="input-small" id="valor_'.$eventos[$i]->getCodigo().'_ID" type="text" name="aValor['.$eventos[$i]->getCodigo().']" value="'.\Zage\App\Util::formataDinheiro($eventos[$i]->getValorAvulso()).'" zg-codigo="'.$item["CODIGO"].'"  zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$eventos[$i]->getCodigo().'\');"></td>';
+		$htmlEventos	.= '<td class="col-sm-1 left"><span></span><input class="input-small" id="valor_'.$eventos[$i]->getCodigo().'_ID" type="text" name="aValor[]" value="'.\Zage\App\Util::formataDinheiro($eventos[$i]->getValorAvulso()).'" zg-codigo="'.$eventos[$i]->getCodigo().'" zg-name="valor" zg-valor="'.$eventos[$i]->getValorAvulso().'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="desCadAlteraValor(\''.$eventos[$i]->getCodigo().'\');"></td>';
 		
 		
 		
@@ -120,7 +121,7 @@ if ($eventos){
 		$htmlEventos .= '<input name="form-field-checkbox" type="checkbox" class="ace" />';
 		
 		$htmlEventos .= '<span class="lbl bigger-120"> '.$eventos[$i]->getCodTipoEvento()->getDescricao().'</span>';
-		$htmlEventos .= '</label>';		
+		$htmlEventos .= '</label>';
 		$htmlEventos .= '</div>';
 		
 		**/

@@ -41,7 +41,6 @@
 						<div class="row">
 							<div class="col-xs-12 col-sm-12">
 								<div class="control-group">
-									
 										%HTML_EVENTOS%
 								</div>
 							</div>
@@ -54,6 +53,12 @@
 							</div>
 							<div class="widget-body">
 								<div class="widget-main small">						
+									<div class="row" id="divInfoValEventoID">
+										<div class="col-sm-12">
+									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total dos Eventos:</p>
+									    	<p id='lbInfoTotalEventosID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+								    	</div>
+									</div>
 									<div class="row" id="divInfoCustoID">
 										<div class="col-sm-12">
 									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total pago:</p>
@@ -398,8 +403,8 @@ $('#fuelux-wizard-container')
 
 
 
-mostraQuadroResumo();
-function mostraQuadroResumo() {
+desCadMostraQuadroResumo();
+function desCadMostraQuadroResumo() {
 	var vSaldoMensalidade	= zgConverteFloat($('#saldoMensalidadeFormandoID').val());
 	var vSaldoSistema		= zgConverteFloat($('#saldoSistemaFormandoID').val());
 	
@@ -428,7 +433,28 @@ function mostraQuadroResumo() {
 	**/
 }
 
-
+function desCadCalculaValorTotalEvento() {
+	var $aSelEventos	= [];
+	var $totalEventos	= 0;
+	
+	var $opt = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	$('input[name="codEventoSel[]"]:checked').each( function() {
+		var $codEvento						= $(this).val();
+		$aSelEventos[$aSelEventos.length]	= $codEvento;
+		$input								= $('input[zg-codigo="'+$codEvento+'"]');
+		$valorEvento						= zgConverteFloat($input.attr('zg-valor'));
+		$totalEventos						+= $valorEvento;
+	});
+	
+	$('#lbInfoTotalEventosID').html(accounting.formatMoney($totalEventos,$opt));
+}
 
 
 </script>
