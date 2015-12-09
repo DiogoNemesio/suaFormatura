@@ -45,7 +45,7 @@
 								    	<label class="col-sm-3 control-label" for="emailID">Email</label>
 						    			<div class="input-group col-sm-8 pull-left">
 						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o email que será utilizado como usuário para acesso ao portal. Lembrando que não pode existir 2 (dois) EMAILs iguais em uma mesma formatura."></i></span>
-						   					<input class="width-100" id="emailID" type="text" %PODE_ALTERAR% maxlength="200" name="email" value="%USUARIO%" placeholder="Email" onblur="checkEmailUsuarioAlt();" autocomplete="off">
+						   					<input class="width-100" id="emailID" type="text" %PODE_ALTERAR% maxlength="200" name="email" value="%USUARIO%" placeholder="Email" onchange="checkEmailUsuarioAlt();" autocomplete="off">
 						    			</div>
 						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
 						    		</div>
@@ -79,7 +79,7 @@
 									    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
 							    			<div class="input-group col-sm-8 pull-left">
 						    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Infome o número do CPF do formando. Lembrando que não pode existir 2 (dois) CPFs iguais em uma mesma formatura."></i></span>
-								    			<input class="form-control" id="cpfID" type="text" %PODE_ALTERAR% name="cpf" maxlength="14" value="%CPF%" placeholder="CPF" %READONLY% onblur="checkCpfUsuarioAlt();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+								    			<input class="form-control" id="cpfID" type="text" %PODE_ALTERAR% name="cpf" maxlength="14" value="%CPF%" placeholder="CPF" %READONLY% onchange="checkCpfUsuarioAlt();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
 									    	</div>
 									    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
 									</div>

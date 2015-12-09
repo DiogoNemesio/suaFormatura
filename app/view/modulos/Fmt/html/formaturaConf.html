@@ -1,6 +1,6 @@
 <div id="content">
 	<div class="page-header">
-	<h1>Configurações da Formatura
+	<h1><i class="fa fa-cog">&nbsp;</i>Configuração&nbsp;&nbsp;
 	</h1>
 	</div><!-- /.page-header -->
 	<br />
@@ -14,34 +14,40 @@
 		<input type="hidden" id="pctDevolucaoID" name="pctDevolucao" value="%PCT_DEVOLUCAO%">
 
 		<div class="row">
-			<div class="form-group col-sm-12" id="divDiaVencimentoID">
-			    <label for="identID" class="col-sm-3 control-label">Dia do Vencimento das Mensalidades</label>
-	    		<div class="input-group col-sm-5 pull-left">
-    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-					<select class="select2" style="width:100%;" id="diaVencimentoID" name="diaVencimento" data-rel="select2">
-					%DIAS_VENC%
-					</select>
-			    </div>
-			    <div class="col-sm-1 pull-left" id="divHelpDiaVencimentoID"></div>
-			</div>
-			<div class="form-group col-sm-12" id="divValorPorFormandoID">
-			    <label for="identID" class="col-sm-3 control-label">Taxa de Administração</label>
-	    		<div class="input-group col-sm-5 pull-left">
-    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-		    		<input class="form-control" id="taxaAdministracaoID" type="text" name="taxaAdministracao" maxlength="60" value="%TAXA_ADMINISTRACAO%" placeholder="Taxa de Administração" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
-			    </div>
-			    <div class="col-sm-1 pull-left" id="divHelpValorPorFormandoID"></div>
-			</div>
-		    <div class="form-group col-sm-12" id="divTaxaPorFormandoID">
-		    	<label class="col-sm-3 control-label" for="taxaPorFormandoID">Taxa de Uso do sistema (por Formando)</label>
+			
+			<h5 class="header blue bolder smaller"><i class="fa fa-cog">&nbsp;</i>Portal SUA FORMATURA</h5>
+			<div class="form-group col-sm-12" id="divTaxaPorFormandoID">
+		    	<label class="col-sm-3 control-label" for="taxaPorFormandoID">Taxa do SUA FORMATURA</label>
 				<div class="input-group col-sm-5 pull-left">
 	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Taxa cobrada pelo (suaFormatura) para uso do sistema."></i></span>
 					<input class="form-control" id="taxaPorFormandoID" disabled readonly type="text" name="taxaPorFormando" placeholder="Valor Por Boleto" maxlength="100" value="%TAXA_FORMANDO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpTaxaPorFormandoID"></div>
 			</div>
+			<div class="form-group col-sm-12" >
+   				<label class="col-sm-3 control-label">
+   					<input name="indRepassaTaxaSistema" id="indRepassaTaxaSistemaID" class="ace ace-switch " value="1" %IND_REPASSA_TAXA_SISTEMA% type="checkbox" />
+   					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+   				</label>
+    			<div class="input-group col-sm-5 pull-left">
+    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar a taxa de uso do SuaFormatura.com as mensalidades geradas"></i></span>
+    				<input readonly type="text" class="form-control" placeholder="Repassar taxa do Sistema (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+			    </div>
+				<div class="help-block col-sm-1 inline" id="divHelpIndRepassaTaxaSistemaID"></div>
+	    	</div>
+			<h5 class="header blue bolder smaller"><i class="fa fa-cog">&nbsp;</i>Mensalidades</h5>
+			<div class="form-group col-sm-12" id="divDiaVencimentoID">
+			    <label for="diaVencimentoID" class="col-sm-3 control-label">Sugestão de vencimento</label>
+	    		<div class="input-group col-sm-5 pull-left">
+    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione um dia para ser sugerido como vencimento no momento de gerar as mensalidades."></i></span>
+					<select class="select2" style="width:100%;" id="diaVencimentoID" name="diaVencimento" data-rel="select2">
+					%DIAS_VENC%
+					</select>
+			    </div>
+			    <div class="col-sm-1 pull-left" id="divHelpDiaVencimentoID"></div>
+			</div>
 		    <div class="form-group col-sm-12" id="divPctJurosTurmaID">
-		    	<label class="col-sm-3 control-label" for="pctJurosTurmaSliderID">Percentual do Júros que fica com a turma</label>
+		    	<label class="col-sm-3 control-label" for="pctJurosTurmaSliderID">% de juros da turma</label>
 				<div class="input-group col-sm-5 pull-left">
 	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor de júros recebido que fica para a turma, a diferença fica para o cerimonial"></i></span>
 	    			<div style="width: 80%;" id="pctJurosTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctJurosTurmaSpanID">%PCT_JUROS_TURMA% %</span>
@@ -64,6 +70,7 @@
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpPctConviteExtraTurmaID"></div>
 			</div>
+			<h5 class="header blue bolder smaller">Convite</h5>
 		    <div class="form-group col-sm-12" id="divPctDevolucaoID">
 		    	<label class="col-sm-3 control-label" for="pctDevolucaoSliderID">Percentual de devolução em caso de desistência</label>
 				<div class="input-group col-sm-5 pull-left">
@@ -72,17 +79,7 @@
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpPctDevolucaoID"></div>
 			</div>
-			<div class="form-group col-sm-12" >
-   				<label class="col-sm-3 control-label">
-   					<input name="indRepassaTaxaSistema" id="indRepassaTaxaSistemaID" class="ace ace-switch " value="1" %IND_REPASSA_TAXA_SISTEMA% type="checkbox" />
-   					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
-   				</label>
-    			<div class="input-group col-sm-5 pull-left">
-    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar a taxa de uso do SuaFormatura.com as mensalidades geradas"></i></span>
-    				<input readonly type="text" class="form-control" placeholder="Repassar taxa do Sistema (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
-			    </div>
-				<div class="help-block col-sm-1 inline" id="divHelpIndRepassaTaxaSistemaID"></div>
-	    	</div>
+			
 	    </div>
 		<div id="divMsgFmtConfID"></div>
 	    

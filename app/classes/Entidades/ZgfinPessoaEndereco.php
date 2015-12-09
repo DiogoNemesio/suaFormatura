@@ -57,6 +57,13 @@ class ZgfinPessoaEndereco
     private $complemento;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_END_CORRETO", type="integer", nullable=false)
+     */
+    private $indEndCorreto;
+
+    /**
      * @var \Entidades\ZgfinPessoa
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
@@ -210,6 +217,29 @@ class ZgfinPessoaEndereco
     public function getComplemento()
     {
         return $this->complemento;
+    }
+
+    /**
+     * Set indEndCorreto
+     *
+     * @param integer $indEndCorreto
+     * @return ZgfinPessoaEndereco
+     */
+    public function setIndEndCorreto($indEndCorreto)
+    {
+        $this->indEndCorreto = $indEndCorreto;
+
+        return $this;
+    }
+
+    /**
+     * Get indEndCorreto
+     *
+     * @return integer 
+     */
+    public function getIndEndCorreto()
+    {
+        return $this->indEndCorreto;
     }
 
     /**
