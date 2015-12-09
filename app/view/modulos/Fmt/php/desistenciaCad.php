@@ -99,14 +99,36 @@ $eventos		= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormat
 
 if ($eventos){
 	$htmlEventos 	= '';
+	$htmlEventos	.= '<div class="col-sm-12" align="center">';
+	$htmlEventos	.= '<h5 align="center">Selecione os eventos que o formando ainda irá participar</h5>';
+	$htmlEventos	.= '<table id="tabItemID" zg-table-orc="1" class="table table-hover table-condensed">';
+	
 	for ($i = 0; $i < sizeof($eventos); $i++){
-		$htmlEventos .= '<div class="checkbox">';
+		
+		
+		$htmlEventos	.= '<tr>';
+		$htmlEventos	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codItemSel['.$eventos[$i]->getCodigo().']" zg-name="selItem" class="ace" value="'.$item["CODIGO"].'" onchange="orcAlteraSel(\''.$eventos[$i]->getCodigo().'\');" /><span class="lbl"></span></label></td>';
+		$htmlEventos	.= '<td class="col-sm-1">'.$eventos[$i]->getCodTipoEvento()->getDescricao().'</td>';
+		$htmlEventos	.= '<td class="col-sm-1 left"><span></span><input class="input-small" id="valor_'.$eventos[$i]->getCodigo().'_ID" type="text" name="aValor['.$eventos[$i]->getCodigo().']" value="'.\Zage\App\Util::formataDinheiro($eventos[$i]->getValorAvulso()).'" zg-codigo="'.$item["CODIGO"].'"  zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$eventos[$i]->getCodigo().'\');"></td>';
+		
+		
+		
+		/**
+		
+		$htmlEventos .= '<div class="checkbox">';		
 		$htmlEventos .= '<label class="block">';
-		$htmlEventos .= '<input name="form-field-checkbox" type="checkbox" class="ace input-lg" />';
+		$htmlEventos .= '<input name="form-field-checkbox" type="checkbox" class="ace" />';
+		
 		$htmlEventos .= '<span class="lbl bigger-120"> '.$eventos[$i]->getCodTipoEvento()->getDescricao().'</span>';
-		$htmlEventos .= '</label>';
-		$htmlEventos .= '</div>';	
+		$htmlEventos .= '</label>';		
+		$htmlEventos .= '</div>';
+		
+		**/
 	}  
+	
+	$htmlEventos	.= '</table>';
+	$htmlEventos	.= '</div>';
+	
 }else{
 	$htmlEventos 	= 'Nenhum evento';
 }
@@ -143,11 +165,11 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('ID'					,$id);
 $tpl->set('TITULO'				,'Desistência');
 $tpl->set('HTML_EVENTOS'		,$htmlEventos);
+$tpl->set('URL_VOLTAR'			,$urlVoltar);
 
-
-
-$tpl->set('URL_VOLTAR'		,$urlVoltar);
-$tpl->set('DP'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+$tpl->set('SALDO_MENSALIDADE'	,$valPagoMensalidade);
+$tpl->set('SALDO_PORTAL'		,$valPagoSistema);
+$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 
 #################################################################################

@@ -135,7 +135,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 	#################################################################################
 	$tipoItens	= $aItem["ITENS"];
 	if (sizeof($tipoItens) > 0) {
-		$htmlForm	.= '<div class="col-sm-10" align="center">';
+		$htmlForm	.= '<div class="col-sm-12" align="center">';
 		$htmlForm	.= '<table id="tabItem_'.$codItem.'_ID" zg-table-orc="1" class="table table-hover table-condensed">';
 		$totalTipo	= 0;
 		
