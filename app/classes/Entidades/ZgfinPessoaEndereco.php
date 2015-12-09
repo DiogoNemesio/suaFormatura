@@ -59,7 +59,7 @@ class ZgfinPessoaEndereco
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_END_CORRETO", type="integer", nullable=false)
+     * @ORM\Column(name="IND_END_CORRETO", type="integer", nullable=true)
      */
     private $indEndCorreto;
 

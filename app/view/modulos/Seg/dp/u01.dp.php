@@ -306,6 +306,7 @@ try {
 	$oClienteEnd->setBairro($oUsuario->getBairro());
 	$oClienteEnd->setNumero($oUsuario->getNumero());
 	$oClienteEnd->setComplemento($oUsuario->getComplemento());
+	$oClienteEnd->setIndEndCorreto($oUsuario->getIndEndCorreto());
 	
 	$em->persist($oClienteEnd);
 	
@@ -319,7 +320,6 @@ try {
 	$oCliTel->_setCodTelefone($codTelefone);
 	
 	$retorno	= $oCliTel->salvar();
-	
 	
 	/********** Salvar as informações *******/
 	try {

@@ -1,0 +1,1122 @@
+<div id="content">
+	<div class="page-header">
+	<h1>Desistência</h1>
+	</div><!-- /.page-header -->
+	<br />
+
+	<!-- #section:plugins/fuelux.wizard -->
+	<div id="fuelux-wizard-container" class="col-sm-10 pull-left">
+		<div>
+			<!-- #section:plugins/fuelux.wizard.steps -->
+			<ul class="steps">
+				<li data-step="1" class="active">
+					<span class="step">1</span>
+					<span class="title">Eventos</span>
+				</li>
+				<li data-step="2">
+					<span class="step">2</span>
+					<span class="title">Valores</span>
+				</li>
+				<li data-step="3">
+					<span class="step">3</span>
+					<span class="title">Parcelas</span>
+				</li>
+			</ul>
+		</div>
+		<hr />
+		<form id="zgFormGeraMensalidadeID" class="form-horizontal">
+			<input type="hidden" name="id" value="%ID%">
+			<input type="hidden" name="codTipoValor" id="codTipoValorID">
+			<input type="hidden" name="numForSel" id="numForSelID">
+			<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
+			<input type="hidden" name="aSelFormandos" id="aSelFormandosID">
+			<input type="hidden" name="saldoTotalFormando" id="saldoTotalFormandoID">
+			<input type="hidden" name="saldoSistemaFormando" id="saldoSistemaFormandoID">
+			<input type="hidden" name="saldoMensalidadeFormando" id="saldoMensalidadeFormandoID">
+			<input type="hidden" name="valParcelaMensalidade" id="valParcelaMensalidadeID">
+			<input type="hidden" name="valParcelaSistema" id="valParcelaSistemaID">
+			<input type="hidden" name="valParcelaTaxa" id="valParcelaTaxaID">
+			<input type="hidden" name="valTotalMensalidade" id="valTotalMensalidadeID">
+			<input type="hidden" name="valTotalSistema" id="valTotalSistemaID">
+			<input type="hidden" name="valTotalTaxa" id="valTotalTaxaID">
+			<input type="hidden" name="totalParcela" id="totalParcelaID">
+			<input type="hidden" name="totalGeral" id="totalGeralID">
+			<input type="hidden" name="taxaBol" id="taxaBolID">
+			<input type="hidden" name="taxaAdmin" id="taxaAdminID" value="%TAXA_ADMIN%">
+			
+			<div class="step-content pos-rel">
+							
+				<div class="step-pane" data-step="1">
+					<div class="col-sm-8 pull-left">
+						<div class="row">
+							<div class="col-xs-12 col-sm-12">
+								<div class="control-group">
+									<label class="control-label bolder blue">Eventos:</label>
+										%HTML_EVENTOS%
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-4 pull-right" zg-div-limpa="1" id="divInfoVencID"></div>
+				</div>
+				<div class="step-pane active" data-step="2">
+					<div class="col-sm-8 pull-left">
+						<div class="row ">
+							
+							<div class="form-group col-sm-12" id="divIndValorTotalID">
+								<label class="col-sm-4 control-label">Valor se refere</label>
+								<div class="btn-group btn-corner col-sm-7 pull-left">
+									<span id='geraMensalidadeValorMensalidadeID' style="width: 150px;" class="btn btn-sm" onclick="selecionaValorMensalidadeGeraMensalidade();">Mensalidade</span>
+									<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
+									<span id='geraMensalidadeValorTotalID' style="width: 150px;" class="btn btn-sm" onclick="selecionaValorTotalGeraMensalidade();">Total do Formando</span>
+								</div>
+							</div>
+							<div class="form-group col-sm-12" id="divValorID">
+							    <label id='lblTipoValorID' class="col-sm-4 control-label"></label>
+					    		<div class="input-group col-sm-7 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
+						    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="" onchange="alteraValorPrincipalGeraMensalidade();" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+							    </div>
+							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
+							</div>
+							
+							<div class="form-group col-sm-12" >
+			    				<label class="col-sm-4 control-label">
+			    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch" onchange="alteraIndTaxaExtraGeraMensalidade();" value="1" checked type="checkbox" />
+			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+			    				</label>
+				    			<div class="input-group col-sm-7 pull-left">
+				    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
+				    				<input readonly type="text" class="form-control" placeholder="Adicionar taxas extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
+					    	</div>
+
+							<div class="form-group col-sm-12" id="divTextoSistemaID">
+							    <label id='lblTextoSistemaID' class="col-sm-4 control-label">SuaFormatura.com</label>
+					    		<div class="input-group col-sm-7 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Saldo a provisionar referente ao uso do Sistema SuaFormatura.com"></i></span>
+						    		<input class="form-control" id="textoSistemaID" type="text" name="textoSistema" readonly maxlength="60" autocomplete="off">
+							    </div>
+							    <div class="col-sm-1 pull-left" id="divHelpTextoSistemaID"></div>
+							</div>
+
+							<div class="form-group col-sm-12" id="divTextoTaxasID">
+							    <label id='lblTextoTaxasID' class="col-sm-4 control-label">Taxas</label>
+					    		<div class="input-group col-sm-7 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Taxas incluídas na mensalidade (podem ser Boleto e Taxa de Administração)"></i></span>
+						    		<input class="form-control" id="textoTaxasID" type="text" name="textoTaxas" readonly maxlength="60" autocomplete="off" >
+							    </div>
+							    <div class="col-sm-1 pull-left" id="divHelpTextoTaxasID"></div>
+							</div>
+
+							<div class="form-group col-sm-12" id="divTextoTotalID">
+							    <label id='lblTextoTotalID' class="col-sm-4 control-label"><b>Total</b></label>
+					    		<div class="input-group col-sm-7 pull-left">
+				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Mostra o valor total da conta ou da parcela (Somatório do valor informado + Taxas)"></i></span>
+						    		<input class="form-control " id="textoTotalID" type="text" name="textoTotal" readonly maxlength="60" autocomplete="off">
+							    </div>
+							    <div class="col-sm-1 pull-left" id="divHelpTextoTotalID"></div>
+							</div>
+					    	
+							<div class="form-group col-sm-12" id="divFormaPagID">
+								<label class="col-sm-4 control-label">Forma de Pag.</label>
+				    			<div class="input-group col-sm-7 pull-left">
+				    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Mensalidade"></i></span>
+									<select class="select2" style="width:100%;" onchange="alteraFormaPagGeraMensalidade();" id="codFormaPagID" name="codFormaPag" data-rel="select2">
+									%FORMAS_PAG%
+									</select>
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpFormaPagID"></div>
+					    	</div>
+							<div class="form-group col-sm-12" id="divContaRecID">
+								<label class="col-sm-4 control-label">Conta de Recebebimento</label>
+				    			<div class="input-group col-sm-7 pull-left">
+				    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
+									<select class="select2" style="width:100%;" onchange="alteraContaRecGeraMensalidade();" id="codContaRecID" name="codContaRec" data-rel="select2">
+									%CONTAS%
+									</select>
+							    </div>
+								<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
+					    	</div>
+						</div>
+					</div>
+					<div class="col-sm-4 pull-right" zg-div-limpa="1" id="divInfoValorID"></div>
+				</div>
+				<div class="step-pane" data-step="3" id="divStepParcelasGeraMensalidadeID">
+					<div class="row">
+						<table id="GeraMensalidadeTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+							<thead>
+								<tr class="warning">
+									<th class="col-sm-1 center" id="thInfoHelpTableParcelasGeraMensalidadeID"></th>
+									<th class="col-sm-2 center">Parcela</th>
+									<th class="col-sm-2 center">Valor</th>
+									<th class="col-sm-1 center">Portal</th>
+									<th class="col-sm-1 center">Taxas</th>
+									<th class="col-sm-2 center">Total</th>
+									<th class="col-sm-2 center">Data</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+							<tfoot>
+								<tr class="warning">
+									<th class="col-sm-1 center"></th>
+									<th class="col-sm-2 center" id="thInfoParcelaGeraMensalidadeID"></th>
+									<th class="col-sm-2 center" id="thInfoValorMensalidadeGeraMensalidadeID"></th>
+									<th class="col-sm-1 center" id="thInfoValorSistemaGeraMensalidadeID"></th>
+									<th class="col-sm-1 center" id="thInfoValorTaxaGeraMensalidadeID"></th>
+									<th class="col-sm-2 center" id="thInfoValorTotalGeraMensalidadeID"></th>
+									<th class="col-sm-2 center"></th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="row center">
+						<ul class="pagination" id="pagerValoresGeraMensalidadeID">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="wizard-actions col-sm-2 pull-right" >
+	
+		<!-- #section:plugins/fuelux.wizard.buttons -->
+		<button class="btn btn-app btn-sm btn-prev pull-left">
+			Anterior
+			<i class="ace-icon fa fa-arrow-left"></i>
+		</button>
+		<button id="btnProxgeraMensalidadeID" class="btn btn-app btn-sm btn-success btn-next pull-right" data-last="Finalizar">
+			Próximo
+			<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+		</button>
+		<!-- /section:plugins/fuelux.wizard.buttons -->
+	</div>
+</div>
+
+<div class="hidden" id="divInfoGeraMensalidadeID">
+	<div class="widget-box">
+		<div class="widget-header widget-header-flat widget-header-small center">
+			<h5 class="widget-title">Informações</h5>
+		</div>
+		<div class="widget-body">
+			<div class="widget-main small">
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblNumFormadosSelID"></p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até Conclusão:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_MAX% meses &nbsp;(%DATA_CONCLUSAO%)</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da Formatura:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_TOTAL_FORM_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%MENSALIDADE_FORMANDO_FMT%</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo a Provisionar:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblSaldoProvisionarID"></p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Uso do SuaFormatura.com:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT% (Total por Formando)</p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de emissão do Boleto:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblTaxaBoletoID"></p>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Administração:</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_ADMIN_FMT%</p>
+			    	</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+var $aCodigos	= '%JSON_CODIGOS%';
+
+selecionaValorTotalGeraMensalidade();
+zgDesabilitaAcaoGeraMensalidade();
+
+$(document).one('ajaxloadstart.page', function(e) {
+	//in ajax mode, remove remaining elements before leaving page
+	$('[class*=select2]').remove();
+});
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2({allowClear: true});
+	}
+});
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2({allowClear: true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+var oTable		= $('#GeraMensalidadeID').dataTable();
+
+$( document ).ready(function() {
+	oTable.on( 'change', 'input[name="%CHECK_NAME%[]"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+
+		if ($count == 0) {
+			zgDesabilitaAcaoGeraMensalidade();
+		}else{
+			zgHabilitaAcaoGeraMensalidade($count);
+		}
+	} );
+	
+	oTable.on( 'change', 'input[name="%CHECK_NAME%_all"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+		var $api 		= oTable.api();
+		var $info 		= $api.page.info();
+		
+		if ($count == 0) {
+			zgDesabilitaAcaoGeraMensalidade();
+		}else{
+			zgHabilitaAcaoGeraMensalidade($count);
+			
+			if ($info.pages > 1) {
+				$.gritter.add({
+					title: 'Aviso',
+					text: 'Os Formandos de todas as páginas, foram selecionados !!!!',
+					class_name: 'gritter-info',
+					time: '5000',
+				});
+			}
+		}
+	} );
+	
+	//oTable.$('input[name="%CHECK_NAME%_all"]').prop('checked', true);
+	
+});
+
+function zgHabilitaAcaoGeraMensalidade($numFormandos) {
+	
+	var $jCodigos 		= jQuery.parseJSON($aCodigos);
+	var $aMensalidade	= [];
+	var	$aSistema		= [];
+	//alert("Jcodigos: "+JSON.stringify($jCodigos));
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		var $codigo	= $(this).val();
+		if ($jCodigos[$codigo] != undefined) {
+
+			/** Monta o array de Mensalidades **/
+			if ( $aMensalidade.indexOf($jCodigos[$codigo]["MENSALIDADE"]) == -1 ) {
+				$aMensalidade[$aMensalidade.length]	= $jCodigos[$codigo]["MENSALIDADE"];
+			}
+
+			/** Monta o array de Sistemas **/
+			if ( $aSistema.indexOf($jCodigos[$codigo]["SISTEMA"]) == -1 ) {
+				$aSistema[$aSistema.length]	= $jCodigos[$codigo]["SISTEMA"];
+			}
+		}else{
+			/** Monta o array de Mensalidades **/
+			if ( $aMensalidade.indexOf(0) == -1 ) {
+				$aMensalidade[$aMensalidade.length]	= 0;
+			}
+
+			/** Monta o array de Sistemas **/
+			if ( $aSistema.indexOf(0) == -1 ) {
+				$aSistema[$aSistema.length]	= 0;
+			}
+		}
+	});
+	
+	$('#numForSelID').val($numFormandos);
+
+	/** Calcular as ações em lotes disponíveis, a partir do status das contas **/
+	if (($aMensalidade.length == 1) && ($aSistema.length == 1)) {
+		$('#btnProxgeraMensalidadeID').attr("disabled",false);
+		$.gritter.removeAll();
+		return false;
+	}else{
+		$('#btnProxgeraMensalidadeID').attr("disabled","disabled");
+		$.gritter.add({
+			title: 'Erro na seleção de formandos',
+			text: 'Selecione apenas formandos com o mesmo valor a provisionar',
+			class_name: 'gritter-info gritter-error gritter-center',
+			time: '8000'
+		});
+
+	}
+	
+}
+
+function zgDesabilitaAcaoGeraMensalidade() {
+	$('#numForSelID').val(0);
+	$('#btnProxgeraMensalidadeID').attr("disabled","disabled");
+}
+
+
+$('#fuelux-wizard-container')
+.ace_wizard({
+	//step: 2 //optional argument. wizard will jump to step "2" at first
+	//buttons: '.wizard-actions:eq(0)'
+})
+.on('actionclicked.fu.wizard' , function(e, info){
+	if(info.step == 1) {
+		var $numSel	= $('#numForSelID').val();
+		
+		if ($numSel == 0) 	{
+			$.gritter.add({
+				title: 'Seleção de Formandos',
+				text: 'Pelo menos 1 formando deve ser selecionado',
+				class_name: 'gritter-info gritter-center gritter-error'
+			});
+
+			e.preventDefault();
+		}
+		mostraQuadroGeraMensalidade('divInfoVencID');
+	}else if (info.step == 2) {
+		var vOk 	= validaVencimentoGeraMensalidade();
+		if(!vOk) 	{
+			e.preventDefault();
+		}
+		mostraQuadroGeraMensalidade('divInfoValorID');
+		
+		/** sugere o saldo a provisionar no valor total da conta **/
+		sugereValorGeraMensalidade();
+		
+	}else if (info.step == 3) {
+		var vOk 	= validaValoresGeraMensalidade();
+		if(!vOk) 	{
+			e.preventDefault();
+		}else{
+			mostraQuadroGeraMensalidade('divInfoValorID');
+			criaTabelaValoresGeraMensalidade();
+		}
+	}
+})
+.on('finished.fu.wizard', function(e) {
+	var vOk 	= atualizaEValidaParcelasGeraMensalidade();
+	if(!vOk) 	{
+		$.gritter.add({
+			title: 'Valores inconsistentes',
+			text: 'Ajuste os valores das parcelas !!!!',
+			class_name: 'gritter-info gritter-center gritter-error'
+		});
+
+		e.preventDefault();
+		return false;
+	}else{
+		$('#zgFormGeraMensalidadeID').submit();
+	}
+	
+}).on('stepclick.fu.wizard', function(e){
+	//e.preventDefault();//this will prevent clicking and selecting steps
+});
+
+
+function atualizaSaldosGeraMensalidade() {
+	var $taxaUso			= zgConverteFloat('%TAXA_USO%');
+	var $jCodigos 			= jQuery.parseJSON($aCodigos);
+	var	$saldoTotal,$mensalidade,$sistema;
+	
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		var $codigo	= $(this).val();
+		if ($jCodigos[$codigo] != undefined) {
+			$saldoTotal		= zgConverteFloat($jCodigos[$codigo]["SALDO"]); 
+			$mensalidade	= zgConverteFloat($jCodigos[$codigo]["MENSALIDADE"]);
+			$sistema		= zgConverteFloat($jCodigos[$codigo]["SISTEMA"]);
+		}
+		if ($saldoTotal) return false; // Sair do loop
+	});
+	
+	if (isNaN($sistema))		$sistema		= 0;
+	if (isNaN($mensalidade))	$mensalidade	= 0;
+	
+	/** Calcular os saldos **/
+	var $saldoSistema			= $taxaUso - $sistema;
+	if ($saldoSistema < 0)		$saldoSistema 	= 0;
+	var $saldoMensalidade		= $saldoTotal - $saldoSistema;
+	
+	if ($saldoMensalidade < 0 )	$saldoMensalidade	= 0;
+	
+	$("#saldoTotalFormandoID").val($saldoTotal.toFixed(2));
+	$("#saldoSistemaFormandoID").val($saldoSistema.toFixed(2));
+	$("#saldoMensalidadeFormandoID").val($saldoMensalidade.toFixed(2));
+}
+
+
+function sugereValorGeraMensalidade() {
+
+	var $numMeses			= parseInt($('#numMesesID').val());
+	var $indTaxaSistema		= $('#indTaxaSistemaID:checked').length;
+	var $indValorExtra		= $('#indValorExtraID:checked').length;
+	var $codTipoValor		= $('#codTipoValorID').val();
+	var $taxaUso			= zgConverteFloat('%TAXA_USO%');
+	var $taxaAdm			= zgConverteFloat('%TAXA_ADMIN%');
+
+	var $opt = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+	
+	/** Resgata o saldo a gerar dos formandos **/
+	$saldoTotal				= zgConverteFloat($('#saldoTotalFormandoID').val());
+	$saldoSistema			= zgConverteFloat($('#saldoSistemaFormandoID').val());
+	$saldoMensalidade		= zgConverteFloat($('#saldoMensalidadeFormandoID').val());
+
+	$('#valorID').val(accounting.formatMoney($saldoMensalidade,$opt)).trigger("change");
+	alteraContaRecGeraMensalidade();
+	
+}
+
+function atualizaInfoGeraMensalidade() {
+
+	var $numMeses			= parseInt($('#numMesesID').val());
+	var $indValorExtra		= $('#indValorExtraID:checked').length;
+	var $codTipoValor		= $('#codTipoValorID').val();
+	var $valor				= zgConverteFloat($('#valorID').val());
+	var $taxaUso			= zgConverteFloat('%TAXA_USO%');
+	var $taxaAdm			= zgConverteFloat('%TAXA_ADMIN%');
+	var $oConta				= $("#codContaRecID option:selected");
+	var $valorBoleto		= zgConverteFloat($oConta.attr("zg-val-boleto"));
+	var $codFormaPag		= $('#codFormaPagID').val();
+	var $taxas,$taxaBol,$totalTaxas,$totalSistema,$valParcelaMensalidade,$valParcelaSistema,$valParcelaTaxa,$valTotalMensalidade,$valTotalSistema,$valTotalTaxa;
+	var $textoTaxa,$textoSistema,$textoTotal;
+	
+	var $opt = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	/** Resgata o saldo a gerar dos formandos **/
+	$saldoTotal				= zgConverteFloat($('#saldoTotalFormandoID').val());
+	$saldoSistema			= zgConverteFloat($('#saldoSistemaFormandoID').val());
+	$saldoMensalidade		= zgConverteFloat($('#saldoMensalidadeFormandoID').val());
+
+	/** Somente cobrar o boleto, caso a forma de pagamento seja boleto **/
+	if ($codFormaPag  == "BOL")	{
+		$taxaBol		= $valorBoleto;
+	}else{
+		$taxaBol		= 0;
+	}
+	
+
+	/** Só adicionar as taxas caso esteja marcado para isso **/
+	if ($indValorExtra)	{
+		/** Calcular o valor total de taxas **/
+		$taxas			= $taxaAdm + $taxaBol;
+	}else{
+		$taxas			= 0
+	}
+
+	
+	if ($codTipoValor == "M") {
+		/** Salvar os valores que ficará de mensalidade **/
+		$valParcelaMensalidade	= $valor;
+		$valTotalMensalidade	= ($valor * $numMeses);
+		
+	}else{
+		/** Salvar os valores que ficará de mensalidade **/
+		$valParcelaMensalidade	= zgConverteFloat(($valor / $numMeses).toFixed(2));
+		$valTotalMensalidade	= $valor;
+	}
+	
+	/** Salvar os valores que ficará de taxa **/
+	$valParcelaTaxa			= $taxas;
+	$valTotalTaxa			= ($taxas * $numMeses);
+
+	/** Salvar os valores que ficará de Sistema **/
+	$valParcelaSistema		= zgConverteFloat(($saldoSistema / $numMeses).toFixed(2));
+	$valTotalSistema		= $saldoSistema;
+
+	
+	/** Atualiza os totais **/
+	var $totalParcela		= $valParcelaTaxa	+ $valParcelaSistema	+ $valParcelaMensalidade;
+	var $totalGeral			= $valTotalTaxa		+ $valTotalSistema		+ $valTotalMensalidade;
+
+	/** Gera os textos informativos dos campos **/
+	$textoTaxa				= $numMeses + "x" + " " + accounting.formatMoney($valParcelaTaxa,$opt) + " = " + accounting.formatMoney($valTotalTaxa,$opt); 
+	$textoSistema			= $numMeses + "x" + " " + accounting.formatMoney($valParcelaSistema,$opt) + " = " + accounting.formatMoney($valTotalSistema,$opt); 
+	$textoTotal				= $numMeses + "x" + " " + accounting.formatMoney($totalParcela,$opt) + " = " + accounting.formatMoney($totalGeral,$opt); 
+
+	
+	/** Salvar os valores de parcela **/
+	$('#valParcelaMensalidadeID').val($valParcelaMensalidade);
+	$('#valParcelaSistemaID').val($valParcelaSistema);
+	$('#valParcelaTaxaID').val($valParcelaTaxa);
+	$('#totalParcelaID').val($totalParcela);
+
+	/** Salvar os valores totais **/
+	$('#valTotalMensalidadeID').val($valTotalMensalidade);
+	$('#valTotalSistemaID').val($valTotalSistema);
+	$('#valTotalTaxaID').val($valTotalTaxa);
+	$('#totalGeralID').val($totalGeral);
+
+	$('#textoTaxasID').val($textoTaxa);
+	$('#textoSistemaID').val($textoSistema);
+	$('#textoTotalID').val($textoTotal);
+}
+
+function alteraValorPrincipalGeraMensalidade() {
+	atualizaInfoGeraMensalidade();
+}
+
+function alteraFormaPagGeraMensalidade() {
+	alteraContaRecGeraMensalidade();
+}
+
+function alteraIndTaxaExtraGeraMensalidade() {
+	atualizaInfoGeraMensalidade();
+}
+
+function alteraContaRecGeraMensalidade() {
+	var $oConta				= $("#codContaRecID option:selected");
+	var $valorBoleto		= zgConverteFloat($oConta.attr("zg-val-boleto"));
+	var $codFormaPag		= $('#codFormaPagID').val();
+
+	var $opt = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	if ($codFormaPag  == "BOL")	{
+		$('#lblTaxaBoletoID').html(accounting.formatMoney($valorBoleto,$opt))
+		$('#taxaBolID').val($valorBoleto);
+	}else{
+		$('#lblTaxaBoletoID').html(accounting.formatMoney(0,$opt))
+		$('#taxaBolID').val(0);
+	}
+	
+	atualizaInfoGeraMensalidade();
+}
+
+
+function mostraQuadroGeraMensalidade($divId) {
+	var $saldo;
+
+	var $opt = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	/** Atualiza os saldos **/
+	atualizaSaldosGeraMensalidade();
+	
+	/** Resgata o saldo a gerar dos formandos **/
+	$saldo		= zgConverteFloat($('#saldoTotalFormandoID').val());
+	
+	/** Atualizar o quadro **/
+	$('[zg-div-limpa="1"]').empty();
+	var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
+	var $divInfo	= $('#divInfoGeraMensalidadeID').html();
+	$('#'+$divId).html($divInfo);
+	$('#lblNumFormadosSelID').each( function() {
+		$(this).html($lblFor);
+	});
+	$('#lblSaldoProvisionarID').html(accounting.formatMoney($saldo,$opt) + " (por Formando)");
+
+}
+
+$('#zgFormGeraMensalidadeID').submit(function() {
+	
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	var $aSelFormandos	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelFormandos[$aSelFormandos.length]	= $(this).val();
+	});
+
+	$("#aSelFormandosID").val($aSelFormandos);
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormGeraMensalidadeID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		});
+		
+		if (checaRetornoOK(data) == true) {
+			bootbox.dialog({
+				message: "Mensalidades geradas com sucesso !!!", 
+				buttons: {
+					"fechar" : {
+						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
+						"className" : "btn-sm btn-danger",
+						"callback": function() {
+							zgLoadUrl('%URL_VOLTAR%');
+						}
+					},
+				}
+			});
+		}else{
+			zgMostraAviso("Fechar");
+		}
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+
+function selecionaValorMensalidadeGeraMensalidade() {
+	$('#geraMensalidadeValorMensalidadeID').addClass("btn-primary");
+	$('#geraMensalidadeValorMensalidadeID').removeClass("btn-light");
+	$('#geraMensalidadeValorTotalID').addClass("btn-light");
+	$('#geraMensalidadeValorTotalID').removeClass("btn-primary");
+	$('#codTipoValorID').val("M");
+	$('#lblTipoValorID').html("Valor da Mensalidade");
+	//$('#lblTextoTotalID').html("Total da Mensalidade");
+	atualizaInfoGeraMensalidade();
+	
+}
+
+function selecionaValorTotalGeraMensalidade() {
+	$('#geraMensalidadeValorTotalID').addClass("btn-primary");
+	$('#geraMensalidadeValorTotalID').removeClass("btn-light");
+	$('#geraMensalidadeValorMensalidadeID').addClass("btn-light");
+	$('#geraMensalidadeValorMensalidadeID').removeClass("btn-primary");
+	$('#codTipoValorID').val("T");
+	$('#lblTipoValorID').html("Valor Total");
+	//$('#lblTextoTotalID').html("Total do Formando");
+	atualizaInfoGeraMensalidade();
+}
+
+function validaVencimentoGeraMensalidade() {
+	var vDataVenc		= $('#dataVencID').val();
+	var vNumMeses		= parseInt($('#numMesesID').val());
+	var vNumMesesMax	= parseInt($('#numMesesMaxID').val());
+	var vOK				= true;
+	
+	// Data de Vencimento
+	if (!vDataVenc) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento deve ser informada !!!'));
+		vOK		= false;
+	}else{
+		$('#divDataVencID').removeClass('has-error');
+		$('#divHelpDataVencID').html('&nbsp;');
+	}
+	
+	// Número de meses
+	if (!vNumMeses) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser preenchido !!!'));
+		vOK		= false;
+	}else if (vNumMeses > vNumMesesMax) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser no máximo '+vNumMesesMax+' !!!'));
+		vOK		= false;
+	}else{
+		$('#divNumMesesID').removeClass('has-error');
+		$('#divHelpNumMesesID').html('&nbsp;');
+	}
+
+	return vOK;
+}
+
+
+function validaValoresGeraMensalidade() {
+	var vCodTipoValor	= $('#codTipoValorID').val();
+	var vValor			= $('#valorID').val();
+	var vCodFormaPag	= $('#codFormaPagID').val();
+	var vCodContaRec	= $('#codContaRecID').val();
+	var vOK				= true;
+	
+	// Valor
+	if (!vValor) {
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Valor deve ser preenchido !!!'));
+		vOK		= false;
+	}else{
+		$('#divValorID').removeClass('has-error');
+		$('#divHelpValorID').html('&nbsp;');
+	}
+
+	// Forma de Pagamento
+	if (!vCodFormaPag) {
+		$('#divFormaPagID').addClass('has-error');
+		$('#divHelpFormaPagID').html(zgCriaSpanErro('Forma de pagamento deve ser selecionada !!!'));
+		vOK		= false;
+	}else{
+		$('#divFormaPagID').removeClass('has-error');
+		$('#divHelpFormaPagID').html('&nbsp;');
+	}
+	
+	// Conta
+	if (!vCodContaRec) {
+		$('#divContaRecID').addClass('has-error');
+		$('#divHelpContaRecID').html(zgCriaSpanErro('Conta de Recebimento deve ser selecionada !!!'));
+		vOK		= false;
+	}else{
+		$('#divContaRecID').removeClass('has-error');
+		$('#divHelpContaRecID').html('&nbsp;');
+	}
+
+	return vOK;
+}
+
+function criaTabelaValoresGeraMensalidade() {
+	var $table					= $('#GeraMensalidadeTableValorID');
+	var $tipoRecParc			= $('#codTipoRecID').val();
+	var $codPeriodoRec			= 'M';
+	var $intervaloRec			= 1;
+	var $dataVenc				= $('#dataVencID').val();
+	var $numMeses				= parseInt($('#numMesesID').val());
+	var $parcelas;
+	var $nValor,$valor,$valorParcela,$valorTotal,$datas;
+
+	var $valParcelaMensalidade	= $('#valParcelaMensalidadeID').val();
+	var $valParcelaSistema		= $('#valParcelaSistemaID').val();
+	var $valParcelaTaxa			= $('#valParcelaTaxaID').val();
+
+	var $valTotalMensalidade	= $('#valTotalMensalidadeID').val();
+	var $valTotalSistema		= $('#valTotalSistemaID').val();
+	var $valTotalTaxa			= $('#valTotalTaxaID').val();
+	
+	var $valTotalGeral			= $('#totalGeralID').val();
+	var $_parc,$_sis,$_taxa,$_tot;
+
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+		
+	var optTotal = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+
+	$parcelas		= $numMeses;	
+	if ($parcelas <= 1) {
+		$tipoRecParc	= "U";
+	}else{
+		$tipoRecParc	= "P";
+	}
+	
+	/** Resgata as datas de vencimentos **/
+	jQuery.ajax({
+		url: "%ROOT_URL%/Fin/geraDatasVencimentoConta.dp.php",
+		data: { dataVenc: $dataVenc, codPeriodoRec: $codPeriodoRec, intervaloRec: $intervaloRec, numParcelas: $parcelas},
+		success: function(ret) {
+			$datas	= JSON.parse(ret);
+		},
+		method: 'get',
+		cache: false,
+		async:false
+	});
+
+	/** Remove os dados atuais **/
+	$('#GeraMensalidadeTableValorID > tbody').find('tr').remove();
+	
+	for ($i = 0; $i < $parcelas; $i++) {
+		var $descParcela	= ($i+1) + " / " + $parcelas;
+		
+		if ($tipoRecParc == "U") {
+			$_parc	= $valTotalMensalidade;
+			$_sis	= $valTotalSistema;
+			$_taxa	= $valTotalTaxa;
+		}else{
+			if ($i == ($parcelas -1)) {
+				$_parc	= zgConverteFloat($valTotalMensalidade	- ($valParcelaMensalidade	* ($parcelas -1) ));
+				$_sis	= zgConverteFloat($valTotalSistema		- ($valParcelaSistema		* ($parcelas -1) ));
+				$_taxa	= zgConverteFloat($valParcelaTaxa);
+			}else{
+				$_parc 	= $valParcelaMensalidade;
+				$_sis 	= $valParcelaSistema;
+				$_taxa 	= $valParcelaTaxa;
+			}
+		}
+		
+		$_tot			= zgConverteFloat($_parc) + zgConverteFloat($_sis) + zgConverteFloat($_taxa);
+		var $_parcFmt	= accounting.formatMoney($_parc	,options);
+		var	$_sisFmt	= accounting.formatMoney($_sis	,options);
+		var $_taxaFmt	= accounting.formatMoney($_taxa	,options);
+		var $_totFmt	= accounting.formatMoney($_tot	,options);
+
+		
+		$('#GeraMensalidadeTableValorID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 40px;">'+$descParcela+'</td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aValor[]" value="'+$_parcFmt+'" onchange="atualizaEValidaParcelasGeraMensalidade();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 80px;"><input type="text" class="form-control input-sm" name="aSistema[]" value="'+$_sisFmt+'" onchange="atualizaEValidaParcelasGeraMensalidade();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 80px;"><input type="text" class="form-control input-sm" name="aTaxas[]" value="'+$_taxaFmt+'" readonly maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aTotal[]" readonly value="'+$_totFmt+'"  maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm datepicker" name="aData[]" value="'+$datas[$i].dataVenc+'" onchange="atualizaEValidaParcelasGeraMensalidade();" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td></tr>');		
+
+		$('#GeraMensalidadeTableValorID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+		$('#GeraMensalidadeTableValorID > tbody > tr:last .datepicker').each(function( index ) {
+			$(this).datepicker({"autoclose": true});
+		});
+		
+	}
+
+	$('#thInfoValorMensalidadeGeraMensalidadeID').html(accounting.formatMoney($valTotalMensalidade,optTotal));
+	$('#thInfoValorSistemaGeraMensalidadeID').html(accounting.formatMoney($valTotalSistema,optTotal));
+	$('#thInfoValorTaxaGeraMensalidadeID').html(accounting.formatMoney($valTotalTaxa,optTotal));
+	$('#thInfoValorTotalGeraMensalidadeID').html(accounting.formatMoney($valTotalGeral,optTotal));
+	$('#thInfoParcelaGeraMensalidadeID').html($parcelas);
+	atualizaEValidaParcelasGeraMensalidade();
+	paginateTableValoresGeraMensalidade();
+}
+
+
+function paginateTableValoresGeraMensalidade() {
+	$('#pagerValoresGeraMensalidadeID li').remove();
+
+	$('table.paginated').each(function() {
+	    var currentPage = 0;
+	    var numPerPage 	= 5;
+	    var $table = $(this);
+	    $table.bind('repaginate', function() {
+	        $table.find('tbody tr').hide().slice(currentPage * numPerPage, (currentPage + 1) * numPerPage).show();
+	    });
+	    $table.trigger('repaginate');
+	    var numRows = $table.find('tbody tr').length;
+	    var numPages = Math.ceil(numRows / numPerPage);
+	    var $pager = $('#pagerValoresGeraMensalidadeID');
+	    for (var page = 0; page < numPages; page++) {
+	    	$('<li><a href="#"><span class="page-number">'+(page + 1)+'</span></a></li>').bind('click', {
+	        //$('<span class="page-number"></span>').text(page + 1).bind('click', {
+	            newPage: page
+	        }, function(event) {
+	            currentPage = event.data['newPage'];
+	            $table.trigger('repaginate');
+	            $(this).addClass('active').siblings().removeClass('active');
+	        }).appendTo($pager).addClass('clickable');
+	    }
+	    $pager.insertBefore($table).find('span.page-number:first').addClass('active');
+	});
+}
+
+function atualizaEValidaParcelasGeraMensalidade() {
+	var $tValMensalidade		= parseFloat(0);
+	var $tValSistema			= parseFloat(0);
+	var $cem					= (100+0).toFixed(2);
+	var $htmlOK					= zgCriaSpanOK();
+	var $htmlError1				= false;
+	var $htmlError2				= false;
+	var $htmlError3				= false;
+	var $epsilon				= 0.00000001;
+	var $vOK					= true;
+	var $menorData;
+	var $tipoRecParc;
+	var $numMeses				= parseInt($('#numMesesID').val());
+	var $valorParcela			= $('#valParcelaMensalidadeID').val();
+	var $valorTotal				= $('#valTotalMensalidadeID').val();
+	var $parcelas;
+
+	var $valParcelaMensalidade	= $('#valParcelaMensalidadeID').val();
+	var $valParcelaSistema		= $('#valParcelaSistemaID').val();
+	var $valParcelaTaxa			= $('#valParcelaTaxaID').val();
+	var $valTotalMensalidade	= $('#valTotalMensalidadeID').val();
+	var $valTotalSistema		= $('#valTotalSistemaID').val();
+	var $valTotalTaxa			= $('#valTotalTaxaID').val();
+	var $valTotalGeral			= $('#totalGeralID').val();
+
+	var opt = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	var opt1 = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+		
+	var opt2 = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	/** Calcula a soma dos valores de Mensalidade e Sistema, para verificar se bate com o total de cada um **/
+	$('#GeraMensalidadeTableValorID > tbody > tr').each(function( index ) {
+		
+		var $_valMen,$_valSis,$_valTaxas,$_valTotal;
+		$(this).find('[name*="aValor[]"]').each(function( index2 ) {
+			$_valMen		 	= zgConverteFloat($(this).val());
+			$tValMensalidade	+= $_valMen;
+		});
+		$(this).find('[name*="aSistema[]"]').each(function( index3 ) {
+			$_valSis			= zgConverteFloat($(this).val());
+			$tValSistema 		+= $_valSis;
+		});
+		$(this).find('[name*="aTaxas[]"]').each(function( index4 ) {
+			$_valTaxas			= zgConverteFloat($(this).val());
+		});
+		
+		/** Atualiza o valor total com a soma dos outros valores **/
+		$(this).find('[name*="aTotal[]"]').each(function( index5 ) {
+			$_valTotal			= zgConverteFloat($_valMen + $_valSis + $_valTaxas);
+			$(this).val(accounting.formatMoney($_valTotal, opt));
+		});
+
+	});
+
+	/** Ajusta os valores totais **/
+	$tValMensalidade		= zgConverteFloat($tValMensalidade.toFixed(2));
+	$tValSistema			= zgConverteFloat($tValSistema.toFixed(2));
+
+	/** Calcula o tipo de recorrência através do número de parcelas **/
+	if ($numMeses <= 1) {
+		$tipoRecParc	= "U";
+	}else{
+		$tipoRecParc	= "P";
+	}
+
+	/** Valida os valores **/
+	if ($valTotalMensalidade != $tValMensalidade) {
+		var $textoMensalidade;
+		var	$diffMensalidade	= ($valTotalMensalidade - $tValMensalidade);
+		
+		if ($diffMensalidade > 0) {
+			$textoMensalidade	= "Falta ainda: "+accounting.formatMoney($diffMensalidade, opt1);
+		}else{
+			$textoMensalidade	= "Valor está a maior: "+accounting.formatMoney(($diffMensalidade*-1), opt1);
+		}
+		
+		$htmlError1	= zgCriaSpanErro($textoMensalidade);
+		$vOK		= false;
+	}
+	
+	if ($valTotalSistema != $tValSistema) {
+		var $textoSistema;
+		var	$diffSistema	= ($valTotalSistema - $tValSistema);
+		
+		if ($diffSistema > 0) {
+			$textoSistema	= "Falta ainda: "+accounting.formatMoney($diffSistema, opt1);
+		}else{
+			$textoSistema	= "Valor está a maior: "+accounting.formatMoney(($diffSistema*-1), opt1);
+		}
+		
+		$htmlError2	= zgCriaSpanErro($textoSistema);
+		$vOK		= false;
+	}
+
+	
+	if ($htmlError1) {
+		$('#thInfoValorMensalidadeGeraMensalidadeID').html($htmlError1);
+	}else{
+		$('#thInfoValorMensalidadeGeraMensalidadeID').html($htmlOK + "&nbsp;"+ accounting.formatMoney($valTotalMensalidade, opt1));
+	}
+
+	if ($htmlError2) {
+		$('#thInfoValorSistemaGeraMensalidadeID').html($htmlError2);
+	}else{
+		$('#thInfoValorSistemaGeraMensalidadeID').html($htmlOK + "&nbsp;"+  accounting.formatMoney($valTotalSistema, opt1));
+	}
+	
+	/** Valida Data **/
+	$('#GeraMensalidadeTableValorID > tbody > tr [name*="aData[]"]').each(function( index ) {
+		var $td		= $(this).parent();
+		var $tr		= $td.parent();
+
+		if (index == 0) {
+			$menorData = moment($(this).val(), "%FORMATO_DATA%");
+			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+		}else{
+			var $data	= moment($(this).val(), "%FORMATO_DATA%");
+			var $dif	= $data - $menorData; 
+			
+			if ($dif < 0) {
+				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Data deve ser maior do que a parcela anterior"));
+				$tr.addClass("alert-danger");
+				$vOK		= false;
+				$htmlError3	= zgCriaSpanErro("Verifique as datas dos registros marcados");
+			}else{
+				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
+				$tr.removeClass("alert-danger");
+			}
+			$menorData = moment($(this).val(), "%FORMATO_DATA%");
+		}
+	});
+
+	
+	if ($htmlError3) {
+		$('#thInfoHelpTableParcelasGeraMensalidadeID').html($htmlError3);
+	}else{
+		$('#thInfoHelpTableParcelasGeraMensalidadeID').html(zgCriaSpanOK());
+	}
+
+	return $vOK;
+	
+}
+
+
+</script>
