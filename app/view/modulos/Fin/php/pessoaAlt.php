@@ -45,6 +45,7 @@ if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) 
 			}
 		}else{
 			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
+			$infoEnd	= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa));
 			if (!$info) \Zage\App\Erro::halt('Pessoa "'.$codPessoa.'" não encontrada !!!');
 		}
 		
@@ -59,6 +60,48 @@ if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) 
 	$link			= $info->getLink();
 	$disabled		= 'disabled';
 	$readOnly		= 'readonly';
+	
+	/** Endereco **/
+	$codLogradouro   = ($infoEnd->getCodLogradouro()) ? $infoEnd->getCodLogradouro()->getCodigo() : null;
+	$cep 		     = ($infoEnd->getCep()) ? $infoEnd->getCep() : null;
+	$complemento     = ($infoEnd->getComplemento()) ? $infoEnd->getComplemento() : null;
+	$numero		     = ($infoEnd->getNumero()) ? $infoEnd->getNumero() : null;
+	$endCorreto		 = ($infoEnd->getIndEndCorreto() == 1) ? "checked" : null;
+	
+	if($codLogradouro != null){
+	
+		$infoLogradouro = $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+	
+		if($infoEnd->getIndEndCorreto() == 0){
+			if($infoLogradouro->getDescricao() == $infoEnd->getEndereco()){
+				$logradouro	  = $infoLogradouro->getDescricao();
+				$readOnlyEnd 	  = 'readonly';
+			}else{
+				$logradouro	  = $infoEnd->getEndereco();
+				$readOnlyEnd 	  = '';
+			}
+				
+			if($infoLogradouro->getCodBairro()->getDescricao() == $infoEnd->getBairro()){
+				$bairro = $infoLogradouro->getCodBairro()->getDescricao();
+				$readOnlyBairro 	  = 'readonly';
+			}else{
+				$bairro = $infoEnd->getBairro();
+				$readOnlyBairro 	  = '';
+			}
+	
+		}else{
+			$logradouro 	= $infoLogradouro->getDescricao();
+			$bairro 		= $infoLogradouro->getCodBairro()->getDescricao();
+			$readOnlyBairro = 'readonly';
+			$readOnlyEnd 	= 'readonly';
+		}
+	
+		$cidade	  		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome();
+		$estado    		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUF()->getNome();
+	}else{
+		$readOnlyBairro = 'readonly';
+		$readOnlyEnd 	= 'readonly';
+	}
 	
 	/** Fonte de Recurso (Conta) **/
 	$oConta			= $em->getRepository('Entidades\ZgfinPessoaConta')->findOneBy(array('codPessoa' => $codPessoa));
@@ -135,6 +178,16 @@ if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) 
 	$banco		= null;
 	$agencia	= null;
 	$ccorrente	= null;
+	
+	$codLogradouro	= null;
+	$cep			= null;
+	$complemento	= null;
+	$numero			= null;
+	$endCorreto		= null;
+	$cidade			= null;
+	$estado			= null;
+	$readOnlyBairro = 'readonly';
+	$readOnlyEnd 	= 'readonly';
 }
 
 
@@ -190,18 +243,6 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
-
-#################################################################################
-## Select de Tipo de Endereço
-#################################################################################
-try {
-	$aTipoEnd		= $em->getRepository('Entidades\ZgfinEnderecoTipo')->findAll();
-	$oTipoEnd		= $system->geraHtmlCombo($aTipoEnd,	'CODIGO', 'DESCRICAO',	null, 		null);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-
 #################################################################################
 ## Resgatar os dados de contato
 #################################################################################
@@ -216,23 +257,6 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 	$oTipoInt		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	$codTipoTel, '');
 
 	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
-}
-
-#################################################################################
-## Resgatar os dados de endereço
-#################################################################################
-$aEnd		= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findBy(array('codPessoa' => $codPessoa));
-$tabEnd		= "";
-for ($i = 0; $i < sizeof($aEnd); $i++) {
-
-
-	#################################################################################
-	## Monta a combo de Tipo
-	#################################################################################
-	$codTipoEnd		= ($aEnd[$i]->getCodTipoEndereco() 	!= null) 	? $aEnd[$i]->getCodTipoEndereco()->getCodigo() 	: null;
-	$oTipoEnd		= $system->geraHtmlCombo($aTipoEnd,	'CODIGO', 'DESCRICAO',	$codTipoEnd, '');
-	$codLogradouro	= ($aEnd[$i]->getCodLogradouro()	!= null) 	? $aEnd[$i]->getCodLogradouro()->getCodigo() 	: null;
-	$tabEnd		.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width: 120px;" name="codTipoEnd[]" data-rel="select2">'.$oTipoEnd.'</select></td><td><input type="text" name="cep[]" style="width: 99%;" value="'.$aEnd[$i]->getCep().'" onchange="pessoaAltCarregaEndereco($(this));" maxlength="9" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"></td><td><input type="text" name="bairro[]" style="width: 99%;" value="'.$aEnd[$i]->getBairro().'" maxlength="60" autocomplete="off"></td><td><input type="text" name="endereco[]" style="width: 99%;" value="'.$aEnd[$i]->getEndereco().'" maxlength="100" autocomplete="off"></td><td><input type="text" style="width: 99%;" name="numero[]" value="'.$aEnd[$i]->getNumero().'" maxlength="20" autocomplete="off"></td><td><input type="text" name="complemento[]" style="width: 99%;" value="'.$aEnd[$i]->getComplemento().'" maxlength="120" autocomplete="off"></td><td class="center"><span class="center" zgdelete onclick="delRowEnderecoPessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codEndereco[]" value="'.$aEnd[$i]->getCodigo().'"><input type="hidden" name="codLogradouro[]" value="'.$codLogradouro.'"></td></tr>';
 }
 
 #################################################################################
@@ -307,7 +331,6 @@ $tpl->set('DATA_NAS'				,$dataNascimento);
 $tpl->set('EMAIL'					,$email);
 $tpl->set('LINK'					,$link);
 $tpl->set('TIPO_TEL'				,$oTipoTel);
-$tpl->set('TIPO_END'				,$oTipoEnd);
 $tpl->set('LISTA_ASS'				,$liAss);
 $tpl->set('LISTA_DIS'				,$liDis);
 $tpl->set('COD_BANCO'				,$codBanco);
@@ -316,7 +339,20 @@ $tpl->set('AGENCIA'					,$agencia);
 $tpl->set('CCORRENTE'				,$ccorrente);
 $tpl->set('TAB_TELEFONE'			,$tabTel);
 $tpl->set('TAB_CONTA'				,$tabConta);
-$tpl->set('TAB_ENDERECO'			,$tabEnd);
+
+$tpl->set ('COD_LOGRADOURO' 	, $codLogradouro);
+$tpl->set ('CEP' 				, $cep);
+$tpl->set ('LOGRADOURO'			, $logradouro);
+$tpl->set ('BAIRRO'				, $bairro);
+$tpl->set ('CIDADE'				, $cidade);
+$tpl->set ('ESTADO'		 		, $estado);
+$tpl->set ('COMPLEMENTO' 		, $complemento);
+$tpl->set ('NUMERO' 			, $numero);
+$tpl->set ('READONLY_BAIRRO'	, $readOnlyBairro);
+$tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
+$tpl->set ('IND_END_CORRETO'	, $endCorreto);
+$tpl->set ('READONLY_BAIRRO'	, $readOnlyBairro);
+$tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));

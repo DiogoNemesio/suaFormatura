@@ -52,15 +52,13 @@ if (isset($_POST['codBanco']))			$codBanco			= $_POST['codBanco'];
 if (isset($_POST['agencia']))			$agencia			= $_POST['agencia'];
 if (isset($_POST['ccorrente']))			$ccorrente			= $_POST['ccorrente'];
 
-if (isset($_POST['codTipoEnd']))		$codTipoEnd			= $_POST['codTipoEnd'];
-if (isset($_POST['cep']))				$cep				= $_POST['cep'];
-if (isset($_POST['bairro']))			$bairro				= $_POST['bairro'];
-if (isset($_POST['endereco']))			$endereco			= $_POST['endereco'];
-if (isset($_POST['numero']))			$numero				= $_POST['numero'];
-if (isset($_POST['complemento']))		$complemento		= $_POST['complemento'];
-if (isset($_POST['codCidade']))			$codCidade			= $_POST['codCidade'];
-if (isset($_POST['codLogradouro']))		$codLogradouro		= $_POST['codLogradouro'];
-if (isset($_POST['codEndereco']))		$codEndereco		= $_POST['codEndereco'];
+if (isset($_POST['codLogradouro']))		$codLogradouro	= \Zage\App\Util::antiInjection($_POST['codLogradouro']);
+if (isset($_POST['endCorreto']))		$endCorreto		= \Zage\App\Util::antiInjection($_POST['endCorreto']);
+if (isset($_POST['descLogradouro']))	$descLogradouro	= \Zage\App\Util::antiInjection($_POST['descLogradouro']);
+if (isset($_POST['bairro']))			$bairro			= \Zage\App\Util::antiInjection($_POST['bairro']);
+if (isset($_POST['complemento']))		$complemento	= \Zage\App\Util::antiInjection($_POST['complemento']);
+if (isset($_POST['numero']))			$numero			= \Zage\App\Util::antiInjection($_POST['numero']);
+if (isset($_POST['cep']))				$cep			= \Zage\App\Util::antiInjection($_POST['cep']);
 
 if (!isset($codTipoTel))				$codTipoTel			= array();
 if (!isset($codTelefone))				$codTelefone		= array();
@@ -71,16 +69,6 @@ if (!isset($codBanco))					$codBanco			= array();
 if (!isset($agencia))					$agencia			= array();
 if (!isset($ccorrente))					$ccorrente			= array();
 
-if (!isset($codTipoEnd))				$codTipoEnd			= array();
-if (!isset($cep))						$cep				= array();
-if (!isset($bairro))					$bairro				= array();
-if (!isset($endereco))					$endereco			= array();
-if (!isset($numero))					$numero				= array();
-if (!isset($complemento))				$complemento		= array();
-if (!isset($codCidade))					$codCidade			= array();
-if (!isset($codLogradouro))				$codLogradouro		= array();
-if (!isset($codEndereco))				$codEndereco		= array();
-
 #################################################################################
 ## Limpar a variável de erro
 #################################################################################
@@ -89,6 +77,14 @@ $err	= false;
 #################################################################################
 ## Fazer validação dos campos
 #################################################################################
+if (!isset($cep) || (empty($cep))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," O campo CEP deve ser preenchido");
+	$err	= 1;
+}elseif ((!empty($cep)) && (strlen($cep) > 8)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO," O CEP não deve conter mais de 8 caracteres.");
+	$err	= 1;
+}
+
 if ($tipo == 'J'){
 	/******* Nome *********/
 	if (!isset($nome) || (empty($nome))) {
@@ -224,8 +220,11 @@ if ($err != null) {
 try {
 	if (isset($codPessoa) && (!empty($codPessoa))) {
  		$oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codPessoa));
+ 		$oEndereco	= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa));
+ 			
  		if (!$oPessoa) {
  			$oPessoa	= new \Entidades\ZgfinPessoa();
+ 			$oEndereco	= new \Entidades\ZgfinPessoaEndereco();
  			$oPessoa->setDataCadastro(new \DateTime("now"));
  			$oPessoa->setIndCliente(0);
  			$oPessoa->setIndFornecedor(0);
@@ -233,6 +232,7 @@ try {
  		}
  	}else{
  		$oPessoa	= new \Entidades\ZgfinPessoa();
+ 		$oEndereco	= new \Entidades\ZgfinPessoaEndereco();
  		$oPessoa->setDataCadastro(new \DateTime("now"));
  		$oPessoa->setIndCliente(0);
  		$oPessoa->setIndFornecedor(0);
@@ -242,6 +242,8 @@ try {
  	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
  	$oSexo		= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
  	$oTipo		= $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => $tipo));
+ 	$oTipoEnd	= $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => "F"));
+ 	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
  	
  	if (!empty($dataNascimento)) {
  		$dtNasc		= DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataNascimento);
@@ -276,6 +278,17 @@ try {
  	$oPessoa->setLink($link);
  	$oPessoa->setIndEstrangeiro($indEstrangeiro);
  	
+ 	$oEndereco->setCodPessoa($oPessoa);
+ 	$oEndereco->setCodTipoEndereco($oTipoEnd);
+ 	$oEndereco->setCodLogradouro($oCodLogradouro);
+ 	$oEndereco->setEndereco($descLogradouro);
+ 	$oEndereco->setNumero($numero);
+ 	$oEndereco->setCep($cep);
+ 	$oEndereco->setBairro($bairro);
+ 	$oEndereco->setComplemento($complemento);
+ 	$oEndereco->setIndEndCorreto($endCorreto == "on" ? 1 : 0);
+ 	
+ 	$em->persist($oEndereco);
  	$em->persist($oPessoa);
  	$em->flush();
  	
@@ -330,70 +343,6 @@ try {
  			}
  		}
  	
- 	}
- 	 
- 	if (!isset($codTipoEnd))				$codTipoEnd			= array();
- 	if (!isset($cep))						$cep				= array();
- 	if (!isset($bairro))					$bairro				= array();
- 	if (!isset($endereco))					$endereco			= array();
- 	if (!isset($numero))					$numero				= array();
- 	if (!isset($complemento))				$complemento		= array();
- 	if (!isset($codCidade))					$codCidade			= array();
- 	if (!isset($codLogradouro))				$codLogradouro		= array();
- 	if (!isset($codEndereco))				$codEndereco		= array();
- 	
- 	#################################################################################
- 	## Endereço
- 	#################################################################################
- 	$enderecos		= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findBy(array('codPessoa' => $codPessoa));
- 	
- 	#################################################################################
- 	## Exclusão
- 	#################################################################################
- 	for ($i = 0; $i < sizeof($enderecos); $i++) {
- 		if (!in_array($enderecos[$i]->getCodigo(), $endereco)) {
- 			try {
- 				$em->remove($enderecos[$i]);
- 				$em->flush();
- 			} catch (\Exception $e) {
- 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o endereco: ".$enderecos[$i]->getEndereco()." Erro: ".$e->getMessage());
- 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
- 				exit;
- 			}
- 		}
- 	}
- 	
- 	#################################################################################
- 	## Criação / Alteração
- 	#################################################################################
- 	for ($i = 0; $i < sizeof($codEndereco); $i++) {
- 		$infoEnd		= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codigo' => $codEndereco[$i] , 'codPessoa' => $oPessoa->getCodigo()));
- 		if (!$infoEnd) 	$infoEnd		= new \Entidades\ZgfinPessoaEndereco();
-
- 		//$oCidade		= $em->getRepository('Entidades\ZgadmCidade')->findOneBy(array('codigo' => $codCidade[$i]));
-		$oTipoEnd		= $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => $codTipoEnd[$i]));
-		$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro[$i]));
- 		
- 		$infoEnd->setCodPessoa($oPessoa);
- 		$infoEnd->setCodTipoEndereco($oTipoEnd);
- 		$infoEnd->setEndereco($endereco[$i]);
- 		$infoEnd->setNumero($numero[$i]);
- 		$infoEnd->setBairro($bairro[$i]);
- 		$infoEnd->setComplemento($complemento[$i]);
- 		$infoEnd->setCep($cep[$i]);
- 		//$infoEnd->setCodCidade($oCidade);
- 		$infoEnd->setCodLogradouro($oLogradouro);
- 				
- 		try {
- 			$em->persist($infoEnd);
- 			$em->flush();
- 			$em->detach($infoEnd);
- 		} catch (\Exception $e) {
- 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível cadastrar o endereço: ".$endereco[$i]." Erro: ".$e->getMessage());
- 			echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
- 			exit;
- 		}
- 		
  	}
  	
  	#################################################################################

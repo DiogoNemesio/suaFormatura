@@ -12,6 +12,7 @@
 				<input type="hidden" name="id" value="%ID%">
 				<input type="hidden" id="codPessoaID" name="codPessoa" value="%COD_PESSOA%">
 				<input type="hidden" id="tipoCadPessoaID" name="tipoCadPessoa" value="%TIPO_CAD_PESSOA%">
+				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
 				<input type="hidden" id="aSegsID" name="aSegs">
 				<div class="tabbable">
 					<ul class="nav nav-tabs padding-16">
@@ -231,23 +232,73 @@
 							<h4 class="header blue bolder smaller">Lista de Endereços</h4>
 							<div class="vspace-xs"></div>
 							<div class="row">
-								<table id="pessoaAltTableEnderecoID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
-									<thead>
-										<tr class="warning">
-											<th class="center">&nbsp;</th>
-											<th class="col-sm-1 center">Tipo</th>
-											<th class="col-sm-1 center">Cep</th>
-											<th class="col-sm-2 center">Bairro</th>
-											<th class="col-sm-3 center">Endereço</th>
-											<th class="col-sm-1 center">Número</th>
-											<th class="col-sm-2 center">Complemento</th>
-											<th class="col-sm-1 center"><span onclick="addRowEnderecoPessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-										</tr>
-									</thead>
-									<tbody>
-									%TAB_ENDERECO%
-									</tbody>
-								</table>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12" id="divCepID">
+										<label for="cepID" class="col-sm-3 control-label">CEP</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="As informações do endereço serão preenchidas de acordo com o CEP informado."></i></span>
+											<input class="form-control" type="text" id="cepID" name="cep" value="%CEP%" maxlength="9" placeholder="Busca por CEP" autocomplete="off" onchange="buscaRua();" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"  />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCepID"></div>
+									</div>																	
+									<div class="form-group col-sm-12" id="divDescLogradouroID">
+										<label for="descLogradouroID" class="col-sm-3 control-label">Logradouro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Logradouro (endereço)"></i></span>
+											<input class="form-control" type="text" id="descLogradouroID" %READONLY_END% name="descLogradouro" value="%LOGRADOURO%" autocomplete="off" placeholder="Logradouro" maxlength="100" />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpDescLogradouroID"></div>
+									</div>	
+									<div class="form-group col-sm-12" id="divBairroID">
+										<label for="bairroID" class="col-xs-12 col-sm-3 control-label">Bairro</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Bairro"></i></span>
+											<input class="form-control" type="text" id="bairroID" name="bairro" %READONLY_BAIRRO% value="%BAIRRO%" autocomplete="off" placeholder="Bairro" maxlength="60" />
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpBairroID"></div>
+									</div>
+									<div class="form-group col-sm-12">
+										<label for="descCidadeID" class="col-xs-12 col-sm-3 control-label">Cidade</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Cidade"></i></span>
+											<input class="form-control" type="text" readonly id="descCidadeID" name="descCidade" value="%CIDADE%" placeholder="Cidade" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group col-sm-12">
+										<label for="descEstadoID" class="col-xs-12 col-sm-3 control-label">Estado (UF)</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Estado (UF)"></i></span>
+											<input class="form-control" type="text" readonly id="descEstadoID" name="descEstado" value="%ESTADO%" placeholder="Estado" />
+										</div>
+									</div>									
+									<div class="form-group col-sm-12" id="divNumeroID">
+										<label for="numeroID" class="col-sm-3 control-label">Número</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o número do endereço."></i></span>
+											<input class="form-control" type="text" id="numeroID" name="numero" value="%NUMERO%" autocomplete="off" placeholder="Número" maxlength="10" />
+										</div>
+									</div>							
+									<div class="form-group col-sm-12" id="divComplementoID">
+										<label for="complementoID" class="col-sm-3 control-label">Complemento</label>
+										<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o complemento do endereço."></i></span>
+											<input class="form-control" type="text" id="complementoID" name="complemento" value="%COMPLEMENTO%" autocomplete="off" placeholder="Complemento" maxlength="100" />
+										</div>
+									</div>																		
+								</div>
+								<div class="hidden" id="divEndCorretoID">
+									<div class="col-sm-12">
+										<div class="form-group col-sm-12">
+											<div class="alert alert-info">	
+												Em caso de incoerência no endereço, algumas informações devem ser inseridas manualmente. O endereço está correto?
+												<input name="endCorreto" id="endCorretoID" class="ace ace-switch ace-switch-2" onchange="mudaEndereco();" %IND_END_CORRETO% type="checkbox"/>
+												<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAO"></span>
+											</div>		
+										</div>	
+									</div>
+						    	</div>
 							</div>
 						</div>
 						<div id="pessoa-segmento" class="tab-pane">
@@ -362,76 +413,6 @@ function addRowTelefonePessoaAlt() {
 }
 
 function delRowTelefonePessoaAlt(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	$tr.addClass("danger");
-	$tr.fadeOut(800, function(){
-		$tr.remove();
-	});
-}
-
-function pessoaAltCarregaEndereco(pObj) {
-	var $td		= pObj.parent();
-	var $tr		= $td.parent();
-	var $cep	= pObj.cleanVal();
-	
-	//if (validaCep($cep) !== true) {
-	//	alert('Cep inválido !!!');
-	//	return false;
-	//}
-	
-	jQuery.ajax({
-		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
-		data: { cep: $cep},
-		success: function(ret) {
-			var vData	= JSON.parse(ret);
-	    	if (vData.codLogradouro) {
-
-	    		$tr.removeClass('alert-danger');
-	    		
-	    		$tr.find('input[name="bairro[]"]').removeAttr("readonly");
-	    		$tr.find('input[name="endereco[]"]').removeAttr("readonly");
-	    		$tr.find('input[name="numero[]"]').removeAttr("readonly");
-	    		$tr.find('input[name="complemento[]"]').removeAttr("readonly");
-	    		
-	    		$tr.find('input[name="bairro[]"]').val(vData.descBairro);
-	    		$tr.find('input[name="endereco[]"]').val(vData.descLogradouro);
-	    		$tr.find('input[name="codLogradouro[]"]').val(vData.codLogradouro);
-
-	    		$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
-
-	    	}else{
-	    		$tr.find('input[name="bairro[]"]').attr('readonly', 'readonly');
-	    		$tr.find('input[name="endereco[]"]').attr('readonly', 'readonly');
-	    		$tr.find('input[name="numero[]"]').attr('readonly', 'readonly');
-	    		$tr.find('input[name="complemento[]"]').attr('readonly', 'readonly');
-	    		
-	    		$tr.find('input[name="bairro[]"]').val(null);
-	    		$tr.find('input[name="endereco[]"]').val(null);
-	    		
-	    		$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro('Cep não encontrado !!!'));
-	    		
-	    		$tr.addClass('alert-danger');
-
-	    	}
-		},
-		method: 'get',
-		cache: false,
-		async:false
-	});
-
-}
-
-function addRowEnderecoPessoaAlt() {
-	$('#pessoaAltTableEnderecoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width: 120px;" name="codTipoEnd[]" data-rel="select2">%TIPO_END%</select></td><td><input type="text" name="cep[]" style="width: 99%;" onchange="pessoaAltCarregaEndereco($(this));" maxlength="9" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cep" zg-data-mask-retira="1"></td><td><input type="text" readonly style="width: 99%;" name="bairro[]" maxlength="60" autocomplete="off"></td><td><input type="text" style="width: 99%;" readonly name="endereco[]" maxlength="100" autocomplete="off"></td><td><input type="text" style="width: 99%;" readonly name="numero[]" maxlength="20" autocomplete="off"></td><td><input type="text" style="width: 99%;" readonly name="complemento[]" maxlength="120" autocomplete="off"></td><td class="center"><span class="center" zgdelete onclick="delRowEnderecoPessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codEndereco[]"><input type="hidden" name="codLogradouro[]"></td></tr>');
-	$('#pessoaAltTableEnderecoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-		zgMask($( this ), $( this ).attr('zg-data-mask'));
-		$( this ).trigger('keyup');
-	});
-	$('#pessoaAltTableEnderecoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-}
-
-function delRowEnderecoPessoaAlt(pObj) {
 	var $td		= pObj.parent();
 	var $tr		= $td.parent();
 	$tr.addClass("danger");
@@ -774,37 +755,52 @@ function validaPessoaAlt() {
 		$vCount = 0;
 	}
 	
-	/** Valida os Endereços **/
-	var $codEndereco 	= $("input[name='codEndereco\\[\\]']");
-	var $cep 			= $("input[name='cep\\[\\]']");
-	var $bairro			= $("input[name='bairro\\[\\]']");
-	var $endereco		= $("input[name='endereco\\[\\]']");
-	for (i = 0; i < $codEndereco.length; i++) {
-		var $td		= $cep.eq(i).parent();
-		var $tr		= $td.parent();
-		
-		if (!$cep.eq(i).val()) {
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Cep deve ser preenchido"));
-			$tr.addClass("alert-danger");
-			vOK		= false;
-		}else if ($cep.eq(i).val().length != 9) {
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Cep inválido"));
-			$tr.addClass("alert-danger");
-			vOK		= false;
-		}else if (!$bairro.eq(i).val()) {
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Bairro deve ser preenchido"));
-			$tr.addClass("alert-danger");
-			vOK		= false;
-		}else if (!$endereco.eq(i).val()) {
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Endereço deve ser preenchido"));
-			$tr.addClass("alert-danger");
+	//---- ABA ENDEREÇO ----//
+	var vCodLogradouro	= $('#codLogradouroID').val();
+	var vCep			= $('#cepID').val();
+	var vDescLogradouro	= $('#descLogradouroID').val();
+	var vBairro			= $('#bairroID').val();
+	
+	if (vCodLogradouro){
+		if (!vCep) {
+			$('#divCepID').addClass('has-error');
+			$('#divHelpCepID').html(zgCriaSpanErro('O CEP deve ser preenchido!'));
 			vOK		= false;
 		}else{
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
-			$tr.removeClass("alert-danger");
+			$('#divCepID').removeClass('has-error');
+			$('#divHelpCepID').html('&nbsp;');
+		}
+		
+		if (!vDescLogradouro) {
+			$('#divDescLogradouroID').addClass('has-error');
+			$('#divHelpDescLogradouroID').html(zgCriaSpanErro('O logradouro deve ser preenchido!'));
+			vOK		= false;
+		}else{
+			$('#divDescLogradouroID').removeClass('has-error');
+			$('#divHelpDescLogradouroID').html('&nbsp;');
+		}
+		
+		if (!vBairro) {
+			$('#divBairroID').addClass('has-error');
+			$('#divHelpBairroID').html(zgCriaSpanErro('O bairro deve ser preenchido!'));
+			vOK		= false;
+		}else{
+			$('#divBairroID').removeClass('has-error');
+			$('#divHelpBairroID').html('&nbsp;');
+		}
+	}else{
+		if (!vCep) {
+			$('#divCepID').addClass('has-error');
+			$('#divHelpCepID').html(zgCriaSpanErro('O CEP deve ser preenchido!'));
+			vOK		= false;
+		}else if (buscaRua() == false){
+			vOK		= false;
+		}else{
+			$('#divCepID').removeClass('has-error');
+			$('#divHelpCepID').html('&nbsp;');
 		}
 	}
-
+	
 	/** Valida as informaçoes bancárias **/
 	var $codConta 	= $("input[name='codConta\\[\\]']");
 	var $codBanco	= $("input[name='codBanco\\[\\]']");
@@ -839,13 +835,145 @@ function validaPessoaAlt() {
 			$tr.removeClass("alert-danger");
 		}
 	}
-
 	
+	if (!vCep) {
+		$('#divCepID').addClass('has-error');
+		$('#divHelpCepID').html(zgCriaSpanErro('O CEP deve ser preenchido!'));
+		vOK		= false;
+	}else{
+		$('#divCepID').removeClass('has-error');
+		$('#divHelpCepID').html('&nbsp;');
+	}
 	
 	if (vOK == true) {
 		return true ;
 	}else{
 		return false;
+	}
+}
+
+/******************************************************
+BUSCAR ENDEREÇO - Buscar o endereço através do CEP 
+/******************************************************/
+//Busca ENDEREÇO
+function buscaRua() {
+	var vCep			= $('#cepID').cleanVal();
+	
+	if (vCep){
+		if (vCep.length != 8){
+			$('#divCepID').addClass('has-error');
+			$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+			$('#divHelpCepID').html(zgCriaSpanErro('CEP inválido !!!'));
+			limpaInfoLogradouro();
+			return false;
+		}else{
+			/** Buscar o cep no banco **/
+			jQuery.ajax({
+	    		url: "%ROOT_URL%/Adm/buscaCep.dp.php",
+	    		data: { cep: vCep},
+	    		success: function(ret) {
+	    			var vData	= JSON.parse(ret);
+	    	    	if (vData.codLogradouro) {
+	    	    		$('#codLogradouroID').val(vData.codLogradouro);
+	    	    		$('#descLogradouroID').val(vData.descLogradouro);
+	    	    		$('#codCidadeID').val(vData.codCidade);
+	    	    		$('#descCidadeID').val(vData.descCidade);
+	    	    		$('#descEstadoID').val(vData.descUf);
+	    	    		$('#bairroID').val(vData.descBairro);
+	
+	    	    		$('#divHelpCepID').html('');
+	    	    		$('#divCepID').removeClass('has-error');
+	    	    		
+	    	    		$('#divLogradouroID').removeClass('has-error');
+	    	    		$('#divNumeroID').removeClass('has-error');
+	    	    		$('#divBairroID').removeClass('has-error');
+	    	    		$('#divHelpBairroID').html('');
+	    	    		$('#divHelpLogradouroID').html('');
+	    	    		$('#divHelpNumeroID').html('');
+
+	    	    		$('#divEndID').removeClass('hidden');
+	    	    		
+	    	    		$('#descLogradouroID').attr("readonly", true);
+	    	    		$('#bairroID').attr("readonly", true);
+	    	    		
+	    	    		$("#endCorretoID").prop("checked", true);
+	    	    		//$('#endCorretoID').attr("checked", true);
+		    	    		
+	    	    		zgMostraDivsEndereco();
+	    	    		$('#numeroID').focus();
+	    	    		
+	    	    		vBusca = 1;
+	
+	    	    	}else{
+	    	    		$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+	    	    		$('#divHelpCepID').html(zgCriaSpanErro('CEP não encontrado !!!'));
+	    	    		$('#divCepID').addClass('has-error');
+	    	    		$('#divEndID').addClass('hidden');
+	    	    		//Apagar o valor dos campos, caso estejam preenchidos
+	    	    		limpaInfoLogradouro();
+	    	    		
+	    	    		vBusca = 0;
+	    	    	}
+	    		},
+	    		
+	    		method: 'get',
+	    		cache: false,
+	    		async:false
+	  		});
+			
+			if (vBusca == 0){
+				return false;
+			}else{
+				return true;
+			}			
+		}
+	}else{
+		$('#divEndCorretoID').addClass("hidden");//Esconder o div de alterar endereço
+		$('#divCepID').removeClass('has-error');
+		$('#divHelpCepID').html('&nbsp;');
+		//Apagar o valor dos campos, caso estejam preenchidos
+		limpaInfoLogradouro();
+	}
+}
+
+//Valida CEP
+function limpaInfoLogradouro() {
+	
+	$('#codLogradouroID').val('');
+	$('#descLogradouroID').val('');
+	$('#codCidadeID').val('');
+	$('#descCidadeID').val('');
+	$('#descEstadoID').val('');
+	$('#bairroID').val('');
+			
+}
+//Div de endereço correto, mostrar em caso que esteja editando.
+zgMostraDivsEnderecoEdicao();
+function zgMostraDivsEnderecoEdicao() {
+	var vCodPessoa		= $('#codPessoaID').val();
+	var vCep			= $('#cepID').val();
+	
+	if(vCodPessoa && vCep){
+		zgMostraDivsEndereco();
+	}
+}
+
+//Div de endereço correto (SIM/NAO)
+function zgMostraDivsEndereco() {
+	$('#divEndCorretoID').removeClass("hidden");
+}
+//Alterar endereço padrão
+function mudaEndereco() {
+	var vEndCorreto		= $('#endCorretoID').is(':checked');
+	
+	if (vEndCorreto == false) {
+		$('#descLogradouroID').removeAttr("readonly");
+		$('#bairroID').removeAttr("readonly");
+
+	}else{
+		buscaRua();
+		$('#descLogradouroID').attr("readonly", true);
+		$('#bairroID').attr("readonly", true);
 	}
 }
 
