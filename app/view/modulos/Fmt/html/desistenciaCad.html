@@ -30,7 +30,7 @@
 			<input type="hidden" name="saldoTotalFormando" id="saldoTotalFormandoID">
 			<input type="hidden" name="saldoSistemaFormando" id="saldoSistemaFormandoID">
 			<input type="hidden" id="saldoMensalidadeFormandoID" value="%SALDO_MENSALIDADE%">
-			<input type="hidden" id="saldoSistemaFormandoID" value="%SALDO_PORTAL%">
+			<input type="hidden" id="saldoPortalFormandoID" value="%SALDO_PORTAL%">
 			<input type="hidden" name="valTotalMensalidade" id="valTotalMensalidadeID">
 			<input type="hidden" name="valTotalSistema" id="valTotalSistemaID">
 			
@@ -52,51 +52,42 @@
 								<h5 class="widget-title">Informações</h5>
 							</div>
 							<div class="widget-body">
-								<div class="widget-main small">						
-									<div class="row" id="divInfoValEventoID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total dos Eventos:</p>
-									    	<p id='lbInfoTotalEventosID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
+								<div class="widget-main small">	
+									<div class="row" id="divInfoConfID">
+										<h6 class="header blue bolder smaller">&nbsp;Pagamentos realizados:</h6>
+									</div>					
 									<div class="row" id="divInfoCustoID">
 										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total pago:</p>
+									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Mensalidades:</p>
 									    	<p id='lbInfoSaldoMensalidadeID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
 								    	</div>
 									</div>
 									<div class="row" id="divInfoValorID">
 										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total de portal:</p>
-									    	<p id='lbInfoSaldoSistemaID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
-									<div class="row" id="divInfoQtdeObrigatorioID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Qtde obrigatória:</p>
-									    	<p id='lbInfoQtdeObrigatorioID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
-									<div class="row" id="divInfoQtdeObrigatorioID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor por formando (R$):</p>
-									    	<p id='lbInfoValorObrigatorioID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
-									<div class="row" id="divInfoCentroCustoID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>LUCRO (R$):</b></p>
-									    	<p id='lbInfoLucroID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
-									<div class="row hidden" id="divInfoPessoaID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Fornecedor:</p>
-									    	<p id='lbInfoPessoaID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
+									    	<p id='lbInfoSaldoPortalID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
 								    	</div>
 									</div>
 									<div class="row" id="divInfoConfID">
-										<h6 class="header blue bolder smaller">&nbsp;Previsão financeira:</h6>
+										<h6 class="header blue bolder smaller">&nbsp;Saldo:</h6>
+									</div>
+									<div class="row" id="divInfoValEventoID">
+										<div class="col-sm-12">
+									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total dos eventos:</p>
+									    	<p id='lbInfoTotalEventosID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+								    	</div>
+									</div>
+									<div class="row" id="divInfoValEventoID">
+										<div class="col-sm-12">
+									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total do portal:</p>
+									    	<p id='lbInfoTotalPortalID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+								    	</div>
+									</div>
+									<div class="row" id="divInfoValEventoID">
+										<div class="col-sm-12">
+									    	<p id='lbInfoSaldoTituloID' class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"></p>
+									    	<p id='lbInfoSaldoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"><b></b></p>
+								    	</div>
 									</div>
 								</div>
 							</div>
@@ -403,7 +394,7 @@ $('#fuelux-wizard-container')
 
 
 
-desCadMostraQuadroResumo();
+
 function desCadMostraQuadroResumo() {
 	var vSaldoMensalidade	= zgConverteFloat($('#saldoMensalidadeFormandoID').val());
 	var vSaldoSistema		= zgConverteFloat($('#saldoSistemaFormandoID').val());
@@ -433,7 +424,11 @@ function desCadMostraQuadroResumo() {
 	**/
 }
 
+desCadCalculaValorTotalEvento();
 function desCadCalculaValorTotalEvento() {
+	var $saldoMensalidade	= zgConverteFloat($('#saldoMensalidadeFormandoID').val());
+	var $saldoPortal		= zgConverteFloat($('#saldoPortalFormandoID').val());
+	
 	var $aSelEventos	= [];
 	var $totalEventos	= 0;
 	
@@ -453,7 +448,25 @@ function desCadCalculaValorTotalEvento() {
 		$totalEventos						+= $valorEvento;
 	});
 	
+	/** Atualizar o quadro **/
+	$('#lbInfoSaldoMensalidadeID').html(accounting.formatMoney($saldoMensalidade,$opt));
+	$('#lbInfoSaldoPortalID').html(accounting.formatMoney($saldoPortal,$opt));
+	
+	// Atualiza total evento	
 	$('#lbInfoTotalEventosID').html(accounting.formatMoney($totalEventos,$opt));
+	
+	//Atualiza total
+	$total =  $saldoMensalidade - $totalEventos;
+	
+	if ($total < 0){
+		$('#lbInfoSaldoID').html('<FONT SIZE="2"><b>'+accounting.formatMoney($total,$opt)+'</b></FONT>');
+		$('#lbInfoSaldoTituloID').html('<FONT SIZE="2"><b>A PAGAR:</b></FONT>');
+	}else{
+		$('#lbInfoSaldoID').html('<FONT SIZE="2"><b>'+accounting.formatMoney($total,$opt)+'</b></FONT>');
+		$('#lbInfoSaldoTituloID').html('<FONT SIZE="2"><b>A DEVOLVER:</b></FONT>');
+	}
+	
+	
 }
 
 

@@ -166,6 +166,7 @@ try {
 		$oClienteEnd->setBairro($oUsuario->_getUsuario()->getBairro());
 		$oClienteEnd->setNumero($oUsuario->_getUsuario()->getNumero());
 		$oClienteEnd->setComplemento($oUsuario->_getUsuario()->getComplemento());
+		$oClienteEnd->setIndEndCorreto($oUsuario->_getUsuario()->getIndEndCorreto());
 		
 		$em->persist($oClienteEnd);
 	}

@@ -3,7 +3,6 @@
 	<h1><i class="fa fa-cog">&nbsp;</i>Configuração&nbsp;&nbsp;
 	</h1>
 	</div><!-- /.page-header -->
-	<br />
 		
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
@@ -12,14 +11,15 @@
 		<input type="hidden" id="pctMoraTurmaID" name="pctMoraTurma" value="%PCT_MORA_TURMA%">
 		<input type="hidden" id="pctConviteExtraTurmaID" name="pctConviteExtraTurma" value="%PCT_CONVITE_TURMA%">
 		<input type="hidden" id="pctDevolucaoID" name="pctDevolucao" value="%PCT_DEVOLUCAO%">
-
+		
 		<div class="row">
+			<div class="col-sm-12">
 			
-			<h5 class="header blue bolder smaller"><i class="fa fa-cog">&nbsp;</i>Portal SUA FORMATURA</h5>
+			<h5 class="header blue bolder smaller">Portal SUA FORMATURA</h5>
 			<div class="form-group col-sm-12" id="divTaxaPorFormandoID">
 		    	<label class="col-sm-3 control-label" for="taxaPorFormandoID">Taxa do SUA FORMATURA</label>
 				<div class="input-group col-sm-5 pull-left">
-	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Taxa cobrada pelo (suaFormatura) para uso do sistema."></i></span>
+	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Taxa cobrada por formando para uso do sistema."></i></span>
 					<input class="form-control" id="taxaPorFormandoID" disabled readonly type="text" name="taxaPorFormando" placeholder="Valor Por Boleto" maxlength="100" value="%TAXA_FORMANDO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpTaxaPorFormandoID"></div>
@@ -35,7 +35,7 @@
 			    </div>
 				<div class="help-block col-sm-1 inline" id="divHelpIndRepassaTaxaSistemaID"></div>
 	    	</div>
-			<h5 class="header blue bolder smaller"><i class="fa fa-cog">&nbsp;</i>Mensalidades</h5>
+			<h5 class="header blue bolder smaller">Mensalidades</h5>
 			<div class="form-group col-sm-12" id="divDiaVencimentoID">
 			    <label for="diaVencimentoID" class="col-sm-3 control-label">Sugestão de vencimento</label>
 	    		<div class="input-group col-sm-5 pull-left">
@@ -47,47 +47,46 @@
 			    <div class="col-sm-1 pull-left" id="divHelpDiaVencimentoID"></div>
 			</div>
 		    <div class="form-group col-sm-12" id="divPctJurosTurmaID">
-		    	<label class="col-sm-3 control-label" for="pctJurosTurmaSliderID">% de juros da turma</label>
+		    	<label class="col-sm-3 control-label" for="pctJurosTurmaSliderID">Percentual sob o juros para turma <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor de júros recebido que irá ficar para a turma. A porcentagem restante ficará para o cerimonial."></i></label>
 				<div class="input-group col-sm-5 pull-left">
-	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor de júros recebido que fica para a turma, a diferença fica para o cerimonial"></i></span>
 	    			<div style="width: 80%;" id="pctJurosTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctJurosTurmaSpanID">%PCT_JUROS_TURMA% %</span>
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpPctJurosTurmaID"></div>
+		    	
 			</div>
 		    <div class="form-group col-sm-12" id="divPctMoraTurmaID">
-		    	<label class="col-sm-3 control-label" for="pctMoraTurmaSliderID">Percentual da Mora que fica com a turma</label>
+		    	<label class="col-sm-3 control-label" for="pctMoraTurmaSliderID">Percentual sob a mora para turma <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor da mora (multa) recebida que irá ficar para a turma. A porcentagem restante ficará para o cerimonial"></i></label>
 				<div class="input-group col-sm-5 pull-left">
-	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor da Mora (Multa) recebida que fica para a turma, a diferença fica para o cerimonial"></i></span>
-	    			<div style="width: 80%;" id="pctMoraTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctMoraTurmaSpanID">%PCT_MORA_TURMA% %</span>
+	    			<div style="width: 80%;" id="pctMoraTurmaSliderID" class="ui-slider-blue control-label"></div><span class="label label-info pull-right" id="pctMoraTurmaSpanID">%PCT_MORA_TURMA% %</span>
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpPctMoraTurmaID"></div>
 			</div>
-		    <div class="form-group col-sm-12" id="divPctConviteExtraTurmaID">
-		    	<label class="col-sm-3 control-label" for="pctConviteExtraTurmaSliderID">Percentual do Convite extra que fica com a turma</label>
-				<div class="input-group col-sm-5 pull-left">
-	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor do Convite extra vendido que fica para a turma, a diferença fica para o cerimonial"></i></span>
-	    			<div style="width: 80%;" id="pctConviteExtraTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctConviteExtraTurmaSpanID">%PCT_CONVITE_TURMA% %</span>
-				</div>
-		    	<div class="col-sm-1 pull-left" id="divHelpPctConviteExtraTurmaID"></div>
-			</div>
-			<h5 class="header blue bolder smaller">Convite</h5>
+			<h5 class="header blue bolder smaller">Desistência</h5>
 		    <div class="form-group col-sm-12" id="divPctDevolucaoID">
-		    	<label class="col-sm-3 control-label" for="pctDevolucaoSliderID">Percentual de devolução em caso de desistência</label>
+		    	<label class="col-sm-3 control-label" for="pctDevolucaoSliderID">Percentual de devolução <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de devolução das mensalidades pagas."></i></label>
 				<div class="input-group col-sm-5 pull-left">
-	    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de devolução das mensalidades pagas"></i></span>
 	    			<div style="width: 80%;" id="pctDevolucaoSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctDevolucaoSpanID">%PCT_DEVOLUCAO% %</span>
 				</div>
 		    	<div class="col-sm-1 pull-left" id="divHelpPctDevolucaoID"></div>
 			</div>
-			
+			<h5 class="header blue bolder smaller">Convite Extra</h5>
+			<div class="form-group col-sm-12" id="divPctConviteExtraTurmaID">
+		    	<label class="col-sm-3 control-label" for="pctConviteExtraTurmaSliderID">Percentual do convite extra para turma <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual do valor do Convite extra vendido que fica para a turma, a diferença fica para o cerimonial."></i></label>
+				<div class="input-group col-sm-5 pull-left">
+	    			<div style="width: 80%;" id="pctConviteExtraTurmaSliderID" class="ui-slider-blue"></div><span class="label label-info pull-right" id="pctConviteExtraTurmaSpanID">%PCT_CONVITE_TURMA% %</span>
+				</div>
+		    	<div class="col-sm-1 pull-left" id="divHelpPctConviteExtraTurmaID"></div>
+			</div>
+		</div>
 	    </div>
+	    
 		<div id="divMsgFmtConfID"></div>
 	    
 	</form>
 
 	<hr />
 	<div class="clearfix form-actions">
-		<label class="col-sm-4 control-label">&nbsp;</label>
+		<label class="col-sm-5 control-label">&nbsp;</label>
 		<button type="button" class="btn btn-primary" id="btnSalvarFormaturaConfID">
 			<i class="fa fa-check bigger-110"></i> Salvar
 		</button>
