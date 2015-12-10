@@ -80,6 +80,15 @@ if ($codPerfil->getCodTipoUsuario()->getCodigo() != "F") {
 }
 
 #################################################################################
+## Resgatar o valor por formando
+#################################################################################
+$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+
+if ($oOrgFmt->getValorPrevistoTotal() && $oOrgFmt->getQtdePrevistaFormandos()){
+	$valorFormatura = round(($oOrgFmt->getValorPrevistoTotal()/$oOrgFmt->getQtdePrevistaFormandos()),2);
+}
+
+#################################################################################
 ## Resgatar os valores ja pago por esse formando
 #################################################################################
 $aPago				= \Zage\Fmt\Financeiro::getValorPagoFormando($system->getCodOrganizacao(),$oUsuario->getCpf());
@@ -168,6 +177,7 @@ $tpl->set('TITULO'				,'Desistência');
 $tpl->set('HTML_EVENTOS'		,$htmlEventos);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 
+$tpl->set('VALOR_FORMATURA'		,$valorFormatura);
 $tpl->set('SALDO_MENSALIDADE'	,$valPagoMensalidade);
 $tpl->set('SALDO_PORTAL'		,$valPagoSistema);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));

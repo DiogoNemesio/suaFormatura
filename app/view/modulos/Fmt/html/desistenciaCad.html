@@ -29,6 +29,7 @@
 			<input type="hidden" name="codFormando" id="codFormandoID">
 			<input type="hidden" name="saldoTotalFormando" id="saldoTotalFormandoID">
 			<input type="hidden" name="saldoSistemaFormando" id="saldoSistemaFormandoID">
+			<input type="hidden" id="valorFormaturaFormandoID" value="%VALOR_FORMATURA%">
 			<input type="hidden" id="saldoMensalidadeFormandoID" value="%SALDO_MENSALIDADE%">
 			<input type="hidden" id="saldoPortalFormandoID" value="%SALDO_PORTAL%">
 			<input type="hidden" name="valTotalMensalidade" id="valTotalMensalidadeID">
@@ -52,7 +53,13 @@
 								<h5 class="widget-title">Informações</h5>
 							</div>
 							<div class="widget-body">
-								<div class="widget-main small">	
+								<div class="widget-main small">
+									<div class="row" id="divInfoCustoID">
+										<div class="col-sm-12">
+									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da formatura:</p>
+									    	<p id='lbInfoValorFormaturaID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+								    	</div>
+									</div>	
 									<div class="row" id="divInfoConfID">
 										<h6 class="header blue bolder smaller">&nbsp;Pagamentos realizados:</h6>
 									</div>					
@@ -95,85 +102,25 @@
 					</div>	
 				</div>
 				<div class="step-pane active" data-step="2">
-					<div class="col-sm-8 pull-left">
+				<div class="col-sm-8 pull-left">
 						<div class="row ">
 							
 							<div class="form-group col-sm-12" id="divIndValorTotalID">
-								<label class="col-sm-4 control-label">Valor se refere</label>
+								<label class="col-sm-4 control-label">Calcular por:</label>
 								<div class="btn-group btn-corner col-sm-7 pull-left">
-									<span id='geraMensalidadeValorMensalidadeID' style="width: 150px;" class="btn btn-sm" onclick="selecionaValorMensalidadeGeraMensalidade();">Mensalidade</span>
+									<span id='geraMensalidadeValorMensalidadeID' style="width: 150px;" class="btn btn-sm" onclick="selecionaValorMensalidadeGeraMensalidade();">Valor pago</span>
 									<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
-									<span id='geraMensalidadeValorTotalID' style="width: 150px;" class="btn btn-sm" onclick="selecionaValorTotalGeraMensalidade();">Total do Formando</span>
+									<span id='geraMensalidadeValorTotalID' style="width: 150px;" class="btn btn-sm" onclick="selecionaValorTotalGeraMensalidade();">Valor da formatura</span>
 								</div>
 							</div>
 							<div class="form-group col-sm-12" id="divValorID">
-							    <label id='lblTipoValorID' class="col-sm-4 control-label"></label>
+							    <label id='lblTipoValorID' class="col-sm-4 control-label">Porcentagem de multa</label>
 					    		<div class="input-group col-sm-7 pull-left">
 				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-						    		<input class="form-control" id="valorID" type="text" name="valor" maxlength="60" value="" onchange="alteraValorPrincipalGeraMensalidade();" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+						    		<input class="form-control" id="porcentagem" type="text" name="valor" maxlength="60" value="" onchange="alteraValorPrincipalGeraMensalidade();" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem">
 							    </div>
 							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
-							</div>
-							
-							<div class="form-group col-sm-12" >
-			    				<label class="col-sm-4 control-label">
-			    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch" onchange="alteraIndTaxaExtraGeraMensalidade();" value="1" checked type="checkbox" />
-			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
-			    				</label>
-				    			<div class="input-group col-sm-7 pull-left">
-				    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
-				    				<input readonly type="text" class="form-control" placeholder="Adicionar taxas extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
-							    </div>
-								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
-					    	</div>
-
-							<div class="form-group col-sm-12" id="divTextoSistemaID">
-							    <label id='lblTextoSistemaID' class="col-sm-4 control-label">SuaFormatura.com</label>
-					    		<div class="input-group col-sm-7 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Saldo a provisionar referente ao uso do Sistema SuaFormatura.com"></i></span>
-						    		<input class="form-control" id="textoSistemaID" type="text" name="textoSistema" readonly maxlength="60" autocomplete="off">
-							    </div>
-							    <div class="col-sm-1 pull-left" id="divHelpTextoSistemaID"></div>
-							</div>
-
-							<div class="form-group col-sm-12" id="divTextoTaxasID">
-							    <label id='lblTextoTaxasID' class="col-sm-4 control-label">Taxas</label>
-					    		<div class="input-group col-sm-7 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Taxas incluídas na mensalidade (podem ser Boleto e Taxa de Administração)"></i></span>
-						    		<input class="form-control" id="textoTaxasID" type="text" name="textoTaxas" readonly maxlength="60" autocomplete="off" >
-							    </div>
-							    <div class="col-sm-1 pull-left" id="divHelpTextoTaxasID"></div>
-							</div>
-
-							<div class="form-group col-sm-12" id="divTextoTotalID">
-							    <label id='lblTextoTotalID' class="col-sm-4 control-label"><b>Total</b></label>
-					    		<div class="input-group col-sm-7 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Mostra o valor total da conta ou da parcela (Somatório do valor informado + Taxas)"></i></span>
-						    		<input class="form-control " id="textoTotalID" type="text" name="textoTotal" readonly maxlength="60" autocomplete="off">
-							    </div>
-							    <div class="col-sm-1 pull-left" id="divHelpTextoTotalID"></div>
-							</div>
-					    	
-							<div class="form-group col-sm-12" id="divFormaPagID">
-								<label class="col-sm-4 control-label">Forma de Pag.</label>
-				    			<div class="input-group col-sm-7 pull-left">
-				    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Mensalidade"></i></span>
-									<select class="select2" style="width:100%;" onchange="alteraFormaPagGeraMensalidade();" id="codFormaPagID" name="codFormaPag" data-rel="select2">
-									%FORMAS_PAG%
-									</select>
-							    </div>
-								<div class="help-block col-sm-1 inline" id="divHelpFormaPagID"></div>
-					    	</div>
-							<div class="form-group col-sm-12" id="divContaRecID">
-								<label class="col-sm-4 control-label">Conta de Recebebimento</label>
-				    			<div class="input-group col-sm-7 pull-left">
-				    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
-									<select class="select2" style="width:100%;" onchange="alteraContaRecGeraMensalidade();" id="codContaRecID" name="codContaRec" data-rel="select2">
-									%CONTAS%
-									</select>
-							    </div>
-								<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
-					    	</div>
+							</div>							
 						</div>
 					</div>
 					<div class="col-sm-4 pull-right" zg-div-limpa="1" id="divInfoValorID"></div>
@@ -337,18 +284,7 @@ $('#fuelux-wizard-container')
 })
 .on('actionclicked.fu.wizard' , function(e, info){
 	if(info.step == 1) {
-		var $numSel	= $('#numForSelID').val();
 		
-		if ($numSel == 0) 	{
-			$.gritter.add({
-				title: 'Seleção de Formandos',
-				text: 'Pelo menos 1 formando deve ser selecionado',
-				class_name: 'gritter-info gritter-center gritter-error'
-			});
-
-			e.preventDefault();
-		}
-		mostraQuadroGeraMensalidade('divInfoVencID');
 	}else if (info.step == 2) {
 		var vOk 	= validaVencimentoGeraMensalidade();
 		if(!vOk) 	{
@@ -428,6 +364,8 @@ desCadCalculaValorTotalEvento();
 function desCadCalculaValorTotalEvento() {
 	var $saldoMensalidade	= zgConverteFloat($('#saldoMensalidadeFormandoID').val());
 	var $saldoPortal		= zgConverteFloat($('#saldoPortalFormandoID').val());
+	var $valorFormatura		= zgConverteFloat($('#valorFormaturaFormandoID').val());
+	
 	
 	var $aSelEventos	= [];
 	var $totalEventos	= 0;
@@ -451,6 +389,8 @@ function desCadCalculaValorTotalEvento() {
 	/** Atualizar o quadro **/
 	$('#lbInfoSaldoMensalidadeID').html(accounting.formatMoney($saldoMensalidade,$opt));
 	$('#lbInfoSaldoPortalID').html(accounting.formatMoney($saldoPortal,$opt));
+	$('#lbInfoValorFormaturaID').html(accounting.formatMoney($valorFormatura,$opt));
+	
 	
 	// Atualiza total evento	
 	$('#lbInfoTotalEventosID').html(accounting.formatMoney($totalEventos,$opt));
