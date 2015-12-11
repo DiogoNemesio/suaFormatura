@@ -400,9 +400,9 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 						$qb3->select('ps2')
 						->from('\Entidades\ZgfinPessoaSegmento','ps2')
 						->leftJoin('\Entidades\ZgfinSegmentoCategoria', 'sc', \Doctrine\ORM\Query\Expr\Join::WITH, 'ps2.codSegmento = sc.codSegmento')
-						->where($qb2->expr()->andX(
-								$qb2->expr()->eq('ps2.codPessoa'		, 'p.codigo'),
-								$qb2->expr()->in('sc.codCategoria'		, $aCodCat)
+						->where($qb3->expr()->andX(
+								$qb3->expr()->eq('ps2.codPessoa'		, 'p.codigo'),
+								$qb3->expr()->in('sc.codCategoria'		, $aCodCat)
 						)
 						)->getDQL()
 					)
