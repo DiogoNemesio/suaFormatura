@@ -346,7 +346,7 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		#################################################################################
 		## Categoria, caso seja informado, deve ser um array
 		#################################################################################
-		if ($aCodCat && !is_array($$aCodCat)) throw new \Exception("Parâmetro aCodCat deve ser um array");
+		if ($aCodCat && !is_array($aCodCat)) throw new \Exception("Parâmetro aCodCat deve ser um array");
 		
 		#################################################################################
 		## Objeto do query builder
