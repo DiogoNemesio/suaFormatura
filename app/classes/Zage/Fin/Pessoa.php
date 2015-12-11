@@ -311,7 +311,17 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	 * @param array $codTipoPessoa
 	 * @param string $indTipo
 	 */
-	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo,$aCodSegMerc = null) {
+	/**
+	 * 
+	 * @param integer $codOrganizacao
+	 * @param array $codTipoPessoa
+	 * @param string $indTipo
+	 * @param array $aCodSegMerc
+	 * @param array $aCodCat
+	 * @throws \Exception
+	 * @return multitype:
+	 */
+	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo,$aCodSegMerc = null,$aCodCat = null) {
 		
 		#################################################################################
 		## Variáveis globais
@@ -332,6 +342,11 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		## Segmento de Mercado, caso seja informado, deve ser um array
 		#################################################################################
 		if ($aCodSegMerc && !is_array($aCodSegMerc)) throw new \Exception("Parâmetro aCodSegMerc deve ser um array");
+		
+		#################################################################################
+		## Categoria, caso seja informado, deve ser um array
+		#################################################################################
+		if ($aCodCat && !is_array($$aCodCat)) throw new \Exception("Parâmetro aCodCat deve ser um array");
 		
 		#################################################################################
 		## Objeto do query builder
@@ -378,6 +393,23 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 				);
 			}
 				
+			if (!empty($aCodCat)) {
+				$qb3 	= $em->createQueryBuilder();
+				$qb->andWhere(
+					$qb->expr()->exists(
+						$qb3->select('ps2')
+						->from('\Entidades\ZgfinPessoaSegmento','ps2')
+						->leftJoin('\Entidades\ZgfinSegmentoCategoria', 'sc', \Doctrine\ORM\Query\Expr\Join::WITH, 'ps2.codSegmento = sc.codSegmento')
+						->where($qb2->expr()->andX(
+								$qb2->expr()->eq('ps2.codPessoa'		, 'p.codigo'),
+								$qb2->expr()->in('sc.codCategoria'		, $aCodCat)
+						)
+						)->getDQL()
+					)
+				);
+			}
+				
+			
 			$query 		= $qb->getQuery();
 			return ($query->getResult()); 
 		} catch (\Exception $e) {
