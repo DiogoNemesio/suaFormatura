@@ -741,7 +741,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 				#################################################################################
 				## Gravar as configurações de Rateio
 				#################################################################################
-				$rateio->setCodContaRec($object);
+				$rateio->setCodContaPag($object);
 				$rateio->_setArrayCodigosRateio($aCodRat);
 				$rateio->_setArrayCategoriasRateio($aCadRat);
 				$rateio->_setArrayCentroCustoRateio($aCenRat);
