@@ -54,7 +54,8 @@ if (!isset($dataEvento) || empty($dataEvento)) {
 }
 
 /** Local do evento (validar apenas se o tipo não for APOSIÇÃO DE PLACA) **/
-if ($codTipo != 5){
+if ($codTipo != 5 && $codTipo != 9 && $codTipo != 10){
+	$emailComEnd = true;
 	if (!isset($codLocal) || empty($codLocal)) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Informe o local aonde será realizado o evento."));
 		$err	= 1;
@@ -62,6 +63,7 @@ if ($codTipo != 5){
 		$oFornecedor	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codLocal));
 	}
 }else{
+	$emailComEnd = false;
 	$oFornecedor = null;
 }
 
@@ -134,7 +136,7 @@ try {
 	$notificacao->setCodTemplate($template);
 	
 	//Analisar o tipo do evento
-	if ($codTipo == 5){
+	if ($emailComEnd == false){
 		$oOrfFmt 		= $em->getRepository('\Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 		
 		$notificacao->adicionaVariavel("EVENTO_TIPO"	, $oTipoEvento->getDescricao());

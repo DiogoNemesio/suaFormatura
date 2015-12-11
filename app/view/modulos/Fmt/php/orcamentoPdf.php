@@ -257,7 +257,7 @@ $valorFinal		= ($valorTotal + ($totalSistema * $numFormandos));
 $totalFormando	= round(($valorFinal / $numFormandos),2);
 $mensalidade	= $totalFormando / $numMeses;
 
-$htmlForm	.= '<div style="width: 48%; page-break-inside: avoid;">';
+$htmlForm	.= '<div style="width: 50%; page-break-inside: avoid;">';
 //$htmlForm	.= '<div style="float: left; width: 48%; page-break-inside: avoid;">';
 $htmlForm	.= '<table class="table" style="width: 100%; page-break-inside: avoid;"><thead>';
 $htmlForm	.= '<tr><th style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Evento</th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">Valor do Evento</th></tr>';
@@ -274,16 +274,16 @@ $htmlForm	.= '</table>';
 $htmlForm	.= '</div>';
 
 
-$htmlForm	.= '<div style="width: 48%; page-break-inside: avoid;">';
+$htmlForm	.= '<div style="width: 50%; page-break-inside: avoid;" align="center">';
 //$htmlForm	.= '<div style="float: right; width: 48%; page-break-inside: avoid;">';
-$htmlForm	.= '<table class="table" style="width: 100%; page-break-inside: avoid;"><thead>';
+$htmlForm	.= '<table class="table" align="center" style="width: 100%; page-break-inside: avoid;"><thead>';
 $htmlForm	.= '<tr><th colspan="2" style="text-align: center; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">Resumo Geral</th></tr>';
-$htmlForm	.= '</thead>';
+$htmlForm	.= '</thead>'; 
 $htmlForm	.= '<tbody>';
-$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Data de Conclusão<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.$dataConclusao.' ( '.$numMeses.' meses previstos)&nbsp;<i>&#10004</i></td></tr>';
-$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Sistema SuaFormatura.com<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.$textoSistema.'&nbsp;<i>&#10004</i></td></tr>';
-$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Total Por Formando<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($totalFormando).' (Total por formando)&nbsp;<i>&#10004</i></td></tr>';
-$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Mensalidade<b>		</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($mensalidade).' mensais por formando&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Data de conclusão<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.$dataConclusao.' ('.$numMeses.' meses previstos)&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Portal SuaFormatura.com<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.$textoSistema.'&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Total por formando<b>	</td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($totalFormando).' por formando&nbsp;<i>&#10004</i></td></tr>';
+$htmlForm	.= '<tr><td style="text-align: left; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;"><b>Sugestão de mensalidade<b> </td><td style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000; border-left: 1px solid #000000;">'.\Zage\App\Util::to_money($mensalidade).' mensais por formando&nbsp;<i>&#10004</i></td></tr>';
 $htmlForm	.= '</tbody>';
 $htmlForm	.= '<tfoot>';
 $htmlForm	.= '<tr><th style="text-align: right; border-left: 1px solid #000000; border-bottom: 1px solid #000000; border-top: 1px solid #000000;">Custo Final Total: </th><th style="text-align: right; border-bottom: 1px solid #000000; border-top: 1px solid #000000; border-right: 1px solid #000000;">'.\Zage\App\Util::to_money($valorFinal).'</th></tr>';

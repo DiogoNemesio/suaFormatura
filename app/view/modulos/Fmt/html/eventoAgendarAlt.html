@@ -109,11 +109,11 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 
-aposicaoPlaca();
-function aposicaoPlaca() {
+naInstituicao();
+function naInstituicao() {
 	var vCodTipo = $('#codTipoID').val();
 	
-	if (vCodTipo == 5){
+	if ((vCodTipo == 5) || (vCodTipo == 9) || (vCodTipo == 10)) {
 		$('#divFornecedorInputID').addClass('hidden');
 		$('#divFornecedorInstituicaoID').removeClass('hidden');
 	}
@@ -218,7 +218,7 @@ function validaEvento() {
 	}
 	
 	//FORNECEDOR
-	if (vCodTipo != 5){
+	if ((vCodTipo != 5) && (vCodTipo != 9) && (vCodTipo != 10)){
 		if (!vFornecedor){
 			$('#divFornecedorID').addClass('has-error');
 			$('#divHelpFornecedorID').html(zgCriaSpanErro('Selecione o local do evento.'));
