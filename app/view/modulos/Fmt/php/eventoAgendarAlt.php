@@ -82,8 +82,35 @@ $vFornecedor = json_encode($vFornecedor);
 ################################################################################
 # Select de Local
 ################################################################################
+$arraySeg = array();
+$arrayCat = array();
+
+switch ($codTipo) {
+	case 1 : //Missa (igreja católica)
+		$arrayCat[] = "31";
+		break;
+	case 2 : // Igreja evangélica(culto)
+		$arrayCat[] = "46";
+		break;
+	case 3 : // Culto espírita
+		$arrayCat[] = "47"; 
+		break;
+	case 4 : //Cerimonia ecumenica
+		$arrayCat[] = ["31","46","47"];
+		break;
+	case 6 : // Aula da saudade
+		$arrayCat[] = "29";
+		break;
+	case 7 : // Colação de grau (treatro ou autidório)
+		$arrayCat[] = "30";
+		break;
+	case 8 :
+		$arrayCat[] = "29";
+		break;
+}
+
 try {
-	$aFornecedor	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),"indFornecedor");
+	$aFornecedor	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),"indFornecedor",$arraySeg,$arrayCat);
 	$oFornecedor 	= $system->geraHtmlCombo($aFornecedor, 'CODIGO', 'FANTASIA', $codFornecedor, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

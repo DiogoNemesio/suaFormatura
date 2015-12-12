@@ -67,38 +67,38 @@
 					<div class="col-sm-1 pull-left" id="divHelpCodVersaoOrcID"></div>
 				</div>
 		   	</div>
-		   	<div class="col-sm-4">
+		   	<div class="col-sm-5">
 			    <div class="profile-user-info profile-user-info-striped" id="divInfoID">
 					<div class="profile-info-row">
-						<div class="profile-info-name">Nº de Pessoas:</div>
+						<div class="profile-info-name">Nº de pessoas:</div>
 						<div class="profile-info-value" id="orcNumConvidadoID"></div>
 					</div>
 					<div class="profile-info-row">
-						<div class="profile-info-name">Meses</div>
+						<div class="profile-info-name">Meses:</div>
 						<div class="profile-info-value" id="orcNumMesesID"><span id="spOrcInfoNumMesesID"></span>&nbsp;<span id='spOrcIcNumMesesID' class="hidden"><i class="fa fa-refresh fa-spin"></i></span></div>
 					</div>				
 					<div class="profile-info-row">
-						<div class="profile-info-name">Orçamento</div>
+						<div class="profile-info-name">Orçamento:</div>
 						<div class="profile-info-value" id="orcTotalOrcID"></div>
 					</div>				
 					<div class="profile-info-row">
-						<div class="profile-info-name">Sistema</div>
+						<div class="profile-info-name">Portal:</div>
 						<div class="profile-info-value" id="orcCustoSistemaID"></div>
 					</div>				
 					<div class="profile-info-row hidden">
-						<div class="profile-info-name">Outros Custos</div>
+						<div class="profile-info-name">Outros custos:</div>
 						<div class="profile-info-value" id="orcOutrosCustosID"></div>
-					</div>				
+					</div>
 					<div class="profile-info-row">
-						<div class="profile-info-name">Por Formando</div>
+						<div class="profile-info-name">Custo final:</div>
+						<div class="profile-info-value" id="orcCustoFinalID"></div>
+					</div>			
+					<div class="profile-info-row">
+						<div class="profile-info-name">Por formando:</div>
 						<div class="profile-info-value" id="orcCustoFormandoID"></div>
 					</div>
 					<div class="profile-info-row">
-						<div class="profile-info-name">Total Geral</div>
-						<div class="profile-info-value" id="orcCustoFinalID"></div>
-					</div>
-					<div class="profile-info-row">
-						<div class="profile-info-name">Mensalidade</div>
+						<div class="profile-info-name">Mensalidade:</div>
 						<div class="profile-info-value" id="orcMensalidadeID"></div>
 					</div>
 				</div>
@@ -782,9 +782,9 @@ function orcAtualizaCustoFinal() {
 	 
 	/** Atualiza os Span's com as informações **/
 	$spTotalSistema.html(accounting.formatMoney($valSistema, options) + " por formando");
-	$spTotalFormando.html(accounting.formatMoney($custoFormando, options) + " (Total por Formando)");
-	$spCustoFinal.html(accounting.formatMoney($valTotal, options) + " (Custo Total Final)");
-	$spMensalidade.html(accounting.formatMoney($valMensalidade, options) + " mensais por formando");
+	$spTotalFormando.html(accounting.formatMoney($custoFormando, options) + " (total por formando)");
+	$spCustoFinal.html(accounting.formatMoney($valTotal, options));
+	$spMensalidade.html(accounting.formatMoney($valMensalidade, options) + " (sugestão de mensalidade)");
 }
 
 function orcAtualizaBotoes() {
