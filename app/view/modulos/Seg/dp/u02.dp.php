@@ -289,6 +289,7 @@ try {
 	$oClienteEnd->setBairro($oUsuario->getBairro());
 	$oClienteEnd->setNumero($oUsuario->getNumero());
 	$oClienteEnd->setComplemento($oUsuario->getComplemento());
+	$oClienteEnd->setIndEndCorreto($oUsuario->getIndEndCorreto());
 	
 	$em->persist($oClienteEnd);
 	

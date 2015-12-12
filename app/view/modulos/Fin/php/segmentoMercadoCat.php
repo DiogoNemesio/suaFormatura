@@ -32,72 +32,57 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata a url desse script
+## Verificar parâmetro obrigatório
 #################################################################################
-$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
+if (!isset($codSegmento)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
+
 
 #################################################################################
-## Resgata os dados do grid
+## Resgata as informações do banco
 #################################################################################
-try {
-	$segmentos	= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findBy(array(), array('descricao' => 'ASC'));
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
+if (!empty($codSegmento)) {
+	try {
+		$info = $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codigo' => $codSegmento));
+	} catch (\Exception $e) {
+		\Zage\App\Erro::halt($e->getMessage());
+	}
+
+	$descricao		= $info->getDescricao();
 	
-
-#################################################################################
-## Cria o objeto do Grid (bootstrap)
-#################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GSeg");
-$grid->adicionaTexto($tr->trans('CÓDIGO'),				10, $grid::CENTER	,'codigo');
-$grid->adicionaTexto($tr->trans('DESCRIÇÃO'),			30, $grid::CENTER	,'descricao');
-$grid->adicionaIcone(null,'fa fa-crosshairs orange',$tr->trans('Vincular a uma categoria'));
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($segmentos);
-
-
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($segmentos); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codSegmento='.$segmentos[$i]->getCodigo().'&url='.$url);
-
-	$grid->setUrlCelula($i,2,ROOT_URL.'/Fin/segmentoMercadoCat.php?id='.$uid);
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Fin/segmentoMercadoAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/segmentoMercadoExc.php?id='.$uid);
+}else{
+	$descricao		= "";
 }
 
 #################################################################################
-## Gerar o código html do grid
+## Url Voltar
 #################################################################################
-try {
-	$htmlGrid	= $grid->getHtmlCode();
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
+$urlVoltar			= ROOT_URL."/Fin/segmentoMercadoLis.php?id=".$id;
 
 #################################################################################
-## Gerar a url de adicão
+## Url Novo
 #################################################################################
-$urlAdd			= ROOT_URL.'/Fin/segmentoMercadoAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codSegmento=');
+$uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codSegmento=');
+$urlNovo			= ROOT_URL."/Fin/segmentoMercadoAlt.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Segmento de Mercado"));
-$tpl->set('URLADD'			,$urlAdd);
-$tpl->set('IC'				,$_icone_);
+$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('URLVOLTAR'			,$urlVoltar);
+$tpl->set('URLNOVO'				,$urlNovo);
+$tpl->set('ID'					,$id);
+$tpl->set('COD_SEGMENTO'		,$codSegmento);
+$tpl->set('DESCRICAO'			,$descricao);
+$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
+

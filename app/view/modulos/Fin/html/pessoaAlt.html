@@ -25,7 +25,7 @@
 						<li>
 							<a data-toggle="tab"  href="#pessoa-contato">
 								<i class="blue fa fa-phone bigger-125"></i>
-								Contato
+								Telefones
 							</a>
 						</li>
 						<li>
@@ -209,27 +209,29 @@
 							</div>
 						</div>
 						<div id="pessoa-contato" class="tab-pane">
-							<h4 class="header blue bolder smaller">Lista de contatos</h4>
+							<h5 class="header blue bolder smaller">Lista de telefones</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
-								<table id="pessoaAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
-									<thead>
-										<tr class="warning">
-											<th class="col-sm-1 center"></th>
-											<th class="col-sm-2 center">Tipo</th>
-											<th class="col-sm-4 center">Telefone</th>
-											<th class="col-sm-1 center"><span onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
-										</tr>
-									</thead>
-									<tbody>
-									%TAB_TELEFONE%
-									</tbody>
-								</table>
+								<div class="col-sm-8" align="center">
+									<table id="pessoaAltTableTelefoneID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display" style="width: 600px;">
+										<thead>
+											<tr class="warning">
+												<th class="col-sm-1 center"></th>
+												<th class="col-sm-3 center">Tipo</th>
+												<th class="col-sm-3 center">Telefone</th>
+												<th class="col-sm-1 center"><span style="cursor: pointer;" onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										%TAB_TELEFONE%
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 						<div id="pessoa-endereco" class="tab-pane">
 							<input type="hidden" name="enderecoIndex" id="enderecoIndexID">
-							<h4 class="header blue bolder smaller">Lista de Endereços</h4>
+							<h5 class="header blue bolder smaller">Endereço</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<div class="col-sm-6">
@@ -335,7 +337,7 @@
 						</div>
 						<div id="pessoa-fonte" class="tab-pane">
 							<input type="hidden" id="codBancoID" name="codBanco" value="%COD_BANCO%">
-							<h4 class="header blue bolder smaller">Fonte de Recurso</h4>
+							<h5 class="header blue bolder smaller">Informações bancárias</h5>
 							<div class="vspace-xs"></div>
 							<div class="row">
 								<table id="pessoaAltTableContaID" class="table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
@@ -345,7 +347,7 @@
 											<th class="col-sm-3 center">Banco</th>
 											<th class="col-sm-3 center">Agencia</th>
 											<th class="col-sm-3 center">Conta</th>
-											<th class="col-sm-1 center"><span onclick="addRowContaPessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+											<th class="col-sm-1 center"><span style="cursor: pointer;" onclick="addRowContaPessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -404,10 +406,11 @@ function zgMostraDivs() {
 }
 
 function addRowTelefonePessoaAlt() {
-	$('#pessoaAltTableTelefoneID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">%TIPO_TEL%</select></td><td><input type="text" name="telefone[]" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]"></td></tr>');
+	$('#pessoaAltTableTelefoneID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">%TIPO_TEL%</select></td><td><input type="text" name="telefone[]" maxlength="15" style="width: 100%;" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]"></td></tr>');
 	$('#pessoaAltTableTelefoneID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 		zgMask($( this ), $( this ).attr('zg-data-mask'));
 		$( this ).trigger('keyup');
+		$( this ).focus();
 	});
 	$('#pessoaAltTableTelefoneID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
 }

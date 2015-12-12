@@ -655,11 +655,13 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		if ($novoUsuario) {
 			$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 			$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
+			$oUsuarioOrg->setDataCadastro(new \DateTime("now"));
 		}else{
 			//$oUsuarioOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
 			if (!$oUsuarioOrg)	{
 				$oUsuarioOrg		= new \Entidades\ZgsegUsuarioOrganizacao();
 				$oUsuarioOrgStatus  = $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
+				$oUsuarioOrg->setDataCadastro(new \DateTime("now"));
 			}else{
 				$oUsuarioOrgStatus  = $oUsuarioOrg->getCodStatus();
 			}

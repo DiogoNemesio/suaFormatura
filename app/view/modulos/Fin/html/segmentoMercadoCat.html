@@ -1,8 +1,7 @@
 <div id="content">
 	<div class="page-header">
-	<h1>Segmento de Mercado 
+	<h1>Segmento - Categoria
 		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
-		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
 	</h1>
 	</div><!-- /.page-header -->
 
@@ -12,23 +11,38 @@
 				<input type="hidden" id="codSegmentoID" name="codSegmento" value="%COD_CENTRO%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
-					<h4 class="header blue bolder smaller">Informações Gerais</h4>
 					<div class="vspace-xs"></div>
 					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group col-sm-12" id="divDescricaoID">
-						    	<label class="col-sm-3 control-label" for="descricaoID">Descrição</label>
-									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Agrupamento de atuação de seus fornecedores no mercado."></i></span>
-				   					<input class="form-control" id="descricaoID" type="text" name="descricao" placeholder="Descrição do segmento" maxlength="60" value="%DESCRICAO%" required autocomplete="off" onblur="checkDescricaoAlt();" />
-				    			</div>
-						    	<div class="col-sm-1 pull-left" id="divHelpDescricaoID"></div>
-				    		</div>
-				    	</div>
+						<div class="col-sm-12">
+							<div class="col-sm-6">
+									<div class="widget-box transparent">
+										<div class="widget-header"> 
+											<h6 class="widget-title"><i class="ace-icon fa fa-thumbs-o-down"></i>Não Selecionados</h6>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="widget-box transparent">
+										<div class="widget-header"> 
+											<h6 class="widget-title"><i class="ace-icon fa fa-thumbs-o-up"></i>Selecionados</h6>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="form-group">
+						    		<div class="col-sm-12">
+										<div class="col-sm-12">
+											<select multiple="multiple" size="10" name="acesso[]" id="duallist">
+												%DUAL_LIST%
+											</select>
+											<div class="hr hr-16 hr-dotted"></div>
+										</div>
+									</div>
+								</div>
+			    		</div>
 				    </div>
 				</div>
 				<div class="clearfix form-actions">
-					<label class="col-sm-4 control-label">&nbsp;</label>
+					<label class="col-sm-5 control-label">&nbsp;</label>
 					<button type="button" class="btn btn-primary" id="btnSubmitID">
 						<i class="fa fa-check bigger-110"></i> Salvar
 					</button>
@@ -49,6 +63,16 @@ $('[data-toggle="popover"]').popover();
 $('[data-rel=popover]').popover({html:true});
 
 $('.datepicker').datepicker();
+
+$('select[name="acesso[]"]').bootstrapDualListbox({
+	
+	infoTextFiltered: '<span class="label label-green label-lg">Filtrado</span>',
+	filterTextClear: 'Mostrar todos',
+	filterPlaceHolder: 'Buscar',
+	infoTextEmpty: 'Lista vazia',
+	infoText: '',
+	selectorMinimalHeight: '100'
+});
 
 /************************* Submit Formulário *************************/
 //Verificar se a validação está OK
