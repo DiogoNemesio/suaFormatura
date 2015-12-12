@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtDesistencia
  *
- * @ORM\Table(name="ZGFMT_DESISTENCIA", indexes={@ORM\Index(name="fk_ZGFMT_DESISTENCIA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_DESISTENCIA_2_idx", columns={"COD_TIPO_DESISTENCIA"}), @ORM\Index(name="fk_ZGFMT_DESISTENCIA_3_idx", columns={"COD_FORMANDO"})})
+ * @ORM\Table(name="ZGFMT_DESISTENCIA", indexes={@ORM\Index(name="fk_ZGFMT_DESISTENCIA_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_DESISTENCIA_2_idx", columns={"COD_TIPO_DESISTENCIA"}), @ORM\Index(name="fk_ZGFMT_DESISTENCIA_3_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_DESISTENCIA_4_idx", columns={"COD_TIPO_BASE_CALCULO"})})
  * @ORM\Entity
  */
 class ZgfmtDesistencia
@@ -27,6 +27,13 @@ class ZgfmtDesistencia
      * @ORM\Column(name="DATA_DESISTENCIA", type="date", nullable=false)
      */
     private $dataDesistencia;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_DEVOLUCAO", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $pctDevolucao;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -57,6 +64,16 @@ class ZgfmtDesistencia
      * })
      */
     private $codFormando;
+
+    /**
+     * @var \Entidades\ZgfmtBaseCalculoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtBaseCalculoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_BASE_CALCULO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoBaseCalculo;
 
 
     /**
@@ -90,6 +107,29 @@ class ZgfmtDesistencia
     public function getDataDesistencia()
     {
         return $this->dataDesistencia;
+    }
+
+    /**
+     * Set pctDevolucao
+     *
+     * @param float $pctDevolucao
+     * @return ZgfmtDesistencia
+     */
+    public function setPctDevolucao($pctDevolucao)
+    {
+        $this->pctDevolucao = $pctDevolucao;
+
+        return $this;
+    }
+
+    /**
+     * Get pctDevolucao
+     *
+     * @return float 
+     */
+    public function getPctDevolucao()
+    {
+        return $this->pctDevolucao;
     }
 
     /**
@@ -159,5 +199,28 @@ class ZgfmtDesistencia
     public function getCodFormando()
     {
         return $this->codFormando;
+    }
+
+    /**
+     * Set codTipoBaseCalculo
+     *
+     * @param \Entidades\ZgfmtBaseCalculoTipo $codTipoBaseCalculo
+     * @return ZgfmtDesistencia
+     */
+    public function setCodTipoBaseCalculo(\Entidades\ZgfmtBaseCalculoTipo $codTipoBaseCalculo = null)
+    {
+        $this->codTipoBaseCalculo = $codTipoBaseCalculo;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoBaseCalculo
+     *
+     * @return \Entidades\ZgfmtBaseCalculoTipo 
+     */
+    public function getCodTipoBaseCalculo()
+    {
+        return $this->codTipoBaseCalculo;
     }
 }

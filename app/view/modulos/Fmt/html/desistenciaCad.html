@@ -24,7 +24,7 @@
 			</ul>
 		</div>
 		<hr />
-		<form id="zgFormGeraMensalidadeID" class="form-horizontal">
+		<form id="zgFormDesCadID" class="form-horizontal">
 			<input type="hidden" name="id" value="%ID%">
 			<input type="hidden" name="codFormando" id="codFormandoID">
 			<input type="hidden" name="saldoTotalFormando" id="saldoTotalFormandoID">
@@ -33,12 +33,12 @@
 			<input type="hidden" id="saldoMensalidadeFormandoID" value="%SALDO_MENSALIDADE%">
 			<input type="hidden" id="saldoPortalFormandoID" value="%SALDO_PORTAL%">
 			<input type="hidden" name="valTotalMensalidade" id="valTotalMensalidadeID">
+			<input type="hidden" name="codTipoBaseCalculo" id="codTipoBaseCalculoID">
 			<input type="hidden" name="valTotalSistema" id="valTotalSistemaID">
 			
-			<div class="step-content pos-rel">
-							
+			<div class="step-content pos-rel col-xs-8 pull-left">
 				<div class="step-pane" data-step="1">
-					<div class="col-sm-7 pull-left">
+					<div class="col-sm-12 pull-left">
 						<div class="row">
 							<div class="col-xs-12 col-sm-12">
 								<div class="control-group">
@@ -47,90 +47,38 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-5 hidden-480">
-						<div class="widget-box">
-							<div class="widget-header widget-header-flat widget-header-small center">
-								<h5 class="widget-title">Informações</h5>
-							</div>
-							<div class="widget-body">
-								<div class="widget-main small">
-									<div class="row" id="divInfoCustoID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da formatura:</p>
-									    	<p id='lbInfoValorFormaturaID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>	
-									<div class="row" id="divInfoConfID">
-										<h6 class="header blue bolder smaller">&nbsp;Pagamentos realizados:</h6>
-									</div>					
-									<div class="row" id="divInfoCustoID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Mensalidades:</p>
-									    	<p id='lbInfoSaldoMensalidadeID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
-									<div class="row" id="divInfoValorID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
-									    	<p id='lbInfoSaldoPortalID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
-									<div class="row" id="divInfoConfID">
-										<h6 class="header blue bolder smaller">&nbsp;Saldo:</h6>
-									</div>
-									<div class="row" id="divInfoValEventoID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total dos eventos:</p>
-									    	<p id='lbInfoTotalEventosID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
-									<div class="row" id="divInfoValEventoID">
-										<div class="col-sm-12">
-									    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total do portal:</p>
-									    	<p id='lbInfoTotalPortalID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
-								    	</div>
-									</div>
-									<div class="row" id="divInfoValEventoID">
-										<div class="col-sm-12">
-									    	<p id='lbInfoSaldoTituloID' class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;"></p>
-									    	<p id='lbInfoSaldoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"><b></b></p>
-								    	</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>	
 				</div>
 				<div class="step-pane active" data-step="2">
-				<div class="col-sm-8 pull-left">
+					<div class="col-sm-12 pull-left">
 						<div class="row ">
 							
-							<div class="form-group col-sm-12" id="divIndValorTotalID">
+							<div class="form-group col-sm-12" id="divCodTipoBaseCalculoID">
 								<label class="col-sm-4 control-label">Calcular por:</label>
-								<div class="btn-group btn-corner col-sm-7 pull-left">
-									<span id='geraMensalidadeValorMensalidadeID' style="width: 150px;" class="btn btn-sm" onclick="selecionaValorMensalidadeGeraMensalidade();">Valor pago</span>
-									<span tabindex="99007" class="btn btn-sm btn-info"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe se o valor informado é o valor da Mensalidade, ou o valor total da Formatura para o formando"></i></span>
-									<span id='geraMensalidadeValorTotalID' style="width: 150px;" class="btn btn-sm" onclick="selecionaValorTotalGeraMensalidade();">Valor da formatura</span>
+								<div class="input-group col-sm-7">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a base de calculo da multa"></i></span>
+									<select class="select2 readonly" onchange="alteraBaseCalculoDesCad();" style="width:100%;" id="codTipoBaseCalculoID" name="codTipoBaseCalculo" data-rel="select2">
+									%BASES_CALCULO%
+									</select>
 								</div>
 							</div>
 							<div class="form-group col-sm-12" id="divValorID">
-							    <label id='lblTipoValorID' class="col-sm-4 control-label">Porcentagem de multa</label>
+							    <label id='lblTipoValorID' class="col-sm-4 control-label">% de multa</label>
 					    		<div class="input-group col-sm-7 pull-left">
 				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um valor que será acrescido as mensalidades do formando, esse valor não é obrigatório"></i></span>
-						    		<input class="form-control" id="porcentagem" type="text" name="valor" maxlength="60" value="" onchange="alteraValorPrincipalGeraMensalidade();" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem">
+						    		<input class="form-control" id="porcentagem" type="text" name="valor" maxlength="60" value="" onchange="alteraPctMultaDesCad();" placeholder="Valor por Formando" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem">
 							    </div>
 							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
 							</div>							
 						</div>
 					</div>
-					<div class="col-sm-4 pull-right" zg-div-limpa="1" id="divInfoValorID"></div>
+					<div class="col-sm-4 pull-right" id="divInfoValorID"></div>
 				</div>
-				<div class="step-pane" data-step="3" id="divStepParcelasGeraMensalidadeID">
+				<div class="step-pane" data-step="3" id="divStepParcelasDesCadID">
 					<div class="row">
-						<table id="GeraMensalidadeTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+						<table id="DesCadTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
 							<thead>
 								<tr class="warning">
-									<th class="col-sm-1 center" id="thInfoHelpTableParcelasGeraMensalidadeID"></th>
+									<th class="col-sm-1 center" id="thInfoHelpTableParcelasDesCadID"></th>
 									<th class="col-sm-2 center">Parcela</th>
 									<th class="col-sm-2 center">Valor</th>
 									<th class="col-sm-1 center">Portal</th>
@@ -145,95 +93,91 @@
 							<tfoot>
 								<tr class="warning">
 									<th class="col-sm-1 center"></th>
-									<th class="col-sm-2 center" id="thInfoParcelaGeraMensalidadeID"></th>
-									<th class="col-sm-2 center" id="thInfoValorMensalidadeGeraMensalidadeID"></th>
-									<th class="col-sm-1 center" id="thInfoValorSistemaGeraMensalidadeID"></th>
-									<th class="col-sm-1 center" id="thInfoValorTaxaGeraMensalidadeID"></th>
-									<th class="col-sm-2 center" id="thInfoValorTotalGeraMensalidadeID"></th>
+									<th class="col-sm-2 center" id="thInfoParcelaDesCadID"></th>
+									<th class="col-sm-2 center" id="thInfoValorMensalidadeDesCadID"></th>
+									<th class="col-sm-1 center" id="thInfoValorSistemaDesCadID"></th>
+									<th class="col-sm-1 center" id="thInfoValorTaxaDesCadID"></th>
+									<th class="col-sm-2 center" id="thInfoValorTotalDesCadID"></th>
 									<th class="col-sm-2 center"></th>
 								</tr>
 							</tfoot>
 						</table>
 					</div>
 					<div class="row center">
-						<ul class="pagination" id="pagerValoresGeraMensalidadeID">
+						<ul class="pagination" id="pagerValoresDesCadID">
 						</ul>
 					</div>
 				</div>
 			</div>
+			<div class="col-sm-4 pull-right" id="divInfoDesCadID">
+				<div class="hidden-480">
+					<div class="widget-box">
+						<div class="widget-header widget-header-flat widget-header-small center">
+							<h5 class="widget-title">Informações</h5>
+						</div>
+						<div class="widget-body">
+							<div class="widget-main small">
+								<div class="row" id="divInfoCustoID">
+									<div class="col-sm-12">
+								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da formatura:</p>
+								    	<p id='lbInfoValorFormaturaID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+							    	</div>
+								</div>	
+								<div class="row" id="divInfoConfID">
+									<h6 class="header blue bolder smaller">&nbsp;Pagamentos realizados:</h6>
+								</div>					
+								<div class="row" id="divInfoCustoID">
+									<div class="col-sm-12">
+								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Mensalidades:</p>
+								    	<p id='lbInfoSaldoMensalidadeID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+							    	</div>
+								</div>
+								<div class="row" id="divInfoValorID">
+									<div class="col-sm-12">
+								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
+								    	<p id='lbInfoSaldoPortalID' class="col-sm-8 pull-left align-left" style="padding: 2px; margin:0;"></p>
+							    	</div>
+								</div>
+								<div class="row" id="divInfoConfID">
+									<h6 class="header blue bolder smaller">&nbsp;Saldo:</h6>
+								</div>
+								<div class="row" id="divInfoValEventoID">
+									<div class="col-sm-12">
+								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total dos eventos:</p>
+								    	<p id='lbInfoTotalEventosID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+							    	</div>
+								</div>
+								<div class="row" id="divInfoValEventoID">
+									<div class="col-sm-12">
+								    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total do portal:</p>
+								    	<p id='lbInfoTotalPortalID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+							    	</div>
+								</div>
+								<div class="row" id="divInfoValEventoID">
+									<div class="col-sm-12">
+								    	<p id='lbInfoSaldoTituloID' class="col-sm-4 pull-left align-right inline" style="padding: 2px; margin:0;"></p>
+								    	<p id='lbInfoSaldoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"><b></b></p>
+							    	</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>	
+			</div>
 		</form>
 	</div>
 	<div class="wizard-actions col-sm-2 pull-right" >
-	
-		<!-- #section:plugins/fuelux.wizard.buttons -->
-		<button class="btn btn-app btn-sm btn-prev pull-left">
-			Anterior
-			<i class="ace-icon fa fa-arrow-left"></i>
-		</button>
-		<button id="btnProxgeraMensalidadeID" class="btn btn-app btn-sm btn-success btn-next pull-right" data-last="Finalizar">
-			Próximo
-			<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
-		</button>
-		<!-- /section:plugins/fuelux.wizard.buttons -->
-	</div>
-</div>
-
-<div class="hidden" id="divInfoGeraMensalidadeID">
-	<div class="widget-box">
-		<div class="widget-header widget-header-flat widget-header-small center">
-			<h5 class="widget-title">Informações</h5>
-		</div>
-		<div class="widget-body">
-			<div class="widget-main small">
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Formandos:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblNumFormadosSelID"></p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Meses até Conclusão:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%NUM_MESES_MAX% meses &nbsp;(%DATA_CONCLUSAO%)</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da Formatura:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%VALOR_TOTAL_FORM_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total Por Formando:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%MENSALIDADE_FORMANDO_FMT%</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo a Provisionar:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblSaldoProvisionarID"></p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Uso do SuaFormatura.com:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT% (Total por Formando)</p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de emissão do Boleto:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblTaxaBoletoID"></p>
-			    	</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Administração:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_ADMIN_FMT%</p>
-			    	</div>
-				</div>
-			</div>
+		<div class="col-sm-12 pull-left" >
+			<!-- #section:plugins/fuelux.wizard.buttons -->
+			<button class="btn btn-app btn-sm btn-prev">
+				Anterior
+				<i class="ace-icon fa fa-arrow-left"></i>
+			</button>
+			<button id="btnProxDesCadID" class="btn btn-app btn-sm btn-success btn-next" data-last="Finalizar">
+				Próximo
+				<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+			</button>
+			<!-- /section:plugins/fuelux.wizard.buttons -->
 		</div>
 	</div>
 </div>
@@ -286,27 +230,25 @@ $('#fuelux-wizard-container')
 	if(info.step == 1) {
 		
 	}else if (info.step == 2) {
-		var vOk 	= validaVencimentoGeraMensalidade();
-		if(!vOk) 	{
-			e.preventDefault();
-		}
-		mostraQuadroGeraMensalidade('divInfoValorID');
-		
+		//var vOk 	= validaVencimentoDesCad();
+		//if(!vOk) 	{
+//			e.preventDefault();
+		//}
+
 		/** sugere o saldo a provisionar no valor total da conta **/
-		sugereValorGeraMensalidade();
+		//sugereValorDesCad();
 		
 	}else if (info.step == 3) {
-		var vOk 	= validaValoresGeraMensalidade();
-		if(!vOk) 	{
-			e.preventDefault();
-		}else{
-			mostraQuadroGeraMensalidade('divInfoValorID');
-			criaTabelaValoresGeraMensalidade();
-		}
+		//var vOk 	= validaValoresDesCad();
+		//if(!vOk) 	{
+//			e.preventDefault();
+//		}else{
+			criaTabelaValoresDesCad();
+//		}
 	}
 })
 .on('finished.fu.wizard', function(e) {
-	var vOk 	= atualizaEValidaParcelasGeraMensalidade();
+	var vOk 	= atualizaEValidaParcelasDesCad();
 	if(!vOk) 	{
 		$.gritter.add({
 			title: 'Valores inconsistentes',
@@ -317,48 +259,12 @@ $('#fuelux-wizard-container')
 		e.preventDefault();
 		return false;
 	}else{
-		$('#zgFormGeraMensalidadeID').submit();
+		$('#zgFormDesCadID').submit();
 	}
 	
 }).on('stepclick.fu.wizard', function(e){
 	//e.preventDefault();//this will prevent clicking and selecting steps
 });
-
-
-
-
-
-
-
-
-function desCadMostraQuadroResumo() {
-	var vSaldoMensalidade	= zgConverteFloat($('#saldoMensalidadeFormandoID').val());
-	var vSaldoSistema		= zgConverteFloat($('#saldoSistemaFormandoID').val());
-	
-	var $opt = {
-		symbol : "R$ ",
-		decimal : ",",
-		thousand: ".",
-		precision : 2,
-		format: "%s%v"
-	};
-
-	/** Atualizar o quadro **/
-	$('#lbInfoSaldoMensalidadeID').html(accounting.formatMoney(vSaldoMensalidade,$opt));
-	$('#lbInfoSaldoSistemaID').html(accounting.formatMoney(vSaldoSistema,$opt));
-	
-	
-	
-	/**
-	var $lblFor		= $('#numForSelID').val() + ' de  %TOTAL_FORMANDOS%';
-	var $divInfo	= $('#divInfoGeraMensalidadeID').html();
-	$('#'+$divId).html($divInfo);
-	$('#lblNumFormadosSelID').each( function() {
-		$(this).html($lblFor);
-	});
-	$('#lblSaldoProvisionarID').html(accounting.formatMoney($saldo,$opt) + " (por Formando)");
-	**/
-}
 
 desCadCalculaValorTotalEvento();
 function desCadCalculaValorTotalEvento() {
@@ -399,15 +305,25 @@ function desCadCalculaValorTotalEvento() {
 	$total =  $saldoMensalidade - $totalEventos;
 	
 	if ($total < 0){
-		$('#lbInfoSaldoID').html('<FONT SIZE="2"><b>'+accounting.formatMoney($total,$opt)+'</b></FONT>');
-		$('#lbInfoSaldoTituloID').html('<FONT SIZE="2"><b>A PAGAR:</b></FONT>');
+		$total			= ($total * -1);
+		$('#lbInfoSaldoTituloID').removeClass("text-success");
+		$('#lbInfoSaldoTituloID').addClass("text-danger");
+		$('#lbInfoSaldoID').html('<b>'+accounting.formatMoney($total,$opt)+'</b>');
+		$('#lbInfoSaldoTituloID').html('<b>A Pagar:</b>');
 	}else{
-		$('#lbInfoSaldoID').html('<FONT SIZE="2"><b>'+accounting.formatMoney($total,$opt)+'</b></FONT>');
-		$('#lbInfoSaldoTituloID').html('<FONT SIZE="2"><b>A DEVOLVER:</b></FONT>');
+		$('#lbInfoSaldoTituloID').removeClass("text-danger");
+		$('#lbInfoSaldoTituloID').addClass("text-success");
+		$('#lbInfoSaldoID').html('<b>'+accounting.formatMoney($total,$opt)+'</b>');
+		$('#lbInfoSaldoTituloID').html('<b>A Receber:</b>');
 	}
-	
-	
+}
+
+function alteraBaseCalculoDesCad() {
+	alert('mudei Base de Calculo');
 }
 
 
+function alteraPctMultaDesCad() {
+	alert('mudei Pct de multa');
+}
 </script>

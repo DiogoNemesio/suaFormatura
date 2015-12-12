@@ -24,6 +24,13 @@ class ZgsegUsuarioOrganizacao
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=true)
+     */
+    private $dataCadastro;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="DATA_CANCELAMENTO", type="datetime", nullable=true)
      */
     private $dataCancelamento;
@@ -46,16 +53,6 @@ class ZgsegUsuarioOrganizacao
     private $codUsuario;
 
     /**
-     * @var \Entidades\ZgsegPerfil
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegPerfil")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PERFIL", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPerfil;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -75,6 +72,16 @@ class ZgsegUsuarioOrganizacao
      */
     private $codStatus;
 
+    /**
+     * @var \Entidades\ZgsegPerfil
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegPerfil")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PERFIL", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPerfil;
+
 
     /**
      * Get codigo
@@ -84,6 +91,29 @@ class ZgsegUsuarioOrganizacao
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set dataCadastro
+     *
+     * @param \DateTime $dataCadastro
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setDataCadastro($dataCadastro)
+    {
+        $this->dataCadastro = $dataCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCadastro
+     *
+     * @return \DateTime 
+     */
+    public function getDataCadastro()
+    {
+        return $this->dataCadastro;
     }
 
     /**
@@ -156,29 +186,6 @@ class ZgsegUsuarioOrganizacao
     }
 
     /**
-     * Set codPerfil
-     *
-     * @param \Entidades\ZgsegPerfil $codPerfil
-     * @return ZgsegUsuarioOrganizacao
-     */
-    public function setCodPerfil(\Entidades\ZgsegPerfil $codPerfil = null)
-    {
-        $this->codPerfil = $codPerfil;
-
-        return $this;
-    }
-
-    /**
-     * Get codPerfil
-     *
-     * @return \Entidades\ZgsegPerfil 
-     */
-    public function getCodPerfil()
-    {
-        return $this->codPerfil;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -222,5 +229,28 @@ class ZgsegUsuarioOrganizacao
     public function getCodStatus()
     {
         return $this->codStatus;
+    }
+
+    /**
+     * Set codPerfil
+     *
+     * @param \Entidades\ZgsegPerfil $codPerfil
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setCodPerfil(\Entidades\ZgsegPerfil $codPerfil = null)
+    {
+        $this->codPerfil = $codPerfil;
+
+        return $this;
+    }
+
+    /**
+     * Get codPerfil
+     *
+     * @return \Entidades\ZgsegPerfil 
+     */
+    public function getCodPerfil()
+    {
+        return $this->codPerfil;
     }
 }

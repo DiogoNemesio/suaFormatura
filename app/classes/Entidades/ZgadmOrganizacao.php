@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmOrganizacao
  *
- * @ORM\Table(name="ZGADM_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_4_idx", columns={"COD_SEXO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_5_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_6_idx", columns={"COD_MOTIVO_CANCELAMENTO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_7_idx", columns={"COD_REPRESENTANTE"})})
+ * @ORM\Table(name="ZGADM_ORGANIZACAO", uniqueConstraints={@ORM\UniqueConstraint(name="IDENTIFICACAO_UNIQUE", columns={"IDENTIFICACAO"})}, indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_2_idx", columns={"COD_TIPO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_4_idx", columns={"COD_SEXO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_5_idx", columns={"COD_LOGRADOURO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_6_idx", columns={"COD_MOTIVO_CANCELAMENTO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_7_idx", columns={"COD_REPRESENTANTE"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_8_idx", columns={"COD_USUARIO_CADASTRO"})})
  * @ORM\Entity
  */
 class ZgadmOrganizacao
@@ -230,6 +230,16 @@ class ZgadmOrganizacao
      * })
      */
     private $codRepresentante;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_USUARIO_CADASTRO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codUsuarioCadastro;
 
 
     /**
@@ -861,5 +871,28 @@ class ZgadmOrganizacao
     public function getCodRepresentante()
     {
         return $this->codRepresentante;
+    }
+
+    /**
+     * Set codUsuarioCadastro
+     *
+     * @param \Entidades\ZgsegUsuario $codUsuarioCadastro
+     * @return ZgadmOrganizacao
+     */
+    public function setCodUsuarioCadastro(\Entidades\ZgsegUsuario $codUsuarioCadastro = null)
+    {
+        $this->codUsuarioCadastro = $codUsuarioCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get codUsuarioCadastro
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getCodUsuarioCadastro()
+    {
+        return $this->codUsuarioCadastro;
     }
 }

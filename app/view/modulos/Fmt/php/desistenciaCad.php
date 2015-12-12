@@ -161,6 +161,15 @@ if (!isset($urlVoltar) || (!$urlVoltar)) {
 }
 
 
+#################################################################################
+## Select do tipo de Base de Calculo
+#################################################################################
+try {
+	$aBaseCalc	= $em->getRepository('Entidades\ZgfmtBaseCalculoTipo')->findAll();
+	$oBaseCalc	= $system->geraHtmlCombo($aBaseCalc,	'CODIGO', 'DESCRICAO',	null, 		null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
 
 
 #################################################################################
@@ -180,6 +189,7 @@ $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('VALOR_FORMATURA'		,$valorFormatura);
 $tpl->set('SALDO_MENSALIDADE'	,$valPagoMensalidade);
 $tpl->set('SALDO_PORTAL'		,$valPagoSistema);
+$tpl->set('BASES_CALCULO'		,$oBaseCalc);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 
