@@ -97,15 +97,41 @@ $valPagoMensalidade	= \Zage\App\Util::to_float($aPago["mensalidade"]);
 $valProvMensalidade	= \Zage\App\Util::to_float($aProvisionado["mensalidade"]);
 $valPagoSistema		= \Zage\App\Util::to_float($aPago["sistema"]);
 $valProvSistema		= \Zage\App\Util::to_float($aProvisionado["sistema"]);
+$taxaUso			= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
+$taxaAdmin			= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao());
+$diaVencimento		= ($oOrgFmt->getDiaVencimento()) ? $oOrgFmt->getDiaVencimento() : 5;
+$dataVenc			= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));
 
-$saldoCancelar		= round($valProvMensalidade - $valPagoMensalidade,2);
-$saldoSistema		= round($valProvSistema - $valPagoSistema,2);
+#################################################################################
+## Formatar as taxas
+#################################################################################
+//if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
+//if ($taxaUso		< 0)		$taxaUso		= 0;
+
+$dataConclusao		= $oOrgFmt->getDataConclusao();
+if (!$dataConclusao)	\Zage\App\Erro::halt("Data de Conclusão não informada");
+
+$hoje				= new DateTime('now');
+$dataAtivacao		= ($oStatus->getDataCadastro()) ? $oStatus->getDataCadastro() : null;
+if (!$dataAtivacao)	\Zage\App\Erro::halt("Formando: ".$oUsuario->getNome()." sem data de Ativação !!!");
+
+$interval1			= $dataAtivacao->diff($hoje);
+$interval2			= $dataConclusao->diff($dataAtivacao);
+$interval3			= $dataConclusao->diff($hoje);
+
+$numMesesUso		= (($interval1->format('%y') * 12) + $interval1->format('%m'));
+$numMesesTotal		= (($interval2->format('%y') * 12) + $interval2->format('%m'));
+$numMesesConc		= (($interval3->format('%y') * 12) + $interval3->format('%m'));
+
+$valDevidoSistema	= round($numMesesUso * $taxaUso,2);
+$valTotalSistema	= round($numMesesTotal * $taxaUso,2);
+
 
 #################################################################################
 ## Resgatar os eventos
 #################################################################################
 $eventos		= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormatura' => $system->getCodOrganizacao()));
-
+$numEventos		= 0;
 if ($eventos){
 	$htmlEventos 	= '';
 	$htmlEventos	.= '<div class="col-sm-12" align="center">';
@@ -113,7 +139,7 @@ if ($eventos){
 	$htmlEventos	.= '<table id="tabItemID" zg-table-orc="1" class="table table-hover table-condensed">';
 	
 	for ($i = 0; $i < sizeof($eventos); $i++){
-		
+		$numEventos		+= 1;
 		$checked		= "";
 		
 		$htmlEventos	.= '<tr>';
@@ -139,16 +165,18 @@ if ($eventos){
 	$htmlEventos	.= '</table>';
 	$htmlEventos	.= '</div>';
 	
+	
+	
 }else{
 	$htmlEventos 	= 'Nenhum evento';
 }
 
 
 
-$log->info("Valor ja pago de Mensalidade do Formando: ".$valPagoMensalidade);
-$log->info("Valor ja pago de Sistema do Formando: ".$valPagoSistema);
-$log->info("Saldo a Cancelar: ".$saldoCancelar);
-$log->info("Saldo de Sistema: ".$saldoSistema);
+//$log->info("Valor ja pago de Mensalidade do Formando: ".$valPagoMensalidade);
+//$log->info("Valor ja pago de Sistema do Formando: ".$valPagoSistema);
+//$log->info("Saldo a Cancelar: ".$saldoCancelar);
+//$log->info("Saldo de Sistema: ".$saldoSistema);
 
 #################################################################################
 ## Gerenciar as URls
@@ -171,6 +199,57 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
+#################################################################################
+## Select da Forma de Pagamento
+#################################################################################
+try {
+	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
+	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	'BOL', '');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
+## Select da Conta de Crédito
+#################################################################################
+try {
+
+	#################################################################################
+	## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
+	#################################################################################
+	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+
+	if ($oFmtAdm)	{
+		$aCntCer	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('nome' => 'ASC'));
+	}else{
+		$aCntCer	= null;
+	}
+
+	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
+
+	if ($aCntCer) {
+		$oConta		= "<optgroup label='Contas do Cerimonial'>";
+		for ($i = 0; $i < sizeof($aCntCer); $i++) {
+			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aCntCer[$i]->getCodigo()) : 0;
+			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
+		}
+		$oConta		.= '</optgroup>';
+	}
+
+	if ($aConta) {
+		$oConta		.= ($aCntCer) ? "<optgroup label='Contas da Formatura'>" : '';
+		for ($i = 0; $i < sizeof($aConta); $i++) {
+			$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
+			$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
+		}
+		$oConta		.= ($aCntCer) ? '</optgroup>' : '';
+	}
+
+
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
 
 #################################################################################
 ## Carregando o template html
@@ -186,10 +265,19 @@ $tpl->set('TITULO'				,'Desistência');
 $tpl->set('HTML_EVENTOS'		,$htmlEventos);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 
-$tpl->set('VALOR_FORMATURA'		,$valorFormatura);
-$tpl->set('SALDO_MENSALIDADE'	,$valPagoMensalidade);
-$tpl->set('SALDO_PORTAL'		,$valPagoSistema);
+$tpl->set('TOTAL_MENSALIDADE'	,$valorFormatura);
+$tpl->set('PAGO_MENSALIDADE'	,$valPagoMensalidade);
+$tpl->set('TOTAL_SISTEMA'		,$valTotalSistema);
+$tpl->set('DEVIDO_SISTEMA'		,$valDevidoSistema);
+$tpl->set('PAGO_SISTEMA'		,$valPagoSistema);
 $tpl->set('BASES_CALCULO'		,$oBaseCalc);
+$tpl->set('NUM_EVENTOS'			,$numEventos);
+$tpl->set('CONTAS'				,$oConta);
+$tpl->set('FORMAS_PAG'			,$oFormaPag);
+$tpl->set('TAXA_ADMIN_FMT'		,\Zage\App\Util::to_money($taxaAdmin));
+$tpl->set('TAXA_ADMIN'			,\Zage\App\Util::formataDinheiro($taxaAdmin));
+$tpl->set('NUM_MESES_MAX'		,$numMesesConc);
+$tpl->set('DATA_VENC'			,$dataVenc);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 

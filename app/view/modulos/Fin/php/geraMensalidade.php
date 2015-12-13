@@ -74,7 +74,6 @@ $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('
 $indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema() : 1;
 $taxaAdmin				= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao());
 $taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
-$taxaUsoTotalFormando	= $taxaUso * $numMesesConc; 
 $mostraIndTaxaSistema	= ($indRepTaxaSistema) ? null : "hidden";
 $chkIndTaxaSistema		= ($indRepTaxaSistema) ? "checked" : null;
 
@@ -82,9 +81,7 @@ $chkIndTaxaSistema		= ($indRepTaxaSistema) ? "checked" : null;
 ## Formatar as taxas
 #################################################################################
 if ($taxaAdmin		< 0)		$taxaAdmin		= 0;
-//if ($taxaBoleto		< 0)		$taxaBoleto		= 0;
 if ($taxaUso		< 0)		$taxaUso		= 0;
-//$totalTaxa			= ($taxaAdmin + $taxaBoleto);
 
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
@@ -123,12 +120,12 @@ for ($i = 0; $i < sizeof($oValorProv); $i++) {
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GeraMensalidade");
 $checkboxName	= "selItemGeracaoConta";
 $grid->adicionaCheckBox($checkboxName);
-$grid->adicionaTexto($tr->trans('USUÁRIO'),				15	,$grid::CENTER	,'usuario');
 $grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('CPF'),					10	,$grid::CENTER	,'cpf','cpf');
-$grid->adicionaTexto($tr->trans('STATUS'),				10	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('CPF'),					13	,$grid::CENTER	,'cpf','cpf');
+$grid->adicionaTexto($tr->trans('STATUS'),				17	,$grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		15	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('R$ PROVISIONAR'),		15	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('MESES USO'),			10	,$grid::CENTER	,'');
 $grid->importaDadosDoctrine($formandos);
 
 #################################################################################
@@ -142,7 +139,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $formandos[$i]->getCodigo(),'codOrganizacao' => $system->getCodOrganizacao()));
 	$codStatus	= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getCodigo() : null;
 	$status		= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getDescricao() : null;
-	$grid->setValorCelula($i,4,$status);
+	$grid->setValorCelula($i,3,$status);
 	
 	#################################################################################
 	## Verificar o status da associação a Formatura, para definir se poderá ou não 
@@ -182,18 +179,28 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
 	$saldo						= round($mensalidadeFormando - $valProvisionado,2);
 	$aCodigos[$formandos[$i]->getCpf()]["SALDO"]	= $saldo;
-	$grid->setValorCelula($i,5,$valProvisionado);
+	$grid->setValorCelula($i,4,$valProvisionado);
 	
 	#################################################################################
 	## Valor a provisionar
 	#################################################################################
 	if ($saldo > 0){
-		$grid->setValorCelula($i, 6, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		$grid->setValorCelula($i, 5, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 	}else if ($saldo == 0) {
-		$grid->setValorCelula($i, 6, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		$grid->setValorCelula($i, 5, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 	}else{
-		$grid->setValorCelula($i, 6, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		$grid->setValorCelula($i, 5, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 	}
+	
+	#################################################################################
+	## Número de meses de uso do sistema
+	#################################################################################
+	$dataAtivacao			= ($oStatus->getDataCadastro()) ? $oStatus->getDataCadastro() : null;
+	if (!$dataAtivacao)		\Zage\App\Erro::halt("Formando: ".$formandos[$i]->getNome()." sem data de Ativação !!!");
+	$interval				= $dataConclusao->diff($dataAtivacao);
+	$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
+	$grid->setValorCelula($i,6,$numMesesConc);
+	$aCodigos[$formandos[$i]->getCpf()]["NUM_MESES"]	= $numMesesConc;
 }
 
 
@@ -287,8 +294,7 @@ $tpl->set('VALOR_TOTAL_FORMATURA'	,\Zage\App\Util::formataDinheiro($valorOrcado)
 $tpl->set('MENSALIDADE_FORMANDO'	,\Zage\App\Util::formataDinheiro($mensalidadeFormando));
 $tpl->set('MENSALIDADE_FORMANDO_FMT',\Zage\App\Util::to_money($mensalidadeFormando));
 $tpl->set('SALDO_FORMANDO_FMT'		,\Zage\App\Util::to_money($saldo));
-$tpl->set('TAXA_USO_FMT'			,\Zage\App\Util::to_money($taxaUsoTotalFormando));
-$tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUsoTotalFormando));
+$tpl->set('TAXA_USO'				,\Zage\App\Util::formataDinheiro($taxaUso));
 $tpl->set('TAXA_ADMIN_FMT'			,\Zage\App\Util::to_money($taxaAdmin));
 $tpl->set('TAXA_ADMIN'				,\Zage\App\Util::formataDinheiro($taxaAdmin));
 $tpl->set('MOSTRA_IND_TAXA_SISTEMA'	,$mostraIndTaxaSistema);

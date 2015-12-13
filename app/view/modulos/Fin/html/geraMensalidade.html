@@ -34,6 +34,7 @@
 			<input type="hidden" name="codTipoValor" id="codTipoValorID">
 			<input type="hidden" name="numForSel" id="numForSelID">
 			<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
+			<input type="hidden" name="numMesesSistema" id="numMesesSistemaID">
 			<input type="hidden" name="aSelFormandos" id="aSelFormandosID">
 			<input type="hidden" name="saldoTotalFormando" id="saldoTotalFormandoID">
 			<input type="hidden" name="saldoSistemaFormando" id="saldoSistemaFormandoID">
@@ -261,7 +262,7 @@
 				<div class="row">
 					<div class="col-sm-12">
 				    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Uso do SuaFormatura.com:</p>
-				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_USO_FMT% (Total por Formando)</p>
+				    	<p class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;" id="lblTaxaUsoID"></p>
 			    	</div>
 				</div>
 				<div class="row">
@@ -367,6 +368,8 @@ function zgHabilitaAcaoGeraMensalidade($numFormandos) {
 	var $jCodigos 		= jQuery.parseJSON($aCodigos);
 	var $aMensalidade	= [];
 	var	$aSistema		= [];
+	var	$aMeses			= [];
+	
 	//alert("Jcodigos: "+JSON.stringify($jCodigos));
 	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
 		var $codigo	= $(this).val();
@@ -381,6 +384,12 @@ function zgHabilitaAcaoGeraMensalidade($numFormandos) {
 			if ( $aSistema.indexOf($jCodigos[$codigo]["SISTEMA"]) == -1 ) {
 				$aSistema[$aSistema.length]	= $jCodigos[$codigo]["SISTEMA"];
 			}
+
+			/** Monta o array de Meses **/
+			if ( $aMeses.indexOf($jCodigos[$codigo]["NUM_MESES"]) == -1 ) {
+				$aMeses[$aMeses.length]	= $jCodigos[$codigo]["NUM_MESES"];
+			}
+
 		}else{
 			/** Monta o array de Mensalidades **/
 			if ( $aMensalidade.indexOf(0) == -1 ) {
@@ -391,21 +400,33 @@ function zgHabilitaAcaoGeraMensalidade($numFormandos) {
 			if ( $aSistema.indexOf(0) == -1 ) {
 				$aSistema[$aSistema.length]	= 0;
 			}
+
+			/** Monta o array de Sistemas **/
+			if ( $aMeses.indexOf(0) == -1 ) {
+				$aMeses[$aMeses.length]	= 0;
+			}
+
 		}
 	});
 	
 	$('#numForSelID').val($numFormandos);
+		
 
 	/** Calcular as ações em lotes disponíveis, a partir do status das contas **/
-	if (($aMensalidade.length == 1) && ($aSistema.length == 1)) {
+	if (($aMensalidade.length == 1) && ($aSistema.length == 1) && ($aMeses.length == 1)) {
 		$('#btnProxgeraMensalidadeID').attr("disabled",false);
 		$.gritter.removeAll();
+		$('#numMesesSistemaID').val($aMeses[0]);
+		/*$.each($aMeses,function( $i, $l ){
+			$('#numMesesSistemaID').val($l);
+		});*/
+		
 		return false;
 	}else{
 		$('#btnProxgeraMensalidadeID').attr("disabled","disabled");
 		$.gritter.add({
 			title: 'Erro na seleção de formandos',
-			text: 'Selecione apenas formandos com o mesmo valor a provisionar',
+			text: 'Selecione apenas formandos com o mesmo valor a provisionar e meses de uso',
 			class_name: 'gritter-info gritter-error gritter-center',
 			time: '8000'
 		});
@@ -481,8 +502,18 @@ $('#fuelux-wizard-container')
 
 function atualizaSaldosGeraMensalidade() {
 	var $taxaUso			= zgConverteFloat('%TAXA_USO%');
+	var $numMesesSis		= $('#numMesesSistemaID').val();
+	var $taxaUsoFor			= $taxaUso * $numMesesSis;
 	var $jCodigos 			= jQuery.parseJSON($aCodigos);
 	var	$saldoTotal,$mensalidade,$sistema;
+	
+	var $opt = {
+		symbol : "R$",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
 	
 	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
 		var $codigo	= $(this).val();
@@ -498,7 +529,7 @@ function atualizaSaldosGeraMensalidade() {
 	if (isNaN($mensalidade))	$mensalidade	= 0;
 	
 	/** Calcular os saldos **/
-	var $saldoSistema			= $taxaUso - $sistema;
+	var $saldoSistema			= $taxaUsoFor - $sistema;
 	if ($saldoSistema < 0)		$saldoSistema 	= 0;
 	var $saldoMensalidade		= $saldoTotal - $saldoSistema;
 	
@@ -507,6 +538,8 @@ function atualizaSaldosGeraMensalidade() {
 	$("#saldoTotalFormandoID").val($saldoTotal.toFixed(2));
 	$("#saldoSistemaFormandoID").val($saldoSistema.toFixed(2));
 	$("#saldoMensalidadeFormandoID").val($saldoMensalidade.toFixed(2));
+	$("#lblTaxaUsoID").html(accounting.formatMoney($taxaUsoFor.toFixed(2),$opt)+" (Total por Formando)");
+	
 }
 
 
@@ -516,9 +549,8 @@ function sugereValorGeraMensalidade() {
 	var $indTaxaSistema		= $('#indTaxaSistemaID:checked').length;
 	var $indValorExtra		= $('#indValorExtraID:checked').length;
 	var $codTipoValor		= $('#codTipoValorID').val();
-	var $taxaUso			= zgConverteFloat('%TAXA_USO%');
 	var $taxaAdm			= zgConverteFloat('%TAXA_ADMIN%');
-
+	
 	var $opt = {
 		symbol : "",
 		decimal : ",",
@@ -543,7 +575,6 @@ function atualizaInfoGeraMensalidade() {
 	var $indValorExtra		= $('#indValorExtraID:checked').length;
 	var $codTipoValor		= $('#codTipoValorID').val();
 	var $valor				= zgConverteFloat($('#valorID').val());
-	var $taxaUso			= zgConverteFloat('%TAXA_USO%');
 	var $taxaAdm			= zgConverteFloat('%TAXA_ADMIN%');
 	var $oConta				= $("#codContaRecID option:selected");
 	var $valorBoleto		= zgConverteFloat($oConta.attr("zg-val-boleto"));
