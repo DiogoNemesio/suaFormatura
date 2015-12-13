@@ -297,6 +297,7 @@ if ($err != null) {
 #################################################################################
 ## Salvar no banco
 #################################################################################
+$em->getConnection()->beginTransaction();
 try {
 	if (isset($codOrganizacao) && (!empty($codOrganizacao))){
  		$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
@@ -314,6 +315,7 @@ try {
  	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => $codSegmento));
  	$oCodLogradouro		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
  	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => A));
+ 	$oUsuario			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
  	
  	if (!empty($dataNascimento)) {
  		$dtNasc		= DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataNascimento);
@@ -334,6 +336,7 @@ try {
  	$oParceiro->setDataNascimento($dtNasc);
  	$oParceiro->setCodStatus($oCodStatus);
  	$oParceiro->setCodSexo($oSexo);
+ 	$oParceiro->setCodUsuarioCadastro($oUsuario);
  	
  	$oParceiro->setCodLogradouro($oCodLogradouro);
  	$oParceiro->setIndEndCorreto($endCorreto);
@@ -344,9 +347,7 @@ try {
  	$oParceiro->setComplemento($complemento);
  	
  	$em->persist($oParceiro);
- 	$em->flush();
- 	//$em->detach($oParceiro);
-
+ 	
  	#################################################################################
  	## Contrato
  	#################################################################################
@@ -359,13 +360,15 @@ try {
  		$oContrato->setCodStatus($oStatusContrato);
  	}
  	
+ 	$planoValor		= \Zage\Adm\Plano::getValorPlano($oPlano->getCodigo());
+ 	
  	$oContrato->setCodOrganizacao($oParceiro);
  	$oContrato->setCodPlano($oPlano);
  	$oContrato->setPctDesconto($pctDesconto);
  	$oContrato->setValorDesconto($valorDesconto);
- 	$em->persist($oContrato);
- 	$em->flush();
+ 	$oContrato->setValorPlano($planoValor);
  	
+ 	$em->persist($oContrato); 	
  	
  	#################################################################################
  	## Telefones
@@ -377,7 +380,6 @@ try {
  		if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
  			try {
  				$em->remove($telefones[$i]);
- 				$em->flush();
  			} catch (\Exception $e) {
  				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
  				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -403,9 +405,7 @@ try {
  			$infoTel->setTelefone($telefone[$i]);
  		 	
  			try {
- 				$em->persist($infoTel);
- 				$em->flush();
- 				$em->detach($infoTel);
+ 				$em->persist($infoTel); 			
  			} catch (\Exception $e) {
  				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível cadastrar o telefone: ".$telefone[$i]." Erro: ".$e->getMessage());
  				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -414,8 +414,21 @@ try {
  		}
  	}
 	
- 	$em->clear();
+ 	#################################################################################
+ 	## SALVAR
+ 	#################################################################################
+	try {
+		$em->flush();
+		$em->clear();
+		$em->getConnection()->commit();
+	} catch (Exception $e) {
+		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+		throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+	}
+ 	
+ 	
 } catch (\Exception $e) {
+	$em->getConnection()->rollback();
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;

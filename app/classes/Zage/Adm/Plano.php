@@ -57,5 +57,43 @@ class Plano {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
 	}
+	
+	/**
+	 *
+	 * Buscar valor do plano de acordo como a data base
+	 */
+	public static function getValorPlano($codPlano) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		$data = new \DateTime("now");
+		$data = $data->format($system->config["data"]["datetimeSimplesFormat"]);
+	
+		//$log->debug($data);
+	
+		try {
+			$qb->select('pv.valor')
+			->from('\Entidades\ZgadmPlanoValor','pv')
+			->leftJoin('\Entidades\ZgadmPlano'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo 	= pv.codPlano')
+			->where($qb->expr()->andx(
+					$qb->expr()->eq('p.codigo'				, ':codPlano'),
+					$qb->expr()->lte('pv.dataBase'			, ':now')
+				)
+			)
+	
+			->setParameter('codPlano', $codPlano)
+			->setParameter('now', new \DateTime("now"))
+				
+			->orderBy('pv.dataBase', 'DESC');
+	
+			$query 		= $qb->getQuery();
+			$query->setMaxResults(1);
+			
+			return($query->getSingleScalarResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
 
 }
