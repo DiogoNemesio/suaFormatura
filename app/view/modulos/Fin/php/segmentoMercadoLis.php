@@ -52,6 +52,7 @@ try {
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GSeg");
 $grid->adicionaTexto($tr->trans('CÓDIGO'),				10, $grid::CENTER	,'codigo');
 $grid->adicionaTexto($tr->trans('DESCRIÇÃO'),			30, $grid::CENTER	,'descricao');
+$grid->adicionaTexto($tr->trans('CATEGORIAS'),			10, $grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-crosshairs orange',$tr->trans('Vincular a uma categoria'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -64,9 +65,31 @@ $grid->importaDadosDoctrine($segmentos);
 for ($i = 0; $i < sizeof($segmentos); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codSegmento='.$segmentos[$i]->getCodigo().'&url='.$url);
 
-	$grid->setUrlCelula($i,2,ROOT_URL.'/Fin/segmentoMercadoCat.php?id='.$uid);
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Fin/segmentoMercadoAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/segmentoMercadoExc.php?id='.$uid);
+	//CATEGORIA ASSOCIADA
+	$oCats		= $em->getRepository('Entidades\ZgfinSegmentoCategoria')->findBy(array('codSegmento' => $segmentos[$i]->getCodigo()));
+	if (sizeof($oCats) == 1) {
+		foreach ($oCats as $cat) {
+			$htmlCat = $cat->getCodCategoria()->getDescricao();
+		}
+	}elseif (sizeof($oCats) > 1) {
+		foreach ($oCats as $cat) {
+			$cats	.= '<li><a href="#">'.$cat->getCodCategoria()->getDescricao().'</a></li>';
+		}
+	
+		$htmlCat	= '<div class="inline dropdown dropup"><a href="#" data-toggle="dropdown"><i class="fa fa-ellipsis-h bigger-150"></i></a>
+		<ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
+			'.$cats.'
+		</ul>
+		</div>';
+	}else{
+		$htmlCat 	= null;
+	}
+	
+	$grid->setValorCelula($i,2,$htmlCat);
+		
+	$grid->setUrlCelula($i,3,ROOT_URL.'/Fin/segmentoMercadoCat.php?id='.$uid);
+	$grid->setUrlCelula($i,4,ROOT_URL.'/Fin/segmentoMercadoAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/segmentoMercadoExc.php?id='.$uid);
 }
 
 #################################################################################

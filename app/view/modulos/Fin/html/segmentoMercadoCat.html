@@ -8,7 +8,7 @@
 	<div id="user-profile-3" class="user-profile row">
 		<div class="col-sm-12">
 			<form id="zgFormID" class="form-horizontal">
-				<input type="hidden" id="codSegmentoID" name="codSegmento" value="%COD_CENTRO%">
+				<input type="hidden" id="codSegmentoID" name="codSegmento" value="%COD_SEGMENTO%">
 				<input type='hidden' id='valID'>
 				<div id="indice" class="tab-pane in active">
 					<div class="vspace-xs"></div>
@@ -31,7 +31,7 @@
 						    	<div class="form-group">
 						    		<div class="col-sm-12">
 										<div class="col-sm-12">
-											<select multiple="multiple" size="10" name="acesso[]" id="duallist">
+											<select multiple="multiple" size="10" name="associacao[]" id="duallist">
 												%DUAL_LIST%
 											</select>
 											<div class="hr hr-16 hr-dotted"></div>
@@ -64,7 +64,7 @@ $('[data-rel=popover]').popover({html:true});
 
 $('.datepicker').datepicker();
 
-$('select[name="acesso[]"]').bootstrapDualListbox({
+$('select[name="associacao[]"]').bootstrapDualListbox({
 	
 	infoTextFiltered: '<span class="label label-green label-lg">Filtrado</span>',
 	filterTextClear: 'Mostrar todos',
@@ -78,7 +78,7 @@ $('select[name="acesso[]"]').bootstrapDualListbox({
 //Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
 	
-	var vOk 	= checkDescricaoAlt();
+	var vOk 	= true;
 	
 	if(vOk == false) 	{
 		$.gritter.add({
@@ -106,8 +106,7 @@ $('#zgFormID').submit(function(e) {
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
-			$('#codSegmentoID').val(zgGetCodRetorno(data));
-			zgMostraAviso("Fechar",'Novo Segmento de Mercado', '%URLNOVO%');
+			zgMostraAviso("Fechar",'Voltar', '%URLVOLTAR%');
 		}else{
 			zgMostraAviso("Fechar");
 		}
