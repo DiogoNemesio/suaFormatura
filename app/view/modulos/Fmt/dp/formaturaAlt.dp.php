@@ -132,11 +132,13 @@ try {
  	#################################################################################
  	$oTipoOrganizacao	= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findOneBy(array('codigo' => FMT));
  	$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => A));
+ 	$oUsuario			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
  	
  	$oOrganizacao->setIdentificacao($ident);
  	$oOrganizacao->setNome($nome);
  	$oOrganizacao->setCodTipo($oTipoOrganizacao);
  	$oOrganizacao->setCodStatus($oCodStatus);
+ 	$oOrganizacao->setCodUsuarioCadastro($oUsuario);
  	
  	$em->persist($oOrganizacao);
  	
@@ -209,10 +211,9 @@ try {
 		$em->persist($oUsuOrg);
 
 	}
-
 	
 	#################################################################################
-	## Contrato
+	## CONTRATO
 	#################################################################################
 	$oContrato		= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $oOrganizacao->getCodigo()));
 	if (!$oContrato)	{
@@ -223,22 +224,23 @@ try {
 		$oContrato->setCodStatus($oStatusContrato);
 	}
 	
-	$planoValor		= $em->getRepository('\Entidades\ZgadmPlanoValor')->findOneBy(array('codPlano' => $codPlano),array('dataBase' => 'DESC'));
+	//$planoValor		= \Zage\Adm\Plano::getValorPlano($codPlano);
 	$oOrgCer		= $em->getRepository('\Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 	
 	if ($oOrgCer){
 		$pctDesconto 	= $oOrgCer->getPctDesconto();
 		$valorDesconto 	= $oOrgCer->getValorDesconto();
+		$planoValor		= \Zage\Adm\Plano::getValorPlano($oOrgCer->getCodPlanoFormatura()->getCodigo());
 	}
 	
 	$oContrato->setCodOrganizacao($oOrganizacao);
 	$oContrato->setCodPlano($oPlano);
-	$oContrato->setValorPlano($planoValor->getValor());
+	$oContrato->setValorPlano($planoValor);
 	$oContrato->setPctDesconto($pctDesconto);
 	$oContrato->setValorDesconto($valorDesconto);
+	
 	$em->persist($oContrato);
-	
-	
+		
 	#################################################################################
  	## Salvar as informações
  	#################################################################################

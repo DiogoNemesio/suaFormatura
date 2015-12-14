@@ -54,6 +54,31 @@ if (!empty($codSegmento)) {
 }
 
 #################################################################################
+## Lista de categorias
+#################################################################################
+$categoria		= $em->getRepository('Entidades\ZgfinCategoria')->findBy(array('codTipoOrganizacao' => "FMT"));
+$segCat			= $em->getRepository('Entidades\ZgfinSegmentoCategoria')->findBy(array('codSegmento' => $codSegmento));
+
+$aSegCat 	= array();
+
+for ($i = 0; $i < sizeof($segCat); $i++) {
+	$aSegCat[$i] = $segCat[$i]->getCodCategoria()->getCodigo();
+}
+
+$htmlLis		= "";
+
+for ($i = 0; $i < sizeof($categoria); $i++) {
+
+	if (in_array($categoria[$i]->getCodigo(), $aSegCat)){
+		$selected = 'selected';
+	}else{
+		$selected = '';
+	}
+
+	$htmlLis .= '<option value="'.$categoria[$i]->getCodigo().'" '.$selected.'>'.$categoria[$i]->getDescricao().'</option>';
+}
+
+#################################################################################
 ## Url Voltar
 #################################################################################
 $urlVoltar			= ROOT_URL."/Fin/segmentoMercadoLis.php?id=".$id;
@@ -77,6 +102,7 @@ $tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
 $tpl->set('URLVOLTAR'			,$urlVoltar);
 $tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
+$tpl->set('DUAL_LIST'			,$htmlLis);
 $tpl->set('COD_SEGMENTO'		,$codSegmento);
 $tpl->set('DESCRICAO'			,$descricao);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
