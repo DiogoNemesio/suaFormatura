@@ -45,7 +45,6 @@
 			<input type="hidden" id="numMesesMaxID" value="%NUM_MESES_MAX%">
 			<input type="hidden" name="valTotalEventos" id="valTotalEventosID">
 			
-			
 			<input type="hidden" name="valParcelaMensalidade" id="valParcelaMensalidadeID">
 			<input type="hidden" name="valParcelaSistema" id="valParcelaSistemaID">
 			<input type="hidden" name="valParcelaTaxa" id="valParcelaTaxaID">
@@ -54,6 +53,7 @@
 			<input type="hidden" name="_valTotalTaxa" id="_valTotalTaxaID">
 			<input type="hidden" name="totalParcela" id="totalParcelaID">
 			<input type="hidden" name="totalGeral" id="totalGeralID">
+			<input type="hidden" name="codTipoConta" id="codTipoContaID">
 			
 			<div class="step-content pos-rel col-xs-9 pull-left">
 				<div class="step-pane" data-step="1">
@@ -133,11 +133,8 @@
 					    	</div>
 
 							<div class="form-group col-sm-12" id="divTextoSistemaID">
-							    <label id='lblTextoSistemaID' class="col-sm-4 control-label">SuaFormatura.com</label>
-					    		<div class="input-group col-sm-7 pull-left">
-				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Saldo a provisionar referente ao uso do Sistema SuaFormatura.com"></i></span>
-						    		<input class="form-control" id="textoSistemaID" type="text" name="textoSistema" readonly maxlength="60" autocomplete="off">
-							    </div>
+							    <label id='lblTextoSistemaID'	class="col-sm-4 control-label">SuaFormatura.com</label>
+					    		<label id='textoSistemaID' 		class="col-sm-7 control-label pull-left" style="text-align: left;"></label>
 							    <div class="col-sm-1 pull-left" id="divHelpTextoSistemaID"></div>
 							</div>
 
@@ -454,7 +451,7 @@ function calculaValorTotalEventoDesCad() {
 		var $codEvento						= $(this).val();
 		$aSelEventos[$aSelEventos.length]	= $codEvento;
 		$input								= $('input[zg-codigo="'+$codEvento+'"]');
-		$valorEvento						= zgConverteFloat($input.attr('zg-valor'));
+		$valorEvento						= zgConverteFloat($input.val());
 		$totalEventos						+= $valorEvento;
 	});
 	
@@ -498,11 +495,10 @@ function calculaSaldoDesCad() {
 		var $codEvento						= $(this).val();
 		$aSelEventos[$aSelEventos.length]	= $codEvento;
 		$input								= $('input[zg-codigo="'+$codEvento+'"]');
-		$valorEvento						= zgConverteFloat($input.attr('zg-valor'));
+		$valorEvento						= zgConverteFloat($input.val());
 		$totalEventos						+= $valorEvento;
 		$numEventosSel						+= 1;
 	});
-	
 	
 	/** Calcular a base de calculo **/
 	if ($codTipoBaseCalculo == "P")	{
@@ -625,12 +621,11 @@ function atualizaInfoDesCad() {
 	var $saldoMulta			= zgConverteFloat($('#saldoMultaID').val());
 	var $total				= zgConverteFloat($saldoMulta + $saldoMensalidade + $saldoSistema);
 	var $valor				= zgConverteFloat($saldoMulta + $saldoMensalidade);
-	var $tipoConta;
 
 	//alert("SaldoSistema: "+$saldoSistema+" SaldoMensalidade: "+$saldoMensalidade+" SaldoMulta:"+$saldoMulta+" Valor: "+$valor);
 	
 	var $taxas,$taxaBol,$totalTaxas,$totalSistema,$valParcelaMensalidade,$valParcelaSistema,$valParcelaTaxa,$valTotalMensalidade,$valTotalSistema,$valTotalTaxa;
-	var $textoTaxa,$textoSistema,$textoTotal;
+	var $textoTaxa,$textoSistema,$textoTotal,$indCreDebSistema,$indCreDebMensalidade;
 	
 	var $opt = {
 		symbol : "R$ ",
@@ -668,14 +663,19 @@ function atualizaInfoDesCad() {
 	}
 
 	if ($total			< 0) {
-		$tipoConta		= "R";
+		$('#codTipoContaID').val("R");
 	}else if ($total == 0) {
-		$tipoConta		= "N";
+		$('#codTipoContaID').val("N");
 	}else{
-		$tipoConta		= "P";
+		$('#codTipoContaID').val("P");
 	}
 	
-	if ($saldoSistema	< 0)		{$saldoSistema	= $saldoSistema * -1;}
+	if ($saldoSistema	< 0)		{
+		$saldoSistema		= $saldoSistema * -1;
+		$indCreDebSistema	= "<span class='text-success'>(A Receber)</span>";
+	}else{
+		$indCreDebSistema	= "<span class='text-danger'>(A Pagar)</span>";
+	}
 	if ($valor			< 0)		{$valor			= $valor		* -1;}
 
 	/** Salvar os valores que ficará de mensalidade **/
@@ -690,15 +690,16 @@ function atualizaInfoDesCad() {
 	$valParcelaSistema		= zgConverteFloat(($saldoSistema / $numMeses).toFixed(2));
 	$valTotalSistema		= $saldoSistema;
 
-//	alert("valParcelaSistema: "+$valParcelaSistema+" valTotalSistema: "+$valTotalSistema);
 	
 	/** Atualiza os totais **/
 	var $totalParcela		= zgConverteFloat(($valParcelaTaxa	+ $valParcelaSistema	+ $valParcelaMensalidade).toFixed(2));
 	var $totalGeral			= zgConverteFloat(($valTotalTaxa	+ $valTotalSistema		+ $valTotalMensalidade).toFixed(2));
 
+	alert("valParcelaSistema: "+$valParcelaSistema+" valTotalSistema: "+$valTotalSistema+" valParcelaMensalidade: "+$valParcelaMensalidade+" valTotalMensalidade: "+$valTotalMensalidade+" saldoSistema: "+$saldoSistema+" saldoMensalidade:"+$saldoMensalidade+" saldoMulta: "+$saldoMulta);
+	
 	/** Gera os textos informativos dos campos **/
 	$textoTaxa				= $numMeses + "x" + " " + accounting.formatMoney($valParcelaTaxa,$opt) + " = " + accounting.formatMoney($valTotalTaxa,$opt); 
-	$textoSistema			= $numMeses + "x" + " " + accounting.formatMoney($valParcelaSistema,$opt) + " = " + accounting.formatMoney($valTotalSistema,$opt); 
+	$textoSistema			= $numMeses + "x" + " " + accounting.formatMoney($valParcelaSistema,$opt) + " = " + accounting.formatMoney($valTotalSistema,$opt) + "&nbsp;" + $indCreDebSistema; 
 	$textoTotal				= $numMeses + "x" + " " + accounting.formatMoney($totalParcela,$opt) + " = " + accounting.formatMoney($totalGeral,$opt); 
 	
 	/** Salvar os valores de parcela **/
@@ -714,7 +715,8 @@ function atualizaInfoDesCad() {
 	$('#totalGeralID').val($totalGeral);
 
 	$('#textoTaxasID').val($textoTaxa);
-	$('#textoSistemaID').val($textoSistema);
+	$('#textoSistemaID').html($textoSistema);
+	//$('#textoSistemaID').val($textoSistema);
 	$('#textoTotalID').val($textoTotal);
 }
 
@@ -772,6 +774,11 @@ function criaTabelaValoresDesCad() {
 	
 	var $valTotalGeral			= zgConverteFloat($('#totalGeralID').val());
 	var $_parc,$_sis,$_taxa,$_tot;
+	
+	
+	if ($('#codTipoContaID').val() == "N") {
+		return true;
+	};
 	
 	//alert("valParcelaMensalidade: "+$valParcelaMensalidade+" valTotalMensalidade:"+$valTotalMensalidade+" valTotalGeral: "+$valTotalGeral);
 
@@ -916,6 +923,10 @@ function atualizaEValidaParcelasDesCad() {
 	var $valTotalTaxa			= $('#_valTotalTaxaID').val();
 	var $valTotalGeral			= $('#totalGeralID').val();
 
+	if ($('#codTipoContaID').val() == "N") {
+		return true;
+	};
+
 	var opt = {
 		symbol : "",
 		decimal : ",",
@@ -1052,9 +1063,5 @@ function atualizaEValidaParcelasDesCad() {
 	return $vOK;
 	
 }
-
-
-
-
 
 </script>
