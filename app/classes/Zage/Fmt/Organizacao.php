@@ -73,16 +73,6 @@ class Organizacao {
 			$codStatus 	= array("A","AA");
 		}
 		
-		#################################################################################
-		## Converter as datas para o formato datetime
-		#################################################################################
-		$_dtIni			= $dataCadIni->format($system->config["data"]["dateFormat"]);
-		$_dtFim			= $dataCadIni->format($system->config["data"]["dateFormat"]);
-		
-		$oDtIni			= DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtIni . " 00:00:00");
-		$oDtFim			= DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtFim . " 23:59:59");
-		
-		
 		$qb 	= $em->createQueryBuilder();
 			
 		try {
