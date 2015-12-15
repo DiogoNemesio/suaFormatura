@@ -56,9 +56,25 @@ class Organizacao {
 	 * @param integer $codOrganizacao
 	 * @return array
 	 */
-	public static function listaFormaturaOrganizacao($codOrganizacao) {
-		global $em,$system;
+	public static function listaFormaturaOrganizacao($codOrganizacao,$codStatus = null,$codUsuarioCad = null) {
+		global $em,$system,$log;
 	
+		#################################################################################
+		## Validar array
+		#################################################################################
+		if ($codUsuarioCad && !is_array($codUsuarioCad)) throw new \Exception("Parâmetro codUsuarioCad deve ser um array");
+		
+		#################################################################################
+		## Status da formatura
+		#################################################################################
+		if ($codStatus){
+			if (!is_array($codStatus)){
+				throw new \Exception("Parâmetro codStatus deve ser um array");
+			}
+		}else{
+			$codStatus = ["A","AA"];
+		}
+		
 		$qb 	= $em->createQueryBuilder();
 			
 		try {
@@ -69,18 +85,61 @@ class Organizacao {
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
 					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
-					$qb->expr()->eq('o.codStatus'			, ':codStatus'),
+					$qb->expr()->in('o.codStatus'			, ':codStatus'),
 					$qb->expr()->isNull('oa.dataValidade')
 					
 	
 			))
 			->setParameter('codOrganizacao', $codOrganizacao)
 			->setParameter('codTipo', 'FMT')
-			->setParameter('codStatus', 'A');
-	
+			->setParameter('codStatus', $codStatus);
+			
+			if (!empty($codUsuarioCad)) {
+				$qb->andWhere($qb->expr()->andX(
+						$qb->expr()->in('o.codUsuarioCadastro', ':$codUsuarioCad')
+				));
+				$qb->setParameter('$codUsuarioCad'			,$codUsuarioCad);
+			}
+			
 			$query 		= $qb->getQuery();
 			return($query->getResult());
 		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	/**
+	 * Lista os usuários que já cadastrou uma formatura em uma organizacao
+	 *
+	 * @param integer $codOrganizacao
+	 * @return array
+	 */
+	public static function listaUsuarioCadFormatura($codOrganizacao) {
+		global $em,$system,$log;
+	
+		$qb 	= $em->createQueryBuilder();
+				
+			try {
+			$qb->select('u')
+			->from('\Entidades\ZgadmOrganizacao','o')
+			->leftJoin('\Entidades\ZgadmOrganizacaoAdm'			,'oa',		\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= oa.codOrganizacao')
+			->leftJoin('\Entidades\ZgsegUsuario'				,'u',		\Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 	= o.codUsuarioCadastro')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
+					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
+					$qb->expr()->isNull('oa.dataValidade')
+			))
+
+			->groupBy('u.codigo')
+			->orderBy('u.nome')
+			->setParameter('codOrganizacao', $codOrganizacao)
+			->setParameter('codTipo', 'FMT');
+			
+			$query 		= $qb->getQuery();
+			
+			return($query->getResult());
+
+			} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
 	}

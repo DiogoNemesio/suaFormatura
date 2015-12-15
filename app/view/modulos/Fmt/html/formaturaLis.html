@@ -1,0 +1,23 @@
+<div class="row">
+	<div class="col-sm-12 widget-container-span">
+		<div class="widget-body">
+			<div class="page-header">
+			<h1><i class="%IC%">&nbsp;</i>%NOME%  
+			<button id='a01ID' class='btn btn-xs btn-primary btn-round' title="Adicionar" onclick="javascript:zgLoadUrl('%URLADD%');"><i class="fa fa-plus-circle bigger-140"></i> Adicionar</button>
+			<button id='a01ID' class='btn btn-xs btn-primary btn-white btn-default btn-round' title="Filtro" onclick="zgAbreModal('%URLFILTRO%');"><i class="fa fa-filter bigger-140"></i> Filtro</button>
+			</h1>
+			</div><!-- /.page-header -->
+				
+			<div class="box-content">
+				%GRID%
+			</div><!--/span-->
+		</div>
+	</div>
+</div>
+<script>
+	var vUrl = '%URLADD%';
+	
+	if (vUrl == '') {
+		$('#a01ID').hide();
+	} 
+</script>

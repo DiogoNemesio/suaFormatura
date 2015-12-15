@@ -321,7 +321,7 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	 * @throws \Exception
 	 * @return multitype:
 	 */
-	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo,$aCodSegMerc = null,$aCodCat = null) {
+	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo,$aCodSegMerc = null,$aCodCat = null,$dataCadIni = null,$dataCadFim = null) {
 		
 		#################################################################################
 		## Variáveis globais

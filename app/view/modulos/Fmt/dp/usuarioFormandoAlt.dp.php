@@ -67,6 +67,19 @@ if ($err != null) {
 #################################################################################
 try {
 	
+	/*********************** 
+	 * Ativar organização (formatura)
+	 ***********************/
+	$formando 	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($system->getCodUsuario(), "F");
+	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+	if (sizeof($formando) == 0){
+		$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => "A"));
+		$oOrg->setCodStatus($oCodStatus);
+	}
+	
+	/*********************** 
+	 * Salvar usuário 
+	 ***********************/
 	$oUsuario			= new \Zage\Seg\Usuario();
 	
 	/*********************** 
@@ -116,8 +129,6 @@ try {
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($retorno));
 		exit;
 	}
-	
-	$oOrg	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 	
 	/***********************
 	* Salavar cliente

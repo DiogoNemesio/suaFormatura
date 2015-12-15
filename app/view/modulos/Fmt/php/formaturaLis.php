@@ -41,12 +41,24 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 $url		= ROOT_URL . '/Fmt/'. basename(__FILE__);
 
-
 #################################################################################
 ## Resgata as informações da organização que está cadastrando a Formatura
 #################################################################################
 $orgCad 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 
+#################################################################################
+## Resgata os parâmetros passados pelo filtro
+#################################################################################
+if (isset($_POST['codStatus']))			$codStatus			= $_POST['codStatus'];
+if (isset($_POST['codUsuarioCad']))		$codUsuarioCad		= $_POST['codUsuarioCad'];
+if (isset($_POST['dataCadIni']))		$dataCadIni			= $_POST['dataCadIni'];
+if (isset($_POST['dataCadFim']))		$dataCadFim			= $_POST['dataCadFim'];
+
+#################################################################################
+## Ajustar valores dos arrays
+#################################################################################
+$codStatus			= (isset($codStatus)) 		? $codStatus		: array();
+$codUsuarioCad		= (isset($codUsuarioCad)) 	? $codUsuarioCad	: array();
 
 #################################################################################
 ## Resgata os dados do grid
@@ -55,7 +67,7 @@ try {
 	if ($orgCad->getCodTipo()->getCodigo() == "ADM") {
 		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturas();
 	}else{
-		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($system->getCodOrganizacao());
+		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($system->getCodOrganizacao(),$codStatus);
 	}
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
@@ -66,11 +78,10 @@ try {
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GFormatura");
 $grid->adicionaTexto($tr->trans('NOME DA TURMA'),		20, $grid::CENTER	,'codOrganizacao:nome');
-$grid->adicionaTexto($tr->trans('IDENTIFICAÇÃO'),		15, $grid::CENTER	,'codOrganizacao:identificacao');
 $grid->adicionaTexto($tr->trans('INSTITUIÇÃO'),			20, $grid::CENTER	,'codInstituicao:sigla');
 $grid->adicionaTexto($tr->trans('CURSO'),				20, $grid::CENTER	,'codCurso:nome');
 $grid->adicionaData($tr->trans('CONCLUSÃO')	,			8, $grid::CENTER	,'dataConclusao');
-$grid->adicionaTexto($tr->trans('STATUS')	,			8, $grid::CENTER	,'codOrganizacao:codStatus:descricao');
+$grid->adicionaTexto($tr->trans('STATUS')	,			20, $grid::CENTER	,'codOrganizacao:codStatus:descricao');
 //$grid->adicionaIcone(null,'fa fa-user green',$tr->trans('Cadastro de usuários'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
@@ -83,8 +94,8 @@ $grid->importaDadosDoctrine($formaturas);
 for ($i = 0; $i < sizeof($formaturas); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$formaturas[$i]->getCodOrganizacao()->getCodigo().'&url='.$url);
 	
-	$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/formaturaAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,7,"javascript:zgAbreModal('".ROOT_URL."/Fmt/formaturaExc.php?id=".$uid."');");
+	$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/formaturaAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Fmt/formaturaExc.php?id=".$uid."');");
 }
 
 #################################################################################
@@ -100,12 +111,12 @@ try {
 ## Gerar a url de adicão
 #################################################################################
 $urlAdd			= ROOT_URL.'/Fmt/formaturaAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao=');
-
+$urlFiltro		= ROOT_URL.'/Fmt/formaturaLisFiltro.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load ( \Zage\App\Util::getCaminhoCorrespondente ( __FILE__, \Zage\App\ZWS::EXT_HTML ) );
 
 #################################################################################
 ## Define os valores das variáveis
@@ -113,6 +124,7 @@ $tpl->load(HTML_PATH . 'templateLis.html');
 $tpl->set('GRID'			,$htmlGrid);
 $tpl->set('NOME'			,$tr->trans('Formaturas'));
 $tpl->set('URLADD'			,$urlAdd);
+$tpl->set('URLFILTRO'		,$urlFiltro);
 $tpl->set('IC'				,$_icone_);
 
 #################################################################################
