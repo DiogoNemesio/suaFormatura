@@ -67,13 +67,21 @@ class Organizacao {
 		#################################################################################
 		## Status da formatura
 		#################################################################################
-		if ($codStatus){
-			if (!is_array($codStatus)){
-				throw new \Exception("Parâmetro codStatus deve ser um array");
-			}
+		if (($codStatus) && (!is_array($codStatus)) ) {
+			throw new \Exception("Parâmetro codStatus deve ser um array");
 		}else{
-			$codStatus = ["A","AA"];
+			$codStatus 	= array("A","AA");
 		}
+		
+		#################################################################################
+		## Converter as datas para o formato datetime
+		#################################################################################
+		$_dtIni			= $dataCadIni->format($system->config["data"]["dateFormat"]);
+		$_dtFim			= $dataCadIni->format($system->config["data"]["dateFormat"]);
+		
+		$oDtIni			= DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtIni . " 00:00:00");
+		$oDtFim			= DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtFim . " 23:59:59");
+		
 		
 		$qb 	= $em->createQueryBuilder();
 			
@@ -83,10 +91,10 @@ class Organizacao {
 			->leftJoin('\Entidades\ZgfmtOrganizacaoFormatura'	,'ofmt',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= ofmt.codOrganizacao')
 			->leftJoin('\Entidades\ZgadmOrganizacaoAdm'			,'oa',		\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= oa.codOrganizacao')
 			->where($qb->expr()->andX(
-					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
-					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
-					$qb->expr()->in('o.codStatus'			, ':codStatus'),
-					$qb->expr()->isNull('oa.dataValidade')
+				$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
+				$qb->expr()->eq('o.codTipo'				, ':codTipo'),
+				$qb->expr()->in('o.codStatus'			, ':codStatus'),
+				$qb->expr()->isNull('oa.dataValidade')
 			))
 			->setParameter('codOrganizacao', $codOrganizacao)
 			->setParameter('codTipo', 'FMT')
@@ -102,18 +110,28 @@ class Organizacao {
 			
 			//Data inicio de cadastro
 			if (!empty($dataCadIni)) {
+				#################################################################################
+				## Converter as datas para o formato datetime
+				#################################################################################
+				$_dtIni			= $dataCadIni->format($system->config["data"]["dateFormat"]);
+				$oDtIni			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtIni . " 00:00:00");
 				$qb->andWhere($qb->expr()->andX(
 					$qb->expr()->gte('o.dataCadastro', ':dataCadastroIni')
 				));
-				$qb->setParameter('dataCadastroIni'			,$dataCadIni);
+				$qb->setParameter('dataCadastroIni'			,$oDtIni);
 			}
 			
 			//Data fim de cadastro
 			if (!empty($dataCadFim)) {
+				#################################################################################
+				## Converter as datas para o formato datetime
+				#################################################################################
+				$_dtFim			= $dataCadIni->format($system->config["data"]["dateFormat"]);
+				$oDtFim			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtFim . " 23:59:59");
 				$qb->andWhere($qb->expr()->andX(
 					$qb->expr()->lte('o.dataCadastro', ':dataCadastroFim')
 				));
-				$qb->setParameter('dataCadastroFim'			,$dataCadFim);
+				$qb->setParameter('dataCadastroFim'			,$oDtFim);
 			}
 			
 			//Instituicao
