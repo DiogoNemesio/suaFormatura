@@ -240,10 +240,12 @@ try {
 	$oContrato->setValorDesconto($valorDesconto);
 	
 	$em->persist($oContrato);
-		
+	$em->flush();
+	$em->clear();
 	#################################################################################
  	## Salvar as informações
  	#################################################################################
+ 	/**
  	try {
  		$em->flush();
  		$em->clear();
@@ -251,7 +253,7 @@ try {
  		$log->debug("Erro ao salvar o Organização:". $e->getTraceAsString());
  		throw new \Exception("Erro ao salvar a Organização. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
  	}
- 	
+ 	**/
  	
 } catch (\Exception $e) {
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
