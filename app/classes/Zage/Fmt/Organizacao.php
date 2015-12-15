@@ -116,7 +116,7 @@ class Organizacao {
 				#################################################################################
 				## Converter as datas para o formato datetime
 				#################################################################################
-				$_dtFim			= $dataCadIni->format($system->config["data"]["dateFormat"]);
+				$_dtFim			= $dataCadFim->format($system->config["data"]["dateFormat"]);
 				$oDtFim			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtFim . " 23:59:59");
 				$qb->andWhere($qb->expr()->andX(
 					$qb->expr()->lte('o.dataCadastro', ':dataCadastroFim')
