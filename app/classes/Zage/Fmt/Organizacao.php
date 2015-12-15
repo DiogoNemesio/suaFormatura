@@ -56,7 +56,7 @@ class Organizacao {
 	 * @param integer $codOrganizacao
 	 * @return array
 	 */
-	public static function listaFormaturaOrganizacao($codOrganizacao,$codStatus = null,$codUsuarioCad = null) {
+	public static function listaFormaturaOrganizacao($codOrganizacao,$codStatus = null,$codUsuarioCad = null,$dataCadIni = null,$dataCadFim = null,$instituicao = null,$curso = null,$cidade = null) {
 		global $em,$system,$log;
 	
 		#################################################################################
@@ -81,24 +81,63 @@ class Organizacao {
 			$qb->select('ofmt')
 			->from('\Entidades\ZgadmOrganizacao','o')
 			->leftJoin('\Entidades\ZgfmtOrganizacaoFormatura'	,'ofmt',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= ofmt.codOrganizacao')
-			->leftJoin('\Entidades\ZgadmOrganizacaoAdm'			,'oa',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= oa.codOrganizacao')
+			->leftJoin('\Entidades\ZgadmOrganizacaoAdm'			,'oa',		\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= oa.codOrganizacao')
 			->where($qb->expr()->andX(
 					$qb->expr()->eq('oa.codOrganizacaoPai'	, ':codOrganizacao'),
 					$qb->expr()->eq('o.codTipo'				, ':codTipo'),
 					$qb->expr()->in('o.codStatus'			, ':codStatus'),
 					$qb->expr()->isNull('oa.dataValidade')
-					
-	
 			))
 			->setParameter('codOrganizacao', $codOrganizacao)
 			->setParameter('codTipo', 'FMT')
 			->setParameter('codStatus', $codStatus);
 			
+			//Codigo do usuário que cadastrou
 			if (!empty($codUsuarioCad)) {
 				$qb->andWhere($qb->expr()->andX(
-						$qb->expr()->in('o.codUsuarioCadastro', ':$codUsuarioCad')
+					$qb->expr()->in('o.codUsuarioCadastro', ':codUsuarioCad')
 				));
-				$qb->setParameter('$codUsuarioCad'			,$codUsuarioCad);
+				$qb->setParameter('codUsuarioCad'			,$codUsuarioCad);
+			}
+			
+			//Data inicio de cadastro
+			if (!empty($dataCadIni)) {
+				$qb->andWhere($qb->expr()->andX(
+					$qb->expr()->gte('o.dataCadastro', ':dataCadastroIni')
+				));
+				$qb->setParameter('dataCadastroIni'			,$dataCadIni);
+			}
+			
+			//Data fim de cadastro
+			if (!empty($dataCadFim)) {
+				$qb->andWhere($qb->expr()->andX(
+					$qb->expr()->lte('o.dataCadastro', ':dataCadastroFim')
+				));
+				$qb->setParameter('dataCadastroFim'			,$dataCadFim);
+			}
+			
+			//Instituicao
+			if (!empty($instituicao)) {
+				$qb->andWhere($qb->expr()->andX(
+					$qb->expr()->eq('ofmt.codInstituicao', ':instituicao')
+				));
+				$qb->setParameter('instituicao'			,$instituicao);
+			}
+			
+			//Curso
+			if (!empty($curso)) {
+				$qb->andWhere($qb->expr()->andX(
+					$qb->expr()->eq('ofmt.codCurso', ':curso')
+				));
+				$qb->setParameter('curso'			,$curso);
+			}
+			
+			//Cidade
+			if (!empty($cidade)) {
+				$qb->andWhere($qb->expr()->andX(
+					$qb->expr()->eq('ofmt.codCidade', ':cidade')
+				));
+				$qb->setParameter('cidade'			,$cidade);
 			}
 			
 			$query 		= $qb->getQuery();

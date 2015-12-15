@@ -6,6 +6,38 @@
 <div class="modal-body" style="overflow-y: scroll; height: 400px;">
 	<div class="row">
 		<div class="col-sm-6">
+			
+			<div><label for="dataCadID">Data do cadastro:</label></div>
+			
+			<div class="form-group col-sm-12">
+				
+				<div class="col-sm-8 input-group input-daterange pul-left">
+					<input type="text" class="input-sm form-control" id="dataCadIniID" name="dataCadIni" placeholder="Data inicial" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+					<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+					<input type="text" class="input-sm form-control" id="dataCadFimID" name="dataCadFim" placeholder="Data final" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+				</div>
+				<div class="col-sm-1 pull-left" id="divHelpDataCadID"></div>
+			</div>
+			<div><label for="instituicaoID">Instituição de ensino:</label></div>
+			<div class="form-group col-sm-12" id="divInstituicaoID">
+				<div class="input-group col-sm-12 pull-left">
+					<input type="hidden" id="instituicaoID" name="instituicao" class="width-100"  data-rel="select2Instituicao">								    	
+				</div>
+			</div>
+			<div><label for="cursoID">Curso:</label></div>
+			<div class="form-group col-sm-12" id="divCursoID">
+				<div class="input-group col-sm-12 pull-left">	    		
+					<input type="hidden" id="cursoID" name="curso" class="width-100"  data-rel="select2Curso">								    	
+				</div>
+			</div>
+			<div><label for="instituicaoID">Cidade da formatura:</label></div>
+			<div class="form-group col-sm-12" id="divCidadeID">
+				<div class="input-group col-sm-12 pull-left">	    			
+					<input type="hidden" id="cidadeID" name="cidade" class="width-100"  data-rel="select2Cidade">								    	
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
 	    	<div class="col-sm-12">
 				<div class="form-group">
 					<label class="col-sm-3 control-label" for="codStatusID">Status</label>
@@ -19,7 +51,7 @@
 	    	</div>
 	    	<div class="col-sm-12">
 				<div class="form-group">
-					<label class="col-sm-3 control-label" for="codUsuarioCadID">Usuários</label>
+					<label class="col-sm-3 control-label" for="codUsuarioCadID">Vendedor</label>
 	    			<div class="input-group col-sm-8">
 	    				<span class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione o Centro de Custo"><i class="fa fa-question-circle"></i></span>
 						<select class="multiselect" multiple="multiple" name="codUsuarioCad[]" id="codUsuarioCadID">
@@ -27,15 +59,6 @@
 						</select>
 					</div>
 				</div>
-			</div>
-			<div class="form-group col-sm-12">
-				<label class="col-sm-3 control-label" for="dataCadID">Cadastro</label>
-				<div class="col-sm-8 input-group input-daterange pul-left">
-					<input type="text" class="input-sm form-control" id="dataCadIniID" name="dataCadIni" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
-					<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-					<input type="text" class="input-sm form-control" id="dataCadFimID" name="dataCadFim" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
-				</div>
-				<div class="col-sm-1 pull-left" id="divHelpDataCadID"></div>
 			</div>
 		</div>
     </div>
@@ -48,6 +71,75 @@
 
 
 <script type="text/javascript" charset="%CHARSET%">
+
+/*********************************************************
+* Busca Select2 typehead Instituição
+*********************************************************/
+$('[data-rel="select2Instituicao"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar instituição de ensino',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fmt/getInstituicao.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+});
+
+/*********************************************************
+* Busca Select2 typehead Cursos
+*********************************************************/
+$('[data-rel="select2Curso"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Selecione o curso',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fmt/getCurso.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+});
+
+/*********************************************************
+* Busca Select2 typehead Cidades
+*********************************************************/
+$('[data-rel="select2Cidade"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar a cidade',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Adm/getCidadeLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+});
 
 $('#zgFormFiltroCRLisID').submit(function() {
 	

@@ -89,22 +89,22 @@ try {
 }
 
 #################################################################################
-## Select do Centro de Custo
+## Multi select dos usuários
 #################################################################################
 try {
-	$aCentroCusto	= \Zage\Fmt\Organizacao::listaUsuarioCadFormatura($system->getCodOrganizacao());
-	$log->info($aCentroCusto);
-	$oCentroCusto	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'NOME', null, null);
+	$aUsuarios	= \Zage\Fmt\Organizacao::listaUsuarioCadFormatura($system->getCodOrganizacao());
+	$oUsuarios	= $system->geraHtmlCombo($aUsuarios,	'CODIGO', 'NOME', null, null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
 #################################################################################
-## Select do Status
+## Multi Select do Status
 #################################################################################
 try {
+	$codStatusSelected = ["A","AA"];
 	$aStatus	= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findAll(array('descricao' => 'ASC'));
-	$oStatus	= $system->geraHtmlCombo($aStatus,	'CODIGO', 'DESCRICAO',	null, null);
+	$oStatus	= $system->geraHtmlCombo($aStatus,	'CODIGO', 'DESCRICAO',	$codStatusSelected , null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
@@ -130,7 +130,7 @@ $tpl->set('DIVCENTRAL'		,$system->getDivCentral());
 $tpl->set('DP_MODAL'		,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('CATEGORIAS'		,$oCat);
 $tpl->set('STATUS'			,$oStatus);
-$tpl->set('CENTRO_CUSTO'	,$oCentroCusto);
+$tpl->set('CENTRO_CUSTO'	,$oUsuarios);
 $tpl->set('FORMAS_PAG'		,$oFormaPag);
 $tpl->set('CONTAS'			,$oConta);
 $tpl->set('VALOR_INI'		,$_SESSION["_CRLIS_valorIniFiltro"]);

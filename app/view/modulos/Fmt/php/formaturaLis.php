@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$system,$tr;
+global $em,$system,$tr;$log;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -53,6 +53,15 @@ if (isset($_POST['codStatus']))			$codStatus			= $_POST['codStatus'];
 if (isset($_POST['codUsuarioCad']))		$codUsuarioCad		= $_POST['codUsuarioCad'];
 if (isset($_POST['dataCadIni']))		$dataCadIni			= $_POST['dataCadIni'];
 if (isset($_POST['dataCadFim']))		$dataCadFim			= $_POST['dataCadFim'];
+if (isset($_POST['instituicao']))		$instituicao		= $_POST['instituicao'];
+if (isset($_POST['curso']))				$curso				= $_POST['curso'];
+if (isset($_POST['cidade']))			$cidade				= $_POST['cidade'];
+
+#################################################################################
+## Ajustar datas
+#################################################################################
+$dataCadIni = (isset($dataCadIni) && !empty($dataCadIni)) 	? DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataCadIni) : null;
+$dataCadFim = (isset($dataCadFim) && !empty($dataCadIni)) 	? DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataCadFim) : null;
 
 #################################################################################
 ## Ajustar valores dos arrays
@@ -67,7 +76,7 @@ try {
 	if ($orgCad->getCodTipo()->getCodigo() == "ADM") {
 		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturas();
 	}else{
-		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($system->getCodOrganizacao(),$codStatus);
+		$formaturas	= \Zage\Fmt\Organizacao::listaFormaturaOrganizacao($system->getCodOrganizacao(),$codStatus,$codUsuarioCad,$dataCadIni,$dataCadFim,$instituicao,$curso,$cidade);
 	}
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
