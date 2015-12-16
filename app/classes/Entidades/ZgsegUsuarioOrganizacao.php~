@@ -24,6 +24,13 @@ class ZgsegUsuarioOrganizacao
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=true)
+     */
+    private $dataCadastro;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="DATA_CANCELAMENTO", type="datetime", nullable=true)
      */
     private $dataCancelamento;
@@ -84,6 +91,29 @@ class ZgsegUsuarioOrganizacao
     public function getCodigo()
     {
         return $this->codigo;
+    }
+
+    /**
+     * Set dataCadastro
+     *
+     * @param \DateTime $dataCadastro
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setDataCadastro($dataCadastro)
+    {
+        $this->dataCadastro = $dataCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCadastro
+     *
+     * @return \DateTime 
+     */
+    public function getDataCadastro()
+    {
+        return $this->dataCadastro;
     }
 
     /**

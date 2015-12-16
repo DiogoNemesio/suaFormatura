@@ -279,6 +279,8 @@ $tpl->set('TAXA_ADMIN'			,\Zage\App\Util::formataDinheiro($taxaAdmin));
 $tpl->set('NUM_MESES_MAX'		,$numMesesConc);
 $tpl->set('DATA_VENC'			,$dataVenc);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+$tpl->set('FORMATO_DATA'		,$system->config["data"]["jsDateFormat"]);
+
 
 
 #################################################################################
