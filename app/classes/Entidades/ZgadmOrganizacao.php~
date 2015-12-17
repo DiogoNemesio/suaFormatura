@@ -162,6 +162,13 @@ class ZgadmOrganizacao
     private $observacaoCancelamento;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ATIVACAO", type="datetime", nullable=true)
+     */
+    private $dataAtivacao;
+
+    /**
      * @var \Entidades\ZgadmOrganizacaoPessoaTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoPessoaTipo")
@@ -710,6 +717,29 @@ class ZgadmOrganizacao
     public function getObservacaoCancelamento()
     {
         return $this->observacaoCancelamento;
+    }
+
+    /**
+     * Set dataAtivacao
+     *
+     * @param \DateTime $dataAtivacao
+     * @return ZgadmOrganizacao
+     */
+    public function setDataAtivacao($dataAtivacao)
+    {
+        $this->dataAtivacao = $dataAtivacao;
+
+        return $this;
+    }
+
+    /**
+     * Get dataAtivacao
+     *
+     * @return \DateTime 
+     */
+    public function getDataAtivacao()
+    {
+        return $this->dataAtivacao;
     }
 
     /**

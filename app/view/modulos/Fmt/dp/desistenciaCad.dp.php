@@ -16,41 +16,152 @@ global $em,$log,$system,$tr;
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-if (isset($_POST['valor']))					$valor					= \Zage\App\Util::antiInjection($_POST['valor']);
+if (isset($_POST['id']))					$id						= \Zage\App\Util::antiInjection($_POST['id']);
 if (isset($_POST['dataVenc']))				$dataVenc				= \Zage\App\Util::antiInjection($_POST['dataVenc']);
 if (isset($_POST['codFormaPag']))			$codFormaPag			= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
 if (isset($_POST['codContaRec']))			$codContaRec			= \Zage\App\Util::antiInjection($_POST['codContaRec']);
-if (isset($_POST['codTipoValor']))			$codTipoValor			= \Zage\App\Util::antiInjection($_POST['codTipoValor']);
 if (isset($_POST['numMeses']))				$numMeses				= \Zage\App\Util::antiInjection($_POST['numMeses']);
 if (isset($_POST['indValorExtra']))			$indValorExtra			= \Zage\App\Util::antiInjection($_POST['indValorExtra']);
 if (isset($_POST['numMesesMax']))			$numMesesMax			= \Zage\App\Util::antiInjection($_POST['numMesesMax']);
-if (isset($_POST['aSelFormandos']))			$aSelFormandos			= \Zage\App\Util::antiInjection($_POST['aSelFormandos']);
+if (isset($_POST['aSelEventos']))			$aSelEventos			= \Zage\App\Util::antiInjection($_POST['aSelEventos']);
+if (isset($_POST['aValorEventos']))			$aValorEventos			= \Zage\App\Util::antiInjection($_POST['aValorEventos']);
 if (isset($_POST['aValor']))				$aValor					= \Zage\App\Util::antiInjection($_POST['aValor']);
 if (isset($_POST['aData']))					$aData					= \Zage\App\Util::antiInjection($_POST['aData']);
-if (isset($_POST['aSistema']))				$aSistema				= \Zage\App\Util::antiInjection($_POST['aSistema']);
 if (isset($_POST['aTaxas']))				$aTaxas					= \Zage\App\Util::antiInjection($_POST['aTaxas']);
 if (isset($_POST['aTotal']))				$aTotal					= \Zage\App\Util::antiInjection($_POST['aTotal']);
 if (isset($_POST['totalGeral']))			$totalGeral				= \Zage\App\Util::antiInjection($_POST['totalGeral']);
-if (isset($_POST['totalParcela']))			$totalParcela			= \Zage\App\Util::antiInjection($_POST['totalParcela']);
-if (isset($_POST['valParcelaMensalidade']))	$valParcelaMensalidade	= \Zage\App\Util::antiInjection($_POST['valParcelaMensalidade']);
-if (isset($_POST['valParcelaSistema']))		$valParcelaSistema		= \Zage\App\Util::antiInjection($_POST['valParcelaSistema']);
-if (isset($_POST['valParcelaTaxa']))		$valParcelaTaxa			= \Zage\App\Util::antiInjection($_POST['valParcelaTaxa']);
 if (isset($_POST['taxaBol']))				$taxaBol				= \Zage\App\Util::antiInjection($_POST['taxaBol']);
 if (isset($_POST['taxaAdmin']))				$taxaAdmin				= \Zage\App\Util::antiInjection($_POST['taxaAdmin']);
+if (isset($_POST['codTipoConta']))			$codTipoConta			= \Zage\App\Util::antiInjection($_POST['codTipoConta']);
 
-
-$aSelFormandos		= explode(",",$aSelFormandos);
-
-//$log->info("POST GERA: ".serialize($_POST));
 
 #################################################################################
-## Validar a data de vencimento
+## Criar o array de seleção de eventos
 #################################################################################
-if (\Zage\App\Util::validaData($dataVenc, $system->config["data"]["dateFormat"]) == false) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Data de Vencimento inválida"));
-	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Data de Vencimento inválida")));
+$aSelEventos		= explode(",",$aSelEventos);
+$aValorEventos		= explode(",",$aValorEventos);
+
+//$log->info("aSelEventos: ".serialize($aSelEventos));
+//$log->info("aValorEventos: ".serialize($aValorEventos));
+
+#################################################################################
+## Descompacta o ID
+#################################################################################
+\Zage\App\Util::descompactaId($id);
+
+#################################################################################
+## Verifica se o usuário tem permissão no menu
+#################################################################################
+$system->checaPermissao($_codMenu_);
+
+#################################################################################
+## Verificar parâmetro obrigatório
+#################################################################################
+if (!isset($codFormando)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Falta de Parâmetros 2'));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Falta de Parâmetros 2')));
 	exit;
 }
+
+#################################################################################
+## Verificar se o usuário existe
+#################################################################################
+$oUsuario	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codFormando));
+if (!$oUsuario) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Formando não existe'));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Formando não existe')));
+	exit;
+}
+
+#################################################################################
+## Resgatar o status da associação com a Formatura
+#################################################################################
+$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codFormando,'codOrganizacao' => $system->getCodOrganizacao()));
+$codStatus	= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getCodigo() : null;
+$codPerfil	= ($oStatus->getCodPerfil()) ? $oStatus->getCodPerfil(): null;
+if (!$codPerfil) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Perfil inválido para o Formando'));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Perfil inválido para o Formando')));
+	exit;
+}
+
+#################################################################################
+## Verificar o status da associação a Formatura, para definir se poderá ou não
+## desistir da formatura
+#################################################################################
+switch ($codStatus) {
+	case "A":
+	case "P":
+	case "B":
+		$podeDesistir	= true;
+		break;
+	default:
+		$podeDesistir	= false;
+		break;
+}
+
+if (!$podeDesistir)	{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Tentativa indevida de desistência: 0x8jga62'));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Tentativa indevida de desistência: 0x8jga62')));
+	exit;
+}
+
+#################################################################################
+## Verificar se o usuário tem perfil de formando nessa organização
+#################################################################################
+if ($codPerfil->getCodTipoUsuario()->getCodigo() != "F") {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Esse usuário não é um formando'));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Esse usuário não é um formando')));
+	exit;
+}
+
+#################################################################################
+## Resgatar o valor por formando
+#################################################################################
+$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+if ($oOrgFmt->getValorPrevistoTotal() && $oOrgFmt->getQtdePrevistaFormandos()){
+	$valorFormatura = round(($oOrgFmt->getValorPrevistoTotal()/$oOrgFmt->getQtdePrevistaFormandos()),2);
+}else{
+	$valorFormatura	= 0;
+}
+
+#################################################################################
+## Resgatar os valores ja pago por esse formando
+#################################################################################
+$aPago				= \Zage\Fmt\Financeiro::getValorPagoFormando($system->getCodOrganizacao(),$oUsuario->getCpf());
+$aProvisionado		= \Zage\Fmt\Financeiro::getValorProvisionadoUnicoFormando($system->getCodOrganizacao(),$oUsuario->getCpf());
+$valPagoMensalidade	= \Zage\App\Util::to_float($aPago["mensalidade"]);
+$valPagoSistema		= \Zage\App\Util::to_float($aPago["sistema"]);
+$taxaUso			= \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao()));
+$taxaAdmin			= \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao());
+$diaVencimento		= ($oOrgFmt->getDiaVencimento()) ? $oOrgFmt->getDiaVencimento() : 5;
+$dataVenc			= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));
+
+$dataConclusao		= $oOrgFmt->getDataConclusao();
+if (!$dataConclusao)	{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Data de Conclusão não informada"));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Data de Conclusão não informada")));
+	exit;
+}
+
+$hoje				= new DateTime('now');
+$dataAtivacao		= ($oStatus->getDataCadastro()) ? $oStatus->getDataCadastro() : null;
+if (!$dataAtivacao)	{
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Formando: ".$oUsuario->getNome()." sem data de Ativação !!!"));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Formando: ".$oUsuario->getNome()." sem data de Ativação !!!")));
+	exit;
+}
+
+$interval1			= $dataAtivacao->diff($hoje);
+$interval2			= $dataConclusao->diff($dataAtivacao);
+$interval3			= $dataConclusao->diff($hoje);
+
+$numMesesUso		= (($interval1->format('%y') * 12) + $interval1->format('%m'));
+$numMesesTotal		= (($interval2->format('%y') * 12) + $interval2->format('%m'));
+$numMesesConc		= (($interval3->format('%y') * 12) + $interval3->format('%m'));
+
+$valDevidoSistema	= round($numMesesUso * $taxaUso,2);
+$valTotalSistema	= round($numMesesTotal * $taxaUso,2);
 
 #################################################################################
 ## Validar o número de meses
@@ -74,56 +185,36 @@ if ($numMeses != sizeof($aValor)) {
 }
 
 #################################################################################
-## Resgata as informações do banco
+## Validar as datas de vencimento
 #################################################################################
-try {
-
-	$formandos	= $em->getRepository('Entidades\ZgsegUsuario')->findBy(array('cpf' => $aSelFormandos));
-	$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
-
-if (sizeof($formandos) == 0) 	{
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Formando[s] não encontrado !!!'));
-	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Formando[s] não encontrado !!!')));
+if ($numMeses != sizeof($aData)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Número de meses deve ser igual ao tamanho do array de Vencimentos"));
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Número de meses deve ser igual ao tamanho do array de Vencimentos")));
 	exit;
-}
-
-if (sizeof($formandos) != sizeof($aSelFormandos)) 	{
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Alguns formandos não foram encontrados na base através do CPF informado!!!'));
-	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Alguns formandos não foram encontrados na base através do CPF informado!!!')));
-}
-
-
-#################################################################################
-## Ajustar os campos de valores
-#################################################################################
-$valor		= \Zage\App\Util::to_float($valor);
-
-#################################################################################
-## Criar as variáveis
-#################################################################################
-if ($codTipoValor == "M") {
-	$indValorParcela	= 1;
 }else{
-	$indValorParcela	= null;
+	for ($i = 0; $i < sizeof($aData); $i++) {
+		if (\Zage\App\Util::validaData($aData[$i], $system->config["data"]["dateFormat"]) == false) {
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Data de Vencimento inválida"));
+			echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Data de Vencimento inválida")));
+			exit;
+		}
+	}
 }
 
 
 #################################################################################
 ## Ajustar as variáveis Fixas
 #################################################################################
-$codTipoRec		= ($numMeses == 1)  ? "U" : "P";
-$parcela		= ($numMeses == 1)  ? 1 : null;
-$codRecPer		= "M";
-$valorJuros		= 0;
-$valorMora		= 0;
-$valorDesconto	= 0;
-$numParcelas	= $numMeses;
-$parcelaInicial	= 1;
-$obs			= null;
+$codTipoRec			= ($numMeses == 1)  ? "U" : "P";
+$parcela			= ($numMeses == 1)  ? 1 : null;
+$codRecPer			= "M";
+$valorJuros			= 0;
+$valorMora			= 0;
+$valorDesconto		= 0;
+$numParcelas		= $numMeses;
+$parcelaInicial		= 1;
+$obs				= null;
+$indValorParcela	= 1;
 
 #################################################################################
 ## Resgatar os parâmetros da categoria
@@ -132,6 +223,8 @@ $codCatMensalidade		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALID
 $codCatPortal			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
 $codCatBoleto			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
 $codCatOutrasTaxas		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
+$codCatDevMensalidade	= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_MENSALIDADE");
+$codCatDevSistema		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_SISTEMA");
 
 #################################################################################
 ## Calcular valor Total e Valor da Parcela, e montar o array de outrosValores
@@ -139,13 +232,9 @@ $codCatOutrasTaxas		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_T
 $aOutrosValores		= array();
 $valorTotal			= 0;
 for ($i = 0; $i < sizeof($aValor); $i++) {
-	$valorOutros			= \Zage\App\Util::to_float($aSistema[$i]) + \Zage\App\Util::to_float($aTaxas[$i]);
+	$valorOutros			= \Zage\App\Util::to_float($aTaxas[$i]);
 	$aOutrosValores[]		=  $valorOutros;
 	$valorTotal 			+= (\Zage\App\Util::to_float($aValor[$i]) + $valorOutros);
-}
-
-if ($codTipoValor != "M") {
-	$valor		= round($valor / $numMeses,2);
 }
 
 $valorOutros		= round(\Zage\App\Util::to_float($valorOutros),2);
@@ -156,12 +245,16 @@ $totalGeral			= round(\Zage\App\Util::to_float($totalGeral),2);
 ## Valida o valor total
 #################################################################################
 if (floatval($valorTotal)	!= floatval($totalGeral))	{
-	//$log->err("Valor total calculado: ".$valorTotal);
-	//$log->err("Valor total Informado: ".$totalGeral);
+	$log->err("Valor total calculado: ".$valorTotal);
+	$log->err("Valor total Informado: ".$totalGeral);
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Somatório dos valores totais das parcelas difere do valor total informado'));
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Somatório dos valores totais das parcelas difere do valor total informado')));
 	exit;
 }
+
+$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Tipo de conta: $codTipoConta !!!"));
+echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Tipo de conta: $codTipoConta !!!")));
+exit;
 
 
 #################################################################################

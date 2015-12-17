@@ -44,6 +44,9 @@
 			<input type="hidden" id="numEventosID" value="%NUM_EVENTOS%">
 			<input type="hidden" id="numMesesMaxID" value="%NUM_MESES_MAX%">
 			<input type="hidden" name="valTotalEventos" id="valTotalEventosID">
+			<input type="hidden" name="aSelEventos" id="aSelEventosID">
+			<input type="hidden" name="aValorEventos" id="aValorEventosID">
+			
 			
 			<input type="hidden" name="valParcelaMensalidade" id="valParcelaMensalidadeID">
 			<input type="hidden" name="valParcelaSistema" id="valParcelaSistemaID">
@@ -224,7 +227,7 @@
 							    <div class="col-sm-1 pull-left" id="divHelpValorID"></div>
 							</div>
 							
-							<div class="form-group col-sm-12" >
+							<div class="form-group col-sm-12" id="divIndTaxaExtraID">
 			    				<label class="col-sm-4 control-label">
 			    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch" onchange="alteraIndTaxaExtraDesCad();" value="1" checked type="checkbox" />
 			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
@@ -453,10 +456,10 @@ $('#fuelux-wizard-container')
 
 		
 	}else if (info.step == 2) {
-		//var vOk 	= validaVencimentoDesCad();
-		//if(!vOk) 	{
-//			e.preventDefault();
-		//}
+		var vOk 	= validaVencimentoDesCad();
+		if(!vOk) 	{
+			e.preventDefault();
+		}
 
 		alteraFormaPagDesCad();
 		
@@ -487,6 +490,68 @@ $('#fuelux-wizard-container')
 }).on('stepclick.fu.wizard', function(e){
 	//e.preventDefault();//this will prevent clicking and selecting steps
 });
+
+
+$('#zgFormDesCadID').submit(function() {
+	
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	var $aSelEventos	= [];
+	var $aValorEventos	= [];
+	$('input[name="codEventoSel[]"]:checked').each( function() {
+		var $codEvento				= $(this).val();
+		var $valorEvento			= zgConverteFloat($('[zg-evento="'+$codEvento+'"]').val());
+		alert("Evento: "+$codEvento+" Valor: "+$valorEvento+" selecionado !!!");
+		
+		$aSelEventos[$aSelEventos.length]		= $codEvento;
+		$aValorEventos[$aValorEventos.length]	= $valorEvento;
+	});
+
+	$("#aSelEventosID").val($aSelEventos);
+	$("#aValorEventosID").val($aValorEventos);
+
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormDesCadID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+		});
+		
+		if (checaRetornoOK(data) == true) {
+			bootbox.dialog({
+				message: "Desistência confirmada com sucesso !!!", 
+				buttons: {
+					"fechar" : {
+						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
+						"className" : "btn-sm btn-danger",
+						"callback": function() {
+							zgLoadUrl('%URL_VOLTAR%');
+						}
+					},
+				}
+			});
+		}else{
+			zgMostraAviso("Fechar");
+		}
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso("Fechar");
+	});
+	return false; 
+});
+
 
 calculaValoresPagosDesCad();
 function calculaValoresPagosDesCad() {
@@ -540,7 +605,7 @@ function calculaValorTotalEventoDesCad() {
 	$('input[name="codEventoSel[]"]:checked').each( function() {
 		var $codEvento						= $(this).val();
 		$aSelEventos[$aSelEventos.length]	= $codEvento;
-		$input								= $('input[zg-codigo="'+$codEvento+'"]');
+		$input								= $('input[zg-evento="'+$codEvento+'"]');
 		$valorEvento						= zgConverteFloat($input.val());
 		$totalEventos						+= $valorEvento;
 	});
@@ -586,7 +651,7 @@ function calculaSaldoDesCad() {
 	$('input[name="codEventoSel[]"]:checked').each( function() {
 		var $codEvento						= $(this).val();
 		$aSelEventos[$aSelEventos.length]	= $codEvento;
-		$input								= $('input[zg-codigo="'+$codEvento+'"]');
+		$input								= $('input[zg-evento="'+$codEvento+'"]');
 		$valorEvento						= zgConverteFloat($input.val());
 		$totalEventos						+= $valorEvento;
 		$numEventosSel						+= 1;
@@ -692,6 +757,10 @@ function alteraContaRecDesCad() {
 	var $oConta				= $("#codContaRecID option:selected");
 	var $valorBoleto		= zgConverteFloat($oConta.attr("zg-val-boleto"));
 	var $codFormaPag		= $('#codFormaPagID').val();
+	var $saldoSistema		= zgConverteFloat($('#saldoSistemaID').val());
+	var $saldoMensalidade	= zgConverteFloat($('#saldoMensalidadeID').val());
+	var $saldoMulta			= zgConverteFloat($('#saldoMultaID').val());
+	var $total				= zgConverteFloat($saldoMulta + $saldoMensalidade + $saldoSistema);
 
 	var $opt = {
 		symbol : "R$ ",
@@ -700,6 +769,13 @@ function alteraContaRecDesCad() {
 		precision : 2,
 		format: "%s%v"
 	};
+
+	if ($total	<= 0) {
+		$valorBoleto	= 0;
+		$('#divIndTaxaExtraID').addClass("hidden");
+	}else{
+		$('#divIndTaxaExtraID').removeClass("hidden");
+	}
 
 	if ($codFormaPag  == "BOL")	{
 		$('#divInfoBoletoID').removeClass("hidden");
@@ -720,7 +796,7 @@ function atualizaInfoDesCad() {
 	var $indValorExtra		= $('#indValorExtraID:checked').length;
 	var $taxaAdm			= zgConverteFloat('%TAXA_ADMIN%');
 	var $oConta				= $("#codContaRecID option:selected");
-	var $valorBoleto		= zgConverteFloat($oConta.attr("zg-val-boleto"));
+	var $valorBoleto		= zgConverteFloat($('#taxaBolID').val());
 	var $codFormaPag		= $('#codFormaPagID').val();
 	var $saldoSistema		= zgConverteFloat($('#saldoSistemaID').val());
 	var $saldoMensalidade	= zgConverteFloat($('#saldoMensalidadeID').val());
@@ -769,11 +845,11 @@ function atualizaInfoDesCad() {
 	}
 
 	if ($total			< 0) {
-		$('#codTipoContaID').val("R");
+		$('#codTipoContaID').val("P");
 	}else if ($total == 0) {
 		$('#codTipoContaID').val("N");
 	}else{
-		$('#codTipoContaID').val("P");
+		$('#codTipoContaID').val("R");
 	}
 	
 	if ($saldoSistema	< 0)		{
@@ -1192,5 +1268,43 @@ function atualizaEValidaParcelasDesCad() {
 	return $vOK;
 	
 }
+
+function validaVencimentoDesCad() {
+	var vDataVenc		= $('#dataVencID').val();
+	var vNumMeses		= parseInt($('#numMesesID').val());
+	var vNumMesesMax	= parseInt($('#numMesesMaxID').val());
+	var vOK				= true;
+	
+	// Data de Vencimento
+	if (!vDataVenc) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento deve ser informada !!!'));
+		vOK		= false;
+	}else if (isDataBR(vDataVenc) == false) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de Vencimento inválida !!!'));
+		vOK		= false;
+	}else{
+		$('#divDataVencID').removeClass('has-error');
+		$('#divHelpDataVencID').html('&nbsp;');
+	}
+	
+	// Número de meses
+	if (!vNumMeses) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser preenchido !!!'));
+		vOK		= false;
+	}else if (vNumMeses > vNumMesesMax) {
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Número de meses deve ser no máximo '+vNumMesesMax+' !!!'));
+		vOK		= false;
+	}else{
+		$('#divNumMesesID').removeClass('has-error');
+		$('#divHelpNumMesesID').html('&nbsp;');
+	}
+
+	return vOK;
+}
+
 
 </script>
