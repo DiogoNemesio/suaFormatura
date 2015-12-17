@@ -55,9 +55,9 @@
 			<input type="hidden" name="totalGeral" id="totalGeralID">
 			<input type="hidden" name="codTipoConta" id="codTipoContaID">
 			
-			<div class="step-content pos-rel col-xs-9 pull-left">
+			<div class="step-content pos-rel col-xs-12 pull-left">
 				<div class="step-pane" data-step="1">
-					<div class="col-sm-12 pull-left">
+					<div class="col-sm-8 pull-left">
 						<div class="row">
 							<div class="col-xs-12 col-sm-12">
 								<div class="control-group">
@@ -66,11 +66,51 @@
 							</div>
 						</div>
 					</div>
+					
+					<div class="col-sm-4 pull-right" id="divInfoDesCadStep1ID">
+						<div class="hidden-480">
+							<div class="widget-box">
+								<div class="widget-header widget-header-flat widget-header-small center">
+									<h5 class="widget-title">Informações</h5>
+								</div>
+								<div class="widget-body">
+									<div class="widget-main small">
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da formatura:</p>
+										    	<p id='lbInfoValorFormaturaStep1ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>	
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total dos eventos:</p>
+										    	<p id='lbInfoTotalEventosStep1ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<h6 class="header blue bolder smaller">&nbsp;Pagamentos realizados:</h6>
+										</div>					
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Mensalidades:</p>
+										    	<p id='lbInfoSaldoMensalidadeStep1ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
+										    	<p id='lbInfoSaldoPortalStep1ID' class="col-sm-7 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
 				</div>
 				<div class="step-pane active" data-step="2">
-					<div class="col-sm-12 pull-left">
+					<div class="col-sm-8 pull-left">
 						<div class="row ">
-							
 							<div class="form-group col-sm-12" id="divCodTipoBaseCalculoID">
 								<label class="col-sm-5 control-label">Calcular por:</label>
 								<div class="input-group col-sm-6">
@@ -106,10 +146,74 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-4 pull-right" id="divInfoValorID"></div>
+					
+					<div class="col-sm-4 pull-right" id="divInfoStep2ID">
+						<div class="hidden-480">
+							<div class="widget-box">
+								<div class="widget-header widget-header-flat widget-header-small center">
+									<h5 class="widget-title">Informações</h5>
+								</div>
+								<div class="widget-body">
+									<div class="widget-main small">
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da formatura:</p>
+										    	<p id='lbInfoValorFormaturaStep2ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>	
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total dos eventos:</p>
+										    	<p id='lbInfoTotalEventosStep2ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<h6 class="header blue bolder smaller">&nbsp;Pagamentos realizados:</h6>
+										</div>					
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Mensalidades:</p>
+										    	<p id='lbInfoSaldoMensalidadeStep2ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
+										    	<p id='lbInfoSaldoPortalStep2ID' class="col-sm-7 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<h6 class="header blue bolder smaller">&nbsp;Valores devidos:</h6>
+										</div>					
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Multa:</p>
+										    	<p id='lbInfoValDevidoMultaStep2ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" >
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
+										    	<p id='lbInfoValDevidoPortalStep2ID' class="col-sm-7 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<h6 class="header blue bolder smaller">&nbsp;Saldo:</h6>
+										</div>
+										<div class="row">
+											<div class="col-sm-12">
+										    	<h5 id='lbInfoSaldoTituloStep2ID' class="col-sm-5 pull-left align-right inline" style="padding: 2px; margin:0;"></h5>
+										    	<p id='lbInfoSaldoStep2ID' class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;"><b></b></p>
+									    	</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
 				</div>
 				<div class="step-pane" data-step="3">
-					<div class="col-sm-12">
+					<div class="col-sm-8 pull-left">
 						<div class="row">
 							<div class="form-group col-sm-12 hidden" id="divValorID">
 							    <label id='lblTipoValorID' class="col-sm-4 control-label"></label>
@@ -132,13 +236,13 @@
 								<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
 					    	</div>
 
-							<div class="form-group col-sm-12" id="divTextoSistemaID">
+							<div class="form-group col-sm-12 hidden" id="divTextoSistemaID">
 							    <label id='lblTextoSistemaID'	class="col-sm-4 control-label">SuaFormatura.com</label>
 					    		<label id='textoSistemaID' 		class="col-sm-7 control-label pull-left" style="text-align: left;"></label>
 							    <div class="col-sm-1 pull-left" id="divHelpTextoSistemaID"></div>
 							</div>
 
-							<div class="form-group col-sm-12" id="divTextoTaxasID">
+							<div class="form-group col-sm-12 hidden" id="divTextoTaxasID">
 							    <label id='lblTextoTaxasID' class="col-sm-4 control-label">Taxas</label>
 					    		<div class="input-group col-sm-7 pull-left">
 				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Taxas incluídas na mensalidade (podem ser Boleto e Taxa de Administração)"></i></span>
@@ -147,7 +251,7 @@
 							    <div class="col-sm-1 pull-left" id="divHelpTextoTaxasID"></div>
 							</div>
 
-							<div class="form-group col-sm-12" id="divTextoTotalID">
+							<div class="form-group col-sm-12 hidden" id="divTextoTotalID">
 							    <label id='lblTextoTotalID' class="col-sm-4 control-label"><b>Total</b></label>
 					    		<div class="input-group col-sm-7 pull-left">
 				    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Mostra o valor total da conta ou da parcela (Somatório do valor informado + Taxas)"></i></span>
@@ -178,7 +282,64 @@
 					    	</div>
 						</div>
 					</div>
-					<div class="col-sm-4 pull-right" zg-div-limpa="1"></div>
+
+					<div class="col-sm-4 pull-right" id="divInfoStep3ID">
+						<div class="hidden-480">
+							<div class="widget-box">
+								<div class="widget-header widget-header-flat widget-header-small center">
+									<h5 class="widget-title">Informações</h5>
+								</div>
+								<div class="widget-body">
+									<div class="widget-main small">
+										<div class="row">
+											<div class="col-sm-12">
+										    	<h5 id='lbInfoSaldoTituloStep3ID' class="col-sm-5 pull-left align-right inline" style="padding: 2px; margin:0;"></h5>
+										    	<p id='lbInfoSaldoStep3ID' class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;"><b>Taxas:</b></p>
+										    	<p id='lbInfoTaxasStep3ID' class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+											<div class="col-sm-12">
+										    	<h5 id='lbInfoTotalTituloStep3ID' class="col-sm-5 pull-left align-right inline" style="padding: 2px; margin:0;"><b>Total:</b></h5>
+										    	<p id='lbInfoTotalStep3ID' class="col-sm-7 pull-right align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<h6 class="header blue bolder smaller">&nbsp;Pagamentos realizados:</h6>
+										</div>					
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Mensalidades:</p>
+										    	<p id='lbInfoSaldoMensalidadeStep3ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
+										    	<p id='lbInfoSaldoPortalStep3ID' class="col-sm-7 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row">
+											<h6 class="header blue bolder smaller">&nbsp;Valores devidos:</h6>
+										</div>					
+										<div class="row">
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Multa:</p>
+										    	<p id='lbInfoValDevidoMultaStep3ID' class="col-sm-7 pull-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+										<div class="row" >
+											<div class="col-sm-12">
+										    	<p class="col-sm-5 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
+										    	<p id='lbInfoValDevidoPortalStep3ID' class="col-sm-7 pull-left align-left" style="padding: 2px; margin:0;"></p>
+									    	</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
 				</div>
 				
 				<div class="step-pane" data-step="4" id="divStepParcelasDesCadID">
@@ -189,7 +350,6 @@
 									<th class="col-sm-1 center" id="thInfoHelpTableParcelasDesCadID"></th>
 									<th class="col-sm-1 center">Parcela</th>
 									<th class="col-sm-2 center">Valor</th>
-									<th class="col-sm-2 center">Portal</th>
 									<th class="col-sm-1 center">Taxas</th>
 									<th class="col-sm-2 center">Total</th>
 									<th class="col-sm-2 center">Data</th>
@@ -203,7 +363,6 @@
 									<th class="col-sm-1 center"></th>
 									<th class="col-sm-1 center" id="thInfoParcelaDesCadID"></th>
 									<th class="col-sm-2 center" id="thInfoValorMensalidadeDesCadID"></th>
-									<th class="col-sm-2 center" id="thInfoValorSistemaDesCadID"></th>
 									<th class="col-sm-1 center" id="thInfoValorTaxaDesCadID"></th>
 									<th class="col-sm-2 center" id="thInfoValorTotalDesCadID"></th>
 									<th class="col-sm-2 center"></th>
@@ -216,82 +375,6 @@
 						</ul>
 					</div>
 				</div>
-			</div>
-			<div class="col-sm-3 pull-right" id="divInfoDesCadID">
-				<div class="hidden-480">
-					<div class="widget-box">
-						<div class="widget-header widget-header-flat widget-header-small center">
-							<h5 class="widget-title">Informações</h5>
-						</div>
-						<div class="widget-body">
-							<div class="widget-main small">
-								<div class="row">
-									<div class="col-sm-12">
-								    	<p class="col-sm-6 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Valor da formatura:</p>
-								    	<p id='lbInfoValorFormaturaID' class="col-sm-6 pull-left" style="padding: 2px; margin:0;"></p>
-							    	</div>
-								</div>	
-								<div class="row">
-									<div class="col-sm-12">
-								    	<p class="col-sm-6 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total dos eventos:</p>
-								    	<p id='lbInfoTotalEventosID' class="col-sm-6 pull-left" style="padding: 2px; margin:0;"></p>
-							    	</div>
-								</div>
-								<div class="row hidden" id="divInfoBoletoID">
-									<div class="col-sm-12">
-								    	<p class="col-sm-6 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa do Boleto:</p>
-								    	<p class="col-sm-6 pull-left" style="padding: 2px; margin:0;" id="lblTaxaBoletoID"></p>
-							    	</div>
-								</div>
-								<div class="row hidden" id="divInfoTaxaAdminID">
-									<div class="col-sm-12">
-								    	<p class="col-sm-6 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Taxa de Administração:</p>
-								    	<p class="col-sm-6 pull-right align-left" style="padding: 2px; margin:0;">%TAXA_ADMIN_FMT%</p>
-							    	</div>
-								</div>
-								<div class="row">
-									<h6 class="header blue bolder smaller">&nbsp;Pagamentos realizados:</h6>
-								</div>					
-								<div class="row">
-									<div class="col-sm-12">
-								    	<p class="col-sm-6 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Mensalidades:</p>
-								    	<p id='lbInfoSaldoMensalidadeID' class="col-sm-6 pull-left" style="padding: 2px; margin:0;"></p>
-							    	</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-12">
-								    	<p class="col-sm-6 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
-								    	<p id='lbInfoSaldoPortalID' class="col-sm-6 pull-left align-left" style="padding: 2px; margin:0;"></p>
-							    	</div>
-								</div>
-								<div class="row">
-									<h6 class="header blue bolder smaller">&nbsp;Valores devidos:</h6>
-								</div>					
-								<div class="row">
-									<div class="col-sm-12">
-								    	<p class="col-sm-6 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Mensalidades (Multa):</p>
-								    	<p id='lbInfoValDevidoMultaID' class="col-sm-6 pull-left" style="padding: 2px; margin:0;"></p>
-							    	</div>
-								</div>
-								<div class="row" >
-									<div class="col-sm-12">
-								    	<p class="col-sm-6 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Portal:</p>
-								    	<p id='lbInfoValDevidoPortalID' class="col-sm-6 pull-left align-left" style="padding: 2px; margin:0;"></p>
-							    	</div>
-								</div>
-								<div class="row">
-									<h6 class="header blue bolder smaller">&nbsp;Saldo:</h6>
-								</div>
-								<div class="row">
-									<div class="col-sm-12">
-								    	<p id='lbInfoSaldoTituloID' class="col-sm-6 pull-left align-right inline" style="padding: 2px; margin:0;"></p>
-								    	<p id='lbInfoSaldoID' class="col-sm-6 pull-right align-left" style="padding: 2px; margin:0;"><b></b></p>
-							    	</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>	
 			</div>
 		</form>
 	</div>
@@ -310,6 +393,7 @@
 		</div>
 	</div>
 </div>
+
 
 <script>
 
@@ -421,9 +505,15 @@ function calculaValoresPagosDesCad() {
 	};
 	
 	/** Atualizar o quadro **/
-	$('#lbInfoSaldoMensalidadeID').html(accounting.formatMoney($valPagoMensalidade,$opt));
-	$('#lbInfoSaldoPortalID').html(accounting.formatMoney($valPagoPortal,$opt));
-	$('#lbInfoValorFormaturaID').html(accounting.formatMoney($valTotalMensalidade,$opt));
+	$('#lbInfoSaldoMensalidadeStep1ID').html(accounting.formatMoney($valPagoMensalidade,$opt));
+	$('#lbInfoSaldoMensalidadeStep2ID').html(accounting.formatMoney($valPagoMensalidade,$opt));
+	$('#lbInfoSaldoMensalidadeStep3ID').html(accounting.formatMoney($valPagoMensalidade,$opt));
+	$('#lbInfoSaldoPortalStep1ID').html(accounting.formatMoney($valPagoPortal,$opt));
+	$('#lbInfoSaldoPortalStep2ID').html(accounting.formatMoney($valPagoPortal,$opt));
+	$('#lbInfoSaldoPortalStep3ID').html(accounting.formatMoney($valPagoPortal,$opt));
+	$('#lbInfoValorFormaturaStep1ID').html(accounting.formatMoney($valTotalMensalidade,$opt));
+	$('#lbInfoValorFormaturaStep2ID').html(accounting.formatMoney($valTotalMensalidade,$opt));
+	$('#lbInfoValorFormaturaStep3ID').html(accounting.formatMoney($valTotalMensalidade,$opt));
 	
 	if ($taxaAdmin > 0)		{
 		$('#divInfoTaxaAdminID').removeClass("hidden");
@@ -459,7 +549,9 @@ function calculaValorTotalEventoDesCad() {
 	$('#valTotalEventosID').val($totalEventos);
 	
 	// Atualiza total evento	
-	$('#lbInfoTotalEventosID').html(accounting.formatMoney($totalEventos,$opt));
+	$('#lbInfoTotalEventosStep1ID').html(accounting.formatMoney($totalEventos,$opt));
+	$('#lbInfoTotalEventosStep2ID').html(accounting.formatMoney($totalEventos,$opt));
+	$('#lbInfoTotalEventosStep3ID').html(accounting.formatMoney($totalEventos,$opt));
 	calculaSaldoDesCad();
 }
 
@@ -528,8 +620,10 @@ function calculaSaldoDesCad() {
 	//alert("Total: "+$total+" ValMulta:"+$valMulta+" SaldoMensalidade: "+$saldoMensalidade+" SaldoSistema: "+$saldoSistema +" valPagoMensalidade: "+$valPagoMensalidade+" valPagoPortal: "+$valPagoPortal+" valTotalMensalidade: "+$valTotalMensalidade +" valTotalSistema: "+$valTotalSistema);
 	
 	$('#lbInfoSaldoSistemaID').html(accounting.formatMoney($saldoSistema,$opt));
-	$('#lbInfoValDevidoPortalID').html(accounting.formatMoney($valDevidoSistema,$opt));
-	$('#lbInfoValDevidoMultaID').html(accounting.formatMoney($valMulta,$opt));
+	$('#lbInfoValDevidoMultaStep2ID').html(accounting.formatMoney($valMulta,$opt));
+	$('#lbInfoValDevidoMultaStep3ID').html(accounting.formatMoney($valMulta,$opt));
+	$('#lbInfoValDevidoPortalStep2ID').html(accounting.formatMoney($valDevidoSistema,$opt));
+	$('#lbInfoValDevidoPortalStep3ID').html(accounting.formatMoney($valDevidoSistema,$opt));
 
 	/** Atualiza as variáveis com os saldos devidos **/
 	$('#saldoSistemaID').val($saldoSistema);
@@ -539,17 +633,29 @@ function calculaSaldoDesCad() {
 	
 	if ($total < 0) {
 		$total			= ($total * -1);
-		$('#lbInfoSaldoTituloID').removeClass("text-danger");
-		$('#lbInfoSaldoTituloID').addClass("text-success");
-		$('#lbInfoSaldoID').html('<b>'+accounting.formatMoney($total,$opt)+'</b>');
-		$('#lbInfoSaldoTituloID').html('<b>A Receber:</b>');
+		$('#lbInfoSaldoTituloStep2ID').removeClass("text-danger");
+		$('#lbInfoSaldoTituloStep3ID').removeClass("text-danger");
+		$('#lbInfoTotalTituloStep3ID').removeClass("text-danger");
+		$('#lbInfoSaldoTituloStep2ID').addClass("text-success");
+		$('#lbInfoSaldoTituloStep3ID').addClass("text-success");
+		$('#lbInfoTotalTituloStep3ID').addClass("text-success");
+		$('#lbInfoSaldoStep2ID').html('<b>'+accounting.formatMoney($total,$opt)+'</b>');
+		$('#lbInfoSaldoStep3ID').html('<b>'+accounting.formatMoney($total,$opt)+'</b>');
+		$('#lbInfoSaldoTituloStep2ID').html('<b>A Receber:</b>');
+		$('#lbInfoSaldoTituloStep3ID').html('<b>A Receber:</b>');
 		$('#lblTipoValorID').html('<b>A Receber:</b>');
 		
 	}else{
-		$('#lbInfoSaldoTituloID').removeClass("text-success");
-		$('#lbInfoSaldoTituloID').addClass("text-danger");
-		$('#lbInfoSaldoID').html('<b>'+accounting.formatMoney($total,$opt)+'</b>');
-		$('#lbInfoSaldoTituloID').html('<b>A Pagar:</b>');
+		$('#lbInfoSaldoTituloStep2ID').removeClass("text-success");
+		$('#lbInfoSaldoTituloStep3ID').removeClass("text-success");
+		$('#lbInfoTotalTituloStep3ID').removeClass("text-success");
+		$('#lbInfoSaldoTituloStep2ID').addClass("text-danger");
+		$('#lbInfoSaldoTituloStep3ID').addClass("text-danger");
+		$('#lbInfoTotalTituloStep3ID').addClass("text-danger");
+		$('#lbInfoSaldoStep2ID').html('<b>'+accounting.formatMoney($total,$opt)+'</b>');
+		$('#lbInfoSaldoStep3ID').html('<b>'+accounting.formatMoney($total,$opt)+'</b>');
+		$('#lbInfoSaldoTituloStep2ID').html('<b>A Pagar:</b>');
+		$('#lbInfoSaldoTituloStep3ID').html('<b>A Pagar:</b>');
 		$('#lblTipoValorID').html('<b>A Pagar:</b>');
 	}
 }
@@ -671,31 +777,44 @@ function atualizaInfoDesCad() {
 	}
 	
 	if ($saldoSistema	< 0)		{
-		$saldoSistema		= $saldoSistema * -1;
+		//$saldoSistema		= $saldoSistema * -1;
 		$indCreDebSistema	= "<span class='text-success'>(A Receber)</span>";
 	}else{
 		$indCreDebSistema	= "<span class='text-danger'>(A Pagar)</span>";
 	}
-	if ($valor			< 0)		{$valor			= $valor		* -1;}
+	
+	/** Salvar os valores que ficará de taxa **/
+	$valParcelaTaxa			= $taxas;
+	$valTotalTaxa			= ($taxas * $numMeses);
+	if ($valor			< 0)		{
+		$valTotalTaxa		= $valTotalTaxa * -1;
+	}
 
 	/** Salvar os valores que ficará de mensalidade **/
 	$valParcelaMensalidade	= zgConverteFloat(($valor / $numMeses).toFixed(2));
 	$valTotalMensalidade	= zgConverteFloat($valor);
 	
-	/** Salvar os valores que ficará de taxa **/
-	$valParcelaTaxa			= $taxas;
-	$valTotalTaxa			= ($taxas * $numMeses);
-
 	/** Salvar os valores que ficará de Sistema **/
 	$valParcelaSistema		= zgConverteFloat(($saldoSistema / $numMeses).toFixed(2));
 	$valTotalSistema		= $saldoSistema;
-
 	
 	/** Atualiza os totais **/
 	var $totalParcela		= zgConverteFloat(($valParcelaTaxa	+ $valParcelaSistema	+ $valParcelaMensalidade).toFixed(2));
 	var $totalGeral			= zgConverteFloat(($valTotalTaxa	+ $valTotalSistema		+ $valTotalMensalidade).toFixed(2));
 
-	alert("valParcelaSistema: "+$valParcelaSistema+" valTotalSistema: "+$valTotalSistema+" valParcelaMensalidade: "+$valParcelaMensalidade+" valTotalMensalidade: "+$valTotalMensalidade+" saldoSistema: "+$saldoSistema+" saldoMensalidade:"+$saldoMensalidade+" saldoMulta: "+$saldoMulta);
+	if ($valParcelaTaxa	< 0)			{$valParcelaTaxa		= $valParcelaTaxa 			* -1;}
+	if ($valTotalTaxa	< 0)			{$valTotalTaxa			= $valTotalTaxa 			* -1;}
+
+	if ($valParcelaMensalidade	< 0)	{$valParcelaMensalidade	= $valParcelaMensalidade 	* -1;}
+	if ($valTotalMensalidade	< 0)	{$valTotalMensalidade	= $valTotalMensalidade	 	* -1;}
+	
+	if ($valParcelaSistema		< 0)	{$valParcelaSistema		= $valParcelaSistema	 	* -1;}
+	if ($valTotalSistema		< 0)	{$valTotalSistema		= $valTotalSistema		 	* -1;}
+
+	if ($totalParcela	< 0)			{$totalParcela			= $totalParcela 			* -1;}
+	if ($totalGeral		< 0)			{$totalGeral			= $totalGeral 				* -1;}
+	
+	//alert("valParcelaSistema: "+$valParcelaSistema+" valTotalSistema: "+$valTotalSistema+" valParcelaMensalidade: "+$valParcelaMensalidade+" valTotalMensalidade: "+$valTotalMensalidade+" saldoSistema: "+$saldoSistema+" saldoMensalidade:"+$saldoMensalidade+" saldoMulta: "+$saldoMulta);
 	
 	/** Gera os textos informativos dos campos **/
 	$textoTaxa				= $numMeses + "x" + " " + accounting.formatMoney($valParcelaTaxa,$opt) + " = " + accounting.formatMoney($valTotalTaxa,$opt); 
@@ -714,8 +833,12 @@ function atualizaInfoDesCad() {
 	$('#_valTotalTaxaID').val($valTotalTaxa);
 	$('#totalGeralID').val($totalGeral);
 
-	$('#textoTaxasID').val($textoTaxa);
-	$('#textoSistemaID').html($textoSistema);
+	
+	
+	$('#lbInfoTaxasStep3ID').html($textoTaxa);
+	$('#lbInfoTotalStep3ID').html("<b>"+$textoTotal+"</b>");
+	//$('#textoTaxasID').val($textoTaxa);
+	//$('#textoSistemaID').html($textoSistema);
 	//$('#textoSistemaID').val($textoSistema);
 	$('#textoTotalID').val($textoTotal);
 }
@@ -773,6 +896,7 @@ function criaTabelaValoresDesCad() {
 	var $valTotalTaxa			= zgConverteFloat($('#_valTotalTaxaID').val());
 	
 	var $valTotalGeral			= zgConverteFloat($('#totalGeralID').val());
+	var $totMen					= zgConverteFloat((zgConverteFloat($valTotalMensalidade) + zgConverteFloat($valTotalSistema)).toFixed(2));
 	var $_parc,$_sis,$_taxa,$_tot;
 	
 	
@@ -825,29 +949,31 @@ function criaTabelaValoresDesCad() {
 		var $descParcela	= ($i+1) + " / " + $parcelas;
 		
 		if ($tipoRecParc == "U") {
-			$_parc	= $valTotalMensalidade;
-			$_sis	= $valTotalSistema;
+			$_parc	= zgConverteFloat((zgConverteFloat($valTotalMensalidade) + zgConverteFloat($valTotalSistema)).toFixed(2));
+			//$_sis	= $valTotalSistema;
 			$_taxa	= $valTotalTaxa;
 		}else{
 			if ($i == ($parcelas -1)) {
-				$_parc	= zgConverteFloat($valTotalMensalidade	- ($valParcelaMensalidade	* ($parcelas -1) ));
-				$_sis	= zgConverteFloat($valTotalSistema		- ($valParcelaSistema		* ($parcelas -1) ));
+				$_parc	= zgConverteFloat($totMen	- ((zgConverteFloat($valParcelaMensalidade)+zgConverteFloat($valParcelaSistema))	* ($parcelas -1) ));
+				//$_sis	= zgConverteFloat($valTotalSistema		- ($valParcelaSistema		* ($parcelas -1) ));
 				$_taxa	= zgConverteFloat($valParcelaTaxa);
 			}else{
-				$_parc 	= $valParcelaMensalidade;
-				$_sis 	= $valParcelaSistema;
+				$_parc 	= zgConverteFloat((zgConverteFloat($valParcelaMensalidade) + zgConverteFloat($valParcelaSistema)).toFixed(2));
+				//$_sis 	= $valParcelaSistema;
 				$_taxa 	= $valParcelaTaxa;
 			}
 		}
 		
-		$_tot			= zgConverteFloat($_parc) + zgConverteFloat($_sis) + zgConverteFloat($_taxa);
+		//$_tot			= zgConverteFloat($_parc) + zgConverteFloat($_sis) + zgConverteFloat($_taxa);
+		$_tot			= zgConverteFloat($_parc) + zgConverteFloat($_taxa);
 		var $_parcFmt	= accounting.formatMoney($_parc	,options);
-		var	$_sisFmt	= accounting.formatMoney($_sis	,options);
+		//var	$_sisFmt	= accounting.formatMoney($_sis	,options);
 		var $_taxaFmt	= accounting.formatMoney($_taxa	,options);
 		var $_totFmt	= accounting.formatMoney($_tot	,options);
-
 		
-		$('#tableValorDesCadID > tbody:last').append('<tr><td class="center" style="width: 18px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 30px;">'+$descParcela+'</td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aValor[]" value="'+$_parcFmt+'" onchange="atualizaEValidaParcelasDesCad();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 80px;"><input type="text" class="form-control input-sm" name="aSistema[]" value="'+$_sisFmt+'" onchange="atualizaEValidaParcelasDesCad();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 80px;"><input type="text" class="form-control input-sm" name="aTaxas[]" value="'+$_taxaFmt+'" readonly maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aTotal[]" readonly value="'+$_totFmt+'"  maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm datepicker" name="aData[]" value="'+$datas[$i].dataVenc+'" onchange="atualizaEValidaParcelasDesCad();" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td></tr>');		
+		//alert("$_tot: "+$_tot+" $_totFmt:"+$_totFmt);
+
+		$('#tableValorDesCadID > tbody:last').append('<tr><td class="center" style="width: 18px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 30px;">'+$descParcela+'</td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aValor[]" value="'+$_parcFmt+'" onchange="atualizaEValidaParcelasDesCad();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 80px;"><input type="text" class="form-control input-sm" name="aTaxas[]" value="'+$_taxaFmt+'" readonly maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aTotal[]" readonly value="'+$_totFmt+'"  maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm datepicker" name="aData[]" value="'+$datas[$i].dataVenc+'" onchange="atualizaEValidaParcelasDesCad();" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td></tr>');		
 
 		$('#tableValorDesCadID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
 			zgMask($( this ), $( this ).attr('zg-data-mask'));
@@ -860,8 +986,8 @@ function criaTabelaValoresDesCad() {
 		
 	}
 
-	$('#thInfoValorMensalidadeDesCadID').html(accounting.formatMoney($valTotalMensalidade,optTotal));
-	$('#thInfoValorSistemaDesCadID').html(accounting.formatMoney($valTotalSistema,optTotal));
+	$('#thInfoValorMensalidadeDesCadID').html(accounting.formatMoney($totMen,optTotal));
+	//$('#thInfoValorSistemaDesCadID').html(accounting.formatMoney($valTotalSistema,optTotal));
 	$('#thInfoValorTaxaDesCadID').html(accounting.formatMoney($valTotalTaxa,optTotal));
 	$('#thInfoValorTotalDesCadID').html(accounting.formatMoney($valTotalGeral,optTotal));
 	$('#thInfoParcelaDesCadID').html($parcelas);
@@ -922,6 +1048,8 @@ function atualizaEValidaParcelasDesCad() {
 	var $valTotalSistema		= $('#_valTotalSistemaID').val();
 	var $valTotalTaxa			= $('#_valTotalTaxaID').val();
 	var $valTotalGeral			= $('#totalGeralID').val();
+	var $totMen					= zgConverteFloat((zgConverteFloat($valTotalMensalidade) + zgConverteFloat($valTotalSistema)).toFixed(2));
+	
 
 	if ($('#codTipoContaID').val() == "N") {
 		return true;
@@ -959,17 +1087,17 @@ function atualizaEValidaParcelasDesCad() {
 			$_valMen		 	= zgConverteFloat($(this).val());
 			$tValMensalidade	+= $_valMen;
 		});
-		$(this).find('[name*="aSistema[]"]').each(function( index3 ) {
+		/*$(this).find('[name*="aSistema[]"]').each(function( index3 ) {
 			$_valSis			= zgConverteFloat($(this).val());
 			$tValSistema 		+= $_valSis;
-		});
+		});*/
 		$(this).find('[name*="aTaxas[]"]').each(function( index4 ) {
 			$_valTaxas			= zgConverteFloat($(this).val());
 		});
 		
 		/** Atualiza o valor total com a soma dos outros valores **/
 		$(this).find('[name*="aTotal[]"]').each(function( index5 ) {
-			$_valTotal			= zgConverteFloat($_valMen + $_valSis + $_valTaxas);
+			$_valTotal			= zgConverteFloat($_valMen + $_valTaxas);
 			$(this).val(accounting.formatMoney($_valTotal, opt));
 		});
 
@@ -977,7 +1105,7 @@ function atualizaEValidaParcelasDesCad() {
 
 	/** Ajusta os valores totais **/
 	$tValMensalidade		= zgConverteFloat($tValMensalidade.toFixed(2));
-	$tValSistema			= zgConverteFloat($tValSistema.toFixed(2));
+	//$tValSistema			= zgConverteFloat($tValSistema.toFixed(2));
 
 	/** Calcula o tipo de recorrência através do número de parcelas **/
 	if ($numMeses <= 1) {
@@ -986,10 +1114,11 @@ function atualizaEValidaParcelasDesCad() {
 		$tipoRecParc	= "P";
 	}
 
+	//alert("Valor total:"+$totMen+" Valor Calculado: "+$tValMensalidade);
 	/** Valida os valores **/
-	if ($valTotalMensalidade != $tValMensalidade) {
+	if ($totMen != $tValMensalidade) {
 		var $textoMensalidade;
-		var	$diffMensalidade	= ($valTotalMensalidade - $tValMensalidade);
+		var	$diffMensalidade	= ($totMen - $tValMensalidade);
 		
 		if ($diffMensalidade > 0) {
 			$textoMensalidade	= "Falta ainda: "+accounting.formatMoney($diffMensalidade, opt1);
@@ -1001,7 +1130,7 @@ function atualizaEValidaParcelasDesCad() {
 		$vOK		= false;
 	}
 	
-	if ($valTotalSistema != $tValSistema) {
+	/*if ($valTotalSistema != $tValSistema) {
 		var $textoSistema;
 		var	$diffSistema	= ($valTotalSistema - $tValSistema);
 		
@@ -1013,20 +1142,20 @@ function atualizaEValidaParcelasDesCad() {
 		
 		$htmlError2	= zgCriaSpanErro($textoSistema);
 		$vOK		= false;
-	}
+	}*/
 
 	
 	if ($htmlError1) {
 		$('#thInfoValorMensalidadeDesCadID').html($htmlError1);
 	}else{
-		$('#thInfoValorMensalidadeDesCadID').html($htmlOK + "&nbsp;"+ accounting.formatMoney($valTotalMensalidade, opt1));
+		$('#thInfoValorMensalidadeDesCadID').html($htmlOK + "&nbsp;"+ accounting.formatMoney($totMen, opt1));
 	}
 
-	if ($htmlError2) {
+	/*if ($htmlError2) {
 		$('#thInfoValorSistemaDesCadID').html($htmlError2);
 	}else{
 		$('#thInfoValorSistemaDesCadID').html($htmlOK + "&nbsp;"+  accounting.formatMoney($valTotalSistema, opt1));
-	}
+	}*/
 	
 	/** Valida Data **/
 	$('#tableValorDesCadID > tbody > tr [name*="aData[]"]').each(function( index ) {
