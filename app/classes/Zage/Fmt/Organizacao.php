@@ -56,7 +56,7 @@ class Organizacao {
 	 * @param integer $codOrganizacao
 	 * @return array
 	 */
-	public static function listaFormaturaOrganizacao($codOrganizacao,$codStatus = null,$codUsuarioCad = null,$dataCadIni = null,$dataCadFim = null,$instituicao = null,$curso = null,$cidade = null) {
+	public static function listaFormaturaOrganizacao($codOrganizacao,$codStatus = null,$codUsuarioCad = null,$dataCadIni = null,$dataCadFim = null,$dataPrevIni = null,$dataPrevFim = null,$instituicao = null,$curso = null,$cidade = null) {
 		global $em,$system,$log;
 	
 		#################################################################################
@@ -67,9 +67,9 @@ class Organizacao {
 		#################################################################################
 		## Status da formatura
 		#################################################################################
-		if (($codStatus) && (!is_array($codStatus)) ) {
+		if (!empty($codStatus) && !is_array($codStatus) ) {
 			throw new \Exception("Parâmetro codStatus deve ser um array");
-		}else{
+		}elseif (empty($codStatus)){
 			$codStatus 	= array("A","AA");
 		}
 		
@@ -86,6 +86,7 @@ class Organizacao {
 				$qb->expr()->in('o.codStatus'			, ':codStatus'),
 				$qb->expr()->isNull('oa.dataValidade')
 			))
+			->orderBy('o.nome')
 			->setParameter('codOrganizacao', $codOrganizacao)
 			->setParameter('codTipo', 'FMT')
 			->setParameter('codStatus', $codStatus);
@@ -103,8 +104,7 @@ class Organizacao {
 				#################################################################################
 				## Converter as datas para o formato datetime
 				#################################################################################
-				$_dtIni			= $dataCadIni->format($system->config["data"]["dateFormat"]);
-				$oDtIni			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtIni . " 00:00:00");
+				$oDtIni			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataCadIni . " 00:00:00");
 				$qb->andWhere($qb->expr()->andX(
 					$qb->expr()->gte('o.dataCadastro', ':dataCadastroIni')
 				));
@@ -116,12 +116,35 @@ class Organizacao {
 				#################################################################################
 				## Converter as datas para o formato datetime
 				#################################################################################
-				$_dtFim			= $dataCadFim->format($system->config["data"]["dateFormat"]);
-				$oDtFim			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $_dtFim . " 23:59:59");
+				$oDtFim			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataCadFim . " 23:59:59");
 				$qb->andWhere($qb->expr()->andX(
 					$qb->expr()->lte('o.dataCadastro', ':dataCadastroFim')
 				));
 				$qb->setParameter('dataCadastroFim'			,$oDtFim);
+			}
+			
+			//Data inicio prevista da formatura
+			if (!empty($dataPrevIni)) {
+				#################################################################################
+				## Converter as datas para o formato datetime
+				#################################################################################
+				$oDtIni			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataPrevIni . " 00:00:00");
+				$qb->andWhere($qb->expr()->andX(
+						$qb->expr()->gte('ofmt.dataConclusao', ':dataPrevisaoIni')
+				));
+				$qb->setParameter('dataPrevisaoIni'			,$oDtIni);
+			}
+				
+			//Data fim prevista da formatura
+			if (!empty($dataPrevFim)) {
+				#################################################################################
+				## Converter as datas para o formato datetime
+				#################################################################################
+				$oDtFim			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataPrevFim . " 23:59:59");
+				$qb->andWhere($qb->expr()->andX(
+						$qb->expr()->lte('ofmt.dataConclusao', ':dataPrevisaoFim')
+				));
+				$qb->setParameter('dataPrevisaoFim'			,$oDtFim);
 			}
 			
 			//Instituicao

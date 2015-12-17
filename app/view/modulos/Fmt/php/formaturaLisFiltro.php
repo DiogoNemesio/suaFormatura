@@ -32,68 +32,11 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata as informações da Organização
-#################################################################################
-$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
-
-#################################################################################
-## Select da Forma de Pagamento
-#################################################################################
-try {
-	$aFormaPag	= $em->getRepository('Entidades\ZgfinFormaPagamento')->findBy(array(),array('descricao' => 'ASC'));
-	$oFormaPag	= $system->geraHtmlCombo($aFormaPag,	'CODIGO', 'DESCRICAO',	$_SESSION["_CRLIS_codFormaPagFiltro"], null);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-#################################################################################
-## Select da Conta de Débito
-#################################################################################
-try {
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-	$oConta		= $system->geraHtmlCombo($aConta,	'CODIGO', 'NOME',	$_SESSION["_CRLIS_codContaRecFiltro"], null);
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-
-#################################################################################
-## Select da Categoria
-#################################################################################
-try {
-	$aCat	= \Zage\Fin\Categoria::listaCombo("C",$oOrg->getCodTipo()->getCodigo());
-	$oCat   = "";
-	if ($aCat) {
-		$aCatTemp	= array();
-		$i 			= 0;
-
-		foreach ($aCat as $cat) {
-			$tDesc 	= ($cat->getCodCategoriaPai() != null) ? $cat->getCodCategoriaPai()->getDescricao() . "/" . $cat->getDescricao() : $cat->getDescricao();
-			$aCatTemp[$tDesc]	= $cat->getCodigo();
-
-		}
-
-		ksort($aCatTemp);
-
-		foreach ($aCatTemp as $cDesc => $cCod) {
-			if ($_SESSION["_CRLIS_codCategoriaFiltro"] !== null) {
-				(in_array($cCod, $_SESSION["_CRLIS_codCategoriaFiltro"])) ? $selected = "selected=\"selected\"" : $selected = "";
-			}else{
-				$selected = "";
-			}
-			$oCat .= "<option value=\"".$cCod."\" $selected>".$cDesc.'</option>';
-		}
-	}
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-#################################################################################
 ## Multi select dos usuários
 #################################################################################
 try {
 	$aUsuarios	= \Zage\Fmt\Organizacao::listaUsuarioCadFormatura($system->getCodOrganizacao());
-	$oUsuarios	= $system->geraHtmlCombo($aUsuarios,	'CODIGO', 'NOME', null, null);
+	$oUsuarios	= $system->geraHtmlCombo($aUsuarios,	'CODIGO', 'NOME', '', null);
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }

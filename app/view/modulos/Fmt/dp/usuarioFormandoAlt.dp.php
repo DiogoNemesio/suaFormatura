@@ -70,11 +70,14 @@ try {
 	/*********************** 
 	 * Ativar organização (formatura)
 	 ***********************/
-	$formando 	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($system->getCodUsuario(), "F");
+	$numFormando = \Zage\Fmt\Formatura::getNumFormandos($system->getCodOrganizacao());
 	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
-	if (sizeof($formando) == 0){
+	
+	if ($numFormando == 0){
 		$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => "A"));
 		$oOrg->setCodStatus($oCodStatus);
+		
+		$em->persist($oOrg);
 	}
 	
 	/*********************** 

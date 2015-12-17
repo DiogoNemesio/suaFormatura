@@ -57,6 +57,20 @@ try {
 	#################################################################################
 	## ASSOCIAR ORGANIZACAO - USUÁRIO
 	#################################################################################
+	
+	/***********************
+	 * Ativar organização (formatura)
+	 ***********************/
+	$numFormando = \Zage\Fmt\Formatura::getNumFormandos($system->getCodOrganizacao());
+	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+	
+	if ($numFormando == 0){
+		$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => "A"));
+		$oOrg->setCodStatus($oCodStatus);
+	
+		$em->persist($oOrg);
+	}	
+	
 	$oUsuOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));
 
 	if ($oUsuOrg){
@@ -81,7 +95,6 @@ try {
 		}
 	}
 	
-	$oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 	$oPerfil			= $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
 	$oUsuOrgStatus  	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'P'));
 	
