@@ -21,7 +21,7 @@ if (isset($_POST['obs']))		 			$obs					= \Zage\App\Util::antiInjection($_POST['
 $err	= false;
 
 #################################################################################
-## Verificações
+## Validações
 #################################################################################
 try {
 	if (!isset($codOrganizacao) || (!$codOrganizacao)) {
@@ -35,14 +35,18 @@ try {
 	if (!$oOrg) {
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Organização não encontranda!"))));
 		$err = 1;
-	}elseif ($oOrg->getCodStatus()->getCodigo() == 3){
-		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("A formatura já está cancelada!"))));
+	}elseif ($oOrg->getCodStatus()->getCodigo() == "C"){
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("A formatura já está cancelada."))));
 		$err = 1;
 	}
 
 	/*** Verificar se a organização tem associação com o usuario ***/
-	$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codOrganizacao' => $codOrganizacao));
-
+	$numFormandos = \Zage\Fmt\Formatura::getNumFormandos($codOrganizacao);
+	if ($numFormandos > 0){
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Está formatura já teve um formando cadastrado e deve ser finalizada."))));
+		$err = 1;
+	}
+	
 	if ($err) {
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
 		exit;
@@ -51,23 +55,23 @@ try {
 	#################################################################################
 	## Cancelar acesso de todos os usuários
 	#################################################################################
-	/*** Cancelarsuario - Organizacao ***/
+	/*** Cancelar Usuário - Organizacao ***/
+	$oUsuOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codOrganizacao' => $codOrganizacao));
 	$oUsuOrgStatus	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => C));
 	
-	/*** Cancelar Usuario - Organizacao e Convite ***/
 	for ($i = 0; $i < sizeof($oUsuOrg); $i++) {
 		
 		//Cancelar Usuario
-		if ($oUsuOrg[$i]->getCodStatus()->getCodigo() != C){
+		if ($oUsuOrg[$i]->getCodStatus()->getCodigo() !="C"){
 			$oUsuOrg[$i]->setCodStatus($oUsuOrgStatus);
 			$oUsuOrg[$i]->setDataCancelamento(new \DateTime());
 			$em->persist($oUsuOrg[$i]);
 		}
-		$log->debug($oUsuOrg[$i]->getCodUsuario()->getCodigo());
+		
 		// Cancelar convite
 		$oConvite	= $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $oUsuOrg[$i]->getCodUsuario()->getCodigo() , 'codOrganizacaoOrigem' => $codOrganizacao, 'codStatus' => A));
 		if($oConvite){
-			$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => C));
+			$oConviteStatus  = $em->getRepository('Entidades\ZgsegConviteStatus')->findOneBy(array('codigo' => "C"));
 		
 			for ($j = 0; $j < sizeof($oConvite); $j++) {
 				$oConvite[$j]->setCodStatus($oConviteStatus);
@@ -77,14 +81,17 @@ try {
 		}
 
 	}	
-	/*** Cancelar Organizacao ***/
-	$oOrgStatus		= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => C));
+	
+	/*** Cancelar na ORGANIZACAO ***/
+	$oOrgStatus		= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => "C"));
 	$oMotivo		= $em->getRepository('Entidades\ZgadmOrganizacaoMotivoCancelamento')->findOneBy(array('codigo' => $motivo));
 	
+	$oOrg->setIdentificacao("CANCELADO_FMT:".$oOrg->getCodigo());
 	$oOrg->setCodStatus($oOrgStatus);
 	$oOrg->setCodMotivoCancelamento($oMotivo);
 	$oOrg->setDataCancelamento(new DateTime(now));
 	$oOrg->setObservacaoCancelamento($obs);
+	
 	$em->persist($oOrg);
 	
 	/***** Flush *****/
@@ -93,7 +100,7 @@ try {
 		$em->clear();
 	} catch (Exception $e) {
 		$log->debug("Erro ao excluir o formando:". $e->getTraceAsString());
-		throw new \Exception("Erro excluir o formando. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
+		throw new \Exception("Ops! Encontramos um problema, mas já estamos trabalhando para solucionar. Tente novamente em instantes e caso o problema continue entre contato com o nosso suporte.");
 	}	
 
 } catch (\Exception $e) {
