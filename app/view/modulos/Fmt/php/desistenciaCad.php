@@ -263,7 +263,7 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('ID'					,$id);
-$tpl->set('TITULO'				,'Desistência');
+$tpl->set('TITULO'				,'Desistência do Formando: '.$oUsuario->getNome());
 $tpl->set('HTML_EVENTOS'		,$htmlEventos);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 

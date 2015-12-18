@@ -1,5 +1,4 @@
 <?php
-use Entidades\ZgfinSeqCodTransacao;
 #################################################################################
 ## Includes
 #################################################################################
@@ -95,7 +94,7 @@ try {
 	#################################################################################
 	## CODIGO DE TRANSAÇÃO
 	#################################################################################
-	$codTransacaoVenda = \Zage\Adm\Sequencial::proximoValor(ZgfinSeqCodTransacao);
+	$codTransacaoVenda = \Zage\Adm\Sequencial::proximoValor('ZgfinSeqCodTransacao');
 	
 	#################################################################################
 	## SALVAR CABEÇALHO DA VENDA
