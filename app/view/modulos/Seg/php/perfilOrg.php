@@ -32,74 +32,83 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata a url desse script
+## Verificar parâmetro obrigatório
 #################################################################################
-$url		= ROOT_URL . "/Seg/". basename(__FILE__)."?id=".$id;
+if (!isset($codPerfil)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 
 #################################################################################
-## Resgata os dados do grid
+## Resgata as informações do banco
 #################################################################################
-try {
-	$perfis	= $em->getRepository('Entidades\ZgsegPerfil')->findBy(array());
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
+if (!empty($codPerfil)) {
+	try {
+		$info = $em->getRepository('Entidades\ZgsegPerfil')->findOneBy(array('codigo' => $codPerfil));
+	} catch (\Exception $e) {
+		\Zage\App\Erro::halt($e->getMessage());
+	}
+
+	$descricao		= $info->getNome();
 	
-
-#################################################################################
-## Cria o objeto do Grid (bootstrap)
-#################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GPerfil");
-$grid->adicionaTexto($tr->trans('NOME'), 	50, $grid::CENTER	,'nome');
-$grid->adicionaTexto($tr->trans('ATIVO'), 	10, $grid::CENTER	,'');
-$grid->adicionaIcone(null,'fa fa-building-o green',$tr->trans('Vincular a um tipo de organizacao'));
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($perfis);
-
-
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($perfis); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPerfil='.$perfis[$i]->getCodigo().'&url='.$url);
-	
-	$grid->setValorCelula($i,1,($perfis[$i]->getIndAtivo() == 0) ? $tr->trans("Não") : $tr->trans("Sim") );
-	$grid->setUrlCelula($i,2,ROOT_URL.'/Seg/perfilOrg.php?id='.$uid);
-	$grid->setUrlCelula($i,3,ROOT_URL.'/Seg/perfilAlt.php?id='.$uid);
-	$grid->setUrlCelula($i,4,'javascript:zgAbreModal(\''.ROOT_URL.'/Seg/perfilExc.php?id='.$uid.'\');');
-	
+}else{
+	$descricao		= "";
 }
 
 #################################################################################
-## Gerar o código html do grid
+## Lista de categorias
 #################################################################################
-try {
-	$htmlGrid	= $grid->getHtmlCode();
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
+$oTipoOrg		= $em->getRepository('Entidades\ZgadmOrganizacaoTipo')->findBy(array(),array('descricao' => ASC));
+$perfilOrgTipo	= $em->getRepository('Entidades\ZgsegPerfilOrganizacaoTipo')->findBy(array('codPerfil' => $codPerfil));
+
+$aPerfilOrg 	= array();
+
+for ($i = 0; $i < sizeof($perfilOrgTipo); $i++) {
+	$aPerfilOrg[$i] = $perfilOrgTipo[$i]->getCodTipoOrganizacao()->getCodigo();
+}
+
+$htmlLis		= "";
+
+for ($i = 0; $i < sizeof($oTipoOrg); $i++) {
+
+	if (in_array($oTipoOrg[$i]->getCodigo(), $aPerfilOrg)){
+		$selected = 'selected';
+	}else{
+		$selected = '';
+	}
+
+	$htmlLis .= '<option value="'.$oTipoOrg[$i]->getCodigo().'" '.$selected.'>'.$oTipoOrg[$i]->getDescricao().'</option>';
 }
 
 #################################################################################
-## Gerar a url de adicão
+## Url Voltar
 #################################################################################
-$urlAdd			= ROOT_URL.'/Seg/perfilAlt.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPerfil=');
+$urlVoltar			= ROOT_URL."/Seg/perfilLis.php?id=".$id;
+
+#################################################################################
+## Url Novo
+#################################################################################
+$uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPerfil=');
+$urlNovo			= ROOT_URL."/Seg/perfilAlt.php?id=".$uid;
 
 #################################################################################
 ## Carregando o template html
 #################################################################################
 $tpl	= new \Zage\App\Template();
-$tpl->load(HTML_PATH . 'templateLis.html');
+$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
 
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans('Perfis'));
-$tpl->set('URLADD'			,$urlAdd);
-$tpl->set('IC'				,$_icone_);
+$tpl->set('URL_FORM'			,$_SERVER['SCRIPT_NAME']);
+$tpl->set('URLVOLTAR'			,$urlVoltar);
+$tpl->set('URLNOVO'				,$urlNovo);
+$tpl->set('ID'					,$id);
+$tpl->set('COD_PERFIL'			,$codPerfil);
+$tpl->set('NOME'				,$nome);
+$tpl->set('DUAL_LIST'			,$htmlLis);
+$tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
+

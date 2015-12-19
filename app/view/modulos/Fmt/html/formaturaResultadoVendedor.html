@@ -1,0 +1,324 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="fa %ICONE% blue"></i>&nbsp;%TITULO%</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormRelID" class="form-horizontal">
+				<input type="hidden" name="indFiltrado" id="indFiltradoID">
+				<input type="hidden" name="id" value="%ID%">
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16">
+						<li id="abaID" class="active">
+							<a data-toggle="tab" href="#filtros" onclick="mostraFiltro();">
+								<i class="green fa fa-search bigger-125"></i>
+								Filtros
+							</a>
+						</li>
+					</ul>
+	
+					<div id="tabID" class="tab-content profile-edit-tab-content">
+						<div id="filtros" class="tab-pane in active">
+							<h5 class="header blue bolder smaller">Filtros</h5>
+							<div class="vspace-xs"></div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div><label for="instituicaoID">Instituição de ensino:</label></div>
+									<div class="form-group col-sm-12" id="divInstituicaoID">
+										<div class="input-group col-sm-12 pull-left">
+											<input type="hidden" id="instituicaoID" name="instituicao" class="width-100"  data-rel="select2Instituicao">								    	
+										</div>
+									</div>
+									<div><label for="cursoID">Curso:</label></div>
+									<div class="form-group col-sm-12" id="divCursoID">
+										<div class="input-group col-sm-12 pull-left">	    		
+											<input type="hidden" id="cursoID" name="curso" class="width-100"  data-rel="select2Curso">								    	
+										</div>
+									</div>
+									<div><label for="instituicaoID">Cidade da formatura:</label></div>
+									<div class="form-group col-sm-12" id="divCidadeID">
+										<div class="input-group col-sm-12 pull-left">	    			
+											<input type="hidden" id="cidadeID" name="cidade" class="width-100"  data-rel="select2Cidade">								    	
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+							    	<div class="col-sm-12">
+							    		<div><label for="codStatusID">Status:</label></div>
+										<div class="form-group">
+							    			<div class="input-group col-sm-12">
+												<select class="multiselect" multiple="multiple" name="codStatus[]" id="codStatusID">
+												%STATUS%
+												</select>
+											</div>
+										</div>
+							    	</div>
+							    	<div><label for="dataCadID">Data do cadastro:</label></div>
+									<div class="form-group col-sm-12">
+										<div class="col-sm-8 input-group input-daterange pul-left">
+											<input type="text" class="input-sm form-control" id="dataCadIniID" name="dataCadIni" placeholder="Data inicial" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											<input type="text" class="input-sm form-control" id="dataCadFimID" name="dataCadFim" placeholder="Data final" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+										</div>
+									</div>
+									<div><label for="dataCadID">Data prevista de conclusão:</label></div>
+									<div class="form-group col-sm-12">
+										<div class="col-sm-8 input-group input-daterange pul-left">
+											<input type="text" class="input-sm form-control" id="dataPrevIniID" name="dataPrevIni" placeholder="Data inicial" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											<input type="text" class="input-sm form-control" id="dataPrevFimID" name="dataPrevFim" placeholder="Data final" maxlength='10' autocomplete='off' zg-data-toggle='mask' zg-data-mask='data'/>
+										</div>
+									</div>
+								</div>
+  			 				</div>							
+						</div>
+						
+						<div class="clearfix form-actions">
+							<label class="col-sm-5 control-label" >&nbsp;</label>
+   							<button type=submit class="btn btn-primary" id="btnSubmitID"><i class="fa fa-cog bigger-110"></i> Consultar</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="col-sm-12">
+		<div class="vspace-xs"></div><br>
+		<div id="tableID">%TABLE%</div>
+	</div>
+</div>
+
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+/*********************************************************
+* Busca Select2 typehead Instituição
+*********************************************************/
+$('[data-rel="select2Instituicao"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar instituição de ensino',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fmt/getInstituicao.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+});
+
+/*********************************************************
+* Busca Select2 typehead Cursos
+*********************************************************/
+$('[data-rel="select2Curso"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar o curso',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Fmt/getCurso.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+});
+
+/*********************************************************
+* Busca Select2 typehead Cidades
+*********************************************************/
+$('[data-rel="select2Cidade"]').select2({
+    minimumInputLength: 2,
+    placeholder: 'Buscar a cidade',
+    allowClear: true,
+    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+        url: "%ROOT_URL%/Adm/getCidadeLis.dp.php",
+        dataType: 'json',
+        quietMillis: 250,
+        data: function (term, page) {
+            return {
+                q: term, // search term
+            };
+        },
+        results: function (data) {
+			return {results: data};
+		},
+        cache: true
+    },
+});
+
+/*********************************************************
+* Mostrar filtro
+*********************************************************/
+function mostraFiltro(){
+	$("#tabID").removeClass("hidden");
+}
+
+$('#zgFormRelID').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+		
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	$("#zgSpinnerID").removeClass("hidden");
+	//$('#zgDivModalID').modal('hide');
+	
+	
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%URL_REL%",
+		data:	$('#zgFormRelID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		
+		$("#abaID").removeClass("active");
+		$("#tabID").addClass("hidden");
+		$('#indFiltradoID').val(1);
+		//$('#tableID').html(teste);
+				
+		$("#zgSpinnerID").addClass("hidden");
+		
+	});
+	zgLoadUrl("%URL_REL%");
+	//Voltar o botão de salvar
+	$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Consultar ');
+	$('#btnSubmitID').attr("disabled",false);
+
+	/** Recolocar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+		
+	return false; 
+});
+
+$(".nav-tabs a[data-toggle=tab]").on("click", function(e) {
+	if ($(this).hasClass("disabled")) {
+		e.preventDefault();
+		return false;
+	}
+});
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({"autoclose": true});
+$('.input-daterange').datepicker({"autoclose": true});
+//$('[data-rel="daterange"]').datepicker({"autoclose":true});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+
+$('#codStatusID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Status',
+	allSelectedText: 'Todos Status',
+	nSelectedText: 'selecionados',
+	selectAllText: 'Marcar todos',
+	numberDisplayed: 2,
+});
+
+$('#codFormaPagID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Forma de Pag.',
+	allSelectedText: 'Todas as Formas',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+$('#codCategoriaID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Categoria',
+	allSelectedText: 'Todas as Categorias',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+$('#codCentroCustoID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Centro de Custo',
+	allSelectedText: 'Todos os Centros',
+	nSelectedText: 'selecionados',
+	selectAllText: 'Marcar todos',
+	numberDisplayed: 2,
+});
+
+$('#codContaID').multiselect({
+	enableFiltering: false,
+	maxHeight: 360, buttonWidth: '100%',
+	includeSelectAllOption: true,
+	disableIfEmpty: true,
+	buttonClass: 'btn btn-white btn-primary btn-sm',
+	nonSelectedText: 'Conta',
+	allSelectedText: 'Todas as Contas',
+	nSelectedText: 'selecionadas',
+	selectAllText: 'Marcar todas',
+	numberDisplayed: 2,
+});
+
+$(document).one('ajaxloadstart.page', function(e) {
+	$('[class*=select2]').remove();
+	$('.rating').raty('destroy');
+	$('.multiselect').multiselect('destroy');
+});
+
+
+</script>
