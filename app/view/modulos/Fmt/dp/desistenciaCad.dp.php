@@ -41,11 +41,11 @@ if (isset($_POST['pctMulta']))				$pctMulta				= \Zage\App\Util::antiInjection($
 #################################################################################
 ## Criar o array de seleção de eventos
 #################################################################################
-$aSelEventos		= explode(",",$aSelEventos);
-$aValorEventos		= explode(",",$aValorEventos);
+$aSelEventos		= ($aSelEventos) 	? explode(",",$aSelEventos)		: array();
+$aValorEventos		= ($aValorEventos)	? explode(",",$aValorEventos)	: array();
 
-//$log->info("aSelEventos: ".serialize($aSelEventos));
-//$log->info("aValorEventos: ".serialize($aValorEventos));
+//$log->info("aSelEventos2: ".serialize($aSelEventos));
+//$log->info("aValorEventos2: ".serialize($aValorEventos));
 
 #################################################################################
 ## Descompacta o ID
@@ -129,6 +129,21 @@ if (!$codPessoa)	{
 	exit;
 }
 
+
+#################################################################################
+## Verificar se os eventos existem
+#################################################################################
+for ($i = 0; $i < sizeof($aSelEventos); $i++) {
+	#################################################################################
+	## Resgata os objetos (chave estrangeiras)
+	#################################################################################
+	$oEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $aSelEventos[$i]));
+	if (!$oEvento) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Evento inválido, erro: 0x6y513 !!'));
+		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Evento inválido, erro: 0x6y513 !!')));
+		exit;
+	}
+}
 
 #################################################################################
 ## Resgatar o status da associação com a Formatura
@@ -219,6 +234,12 @@ $numMesesConc		= (($interval3->format('%y') * 12) + $interval3->format('%m'));
 $valDevidoSistema	= round($numMesesUso * $taxaUso,2);
 $valTotalSistema	= round($numMesesTotal * $taxaUso,2);
 
+
+
+#################################################################################
+## Ajustar o campo de porcentagem
+#################################################################################
+$pctMulta			= \Zage\App\Util::to_float(str_replace("%", "", $pctMulta));
 
 #################################################################################
 ## Calcular o valor da multa
@@ -326,6 +347,7 @@ $valorTaxas			= round(\Zage\App\Util::to_float($valorTaxas),2);
 $valorTotal			= round(\Zage\App\Util::to_float($valorTotal),2);
 $totalGeral			= round(\Zage\App\Util::to_float($totalGeral),2);
 $saldoFinal			= round(\Zage\App\Util::to_float($saldoFinal),2);
+$_saldoTotal		= round($saldoFinal + $valorTaxas,2);
 
 #################################################################################
 ## Valida o valor total
@@ -340,8 +362,9 @@ if (floatval($valorTotal)	!= floatval($totalGeral))	{
 
 //$log->err("Saldo Final: ".$saldoFinal);
 //$log->err("Valor Taxas: ".$valorTaxas);
+//$log->err("_saldoTotal: ".$_saldoTotal);
 
-if (floatval($saldoFinal + $valorTaxas)	!= floatval($totalGeral))	{
+if (floatval($_saldoTotal)	!= floatval($totalGeral))	{
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Saldo final difere to total geral, erro: 0x9ga5163'));
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Saldo final difere to total geral, erro: 0x9ga5163')));
 	exit;
@@ -388,12 +411,47 @@ if ($contaMensalidade == $contaSistema) {
 $saldoMensalidade			= (($saldoMensalidade + $valMulta) 	< 0) ? ($saldoMensalidade + $valMulta) 	* -1 : ($saldoMensalidade + $valMulta);
 $saldoSistema				= ($saldoSistema 		< 0) ? $saldoSistema 		* -1 : $saldoSistema;
 
-
-
 #################################################################################
 ## Iniciar a transação no banco
 #################################################################################
 $em->getConnection()->beginTransaction();
+
+
+#################################################################################
+## Selecionar as contas a receber serem canceladas
+#################################################################################
+$contasRec	= \Zage\Fmt\Desistencia::listaMensalidadeACancelar($system->getCodOrganizacao(), $oUsuario->getCpf());
+
+#################################################################################
+## Cancelar as Contas a Receber em aberto
+#################################################################################
+for ($i = 0; $i < sizeof($contasRec); $i++) {
+	$log->debug("Cancelar Conta: ".$contasRec[$i]->getDescricao()." Parcela: ".$contasRec[$i]->getParcela()." Código: ".$contasRec[$i]->getCodigo());
+
+	#################################################################################
+	## Efetuar o cancelamento
+	#################################################################################
+	try {
+		$contaReceber		= new \Zage\Fin\ContaReceber();
+		$erro				= $contaReceber->cancela($contasRec[$i], "Desistência");
+
+		if ($erro) {
+			$log->err("Erro ao salvar: ".$erro);
+			$em->getConnection()->rollback();
+			$em->clear();
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$erro);
+			echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($erro));
+			exit;
+		}
+	
+	} catch (\Exception $e) {
+		$log->err("Erro: ".$e->getMessage());
+		$em->getConnection()->rollback();
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
+		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+		exit;
+	}
+}
 
 #################################################################################
 ## Configurações de geração de contas, apenas se for necessário
@@ -475,7 +533,9 @@ if ($numContas	> 0) {
 			$_valor				= \Zage\App\Util::to_float($aValor[$i]);
 			$_taxaBol			= \Zage\App\Util::to_float($taxaBol);
 			$_taxaAdmin			= \Zage\App\Util::to_float($taxaAdmin);
-			if (($_taxaAdmin + $_taxaBol) != $aTaxas[$i]) {
+			$taxa				= round(\Zage\App\Util::to_float($aTaxas[$i]),2);
+			$_taxas				= round(\Zage\App\Util::to_float($_taxaAdmin + $_taxaBol),2);
+			if ($_taxas != $taxa) {
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Calculo de taxas indevido, erro: 0xp8yh554'));
 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Calculo de taxas indevido, erro: 0xp8yh554')));
 				exit;
@@ -502,20 +562,11 @@ if ($numContas	> 0) {
 			$_codRateio			= array();
 		
 			$_pctRateio[]		= $pctMensalidade;
-			$_valorRateio[]		= round($_valor*$pctMensalidade/100,2);
+			$_valorRateio[]		= round($_valParcela*$pctMensalidade/100,2);
 			$_codCategoria[]	= $codCatDevMensalidade;
 			$_codCentroCusto[]	= null;
 			$_codRateio[]		= null;
 		
-
-			if ($pctSistema)		{
-				$_pctRateio[]		= $pctSistema;
-				$_valorRateio[]		= round($_valor*$pctSistema/100,2);
-				$_codCategoria[]	= $codCatDevSistema;
-				$_codCentroCusto[]	= null;
-				$_codRateio[]		= null;
-			}
-				
 			if ($pctAdmin)		{
 				$_pctRateio[]		= $pctAdmin;
 				$_valorRateio[]		= $_taxaAdmin;
@@ -531,7 +582,15 @@ if ($numContas	> 0) {
 				$_codCentroCusto[]	= null;
 				$_codRateio[]		= null;
 			}
-				
+
+			if ($pctSistema)		{
+				$_pctRateio[]		= $pctSistema;
+				$_valorRateio[]		= round($_valParcela*$pctSistema/100,2);
+				$_codCategoria[]	= $codCatDevSistema;
+				$_codCentroCusto[]	= null;
+				$_codRateio[]		= null;
+			}
+			
 			$pctRateio[$i]		= $_pctRateio;
 			$valorRateio[$i]	= $_valorRateio;
 			$codCategoria[$i]	= $_codCategoria;
@@ -593,8 +652,8 @@ if ($numContas	> 0) {
 		$devMen->setCodTipoRecorrencia($oTipoRec);
 		$devMen->setIntervaloRecorrencia(1);
 		$devMen->setCodConta($oContaRec);
-		$devMen->setIndReceberAuto($flagReceberAuto);
-		$devMen->_setflagRecebida($flagRecebida);
+		$devMen->setIndPagarAuto($flagReceberAuto);
+		$devMen->_setFlagPaga($flagRecebida);
 		$devMen->_setIndValorParcela($indValorParcela);
 		$devMen->_setIndAlterarSeq($flagAlterarSeq);
 		$devMen->_setValorTotal($valorTotal);
@@ -674,7 +733,7 @@ if ($numContas	> 0) {
 			$oPessoa	= $em->getReference('Entidades\ZgfinPessoa'						,$codPessoa);
 			$oOrg		= $em->getReference('Entidades\ZgadmOrganizacao'				,$system->getCodOrganizacao());
 			$oForma		= $em->getReference('Entidades\ZgfinFormaPagamento' 			,$codFormaPag);
-			$oStatus	= $em->getReference('Entidades\ZgfinContaStatusTipo'			,"L");
+			$oStatus	= $em->getReference('Entidades\ZgfinContaStatusTipo'			,"A");
 			$oMoeda		= $em->getReference('Entidades\ZgfinMoeda'						,1);
 			$oPeriodo	= $em->getReference('Entidades\ZgfinContaRecorrenciaPeriodo'	,$codRecPer);
 			$oTipoRec	= $em->getReference('Entidades\ZgfinContaRecorrenciaTipo'		,"U");
@@ -715,8 +774,8 @@ if ($numContas	> 0) {
 			$devSis1->setCodTipoRecorrencia($oTipoRec);
 			$devSis1->setIntervaloRecorrencia(1);
 			$devSis1->setCodConta($oContaRec);
-			$devSis1->setIndReceberAuto($flagReceberAuto);
-			$devSis1->_setflagRecebida($flagRecebida);
+			$devSis1->setIndPagarAuto($flagReceberAuto);
+			$devSis1->_setFlagPaga($flagRecebida);
 			$devSis1->_setIndValorParcela($indValorParcela);
 			$devSis1->_setIndAlterarSeq($flagAlterarSeq);
 			$devSis1->_setValorTotal($saldoSistema);
@@ -801,7 +860,7 @@ if ($numContas	> 0) {
 		$oPessoa	= $em->getReference('Entidades\ZgfinPessoa'						,$codPessoa);
 		$oOrg		= $em->getReference('Entidades\ZgadmOrganizacao'				,$system->getCodOrganizacao());
 		$oForma		= $em->getReference('Entidades\ZgfinFormaPagamento' 			,$codFormaPag);
-		$oStatus	= $em->getReference('Entidades\ZgfinContaStatusTipo'			,"L");
+		$oStatus	= $em->getReference('Entidades\ZgfinContaStatusTipo'			,"A");
 		$oMoeda		= $em->getReference('Entidades\ZgfinMoeda'						,1);
 		$oPeriodo	= $em->getReference('Entidades\ZgfinContaRecorrenciaPeriodo'	,$codRecPer);
 		$oTipoRec	= $em->getReference('Entidades\ZgfinContaRecorrenciaTipo'		,"U");
@@ -842,8 +901,8 @@ if ($numContas	> 0) {
 		$devSis2->setCodTipoRecorrencia($oTipoRec);
 		$devSis2->setIntervaloRecorrencia(1);
 		$devSis2->setCodConta($oContaRec);
-		$devSis2->setIndReceberAuto($flagReceberAuto);
-		$devSis2->_setflagRecebida($flagRecebida);
+		$devSis2->setIndPagarAuto($flagReceberAuto);
+		$devSis2->_setFlagPaga($flagRecebida);
 		$devSis2->_setIndValorParcela($indValorParcela);
 		$devSis2->_setIndAlterarSeq($flagAlterarSeq);
 		$devSis2->_setValorTotal($saldoSistema);
@@ -925,6 +984,7 @@ if ($numContas	> 0) {
 			$pctSistema				= round(($saldoSistema 		* 100) / $saldoFinal,2);
 	
 		}elseif ($contaMensalidade	== "R" && $contaSistema == "N") {
+		
 			#################################################################################
 			## Caso 2: Formando precisa pagar Mensalidade apenas e não existe saldo de sistema (SaldoSistema = 0)
 			## Somente 1 conta a receber com a mensalidade
@@ -933,6 +993,7 @@ if ($numContas	> 0) {
 			$pctSistema				= 0;
 	
 		}else{
+		
 			#################################################################################
 			## Caso 3: Precisa Pagar Mensalidade, porém precisa receber o saldo de sistema
 			## serão 2 contas a receber, cada conta terá 100% de rateio de cada valor
@@ -952,7 +1013,9 @@ if ($numContas	> 0) {
 			$_valor				= \Zage\App\Util::to_float($aValor[$i]);
 			$_taxaBol			= \Zage\App\Util::to_float($taxaBol);
 			$_taxaAdmin			= \Zage\App\Util::to_float($taxaAdmin);
-			if (($_taxaAdmin + $_taxaBol) != $aTaxas[$i]) {
+			$taxa				= round(\Zage\App\Util::to_float($aTaxas[$i]),2);
+			$_taxas				= round(\Zage\App\Util::to_float($_taxaAdmin + $_taxaBol),2); 
+			if ($_taxas != $taxa) {
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Calculo de taxas indevido, erro: 0xp8yh876'));
 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Calculo de taxas indevido, erro: 0xp8yh876')));
 				exit;
@@ -978,19 +1041,10 @@ if ($numContas	> 0) {
 			$_codRateio			= array();
 	
 			$_pctRateio[]		= $pctMensalidade;
-			$_valorRateio[]		= round($_valor*$pctMensalidade/100,2);
+			$_valorRateio[]		= round($_valParcela*$pctMensalidade/100,2);
 			$_codCategoria[]	= $codCatMensalidade;
 			$_codCentroCusto[]	= null;
 			$_codRateio[]		= null;
-	
-	
-			if ($pctSistema)		{
-				$_pctRateio[]		= $pctSistema;
-				$_valorRateio[]		= round($_valor*$pctSistema/100,2);
-				$_codCategoria[]	= $codCatPortal;
-				$_codCentroCusto[]	= null;
-				$_codRateio[]		= null;
-			}
 	
 			if ($pctAdmin)		{
 				$_pctRateio[]		= $pctAdmin;
@@ -1007,7 +1061,15 @@ if ($numContas	> 0) {
 				$_codCentroCusto[]	= null;
 				$_codRateio[]		= null;
 			}
-	
+
+			if ($pctSistema)		{
+				$_pctRateio[]		= $pctSistema;
+				$_valorRateio[]		= round($_valParcela*$pctSistema/100,2);
+				$_codCategoria[]	= $codCatPortal;
+				$_codCentroCusto[]	= null;
+				$_codRateio[]		= null;
+			}
+				
 			$pctRateio[$i]		= $_pctRateio;
 			$valorRateio[$i]	= $_valorRateio;
 			$codCategoria[$i]	= $_codCategoria;
@@ -1151,7 +1213,7 @@ if ($numContas	> 0) {
 			$oPessoa	= $em->getReference('Entidades\ZgfinPessoa'						,$codPessoa);
 			$oOrg		= $em->getReference('Entidades\ZgadmOrganizacao'				,$system->getCodOrganizacao());
 			$oForma		= $em->getReference('Entidades\ZgfinFormaPagamento' 			,$codFormaPag);
-			$oStatus	= $em->getReference('Entidades\ZgfinContaStatusTipo'			,"L");
+			$oStatus	= $em->getReference('Entidades\ZgfinContaStatusTipo'			,"A");
 			$oMoeda		= $em->getReference('Entidades\ZgfinMoeda'						,1);
 			$oPeriodo	= $em->getReference('Entidades\ZgfinContaRecorrenciaPeriodo'	,$codRecPer);
 			$oTipoRec	= $em->getReference('Entidades\ZgfinContaRecorrenciaTipo'		,"U");
@@ -1280,7 +1342,7 @@ if ($numContas	> 0) {
 		$oPessoa	= $em->getReference('Entidades\ZgfinPessoa'						,$codPessoa);
 		$oOrg		= $em->getReference('Entidades\ZgadmOrganizacao'				,$system->getCodOrganizacao());
 		$oForma		= $em->getReference('Entidades\ZgfinFormaPagamento' 			,$codFormaPag);
-		$oStatus	= $em->getReference('Entidades\ZgfinContaStatusTipo'			,"L");
+		$oStatus	= $em->getReference('Entidades\ZgfinContaStatusTipo'			,"A");
 		$oMoeda		= $em->getReference('Entidades\ZgfinMoeda'						,1);
 		$oPeriodo	= $em->getReference('Entidades\ZgfinContaRecorrenciaPeriodo'	,$codRecPer);
 		$oTipoRec	= $em->getReference('Entidades\ZgfinContaRecorrenciaTipo'		,"U");
@@ -1374,17 +1436,64 @@ $desistencia		= new \Entidades\ZgfmtDesistencia();
 #################################################################################
 $codTipoDesistencia	= (sizeof($aSelEventos) > 0) ? "P" : "D";
 
-
 #################################################################################
 ## Resgata os objetos (chave estrangeiras)
 #################################################################################
 $oOrg		= $em->getReference('Entidades\ZgadmOrganizacao'				,$system->getCodOrganizacao());
 $oTipoDes	= $em->getReference('Entidades\ZgfmtDesistenciaTipo' 			,$codTipoDesistencia);
+$oTipoBase	= $em->getReference('Entidades\ZgfmtBaseCalculoTipo' 			,$codTipoBaseCalculo);
+
+#################################################################################
+## Coloca na fila do doctrine
+#################################################################################
+$desistencia->setCodFormando($oUsuario);
+$desistencia->setCodOrganizacao($oOrg);
+$desistencia->setCodTipoBaseCalculo($oTipoBase);
+$desistencia->setCodTipoDesistencia($oTipoDes);
+$desistencia->setCodTransacao($codTransacao);
+$desistencia->setDataDesistencia(new \DateTime());
+$desistencia->setPctMulta($pctMulta);
+$desistencia->setValorMulta($valMulta);
+$em->persist($desistencia);
+
+#################################################################################
+## Salvar a participação nos eventos
+#################################################################################
+for ($i = 0; $i < sizeof($aSelEventos); $i++) {
+
+	#################################################################################
+	## Resgata os objetos (chave estrangeiras)
+	#################################################################################
+	$oOrg		= $em->getReference('Entidades\ZgadmOrganizacao'		,$system->getCodOrganizacao());
+	$oEvento	= $em->getReference('Entidades\ZgfmtEvento'				,$aSelEventos[$i]);
+	$oUsuario	= $em->getReference('Entidades\ZgsegUsuario'			,$codFormando);
+	
+	$eventoPart		= new \Entidades\ZgfmtEventoParticipacao();
+	$eventoPart->setCodEvento($oEvento);
+	$eventoPart->setCodFormando($oUsuario);
+	$eventoPart->setCodOrganizacao($oOrg);
+	$eventoPart->setDataCadastro(new \DateTime());
+	$eventoPart->setValor(\Zage\App\Util::to_float($aValorEventos[$i]));
+	$em->persist($eventoPart);
+}
 
 
-$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Tipo de conta: $codTipoConta !!!"));
-echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Tipo de conta: $codTipoConta !!!")));
-exit;
+#################################################################################
+## Calcular o status da Desistência
+#################################################################################
+if ($codTipoDesistencia	== "P") {
+	$codStatusAss		= "D";
+}else{
+	$codStatusAss		= "T";
+}
+$oStAs		= $em->getReference('Entidades\ZgsegUsuarioOrganizacaoStatus'		,$codStatusAss);
+
+#################################################################################
+## Alterar a associação do usuário na organização
+#################################################################################
+$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codFormando,'codOrganizacao' => $system->getCodOrganizacao()));
+$oUsuOrg->setCodStatus($oStAs);
+$em->persist($oUsuOrg);
 
 #################################################################################
 ## Define a variável de sessão da listagem de contas para a data do primeiro vencimento

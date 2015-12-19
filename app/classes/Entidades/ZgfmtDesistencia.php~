@@ -36,6 +36,20 @@ class ZgfmtDesistencia
     private $pctDevolucao;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_MULTA", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $valorMulta;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="COD_TRANSACAO", type="integer", nullable=true)
+     */
+    private $codTransacao;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -130,6 +144,52 @@ class ZgfmtDesistencia
     public function getPctDevolucao()
     {
         return $this->pctDevolucao;
+    }
+
+    /**
+     * Set valorMulta
+     *
+     * @param float $valorMulta
+     * @return ZgfmtDesistencia
+     */
+    public function setValorMulta($valorMulta)
+    {
+        $this->valorMulta = $valorMulta;
+
+        return $this;
+    }
+
+    /**
+     * Get valorMulta
+     *
+     * @return float 
+     */
+    public function getValorMulta()
+    {
+        return $this->valorMulta;
+    }
+
+    /**
+     * Set codTransacao
+     *
+     * @param integer $codTransacao
+     * @return ZgfmtDesistencia
+     */
+    public function setCodTransacao($codTransacao)
+    {
+        $this->codTransacao = $codTransacao;
+
+        return $this;
+    }
+
+    /**
+     * Get codTransacao
+     *
+     * @return integer 
+     */
+    public function getCodTransacao()
+    {
+        return $this->codTransacao;
     }
 
     /**
