@@ -67,6 +67,7 @@ try {
 	if ($numFormando == 0){
 		$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => "A"));
 		$oOrg->setCodStatus($oCodStatus);
+		$oOrg->setDataAtivacao(new DateTime(now));
 	
 		$em->persist($oOrg);
 	}	
