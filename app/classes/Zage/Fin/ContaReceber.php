@@ -314,7 +314,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				$_val				= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($_valorOutros) - \Zage\App\Util::to_float($this->getValorDesconto()) - \Zage\App\Util::to_float($this->getValorDescontoJuros()) - \Zage\App\Util::to_float($this->getValorDescontoMora());
 				$_valorTotal		+= $_val;
 				$valores[$i]		= \Zage\App\Util::to_float($this->_valores[$i]); 
-				$outrosValores[$i]	= \Zage\App\Util::to_float($_valorOutros);
+				$outrosValores[$i]	= ($_valorOutros) ? \Zage\App\Util::to_float($_valorOutros) : 0;
 			}
 		}
 		
@@ -558,11 +558,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Ajustes nos campos
 		#################################################################################
-		$this->setValor(\Zage\App\Util::toMysqlNumber($this->getValor()));
-		$this->setValorJuros(\Zage\App\Util::toMysqlNumber($this->getValorJuros()));
-		$this->setValorMora(\Zage\App\Util::toMysqlNumber($this->getValorMora()));
-		$this->setValorDesconto(\Zage\App\Util::toMysqlNumber($this->getValorDesconto()));
-		$this->setValorOutros(\Zage\App\Util::toMysqlNumber($this->getValorOutros()));
+		$this->setValor(\Zage\App\Util::to_float($this->getValor()));
+		$this->setValorJuros(\Zage\App\Util::to_float($this->getValorJuros()));
+		$this->setValorMora(\Zage\App\Util::to_float($this->getValorMora()));
+		$this->setValorDesconto(\Zage\App\Util::to_float($this->getValorDesconto()));
+		$this->setValorOutros(\Zage\App\Util::to_float($this->getValorOutros()));
 
 		#################################################################################
 		## Número de Parcelas, se não definido usar o padrão que é "1"
@@ -2574,12 +2574,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		$aBaixa	=  $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codContaRec' => $oConta->getCodigo()));
 
-		if ($aBaixa) {
-			$log->info("Baixa: ".$aBaixa[0]->getCodigo()." encontrada !!!");
-		}
-
 		#################################################################################
-		## Verificar se Existem baixas
+		## Verificar se Existem Substituições
 		#################################################################################
 		$oSub	=  $em->getRepository('Entidades\ZgfinContaRecHistSub')->findBy(array('codConta' => $oConta->getCodigo()));
 			

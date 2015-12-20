@@ -47,6 +47,13 @@ $aValorEventos		= ($aValorEventos)	? explode(",",$aValorEventos)	: array();
 //$log->info("aSelEventos2: ".serialize($aSelEventos));
 //$log->info("aValorEventos2: ".serialize($aValorEventos));
 
+
+//$log->info("aValor: ".serialize($aValor));
+//$log->info("aTaxa: ".serialize($aTaxas));
+//$log->info("aTotal: ".serialize($aTotal));
+
+
+
 #################################################################################
 ## Descompacta o ID
 #################################################################################
@@ -335,11 +342,13 @@ $codCatDevSistema		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO
 $aOutrosValores		= array();
 $valorTotal			= 0;
 $valorTaxas			= 0;
+$valorOutros		= 0;
 for ($i = 0; $i < sizeof($aValor); $i++) {
-	$valorOutros			= \Zage\App\Util::to_float($aTaxas[$i]);
-	$valorTaxas				+= \Zage\App\Util::to_float($aTaxas[$i]);
-	$aOutrosValores[]		=  $valorOutros;
-	$valorTotal 			+= (\Zage\App\Util::to_float($aValor[$i]) + $valorOutros);
+	$_tempTaxa				= \Zage\App\Util::to_float($aTaxas[$i]);
+	$valorOutros			+= $_tempTaxa;
+	$valorTaxas				+= $_tempTaxa;
+	$aOutrosValores[]		=  $_tempTaxa;
+	$valorTotal 			+= (\Zage\App\Util::to_float($aValor[$i]) + $_tempTaxa);
 }
 
 $valorOutros		= round(\Zage\App\Util::to_float($valorOutros),2);
@@ -494,42 +503,55 @@ if ($numContas	> 0) {
 		$codRateio			= array();
 
 		#################################################################################
-		## Calcular os percentuais de devolução de sistema e Mensalidade
+		## Calcular se será necessário gerar mais uma conta
 		#################################################################################
-		if ($contaMensalidade == "P" && $contaSistema == "P") {
-				
-			#################################################################################
-			## Caso 1: Formando precisa devolver Mensalidade e Sistema
-			## Somente 1 conta a pagar com as 2 devoluções (2 categorias)
-			#################################################################################
-			$pctMensalidade			= round(($saldoMensalidade	* 100) / $saldoFinal,2);
-			$pctSistema				= round(($saldoSistema 		* 100) / $saldoFinal,2);
-				
-		}elseif ($contaMensalidade	== "P" && $contaSistema == "N") {
-			#################################################################################
-			## Caso 2: Formando precisa devolver Mensalidade apenas e não existe saldo de sistema (SaldoSistema = 0)
-			## Somente 1 conta a pagar com a devolução da mensalidade
-			#################################################################################
-			$pctMensalidade			= 100;
-			$pctSistema				= 0;
-				
-		}else{
-			#################################################################################
-			## Caso 3: Formand precisa devolver Mensalidade, porém precisa pagar o saldo de sistema
-			## serão 2 contas a pagar, cada conta terá 100% de rateio de cada valor
-			## Gerar agora apenas a conta de mensalidade
-			#################################################################################
-			$pctMensalidade			= 100;
-			$pctSistema				= 0;
+		if ($contaMensalidade == "P" && $contaSistema == "R") {
 			$indGeraDevSis			= true;
-				
 		}
+		
+		#################################################################################
+		## Variáveis de valores totais, para auxiliar no calculo das parcelas
+		#################################################################################
+		$_vTotalMen		= 0;
+		$_vTotalSis		= 0;
 		
 		#################################################################################
 		## Criar o array de acordo com o número de parcelas
 		#################################################################################
 		for ($i = 0; $i < $numMeses; $i++) {
 
+
+			#################################################################################
+			## Calcular os percentuais de devolução de sistema e Mensalidade
+			#################################################################################
+			if ($contaMensalidade == "P" && $contaSistema == "P") {
+			
+				#################################################################################
+				## Caso 1: Formando precisa devolver Mensalidade e Sistema
+				## Somente 1 conta a pagar com as 2 devoluções (2 categorias)
+				#################################################################################
+				$pctMensalidade			= round(($saldoMensalidade	* 100) / $saldoFinal,2);
+				$pctSistema				= 100 - $pctMensalidade;
+			
+			}elseif ($contaMensalidade	== "P" && $contaSistema == "N") {
+				#################################################################################
+				## Caso 2: Formando precisa devolver Mensalidade apenas e não existe saldo de sistema (SaldoSistema = 0)
+				## Somente 1 conta a pagar com a devolução da mensalidade
+				#################################################################################
+				$pctMensalidade			= 100;
+				$pctSistema				= 0;
+			
+			}else{
+				#################################################################################
+				## Caso 3: Formand precisa devolver Mensalidade, porém precisa pagar o saldo de sistema
+				## serão 2 contas a pagar, cada conta terá 100% de rateio de cada valor
+				## Gerar agora apenas a conta de mensalidade
+				#################################################################################
+				$pctMensalidade			= 100;
+				$pctSistema				= 0;
+			}
+				
+			
 			$_valor				= \Zage\App\Util::to_float($aValor[$i]);
 			$_taxaBol			= \Zage\App\Util::to_float($taxaBol);
 			$_taxaAdmin			= \Zage\App\Util::to_float($taxaAdmin);
@@ -542,12 +564,11 @@ if ($numContas	> 0) {
 			}
 			
 			$_valParcela		= ($_valor + $_taxaAdmin + $_taxaBol);
-			$pctTaxas			= round((($_taxaAdmin + $_taxaBol) * 100) / $_valParcela,2);
+			$pctTaxas			= round(($_taxas * 100) / $_valParcela,2);
 			$pctBol				= round(($_taxaBol * 100) / $_valParcela,2);
 			$pctAdmin			= $pctTaxas - $pctBol;
 			$pctValores			= 100 - $pctTaxas;
 			
-				
 			#################################################################################
 			## Aplicar o percentual somente de valores aos percentuais de sistema e mensalidade
 			## ou seja, retirar o percentual de taxas
@@ -555,6 +576,36 @@ if ($numContas	> 0) {
 			$pctMensalidade		= round($pctMensalidade * $pctValores / 100,2);
 			$pctSistema			= $pctValores - $pctMensalidade;
 					
+			#################################################################################
+			## Calcula os valores referente a cada categoria
+			#################################################################################
+			if ($i == ($numMeses - 1)) { // Última Parcela
+				if ($pctMensalidade && $pctSistema)	{
+					$_valMen			= round($saldoMensalidade - $_vTotalMen,2);
+				}elseif ($pctMensalidade) {
+					$_valMen			= round($saldoMensalidade - $saldoSistema - $_vTotalMen,2);
+				}else{
+					$_valMen			= 0;
+				}
+			}else{
+				if ($pctMensalidade && $pctSistema)	{
+					$_valMen			= round($_valParcela*$pctMensalidade/100,2);
+				}elseif ($pctMensalidade) {
+					$_valMen			= $_valor;
+				}else{
+					$_valMen			= 0;
+				}
+				
+				$_valSis			= ($pctSistema		> 0)	? ($_valParcela - $_taxas - $_valMen)		: 0;
+			}
+			
+			#################################################################################
+			## Atualiza os valores totais
+			#################################################################################
+			$_vTotalMen			+= $_valMen;
+			$_vTotalSis			+= $_valSis;
+				
+			
 			$_pctRateio			= array();
 			$_valorRateio		= array();
 			$_codCategoria		= array();
@@ -562,7 +613,7 @@ if ($numContas	> 0) {
 			$_codRateio			= array();
 		
 			$_pctRateio[]		= $pctMensalidade;
-			$_valorRateio[]		= round($_valParcela*$pctMensalidade/100,2);
+			$_valorRateio[]		= $_valMen;
 			$_codCategoria[]	= $codCatDevMensalidade;
 			$_codCentroCusto[]	= null;
 			$_codRateio[]		= null;
@@ -585,7 +636,7 @@ if ($numContas	> 0) {
 
 			if ($pctSistema)		{
 				$_pctRateio[]		= $pctSistema;
-				$_valorRateio[]		= round($_valParcela*$pctSistema/100,2);
+				$_valorRateio[]		= $_valSis;
 				$_codCategoria[]	= $codCatDevSistema;
 				$_codCentroCusto[]	= null;
 				$_codRateio[]		= null;
@@ -626,6 +677,8 @@ if ($numContas	> 0) {
 		## Criar as variáveis das parcelas
 		#################################################################################
 		$descricao		= "Devolução de Mensalidade (Desistência)";
+		
+		//$log->info("Vou cadastrar a devolução de mensalidade, valorOutros: ".$valorOutros);
 		
 		#################################################################################
 		## Escrever os valores no objeto
@@ -767,7 +820,7 @@ if ($numContas	> 0) {
 			$devSis1->setDataVencimento($dataVenc);
 			$devSis1->setDocumento(null);
 			$devSis1->setObservacao($obs);
-			$devSis1->setNumParcelas($numParcelas);
+			$devSis1->setNumParcelas(1);
 			$devSis1->setParcelaInicial(1);
 			$devSis1->setParcela(1);
 			$devSis1->setCodPeriodoRecorrencia($oPeriodo);
@@ -843,7 +896,7 @@ if ($numContas	> 0) {
 		#################################################################################
 		$pctRateio[]		= $pctSistema;
 		$valorRateio[]		= $saldoSistema;
-		$codCategoria[]		= $codCatDevMensalidade;
+		$codCategoria[]		= $codCatDevSistema;
 		$codCentroCusto[]	= null;
 		$codRateio[]		= null;
 		
@@ -894,7 +947,7 @@ if ($numContas	> 0) {
 		$devSis2->setDataVencimento($dataVenc);
 		$devSis2->setDocumento(null);
 		$devSis2->setObservacao($obs);
-		$devSis2->setNumParcelas($numParcelas);
+		$devSis2->setNumParcelas(1);
 		$devSis2->setParcelaInicial(1);
 		$devSis2->setParcela(1);
 		$devSis2->setCodPeriodoRecorrencia($oPeriodo);
@@ -972,44 +1025,56 @@ if ($numContas	> 0) {
 		$codRateio			= array();
 	
 		#################################################################################
-		## Calcular os percentuais de sistema e Mensalidade
+		## Calcular se será necessário gerar mais uma conta
 		#################################################################################
-		if ($contaMensalidade == "R" && $contaSistema == "R") {
-	
-			#################################################################################
-			## Caso 1: Formando precisa pagar Mensalidade e Sistema
-			## Somente 1 conta a receber com as 2 categorias
-			#################################################################################
-			$pctMensalidade			= round(($saldoMensalidade	* 100) / $saldoFinal,2);
-			$pctSistema				= round(($saldoSistema 		* 100) / $saldoFinal,2);
-	
-		}elseif ($contaMensalidade	== "R" && $contaSistema == "N") {
-		
-			#################################################################################
-			## Caso 2: Formando precisa pagar Mensalidade apenas e não existe saldo de sistema (SaldoSistema = 0)
-			## Somente 1 conta a receber com a mensalidade
-			#################################################################################
-			$pctMensalidade			= 100;
-			$pctSistema				= 0;
-	
-		}else{
-		
-			#################################################################################
-			## Caso 3: Precisa Pagar Mensalidade, porém precisa receber o saldo de sistema
-			## serão 2 contas a receber, cada conta terá 100% de rateio de cada valor
-			## Gerar agora apenas a conta de mensalidade
-			#################################################################################
-			$pctMensalidade			= 100;
-			$pctSistema				= 0;
+		if ($contaMensalidade == "R" && $contaSistema == "P") {
 			$indGeraPagSis			= true;
-	
 		}
-	
+
+		#################################################################################
+		## Variáveis de valores totais, para auxiliar no calculo das parcelas
+		#################################################################################
+		$_vTotalMen		= 0;
+		$_vTotalSis		= 0;
+		
 		#################################################################################
 		## Criar o array de acordo com o número de parcelas
 		#################################################################################
 		for ($i = 0; $i < $numMeses; $i++) {
-	
+
+			
+			#################################################################################
+			## Calcular os percentuais de sistema e Mensalidade
+			#################################################################################
+			if ($contaMensalidade == "R" && $contaSistema == "R") {
+			
+				#################################################################################
+				## Caso 1: Formando precisa pagar Mensalidade e Sistema
+				## Somente 1 conta a receber com as 2 categorias
+				#################################################################################
+				$pctMensalidade			= round(($saldoMensalidade	* 100) / $saldoFinal,2);
+				$pctSistema				= 100 - $pctMensalidade;
+			
+			}elseif ($contaMensalidade	== "R" && $contaSistema == "N") {
+			
+				#################################################################################
+				## Caso 2: Formando precisa pagar Mensalidade apenas e não existe saldo de sistema (SaldoSistema = 0)
+				## Somente 1 conta a receber com a mensalidade
+				#################################################################################
+				$pctMensalidade			= 100;
+				$pctSistema				= 0;
+			
+			}else{
+			
+				#################################################################################
+				## Caso 3: Precisa Pagar Mensalidade, porém precisa receber o saldo de sistema
+				## serão 2 contas a receber, cada conta terá 100% de rateio de cada valor
+				## Gerar agora apenas a conta de mensalidade
+				#################################################################################
+				$pctMensalidade			= 100;
+				$pctSistema				= 0;
+			}
+				
 			$_valor				= \Zage\App\Util::to_float($aValor[$i]);
 			$_taxaBol			= \Zage\App\Util::to_float($taxaBol);
 			$_taxaAdmin			= \Zage\App\Util::to_float($taxaAdmin);
@@ -1022,7 +1087,7 @@ if ($numContas	> 0) {
 			}
 				
 			$_valParcela		= ($_valor + $_taxaAdmin + $_taxaBol);
-			$pctTaxas			= round((($_taxaAdmin + $_taxaBol) * 100) / $_valParcela,2);
+			$pctTaxas			= round(($_taxas * 100) / $_valParcela,2);
 			$pctBol				= round(($_taxaBol * 100) / $_valParcela,2);
 			$pctAdmin			= $pctTaxas - $pctBol;
 			$pctValores			= 100 - $pctTaxas;
@@ -1033,6 +1098,38 @@ if ($numContas	> 0) {
 			#################################################################################
 			$pctMensalidade		= round($pctMensalidade * $pctValores / 100,2);
 			$pctSistema			= $pctValores - $pctMensalidade;
+
+			#################################################################################
+			## Calcula os valores referente a cada categoria
+			#################################################################################
+			if ($i == ($numMeses - 1)) { // Última Parcela
+				if ($pctMensalidade && $pctSistema)	{
+					$_valMen			= round($saldoMensalidade	- $_vTotalMen,2);
+				}elseif ($pctMensalidade) {
+					$_valMen			= round($saldoMensalidade - $saldoSistema - $_vTotalMen,2);
+				}else{
+					$_valMen			= 0;
+				}
+				$_valSis			= ($pctSistema		> 0)	? round($saldoSistema 		- $_vTotalSis,2)	: 0;
+			}else{
+				if ($pctMensalidade && $pctSistema)	{
+					$_valMen			= round($_valParcela*$pctMensalidade/100,2);
+				}elseif ($pctMensalidade) {
+					$_valMen			= $_valor;
+				}else{
+					$_valMen			= 0;
+				}
+				$_valSis			= ($pctSistema		> 0)	? ($_valParcela - $_taxas - $_valMen)		: 0;
+			}
+			
+			#################################################################################
+			## Atualiza os valores totais
+			#################################################################################
+			$_vTotalMen			+= $_valMen;
+			$_vTotalSis			+= $_valSis;
+				
+			//$log->info("Parcela (".($i+1).") PctMensalidade: ".$pctMensalidade." PctSistema: ".$pctSistema." PctTaxas: ".$pctTaxas." PctBol: ".$pctBol." PctAdmin: ".$pctAdmin);
+			//$log->info("Parcela (".($i+1).") ValorParcela: ".$_valParcela." ValorMensalidade: ".$_valMen." ValorSistema: ".$_valSis);
 				
 			$_pctRateio			= array();
 			$_valorRateio		= array();
@@ -1041,7 +1138,7 @@ if ($numContas	> 0) {
 			$_codRateio			= array();
 	
 			$_pctRateio[]		= $pctMensalidade;
-			$_valorRateio[]		= round($_valParcela*$pctMensalidade/100,2);
+			$_valorRateio[]		= $_valMen;
 			$_codCategoria[]	= $codCatMensalidade;
 			$_codCentroCusto[]	= null;
 			$_codRateio[]		= null;
@@ -1064,7 +1161,7 @@ if ($numContas	> 0) {
 
 			if ($pctSistema)		{
 				$_pctRateio[]		= $pctSistema;
-				$_valorRateio[]		= round($_valParcela*$pctSistema/100,2);
+				$_valorRateio[]		= $_valSis;
 				$_codCategoria[]	= $codCatPortal;
 				$_codCentroCusto[]	= null;
 				$_codRateio[]		= null;
@@ -1247,7 +1344,7 @@ if ($numContas	> 0) {
 			$portal1->setDataVencimento($dataVenc);
 			$portal1->setDocumento(null);
 			$portal1->setObservacao($obs);
-			$portal1->setNumParcelas($numParcelas);
+			$portal1->setNumParcelas(1);
 			$portal1->setParcelaInicial(1);
 			$portal1->setParcela(1);
 			$portal1->setCodPeriodoRecorrencia($oPeriodo);
@@ -1376,7 +1473,7 @@ if ($numContas	> 0) {
 		$portal2->setDataVencimento($dataVenc);
 		$portal2->setDocumento(null);
 		$portal2->setObservacao($obs);
-		$portal2->setNumParcelas($numParcelas);
+		$portal2->setNumParcelas(1);
 		$portal2->setParcelaInicial(1);
 		$portal2->setParcela(1);
 		$portal2->setCodPeriodoRecorrencia($oPeriodo);
@@ -1426,6 +1523,12 @@ if ($numContas	> 0) {
 }
 
 
+/*$em->getConnection()->rollback();
+$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Somente verificar valores"));
+echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Somente verificar valores")));
+exit;*/
+
+
 #################################################################################
 ## Gerar a desistência
 #################################################################################
@@ -1434,14 +1537,16 @@ $desistencia		= new \Entidades\ZgfmtDesistencia();
 #################################################################################
 ## Calcular o tipo de desistência
 #################################################################################
-$codTipoDesistencia	= (sizeof($aSelEventos) > 0) ? "P" : "D";
+$codTipoDesistencia	= (sizeof($aSelEventos) > 0) ? "P" : "T";
 
 #################################################################################
 ## Resgata os objetos (chave estrangeiras)
 #################################################################################
-$oOrg		= $em->getReference('Entidades\ZgadmOrganizacao'				,$system->getCodOrganizacao());
-$oTipoDes	= $em->getReference('Entidades\ZgfmtDesistenciaTipo' 			,$codTipoDesistencia);
-$oTipoBase	= $em->getReference('Entidades\ZgfmtBaseCalculoTipo' 			,$codTipoBaseCalculo);
+$oOrg			= $em->getReference('Entidades\ZgadmOrganizacao'				,$system->getCodOrganizacao());
+$oTipoBase		= $em->getReference('Entidades\ZgfmtBaseCalculoTipo' 			,$codTipoBaseCalculo);
+$oTipoDes		= $em->getRepository('Entidades\ZgfmtDesistenciaTipo')->findOneBy(array('codigo' => $codTipoDesistencia));
+$codStatusAss	= $oTipoDes->getCodStatus()->getCodigo();
+$oStAs			= $oTipoDes->getCodStatus();
 
 #################################################################################
 ## Coloca na fila do doctrine
@@ -1478,15 +1583,6 @@ for ($i = 0; $i < sizeof($aSelEventos); $i++) {
 }
 
 
-#################################################################################
-## Calcular o status da Desistência
-#################################################################################
-if ($codTipoDesistencia	== "P") {
-	$codStatusAss		= "D";
-}else{
-	$codStatusAss		= "T";
-}
-$oStAs		= $em->getReference('Entidades\ZgsegUsuarioOrganizacaoStatus'		,$codStatusAss);
 
 #################################################################################
 ## Alterar a associação do usuário na organização

@@ -81,16 +81,16 @@ $documento			= "";
 #################################################################################
 ## Calcula o valor pendente de recebimento
 #################################################################################
-$contaPag			= new \Zage\Fin\ContaReceber();
-$saldoDet			= $contaPag->getSaldoAReceberDetalhado($codConta);
-if (!$contaPag->getValorJaRecebido($codConta)) {
-	$valor				= \Zage\App\Util::toPHPNumber($oConta->getValor());
-	$valorDesconto		= \Zage\App\Util::toPHPNumber($oConta->getValorDesconto());
-	$valorOutros		= \Zage\App\Util::toPHPNumber($oConta->getValorOutros());
+$contaRec			= new \Zage\Fin\ContaReceber();
+$saldoDet			= $contaRec->getSaldoAReceberDetalhado($codConta);
+if (!$contaRec->getValorJaRecebido($codConta)) {
+	$valor				= \Zage\App\Util::to_float($oConta->getValor());
+	$valorDesconto		= \Zage\App\Util::to_float($oConta->getValorDesconto());
+	$valorOutros		= \Zage\App\Util::to_float($oConta->getValorOutros());
 }else{
-	$valor				= \Zage\App\Util::toPHPNumber($saldoDet["PRINCIPAL"]);
+	$valor				= \Zage\App\Util::to_float($saldoDet["PRINCIPAL"]);
 	$valorDesconto		= 0;
-	$valorOutros		= \Zage\App\Util::toPHPNumber($saldoDet["OUTROS"]);
+	$valorOutros		= \Zage\App\Util::to_float($saldoDet["OUTROS"]);
 	
 	#################################################################################
 	## Verificar se o outros valores foi pago no valor principal
@@ -99,7 +99,6 @@ if (!$contaPag->getValorJaRecebido($codConta)) {
 		$valor			= 0;
 		$valorOutros	= 0;
 	}
-	
 }
 
 #################################################################################
@@ -114,8 +113,8 @@ if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRec) == true
 	$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($oConta->getCodigo(), $dataRec);
 	
 }else{
-	$valorJuros			= \Zage\App\Util::toPHPNumber($oConta->getValorJuros());
-	$valorMora			= \Zage\App\Util::toPHPNumber($oConta->getValorMora());
+	$valorJuros			= \Zage\App\Util::to_float($oConta->getValorJuros());
+	$valorMora			= \Zage\App\Util::to_float($oConta->getValorMora());
 }
 
 #################################################################################

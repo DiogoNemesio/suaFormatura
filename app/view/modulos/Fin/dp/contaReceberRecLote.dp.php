@@ -117,15 +117,69 @@ try {
 			$dataRec		= $contas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
 		}
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		#################################################################################
-		## Resgatar o valor (Saldo da conta) que tem a receber
+		## Calcula o valor pendente de recebimento
 		#################################################################################
-		$valor				= \Zage\App\Util::toPHPNumber($conta->getSaldoAReceber($contas[$i]->getCodigo()));
+		$contaRec			= new \Zage\Fin\ContaReceber();
+		$saldoDet			= $contaRec->getSaldoAReceberDetalhado($contas[$i]->getCodigo());
+		if (!$contaRec->getValorJaRecebido($contas[$i]->getCodigo())) {
+			$valor				= \Zage\App\Util::to_float($contas[$i]->getValor());
+			$valorDesconto		= \Zage\App\Util::to_float($contas[$i]->getValorDesconto());
+			$valorOutros		= \Zage\App\Util::to_float($contas[$i]->getValorOutros());
+		}else{
+			$valor				= \Zage\App\Util::to_float($saldoDet["PRINCIPAL"]);
+			$valorDesconto		= 0;
+			$valorOutros		= \Zage\App\Util::to_float($saldoDet["OUTROS"]);
+		
+			#################################################################################
+			## Verificar se o outros valores foi pago no valor principal
+			#################################################################################
+			if (($valor < 0) && (($valor + $valorOutros) == 0)) {
+				$valor			= 0;
+				$valorOutros	= 0;
+			}
+		}
+		
+		#################################################################################
+		## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+		#################################################################################
+		if (\Zage\Fin\ContaReceber::estaAtrasada($contas[$i]->getCodigo(), $dataRec) == true) {
+		
+			#################################################################################
+			## Calcula os valor através da data de referência
+			#################################################################################
+			$valorJuros		= \Zage\Fin\ContaReceber::calculaJurosPorAtraso($contas[$i]->getCodigo(), $dataRec);
+			$valorMora		= \Zage\Fin\ContaReceber::calculaMoraPorAtraso($contas[$i]->getCodigo(), $dataRec);
+		
+		}else{
+			$valorJuros			= \Zage\App\Util::to_float($contas[$i]->getValorJuros());
+			$valorMora			= \Zage\App\Util::to_float($contas[$i]->getValorMora());
+		}
+		
+		#################################################################################
+		## Atualiza o saldo a receber
+		#################################################################################
+		$valorJuros			+= $saldoDet["JUROS"];
+		$valorMora			+= $saldoDet["MORA"];
+		
+		//$valor				= \Zage\App\Util::to_float($conta->getSaldoAReceber($contas[$i]->getCodigo()));
 		
 		#################################################################################
 		## Efetiva o recebimento
 		#################################################################################
-		$erro		= $conta->recebe($contas[$i],$codContaCre,$codFormaPag,$dataRec,$valor,0,0,0,0,0,0,$documento,"MAN",null);
+		$erro		= $conta->recebe($contas[$i],$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,0,0,$documento,"MAN",null);
 		if ($erro != false) {
 			$em->getConnection()->rollback();
 			echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($erro));

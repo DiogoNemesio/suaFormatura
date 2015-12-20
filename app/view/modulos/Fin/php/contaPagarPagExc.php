@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$system,$tr;
+global $system,$em,$tr;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -40,108 +40,72 @@ $system->checaPermissao($_codMenu_);
 ## Verificar parâmetro obrigatório
 #################################################################################
 if (!isset($codConta)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
-
+if (!isset($codHist)) \Zage\App\Erro::halt('Falta de Parâmetros 3');
 
 #################################################################################
-## Resgata as informações do banco
+## Resgata as informações da conta
 #################################################################################
-$oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
+$oConta		= $em->getRepository('Entidades\ZgfinContaPagar')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codConta));
+if (!$oConta) \Zage\App\Erro::halt('Conta não encontrada');
 
-if (!$oConta) {
-	\Zage\App\Erro::halt($tr->trans('Conta %s não encontrada !!!',array('%s' => $codConta)));
-}
+#################################################################################
+## Resgata as informações da Baixa
+#################################################################################
+$oHist		= $em->getRepository('Entidades\ZgfinHistoricoPag')->findOneBy(array('codigo' => $codHist));
+if (!$oHist) \Zage\App\Erro::halt('Pagamento não encontrado');
+
+#################################################################################
+## Verificar se a baixa pertence a conta informada
+#################################################################################
+if ($codConta != $oHist->getCodContaPag()->getCodigo()) \Zage\App\Erro::halt('Exclusão de baixa indevida, ERR: 01x947');
 
 #################################################################################
 ## Resgata o perfil da conta
 #################################################################################
 $codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
 
-#################################################################################
-## Verifica se a conta pode ser confirmada
-#################################################################################
-if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "HIS")) {
-	$podeHis	= false;
-}else{
-	$podeHis	= true;
-}
-
-#################################################################################
-## Verifica se pode Excluir baixa da conta
-#################################################################################
 if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "EXB")) {
-	$podeExb	= false;
-}else{
-	$podeExb	= true;
+	\Zage\App\Erro::halt('Pagamento não pode ser excluído');
 }
 
 #################################################################################
-## Verifica se pode ser visualizado o histórico
+## Gerenciar as URls
 #################################################################################
-if (!$podeHis) {
-	\Zage\App\Erro::halt($tr->trans('Conta não pode ter o histórico visualizado, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
-}
-
-#################################################################################
-## Resgata o Histórico
-#################################################################################
-$oHist		= $em->getRepository('Entidades\ZgfinHistoricoRec')->findBy(array('codContaRec' => $codConta));
-
-#################################################################################
-## Cria o objeto do Grid (bootstrap)
-#################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GContaHis");
-$grid->setPagingType(\Zage\App\Grid\Tipo::PG_NONE);
-$grid->setFiltro(0);
-$grid->setMostraInfo(0);
-$grid->adicionaTexto($tr->trans('FORMA PAG'),			15, $grid::CENTER	,'codFormaPagamento:descricao');
-$grid->adicionaData($tr->trans('DATA REC'),				8, $grid::CENTER	,'dataRecebimento');
-$grid->adicionaMoeda($tr->trans('VALOR'),				10, $grid::CENTER	,'valorRecebido');
-$grid->adicionaMoeda($tr->trans('JUROS'),				10, $grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('MORA'),				10, $grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('DESCONTO'),			10, $grid::CENTER	,'valorDesconto');
-$grid->adicionaMoeda($tr->trans('OUTROS'),				10, $grid::CENTER	,'valorOutros');
-$grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome');
-$grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
-$grid->adicionaIcone("#", "fa fa-trash red", "Excluir o recebimento");
-$grid->importaDadosDoctrine($oHist);
-
-#################################################################################
-## Popula os valores dos botões
-#################################################################################
-for ($i = 0; $i < sizeof($oHist); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$codConta.'&codHist='.$oHist[$i]->getCodigo());
-	$url		= "javascript:zgAbreModal('".ROOT_URL . "/Fin/contaReceberRecExc.php?id=".$uid."');";
-	
-	
-	#################################################################################
-	## Calcula o valor de Júros e mora
-	#################################################################################
-	$grid->setValorCelula($i,3,floatval($oHist[$i]->getValorJuros()) - floatval($oHist[$i]->getValorDescontoJuros()));
-	$grid->setValorCelula($i,4,floatval($oHist[$i]->getValorMora()) - floatval($oHist[$i]->getValorDescontoMora()));
-	
-	
-	if (!$podeExb) {
-		$grid->desabilitaCelula($i, 9);
-	}else{
-		$grid->setUrlCelula($i, 9, $url);
-	}
-}
-
-
-$gHtml	= $grid->getHtmlCode();
-
 if (!isset($urlVoltar) || (!$urlVoltar)) {
-	$urlVoltar			= ROOT_URL . "/Fin/contaReceberLis.php?id=".$id;
+	$urlVoltar			= ROOT_URL . "/Fin/contaPagarLis.php?id=".$id;
 }else{
 	$urlVoltar			= $urlVoltar . "&id=".$id;
 }
 
+#################################################################################
+## Cria o objeto do Grid (bootstrap)
+#################################################################################
+$aHist			= array($oHist);
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GContaHisExc");
+$grid->setPagingType(\Zage\App\Grid\Tipo::PG_NONE);
+$grid->setFiltro(0);
+$grid->setMostraInfo(0);
+$grid->adicionaTexto($tr->trans('FORMA PAG'),			15, $grid::CENTER	,'codFormaPagamento:descricao');
+$grid->adicionaData($tr->trans('DATA PAG'),				8, $grid::CENTER	,'dataPagamento');
+$grid->adicionaMoeda($tr->trans('VALOR'),				10, $grid::CENTER	,'valorPago');
+$grid->adicionaMoeda($tr->trans('JUROS'),				10, $grid::CENTER	,'valorJuros');
+$grid->adicionaMoeda($tr->trans('MORA'),				10, $grid::CENTER	,'valorMora');
+$grid->adicionaMoeda($tr->trans('DESCONTO'),			10, $grid::CENTER	,'valorDesconto');
+$grid->adicionaMoeda($tr->trans('OUTROS'),				10, $grid::CENTER	,'valorOutros');
+$grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'codConta:nome');
+$grid->adicionaTexto($tr->trans('TIPO BAIXA'),			10, $grid::CENTER	,'codTipoBaixa:nome');
+$grid->importaDadosDoctrine($aHist);
 
-#################################################################################
-## Calculo dos valores
-#################################################################################
-$valorTotal			= \Zage\App\Util::to_money(\Zage\Fin\ContaReceber::calculaValorTotal($oConta));
-$valorRecebido		= \Zage\App\Util::to_money((new \Zage\Fin\ContaReceber())->getValorJaRecebido($codConta)); 
+for ($i = 0; $i < sizeof($aHist); $i++) {
+	
+	#################################################################################
+	## Calcula o valor de Júros e mora
+	#################################################################################
+	$grid->setValorCelula($i,3,floatval($aHist[$i]->getValorJuros()) );
+	$grid->setValorCelula($i,4,floatval($aHist[$i]->getValorMora())  );
+}
+
+
 
 #################################################################################
 ## Carregando o template html
@@ -153,17 +117,15 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('ID'					,$id);
-$tpl->set('TITULO'				,$tr->trans('Histórico de Recebimento'));
+$tpl->set('TITULO'				,'Exclusão de Baixa');
 $tpl->set('COD_CONTA'			,$codConta);
-$tpl->set('MENSAGEM'			,$mensagem);
-$tpl->set('GRID'				,$gHtml);
-$tpl->set('VALOR_TOTAL'			,$valorTotal);
-$tpl->set('VALOR_RECEBIDO'		,$valorRecebido);
-$tpl->set('GRID'				,$gHtml);
+$tpl->set('COD_HIST'			,$codHist);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
+$tpl->set('GRID'				,$grid->getHtmlCode());
+$tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
-

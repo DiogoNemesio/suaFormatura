@@ -66,13 +66,6 @@ if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatu
 }
 
 #################################################################################
-## Verifica se pode ser visualizado o histórico
-#################################################################################
-if (!$podeHis) {
-	\Zage\App\Erro::halt($tr->trans('Conta não pode ter o histórico visualizado, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
-}
-
-#################################################################################
 ## Verifica se pode Excluir baixa da conta
 #################################################################################
 if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "EXB")) {
@@ -81,6 +74,12 @@ if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatu
 	$podeExb	= true;
 }
 
+#################################################################################
+## Verifica se pode ser visualizado o histórico
+#################################################################################
+if (!$podeHis) {
+	\Zage\App\Erro::halt($tr->trans('Conta não pode ter o histórico visualizado, status não permitido (%s)',array('%s' => $oConta->getCodStatus()->getCodigo())));
+}
 
 #################################################################################
 ## Resgata o Histórico

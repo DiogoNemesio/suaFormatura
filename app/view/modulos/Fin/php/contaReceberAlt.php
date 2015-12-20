@@ -72,8 +72,6 @@ if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $info->getCodStatus(
 	\Zage\App\Erro::halt($mensagemErro);
 }
 
-
-
 $codConta		= $info->getCodigo();
 $numero			= $info->getNumero();
 $descricao		= $info->getDescricao();

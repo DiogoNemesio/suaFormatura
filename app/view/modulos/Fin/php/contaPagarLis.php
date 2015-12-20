@@ -297,7 +297,6 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$podeSub	= $aAcoes["SUB"];
 	$podeBol	= $aAcoes["BOL"];
 	
-	
 	#################################################################################
 	## Status
 	#################################################################################
@@ -307,10 +306,11 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	#################################################################################
 	## Valor Total
 	#################################################################################
-	if ($status == "C") {
+	$status			= $contas[$i]->getCodStatus()->getCodigo();
+	if ($status == "C" || $status == "S") {
 		$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) + floatval($contas[$i]->getValorOutros()) - (floatval($contas[$i]->getValorDesconto())) ));
 	}else{
-		$grid->setValorCelula($i,$colValTot,( floatval($contas[$i]->getValor()) + floatval($contas[$i]->getValorJuros()) + floatval($contas[$i]->getValorMora()) + floatval($contas[$i]->getValorOutros()) - (floatval($contas[$i]->getValorDesconto()) + floatval($contas[$i]->getValorCancelado())) ));
+		$grid->setValorCelula($i,$colValTot, \Zage\Fin\ContaPagar::calculaValorTotal($contas[$i]));
 	}
 	
 	#################################################################################
@@ -403,7 +403,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$urlExc			= ($podeExc)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarExc.php?id=".$uid."');" : null;
 	$urlCan			= ($podeCan)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarCan.php?id=".$uid."');" : null;
 	$urlCon			= ($podeCon)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarPag.php?id=".$uid."');" : null;
-	$urlPls			= ($podePls)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarPagLis.php?id=".$uid."');" : null;
+	$urlHis			= ($podeHis)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaPagarPagLis.php?id=".$uid."');" : null;
 	$urlSub			= ($podeSub)	? "javascript:zgLoadUrl('".ROOT_URL."/Fin/contaPagarSub.php?id=".$uid."&cid=".$cid."');" : null;
 	$urlImp			= ($podeImp)	? "javascript:zgAbreModalFull('".ROOT_URL."/Fin/contaPagarPreview.php?id=".$uid."');" : null;
 		
@@ -413,14 +413,14 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$htmlExc		= str_replace("%M%","Excluir"					, str_replace("%U%",$urlExc, $htmlTplAcaoIni)) . (($podeExc)	?  '<i class="ace-icon fa fa-trash red bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
 	$htmlCan		= str_replace("%M%","Cancelar"					, str_replace("%U%",$urlCan, $htmlTplAcaoIni)) . (($podeCan)	?  '<i class="ace-icon fa fa-ban red bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
 	$htmlCon		= str_replace("%M%","Confirmar"					, str_replace("%U%",$urlCon, $htmlTplAcaoIni)) . (($podeCon)	?  '<i class="ace-icon fa fa-check green bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
-	$htmlPls		= str_replace("%M%","Pagamentos confirmados"	, str_replace("%U%",$urlPls, $htmlTplAcaoIni)) . (($podePls)	?  '<i class="ace-icon fa fa-usd grey bigger-140"></i>'			: null) . $htmlTplAcaoFim;
+	$htmlHis		= str_replace("%M%","Pagamentos confirmados"	, str_replace("%U%",$urlHis, $htmlTplAcaoIni)) . (($podeHis)	?  '<i class="ace-icon fa fa-usd grey bigger-140"></i>'			: null) . $htmlTplAcaoFim;
 	$htmlSub		= str_replace("%M%","Substituir"				, str_replace("%U%",$urlSub, $htmlTplAcaoIni)) . (($podeSub)	?  '<i class="ace-icon fa fa-exchange blue bigger-140"></i>' 	: null) . $htmlTplAcaoFim;
 	$htmlImp		= str_replace("%M%","Imprimir"					, str_replace("%U%",$urlImp, $htmlTplAcaoIni)) . (($podeImp)	?  '<i class="ace-icon fa fa-print grey bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
 	
 	$htmlAcao	= '<div class="inline dropdown dropup"><a href="#" data-toggle="dropdown"><i class="ace-icon fa fa-cog icon-on-right bigger-140"></i></a>
 	<ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
 		<li class="active"><a href="#"><div class="center small bolder blue">Ações para: '.$contas[$i]->getDescricao().' ('.$contas[$i]->getParcela() . "/".$contas[$i]->getNumParcelas().')</div></a></li>
-		<li><a href="#">'.$htmlVis.$htmlAlt.$htmlExc.$htmlCan.$htmlCon.$htmlPls.$htmlSub.$htmlImp.'</a></li>
+		<li><a href="#">'.$htmlVis.$htmlAlt.$htmlExc.$htmlCan.$htmlCon.$htmlHis.$htmlSub.$htmlImp.'</a></li>
 	</ul>
 	</div>';
 	$grid->setValorCelula($i,$colAcao,$htmlAcao);

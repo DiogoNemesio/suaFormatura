@@ -176,14 +176,18 @@ class Categoria extends \Entidades\ZgfinCategoria {
     		->from('\Entidades\ZgfinCategoria','ca')
     		->leftJoin('\Entidades\ZgfinCategoria', 'p', \Doctrine\Orm\Query\Expr\Join::WITH, 'p.codigo = ca.codCategoriaPai')
     		->where($qb->expr()->orX(
-    				$qb->expr()->andX(
-    						$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao'),
-    						$qb->expr()->isNull('ca.codTipoOrganizacao')
-    				),
-    				$qb->expr()->andX(
-    						$qb->expr()->isNull('ca.codOrganizacao'),
-    						$qb->expr()->eq('ca.codTipoOrganizacao'	, ':codTipoOrg')
-    				)
+    			$qb->expr()->andX(
+    				$qb->expr()->eq('ca.codOrganizacao'	, ':codOrganizacao'),
+    				$qb->expr()->isNull('ca.codTipoOrganizacao')
+    			),
+    			$qb->expr()->andX(
+    				$qb->expr()->isNull('ca.codOrganizacao'),
+    				$qb->expr()->eq('ca.codTipoOrganizacao'	, ':codTipoOrg')
+    			),
+    			$qb->expr()->andX(
+    				$qb->expr()->isNull('ca.codOrganizacao'),
+    				$qb->expr()->isNull('ca.codTipoOrganizacao')
+    			)
     		))
     		->andWhere($qb->expr()->eq('ca.codTipo'	, ':codTipo'))
     		->orderBy('ca.descricao', 'ASC')

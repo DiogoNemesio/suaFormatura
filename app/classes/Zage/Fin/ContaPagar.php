@@ -312,7 +312,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 				$_val				= \Zage\App\Util::to_float($this->_valores[$i]) + \Zage\App\Util::to_float($this->getValorJuros()) + \Zage\App\Util::to_float($this->getValorMora()) + \Zage\App\Util::to_float($_valorOutros) - \Zage\App\Util::to_float($this->getValorDesconto());
 				$_valorTotal		+= $_val;
 				$valores[$i]		= \Zage\App\Util::to_float($this->_valores[$i]);
-				$outrosValores[$i]	= \Zage\App\Util::to_float($_valorOutros);
+				$outrosValores[$i]	= ($_valorOutros) ? \Zage\App\Util::to_float($_valorOutros) : 0;
 			}
 		}
 		
@@ -556,11 +556,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Ajustes nos campos
 		#################################################################################
-		$this->setValor(\Zage\App\Util::toMysqlNumber($this->getValor()));
-		$this->setValorJuros(\Zage\App\Util::toMysqlNumber($this->getValorJuros()));
-		$this->setValorMora(\Zage\App\Util::toMysqlNumber($this->getValorMora()));
-		$this->setValorOutros(\Zage\App\Util::toMysqlNumber($this->getValorOutros()));
-		$this->setValorDesconto(\Zage\App\Util::toMysqlNumber($this->getValorDesconto()));
+		$this->setValor(\Zage\App\Util::to_float($this->getValor()));
+		$this->setValorJuros(\Zage\App\Util::to_float($this->getValorJuros()));
+		$this->setValorMora(\Zage\App\Util::to_float($this->getValorMora()));
+		$this->setValorOutros(\Zage\App\Util::to_float($this->getValorOutros()));
+		$this->setValorDesconto(\Zage\App\Util::to_float($this->getValorDesconto()));
 		
 		#################################################################################
 		## Número de Parcelas, se não definido usar o padrão que é "1"
@@ -650,7 +650,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			$object->setValorDesconto($this->getValorDesconto());
 			$object->setValorJuros($this->getValorJuros());
 			$object->setValorMora($this->getValorMora());
-			$object->setValorOutros($this->getValorOutros());
+			//$object->setValorOutros($this->getValorOutros());
 			$object->setCodPeriodoRecorrencia($this->getCodPeriodoRecorrencia());
 			$object->setIntervaloRecorrencia($this->getIntervaloRecorrencia());
 			$object->setCodTipoRecorrencia($this->getCodTipoRecorrencia());
@@ -980,11 +980,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Ajusta os valores para o Formato do Banco
 		#################################################################################
-		$valor			= \Zage\App\Util::toMysqlNumber($valor);
-		$valorJuros		= \Zage\App\Util::toMysqlNumber($valorJuros);
-		$valorMora		= \Zage\App\Util::toMysqlNumber($valorMora);
-		$valorOutros	= \Zage\App\Util::toMysqlNumber($valorOutros);
-		$valorDesconto	= \Zage\App\Util::toMysqlNumber($valorDesconto);
+		$valor			= \Zage\App\Util::to_float($valor);
+		$valorJuros		= \Zage\App\Util::to_float($valorJuros);
+		$valorMora		= \Zage\App\Util::to_float($valorMora);
+		$valorOutros	= \Zage\App\Util::to_float($valorOutros);
+		$valorDesconto	= \Zage\App\Util::to_float($valorDesconto);
 		
 		
 		#################################################################################
@@ -1665,6 +1665,33 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 	
 	}
 	
+	/**
+	 * Calcular o valor total da conta
+	 * @param \Entidades\ZgfinContaPagar $oConta
+	 */
+	public static function calculaValorTotal(\Entidades\ZgfinContaPagar $oConta) {
+	
+		#################################################################################
+		## Calcula o valor do Júros
+		#################################################################################
+		$valJuros		= $oConta->getValorJuros();
+		$valJuros		= ($valJuros < 0) ? 0 : $valJuros;
+	
+		#################################################################################
+		## Calcula o valor da Mora
+		#################################################################################
+		$valMora		= $oConta->getValorMora();
+		$valMora		= ($valMora < 0) ? 0 : $valMora;
+	
+		#################################################################################
+		## Calcula o valor total da conta
+		#################################################################################
+		$valorTotal			= \Zage\App\Util::to_float($oConta->getValor() + $valJuros + $valMora + $oConta->getValorOutros() - ($oConta->getValorCancelado() + $oConta->getValorDesconto()));
+	
+		return $valorTotal;
+	}
+	
+	
 	
 	public static function geraNumero() {
 		return (date('Ymd').'/'.str_pad(mt_rand(0,999999), 6, "0", STR_PAD_LEFT));
@@ -1759,6 +1786,193 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 	}
 	
 	
+	/**
+	 * Excluir uma baixa, retornar ao estado anterior da baixa
+	 * @param \Entidades\ZgfinContaPagar $oConta
+	 * @param \Entidades\ZgfinHistoricoPag $oHist
+	 * @throws \Exception
+	 */
+	public function excluiBaixa (\Entidades\ZgfinContaPagar $oConta,\Entidades\ZgfinHistoricoPag $oHist) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$tr,$log;
+	
+		#################################################################################
+		## Valida se os parâmetros são objetos
+		#################################################################################
+		if (!is_object($oConta))	throw new \Exception("Parâmetro 1 passado a função: ".__FUNCTION__." é inconsistente");
+		if (!is_object($oHist))		throw new \Exception("Parâmetro 2 passado a função: ".__FUNCTION__." é inconsistente");
+	
+		#################################################################################
+		## Verifica se o perfil / status da conta permite a exclusão
+		#################################################################################
+		$codPerfil	= ($oConta->getCodContaPerfil()) ? $oConta->getCodContaPerfil()->getCodigo() : 0;
+		if (!\Zage\Fin\ContaAcao::verificaAcaoPermitida($codPerfil, $oConta->getCodStatus()->getCodigo(), "EXB")) {
+			throw new \Exception($tr->trans("Pagamento não pode ser excluído"));
+		}
+	
+		#################################################################################
+		## Resgata o grupo de movimentação
+		#################################################################################
+		$grupoMov			= $oHist->getCodGrupoMov();
+	
+		#################################################################################
+		## Controlar se será necessário salvar
+		#################################################################################
+		$_indSalvar			= false;
+	
+		#################################################################################
+		## Calcula o saldo de adiantamento dessa pessoa, para saber se a baixa pode ser
+		## Excluída
+		#################################################################################
+		$saldoAdiant	= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao()->getCodigo(),$oConta->getCodPessoa()->getCodigo());
+	
+		#################################################################################
+		## Verifica se foi cadastrado adiantamento para essa baixa
+		#################################################################################
+		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaPag' => $oHist->getCodContaPag()->getCodigo(), 'codGrupoMov' => $grupoMov));
+	
+		#################################################################################
+		## Soma os valores de adiantamentos pra saber se poderá excluir
+		#################################################################################
+		$valAdiantaExc	= 0;
+		for ($i = 0; $i < sizeof($aAdiant); $i++) {
+			$valAdiantaExc	+= \Zage\App\Util::to_float($aAdiant[$i]->getValor());
+		}
+	
+		if (($valAdiantaExc > 0) && ($saldoAdiant < $valAdiantaExc)) {
+			throw new \Exception("Baixa com adiantamento já utilizado !!!");
+		}
+			
+	
+		#################################################################################
+		## Verificar se houve cancelamento de saldo, para não deixar remover a baixa,
+		## Antes da exclusão do cancelamento
+		#################################################################################
+		$aCanc		=  $em->getRepository('Entidades\ZgfinContaPagHistCanc')->findBy(array('codConta' => $oHist->getCodContaPag()->getCodigo()));
+		if ($aCanc)	throw new \Exception("Houve cancelamento de saldo na conta, para excluir a baixa, primeiro desfaça o cancelamento !!!");
+	
+		#################################################################################
+		## Excluir os adiatamentos
+		#################################################################################
+		if (($valAdiantaExc > 0) && ($saldoAdiant >= $valAdiantaExc)) {
+			for ($i = 0; $i < sizeof($aAdiant); $i++) {
+				$em->remove($aAdiant[$i]);
+			}
+		}
+	
+		#################################################################################
+		## Verificar se a baixa que foi excluída agregou júros, mora e desconto a conta
+		#################################################################################
+		$valJurosBaixa		= round(floatval($oHist->getValorJuros())			,2);
+		$valMoraBaixa		= round(floatval($oHist->getValorMora()) 			,2);
+		$valJurosConta		= round(floatval($oConta->getValorJuros()) 			,2);
+		$valMoraConta		= round(floatval($oConta->getValorMora()) 			,2);
+		$valDescontoBaixa	= round(floatval($oHist->getValorDesconto())		,2);
+		$valDescontoConta	= round(floatval($oConta->getValorDesconto())		,2);
+	
+		if (($valJurosBaixa > 0) && ($valJurosBaixa <= $valJurosConta) ) {
+			$oConta->setValorJuros($valJurosConta - $valJurosBaixa);
+			$_indSalvar			= true;
+		}
+	
+		if (($valMoraBaixa > 0) && ($valMoraBaixa <= $valMoraConta) ) {
+			$oConta->setValorMora($valMoraConta - $valMoraBaixa);
+			$_indSalvar			= true;
+		}
+	
+		if (($valDescontoBaixa > 0) && ($valDescontoBaixa >= $valDescontoConta) ) {
+			$oConta->setValorDesconto($valDescontoConta - $valDescontoBaixa);
+			$_indSalvar			= true;
+		}
+	
+		#################################################################################
+		## Excluir o Histórico
+		#################################################################################
+		$aHist	=  $em->getRepository('Entidades\ZgfinContaPagarHistorico')->findBy(array('codConta' => $oConta->getCodigo()));
+		for ($i = 0; $i < sizeof($aHist); $i++) {
+			$em->remove($aHist[$i]);
+		}
+	
+		#################################################################################
+		## Excluir a Baixa
+		#################################################################################
+		$aBaixa	=  $em->getRepository('Entidades\ZgfinHistoricoPag')->findBy(array('codigo' => $oHist->getCodigo()));
+		for ($i = 0; $i < sizeof($aBaixa); $i++) {
+			$em->remove($aBaixa[$i]);
+		}
+	
+		#################################################################################
+		## Excluir a movimentação bancária
+		#################################################################################
+		$aMov	=  $em->getRepository('Entidades\ZgfinMovBancaria')->findBy(array('codOrganizacao' => $oConta->getCodOrganizacao()->getCodigo(),'codGrupoMov' => $oHist->getCodGrupoMov()));
+		for ($i = 0; $i < sizeof($aMov); $i++) {
+			$em->remove($aMov[$i]);
+		}
+	
+		#################################################################################
+		## Verificar se precisa salvar alguma alteração
+		#################################################################################
+		if ($_indSalvar		== true) {
+			$em->persist($oConta);
+		}
+	
+		return null;
+	}
+	
+	/**
+	 * Calcular o status da conta e retornar
+	 * @param \Zage\Fin\ContaPagar $oConta
+	 * @return string $codStatus
+	 */
+	public static function recalculaStatus (\Entidades\ZgfinContaPagar $oConta) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$log;
+	
+		#################################################################################
+		## Iremos tentar detectar qual o status que a conta deve ter a partir das tabelas
+		## de movimentação das ações, levando em conta as datas de acontecimento das ações
+		#################################################################################
+	
+		#################################################################################
+		## Verificar se houve Cancelamento,Caso haja alguma baixa o status deve ser
+		## Liquidada, caso contrário cancelar a conta
+		#################################################################################
+		$oCanc	=  $em->getRepository('Entidades\ZgfinContaPagHistCanc')->findOneBy(array('codConta' => $oConta->getCodigo()));
+	
+		#################################################################################
+		## Verificar se Existem baixas
+		#################################################################################
+		$aBaixa	=  $em->getRepository('Entidades\ZgfinHistoricoPag')->findBy(array('codContaPag' => $oConta->getCodigo()));
+	
+		#################################################################################
+		## Verificar se Existem Substituições
+		#################################################################################
+		$oSub	=  $em->getRepository('Entidades\ZgfinContaPagHistSub')->findBy(array('codConta' => $oConta->getCodigo()));
+			
+		#################################################################################
+		## Calculo do novo status
+		#################################################################################
+		if ($oSub) {
+			$codStatus			= "S";
+		}elseif ($oCanc && $aBaixa)	{
+			$codStatus			= "L";
+		}elseif ($oCanc) {
+			$codStatus			= "C";
+		}elseif ($aBaixa) {
+			$codStatus			= "P";
+		}else{
+			$codStatus			= "A";
+		}
+	
+		return $codStatus;
+	
+	}
 	
 	
 }
