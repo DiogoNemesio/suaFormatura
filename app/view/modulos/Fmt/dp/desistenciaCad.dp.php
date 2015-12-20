@@ -247,6 +247,7 @@ $valTotalSistema	= round($numMesesTotal * $taxaUso,2);
 ## Ajustar o campo de porcentagem
 #################################################################################
 $pctMulta			= \Zage\App\Util::to_float(str_replace("%", "", $pctMulta));
+if (!$pctMulta)		$pctMulta = 0;
 
 #################################################################################
 ## Calcular o valor da multa
@@ -257,6 +258,7 @@ if ($codTipoBaseCalculo == "P")	{
 	$baseCalculo		= $valorFormatura;
 }
 $valMulta				= round($baseCalculo * $pctMulta / 100,2);
+if (!$valMulta)			$valMulta = 0;
 if ($valMulta < 0)		{
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Erro no calculo do valor da multa"));
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Erro no calculo do valor da multa")));

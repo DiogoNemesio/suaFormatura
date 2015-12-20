@@ -184,7 +184,8 @@ if ($eventos){
 ## Gerenciar as URls
 #################################################################################
 if (!isset($urlVoltar) || (!$urlVoltar)) {
-	$urlVoltar			= ROOT_URL . "/Fin/contaReceberLis.php?id=".$id;
+	$urlVoltar			= ROOT_URL . "/Fmt/mensalFormandoLis.php?id=".$id;
+	//$urlVoltar			= ROOT_URL . "/Fin/contaReceberLis.php?id=".$id;
 	//$urlVoltar			= ROOT_URL . "/Fin/contaReceberRecLis.php?id=".$id;
 }else{
 	$urlVoltar			= $urlVoltar . "&id=".$id;

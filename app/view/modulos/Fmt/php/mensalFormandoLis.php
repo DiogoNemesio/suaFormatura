@@ -197,12 +197,16 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Déficit de geração
 	#################################################################################
-	if ($saldo > 0){
-		$grid->setValorCelula($i, 3, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
-	}else if ($saldo == 0) {
-		$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+	if ($podeDesistir	== true) {
+		if ($saldo > 0){
+			$grid->setValorCelula($i, 3, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		}else if ($saldo == 0) {
+			$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		}else{
+			$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		}
 	}else{
-		$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
 	}
 }
 
