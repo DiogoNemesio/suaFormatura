@@ -152,21 +152,29 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 		$oCatExiste		.= '</optgroup>';
 	}
 	
+	if ($aOrcItem[$i]->getTextoDescritivo()) {
+		$hidDesc		= "";
+	}else{
+		$hidDesc		= "hidden";
+	}
 	
-	
-	$tabOrcamento	.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td>
-				<td><input type="text" class="width-100" name="item[]" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracao($(this));"></td>
-				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oTipoItem.'</select></td>
-				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">'.$oCatExiste.'</select></td>
-				<td align="center"><label><input name="indAtivo[]" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></rd>
+	$tabOrcamento	.= '<tr class="_registroOrc"><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td>
+				<td><input type="text" class="width-100" name="item[]" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td>
+				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oTipoItem.'</select></td>
+				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oCatExiste.'</select></td>
+				<td align="center"><label><input name="indAtivo[]" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
 				<td class="center">
 						<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
 							<span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span>
 							<span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span>
 							<span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span>
+							<span class="btn btn-sm btn-white btn-info center" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i class="fa fa-commenting-o bigger-150"></i></span>
 						</div>
 						<input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'">
 				</td></tr>
+				<tr class="'.$hidDesc.'">
+					<td colspan="6"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();">'.$aOrcItem[$i]->getTextoDescritivo().'</textarea></td>
+				</tr>
 				';
 }
 

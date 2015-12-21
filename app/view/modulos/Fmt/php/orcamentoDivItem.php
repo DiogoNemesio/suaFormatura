@@ -70,10 +70,10 @@ for ($i = 0; $i < sizeof($orcItens); $i++) {
 	$item		= $orcItens[$i]->getCodItem();
 	$codTipo	= $item->getCodGrupoItem()->getCodigo();
 	$codigo		= $item->getCodigo();
-	$aOrcItens[$codigo]["QTDE"]		= $orcItens[$i]->getQuantidade();
-	$aOrcItens[$codigo]["VALOR"]	= \Zage\App\Util::formataDinheiro($orcItens[$i]->getValorUnitario());
-	$aOrcItens[$codigo]["OBS"]		= $orcItens[$i]->getObservacao();
-	$aOrcItens[$codigo]["TOTAL"]	= \Zage\App\Util::to_float($orcItens[$i]->getQuantidade() * \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario()));
+	$aOrcItens[$codigo]["QTDE"]			= $orcItens[$i]->getQuantidade();
+	$aOrcItens[$codigo]["VALOR"]		= \Zage\App\Util::formataDinheiro($orcItens[$i]->getValorUnitario());
+	$aOrcItens[$codigo]["DESCRITIVO"]	= $orcItens[$i]->getTextoDescritivo();
+	$aOrcItens[$codigo]["TOTAL"]		= \Zage\App\Util::to_float($orcItens[$i]->getQuantidade() * \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario()));
 }
 
 
@@ -91,15 +91,15 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $itens[$i]->getItem();
 	
 	if (isset($aOrcItens[$codigo])) {
-		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 	= $aOrcItens[$codigo]["QTDE"];
-		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 	= $aOrcItens[$codigo]["VALOR"];
-		$aItens[$codTipo]["ITENS"][$codigo]["OBS"] 		= $aOrcItens[$codigo]["OBS"];
-		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]	= $aOrcItens[$codigo]["TOTAL"];
+		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= $aOrcItens[$codigo]["QTDE"];
+		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= $aOrcItens[$codigo]["VALOR"];
+		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $aOrcItens[$codigo]["DESCRITIVO"];
+		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= $aOrcItens[$codigo]["TOTAL"];
 	}else{
-		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 	= null;
-		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 	= null;
-		$aItens[$codTipo]["ITENS"][$codigo]["OBS"] 		= null;
-		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 	= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= null;
 	}
 }
 
@@ -168,7 +168,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 			$htmlForm	.= '<td class="col-sm-1"><span style="cursor: pointer;" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i class="fa fa-commenting-o"><i></span></td>';
 			$htmlForm	.= '</tr>';
 			$htmlForm	.= '<tr class="hidden" id="trOrcObs_'.$item["CODIGO"].'_ID">';
-			$htmlForm	.= '<td colspan="7"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs['.$item["CODIGO"].']" onchange="orcAlteraObs(\''.$item["CODIGO"].'\');">'.$item["OBS"].'</textarea></td>';
+			$htmlForm	.= '<td colspan="7"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs['.$item["CODIGO"].']" onchange="orcAlteraObs(\''.$item["CODIGO"].'\');">'.$item["DESCRITIVO"].'</textarea></td>';
 			$htmlForm	.= '</tr>';
 				
 			$tabIndex++;

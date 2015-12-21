@@ -27,7 +27,7 @@
 					    	<label class="col-sm-2 control-label" for="versaoID">Versão</label>
 								<div class="input-group col-sm-8 pull-left">
 				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a versão de orçamento."></i></span>
-			   					<input class="form-control" id="versaoID" type="text" name="versao" placeholder="Nome da versão" maxlength="60" value="%VERSAO%" onchange="verificaAlteracao($(this));" required autocomplete="off">
+			   					<input class="form-control" id="versaoID" type="text" name="versao" placeholder="Nome da versão" maxlength="60" value="%VERSAO%" onchange="verificaAlteracaoOrcAlt($(this));" required autocomplete="off">
 			    			</div>
 					    	<div class="col-sm-1 pull-left" id="divHelpVersaoID"></div>
 			    		</div>
@@ -56,7 +56,7 @@
 										<th class="col-sm-2 center">Calcular</th>
 										<th class="col-sm-2 center">Categoria</th>
 										<th class="col-sm-1 center">Ativo</th>
-										<th class="col-sm-1 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+										<th class="col-sm-2 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -96,7 +96,7 @@ $('.select2').css('width','100%').select2({allowClear:true});
 /************************* Submit Formulário *************************/
 //Verificar se a validação está OK
 $('#btnSubmitListaOrcID').on("click", function(e) {
-	var vOk 	= validaOrcamento();
+	var vOk 	= validaOrcamentoOrcAlt();
 	
 	if(vOk == false) 	{
 		$.gritter.add({
@@ -166,7 +166,8 @@ function addRowOrcamentoOrcAlt() {
 	
 	$ordem		= parseInt($ultOrdem) + 1;
 
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item[]" zg-name="item" autocomplete="off" onchange="verificaAlteracao($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracao($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo[]" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracao($(this));" /><span class="lbl"></span></label></td><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroOrc"><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item[]" zg-name="item" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo[]" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i class="fa fa-commenting-o bigger-150"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-name="item"]').each(function( index ) {
 		$( this ).focus();
 	});
@@ -175,6 +176,8 @@ function addRowOrcamentoOrcAlt() {
 		$( this ).trigger('keyup');
 	});
 	$('#layRegTableOrcamentoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="hidden"><td colspan="6"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();"></textarea></td></tr>');
+
 }
 
 function delRowOrcamentoOrcAlt(pObj) {
@@ -251,11 +254,11 @@ function recalculaOrdemOrcAlt() {
 	});
 }
 
-function verificaAlteracao(pObj) {
+function verificaAlteracaoOrcAlt(pObj) {
 	$('#_precisaSalvarID').val(1);
 }
 
-function validaOrcamento () {
+function validaOrcamentoOrcAlt () {
 	var $return,$ok;
 	var vVersao = $('#versaoID').val();
 	
@@ -272,7 +275,7 @@ function validaOrcamento () {
 	}
 	
 	// TABELA
-	$('#layRegTableOrcamentoID > tbody > tr').each(function( index ) {
+	$('#layRegTableOrcamentoID > tbody > tr ._registroOrc').each(function( index ) {
 		
 		$itemObj 	= $(this).find('[zg-name="item"]');
 		
@@ -294,7 +297,7 @@ function validaOrcamento () {
 
 function zgLoadUrlSeSalvouOrc($url) {
 	
-	var vOk 		= validaOrcamento();
+	var vOk 		= validaOrcamentoOrcAlt();
 	var vCodVersao 	= $('#codVersaoID').val();
 	
 	if(vOk == false) 	{
@@ -344,4 +347,25 @@ function zgLoadUrlSeSalvouOrc($url) {
 		}
 	}
 }
+
+function alteraTextoDescritivoOrcAlt() {
+	alert('oi');
+	$('#_precisaSalvarID').val(1);
+}
+
+function habilitaTextoDescritivoOrcAlt(pObj) {
+	var $div	= pObj.parent();
+	var $td		= $div.parent();
+	var $tr		= $td.parent();
+	//var $trDesc	= pObj.parent('tr').next('tr');
+	var $trDesc	= $tr.next('tr');
+
+	if ($trDesc.hasClass( "hidden")) {
+		$trDesc.removeClass("hidden");
+	}else{
+		$trDesc.addClass("hidden");
+	}
+}
+
+
 </script>

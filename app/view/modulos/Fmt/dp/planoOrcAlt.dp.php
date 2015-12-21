@@ -23,7 +23,7 @@ if (isset($_POST['item']))					$item				= \Zage\App\Util::antiInjection($_POST['
 if (isset($_POST['codTipoItem']))			$codTipoItem		= \Zage\App\Util::antiInjection($_POST['codTipoItem']);
 if (isset($_POST['codCategoria']))			$codCategoria		= \Zage\App\Util::antiInjection($_POST['codCategoria']);
 if (isset($_POST['indAtivo']))				$indAtivo			= \Zage\App\Util::antiInjection($_POST['indAtivo']);
-
+if (isset($_POST['aObs']))					$aObs				= \Zage\App\Util::antiInjection($_POST['aObs']);
 if (isset($_POST['versao']))				$versao				= \Zage\App\Util::antiInjection($_POST['versao']);
 if (isset($_POST['indVersao']))				$indVersao			= \Zage\App\Util::antiInjection($_POST['indVersao']);
 
@@ -157,6 +157,7 @@ try {
 		$oOrcamento->setItem($item[$i]);
 		$oOrcamento->setOrdem(($i+1));
 		$oOrcamento->setIndAtivo($indAtivoLinha);
+		$oOrcamento->setTextoDescritivo($aObs[$i]);
 		
 		$em->persist($oOrcamento);
 	}
