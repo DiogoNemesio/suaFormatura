@@ -72,7 +72,7 @@ try {
 	 ***********************/
 	$numFormando = \Zage\Fmt\Formatura::getNumFormandos($system->getCodOrganizacao());
 	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
-	
+	$log->info($numFormando);
 	if ($numFormando == 0){
 		$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => "A"));
 		$oOrg->setCodStatus($oCodStatus);
