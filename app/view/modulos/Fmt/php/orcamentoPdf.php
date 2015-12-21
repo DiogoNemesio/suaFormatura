@@ -169,7 +169,7 @@ for ($i = 0; $i < sizeof($orcItens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $item->getItem();
 	$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= $orcItens[$i]->getQuantidade();
 	$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario());
-	$aItens[$codTipo]["ITENS"][$codigo]["OBS"] 			= $orcItens[$i]->getObservacao();
+	$aItens[$codTipo]["ITENS"][$codigo]["OBS"] 			= $orcItens[$i]->getTextoDescritivo();
 	$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= \Zage\App\Util::to_float($orcItens[$i]->getQuantidade() * \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario()));
 	
 }
