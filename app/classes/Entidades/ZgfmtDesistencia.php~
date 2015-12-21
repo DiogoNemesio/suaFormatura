@@ -31,9 +31,9 @@ class ZgfmtDesistencia
     /**
      * @var float
      *
-     * @ORM\Column(name="PCT_DEVOLUCAO", type="float", precision=10, scale=0, nullable=false)
+     * @ORM\Column(name="PCT_MULTA", type="float", precision=10, scale=0, nullable=false)
      */
-    private $pctDevolucao;
+    private $pctMulta;
 
     /**
      * @var float
@@ -124,26 +124,26 @@ class ZgfmtDesistencia
     }
 
     /**
-     * Set pctDevolucao
+     * Set pctMulta
      *
-     * @param float $pctDevolucao
+     * @param float $pctMulta
      * @return ZgfmtDesistencia
      */
-    public function setPctDevolucao($pctDevolucao)
+    public function setPctMulta($pctMulta)
     {
-        $this->pctDevolucao = $pctDevolucao;
+        $this->pctMulta = $pctMulta;
 
         return $this;
     }
 
     /**
-     * Get pctDevolucao
+     * Get pctMulta
      *
      * @return float 
      */
-    public function getPctDevolucao()
+    public function getPctMulta()
     {
-        return $this->pctDevolucao;
+        return $this->pctMulta;
     }
 
     /**
