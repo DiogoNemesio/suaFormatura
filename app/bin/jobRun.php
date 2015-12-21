@@ -41,7 +41,7 @@ if (!$oJob)	exit;
 ## Verifica se o comando do Job está disponível
 #################################################################################
 $codJob			= $oJob->getCodigo();
-$log->info("Job: ($codJob) iniciado");
+//$log->info("Job: ($codJob) iniciado");
 $phpCmd		= JOB_PATH . "./" . $oJob->getComando();
 if (!is_readable($phpCmd))	{
 	$log->err("Job: ($codJob) não pode ser executado, pois o comando (".$phpCmd.") não foi encontrado !!!, o job será desabilitado");
@@ -99,7 +99,7 @@ if ($pid == -1) {
 ## Executa o comando
 #################################################################################
 $comando	= "php $phpCmd";
-$log->info("Job: ($codJob) executando o comando: ".$comando);
+//$log->info("Job: ($codJob) executando o comando: ".$comando);
 exec ($comando, $saida,$codigoSaida);
 $dataFim		= new \DateTime();
 
@@ -115,7 +115,7 @@ if ($codigoSaida == 0) {
 	$oJob->setNumFalhas($numFalhas);
 }
 
-$log->info("Job: ($codJob) codigo de saida: $codigoSaida");
+//$log->info("Job: ($codJob) codigo de saida: $codigoSaida");
 #################################################################################
 ## Formata o retorno
 #################################################################################
@@ -125,7 +125,7 @@ if (is_array($saida)) {
 	$retorno	= $saida;
 }
 
-$log->info("Job: ($codJob) Retorno:  $retorno");
+//$log->info("Job: ($codJob) Retorno:  $retorno");
 
 #################################################################################
 ## Atualiza o histórico da execução
