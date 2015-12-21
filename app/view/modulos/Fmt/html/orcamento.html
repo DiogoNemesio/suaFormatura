@@ -124,6 +124,7 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
 //Mensagens
+
 $('[data-rel=tooltip]').tooltip();
 $('[data-rel=popover]').popover({html:true});
 
@@ -144,7 +145,6 @@ $('#codVersaoOrcID').css('width','50%').select2({
 	allowClear:true,
     formatResult: orcFormatCodVersaoSelect
 });
-
 
 orcCalculaNumMeses();
 carregaPlanoOrc();
@@ -598,7 +598,7 @@ function orcAlteraQuantidade($codigo) {
 }
 
 
-function orcAlteraValor($codigo,$indSel = true) {
+function orcAlteraValor($codigo,$indSel) {
 	/**
 	 * Seleciona o registro editado
 	 */
@@ -645,19 +645,6 @@ function orcAlteraSel($codigo) {
 	} else {
 		orcAlteraValor($codigo,false);
 	}
-	
-	//
-	return false;
-	/**
-	 * Atualiza a flag de salvamento
-	 */
-	 orcIndPrecisaSalvar();
-
-	/**
-	 * Controlar a ação dos botões 
-	 */
-	 orcAtualizaBotoes();
-
 }
 
 function orcAlteraObs($codigo) {

@@ -105,18 +105,6 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 }
 
 
-#################################################################################
-## Resgata as informações de Cortesia do Orçamento
-#################################################################################
-try {
-	$aCortesia	= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findAll();
-	$oCortesia	= $system->geraHtmlCombo($aCortesia,'CODIGO', 'DESCRICAO', null, null);
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
-
 //print_r($aItens);
 //exit;
 
@@ -172,12 +160,26 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$checked	= null;
 			}
 			
+			
+			#################################################################################
+			## Resgata as informações de Cortesia do Orçamento
+			#################################################################################
+			try {
+				$aCortesia	= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findAll();
+				$oCortesia	= $system->geraHtmlCombo($aCortesia,'CODIGO', 'DESCRICAO', null, null);
+			
+			} catch (\Exception $e) {
+				\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+			}
+			
+			
+			
 			$htmlForm	.= '<tr>';
 			$htmlForm	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codItemSel['.$item["CODIGO"].']" zg-name="selItem" class="ace" value="'.$item["CODIGO"].'" onchange="orcAlteraSel(\''.$item["CODIGO"].'\');" /><span class="lbl"></span></label></td>';
 			$htmlForm	.= '<td class="col-sm-2">'.$item["ITEM"].'</td>';
 			$htmlForm	.= '<td class="col-sm-1 right"><span>Qtde:&nbsp;</span> <input class="input-mini" id="qtde_'.$item["CODIGO"].'_ID" name="aQtde['.$item["CODIGO"].']" type="text" '.$ro.' zg-tipo="'.$item["TIPO"].'" zg-evento="'.$codTipo.'" zg-codigo="'.$item["CODIGO"].'" zg-name="qtde" maxlength="5" tabindex="'.$qTab.'" value="'.$qtde.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="orcAlteraQuantidade(\''.$item["CODIGO"].'\');"></td>';
 			$htmlForm	.= '<td class="col-sm-1 center"><i class="fa fa-close"></i></td>';
-			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" value="'.$item["VALOR"].'" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\');"></td>';
+			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" value="'.$item["VALOR"].'" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\',true);"></td>';
 			$htmlForm	.= '<td class="col-sm-2">
 								<div data-toggle="buttons" class="btn-group btn-overlap">
 									<span class="btn btn-sm btn-white btn-info center pull-left" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i class="fa fa-commenting-o bigger-150"></i></span>
