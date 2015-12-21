@@ -121,7 +121,7 @@ try {
  		$oOrcItem->setCodItem($oItem);
  		$oOrcItem->setCodOrcamento($oOrc);
  		$oOrcItem->setIndHabilitado(1);
- 		$oOrcItem->setObservacao($aObs[$codItem]);
+ 		$oOrcItem->setTextoDescritivo($aObs[$codItem]);
  		$oOrcItem->setQuantidade($qtde);
  		$oOrcItem->setValorUnitario($valor);
  		$em->persist($oOrcItem);

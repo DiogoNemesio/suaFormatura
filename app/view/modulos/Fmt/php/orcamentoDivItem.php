@@ -72,8 +72,9 @@ for ($i = 0; $i < sizeof($orcItens); $i++) {
 	$codigo		= $item->getCodigo();
 	$aOrcItens[$codigo]["QTDE"]			= $orcItens[$i]->getQuantidade();
 	$aOrcItens[$codigo]["VALOR"]		= \Zage\App\Util::formataDinheiro($orcItens[$i]->getValorUnitario());
-	$aOrcItens[$codigo]["DESCRITIVO"]	= $orcItens[$i]->getTextoDescritivo();
+	$aOrcItens[$codigo]["DESCRITIVO"]	= ($orcItens[$i]->getTextoDescritivo()) ? $orcItens[$i]->getTextoDescritivo() : $item->getTextoDescritivo() ;
 	$aOrcItens[$codigo]["TOTAL"]		= \Zage\App\Util::to_float($orcItens[$i]->getQuantidade() * \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario()));
+	
 }
 
 
@@ -98,7 +99,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	}else{
 		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= null;
 		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= null;
-		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $itens[$i]->getTextoDescritivo();
 		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= null;
 	}
 }
