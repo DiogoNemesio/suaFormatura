@@ -27,6 +27,7 @@ if (isset($_POST['codPlanoOrc'])) 		$codPlanoOrc		= \Zage\App\Util::antiInjectio
 if (isset($_POST['aQtde'])) 			$aQtde				= \Zage\App\Util::antiInjection($_POST['aQtde']);
 if (isset($_POST['aValor'])) 			$aValor				= \Zage\App\Util::antiInjection($_POST['aValor']);
 if (isset($_POST['aObs'])) 				$aObs				= \Zage\App\Util::antiInjection($_POST['aObs']);
+if (isset($_POST['codTipoCortesia'])) 	$codTipoCortesia	= \Zage\App\Util::antiInjection($_POST['codTipoCortesia']);
 
 //$log->info("POST ORC: ".serialize($_POST));
 
@@ -115,6 +116,7 @@ try {
  	#################################################################################
  	foreach ($codItemSel as $codItem => $item) {
  		$oItem			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findOneBy(array('codigo' => $codItem));
+ 		$oTipoCort		= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findOneBy(array('codigo' => $codTipoCortesia[$codItem]));
  		$valor			= ($aValor[$codItem]) ? \Zage\App\Util::to_float($aValor[$codItem]) : 0; 
  		$qtde			= (int) $aQtde[$codItem];
  		$oOrcItem		= new \Entidades\ZgfmtOrcamentoItem();
@@ -124,6 +126,7 @@ try {
  		$oOrcItem->setTextoDescritivo($aObs[$codItem]);
  		$oOrcItem->setQuantidade($qtde);
  		$oOrcItem->setValorUnitario($valor);
+ 		$oOrcItem->setCodTipoCortesia($oTipoCort);
  		$em->persist($oOrcItem);
  	}
  	

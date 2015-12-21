@@ -50,6 +50,13 @@ class ZgfmtPlanoOrcItem
     private $ordem;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="TEXTO_DESCRITIVO", type="string", length=1000, nullable=true)
+     */
+    private $textoDescritivo;
+
+    /**
      * @var \Entidades\ZgfmtPlanoOrcamentario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcamentario")
@@ -190,6 +197,29 @@ class ZgfmtPlanoOrcItem
     public function getOrdem()
     {
         return $this->ordem;
+    }
+
+    /**
+     * Set textoDescritivo
+     *
+     * @param string $textoDescritivo
+     * @return ZgfmtPlanoOrcItem
+     */
+    public function setTextoDescritivo($textoDescritivo)
+    {
+        $this->textoDescritivo = $textoDescritivo;
+
+        return $this;
+    }
+
+    /**
+     * Get textoDescritivo
+     *
+     * @return string 
+     */
+    public function getTextoDescritivo()
+    {
+        return $this->textoDescritivo;
     }
 
     /**

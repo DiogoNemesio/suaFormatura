@@ -171,6 +171,7 @@ for ($i = 0; $i < sizeof($orcItens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario());
 	$aItens[$codTipo]["ITENS"][$codigo]["OBS"] 			= $orcItens[$i]->getTextoDescritivo();
 	$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= \Zage\App\Util::to_float($orcItens[$i]->getQuantidade() * \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario()));
+	$aItens[$codTipo]["ITENS"][$codigo]["CORTESIA"] 	= ($orcItens[$i]->getCodTipoCortesia()) ? $orcItens[$i]->getCodTipoCortesia()->getTexto() : null;
 	
 }
 
@@ -217,8 +218,8 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$bdBottom	= "border-bottom: 1px solid #000000;";
 			}
 			
-			$valItem	= ($item["VALOR"]) ? \Zage\App\Util::to_money($item["VALOR"]) : "cortesia"; 
-			$totItem	= ($item["TOTAL"]) ? \Zage\App\Util::to_money($item["TOTAL"]) : "cortesia";
+			$valItem	= ($item["VALOR"]) ? \Zage\App\Util::to_money($item["VALOR"]) : $item["CORTESIA"];
+			$totItem	= ($item["TOTAL"]) ? \Zage\App\Util::to_money($item["TOTAL"]) : $item["CORTESIA"];
 			
 			$htmlForm	.= '<tr>';
 			$htmlForm	.= '<td style="text-align: left; '.$w1.' border-left: 1px solid #000000; '.$bdBottom.' border-top: 1px solid #000000;">'.$item["ITEM"].'</td>';

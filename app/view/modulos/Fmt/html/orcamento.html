@@ -598,12 +598,27 @@ function orcAlteraQuantidade($codigo) {
 }
 
 
-function orcAlteraValor($codigo) {
+function orcAlteraValor($codigo,$indSel = true) {
 	/**
 	 * Seleciona o registro editado
 	 */
 	var $_chk	= $('input[type=checkbox][name="codItemSel['+$codigo+']"][value="'+$codigo+'"]');
-	$_chk.prop('checked', true);
+	if ($indSel == true) {
+		$_chk.prop('checked', true);
+	}
+	
+	
+	/**
+	 * Se o valor for zero e o item estiver marcado , habilitar o select para escolher o tipo de cortesia
+	 */
+	var $selCortesia	= $('#selCortesia_'+$codigo+'_ID');
+	var $oValor			= $('input[zg-name="valor"][zg-codigo="'+$codigo+'"]').val();
+
+	if (!$oValor && $_chk.prop('checked')) {
+		$selCortesia.removeClass("hidden");
+	}else{
+		$selCortesia.addClass("hidden");
+	}
 	
 	/**
 	 * Atualiza a flag de salvamento
@@ -622,6 +637,17 @@ function orcAlteraValor($codigo) {
 }
 
 function orcAlteraSel($codigo) {
+	
+	var $_chk	= $('input[type=checkbox][name="codItemSel['+$codigo+']"][value="'+$codigo+'"]');
+	
+	if($_chk.prop('checked')) {
+		orcAlteraValor($codigo,true);
+	} else {
+		orcAlteraValor($codigo,false);
+	}
+	
+	//
+	return false;
 	/**
 	 * Atualiza a flag de salvamento
 	 */
@@ -647,6 +673,18 @@ function orcAlteraObs($codigo) {
 
 }
 
+function orcAlteraCortesia($codigo) {
+	/**
+	 * Atualiza a flag de salvamento
+	 */
+	 orcIndPrecisaSalvar();
+
+	/**
+	 * Controlar a ação dos botões 
+	 */
+	 orcAtualizaBotoes();
+}
+
 
 function orcHabilitaObs($codigo) {
 	var $oTr		= $('#trOrcObs_'+$codigo+'_ID');
@@ -663,12 +701,15 @@ function orcAtualizaTotalItem($codigo) {
 	var $oValor	= $('input[zg-name="valor"][zg-codigo="'+$codigo+'"]');
 	var $oTotal	= $('#total_'+$codigo+'_ID');
 	var $evento	= $oQtde.attr('zg-evento');
+	var $_chk	= $('input[type=checkbox][name="codItemSel['+$codigo+']"][value="'+$codigo+'"]');
 	
-	
-	var	$valor	= zgConverteFloat($oValor.val());
-	var $qtde	= parseInt($oQtde.val());
-	var $total	= $valor * $qtde;
-	
+	if ($_chk.prop('checked')) {
+		var	$valor	= zgConverteFloat($oValor.val());
+		var $qtde	= parseInt($oQtde.val());
+		var $total	= $valor * $qtde;
+	}else{
+		var $total	= 0;
+	}
 
 	var options = {
 		symbol : "R$ ",
@@ -693,6 +734,7 @@ function orcAtualizaInfoEvento($evento) {
 		var $qtde		= parseInt($(this).val()); 
 		var $codigo		= $(this).attr("zg-codigo");
 		var $valor		= zgConverteFloat($('input[zg-evento="'+$evento+'"][zg-name="valor"][zg-codigo="'+$codigo+'"]').val());
+		var $_chk		= $('input[type=checkbox][name="codItemSel['+$codigo+']"][value="'+$codigo+'"]');
 		
 		if (isNaN($valor)) {
 			$valor 	= parseFloat(0);
@@ -703,7 +745,15 @@ function orcAtualizaInfoEvento($evento) {
 		}
 
 		//alert("Codigo: "+$codigo+" Qtde: "+$qtde+" Valor: "+$valor);
-		var $totalItem	= $qtde * $valor;
+		
+		
+	
+		if ($_chk.prop('checked')) {
+			var $totalItem	= $qtde * $valor;
+		}else{
+			var $totalItem	= 0;
+		}
+		
 		$totalEvento	+= $totalItem;
 	});
 	

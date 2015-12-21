@@ -38,9 +38,9 @@ class ZgfmtOrcamentoItem
     /**
      * @var string
      *
-     * @ORM\Column(name="OBSERVACAO", type="string", length=1000, nullable=true)
+     * @ORM\Column(name="TEXTO_DESCRITIVO", type="string", length=1000, nullable=true)
      */
-    private $observacao;
+    private $textoDescritivo;
 
     /**
      * @var integer
@@ -127,26 +127,26 @@ class ZgfmtOrcamentoItem
     }
 
     /**
-     * Set observacao
+     * Set textoDescritivo
      *
-     * @param string $observacao
+     * @param string $textoDescritivo
      * @return ZgfmtOrcamentoItem
      */
-    public function setObservacao($observacao)
+    public function setTextoDescritivo($textoDescritivo)
     {
-        $this->observacao = $observacao;
+        $this->textoDescritivo = $textoDescritivo;
 
         return $this;
     }
 
     /**
-     * Get observacao
+     * Get textoDescritivo
      *
      * @return string 
      */
-    public function getObservacao()
+    public function getTextoDescritivo()
     {
-        return $this->observacao;
+        return $this->textoDescritivo;
     }
 
     /**

@@ -133,8 +133,6 @@ try {
 		if (!$oOrcamento) {
 			$oOrcamento	= new \Entidades\ZgfmtPlanoOrcItem();
 			$oOrcamento->setDataCadastro(new \DateTime("now"));
-		}else{
-			$log->info("Achei o registro: ".$oOrcamento->getCodigo());
 		}
 		
 		if (isset($indAtivo [$i])) {
