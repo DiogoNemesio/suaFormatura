@@ -150,24 +150,15 @@ $('#zgFormID').submit(function() {
 });
 
 function addRowOrcamentoOrcAlt() {
-	var $ultOrdem,$ordem,$ultPos,$posicao,$ultTam,$indTriggerChange,$return;
-	
-	$ultOrdem	= 0;
-	
-	$('#layRegTableOrcamentoID > tbody > tr:last [name*="ordem[]"]').each(function( index ) {
-		$ultOrdem	= parseInt($(this).val());
-	});
+	var $ultPos,$posicao,$ultTam,$indTriggerChange,$return;
 	
 	$('#_precisaSalvarID').val(1);
 
 	if ($return == true) return $return;
 	
-	var $numRows = $("#layRegTableOrcamentoID > tbody").children().length;
+	var $numRows = ($("#layRegTableOrcamentoID > tbody > tr._registroOrc").length);
 	
-	$ordem		= parseInt($ultOrdem) + 1;
-
 	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroOrc"><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><input type="text" class="width-100" name="item[]" zg-name="item" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_CATEGORIA%</select></td><td align="center"><label><input name="indAtivo[]" id="indAtivoID" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i class="fa fa-commenting-o bigger-150"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
-	
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-name="item"]').each(function( index ) {
 		$( this ).focus();
 	});
@@ -176,7 +167,7 @@ function addRowOrcamentoOrcAlt() {
 		$( this ).trigger('keyup');
 	});
 	$('#layRegTableOrcamentoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="hidden"><td colspan="6"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();"></textarea></td></tr>');
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroTextoDesc hidden"><td colspan="6"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();"></textarea></td></tr>');
 
 }
 
@@ -185,6 +176,7 @@ function delRowOrcamentoOrcAlt(pObj) {
 	var $div	= pObj.parent();
 	var $td		= $div.parent();
 	var $tr		= $td.parent();
+	var $trDesc	= $tr.next("._registroTextoDesc");
 	
 	/** Encontra a ordem que está sendo removida **/
 	$ordemObj 	= $tr.find('[name*="ordem[]"]');
@@ -193,65 +185,51 @@ function delRowOrcamentoOrcAlt(pObj) {
 	$tr.addClass("danger");
 	$tr.fadeOut(500, function(){
 		$tr.remove();
-		recalculaOrdemOrcAlt();
+		$trDesc.remove();
 	});
 }
 
 
 function moveUpOrcamentoOrcAlt(pObj) {
 	$('#_precisaSalvarID').val(1);
-	var $div	= pObj.parent();
-	var $td		= $div.parent();
-	var $tr		= $td.parent();
+
+	var $div		= pObj.parent();
+	var $td			= $div.parent();
+	var $tr			= $td.parent();
+	var $trAnt		= $tr.prev().prev( "._registroOrc" );
+	var $meuTxt		= $tr.next("._registroTextoDesc");
 	
-	/** Encontra a ordem e posição que está sendo movida **/
-	$ordObj 	= $tr.find('[zg-name="ordem"]');
+	/** Verificar se o registro é o primeiro da tabela, para não fazer nada **/
+	if (typeof $trAnt === 'object' && $trAnt.html() === undefined) {
+		return false;
+	} 
 	
-	$ordem		= parseInt($ordObj.val());
-	
-	if ($ordem == 1) return false;
-	
-	/** Resgata a posição inicial do registro anterior **/
-	var $index	= $ordem - 2;
-	
-	/** Move o registro **/
-	$tr.insertBefore($tr.prev());
-	
-	/** Recalcula a ordem **/
-	recalculaOrdemOrcAlt();
+	/** Move o registro do item **/
+	$tr.insertBefore($trAnt);
+
+	/** Move o registro do texto descritivo **/
+	$meuTxt.insertAfter($tr);
 }
 
 function moveDownOrcamentoOrcAlt(pObj) {
 	$('#_precisaSalvarID').val(1);
 
-	/** Calcula o número de registros da tabela **/
-	$numRows 	= $('#layRegTableOrcamentoID').find('tbody tr').length;
+	var $div		= pObj.parent();
+	var $td			= $div.parent();
+	var $tr			= $td.parent();
+	var $meuTxt		= $tr.next("._registroTextoDesc");
+	var $prxTxt		= $tr.nextAll("._registroTextoDesc").slice(1, 2);
 
-	var $div	= pObj.parent();
-	var $td		= $div.parent();
-	var $tr		= $td.parent();
-	
-	/** Encontra a ordem e posição que está sendo movida **/
-	$ordObj 	= $tr.find('[zg-name="ordem"]');
-	
-	$ordem		= parseInt($ordObj.val());
-	
-	if ($ordem == $numRows) return false;
-	
-	/** Move o registro **/
-	$tr.insertAfter($tr.next());
+	/** Verificar se o registro é o último da tabela, para não fazer nada **/
+	if (typeof $prxTxt === 'object' && $prxTxt.html() === undefined) {
+		return false;
+	} 
 
-	/** Recalcula a ordem **/
-	recalculaOrdemOrcAlt();
-}
+	/** Move o registro do item **/
+	$tr.insertAfter($prxTxt);
 
-function recalculaOrdemOrcAlt() {
-	var $ordem	= 1;
-	$('#layRegTableOrcamentoID > tbody > tr').each(function( index ) {
-		$ordObj 	= $(this).find('[zg-name="ordem"]');
-		$ordObj.val($ordem);
-		$ordem += 1;
-	});
+	/** Move o registro do texto descritivo **/
+	$meuTxt.insertAfter($tr);
 }
 
 function verificaAlteracaoOrcAlt(pObj) {
@@ -349,7 +327,6 @@ function zgLoadUrlSeSalvouOrc($url) {
 }
 
 function alteraTextoDescritivoOrcAlt() {
-	//alert('oi');
 	$('#_precisaSalvarID').val(1);
 }
 
@@ -357,13 +334,12 @@ function habilitaTextoDescritivoOrcAlt(pObj) {
 	var $div	= pObj.parent();
 	var $td		= $div.parent();
 	var $tr		= $td.parent();
-	//var $trDesc	= pObj.parent('tr').next('tr');
-	var $trDesc	= $tr.next('tr');
+	var $prxTxt	= $tr.next('._registroTextoDesc');
 
-	if ($trDesc.hasClass( "hidden")) {
-		$trDesc.removeClass("hidden");
+	if ($prxTxt.hasClass( "hidden")) {
+		$prxTxt.removeClass("hidden");
 	}else{
-		$trDesc.addClass("hidden");
+		$prxTxt.addClass("hidden");
 	}
 }
 

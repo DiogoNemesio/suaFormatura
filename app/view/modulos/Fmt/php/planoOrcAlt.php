@@ -172,7 +172,7 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 						</div>
 						<input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'">
 				</td></tr>
-				<tr class="'.$hidDesc.'">
+				<tr class="_registroTextoDesc '.$hidDesc.'">
 					<td colspan="6"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();">'.$aOrcItem[$i]->getTextoDescritivo().'</textarea></td>
 				</tr>
 				';

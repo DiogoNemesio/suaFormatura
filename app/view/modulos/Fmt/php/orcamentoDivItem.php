@@ -47,7 +47,7 @@ if (!isset($codPlanoOrc)) exit;
 #################################################################################
 ## Resgatar os dados
 #################################################################################
-$itens		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codPlano' => $codPlanoOrc,'indAtivo' => 1));
+$itens		= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findBy(array('codPlano' => $codPlanoOrc,'indAtivo' => 1),array('ordem' => 'ASC'));
 
 #################################################################################
 ## Verificar se o orçamento tem algum item
@@ -74,7 +74,7 @@ for ($i = 0; $i < sizeof($orcItens); $i++) {
 	$aOrcItens[$codigo]["VALOR"]		= \Zage\App\Util::formataDinheiro($orcItens[$i]->getValorUnitario());
 	$aOrcItens[$codigo]["DESCRITIVO"]	= ($orcItens[$i]->getTextoDescritivo()) ? $orcItens[$i]->getTextoDescritivo() : $item->getTextoDescritivo() ;
 	$aOrcItens[$codigo]["TOTAL"]		= \Zage\App\Util::to_float($orcItens[$i]->getQuantidade() * \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario()));
-	
+	$aOrcItens[$codigo]["COD_CORT"]		= ($orcItens[$i]->getCodTipoCortesia()) ? $orcItens[$i]->getCodTipoCortesia()->getCodigo() : null ;
 }
 
 
@@ -96,17 +96,28 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= $aOrcItens[$codigo]["VALOR"];
 		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $aOrcItens[$codigo]["DESCRITIVO"];
 		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= $aOrcItens[$codigo]["TOTAL"];
+		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= $aOrcItens[$codigo]["COD_CORT"];
 	}else{
 		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= null;
 		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= null;
 		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $itens[$i]->getTextoDescritivo();
 		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= null;
 	}
 }
 
 
 //print_r($aItens);
 //exit;
+
+#################################################################################
+## Resgata as informações de Cortesia do Orçamento
+#################################################################################
+try {
+	$aCortesia	= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findAll();
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
 
 #################################################################################
 ## Cria o html dinâmico 
@@ -156,8 +167,16 @@ foreach ($aItens as $codTipo => $aItem)	{
 			
 			if (isset($item["VALOR"]) && $item["VALOR"]) {
 				$checked	= 'checked="checked"';
+				
 			}else{
 				$checked	= null;
+				$hidObs		= "";
+			}
+			
+			if (isset($item["COD_CORT"]) && $item["COD_CORT"] && ($item["VALOR"] == 0)) {
+				$hidObs		= "";
+			}else{
+				$hidObs		= "hidden";
 			}
 			
 			
@@ -165,15 +184,11 @@ foreach ($aItens as $codTipo => $aItem)	{
 			## Resgata as informações de Cortesia do Orçamento
 			#################################################################################
 			try {
-				$aCortesia	= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findAll();
-				$oCortesia	= $system->geraHtmlCombo($aCortesia,'CODIGO', 'DESCRICAO', null, null);
-			
+				$oCortesia	= $system->geraHtmlCombo($aCortesia,'CODIGO', 'DESCRICAO', $item["COD_CORT"], null);
 			} catch (\Exception $e) {
 				\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 			}
-			
-			
-			
+
 			$htmlForm	.= '<tr>';
 			$htmlForm	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codItemSel['.$item["CODIGO"].']" zg-name="selItem" class="ace" value="'.$item["CODIGO"].'" onchange="orcAlteraSel(\''.$item["CODIGO"].'\');" /><span class="lbl"></span></label></td>';
 			$htmlForm	.= '<td class="col-sm-2">'.$item["ITEM"].'</td>';
@@ -184,7 +199,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 								<div data-toggle="buttons" class="btn-group btn-overlap">
 									<span class="btn btn-sm btn-white btn-info center pull-left" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i class="fa fa-commenting-o bigger-150"></i></span>
 									&nbsp;
-									<select id="selCortesia_'.$item["CODIGO"].'_ID" class="select2 hidden" name="codTipoCortesia['.$item["CODIGO"].']" data-rel="select2" onchange="orcAlteraCortesia($(this));">'.$oCortesia.'</select>
+									<select id="selCortesia_'.$item["CODIGO"].'_ID" class="select2 '.$hidObs.'" name="codTipoCortesia['.$item["CODIGO"].']" data-rel="select2" onchange="orcAlteraCortesia($(this));">'.$oCortesia.'</select>
 								</div>
 							</td>';
 			$htmlForm	.= '<td class="col-sm-2"><span>Total:&nbsp;</span><span zg-total-item="1" id="total_'.$item["CODIGO"].'_ID">'.\Zage\App\Util::to_money($item["TOTAL"]).'</span></td>';
