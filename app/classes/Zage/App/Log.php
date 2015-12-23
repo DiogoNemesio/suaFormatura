@@ -67,8 +67,17 @@ class Log {
 		/**
 		 * Definindo o formato do log *
 		 */
-		$this->logFormatText = '[%timestamp%] [%priority%] [%priorityName%] [%message%]' . PHP_EOL;
-		$this->logFormatHtml = '[%timestamp%] [%priority%] [%priorityName%] [%message%]' . "<BR>";
+		$systemClass = "\\Zage\\App\\suaFormatura";
+		if (is_object($system) && ($system instanceof $systemClass)) {
+			
+			$customFormat1	= $system->getCodOrganizacao() 	? " [".$system->getCodOrganizacao()."]" : "";
+			$customFormat2	= $system->getCodUsuario()		? " [".$system->getCodUsuario()."]"		: "";
+		}else{
+			$customFormat1	= "";
+			$customFormat2	= "";
+		}
+		$this->logFormatText = '[%timestamp%] [%priority%] [%priorityName%]'.$customFormat1.$customFormat2.' [%message%]' . PHP_EOL;
+		$this->logFormatHtml = '[%timestamp%] [%priority%] [%priorityName%]'.$customFormat1.$customFormat2.' [%message%]' . "<BR>";
 		
 		/**
 		 * Criando o objeto (Zend Framework) do formato do log *

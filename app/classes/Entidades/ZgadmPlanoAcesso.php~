@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmPlanoAcesso
  *
- * @ORM\Table(name="ZGADM_PLANO_ACESSO", indexes={@ORM\Index(name="fk_ZGADM_PLANO_ACESSO_1_idx", columns={"COD_PLANO"}), @ORM\Index(name="fk_ZGADM_PLANO_ACESSO_2_idx", columns={"COD_TIPO_ORGANIZACAO"})})
+ * @ORM\Table(name="ZGADM_PLANO_ACESSO", indexes={@ORM\Index(name="fk_ZGADM_PLANO_ACESSO_1_idx", columns={"COD_PLANO"}), @ORM\Index(name="fk_ZGADM_PLANO_ACESSO_2_idx", columns={"COD_SISTEMA"})})
  * @ORM\Entity
  */
 class ZgadmPlanoAcesso
@@ -32,14 +32,14 @@ class ZgadmPlanoAcesso
     private $codPlano;
 
     /**
-     * @var \Entidades\ZgadmOrganizacaoTipo
+     * @var \Entidades\ZgadmSistema
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoTipo")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmSistema")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_TIPO_ORGANIZACAO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_SISTEMA", referencedColumnName="CODIGO")
      * })
      */
-    private $codTipoOrganizacao;
+    private $codSistema;
 
 
     /**
@@ -76,25 +76,25 @@ class ZgadmPlanoAcesso
     }
 
     /**
-     * Set codTipoOrganizacao
+     * Set codSistema
      *
-     * @param \Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao
+     * @param \Entidades\ZgadmSistema $codSistema
      * @return ZgadmPlanoAcesso
      */
-    public function setCodTipoOrganizacao(\Entidades\ZgadmOrganizacaoTipo $codTipoOrganizacao = null)
+    public function setCodSistema(\Entidades\ZgadmSistema $codSistema = null)
     {
-        $this->codTipoOrganizacao = $codTipoOrganizacao;
+        $this->codSistema = $codSistema;
 
         return $this;
     }
 
     /**
-     * Get codTipoOrganizacao
+     * Get codSistema
      *
-     * @return \Entidades\ZgadmOrganizacaoTipo 
+     * @return \Entidades\ZgadmSistema 
      */
-    public function getCodTipoOrganizacao()
+    public function getCodSistema()
     {
-        return $this->codTipoOrganizacao;
+        return $this->codSistema;
     }
 }

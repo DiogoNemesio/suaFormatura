@@ -65,10 +65,13 @@ class Financeiro {
 		$aCatConv					= array($codCatConviteExtra);
 		
 		#################################################################################
-		## Resgatar as categorias de boleto e taxa de administração
+		## Resgatar as categorias 
 		#################################################################################
 		$codCatBoleto				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
 		$codCatTxAdm				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
+		$codCatDevMensalidade		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_MENSALIDADE");
+		$codCatDevSistema			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_SISTEMA");
+		$aCatDev					= array($codCatDevMensalidade,$codCatDevSistema);
 		$aCatBolTx					= array($codCatBoleto,$codCatTxAdm);
 		
 		#################################################################################
@@ -85,7 +88,8 @@ class Financeiro {
 			## o Percentual de júros / mora configurado para ficar com a formatura -
 			## o Percentual dos convites extras configurado para ficar com  o cerimonial -
 			## o valor do boleto -
-			## o valor de taxa de administração
+			## o valor de taxa de administração -
+			## as devoluções de mensalidade (desistentes)
 			#################################################################################
 					
 			
@@ -167,25 +171,44 @@ class Financeiro {
 			#################################################################################
 			## Somatório de boleto e taxa de adm
 			#################################################################################
-			$qb3->select('SUM(crr.valor) valor')
+			$qb2->select('SUM(crr.valor) valor')
 			->from('\Entidades\ZgfinContaReceberRateio','crr')
 			->leftJoin('\Entidades\ZgfinContaReceber', 'cr', \Doctrine\ORM\Query\Expr\Join::WITH, 'crr.codContaRec = cr.codigo')
-			->where($qb3->expr()->andx(
-				$qb3->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
-				$qb3->expr()->in('cr.codStatus'			, ':status'),
-				$qb3->expr()->in('crr.codCategoria'		, ':aCatBol')
+			->where($qb2->expr()->andx(
+				$qb2->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
+				$qb2->expr()->in('cr.codStatus'			, ':status'),
+				$qb2->expr()->in('crr.codCategoria'		, ':aCatBol')
 			))
 			->setParameter('codOrganizacao'	, $codFormatura)
 			->setParameter('status'			, array("L"))
 			->setParameter('aCatBol'		, $aCatBolTx);
 				
-			$query 			= $qb3->getQuery();
+			$query 			= $qb2->getQuery();
 			$valorBolTx		= \Zage\App\Util::to_float($query->getSingleScalarResult());
 
+
+			#################################################################################
+			## Somatório das devoluções
+			#################################################################################
+			$qb3->select('SUM(cpr.valor) valor')
+			->from('\Entidades\ZgfinContaPagarRateio','cpr')
+			->leftJoin('\Entidades\ZgfinContaPagar', 'cp', \Doctrine\ORM\Query\Expr\Join::WITH, 'cpr.codContaPag = cp.codigo')
+			->where($qb3->expr()->andx(
+				$qb3->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
+				$qb3->expr()->in('cp.codStatus'			, ':status'),
+				$qb3->expr()->in('cpr.codCategoria'		, ':aCatDev')
+			))
+			->setParameter('codOrganizacao'	, $codFormatura)
+			->setParameter('status'			, array("L"))
+			->setParameter('aCatDev'		, $aCatDev);
+			
+			$query 			= $qb3->getQuery();
+			$valorDev		= \Zage\App\Util::to_float($query->getSingleScalarResult());
+				
 			#################################################################################
 			## Valor total
 			#################################################################################
-			$valorTotal			= $valorPrincipal + $valorJuros + $valorMora - $valorConvCer - $valorBolTx;
+			$valorTotal			= $valorPrincipal + $valorJuros + $valorMora - $valorConvCer - $valorBolTx - $valorDev;
 			
 			return ($valorTotal);
 			

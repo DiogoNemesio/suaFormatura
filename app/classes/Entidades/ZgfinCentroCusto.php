@@ -43,6 +43,13 @@ class ZgfinCentroCusto
     private $indCredito;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=true)
+     */
+    private $indAtivo;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -150,6 +157,29 @@ class ZgfinCentroCusto
     public function getIndCredito()
     {
         return $this->indCredito;
+    }
+
+    /**
+     * Set indAtivo
+     *
+     * @param integer $indAtivo
+     * @return ZgfinCentroCusto
+     */
+    public function setIndAtivo($indAtivo)
+    {
+        $this->indAtivo = $indAtivo;
+
+        return $this;
+    }
+
+    /**
+     * Get indAtivo
+     *
+     * @return integer 
+     */
+    public function getIndAtivo()
+    {
+        return $this->indAtivo;
     }
 
     /**
