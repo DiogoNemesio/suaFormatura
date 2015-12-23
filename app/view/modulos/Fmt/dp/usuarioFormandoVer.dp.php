@@ -8,13 +8,6 @@ if (defined('DOC_ROOT')) {
 	include_once('../include.php');
 }
 
-use \Zend\Mail;
-use \Zend\Mail\Message;
-use \Zend\Mime\Message as MimeMessage;
-use \Zend\Mime\Part as MimePart;
-Use \Zend\Mime;
-
-
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
@@ -65,11 +58,29 @@ try {
 	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 	
 	if ($numFormando == 0){
+		//ATIVAR A FORMATURA
 		$oCodStatus			= $em->getRepository('Entidades\ZgadmOrganizacaoStatusTipo')->findOneBy(array('codigo' => "A"));
 		$oOrg->setCodStatus($oCodStatus);
 		$oOrg->setDataAtivacao(new DateTime(now));
 	
 		$em->persist($oOrg);
+		
+		//CRIAR CENTRO DE CUSTO NA EMPRESA QUE ADMINISTRA
+		$oOrgAdm	= $em->getRepository('Entidades\ZgadmOrganizacaoAdm')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+		
+		if ($oOrgAdm){
+			$oCentroTipo	= $em->getRepository('Entidades\ZgfinCentroCustoTipo')->findOneBy(array('codigo' => "P"));
+			$oCentro		= new \Entidades\ZgfinCentroCusto();
+			
+			$oCentro->setCodOrganizacao($oOrgAdm->getCodOrganizacaoPai());
+			$oCentro->setCodTipoCentroCusto($oCentroTipo);
+			$oCentro->setDescricao("FMT:".$oOrg->getNome());
+			$oCentro->setIndCredito(1);
+			$oCentro->setIndDebito(1);
+			
+			$em->persist($oCentro);
+		}
+		 
 	}	
 	
 	$oUsuOrg		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $oUsuario->getCodigo(), 'codOrganizacao' => $codOrganizacao));

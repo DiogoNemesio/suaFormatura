@@ -482,11 +482,11 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 }
 
 $parcelas		= substr($parcelas,0 ,-1);
-$textoParcela	= "Boleto referente ";
+$textoParcela	= "";
 if (sizeof($codContaSel) > 1) {
-	$textoParcela .= "as parcelas (".$parcelas .") ";
+	$textoParcela .= $parcelas;
 }else{
-	$textoParcela .= "a parcela ".$parcelas;
+	$textoParcela .= $parcelas;
 }
 
 $textoParcela	.= " de ".$oConta->getNumParcelas()."";

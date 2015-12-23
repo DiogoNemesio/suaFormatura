@@ -734,26 +734,47 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		$aUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findBy(array('codUsuario' => $this->_getCodUsuario()));
 		
 		if ($oUsuOrg->getCodStatus()->getCodigo() == "P" && $this->_usuario->getCodStatus()->getCodigo() == "P" && sizeof($aUsuOrg) == 1){
-			//Remover Usuário
-			$em->remove($this->_usuario);
+			//Resgatar o codPessoa
+			$codPessoa = \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(), $this->_getCodUsuario());
 			
-			//Remover associação
-			$em->remove($oUsuOrg);
+			//Resgatar contas
+			$oContaPagar	= $em->getRepository('Entidades\ZgfinContaReceber')->findBy(array('codPessoa' => $codPessoa));
+			$oContaReceber	= $em->getRepository('Entidades\ZgfinContaPagar')->findBy(array('codPessoa' => $codPessoa));
 			
-			//Remover convites
-			$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $this->_getCodUsuario()));
-			if($oConvite){			
-				for ($i = 0; $i < sizeof($oConvite); $i++) {
-					$em->remove($oConvite[$i]);
+			if (sizeof($oContaPagar) == 0 && sizeof($oContaReceber) == 0){
+				
+				//Remover Usuário
+				$em->remove($this->_usuario);
+					
+				//Remover associação
+				$em->remove($oUsuOrg);
+					
+				//Remover convites
+				$oConvite = $em->getRepository('Entidades\ZgsegConvite')->findBy(array('codUsuarioDestino' => $this->_getCodUsuario()));
+				if($oConvite){
+					for ($i = 0; $i < sizeof($oConvite); $i++) {
+						$em->remove($oConvite[$i]);
+					}
 				}
-			}
-			
-			//Remover notificação
-			$oNotificacao = $em->getRepository('Entidades\ZgappNotificacaoUsuario')->findBy(array('codUsuario' => $this->_getCodUsuario()));
-			if($oNotificacao){
-				for ($i = 0; $i < sizeof($oNotificacao); $i++) {
-					$em->remove($oNotificacao[$i]);
+					
+				//Remover notificação
+				$oNotificacao = $em->getRepository('Entidades\ZgappNotificacaoUsuario')->findBy(array('codUsuario' => $this->_getCodUsuario()));
+				if($oNotificacao){
+					for ($i = 0; $i < sizeof($oNotificacao); $i++) {
+						$em->remove($oNotificacao[$i]);
+					}
 				}
+					
+				//Remover notificação log
+				$oNotificacaoLog = $em->getRepository('Entidades\ZgappNotificacaoLogDest')->findBy(array('codUsuario' => $this->_getCodUsuario()));
+				if($oNotificacaoLog){
+					for ($i = 0; $i < sizeof($oNotificacaoLog); $i++) {
+						$em->remove($oNotificacaoLog[$i]);
+					}
+				}
+				
+			}else{
+				return $tr->trans('Para usuário que já possuam contas emitidas, deve-se realizar a desistência.');
 			}
 			
 		}else{

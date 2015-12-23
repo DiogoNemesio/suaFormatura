@@ -363,8 +363,8 @@ $em->persist($hist);
 $em->flush();
 
 $parcelas		= substr($parcelas,0 ,-1);
-$textoParcela	= "Boleto referente ";
-$textoParcela .= "a parcela ".$parcelas;
+$textoParcela	= "";
+$textoParcela .= $parcelas;
 
 $textoParcela	.= " de ".$oConta->getNumParcelas()."";
 $oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
