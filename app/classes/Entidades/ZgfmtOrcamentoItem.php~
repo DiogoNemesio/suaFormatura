@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtOrcamentoItem
  *
- * @ORM\Table(name="ZGFMT_ORCAMENTO_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_ORCAMENTO_ITEM_1_idx", columns={"COD_ORCAMENTO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_ITEM_2_idx", columns={"COD_ITEM"})})
+ * @ORM\Table(name="ZGFMT_ORCAMENTO_ITEM", indexes={@ORM\Index(name="fk_ZGFMT_ORCAMENTO_ITEM_1_idx", columns={"COD_ORCAMENTO"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_ITEM_2_idx", columns={"COD_ITEM"}), @ORM\Index(name="fk_ZGFMT_ORCAMENTO_ITEM_3_idx", columns={"COD_TIPO_CORTESIA"})})
  * @ORM\Entity
  */
 class ZgfmtOrcamentoItem
@@ -68,6 +68,16 @@ class ZgfmtOrcamentoItem
      * })
      */
     private $codItem;
+
+    /**
+     * @var \Entidades\ZgfmtOrcamentoCortesiaTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrcamentoCortesiaTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_CORTESIA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoCortesia;
 
 
     /**
@@ -216,5 +226,28 @@ class ZgfmtOrcamentoItem
     public function getCodItem()
     {
         return $this->codItem;
+    }
+
+    /**
+     * Set codTipoCortesia
+     *
+     * @param \Entidades\ZgfmtOrcamentoCortesiaTipo $codTipoCortesia
+     * @return ZgfmtOrcamentoItem
+     */
+    public function setCodTipoCortesia(\Entidades\ZgfmtOrcamentoCortesiaTipo $codTipoCortesia = null)
+    {
+        $this->codTipoCortesia = $codTipoCortesia;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoCortesia
+     *
+     * @return \Entidades\ZgfmtOrcamentoCortesiaTipo 
+     */
+    public function getCodTipoCortesia()
+    {
+        return $this->codTipoCortesia;
     }
 }
