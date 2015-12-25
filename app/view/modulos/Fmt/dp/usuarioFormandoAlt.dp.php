@@ -84,14 +84,15 @@ try {
 		$oOrgAdm	= $em->getRepository('Entidades\ZgadmOrganizacaoAdm')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 		
 		if ($oOrgAdm){
-			$oCentroTipo	= $em->getRepository('Entidades\ZgfinCentroCustoTipo')->findOneBy(array('codigo' => "P"));
+			$oCentroTipo	= $em->getRepository('Entidades\ZgfinCentroCustoTipo')->findOneBy(array('codigo' => "F"));
 			$oCentro		= new \Entidades\ZgfinCentroCusto();
 				
 			$oCentro->setCodOrganizacao($oOrgAdm->getCodOrganizacaoPai());
 			$oCentro->setCodTipoCentroCusto($oCentroTipo);
-			$oCentro->setDescricao("FMT:".$oOrg->getNome());
+			$oCentro->setDescricao("FMT:(".$oOrg->getCodigo().")".$oOrg->getNome());
 			$oCentro->setIndCredito(1);
 			$oCentro->setIndDebito(1);
+			$oCentro->setIndAtivo(1);
 				
 			$em->persist($oCentro);
 		}

@@ -13,6 +13,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 if (isset($_POST['codCentro']))			$codCentro			= \Zage\App\Util::antiInjection($_POST['codCentro']);
 if (isset($_POST['descricao'])) 		$descricao			= \Zage\App\Util::antiInjection($_POST['descricao']);
+if (isset($_POST['ativo']))	 			$ativo				= \Zage\App\Util::antiInjection($_POST['ativo']);
 if (isset($_POST['debito']))	 		$debito				= \Zage\App\Util::antiInjection($_POST['debito']);
 if (isset($_POST['credito']))	 		$credito			= \Zage\App\Util::antiInjection($_POST['credito']);
 
@@ -26,20 +27,26 @@ $err	= false;
 #################################################################################
 /** DESCRIÇÃO **/
 if (!isset($descricao) || (empty($descricao))) {
- 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo DESCRIÇÃO é obrigatório");
+ 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Informe o nome do centro de custo.");
 	$err	= 1;
 }
 
 if ((!empty($descricao)) && (strlen($descricao) > 60)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo DESCRIÇÃO não deve conter mais de 60 caracteres");
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"O nome do centro de custo não deve conter mais de 60 caracteres.");
 	$err	= 1;
 }
 
 $oNome	= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'descricao' => $descricao ));
 
 if (($oNome != null) && ($oNome->getCodigo() != $codCentro)){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Descrição do centro de custo já existe"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe um centro de custo com este nome."));
 	$err 	= 1;
+}
+
+if (isset($ativo) && (!empty($ativo))) {
+	$ativo	= 1;
+}else{
+	$ativo	= 0;
 }
 
 if (isset($debito) && (!empty($debito))) {
@@ -55,7 +62,7 @@ if (isset($credito) && (!empty($credito))) {
 }
 
 if ($credito == 0 && $debito == 0) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O centro de custo deve ser pelo menos de Débito ou Crédito"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O centro de custo deve ser pelo menos de débito ou crédito"));
 	$err 	= 1;
 }
 
@@ -83,6 +90,7 @@ try {
  	$oConta->setDescricao($descricao);
  	$oConta->setIndDebito($debito);
  	$oConta->setIndCredito($credito);
+ 	$oConta->setIndAtivo($ativo);
  	$oConta->setCodTipoCentroCusto($oCCTipo);
  	
  	$em->persist($oConta);

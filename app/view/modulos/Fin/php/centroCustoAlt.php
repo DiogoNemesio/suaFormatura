@@ -48,11 +48,13 @@ if (!empty($codCentro)) {
 	}
 
 	$descricao		= $info->getDescricao();
+	$ativo			= ($info->getIndAtivo()		== 1) ? "checked" : null;
 	$debito			= ($info->getIndDebito()	== 1) ? "checked" : null;
 	$credito		= ($info->getIndCredito()	== 1) ? "checked" : null;
 	
 }else{
 	$descricao		= "";
+	$ativo			= "checked";
 	$debito			= "checked";
 	$credito		= "checked";
 }
@@ -83,6 +85,7 @@ $tpl->set('URLNOVO'				,$urlNovo);
 $tpl->set('ID'					,$id);
 $tpl->set('COD_CENTRO'			,$codCentro);
 $tpl->set('DESCRICAO'			,$descricao);
+$tpl->set('ATIVO'				,$ativo);
 $tpl->set('DEBITO'				,$debito);
 $tpl->set('CREDITO'				,$credito);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));

@@ -153,6 +153,7 @@ try {
  		$oCC->setCodTipoCentroCusto($oCCTipo);
  		$oCC->setIndCredito(1);
  		$oCC->setIndDebito(1);
+ 		$oCC->setIndAtivo(1);
  			
  		$em->persist($oCC);
  		

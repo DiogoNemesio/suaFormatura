@@ -61,7 +61,7 @@ $('#orcMailEnviaEmailID').click(function() {
 		return false;
 	}
 	
-	$('#orcMailEnviaEmailID').html("Enviando e-mail, aguarde ...");
+	$('#orcMailEnviaEmailID').html('Enviando e-mail, aguarde... <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
 	$('#orcMailEnviaEmailID').attr("disabled","disabled");
 	
 	$('#zgFormOrcMailID').submit(function(e) {
