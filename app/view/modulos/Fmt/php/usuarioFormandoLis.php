@@ -60,9 +60,9 @@ try {
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GUsuario");
 $grid->adicionaTexto($tr->trans('NOME'),	 			20, $grid::CENTER	,'codUsuario:nome');
 $grid->adicionaTexto($tr->trans('EMAIL'),				20, $grid::CENTER	,'codUsuario:usuario');
-$grid->adicionaTexto($tr->trans('CPF'),					15, $grid::CENTER	,'codUsuario:cpf');
+$grid->adicionaTexto($tr->trans('CPF'),					10, $grid::CENTER	,'codUsuario:cpf');
 $grid->adicionaTexto($tr->trans('CADASTRO'),			10, $grid::CENTER	,'codUsuario:codStatus:descricao');
-$grid->adicionaTexto($tr->trans('ASSOCIAÇÃO'),			10, $grid::CENTER	,'codStatus:descricao');
+$grid->adicionaTexto($tr->trans('ASSOCIAÇÃO'),			15, $grid::CENTER	,'codStatus:descricao');
 $grid->adicionaIcone(null,'fa fa-envelope orange',$tr->trans('Reenviar convite'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
