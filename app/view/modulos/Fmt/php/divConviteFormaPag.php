@@ -144,7 +144,7 @@ $html .= '<div class="col-sm-6">';
 $html .= '<h5 class="header blue bolder smaller" align="center">Pagamento</h5>';
 $html .= '<div class="form-group col-sm-12" id="divValorPorFormandoID">';
 $html .= '<label class="col-sm-3 control-label" for="codFormaPagID">Forma de Pag.</label>';
-$html .= '<div class="input-group col-sm-5 pull-left">';
+$html .= '<div class="input-group col-sm-7 pull-left">';
 $html .= '<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Selecione as formas de pagamento aceitas na venda do convite extra no tipo '.$oVendaTipo->getDescricao().'."></i></span>';
 $html .= '<select class="multiselect" multiple="multiple" name="codFormaPag[]" id="codFormaPagID">';
 $html .= $oFormaPag;
@@ -154,7 +154,7 @@ $html .= '</div>';
 
 $html .= '<div class="form-group col-sm-12" id="divValorPorFormandoID">
 		 <label for="taxaAdministracaoID" class="col-sm-3 control-label">Taxa comodidade</label>
-		 <div class="input-group col-sm-5 pull-left">
+		 <div class="input-group col-sm-7 pull-left">
 		 <span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="A taxa de comodidade é o valor fixo que será adicionado a uma venda de convite extra. Caso não seja preenchido, este valor será considerado como 0."></i></span>
 		 <input class="form-control" id="taxaAdministracaoID" type="text" name="taxaAdministracao" maxlength="60" value="'.$taxaAdm.'" placeholder="Taxa de administração" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 		 </div>
@@ -170,7 +170,7 @@ $html .= '<h5 class="header blue bolder smaller" align="center">Configuração d
 $html .=	'<div id="divBoletoConfID">';
 $html .=	'<div class="form-group col-sm-12" id="divContaRecID">
 			<label class="col-sm-3 control-label">Conta Corrente</label>
-			<div class="input-group col-sm-6 pull-left">
+			<div class="input-group col-sm-7 pull-left">
 			<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Selecione a conta corrente que será utilizada para gerar os boletos da venda do convite extra."></i></span>
 			<select class="select2" style="width:100%;" onchange="mostrarTaxaBoleto();" id="codContaRecID" name="codContaRec" data-rel="select2">
 			'.$oConta.'
@@ -181,7 +181,7 @@ $html .=	'<div class="form-group col-sm-12" id="divContaRecID">
 
 $html .=	'<div class="form-group col-sm-12" id="divValorPorFormandoID">
 			<label for="taxaBoletoID" class="col-sm-3 control-label">Taxa boleto</label>
-			<div class="input-group col-sm-5 pull-left">
+			<div class="input-group col-sm-7 pull-left">
 			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Custo do boleto para a conta selecionada."></i></span>
 			<input class="form-control" id="taxaBoletoID" readonly type="text" name="taxaBoleto" maxlength="60" value="" placeholder="Custo do boleto" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 			</div>
@@ -190,7 +190,7 @@ $html .=	'<div class="form-group col-sm-12" id="divValorPorFormandoID">
 
 $html .=	'<div class="form-group col-sm-12" id="divDiasVencimentoID">
 			<label for="diasVencimentoID" class="col-sm-3 control-label">Prazo</label>
-			<div class="input-group col-sm-5 pull-left">
+			<div class="input-group col-sm-7 pull-left">
 			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Número de dias para o vencimento do boleto a partir da data da compra."></i></span>
 			<input class="form-control" id="diasVencimentoID" type="text" name="diasVencimento" maxlength="3" value="'.$diasVencimento.'" placeholder="Dias para o vencimento" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 			</div>
@@ -219,6 +219,7 @@ $html	.= "$('#codFormaPagID').multiselect({
 			enableFiltering: false,
 			includeSelectAllOption: true,
 			disableIfEmpty: true,
+			buttonWidth: '100%',
 			buttonClass: 'btn btn-white btn-primary btn-sm',
 			nonSelectedText: 'Selecione as formas de pagamento',
 			allSelectedText: 'Todas as formas selecionadas',

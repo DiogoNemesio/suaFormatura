@@ -38,22 +38,23 @@ if (isset($_GET['codVenda'])){
 	$codVenda		= \Zage\App\Util::antiInjection($_GET['codVenda']);
 }
 
-$infoVenda = $em->getRepository('Entidades\ZgfmtConviteExtraVendaItem')->findBy(array('codVenda' => $codVenda));
+$infoVenda	 	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findOneBy(array('codigo' => $codVenda));
+$infoItemVenda 	= $em->getRepository('Entidades\ZgfmtConviteExtraVendaItem')->findBy(array('codVenda' => $codVenda));
 
 // Cálculo do valor total
-$valorTotal = $infoVenda[0]->getCodVenda()->getValorTotal() + $infoVenda[0]->getCodVenda()->getTaxaConveniencia();
+$valorTotal = $infoVenda->getValorTotal() + $infoVenda->getTaxaConveniencia();
 
 #################################################################################
 ## Resgatar informações da conta
 #################################################################################
-$infoContaRec = $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codTransacao' => $infoVenda[0]->getCodVenda()->getCodTransacao()));
+$infoContaRec = $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codTransacao' => $infoItemVenda[0]->getCodVenda()->getCodTransacao()));
 
 #################################################################################
 ## Verificar se pode imprimir boleto
 #################################################################################
 if($infoContaRec && \Zage\Fin\ContaReceber::podeEmitirBoleto($infoContaRec) == true){
 	//URL da geração de boleto
-	$eid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$infoContaRec->getCodigo().'&tipoMidia=EMAIL'.'&email='.$infoVenda[0]->getCodVenda()->getCodFormando()->getEmail().'&instrucao=');
+	$eid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$infoContaRec->getCodigo().'&tipoMidia=EMAIL'.'&email='.$infoItemVenda[0]->getCodVenda()->getCodFormando()->getEmail().'&instrucao=');
 	$pid = \Zage\App\Util::encodeUrl ( '_codMenu_=' . $_codMenu_ . '&_icone_=' . $_icone_ .'&codConta='.$infoContaRec->getCodigo().'&tipoMidia=PDF'.'&instrucao=');
 		
 	$urlEmail 	= ROOT_URL . "/Fin/geraBoletoConta.php?id=" . $eid;
@@ -95,20 +96,20 @@ if($infoContaRec && \Zage\Fin\ContaReceber::podeEmitirBoleto($infoContaRec) == t
 }
 
 $total = 0;
-for ($i = 0; $i < sizeof($infoVenda); $i++) {
-	//$total = $infoVenda[$i]->getCodRifa()->getValorUnitario() + $total;
+for ($i = 0; $i < sizeof($infoItemVenda); $i++) {
+	//$total = $infoItemVenda[$i]->getCodRifa()->getValorUnitario() + $total;
 	$linha = $i + 1;
 	
 	$html .= '<tr>';
 	$html .= '<td class="center">'.$linha.'</td>';
-	$html .= '<td class="center">'.$infoVenda[$i]->getCodEvento()->getCodTipoEvento()->getDescricao().'</td>';
-	$html .= '<td class="center">'.$infoVenda[$i]->getQuantidade().'</td>';
-	$html .= '<td class="center">'.\Zage\App\Util::to_money($infoVenda[$i]->getValorUnitario()).'</td>';
-	$html .= '<td class="center">'.\Zage\App\Util::to_money($infoVenda[$i]->getCodVenda()->getValorTotal()).'</td>';
+	$html .= '<td class="center">'.$infoItemVenda[$i]->getCodEvento()->getCodTipoEvento()->getDescricao().'</td>';
+	$html .= '<td class="center">'.$infoItemVenda[$i]->getQuantidade().'</td>';
+	$html .= '<td class="center">'.\Zage\App\Util::to_money($infoItemVenda[$i]->getValorUnitario()).'</td>';
+	$html .= '<td class="center">'.\Zage\App\Util::to_money($infoItemVenda[$i]->getQuantidade() * $infoItemVenda[$i]->getValorUnitario()).'</td>';
 	$html .= '</tr>';
 }
 
-$html 	.= "<tr><td colspan='4' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID'>".\Zage\App\Util::to_money($infoVenda[0]->getCodVenda()->getTaxaConveniencia())."</div></td>";
+$html 	.= "<tr><td colspan='4' align=\"right\">TAXA DE CONVENIÊNCIA</td><td class=\"center\"><div id='valorConvenienciaID'>".\Zage\App\Util::to_money($infoVenda->getTaxaConveniencia())."</div></td>";
 
 #################################################################################
 ## Verifica se está vencida
@@ -141,14 +142,14 @@ $tpl->set('IC'					,$_icone_);
 
 $tpl->set('STATUS'				,$statusDesc);
 $tpl->set('DATA_VENCIMENTO'		,$infoContaRec->getDataVencimento()->format($system->config["data"]["dateFormat"]));
-$tpl->set('FORMA_PAGAMENTO'		,$infoVenda[0]->getCodVenda()->getCodFormaPagamento()->getDescricao());
-$tpl->set('CONTA_RECEBIMENTO'	,$infoVenda[0]->getCodVenda()->getCodContaRecebimento()->getNome());
+$tpl->set('FORMA_PAGAMENTO'		,$infoVenda->getCodFormaPagamento()->getDescricao());
+$tpl->set('CONTA_RECEBIMENTO'	,$infoVenda->getCodContaRecebimento()->getNome());
 $tpl->set('COD_VENDA'			,$codVenda);
 $tpl->set('TOTAL'				,\Zage\App\Util::to_money($valorTotal));
-$tpl->set('DATA_VENDA'			,$infoVenda[0]->getCodVenda()->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]));
+$tpl->set('DATA_VENDA'			,$infoItemVenda[0]->getCodVenda()->getDataCadastro()->format($system->config["data"]["datetimeSimplesFormat"]));
 
-$tpl->set('NOME'				,$infoVenda[0]->getCodVenda()->getCodFormando()->getNome());
-$tpl->set('EMAIL'				,$infoVenda[0]->getCodVenda()->getCodFormando()->getEmail());
+$tpl->set('NOME'				,$infoVenda->getCodFormando()->getNome());
+$tpl->set('EMAIL'				,$infoVenda->getCodFormando()->getEmail());
 $tpl->set('HTML_TABLE'			,$html);
 $tpl->set('HTML_BOL'			,$htmlBol);
 

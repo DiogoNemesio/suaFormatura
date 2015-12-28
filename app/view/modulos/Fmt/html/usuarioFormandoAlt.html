@@ -12,8 +12,8 @@
 				<input type="hidden" name="codOrganizacao" id="codOrganizacaoID" value="%COD_ORGANIZACAO%">
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
 				<input type="hidden" id="id" name="id" value="%ID%">
-				<input type='hidden' id='valCpfID'>
-				<input type='hidden' id='valEmailID'>
+				<input type='hidden' id='valCpfID' value="%VAL_CPF%">
+				<input type='hidden' id='valEmailID' value=%VAL_EMAIL%>
 				<div class="tabbable" id="tabID">
 					<ul class="nav nav-tabs padding-16">
 						<li class="active">
@@ -45,7 +45,11 @@
 								    	<label class="col-sm-3 control-label" for="emailID">Email</label>
 						    			<div class="input-group col-sm-8 pull-left">
 						   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o email que será utilizado como usuário para acesso ao portal. Lembrando que não pode existir 2 (dois) EMAILs iguais em uma mesma formatura."></i></span>
-						   					<input class="width-100" id="emailID" type="text" %PODE_ALTERAR% maxlength="200" name="email" value="%USUARIO%" placeholder="Email" onchange="checkEmailUsuarioAlt();" autocomplete="off">
+						   					<span  class="block input-icon input-icon-right">
+						   						<input class="width-100" id="emailID" type="text" %PODE_ALTERAR% maxlength="200" name="email" value="%USUARIO%" placeholder="Email" onchange="checkEmailUsuarioAlt();" autocomplete="off">
+						   						<i id="emailIconeID" class=""></i>
+						   					</span>
+						   					
 						    			</div>
 						    			<div class="col-sm-1 pull-left" id="divHelpEmailID"></div>
 						    		</div>
@@ -79,7 +83,10 @@
 									    	<label class="col-xs-12 col-sm-3 control-label" for="cpfID">CPF</label>
 							    			<div class="input-group col-sm-8 pull-left">
 						    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Infome o número do CPF do formando. Lembrando que não pode existir 2 (dois) CPFs iguais em uma mesma formatura."></i></span>
-								    			<input class="form-control" id="cpfID" type="text" %PODE_ALTERAR% name="cpf" maxlength="14" value="%CPF%" placeholder="CPF" %READONLY% onchange="checkCpfUsuarioAlt();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+								    			<span  class="block input-icon input-icon-right">
+								    				<input class="form-control" id="cpfID" type="text" %PODE_ALTERAR% name="cpf" maxlength="14" value="%CPF%" placeholder="CPF" %READONLY% onchange="checkCpfUsuarioAlt();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="cpf" zg-data-mask-retira="1">
+									    			<i id="cpfIconeID" class=""></i>
+						   						</span>
 									    	</div>
 									    	<div class="col-sm-1 pull-left" id="divHelpCpfID"></div>
 									</div>
@@ -198,7 +205,7 @@
 												<th class="col-sm-1 center"></th>
 												<th class="col-sm-3 center">Tipo</th>
 												<th class="col-sm-3 center">Telefone</th>
-												<th class="col-sm-1 center"><span onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
+												<th class="col-sm-1 center"><span style="cursor: pointer" onclick="addRowTelefonePessoaAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -211,7 +218,7 @@
 					</div>
 				</div>
 				<div class="clearfix form-actions">
-					<label class="col-sm-4 control-label">&nbsp;</label>
+					<label class="col-sm-5 control-label">&nbsp;</label>
 					<button type="button" class="btn btn-primary" id="btnSubmitID">
 						<i class="fa fa-check bigger-110"></i> Salvar
 					</button>
@@ -326,7 +333,7 @@ VALIDA FORMULÁRIO
 function checkEmailUsuarioAlt() {
 	var vEmail	= $('#emailID').val();
 	$('#valEmailID').val(0);
-
+	
 	if (!vEmail){
 		$('#divEmailID').addClass('has-error');
 		$('#divHelpEmailID').html(zgCriaSpanErro('O Email deve ser preenchido!'));
@@ -336,6 +343,9 @@ function checkEmailUsuarioAlt() {
 		$('#divHelpEmailID').html(zgCriaSpanErro('Email inválido!'));
 		return false;
 	}else{
+		
+		
+		//	$('#emailIconeID').addClass("ace-icon fa fa-spinner fa-spin orange");
 		
 		//Verificar se o nome está disponível no banco
 		jQuery.ajax({
@@ -353,6 +363,7 @@ function checkEmailUsuarioAlt() {
 	   		cache: false,
 	   		async:false
 	   });
+		//$('#emailIconeID').removeClass("ace-icon fa fa-spinner fa-spin orange");
 		
 		if ($('#valEmailID').val() == 0) {
 			zgAbreModal("%ROOT_URL%/Fmt/usuarioFormandoVer.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val());
@@ -384,6 +395,8 @@ function checkCpfUsuarioAlt() {
 		return false;
 	}else{
 		
+		//$('#cpfIconeID').addClass("ace-icon fa fa-spinner fa-spin orange");
+		
 		//Verificar se o nome está disponível no banco
 		jQuery.ajax({
 	   		url: "%ROOT_URL%/Seg/usuarioVerificaCpf.dp.php",
@@ -400,6 +413,8 @@ function checkCpfUsuarioAlt() {
 	   		cache: false,
 	   		async:false
 	   });
+		
+		//$('#cpfIconeID').removeClass("ace-icon fa fa-spinner fa-spin orange");
 		
 		if ($('#valCpfID').val() == 0) {
 			zgAbreModal("%ROOT_URL%/Fmt/usuarioFormandoVer.php?id=" + $('#id').val() + "&email=" + $('#emailID').val() + "&cpf=" + $('#cpfID').val());
@@ -510,15 +525,21 @@ function validaUsuarioAlt() {
 	
 	//---- ABA GERAL----//
 	//USUARIO
-	if (checkEmailUsuarioAlt() == false){
-		vOK		= false;
-		vTab 	= 0;
+	if ($('#valEmailID').val() != 1){
+		if (checkEmailUsuarioAlt() == false){
+			vOK		= false;
+			vTab 	= 0;
+		}
 	}
 	
+	
+	
 	//CPF
-	if (checkCpfUsuarioAlt() == false){
-		vOK		= false;
-		vTab 	= 0;
+	if ($('#valCpfID').val() != 1){
+		if (checkCpfUsuarioAlt() == false){
+			vOK		= false;
+			vTab 	= 0;
+		}
 	}
 	
 	//NOME
