@@ -10,7 +10,7 @@
 	<form id="zgFormID" class="form-horizontal">
 		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
 		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
-		<input type="hidden" id="valID" name="validado">
+		<input type="hidden" id="valID" name="validado" value="%VAL_ID%">
 
 		<div class="row">
 			<div class="form-group col-sm-12" id="divIdentID">
@@ -458,8 +458,10 @@ function validaFormaturaAlt() {
 	}
 	
 	// IDENTIFICAÇÃO
-	if (validaIdent() == false){
-		vOK = false;
+	if ($('#valID').val() != 1){
+		if (validaIdent() == false){
+			vOK = false;
+		}
 	}
 	
 	if (vOK == true) {

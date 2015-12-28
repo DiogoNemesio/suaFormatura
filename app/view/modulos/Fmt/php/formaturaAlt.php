@@ -72,6 +72,8 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$curso			= $orgFmt->getCodCurso()->getCodigo();
 	$cidade			= $orgFmt->getCodCidade()->getCodigo();
 	$dataConclusao	= ($orgFmt->getDataConclusao() != null) ? $orgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
+	
+	$valId			= 1;
 
 	if ($oContrato) {
 		$codPlano			= ($oContrato->getCodPlano()) ? $oContrato->getCodPlano()->getCodigo() : null;
@@ -95,6 +97,8 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$curso			= null;
 	$cidade			= null;
 	$dataConclusao  = null;
+	
+	$valId			= null;
 
 	$codPlano		= null;
 	$formaDesc		= "V";
@@ -154,6 +158,7 @@ $tpl->set('PCT_DESCONTO'			,$pctDesconto);
 $tpl->set('FORMA_DESCONTO'			,$formaDesc);
 $tpl->set('HIDDEN'					,$hidden);
 
+$tpl->set('VAL_ID'					,$valId);
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));
