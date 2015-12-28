@@ -109,9 +109,19 @@ class Convite {
 			->from('\Entidades\ZgfmtConviteExtraEventoConf','c')
 				->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= c.codOrganizacao')
 				->where($qb->expr()->andx(
-						$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
-						$qb->expr()->lte('c.dataInicioPresencial'	, ':now'),
-						$qb->expr()->gte('c.dataFimPresencial'		, ':now')
+					$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
+					$qb->expr()->andx(
+						$qb->expr()->orX(
+							$qb->expr()->isNull('c.dataInicioPresencial'),
+							$qb->expr()->lte('c.dataInicioPresencial'	, ':now')
+						)
+					),
+					$qb->expr()->andx(
+						$qb->expr()->orX(
+							$qb->expr()->isNull('c.dataFimPresencial'),
+							$qb->expr()->gte('c.dataFimPresencial'		, ':now')
+						)
+					)
 				)
 			)
 	
