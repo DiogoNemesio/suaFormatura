@@ -38,9 +38,9 @@ class ZgadmOrganizacao
     /**
      * @var string
      *
-     * @ORM\Column(name="RAZAO", type="string", length=100, nullable=true)
+     * @ORM\Column(name="FANTASIA", type="string", length=100, nullable=true)
      */
-    private $razao;
+    private $fantasia;
 
     /**
      * @var string
@@ -313,26 +313,26 @@ class ZgadmOrganizacao
     }
 
     /**
-     * Set razao
+     * Set fantasia
      *
-     * @param string $razao
+     * @param string $fantasia
      * @return ZgadmOrganizacao
      */
-    public function setRazao($razao)
+    public function setFantasia($fantasia)
     {
-        $this->razao = $razao;
+        $this->fantasia = $fantasia;
 
         return $this;
     }
 
     /**
-     * Get razao
+     * Get fantasia
      *
      * @return string 
      */
-    public function getRazao()
+    public function getFantasia()
     {
-        return $this->razao;
+        return $this->fantasia;
     }
 
     /**

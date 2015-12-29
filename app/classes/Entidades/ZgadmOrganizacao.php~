@@ -169,6 +169,13 @@ class ZgadmOrganizacao
     private $dataAtivacao;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="LINK", type="string", length=200, nullable=true)
+     */
+    private $link;
+
+    /**
      * @var \Entidades\ZgadmOrganizacaoPessoaTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoPessoaTipo")
@@ -740,6 +747,29 @@ class ZgadmOrganizacao
     public function getDataAtivacao()
     {
         return $this->dataAtivacao;
+    }
+
+    /**
+     * Set link
+     *
+     * @param string $link
+     * @return ZgadmOrganizacao
+     */
+    public function setLink($link)
+    {
+        $this->link = $link;
+
+        return $this;
+    }
+
+    /**
+     * Get link
+     *
+     * @return string 
+     */
+    public function getLink()
+    {
+        return $this->link;
     }
 
     /**
