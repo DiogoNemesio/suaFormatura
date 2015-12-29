@@ -90,7 +90,14 @@ $aValoresPagos				= \Zage\Fmt\Financeiro::getValorPagoPorFormando($system->getCo
 #################################################################################
 $aValoresDevidos			= \Zage\Fmt\Financeiro::getValorInadimplenciaPorFormando($system->getCodOrganizacao());
 
-/*echo "Array Provisionado: <BR><BR>";
+#################################################################################
+## Array de valores Devolvidos
+#################################################################################
+$aValoresDevolvidos			= \Zage\Fmt\Financeiro::getValorDevolvidoPorFormando($system->getCodOrganizacao());
+
+/*echo "Array Devolvidos: <BR><BR>";
+print_r($aValoresDevolvidos);
+echo "Array Provisionado: <BR><BR>";
 print_r($aValoresProvisionados);
 echo "Array Pago: <BR><BR>";
 print_r($aValoresPagos);
@@ -107,16 +114,27 @@ for ($i = 0; $i < sizeof($aValoresProvisionados); $i++) {
 	$cpf		= $aValoresProvisionados[$i][0]->getCgc();
 	$aValores[$cpf]["provisionado"]		= \Zage\App\Util::to_float($aValoresProvisionados[$i]["sistema"]) + \Zage\App\Util::to_float($aValoresProvisionados[$i]["mensalidade"]);
 }
+
 if (sizeof($aValoresPagos) > 0) {
 	foreach ($aValoresPagos as $cpf => $dados) {
 		$aValores[$cpf]["mensalidade"]		= \Zage\App\Util::to_float($dados["mensalidade"]);
+		$aValores[$cpf]["juros"]			= \Zage\App\Util::to_float($dados["juros"]);
+		$aValores[$cpf]["mora"]				= \Zage\App\Util::to_float($dados["mora"]);
 		$aValores[$cpf]["sistema"]			= \Zage\App\Util::to_float($dados["sistema"]);
 		$aValores[$cpf]["rifas"]			= \Zage\App\Util::to_float($dados["rifas"]);
 		$aValores[$cpf]["convites"]			= \Zage\App\Util::to_float($dados["convites"]);
 		$aValores[$cpf]["outros"]			= \Zage\App\Util::to_float($dados["outros"]);
 		$aValores[$cpf]["pago"]				= \Zage\App\Util::to_float($dados["sistema"]) + \Zage\App\Util::to_float($dados["mensalidade"]);
-		$aValores[$cpf]["totalPago"]		= \Zage\App\Util::to_float($dados["sistema"]) + \Zage\App\Util::to_float($dados["mensalidade"]) + \Zage\App\Util::to_float($dados["rifas"]) + \Zage\App\Util::to_float($dados["convites"]) + \Zage\App\Util::to_float($dados["outros"]);
+		$aValores[$cpf]["totalPago"]		= \Zage\App\Util::to_float($dados["sistema"]) + \Zage\App\Util::to_float($dados["mensalidade"]) + \Zage\App\Util::to_float($dados["rifas"]) + \Zage\App\Util::to_float($dados["convites"]) + \Zage\App\Util::to_float($dados["outros"]) + \Zage\App\Util::to_float($dados["juros"]) + \Zage\App\Util::to_float($dados["mora"]);
 	}
+}
+
+for ($i = 0; $i < sizeof($aValoresDevolvidos); $i++) {
+	$cpf		= $aValoresDevolvidos[$i][0]->getCgc();
+	$aValores[$cpf]["devMensalidade"]		= \Zage\App\Util::to_float($aValoresDevolvidos[$i]["mensalidade"]);
+	$aValores[$cpf]["devSistema"]			= \Zage\App\Util::to_float($aValoresDevolvidos[$i]["sistema"]);
+	$aValores[$cpf]["devOutras"]			= \Zage\App\Util::to_float($aValoresDevolvidos[$i]["outras"]);
+	$aValores[$cpf]["totalDevolvido"]		= \Zage\App\Util::to_float($aValoresDevolvidos[$i]["sistema"]) + \Zage\App\Util::to_float($aValoresDevolvidos[$i]["mensalidade"]) + \Zage\App\Util::to_float($aValoresDevolvidos[$i]["outras"]);
 }
 
 for ($i = 0; $i < sizeof($aValoresDevidos); $i++) {
@@ -124,36 +142,15 @@ for ($i = 0; $i < sizeof($aValoresDevidos); $i++) {
 	$aValores[$cpf]["valDevido"]		= \Zage\App\Util::to_float($aValoresDevidos[$i]["valor"]) - \Zage\App\Util::to_float($aValoresDevidos[$i]["valor_pago"]);
 }
 
-ksort($aValores);
-//print_r($aValores);
-
 if (sizeof($aValores) > 0) {
 	
+
 	#################################################################################
-	## Não colocar os tamanhos do campo caso não seja para gerar o PDF
+	## Criar um array ordenado por nome
 	#################################################################################
-	if ($geraPdf	== 1) {
-		$w1			= "width: 16%;";
-		$w2			= "width: 8%;";
-		$w3			= "width: 4%;";
-		$w4			= "width: 8%;";
-		$w5			= "width: 8%;";
-		$iconOK		= "";
-		$iconAb		= "(!)";
-	}else{
-		$w1			= "";
-		$w2			= "";
-		$w3			= "";
-		$w4			= "";
-		$w5			= "";
-		$iconOK		= "<i class='fa fa-check-circle green'></i>";
-		$iconAb		= "<i class='fa fa-exclamation-circle red'></i>";
-	}
-	
-	$table	= '<table class="table table-condensed">';
+	$aDados		= array();
 	
 	foreach ($aValores as $cpf => $dados) {
-		
 		#################################################################################
 		## Resgatar as informações do Formando
 		#################################################################################
@@ -167,28 +164,76 @@ if (sizeof($aValores) > 0) {
 		$status		= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getDescricao() : null;
 		if (!$status) die($tr->trans('Status inválido para o Formando ('.$cpf.')'));
 		
-		$table .= '<thead><tr style="background-color:#EEEEEE">
-					<th style="text-align: left;" colspan="7"><strong>&nbsp;'.$oFormando->getNome().'&nbsp; ('.$status.')'.'</strong></th>
+		$nome		= $oFormando->getNome().'&nbsp; ('.\Zage\App\Util::formatCPF($cpf).')&nbsp;&nbsp;STATUS: '.$status; 
+
+		$aDados[$nome]["provisionado"]		= $aValores[$cpf]["provisionado"];
+		$aDados[$nome]["mensalidade"]		= $aValores[$cpf]["mensalidade"];
+		$aDados[$nome]["juros"]				= $aValores[$cpf]["juros"];
+		$aDados[$nome]["mora"]				= $aValores[$cpf]["mora"];
+		$aDados[$nome]["sistema"]			= $aValores[$cpf]["sistema"];
+		$aDados[$nome]["rifas"]				= $aValores[$cpf]["rifas"];
+		$aDados[$nome]["convites"]			= $aValores[$cpf]["convites"];
+		$aDados[$nome]["outros"]			= $aValores[$cpf]["outros"];
+		$aDados[$nome]["pago"]				= $aValores[$cpf]["pago"];
+		$aDados[$nome]["totalPago"]			= $aValores[$cpf]["totalPago"];
+		$aDados[$nome]["valDevido"]			= $aValores[$cpf]["valDevido"];
+		$aDados[$nome]["devMensalidade"]	= $aValores[$cpf]["devMensalidade"];
+		$aDados[$nome]["devSistema"]		= $aValores[$cpf]["devSistema"];
+		$aDados[$nome]["devOutras"]			= $aValores[$cpf]["devOutras"];
+		$aDados[$nome]["totalDevolvido"]	= $aValores[$cpf]["totalDevolvido"];
+		
+	}
+	ksort($aDados);
+	unset($aValores);
+	
+	if ($geraPdf == 1) {
+		$tabStyle		= "width: 100%;";
+	}else{
+		$tabStyle		= "width: 100%;";
+	}
+	
+	$table	= '<table style="'.$tabStyle.'" class="table table-condensed">';
+	
+	foreach ($aDados as $nome => $dados) {
+		
+		
+		$table .= '<thead><tr style="background-color:#EFEFEF">
+					<th style="text-align: left; border: 1px solid #000000;" colspan="12" ><strong>&nbsp;'.$nome.'</strong></th>
 			   </tr></thead>';
 		
 		$table .= '<tr style="background-color:#FDF5E6">
-						<th style="text-align: center; width: 15%;"><strong>Provisionado de Mensalidades</strong></th>
-						<th style="text-align: center; width: 10%;"><strong>Pago em Mensalidades</strong></th>
-						<th style="text-align: center; width: 10%;"><strong>Total em aberto</strong></th>
-						<th style="text-align: center; width: 10%;"><strong>Saldo a Pagar</strong></th>
-						<th style="text-align: center; width: 10%;"><strong>Pago em Rifas</strong></th>
-						<th style="text-align: center; width: 10%;"><strong>Pago em Convites Extras</strong></th>
-						<th style="text-align: center; width: 15%;"><strong>Total Pago</strong></th>
+						<th style="text-align: center; border: 1px solid #000000;" colspan="6"><strong>Pagamentos realizados</strong></th>
+						<th style="text-align: center; border: 1px solid #000000;" colspan="3"><strong>Devoluções</strong></th>
+						<th style="text-align: center; border: 1px solid #000000;" colspan="3"><strong>Resumo (Totalizadores)</strong></th>
+				</tr>';
+		$table .= '<tr style="background-color:#FDF5E6;">
+						<th style="text-align: center; width: 10%; border-left: 1px solid #000000; border-bottom: 1px solid #000000;"><strong>Mensalidades</strong></th>
+						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Sistema</strong></th>
+						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Juros/Mora</strong></th>
+						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Rifas</strong></th>
+						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Conv. extras</strong></th>
+						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000; border-right: 1px solid #000000;"><strong>Outros</strong></th>
+						<th style="text-align: center; width: 10%; border-left: 1px solid #000000; border-bottom: 1px solid #000000;"><strong>Mensalidades</strong></th>
+						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Sistema</strong></th>
+						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000; border-right: 1px solid #000000;"><strong>Outros</strong></th>
+						<th style="text-align: center; width: 10%; border-left: 1px solid #000000; border-bottom: 1px solid #000000;"><strong>Total pago</strong></th>
+						<th style="text-align: center; width: 10%; border-bottom: 1px solid #000000;"><strong>Total devolvido</strong></th>
+						<th style="text-align: center; width: 10%; border-bottom: 1px solid #000000; border-right: 1px solid #000000;"><strong>Total atrasado</strong></th>
 				</tr>';
 		$table .= '</thead><tbody>';
 		$table .= '<tr>
-						<td style="text-align: center; width: 15%;">'.\Zage\App\Util::to_money($dados["provisionado"]).'</td>
-						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money($dados["pago"]).'</td>
-						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money($dados["valDevido"]).'</td>
-						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money(($dados["provisionado"] - $dados["pago"])).'</td>
-						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money($dados["rifas"]).'</td>
-						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money($dados["convites"]).'</td>
-						<td style="text-align: center; width: 15%;">'.\Zage\App\Util::to_money($dados["totalPago"]).'</td>
+						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money($dados["mensalidade"]).'</td>
+						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["sistema"]).'</td>
+						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money(($dados["juros"]+$dados["mora"])).'</td>
+						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["rifas"]).'</td>
+						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["convites"]).'</td>
+						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["outros"]).'</td>
+						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money($dados["devMensalidade"]).'</td>
+						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["devSistema"]).'</td>
+						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["devOutras"]).'</td>
+						<td style="text-align: center; width: 10%;"><strong>'.\Zage\App\Util::to_money($dados["totalPago"]).'</strong></td>
+						<td style="text-align: center; width: 10%;"><strong>'.\Zage\App\Util::to_money($dados["totalDevolvido"]).'</strong></td>
+						<td style="text-align: center; width: 10%;"><strong>'.\Zage\App\Util::to_money($dados["valDevido"]).'</strong></td>
 					</tr>';
 		$table .= '</tbody>';
 	}
@@ -201,8 +246,7 @@ if (sizeof($aValores) > 0) {
 
 if ($geraPdf == 1) {
 	$html	= '<body class="no-skin">';
-	$html	.= '<h4 align="center"><strong>RESUMO FINANCEIRO</strong></h4>';
-	$html	.= '<h4 align="center">'.$oOrg->getNome().'</h4>';
+	$html	.= '<h4 align="center"><strong>RESUMO FINANCEIRO</strong> - '.$oOrg->getNome().'</h4>';
 	$html	.= '<br>';
 }else{
 	$html	= '

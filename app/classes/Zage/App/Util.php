@@ -331,6 +331,21 @@ class Util {
 	}
 
 	/**
+	 * Formatar um CPF
+	 *
+	 * @param number 
+	 * @return string 
+	 */
+	public static function formatCPF($cpf) {
+		if ((strlen($cpf)) != 11) {
+			return $cpf;
+		}else{
+			return (substr($cpf,0,3).'.'.substr($cpf,3,3).'.'.substr($cpf,6,3).'-'.substr($cpf,9,2)) ;
+		}
+	}
+	
+	
+	/**
 	 * Retirar todos os espaços em branco contínuos de uma string
 	 *
 	 * @param string
