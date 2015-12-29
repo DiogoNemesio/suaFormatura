@@ -439,7 +439,6 @@ class Financeiro {
 	}
 	
 
-
 	/**
 	 * Resgata o valor de mensalidades já pago por um Formando
 	 * @param unknown $codFormatura
@@ -537,4 +536,337 @@ class Financeiro {
 	
 	}
 	
+	/**
+	 * Resgata o valor já pago por Formando
+	 * @param unknown $codFormatura
+	 */
+	public static function getValorPagoPorFormando($codFormatura) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		#################################################################################
+		## Array de status que serão calculados
+		#################################################################################
+		$aStatus					= array ("L","P");
+	
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
+		$codCatRifa					= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_RIFA");
+		$codCatConvite				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_CONVITE_EXTRA");
+		$aCat						= array($codCatMensalidade,$codCatConvite,$codCatRifa,$codCatSistema);
+	
+		#################################################################################
+		## Somar os valores recebidos de contas que possuam a categora de mensalidades
+		## calcular os juros e mora separados
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
+			$rsm->addFieldResult('P', 'CGC', 'cgc');
+			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('mensalidade'			, 'mensalidade');
+			$rsm->addScalarResult('juros'				, 'juros');
+			$rsm->addScalarResult('mora'				, 'mora');
+			$query 	= $em->createNativeQuery("
+					SELECT	P.CGC,P.CODIGO,SUM(HR.VALOR_RECEBIDO - HR.VALOR_DESCONTO) as mensalidade,SUM(HR.VALOR_JUROS) as juros,SUM(HR.VALOR_MORA) as mora
+					FROM 	ZGFIN_CONTA_RECEBER 	CR,
+							ZGFIN_PESSOA			P,
+							ZGFIN_HISTORICO_REC		HR
+					WHERE   CR.CODIGO 				= HR.COD_CONTA_REC
+					AND		EXISTS	(
+							SELECT	1
+							FROM	ZGFIN_CONTA_RECEBER_RATEIO CRR
+							WHERE	CRR.COD_CONTA_REC			= CR.CODIGO
+							AND		CRR.COD_CATEGORIA			IN (:categoria)
+					)
+					AND	    CR.COD_PESSOA			= P.CODIGO
+					AND		CR.COD_STATUS			IN (:status)
+					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					GROUP	BY P.CGC,P.CODIGO
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,$aStatus);
+			$query->setParameter('categoria'		,array($codCatMensalidade));
+			$mensalidades		= $query->getResult();
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	
+		#################################################################################
+		## Somar os valores recebidos de contas que possuam a categora de de rifas
+		## calcular os juros e mora separados
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
+			$rsm->addFieldResult('P', 'CGC', 'cgc');
+			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('rifas'				, 'rifas');
+			$rsm->addScalarResult('juros'				, 'juros');
+			$rsm->addScalarResult('mora'				, 'mora');
+		
+			$query 	= $em->createNativeQuery("
+					SELECT	P.CGC,P.CODIGO,
+							SUM(HR.VALOR_RECEBIDO - HR.VALOR_DESCONTO) as rifas,
+							SUM(HR.VALOR_JUROS) as juros,
+							SUM(HR.VALOR_MORA) as mora
+					FROM 	ZGFIN_CONTA_RECEBER 	CR,
+							ZGFIN_PESSOA			P,
+							ZGFIN_HISTORICO_REC		HR
+					WHERE   CR.CODIGO 				= HR.COD_CONTA_REC
+					AND		EXISTS	(
+							SELECT	1
+							FROM	ZGFIN_CONTA_RECEBER_RATEIO CRR
+							WHERE	CRR.COD_CONTA_REC			= CR.CODIGO
+							AND		CRR.COD_CATEGORIA			IN (:categoria)
+					)
+					AND	    CR.COD_PESSOA			= P.CODIGO
+					AND		CR.COD_STATUS			IN (:status)
+					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					GROUP	BY P.CGC,P.CODIGO
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,$aStatus);
+			$query->setParameter('categoria'		,array($codCatRifa));
+		
+			$rifas		= $query->getResult();
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+
+		#################################################################################
+		## Somar os valores recebidos de contas que possuam a categora de Convites extras
+		## calcular os juros e mora separados
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
+			$rsm->addFieldResult('P', 'CGC', 'cgc');
+			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('convites'			, 'convites');
+			$rsm->addScalarResult('juros'				, 'juros');
+			$rsm->addScalarResult('mora'				, 'mora');
+		
+			$query 	= $em->createNativeQuery("
+					SELECT	P.CGC,P.CODIGO,
+							SUM(HR.VALOR_RECEBIDO - HR.VALOR_DESCONTO) as convites,
+							SUM(HR.VALOR_JUROS) as juros,
+							SUM(HR.VALOR_MORA) as mora
+					FROM 	ZGFIN_CONTA_RECEBER 	CR,
+							ZGFIN_PESSOA			P,
+							ZGFIN_HISTORICO_REC		HR
+					WHERE   CR.CODIGO 				= HR.COD_CONTA_REC
+					AND		EXISTS	(
+							SELECT	1
+							FROM	ZGFIN_CONTA_RECEBER_RATEIO CRR
+							WHERE	CRR.COD_CONTA_REC			= CR.CODIGO
+							AND		CRR.COD_CATEGORIA			IN (:categoria)
+					)
+					AND	    CR.COD_PESSOA			= P.CODIGO
+					AND		CR.COD_STATUS			IN (:status)
+					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					GROUP	BY P.CGC,P.CODIGO
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,$aStatus);
+			$query->setParameter('categoria'		,array($codCatConvite));
+		
+			$convites		= $query->getResult();
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		#################################################################################
+		## Somar os valores recebidos de contas que possuam a categoria diferente das
+		## previstas calcular os juros e mora separados
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
+			$rsm->addFieldResult('P', 'CGC', 'cgc');
+			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('outros'				, 'outros');
+			$rsm->addScalarResult('juros'				, 'juros');
+			$rsm->addScalarResult('mora'				, 'mora');
+		
+			$query 	= $em->createNativeQuery("
+					SELECT	P.CGC,P.CODIGO,
+							SUM(HR.VALOR_RECEBIDO - HR.VALOR_DESCONTO) as outros,
+							SUM(HR.VALOR_JUROS) as juros,
+							SUM(HR.VALOR_MORA) as mora
+					FROM 	ZGFIN_CONTA_RECEBER 	CR,
+							ZGFIN_PESSOA			P,
+							ZGFIN_HISTORICO_REC		HR
+					WHERE   CR.CODIGO 				= HR.COD_CONTA_REC
+					AND		EXISTS	(
+							SELECT	1
+							FROM	ZGFIN_CONTA_RECEBER_RATEIO CRR
+							WHERE	CRR.COD_CONTA_REC			= CR.CODIGO
+							AND		CRR.COD_CATEGORIA			NOT IN (:categoria)
+					)
+					AND	    CR.COD_PESSOA			= P.CODIGO
+					AND		CR.COD_STATUS			IN (:status)
+					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					GROUP	BY P.CGC,P.CODIGO
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,$aStatus);
+			$query->setParameter('categoria'		,$aCat);
+		
+			$outros		= $query->getResult();
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		#################################################################################
+		## Somar os valores da categora de sistema
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
+			$rsm->addFieldResult('P', 'CGC', 'cgc');
+			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('sistema'						, 'sistema');
+	
+			$query 	= $em->createNativeQuery("
+					SELECT	P.CGC,P.CODIGO,SUM(CRR.VALOR) as sistema
+					FROM 	ZGFIN_CONTA_RECEBER 		CR,
+							ZGFIN_PESSOA				P,
+							ZGFIN_CONTA_RECEBER_RATEIO	CRR
+					WHERE   CR.CODIGO 				= CRR.COD_CONTA_REC
+					AND	    CR.COD_PESSOA			= P.CODIGO
+					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					AND		CR.COD_STATUS			= :status
+					AND		CRR.COD_CATEGORIA		= :categoria
+					GROUP	BY P.CGC,P.CODIGO
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,"L");
+			$query->setParameter('categoria'		,$codCatSistema);
+	
+			$sistemas	= $query->getResult();
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		#################################################################################
+		## Formatar o resultado combinando os arrays
+		#################################################################################
+		$result		= array();
+		
+		
+		for ($i = 0; $i < sizeof($mensalidades); $i++) {
+			$cpf							= $mensalidades[$i][0]->getCgc();
+			$result[$cpf]["mensalidade"]	= $mensalidades[$i]["mensalidade"];
+			$result[$cpf]["juros"]			= $mensalidades[$i]["juros"];
+			$result[$cpf]["mora"]			= $mensalidades[$i]["mora"];
+		}
+	
+		for ($i = 0; $i < sizeof($rifas); $i++) {
+			$cpf							= $rifas[$i][0]->getCgc();
+			if (!isset($result[$cpf]["juros"]))	$result[$cpf]["juros"]	= 0;
+			if (!isset($result[$cpf]["mora"]))	$result[$cpf]["mora"]	= 0;
+			$result[$cpf]["rifas"]			= $rifas[$i]["rifas"];
+			$result[$cpf]["juros"]			+= $rifas[$i]["juros"];
+			$result[$cpf]["mora"]			+= $rifas[$i]["mora"];
+		}
+		
+		for ($i = 0; $i < sizeof($convites); $i++) {
+			$cpf							= $convites[$i][0]->getCgc();
+			if (!isset($result[$cpf]["juros"]))	$result[$cpf]["juros"]	= 0;
+			if (!isset($result[$cpf]["mora"]))	$result[$cpf]["mora"]	= 0;
+			$result[$cpf]["convites"]		= $convites[$i]["convites"];
+			$result[$cpf]["juros"]			+= $convites[$i]["juros"];
+			$result[$cpf]["mora"]			+= $convites[$i]["mora"];
+		}
+		
+		for ($i = 0; $i < sizeof($outros); $i++) {
+			$cpf							= $outros[$i][0]->getCgc();
+			if (!isset($result[$cpf]["juros"]))	$result[$cpf]["juros"]	= 0;
+			if (!isset($result[$cpf]["mora"]))	$result[$cpf]["mora"]	= 0;
+			$result[$cpf]["outros"]				= $outros[$i]["outros"];
+			$result[$cpf]["juros"]				+= $outros[$i]["juros"];
+			$result[$cpf]["mora"]				+= $outros[$i]["mora"];
+		}
+		
+		for ($i = 0; $i < sizeof($sistemas); $i++) {
+			$cpf								= $sistemas[$i][0]->getCgc();
+			$result[$cpf]["sistema"]			= $sistemas[$i]["sistema"];
+		}
+		
+		return $result;
+	}
+	
+
+
+	/**
+	 * Resgata o valor devido por formando (inadimplência)
+	 * @param unknown $codFormatura
+	 */
+	public static function getValorInadimplenciaPorFormando($codFormatura) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$aCat						= array($codCatMensalidade);
+	
+		#################################################################################
+		## Data base da inadimplência
+		#################################################################################
+		$oData					= new \DateTime;
+		$hoje					= $oData->format("Y-m-d");
+		
+		#################################################################################
+		## Somar os valores dividos por categora
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
+			$rsm->addFieldResult('P', 'CGC', 'cgc');
+			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('valor'					, 'valor');
+			$rsm->addScalarResult('valor_pago'				, 'valor_pago');
+			
+			$query 	= $em->createNativeQuery("
+				SELECT  P.CODIGO,P.CGC,SUM(IFNULL(R.VALOR,0) + IFNULL(R.VALOR_JUROS,0) + IFNULL(R.VALOR_MORA,0) + IFNULL(R.VALOR_OUTROS,0) - IFNULL(R.VALOR_DESCONTO,0) - IFNULL(R.VALOR_CANCELADO,0)) AS valor, SUM(IFNULL(H.VALOR_RECEBIDO,0) + IFNULL(H.VALOR_JUROS,0) + IFNULL(H.VALOR_MORA,0) + IFNULL(H.VALOR_OUTROS,0) - IFNULL(H.VALOR_DESCONTO,0)) as valor_pago
+				FROM	ZGFIN_CONTA_RECEBER 		R
+				LEFT OUTER JOIN ZGFIN_HISTORICO_REC	H	ON (R.CODIGO		= H.COD_CONTA_REC)
+				LEFT JOIN ZGFIN_PESSOA 				P	ON (R.COD_PESSOA	= P.CODIGO)
+		        LEFT JOIN ZGFIN_CONTA_STATUS_TIPO	ST	ON (R.COD_STATUS	= ST.CODIGO)
+				WHERE	R.COD_ORGANIZACAO			= :codOrg
+				AND		R.COD_STATUS				IN ('A','P')
+				AND		R.DATA_VENCIMENTO			< :dataVenc
+				AND		EXISTS (
+		            	SELECT 1
+		            	FROM	ZGFIN_CONTA_RECEBER_RATEIO 	RR
+		            	WHERE	RR.COD_CONTA_REC			= R.CODIGO
+		         		AND		RR.COD_CATEGORIA			IN (:codCat)
+		        )
+				GROUP BY P.CODIGO,P.CGC
+				ORDER	BY 1
+			", $rsm);
+			$query->setParameter('codOrg'	, $codFormatura);
+			$query->setParameter('codCat'	, $aCat);
+			$query->setParameter('dataVenc'	, $hoje);
+				
+			$info		= $query->getResult();
+			return ($info);
+				
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+
 }

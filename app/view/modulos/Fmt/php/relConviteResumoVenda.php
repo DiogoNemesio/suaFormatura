@@ -206,7 +206,7 @@ foreach ($dadosRes as $dados) {
 	//$table .= '</tbody></table>';
 	//$table .= '</th></tr>';
 }
-$table .= '</table>';
+$table .= '</tbody></table>';
 
 //Formulário
 if ($geraPdf == 1) {
@@ -319,7 +319,7 @@ $htmlTable	= '
 $html		.= $htmlTable;
 $relName	= "Pagamentos_".str_replace("/", "_", $dataRef).".pdf";
 
-$log->info($html);
+//$log->info($html);
 
 if ($geraPdf == 1) {
 	$rel->WriteHTML($html);
