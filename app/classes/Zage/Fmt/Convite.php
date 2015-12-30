@@ -337,4 +337,57 @@ class Convite {
 	
 	}
 	
+	
+	/**
+	 * Resgatar o valor de sistema de uma determinada conta
+	 * @param integer $codConta
+	 */
+	function contaEhDeConviteExtra($codConta) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		#################################################################################
+		## Resgatar a categoria de Convite extra
+		#################################################################################
+		$codCatConviteExtra			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_CONVITE_EXTRA");
+		$aCatConv					= array($codCatConviteExtra);
+		
+		#################################################################################
+		## Criar os objetos do Query builde, um para cada consulta
+		#################################################################################
+		$qb1 	= $em->createQueryBuilder();
+	
+		try {
+	
+			#################################################################################
+			## Somatório dos recebimentos
+			#################################################################################
+			$qb1->select('count(crr.codigo)')
+			->from('\Entidades\ZgfinContaReceberRateio','crr')
+			->where($qb1->expr()->andx(
+				$qb1->expr()->eq('crr.codContaRec'		, ':codConta'),
+				$qb1->expr()->in('crr.codCategoria'		, ':codCategoria')
+			))
+			->setParameter('codConta'		, $codConta)
+			->setParameter('codCategoria'	, $aCatConv);
+	
+			$query 				= $qb1->getQuery();
+			$count				= (int) $query->getSingleScalarResult();
+			
+			if ($count > 0) {
+				return true;
+			}else{
+				return false;
+			}
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	
+	}
+	
+	
 }

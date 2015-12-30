@@ -58,7 +58,6 @@ if (!$oOrgFmt)	\Zage\App\Erro::halt("Organização não é uma formatura");
 #################################################################################
 $rel	= new \Zage\App\Relatorio(''	,'A4-L',10,'',15,15,16,16,9,9,'L');
 
-
 #################################################################################
 ## Criação do cabeçalho
 #################################################################################
@@ -98,71 +97,137 @@ list ($mes, $ano) = split ('[/.-]', $mesRef);
 #################################################################################
 $mesRef				= date('m/Y', mktime (0,0,0,($mes+$offset),1,$ano));
 list ($mes, $ano) = split ('[/.-]', $mesRef);
+$anoMesRef			= (int) $ano.$mes;
+
 
 #################################################################################
-## Calcular o mês inicial a partir do mês de referência
+## Verificar se o mês de referência é maior que a data atual, para não
+## permitir visualizar movimentações futuras
 #################################################################################
-$_mesIni			= date("m",mktime(0, 0, 0, $mes - 11, 1 , $ano));
-$_anoIni			= date("Y",mktime(0, 0, 0, $mes - 11, 1 , $ano));
-$mesIni				= date("m/Y",mktime(0, 0, 0, $_mesIni, 1 , $_anoIni));
+$anoMesAtual		= (int) date('Ym');
+if ($anoMesRef > $anoMesAtual) {
+	$mes		= date("m");
+	$ano		= date("Y");
+	$mesRef		= date("m/Y");
+	$anoMesRef	= (int) $ano.$mes;
+}
 
-$_dtVencIni			= \DateTime::createFromFormat("m/Y", $mesIni);
-$_dtVencFim			= \DateTime::createFromFormat("m/Y", $mesRef);
+#################################################################################
+## Calcular se pode avançar e retroceder no mês de referência
+## O Maior mês é o mês atual, então bloquear o avanço caso o mês de referência seja o atual
+## O Menor Mẽs será a data de cadastro da Formatura, então, bloquear o retroceder
+## caso o mês de referência seja igual ao mês de cadastro
+#################################################################################
+$anoCad			= $oOrg->getDataCadastro()->format('Y');
+$mesCad			= $oOrg->getDataCadastro()->format('m');
+$anoMesCad		= (int) $anoCad.$mesCad;
+$podeRetroceder	= ($anoMesRef <= $anoMesCad) 	? false : true;
+$podeAvancar	= ($anoMesRef >= $anoMesAtual) 	? false : true;
+$disBtnRet		= (!$podeRetroceder)			? "disabled=disabled" : null;
+$disBtnAva		= (!$podeAvancar)				? "disabled=disabled" : null;  
 
-$dtVencIni			= $_dtVencIni->format("Ym");
-$dtVencFim			= $_dtVencFim->format("Ym");
+#################################################################################
+## Calcular as datas início e fim a partir do mês de referência
+#################################################################################
+$oDataIni			= mktime(0, 0, 0, $mes, 1, $ano);
+$oDataFim			= mktime(0, 0, 0, $mes + 1, 0, $ano);
+$oDataBase			= mktime(0, 0, 0, $mes, 0, $ano);
+$dataIni			= date($system->config["data"]["dateFormat"],$oDataIni);
+$dataFim			= date($system->config["data"]["dateFormat"],$oDataFim);
+$dataBase			= date($system->config["data"]["dateFormat"],$oDataBase);
 
 #################################################################################
 ## Montar o nome do Mês que será exibido
 #################################################################################
 $texto				= $mesRef . " (".ucfirst(strftime("%B",mktime(0,0,0,$mes,1,null))).")";
 
+//echo "DataInicial: $dataIni, DataFinal: $dataFim, dataBase: $dataBase, MesRef: $mesRef, Texto: $texto, DisBtnRet: $disBtnRet, DisBtnAva: $disBtnAva, AnoMesCad: $anoMesCad, AnoMesRef: $anoMesRef<BR>";
+
 #################################################################################
 ## Url desse script
 #################################################################################
-$urlForm			= ROOT_URL . '/Fin/relResumoFinanceiro.php'; 
+$urlForm			= ROOT_URL . '/Fin/relExtratoFinanceiro.php'; 
 
 #################################################################################
-## Resgata a categoria de mensalidades
+## Calcular os Percentuais de Júros, Mora e convite extra que ficam para a Formatura
 #################################################################################
-$catMen				= \Zage\Adm\Parametro::getValorSistema('APP_COD_CAT_MENSALIDADE');
+if ($oOrgFmt) {
+	$pctJuros		= $oOrgFmt->getPctJurosTurma();
+	$pctMora		= $oOrgFmt->getPctMoraTurma();
+	$pctConvite		= $oOrgFmt->getPctConviteExtraTurma();
+	$pctConviteCer	= 100 - $pctConvite;
+}else{
+	$pctJuros		= 0;
+	$pctMora		= 0;
+	$pctConvite		= 0;
+	$pctConviteCer	= 100;
+}
+
 
 #################################################################################
-## Resgata os dados do relatório
+## Resgatar o saldo Inicial referente a dataBase
+#################################################################################
+$saldoInicial		= \Zage\Fmt\Financeiro::calcSaldoFormaturaPorDataBase($system->getCodOrganizacao(),$dataBase);
+
+#################################################################################
+## Calcular o saldo atual
+#################################################################################
+$valorArrecadado	= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
+$valorGasto			= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
+$saldoAtual			= \Zage\App\Util::to_float($valorArrecadado	- $valorGasto);
+
+#################################################################################
+## Instância do query Builder
+#################################################################################
+$qb1 	= $em->createQueryBuilder();
+$qb2 	= $em->createQueryBuilder();
+
+#################################################################################
+## Contas Pagas
 #################################################################################
 try {
+	$qb1->select('hp')
+	->from('\Entidades\ZgfinHistoricoPag','hp')
+	->leftJoin('\Entidades\ZgfinContaPagar', 'cp', \Doctrine\ORM\Query\Expr\Join::WITH, 'hp.codContaPag = cp.codigo')
+	->where($qb1->expr()->andx(
+		$qb1->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
+		$qb1->expr()->in('cp.codStatus'			, ':status'),
+		$qb1->expr()->gte('hp.dataPagamento'	, ':dataIni'),
+		$qb1->expr()->lte('hp.dataPagamento'	, ':dataFim')
+	))
+	->setParameter('codOrganizacao'	, $system->getCodOrganizacao())
+	->setParameter('dataIni'		, $oDataIni)
+	->setParameter('dataFim'		, $oDataFim)
+	->setParameter('status'			, array("L","P"));
 
-	$rsm 	= new Doctrine\ORM\Query\ResultSetMapping();
-	$rsm->addEntityResult('Entidades\ZgfinPessoa'	, 'p');
-	$rsm->addScalarResult('COD_PESSOA'				, 'COD_PESSOA');
-	$rsm->addScalarResult('NOME_PESSOA'				, 'NOME_PESSOA');
-	$rsm->addScalarResult('MES_REF'					, 'MES_REF');
-	$rsm->addScalarResult('VALOR'					, 'VALOR');
-	$rsm->addScalarResult('VALOR_PAGO'				, 'VALOR_PAGO');
-	
-	$query 	= $em->createNativeQuery("
-		SELECT  P.CODIGO AS COD_PESSOA,P.NOME AS NOME_PESSOA,DATE_FORMAT(R.DATA_VENCIMENTO,'%Y%m') AS MES_REF,SUM(IFNULL(R.VALOR,0) + IFNULL(R.VALOR_JUROS,0) + IFNULL(R.VALOR_MORA,0) + IFNULL(R.VALOR_OUTROS,0) - IFNULL(R.VALOR_DESCONTO,0) - IFNULL(R.VALOR_CANCELADO,0)) AS VALOR, SUM(IFNULL(H.VALOR_RECEBIDO,0) + IFNULL(H.VALOR_JUROS,0) + IFNULL(H.VALOR_MORA,0) + IFNULL(H.VALOR_OUTROS,0) - IFNULL(H.VALOR_DESCONTO,0)) VALOR_PAGO
-		FROM	ZGFIN_CONTA_RECEBER 		R
-		LEFT OUTER JOIN ZGFIN_HISTORICO_REC	H	ON (R.CODIGO		= H.COD_CONTA_REC)
-		LEFT JOIN ZGFIN_PESSOA 				P	ON (R.COD_PESSOA	= P.CODIGO)
-        LEFT JOIN ZGFIN_CONTA_STATUS_TIPO	ST	ON (R.COD_STATUS	= ST.CODIGO)
-		WHERE	R.COD_ORGANIZACAO			= :codOrg
-		AND		R.COD_STATUS				IN ('A','P','L')
-        AND		EXISTS (
-            	SELECT 1
-            	FROM	ZGFIN_CONTA_RECEBER_RATEIO 	RR
-            	WHERE	RR.COD_CONTA_REC			= R.CODIGO
-         		AND		RR.COD_CATEGORIA			= :codCat   
-        )
-        
-		GROUP	BY P.CODIGO,P.NOME,DATE_FORMAT(R.DATA_VENCIMENTO,'%Y%m')
-		ORDER	BY 1,2
-	", $rsm);
-	$query->setParameter('codOrg'	, $system->getCodOrganizacao());
-	$query->setParameter('codCat'	, $catMen);
-	
-	$contas = $query->getResult();
-	
+	$query 				= $qb1->getQuery();
+	$pag				= $query->getResult();
+
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage());
+}
+
+#################################################################################
+## Contas Recebidas
+#################################################################################
+try {
+	$qb2->select('hr')
+	->from('\Entidades\ZgfinHistoricoRec','hr')
+	->leftJoin('\Entidades\ZgfinContaReceber', 'cr', \Doctrine\ORM\Query\Expr\Join::WITH, 'hr.codContaRec = cr.codigo')
+	->where($qb2->expr()->andx(
+		$qb2->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
+		$qb2->expr()->in('cr.codStatus'			, ':status'),
+		$qb2->expr()->gte('hr.dataPagamento'	, ':dataIni'),
+		$qb2->expr()->lte('hr.dataPagamento'	, ':dataFim')
+	))
+	->setParameter('codOrganizacao'	, $system->getCodOrganizacao())
+	->setParameter('dataIni'		, $oDataIni)
+	->setParameter('dataFim'		, $oDataFim)
+	->setParameter('status'			, array("L","P"));
+
+	$query 				= $qb2->getQuery();
+	$rec				= $query->getResult();
+
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -170,69 +235,118 @@ try {
 #################################################################################
 ## Formatar os dados do relatório
 #################################################################################
-$valTotal		= 0;
-$valTotAPag		= 0;
-$dadosRel		= array();
-for ($i = 0; $i < sizeof($contas); $i++) {
+$aMov			= array();
+
+
+#################################################################################
+## Formatar os dados do contas a pagar
+#################################################################################
+for ($i = 0; $i < sizeof($pag); $i++) {
+	
+	$valor			= \Zage\App\Util::to_float($pag[$i]->getValorPago()) + \Zage\App\Util::to_float($pag[$i]->getValorOutros()) - \Zage\App\Util::to_float($pag[$i]->getValorDesconto()); 
+	$juros			= \Zage\App\Util::to_float($pag[$i]->getValorJuros()) + \Zage\App\Util::to_float($pag[$i]->getValorMora());
+	$descricao		= $pag[$i]->getContaPag()->getDescricao();
+	$documento		= $pag[$i]->getDocumento();
+	$parcela		= $pag[$i]->getContaPag()->getParcela() . '/' . $pag[$i]->getContaPag()->getNumParcelas();
+	$oData			= $pag[$i]->getDataPagamento();
+	$data			= $oData->format($system->config["data"]["dateFormat"]);
+	$dataIndex		= (int) $oData->format('Ymd');
+	$n				= (isset($aMov[$dataIndex]))	? sizeof($aMov[$dataIndex]) : 0;
 	
 	#################################################################################
-	## Verificar se o mês está dentro do período do relatório
+	## Valor Líquido igual ao valor para as contas a pagar,pois o débito é todo da
+	## Formatura
 	#################################################################################
-	$_valor		= $contas[$i]["VALOR"];
+	$valor			+= $juros;
+	$valorLiq		= $valor;
+	
+	$aMov[$dataIndex][$n]["data"]		= $data;
+	$aMov[$dataIndex][$n]["valor"]		= $valor;
+	$aMov[$dataIndex][$n]["valorLiq"]	= $valorLiq;
+	$aMov[$dataIndex][$n]["descricao"]	= $descricao;
+	$aMov[$dataIndex][$n]["parcela"]	= $parcela;
+	$aMov[$dataIndex][$n]["documento"]	= $documento;
+	$aMov[$dataIndex][$n]["tipo"]		= "D";
+}
+
+#################################################################################
+## Formatar os dados do contas a receber
+#################################################################################
+for ($i = 0; $i < sizeof($rec); $i++) {
+
+	$valor			= \Zage\App\Util::to_float($rec[$i]->getValorRecebido()) + \Zage\App\Util::to_float($rec[$i]->getValorOutros()) - \Zage\App\Util::to_float($rec[$i]->getValorDesconto());
+	$descricao		= $rec[$i]->getContaRec()->getDescricao();
+	$documento		= $rec[$i]->getDocumento();
+	$parcela		= $rec[$i]->getContaRec()->getParcela() . '/' . $rec[$i]->getContaRec()->getNumParcelas();
+	$oData			= $rec[$i]->getDataRecebimento();
+	$data			= $oData->format($system->config["data"]["dateFormat"]);
+	$dataIndex		= (int) $oData->format('Ymd');
+
+	#################################################################################
+	## Valor Líquido do crédito, é aquele que é contabilizado para a formatura, os casos
+	## que o Valor Líquido é diferente do Valor Bruto, são os Juros / Mora e
+	## Os Convites Extras (que o cerimonial fica com um percentual)
+	## Os valores de Boleto e taxa de administração devem ser retirados
+	## Os valores pagos de sistema também
+	#################################################################################
 	
 	#################################################################################
-	## Verificar se o mês está dentro do período do relatório
+	## Valor de júros / multa da formatura
 	#################################################################################
-	if ($contas[$i]["MES_REF"] < $dtVencIni) {
-		$_mesRef		= "ANTERIOR";
-	}elseif ($contas[$i]["MES_REF"] > $dtVencFim) {
-		$_mesRef		= "POSTERIOR";
+	$valorJuros			= (\Zage\App\Util::to_float($rec[$i]->getValorJuros())	* $pctJuros	/ 100);
+	$valorMora			= (\Zage\App\Util::to_float($rec[$i]->getValorMora()) 	* $pctMora	/ 100);
+	$jurosLiq			= $valorJuros + $valorMora;
+
+	#################################################################################
+	## Verificar se a conta é de convite extra
+	#################################################################################
+	if (\Zage\Fmt\Convite::contaEhDeConviteExtra($rec[$i]->getCodContaRec()->getCodigo())) {
+		$valorLiq				= round(($valor * $pctConvite) /100,2);
 	}else{
-		$_mesRef		= $contas[$i]["MES_REF"];
+		$valorLiq				= $valor;
 	}
 	
-	if (!isset($dadosRel[$contas[$i]["COD_PESSOA"]][$_mesRef])) {
-		$dadosRel[$contas[$i]["COD_PESSOA"]][$_mesRef]["VALOR"]			= 0;
-		$dadosRel[$contas[$i]["COD_PESSOA"]][$_mesRef]["VALOR_PAGO"]	= 0;
-		$dadosRel[$contas[$i]["COD_PESSOA"]][$_mesRef]["VALOR_APAGAR"]	= 0;
-	}
-	
-	if (!isset($dadosRel[$contas[$i]["COD_PESSOA"]]["VALOR_TOTAL"])) {
-		$dadosRel[$contas[$i]["COD_PESSOA"]]["VALOR_TOTAL"] = 0;
-	}
+	#################################################################################
+	## Calcular o valor não líquido de uma conta
+	## Os valores não líquidos são eles:
+	## Boleto, Sistema e Taxa de Administração
+	#################################################################################
+	$valorNaoLiq		= \Zage\Fmt\Financeiro::getValorNaoLiquidoConta($rec[$i]->getCodContaRec()->getCodigo());
 	
 	
-	if ($contas[$i]["VALOR"] > $contas[$i]["VALOR_PAGO"]) {
-		$dadosRel[$contas[$i]["COD_PESSOA"]]["VALOR_APAGAR"]			+= ($contas[$i]["VALOR"] - $contas[$i]["VALOR_PAGO"]);
-	}
+	#################################################################################
+	## Calcular o valor líquido do Recebimento
+	## Valor Liquido é igual ao valor - o valor não líquido + o júros líquido
+	#################################################################################
+	$valorLiq			-= $valorNaoLiq;
+	$valorLiq			+= $jurosLiq;
+	
+	$n				= (isset($aMov[$dataIndex]))	? sizeof($aMov[$dataIndex]) : 0;
 
-	$dadosRel[$contas[$i]["COD_PESSOA"]][$_mesRef]["VALOR"]			+= $contas[$i]["VALOR"];
-	$dadosRel[$contas[$i]["COD_PESSOA"]][$_mesRef]["VALOR_PAGO"]	+= $contas[$i]["VALOR_PAGO"];
-	$dadosRel[$contas[$i]["COD_PESSOA"]]["NOME_PESSOA"]				= $contas[$i]["NOME_PESSOA"];
-	$dadosRel[$contas[$i]["COD_PESSOA"]]["VALOR_TOTAL"]				+= $contas[$i]["VALOR_PAGO"];
-	$valTotal														+= $contas[$i]["VALOR_PAGO"];
+	$aMov[$dataIndex][$n]["data"]		= $data;
+	$aMov[$dataIndex][$n]["valor"]		= $valor;
+	$aMov[$dataIndex][$n]["valorLiq"]	= $valorLiq;
+	$aMov[$dataIndex][$n]["juros"]		= $juros;
+	$aMov[$dataIndex][$n]["descricao"]	= $descricao;
+	$aMov[$dataIndex][$n]["parcela"]	= $parcela;
+	$aMov[$dataIndex][$n]["documento"]	= $documento;
+	$aMov[$dataIndex][$n]["tipo"]		= "C";
 
 }
 
 #################################################################################
-## Montar o array de meses
+## Ordenar os dados do relatório pela data
 #################################################################################
-$_mes			=	$_mesIni;
-$_ano			=	$_anoIni;
-$aMeses			= array();
-$aHtml			= array();
-$numFormandos	= sizeof($dadosRel);	
-for ($i = 0; $i < 12; $i++) {
-	$_mesAtual			= (int) date("m",mktime(0, 0, 0, $_mes + $i, 1 , $_ano));
-	$_anoAtual			= (int) date("Y",mktime(0, 0, 0, $_mes + $i, 1 , $_ano));
-	$mesDesc			= gmstrftime("%b-%y",mktime(0, 0, 0, $_mesAtual, 1 , $_anoAtual));
-	$mesIndex			= gmstrftime("%Y%m",mktime(0, 0, 0, $_mesAtual, 1 , $_anoAtual));
-	$aMeses[]			= $mesDesc;
-	$aHtml[$mesIndex]	= '<td style="text-align: right;">%MES_'.$mesIndex.'%</td>';
-}
+ksort($aMov);
 
+#################################################################################
+## Liberar memória
+#################################################################################
+unset($rec);
+unset($pag);
 
-if (sizeof($dadosRel) > 0) {
+	
+if (sizeof($aMov) > 0) {
 	
 	#################################################################################
 	## Não colocar os tamanhos do campo caso não seja para gerar o PDF
@@ -342,43 +456,57 @@ if (isset($todos) && ($todos == 1)) {
 
 if ($geraPdf == 1) {
 	$html	= '<body class="no-skin">';
+	$html	.= '<h4 align="center"><strong>Extrato Financeiro</strong></h4>';
+	$html	.= '<h4 align="center">'.$oOrg->getNome()	.'</h4>';
+	$html	.= '<br>';
 }else{
+	$html	= '<table style="width: 100%;" class="table-condensed">
+			<tr><td style="width: 70%;">
+				<h4 align="center"><strong>Extrato Financeiro</strong></h4>
+				</td>
+				<td rowspan="2" align="right" style="width: 30%;">'.$tableTotal.'</td>
+			</tr>
+			<tr><td style="width: 70%; vertical-align:top;" valign="top"><h6 align="center">'.$oOrg->getNome().'</h6></td></tr>
+			</table>
+			';
+	$html	.= '<br>';
+	
 	$html	= '
-<form id="zgFormRelResumoFinanceiroID" class="form-horizontal" method="GET" target="_blank" action="'.$urlForm.'" >
+<form id="zgFormRelExtratoFinanceiroID" class="form-horizontal" method="GET" target="_blank" action="'.$urlForm.'" >
 <input type="hidden" name="mesRef" 	id="mesRefID" 	value="'.$mesRef.'">
 <input type="hidden" name="geraPdf" id="geraPdfID">
 <input type="hidden" name="id" value="'.$id.'">
 <div class="row">
-	<div class="col-sm-6 pull-left">
-		<div class="btn-group btn-corner pull-right">
-			<button type="button" class="btn btn-white btn-sm" title="Voltar" id="btnRelResumoFinanceiroVoltarID" onclick="zgRelResumoFinanceiroVoltar();">
+	<div class="col-sm-12 center">
+		<div class="btn-group btn-corner">
+			<button type="button" class="btn btn-white btn-sm" '.$disBtnRet.' title="Voltar" id="btnRelExtratoFinanceiroVoltarID" onclick="zgRelExtratoFinanceiroVoltar();">
 				<i class="fa fa-angle-double-left "></i>
 			</button>
 			<span id="relPagamentoPopoverID" style="width: 250px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >'.$texto.'</span>
-			<button type="button" class="btn btn-white btn-sm tooltip-info" onclick="zgRelResumoFinanceiroImprimir();" data-rel="tooltip" data-placement="top" title="Gerar PDF">
+			<button type="button" class="btn btn-white btn-sm tooltip-info" onclick="zgRelExtratoFinanceiroImprimir();" data-rel="tooltip" data-placement="top" title="Gerar PDF">
 				<i class="fa fa-file-pdf-o red"></i>
 			</button>
 					
-			<button type="button" class="btn btn-white btn-sm" title="Avançar" id="btnRelResumoFinanceiroAvancarID" onclick="zgRelResumoFinanceiroAvancar();">
+			<button type="button" class="btn btn-white btn-sm" '.$disBtnAva.' title="Avançar" id="btnRelExtratoFinanceiroAvancarID" onclick="zgRelExtratoFinanceiroAvancar();">
 				<i class="fa fa-angle-double-right"></i>
 			</button>
 		</div>
 	</div>
-	<div class="col-sm-6 pull-right">
+	<div class="col-sm-6 pull-right hidden">
 		<div class="checkbox pull-left">
 			<label>
-				<input name="verTodosMeses" id="verTodosMesesID" type="checkbox" '.$checked.' class="ace" onchange="zgRelResumoFinanceiroTodosMeses();"/>
+				<input name="verTodosMeses" id="verTodosMesesID" type="checkbox" '.$checked.' class="ace" onchange="zgRelExtratoFinanceiroTodosMeses();"/>
 				<span class="lbl">&nbsp;Ver todos os meses</span>
 			</label>
 		</div>
 	</div>
 </div>
 
-<div id="divPopoverRelPagamentoContentID" class="hide">
-	<div class="col-sm-12" id="divRelPagamentoContentMensalID">
+<div id="divPopoverRelExtratoFinanceiroContentID" class="hide">
+	<div class="col-sm-12" id="divRelExtratoFinanceiroContentMensalID">
 		<label class="col-sm-3 control-label">Mês:</label>
 		<div class="col-xs-12 col-sm-9">
-    		<input class="form-control datepicker col-md-12" readonly id="tempMesFiltroID" onchange="copiaValoresFormRelPagamento();" value="'.$mesRef.'" type="text" maxlength="7" autocomplete="off">
+    		<input class="form-control datepicker col-md-12" readonly id="tempMesFiltroID" onchange="copiaValoresFormRelExtratoFinanceiro();" value="'.$mesRef.'" type="text" maxlength="7" autocomplete="off">
 		</div>
 	</div>
 	<div class="form-group col-sm-12 center">
@@ -386,30 +514,37 @@ if ($geraPdf == 1) {
 	</div>
 	<label class="col-sm-3 control-label">&nbsp;</label>
 	<div class="btn-group btn-corner col-sm-9 center">
-		<button type="button" class="btn btn-success btn-sm" onclick="relPagamentoFilter();">OK</button>
-		<button type="button" class="btn btn-danger btn-sm" onclick="fecharPopoverRelPagamento();">Fechar</button>
+		<button type="button" class="btn btn-success btn-sm" onclick="relExtratoFinanceiroFilter();">OK</button>
+		<button type="button" class="btn btn-danger btn-sm" onclick="fecharPopoverRelExtratoFinanceiro();">Fechar</button>
 	</div>
 </div>
 					
-<div id="divPopoverRelPagamentoTitleID" class="hide">
+<div id="divPopoverRelExtratoFinanceiroTitleID" class="hide">
 	<div class="btn-group btn-corner" style="width: 310px;">
 		<p>Selecione o mês de referência</p>
 	</div>
 </div>
 </form>
 <br>
+
+<div class="page-header">
+	<h4 align="center"><strong>Extrato Financeiro</strong></h4>
+	<h4 align="center">'.$oOrg->getNome().'</h4>
+</div><!-- /.page-header -->
+
+    				
 <script>
-	function zgRelResumoFinanceiroImprimir() {
+	function zgRelExtratoFinanceiroImprimir() {
     	$("#geraPdfID").val(1);
-		$("#zgFormRelResumoFinanceiroID").submit();
+		$("#zgFormRelExtratoFinanceiroID").submit();
 	}
 
-	function zgRelResumoFinanceiroAvancar() {
+	function zgRelExtratoFinanceiroAvancar() {
 		var vUrl	= "'.$urlForm.'?id='.$id.'&geraPdf=0&mesRef='.$mesRef.'&avancar=1";
 		zgLoadUrl(vUrl);
 	}
 
-	function zgRelResumoFinanceiroVoltar() {
+	function zgRelExtratoFinanceiroVoltar() {
 		var vUrl	= "'.$urlForm.'?id='.$id.'&geraPdf=0&mesRef='.$mesRef.'&voltar=1";
 		zgLoadUrl(vUrl);
 	}
@@ -418,7 +553,7 @@ if ($geraPdf == 1) {
 		$("#divCPLisFiltroContentMensalID").removeClass("hide");
 	}
 	
-	function copiaValoresFormRelPagamento() {
+	function copiaValoresFormRelExtratoFinanceiro() {
 		var $mes;
 		$mes		= $("#tempMesFiltroID").val();
 		/** Copiar valores para o outro form **/
@@ -426,18 +561,18 @@ if ($geraPdf == 1) {
 	
 	}
 				
-	function relPagamentoFilter() {
-		copiaValoresFormRelPagamento();
+	function relExtratoFinanceiroFilter() {
+		copiaValoresFormRelExtratoFinanceiro();
 		var vMes	= $("#mesRefID").val();
 		var vUrl	= "'.$urlForm.'?id='.$id.'&geraPdf=0&mesRef="+vMes;
 		zgLoadUrl(vUrl);
 	}
 
-	function fecharPopoverRelPagamento() {
+	function fecharPopoverRelExtratoFinanceiro() {
 		$("#relPagamentoPopoverID").popover("hide");
 	}
 
-	function zgRelResumoFinanceiroTodosMeses() {
+	function zgRelExtratoFinanceiroTodosMeses() {
 		var $verTodos	= $("#verTodosMesesID").is(":checked");
 		if ($verTodos) {
 			$verTodos = 1;
@@ -460,10 +595,10 @@ $( document ).ready(function() {
 	$("[data-rel=popover]").popover({ 
 		html:true,
 		content: function() {
-			return $("#divPopoverRelPagamentoContentID").html();
+			return $("#divPopoverRelExtratoFinanceiroContentID").html();
 		},
 		title: function() {
-			return $("#divPopoverRelPagamentoTitleID").html();
+			return $("#divPopoverRelExtratoFinanceiroTitleID").html();
 		},
 		callback: function() {
 			$("#tempMesFiltroID").datepicker({autoclose: true,format: "mm/yyyy",viewMode: "months", minViewMode: "months"});
@@ -476,7 +611,7 @@ $( document ).ready(function() {
 });
 				
 </script>
-					
+
 ';
 	
 }
@@ -492,7 +627,7 @@ $htmlTable	= '
 </body>';
 
 $html		.= $htmlTable;
-$relName	= "Resumo_Financeiro_".$mes.".pdf";
+$relName	= "Extrato_".$mesRef.".pdf";
 
 if ($geraPdf == 1) {
 	$rel->WriteHTML($html);

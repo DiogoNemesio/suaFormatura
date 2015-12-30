@@ -6,7 +6,7 @@
 }*/
 
 html {
-  font-family: "Helvetica";
+  font-family: "Verdana";
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
@@ -284,7 +284,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Helvetica";
+  font-family: "Verdana";
   font-size: 11px;
   line-height: 1.42857143;
   color: #333333;

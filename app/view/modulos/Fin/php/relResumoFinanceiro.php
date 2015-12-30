@@ -146,9 +146,12 @@ if (sizeof($aValores) > 0) {
 	
 
 	#################################################################################
-	## Criar um array ordenado por nome
+	## Criar um array ordenado por nome, e calcular o total geral da Formatura
 	#################################################################################
-	$aDados		= array();
+	$aDados			= array();
+	$totalPago		= 0;
+	$totalDevolvido	= 0;
+	$totalDevido	= 0;
 	
 	foreach ($aValores as $cpf => $dados) {
 		#################################################################################
@@ -182,63 +185,91 @@ if (sizeof($aValores) > 0) {
 		$aDados[$nome]["devOutras"]			= $aValores[$cpf]["devOutras"];
 		$aDados[$nome]["totalDevolvido"]	= $aValores[$cpf]["totalDevolvido"];
 		
+		$totalPago							+= \Zage\App\Util::to_float($dados["totalPago"]);
+		$totalDevolvido						+= \Zage\App\Util::to_float($dados["totalDevolvido"]);
+		$totalDevido						+= \Zage\App\Util::to_float($dados["valDevido"]);
+		
 	}
 	ksort($aDados);
 	unset($aValores);
 	
 	if ($geraPdf == 1) {
 		$tabStyle		= "width: 100%;";
+		$tabClass		= "";
 	}else{
 		$tabStyle		= "width: 100%;";
+		$tabClass		= "table-condensed";
 	}
 	
-	$table	= '<table style="'.$tabStyle.'" class="table table-condensed">';
+	#################################################################################
+	## Criar a tabela de totalizador geral
+	#################################################################################
+	$tableTotal	= '<table style="'.$tabStyle.' width:400px;" align="right" class="table '.$tabClass.'">';
+	$tableTotal .= '<tr style="background-color:#EFEFEF">
+						<th style="text-align: center; border-left: 1px solid #000000; border-right: 1px solid #000000; border-top: 1px solid #000000;" colspan="3"><strong>Resumo da Formatura</strong></th>
+					</tr>';
+	$tableTotal .= '<tr style="background-color:#FDF5E6">
+						<th style="text-align: center; width: 10%; border-left: 1px solid #000000;"><strong>Total pago</strong></th>
+						<th style="text-align: center; width: 10%;"><strong>Total devolvido</strong></th>
+						<th style="text-align: center; width: 10%; border-right: 1px solid #000000;"><strong>Total atrasado</strong></th>
+					</tr>';
+	$tableTotal .= '<tr>
+						<td style="text-align: center; width: 10%; border-bottom: 1px solid #000000; border-left: 1px solid #000000;"><strong>'.\Zage\App\Util::to_money($totalPago).'</strong></td>
+						<td style="text-align: center; width: 10%; border-bottom: 1px solid #000000;"><strong>'.\Zage\App\Util::to_money($totalDevolvido).'</strong></td>
+						<td style="text-align: center; width: 10%; border-bottom: 1px solid #000000; border-right: 1px solid #000000;"><strong>'.\Zage\App\Util::to_money($totalDevido).'</strong></td>
+					</tr>';
+	$tableTotal	.= '</table>';
+	
+	
+	$table	= '<table style="'.$tabStyle.'" class="table '.$tabClass.'">';
 	
 	foreach ($aDados as $nome => $dados) {
 		
 		
-		$table .= '<thead><tr style="background-color:#EFEFEF">
+		$table .= '<tr style="background-color:#EFEFEF">
 					<th style="text-align: left; border: 1px solid #000000;" colspan="12" ><strong>&nbsp;'.$nome.'</strong></th>
-			   </tr></thead>';
-		
+			   	</tr><tbody>';
+
 		$table .= '<tr style="background-color:#FDF5E6">
-						<th style="text-align: center; border: 1px solid #000000;" colspan="6"><strong>Pagamentos realizados</strong></th>
-						<th style="text-align: center; border: 1px solid #000000;" colspan="3"><strong>Devoluções</strong></th>
-						<th style="text-align: center; border: 1px solid #000000;" colspan="3"><strong>Resumo (Totalizadores)</strong></th>
+						<th style="text-align: center; border-left: 1px solid #000000; border-right: 1px solid #000000;" colspan="6"><strong>Pagamentos realizados</strong></th>
+						<th style="text-align: center; border-left: 1px solid #000000; border-right: 1px solid #000000;" colspan="3"><strong>Devoluções</strong></th>
+						<th style="text-align: center; border-left: 1px solid #000000; border-right: 1px solid #000000;" colspan="3"><strong>Resumo (Totalizadores)</strong></th>
 				</tr>';
 		$table .= '<tr style="background-color:#FDF5E6;">
-						<th style="text-align: center; width: 10%; border-left: 1px solid #000000; border-bottom: 1px solid #000000;"><strong>Mensalidades</strong></th>
-						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Sistema</strong></th>
-						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Juros/Mora</strong></th>
-						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Rifas</strong></th>
-						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Conv. extras</strong></th>
-						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000; border-right: 1px solid #000000;"><strong>Outros</strong></th>
-						<th style="text-align: center; width: 10%; border-left: 1px solid #000000; border-bottom: 1px solid #000000;"><strong>Mensalidades</strong></th>
-						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000;"><strong>Sistema</strong></th>
-						<th style="text-align: center; width: 7%; border-bottom: 1px solid #000000; border-right: 1px solid #000000;"><strong>Outros</strong></th>
-						<th style="text-align: center; width: 10%; border-left: 1px solid #000000; border-bottom: 1px solid #000000;"><strong>Total pago</strong></th>
-						<th style="text-align: center; width: 10%; border-bottom: 1px solid #000000;"><strong>Total devolvido</strong></th>
-						<th style="text-align: center; width: 10%; border-bottom: 1px solid #000000; border-right: 1px solid #000000;"><strong>Total atrasado</strong></th>
+						<th style="text-align: center; width: 10%; border-left: 1px solid #000000;"><strong>Mensalidades</strong></th>
+						<th style="text-align: center; width: 7%;"><strong>Sistema</strong></th>
+						<th style="text-align: center; width: 7%;"><strong>Juros/Mora</strong></th>
+						<th style="text-align: center; width: 7%;"><strong>Rifas</strong></th>
+						<th style="text-align: center; width: 7%;"><strong>Conv. extras</strong></th>
+						<th style="text-align: center; width: 7%; border-right: 1px solid #000000;"><strong>Outros</strong></th>
+						<th style="text-align: center; width: 10%; border-left: 1px solid #000000;"><strong>Mensalidades</strong></th>
+						<th style="text-align: center; width: 7%;"><strong>Sistema</strong></th>
+						<th style="text-align: center; width: 7%; border-right: 1px solid #000000;"><strong>Outros</strong></th>
+						<th style="text-align: center; width: 10%; border-left: 1px solid #000000;"><strong>Total pago</strong></th>
+						<th style="text-align: center; width: 10%;"><strong>Total devolvido</strong></th>
+						<th style="text-align: center; width: 10%; border-right: 1px solid #000000;"><strong>Total atrasado</strong></th>
 				</tr>';
-		$table .= '</thead><tbody>';
+		$table .= '';
 		$table .= '<tr>
-						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money($dados["mensalidade"]).'</td>
-						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["sistema"]).'</td>
-						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money(($dados["juros"]+$dados["mora"])).'</td>
-						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["rifas"]).'</td>
-						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["convites"]).'</td>
-						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["outros"]).'</td>
-						<td style="text-align: center; width: 10%;">'.\Zage\App\Util::to_money($dados["devMensalidade"]).'</td>
-						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["devSistema"]).'</td>
-						<td style="text-align: center; width: 7%;">'.\Zage\App\Util::to_money($dados["devOutras"]).'</td>
-						<td style="text-align: center; width: 10%;"><strong>'.\Zage\App\Util::to_money($dados["totalPago"]).'</strong></td>
-						<td style="text-align: center; width: 10%;"><strong>'.\Zage\App\Util::to_money($dados["totalDevolvido"]).'</strong></td>
-						<td style="text-align: center; width: 10%;"><strong>'.\Zage\App\Util::to_money($dados["valDevido"]).'</strong></td>
+						<td style="text-align: center; width: 10%; border-left: 1px solid #000000; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money($dados["mensalidade"]).'</td>
+						<td style="text-align: center; width: 7%; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money($dados["sistema"]).'</td>
+						<td style="text-align: center; width: 7%; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money(($dados["juros"]+$dados["mora"])).'</td>
+						<td style="text-align: center; width: 7%; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money($dados["rifas"]).'</td>
+						<td style="text-align: center; width: 7%; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money($dados["convites"]).'</td>
+						<td style="text-align: center; width: 7%; border-right: 1px solid #000000; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money($dados["outros"]).'</td>
+						<td style="text-align: center; width: 10%; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money($dados["devMensalidade"]).'</td>
+						<td style="text-align: center; width: 7%; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money($dados["devSistema"]).'</td>
+						<td style="text-align: center; width: 7%; border-right: 1px solid #000000; border-bottom: 1px solid #000000;">'.\Zage\App\Util::to_money($dados["devOutras"]).'</td>
+						<td style="text-align: center; width: 10%; border-bottom: 1px solid #000000;"><strong>'.\Zage\App\Util::to_money($dados["totalPago"]).'</strong></td>
+						<td style="text-align: center; width: 10%; border-bottom: 1px solid #000000;"><strong>'.\Zage\App\Util::to_money($dados["totalDevolvido"]).'</strong></td>
+						<td style="text-align: center; width: 10%; border-right: 1px solid #000000; border-bottom: 1px solid #000000;"><strong>'.\Zage\App\Util::to_money($dados["valDevido"]).'</strong></td>
 					</tr>';
 		$table .= '</tbody>';
+		
 	}
 	
 	$table .= '</table>';
+	
 }else{
 	$table	= "<center>nenhuma informação encontrada !!!</center>";
 }
@@ -246,20 +277,28 @@ if (sizeof($aValores) > 0) {
 
 if ($geraPdf == 1) {
 	$html	= '<body class="no-skin">';
-	$html	.= '<h4 align="center"><strong>RESUMO FINANCEIRO</strong> - '.$oOrg->getNome().'</h4>';
+	$html	.= '<table style="width: 100%;" class="table-condensed">
+			<tr><td style="width: 70%;">
+				<h4 align="center"><strong>Resumo Financeiro</strong></h4>
+				</td>
+				<td rowspan="2" align="right" style="width: 30%;">'.$tableTotal.'</td>
+			</tr>
+			<tr><td style="width: 70%; vertical-align:top;" valign="top"><h6 align="center">'.$oOrg->getNome().'</h6></td></tr>
+			</table>
+			';
 	$html	.= '<br>';
 }else{
-	$html	= '
-
-	<div class="page-header">
-		<h1><i class="fa fa-dollar">&nbsp;</i>Resumo Financeiro&nbsp;&nbsp;
-			<button class="btn btn-white btn-default btn-round" onclick="zgRelResumoFinanceiroImprimir();" data-rel="tooltip" data-placement="top" title="Gerar PDF">
-				<i class="ace-icon fa fa-file-pdf-o red2"></i>
-				PDF	
-			</button>
-		</h1>
-	</div><!-- /.page-header -->
-			
+	$html	= '<table style="width: 100%;" class="table-condensed">
+			<tr><td style="width: 70%;">
+				<h4 align="center"><strong>Resumo Financeiro</strong> - '.$oOrg->getNome().'</h4>
+				</td>
+				<td rowspan="2" align="right" style="width: 30%;">'.$tableTotal.'</td>
+			</tr>
+			<tr><td style="width: 70%; vertical-align:top;" valign="top"><h6 align="center"><button class="btn btn-white btn-default btn-round" onclick="zgRelResumoFinanceiroImprimir();" data-rel="tooltip" data-placement="top" title="Gerar PDF"><i class="ace-icon fa fa-file-pdf-o red2"></i>	PDF</button></h6></td></tr>
+			</table>
+			';
+	$html	.= '<br>';
+	$html	.= '
 	<form id="zgFormID" class="form-horizontal" method="GET" target="_blank" action="'.$urlForm.'" >
 	<input type="hidden" name="geraPdf" id="geraPdfID">
 	<input type="hidden" name="id" value="'.$id.'">
@@ -311,8 +350,12 @@ $htmlTable	= '
 			<div class="box-content">'.$table.'</div><!--/span-->
 		</div>
 	</div>
-</div>
-</body>';
+</div>';
+
+if ($geraPdf == 1) {
+	$htmlTable	.= '</body>';
+}
+
 
 
 $html		.= $htmlTable;
