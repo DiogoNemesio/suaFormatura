@@ -366,8 +366,8 @@ $table	.= '<thead><tr style="background-color:#EFEFEF">
 			</tr>';
 $table	.= '<tr style="background-color:#FDF5E6">
 				<th style="text-align: center; width: 7%;">Data</th>
-				<th style="text-align: center; width: 40%;">Histórico</th>
-				<th style="text-align: center; width: 16%;">Pessoa</th>
+				<th style="text-align: left; width: 40%;">Histórico</th>
+				<th style="text-align: left; width: 16%;">Pessoa</th>
 				<th style="text-align: center; width: 7%;">Pag</th>
 				<th style="text-align: center; width: 10%;">Valor</th>
 				<th style="text-align: center; width: 10%;">Valor Líquido</th>
