@@ -27,9 +27,9 @@ if (isset($_POST['pctDesconto']))	 	$pctDesconto		= \Zage\App\Util::antiInjectio
 
 if ($tipo == 'J'){
 	
-	if (isset($_POST['razao'])) 		$razao				= \Zage\App\Util::antiInjection($_POST['razao']);
+	if (isset($_POST['razao'])) 		$nome				= \Zage\App\Util::antiInjection($_POST['razao']);
 	if (isset($_POST['cnpj']))	 		$cgc				= \Zage\App\Util::antiInjection($_POST['cnpj']);
-	if (isset($_POST['fantasia'])) 		$nome				= \Zage\App\Util::antiInjection($_POST['fantasia']);
+	if (isset($_POST['fantasia'])) 		$fantasia			= \Zage\App\Util::antiInjection($_POST['fantasia']);
 	if (isset($_POST['inscrEst'])) 		$inscEstadual		= \Zage\App\Util::antiInjection($_POST['inscrEst']);
 	if (isset($_POST['inscrMun'])) 		$inscMunicipal		= \Zage\App\Util::antiInjection($_POST['inscrMun']);
 	if (isset($_POST['dataInicio'])) 	$dataNascimento		= \Zage\App\Util::antiInjection($_POST['dataInicio']);
@@ -43,7 +43,7 @@ if ($tipo == 'J'){
 	if (isset($_POST['rg']))	 		$rg					= \Zage\App\Util::antiInjection($_POST['rg']);
 	if (isset($_POST['dataNas'])) 		$dataNascimento		= \Zage\App\Util::antiInjection($_POST['dataNas']);
 	if (isset($_POST['sexo']))	 		$sexo				= \Zage\App\Util::antiInjection($_POST['sexo']);
-	$razao			= null;
+	if (isset($_POST['nomeComercial']))		$fantasia		= \Zage\App\Util::antiInjection($_POST['nomeComercial']);
 	$inscEstadual	= null;
 	$inscMunicipal	= null;
 }
@@ -60,7 +60,8 @@ if (isset($_POST['codTipoTel']))		$codTipoTel			= $_POST['codTipoTel'];
 if (isset($_POST['codTelefone']))		$codTelefone		= $_POST['codTelefone'];
 if (isset($_POST['telefone']))			$telefone			= $_POST['telefone'];
 
-if (isset($_POST['segmento']))			$codSegmento			= $_POST['segmento'];
+if (isset($_POST['segmento']))			$codSegmento		= $_POST['segmento'];
+if (isset($_POST['link']))				$link				= $_POST['link'];
 
 if (!isset($codTipoTel))				$codTipoTel			= array();
 if (!isset($codTelefone))				$codTelefone		= array();
@@ -133,19 +134,19 @@ if ($tipo == 'J'){
 	}
 	
 	/******* Nome *********/
-	if (!isset($razao) || (empty($razao))) {
+	if (!isset($nome) || (empty($nome))) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A razão social deve ser preenchida!"));
 		$err	= 1;
-	}elseif ((!empty($razao)) && (strlen($razao) > 100)) {
+	}elseif ((!empty($nome)) && (strlen($nome) > 100)) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A razão social não deve conter mais de 100 caracteres!"));
 		$err	= 1;
 	}
 	
 	/******* Fantasia *********/
-	if (!isset($nome) || (empty($nome))) {
+	if (!isset($fantasia) || (empty($fantasia))) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome fantasia deve ser preenchido!"));
 		$err	= 1;
-	}elseif ((!empty($nome)) && (strlen($nome) > 100)) {
+	}elseif ((!empty($fantasia)) && (strlen($fantasia) > 100)) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome fantasia não deve conter mais de 100 caractes!"));
 		$err	= 1;
 	}
@@ -196,6 +197,15 @@ if ($tipo == 'F'){
 		$err	= 1;
 	}elseif ((!empty($nome)) && (strlen($nome) > 100)) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome não deve conter mais de 100 caracteres!"));
+		$err	= 1;
+	}
+	
+	/******* Nome Comercial *********/
+	if (!isset($fantasia) || (empty($fantasia))) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome comercial deve ser preenchido! Caso não exista informe o nome completo novamente."));
+		$err	= 1;
+	}elseif ((!empty($fantasia)) && (strlen($fantasia) > 100)) {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("O nome comercial não deve conter mais de 100 caracteres!"));
 		$err	= 1;
 	}
 	
@@ -324,8 +334,8 @@ try {
  	}
  	
  	$oParceiro->setIdentificacao($ident);
+ 	$oParceiro->setFantasia($fantasia);
  	$oParceiro->setNome($nome);
- 	$oParceiro->setRazao($razao);
  	$oParceiro->setCgc($cgc);
  	$oParceiro->setRg($rg);
  	$oParceiro->setCodTipoPessoa($oTipoPessoa);
@@ -333,6 +343,7 @@ try {
  	$oParceiro->setInscEstadual($inscEstadual);
  	$oParceiro->setInscMunicipal($inscMunicipal);
  	$oParceiro->setEmail($email);
+ 	$oParceiro->setLink($link);
  	$oParceiro->setDataNascimento($dtNasc);
  	$oParceiro->setCodStatus($oCodStatus);
  	$oParceiro->setCodSexo($oSexo);
@@ -414,6 +425,70 @@ try {
  		}
  	}
 	
+ 	/***********************
+ 	 * Salavar cliente
+ 	 ***********************/
+ 	$oFornec = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oParceiro->getCgc() , 'codOrganizacao' => null));
+ 	
+ 	if(!$oFornec){
+ 		$oFornec = new \Entidades\ZgfinPessoa();
+ 		$oFornec->setDataCadastro(new DateTime(now));
+ 		$oFornec->setObservacao('Importado do cadastro de parceiros.');
+ 	}
+ 	
+ 	$oFornecTipoPessoa		= $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => $tipo));
+ 	
+ 	$oFornec->setFantasia($oParceiro->getFantasia());
+ 	$oFornec->setNome($oParceiro->getNome());
+ 	$oFornec->setCgc($oParceiro->getCgc());
+ 	$oFornec->setRg($oParceiro->getRg());
+ 	$oFornec->setDataNascimento($oParceiro->getDataNascimento());
+ 	$oFornec->setEmail($oParceiro->getEmail());
+ 	$oFornec->setLink($oParceiro->getLink());
+ 	$oFornec->setCodTipoPessoa($oFornecTipoPessoa); //parceiro
+ 	$oFornec->setIndContribuinte(0);
+ 	$oFornec->setIndCliente(1);
+ 	$oFornec->setIndFornecedor(1);
+ 	$oFornec->setIndTransportadora(0);
+ 	$oFornec->setIndEstrangeiro(0);
+ 	$oFornec->setIndAtivo(1);
+ 	$oFornec->setCodSexo($oParceiro->getCodSexo());
+ 	
+ 	$em->persist($oFornec);
+ 	
+ 	//ENDEREÇO CLIENTE
+ 	if ($codLogradouro){
+ 		$oFornecEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oFornec->getCodigo()));
+ 		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => "F"));
+ 	
+ 		if (!$oFornecEnd){
+ 			$oFornecEnd = new \Entidades\ZgfinPessoaEndereco();
+ 		}
+ 	
+ 		$oFornecEnd->setCodPessoa($oFornec);
+ 		$oFornecEnd->setCodTipoEndereco($oEndTipo);
+ 		$oFornecEnd->setCodLogradouro($oCodLogradouro);
+ 		$oFornecEnd->setCep($oParceiro->getCep());
+ 		$oFornecEnd->setEndereco($oParceiro->getEndereco());
+ 		$oFornecEnd->setBairro($oParceiro->getBairro());
+ 		$oFornecEnd->setNumero($oParceiro->getNumero());
+ 		$oFornecEnd->setComplemento($oParceiro->getComplemento());
+ 		$oFornecEnd->setIndEndCorreto($oParceiro->getIndEndCorreto());
+ 	
+ 		$em->persist($oFornecEnd);
+ 	}
+ 	
+ 	//Telefone
+ 	$oCliTel			= new \Zage\App\Telefone();
+ 	$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
+ 	$oCliTel->_setCodProp($oFornec);
+ 	$oCliTel->_setTelefone($telefone);
+ 	$oCliTel->_setCodTipoTel($codTipoTel);
+ 	$oCliTel->_setCodTelefone($codTelefone);
+ 	
+ 	$retorno	= $oCliTel->salvar();
+ 	
+ 	
  	#################################################################################
  	## SALVAR
  	#################################################################################

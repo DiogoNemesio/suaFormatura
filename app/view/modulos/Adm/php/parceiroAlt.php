@@ -50,16 +50,18 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	
 	$tipo			= $info->getCodTipoPessoa()->getCodigo();
 	$segmento		= $info->getCodTipo()->getCodigo();
+	$link			= $info->getLink();
 	$email			= $info->getEmail();
 	$ident			= $info->getIdentificacao();
 	$disabled		= 'disabled';
 	$readOnly		= 'readonly';
+	$valID			= '1';
 	
 	if ($tipo == 'J') {
 
-		$nome			= $info->getNome();
+		$razao			= $info->getNome();
 		$cnpj			= $info->getCgc();
-		$razao			= $info->getRazao();
+		$fantasia		= $info->getFantasia();
 		$inscEstadual	= $info->getInscEstadual();
 		$inscMunicipal	= $info->getInscMunicipal();
 		$datInicio 		= ($info->getDataNascimento() != null) ? $info->getDataNascimento()->format($system->config["data"]["dateFormat"]) : null;	
@@ -67,16 +69,23 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		$rg				= '';
 		$sexo			= '';
 		$dataNascimento = '';
+		$nome 			= '';
+		$nomeCom 		= '';
+		$valCnpj		= 1;
+		$valCpf			= '';
 	
 	}elseif($tipo == 'F') {
 		
-		$razao			= '';
+		$valCnpj		= '';
+		$valCpf			= 1;
 		$cnpj			= '';
-		$fantasia		= '';
 		$inscEstadual	= '';
 		$inscMunicipal	= '';
 		$datInicio 		= '';
+		$fantasia		= '';
+		$razao			= '';
 		$nome			= $info->getNome();
+		$nomeCom		= $info->getFantasia();
 		$cpf			= $info->getCgc();
 		$rg				= $info->getRg();
 		$sexo			= ($info->getCodSexo() != null) ? $info->getCodSexo()->getCodigo() : null;
@@ -143,6 +152,7 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$tipo			= 'J';
 	$ident			= '';
 	$nome			= '';
+	$nomeCom		= '';
 	$cpf			= '';
 	$rg				= '';
 	$sexo			= '';
@@ -157,6 +167,9 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$disabled		= '';
 	$segmento		= '';
 	$readOnly		= '';
+	$valID			= '';
+	$valCnpj		= '';
+	$valCpf			= '';
 	
 	$codLogradouro  = '';
 	$logradouro		= '';
@@ -304,11 +317,12 @@ $tpl->set('RAZAO'					,$razao);
 $tpl->set('CNPJ'					,$cnpj);
 $tpl->set('DISABLED'				,$disabled);
 $tpl->set('READONLY'				,$readOnly);
-$tpl->set('FANTASIA'				,$nome);
+$tpl->set('FANTASIA'				,$fantasia);
 $tpl->set('INSCR_EST'				,$inscEstadual);
 $tpl->set('INSCR_MUN'				,$inscMunicipal);
 $tpl->set('DATA_INICIO'				,$datInicio);
 $tpl->set('NOME'					,$nome);
+$tpl->set('NOME_COMERCIAL'			,$nomeCom);
 $tpl->set('CPF'						,$cpf);
 $tpl->set('RG'						,$rg);
 $tpl->set('NOME'					,$nome);
@@ -323,6 +337,9 @@ $tpl->set('COD_PLANO'				,$codPlano);
 $tpl->set('VALOR_DESCONTO'			,$valorDesconto);
 $tpl->set('PCT_DESCONTO'			,$pctDesconto);
 $tpl->set('FORMA_DESCONTO'			,$formaDesc);
+$tpl->set('VAL_ID'					,$valID);
+$tpl->set('VAL_CPF_ID'				,$valCpf);
+$tpl->set('VAL_CNPJ_ID'				,$valCnpj);
 
 $tpl->set ( 'COD_LOGRADOURO' , $codLogradouro);
 $tpl->set ( 'CEP' 			 , $cep);

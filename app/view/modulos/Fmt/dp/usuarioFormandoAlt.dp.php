@@ -184,7 +184,7 @@ try {
 	//ENDEREÇO CLIENTE
 	if ($codLogradouro){
 		$oClienteEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oCliente->getCodigo()));
-		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => C));
+		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => "F"));
 		
 		if (!$oClienteEnd){
 			$oClienteEnd = new \Entidades\ZgfinPessoaEndereco();

@@ -136,6 +136,7 @@ try {
  	
  	$oOrganizacao->setIdentificacao($ident);
  	$oOrganizacao->setNome($nome);
+ 	$oOrganizacao->setFantasia($nome);
  	$oOrganizacao->setCodTipo($oTipoOrganizacao);
  	$oOrganizacao->setCodStatus($oCodStatus);
  	$oOrganizacao->setCodUsuarioCadastro($oUsuario);
