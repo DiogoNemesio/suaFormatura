@@ -47,9 +47,9 @@ class Financeiro {
 		#################################################################################
 		$oOrgFmt										= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 		if ($oOrgFmt) {
-			$pctJuros		= $oOrgFmt->getPctJurosTurma();
-			$pctMora		= $oOrgFmt->getPctMoraTurma();
-			$pctConvite		= $oOrgFmt->getPctConviteExtraTurma();
+			$pctJuros		= \Zage\App\Util::to_float($oOrgFmt->getPctJurosTurma());
+			$pctMora		= \Zage\App\Util::to_float($oOrgFmt->getPctMoraTurma());
+			$pctConvite		= \Zage\App\Util::to_float($oOrgFmt->getPctConviteExtraTurma());
 			$pctConviteCer	= 100 - $pctConvite;
 		}else{
 			$pctJuros		= 0;
@@ -69,9 +69,6 @@ class Financeiro {
 		#################################################################################
 		$codCatBoleto				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
 		$codCatTxAdm				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
-		$codCatDevMensalidade		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_MENSALIDADE");
-		$codCatDevSistema			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_SISTEMA");
-		$aCatDev					= array($codCatDevMensalidade,$codCatDevSistema);
 		$aCatBolTx					= array($codCatBoleto,$codCatTxAdm);
 		
 		#################################################################################
@@ -79,7 +76,6 @@ class Financeiro {
 		#################################################################################
 		$qb1 	= $em->createQueryBuilder();
 		$qb2 	= $em->createQueryBuilder();
-		$qb3 	= $em->createQueryBuilder();
 	
 		try {
 			
@@ -99,10 +95,10 @@ class Financeiro {
 			->leftJoin('\Entidades\ZgfinContaReceber', 'cr', \Doctrine\ORM\Query\Expr\Join::WITH, 'hr.codContaRec = cr.codigo')
 			->where($qb1->expr()->andx(
 				$qb1->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
-				$qb1->expr()->in('cr.codStatus'			, ':status')
+				$qb1->expr()->notIn('cr.codStatus'		, ':statusCanc')
 			))
 			->setParameter('codOrganizacao'	, $codFormatura)
-			->setParameter('status'			, array("L","P"));
+			->setParameter('statusCanc'		, array("S","C"));
 	
 			$query 				= $qb1->getQuery();
 			$rec				= $query->getOneOrNullResult();
@@ -220,11 +216,11 @@ class Financeiro {
 			->from('\Entidades\ZgfinHistoricoPag','hp')
 			->leftJoin('\Entidades\ZgfinContaPagar', 'cp', \Doctrine\ORM\Query\Expr\Join::WITH, 'hp.codContaPag = cp.codigo')
 			->where($qb1->expr()->andx(
-			$qb1->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
-			$qb1->expr()->in('cp.codStatus'			, ':status')
+				$qb1->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
+				$qb1->expr()->notIn('cp.codStatus'		, ':statusCanc')
 			))
 			->setParameter('codOrganizacao'	, $codFormatura)
-			->setParameter('status'			, array("L","P"));
+			->setParameter('statusCanc'		, array("S","C"));
 			
 			$query 				= $qb1->getQuery();
 			$rec				= $query->getOneOrNullResult();
@@ -1282,9 +1278,9 @@ class Financeiro {
 		## Resgatar as categorias de sistema, boleto e taxa de administração
 		#################################################################################
 		$codCatTxAdm				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_TAXAS");
-		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
+		//$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
 		$codCatBoleto				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
-		$aCat						= array($codCatBoleto,$codCatSistema,$codCatTxAdm);
+		$aCat						= array($codCatBoleto,$codCatTxAdm);
 	
 		#################################################################################
 		## Criar os objetos do Query builde, um para cada consulta

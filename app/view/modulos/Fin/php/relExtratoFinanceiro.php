@@ -105,12 +105,12 @@ $anoMesRef			= (int) $ano.$mes;
 ## permitir visualizar movimentações futuras
 #################################################################################
 $anoMesAtual		= (int) date('Ym');
-if ($anoMesRef > $anoMesAtual) {
+/*if ($anoMesRef > $anoMesAtual) {
 	$mes		= date("m");
 	$ano		= date("Y");
 	$mesRef		= date("m/Y");
 	$anoMesRef	= (int) $ano.$mes;
-}
+}*/
 
 #################################################################################
 ## Calcular se pode avançar e retroceder no mês de referência
@@ -126,6 +126,9 @@ $podeAvancar	= ($anoMesRef >= $anoMesAtual) 	? false : true;
 $disBtnRet		= (!$podeRetroceder)			? "disabled=disabled" : null;
 $disBtnAva		= (!$podeAvancar)				? "disabled=disabled" : null;  
 
+$disBtnRet		= false;
+$disBtnAva		= false;
+
 #################################################################################
 ## Calcular as datas início e fim a partir do mês de referência
 #################################################################################
@@ -135,6 +138,8 @@ $oDataBase			= mktime(0, 0, 0, $mes, 0, $ano);
 $dataIni			= date($system->config["data"]["dateFormat"],$oDataIni);
 $dataFim			= date($system->config["data"]["dateFormat"],$oDataFim);
 $dataBase			= date($system->config["data"]["dateFormat"],$oDataBase);
+$dDataIni			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataIni . " 00:00:00");
+$dDataFim			= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataFim . " 23:59:59");
 
 #################################################################################
 ## Montar o nome do Mês que será exibido
@@ -152,15 +157,13 @@ $urlForm			= ROOT_URL . '/Fin/relExtratoFinanceiro.php';
 ## Calcular os Percentuais de Júros, Mora e convite extra que ficam para a Formatura
 #################################################################################
 if ($oOrgFmt) {
-	$pctJuros		= $oOrgFmt->getPctJurosTurma();
-	$pctMora		= $oOrgFmt->getPctMoraTurma();
-	$pctConvite		= $oOrgFmt->getPctConviteExtraTurma();
-	$pctConviteCer	= 100 - $pctConvite;
+	$pctJuros		= \Zage\App\Util::to_float($oOrgFmt->getPctJurosTurma());
+	$pctMora		= \Zage\App\Util::to_float($oOrgFmt->getPctMoraTurma());
+	$pctConvite		= \Zage\App\Util::to_float($oOrgFmt->getPctConviteExtraTurma());
 }else{
 	$pctJuros		= 0;
 	$pctMora		= 0;
 	$pctConvite		= 0;
-	$pctConviteCer	= 100;
 }
 
 
@@ -174,6 +177,7 @@ $saldoInicial		= \Zage\Fmt\Financeiro::calcSaldoFormaturaPorDataBase($system->ge
 #################################################################################
 $valorArrecadado	= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorArrecadadoFormatura($system->getCodOrganizacao()));
 $valorGasto			= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calcValorGastoFormatura($system->getCodOrganizacao()));
+//echo "Valor Arrecadado: $valorArrecadado, valorGasto: $valorGasto<BR>";
 $saldoAtual			= \Zage\App\Util::to_float($valorArrecadado	- $valorGasto);
 
 #################################################################################
@@ -191,16 +195,17 @@ try {
 	->leftJoin('\Entidades\ZgfinContaPagar', 'cp', \Doctrine\ORM\Query\Expr\Join::WITH, 'hp.codContaPag = cp.codigo')
 	->where($qb1->expr()->andx(
 		$qb1->expr()->eq('cp.codOrganizacao'	, ':codOrganizacao'),
-		$qb1->expr()->in('cp.codStatus'			, ':status'),
+		$qb1->expr()->notIn('cp.codStatus'		, ':statusCanc'),
 		$qb1->expr()->gte('hp.dataPagamento'	, ':dataIni'),
 		$qb1->expr()->lte('hp.dataPagamento'	, ':dataFim')
 	))
 	->setParameter('codOrganizacao'	, $system->getCodOrganizacao())
-	->setParameter('dataIni'		, $oDataIni)
-	->setParameter('dataFim'		, $oDataFim)
-	->setParameter('status'			, array("L","P"));
+	->setParameter('statusCanc'		, array("S","C"))
+	->setParameter('dataIni'		, $dDataIni)
+	->setParameter('dataFim'		, $dDataFim);
 
 	$query 				= $qb1->getQuery();
+	//echo $query->getSQL()."<BR><BR>";
 	$pag				= $query->getResult();
 
 } catch (\Exception $e) {
@@ -216,14 +221,14 @@ try {
 	->leftJoin('\Entidades\ZgfinContaReceber', 'cr', \Doctrine\ORM\Query\Expr\Join::WITH, 'hr.codContaRec = cr.codigo')
 	->where($qb2->expr()->andx(
 		$qb2->expr()->eq('cr.codOrganizacao'	, ':codOrganizacao'),
-		$qb2->expr()->in('cr.codStatus'			, ':status'),
-		$qb2->expr()->gte('hr.dataPagamento'	, ':dataIni'),
-		$qb2->expr()->lte('hr.dataPagamento'	, ':dataFim')
+		$qb2->expr()->notIn('cr.codStatus'		, ':statusCanc'),
+		$qb2->expr()->gte('hr.dataRecebimento'	, ':dataIni'),
+		$qb2->expr()->lte('hr.dataRecebimento'	, ':dataFim')
 	))
 	->setParameter('codOrganizacao'	, $system->getCodOrganizacao())
-	->setParameter('dataIni'		, $oDataIni)
-	->setParameter('dataFim'		, $oDataFim)
-	->setParameter('status'			, array("L","P"));
+	->setParameter('statusCanc'		, array("S","C"))
+	->setParameter('dataIni'		, $dDataIni)
+	->setParameter('dataFim'		, $dDataFim);
 
 	$query 				= $qb2->getQuery();
 	$rec				= $query->getResult();
@@ -245,12 +250,14 @@ for ($i = 0; $i < sizeof($pag); $i++) {
 	
 	$valor			= \Zage\App\Util::to_float($pag[$i]->getValorPago()) + \Zage\App\Util::to_float($pag[$i]->getValorOutros()) - \Zage\App\Util::to_float($pag[$i]->getValorDesconto()); 
 	$juros			= \Zage\App\Util::to_float($pag[$i]->getValorJuros()) + \Zage\App\Util::to_float($pag[$i]->getValorMora());
-	$descricao		= $pag[$i]->getContaPag()->getDescricao();
+	$descricao		= $pag[$i]->getCodContaPag()->getDescricao();
 	$documento		= $pag[$i]->getDocumento();
-	$parcela		= $pag[$i]->getContaPag()->getParcela() . '/' . $pag[$i]->getContaPag()->getNumParcelas();
+	$parcela		= $pag[$i]->getCodContaPag()->getParcela() . '/' . $pag[$i]->getCodContaPag()->getNumParcelas();
 	$oData			= $pag[$i]->getDataPagamento();
 	$data			= $oData->format($system->config["data"]["dateFormat"]);
 	$dataIndex		= (int) $oData->format('Ymd');
+	$pessoa			= ($pag[$i]->getCodContaPag()->getCodPessoa()) ? $pag[$i]->getCodContaPag()->getCodPessoa()->getNome() : null;
+	$formaPag		= ($pag[$i]->getCodFormaPagamento()) 	? $pag[$i]->getCodFormaPagamento()->getCodigo() : null;
 	$n				= (isset($aMov[$dataIndex]))	? sizeof($aMov[$dataIndex]) : 0;
 	
 	#################################################################################
@@ -266,6 +273,8 @@ for ($i = 0; $i < sizeof($pag); $i++) {
 	$aMov[$dataIndex][$n]["descricao"]	= $descricao;
 	$aMov[$dataIndex][$n]["parcela"]	= $parcela;
 	$aMov[$dataIndex][$n]["documento"]	= $documento;
+	$aMov[$dataIndex][$n]["pessoa"]		= $pessoa;
+	$aMov[$dataIndex][$n]["formaPag"]	= $formaPag;
 	$aMov[$dataIndex][$n]["tipo"]		= "D";
 }
 
@@ -275,13 +284,15 @@ for ($i = 0; $i < sizeof($pag); $i++) {
 for ($i = 0; $i < sizeof($rec); $i++) {
 
 	$valor			= \Zage\App\Util::to_float($rec[$i]->getValorRecebido()) + \Zage\App\Util::to_float($rec[$i]->getValorOutros()) - \Zage\App\Util::to_float($rec[$i]->getValorDesconto());
-	$descricao		= $rec[$i]->getContaRec()->getDescricao();
+	$descricao		= $rec[$i]->getCodContaRec()->getDescricao();
 	$documento		= $rec[$i]->getDocumento();
-	$parcela		= $rec[$i]->getContaRec()->getParcela() . '/' . $rec[$i]->getContaRec()->getNumParcelas();
+	$parcela		= $rec[$i]->getCodContaRec()->getParcela() . '/' . $rec[$i]->getCodContaRec()->getNumParcelas();
 	$oData			= $rec[$i]->getDataRecebimento();
 	$data			= $oData->format($system->config["data"]["dateFormat"]);
 	$dataIndex		= (int) $oData->format('Ymd');
-
+	$pessoa			= ($rec[$i]->getCodContaRec()->getCodPessoa())	? $rec[$i]->getCodContaRec()->getCodPessoa()->getNome() : null;
+	$formaPag		= ($rec[$i]->getCodFormaPagamento()) 			? $rec[$i]->getCodFormaPagamento()->getCodigo() : null;
+	
 	#################################################################################
 	## Valor Líquido do crédito, é aquele que é contabilizado para a formatura, os casos
 	## que o Valor Líquido é diferente do Valor Bruto, são os Juros / Mora e
@@ -313,7 +324,6 @@ for ($i = 0; $i < sizeof($rec); $i++) {
 	#################################################################################
 	$valorNaoLiq		= \Zage\Fmt\Financeiro::getValorNaoLiquidoConta($rec[$i]->getCodContaRec()->getCodigo());
 	
-	
 	#################################################################################
 	## Calcular o valor líquido do Recebimento
 	## Valor Liquido é igual ao valor - o valor não líquido + o júros líquido
@@ -330,6 +340,8 @@ for ($i = 0; $i < sizeof($rec); $i++) {
 	$aMov[$dataIndex][$n]["descricao"]	= $descricao;
 	$aMov[$dataIndex][$n]["parcela"]	= $parcela;
 	$aMov[$dataIndex][$n]["documento"]	= $documento;
+	$aMov[$dataIndex][$n]["pessoa"]		= $pessoa;
+	$aMov[$dataIndex][$n]["formaPag"]	= $formaPag;
 	$aMov[$dataIndex][$n]["tipo"]		= "C";
 
 }
@@ -342,111 +354,85 @@ ksort($aMov);
 #################################################################################
 ## Liberar memória
 #################################################################################
-unset($rec);
-unset($pag);
+//unset($rec);
+//unset($pag);
 
-	
+
+$classeSaldo	= ($saldoInicial >= 0) ? "text-success" : "text-danger";
+$table			= '<table style="width: 100%;" class="table table-condensed">';
+$table	.= '<thead><tr style="background-color:#EFEFEF">
+				<th style="text-align: left;" colspan="4">Período: '.$dataIni.' a '.$dataFim.'</th>
+				<th style="text-align: right;" colspan="4">Data/Hora: '.date('d/m/Y').' às '.date('H:i').'h</th>
+			</tr>';
+$table	.= '<tr style="background-color:#FDF5E6">
+				<th style="text-align: center; width: 7%;">Data</th>
+				<th style="text-align: center; width: 40%;">Histórico</th>
+				<th style="text-align: center; width: 16%;">Pessoa</th>
+				<th style="text-align: center; width: 7%;">Pag</th>
+				<th style="text-align: center; width: 10%;">Valor</th>
+				<th style="text-align: center; width: 10%;">Valor Líquido</th>
+				<th style="text-align: center; width: 10%;">Saldo</th>
+			</tr></thead>';
+$table	.= '<tbody><tr>
+				<td style="text-align: center; width: 7%;"><strong>'.$dataBase.'</strong></td>
+				<td style="text-align: left; width: 40%;"><strong>Saldo inicial</strong></td>
+				<td colspan="4">&nbsp;</td>
+				<td style="text-align: center; width: 10%;" class="'.$classeSaldo.'"><strong>'.\Zage\App\Util::to_money($saldoInicial).'</strong></td>
+			</tr>';
+
+$_saldo			= $saldoInicial;
+$valorTotal		= 0;
+$valorLiqTotal	= 0;
 if (sizeof($aMov) > 0) {
 	
-	#################################################################################
-	## Não colocar os tamanhos do campo caso não seja para gerar o PDF
-	#################################################################################
-	if ($geraPdf	== 1) {
-		$w1			= "width: 16%;";
-		$w2			= "width: 8%;";
-		$w3			= "width: 4%;";
-		$w4			= "width: 8%;";
-		$w5			= "width: 8%;";
-		$iconOK		= "";
-		$iconAb		= "(!)";
-	}else{
-		$w1			= "";
-		$w2			= "";
-		$w3			= "";
-		$w4			= "";
-		$w5			= "";
-		$iconOK		= "<i class='fa fa-check-circle green'></i>";
-		$iconAb		= "<i class='fa fa-exclamation-circle red'></i>";
-	}
-	
-	
-	$table	= '<table class="table table-condensed">';
-	$table .= '<thead>
-				<tr><th style="text-align: center;" colspan="16"><h4>TURMA: '.$oOrg->getNome().' - '.$oOrgFmt->getDataConclusao()->format('Y').' MÊS DE REFERÊNCIA: '.$texto.'</h4></th></tr>
-				<tr>
-					<th style="text-align: left; '.$w1.'"><strong>FORMANDO</strong></th>
-					<th style="text-align: center; '.$w2.'"><strong>MESES ANTERIORES</strong></th>
-					';
-	$_mes		=	$_mesIni;
-	$_ano		=	$_anoIni;
-	foreach ($aMeses as $mesAtual) {
-		$table .= '<th style="text-align: center; '.$w3.'"><strong>'.$mesAtual.'</strong></th>';
-	}
-	$table .='		<th style="text-align: right; '.$w4.'"><strong>TOTAL PAGO</strong></th>
-					<th style="text-align: right; '.$w5.'"><strong>A PAGAR</strong></th>
-				</tr>
-				</thead><tbody>';
-
-	foreach ($dadosRel as $lanc) {
-		
-		#################################################################################
-		## Formatar os dados
-		#################################################################################
-		$anterior	= (isset($lanc["ANTERIOR"]["VALOR_PAGO"])		? $lanc["ANTERIOR"]["VALOR_PAGO"] 	: 0);
-		$posterior	= (isset($lanc["POSTERIOR"]["VALOR_PAGO"])		? $lanc["POSTERIOR"]["VALOR_PAGO"] 	: 0);
-		$total		= (isset($lanc["VALOR_TOTAL"])	? $lanc["VALOR_TOTAL"] 	: 0);
-		$aPagar		= (isset($lanc["VALOR_APAGAR"])	? $lanc["VALOR_APAGAR"] : 0);
-		
-		$table .= '<tr>
-			<td style="text-align: left;">'.$lanc["NOME_PESSOA"].'</td>
-			<td style="text-align: center;">'.\Zage\App\Util::to_money($anterior).'</td>
-		';
-		foreach ($aHtml as $mes => $_html) {
+	foreach ($aMov as $dataIndex => $_dados) {
+		if (sizeof($_dados) > 0) {
+			foreach ($_dados as $index => $mov) {
 			
-			if ($lanc[$mes]["VALOR"] == 0 && $lanc[$mes]["VALOR_PAGO"] == 0) {
-				$_icone			= "";
-				$_valor			= " - ";
-			}else if ($lanc[$mes]["VALOR"] > $lanc[$mes]["VALOR_PAGO"]) {
-				if ($mes >= date('Ym')) {
-					$_icone		= "";
-					$_valor			= \Zage\App\Util::to_money($lanc[$mes]["VALOR_PAGO"]);
-				}else{
-					$_icone		= $iconAb;
-					$_valor			= ($geraPdf	== 1) ? "NÃO PAGA" : \Zage\App\Util::to_money($lanc[$mes]["VALOR_PAGO"]);
-				}
-			}else{
-				$_icone			= ($mes == date('Ym')) ? "" : $iconOK;  
-				$_valor			= \Zage\App\Util::to_money($lanc[$mes]["VALOR_PAGO"]);
+				$classeValor	= ($mov["tipo"] == "C") ? "text-success" : "text-danger";
+				$valor			= ($mov["tipo"] == "C") ? $mov["valor"] 	: $mov["valor"]		* -1;
+				$valorLiq		= ($mov["tipo"] == "C") ? $mov["valorLiq"]	: $mov["valorLiq"]	* -1;
+				$_saldo			+= $valorLiq;
+				$classeSaldo	= ($_saldo >= 0) ? "text-success" : "text-danger";
+				$data			= $mov["data"];
+				$descricao		= $mov["descricao"] . "&nbsp;(" . $mov["parcela"].")";
+				$valorTotal		+= $valor;
+				$valorLiqTotal	+= $valorLiq;
+				
+				$table	.= '<tr>
+								<td style="text-align: center; width: 7%;">'.$data.'</td>
+								<td style="text-align: left; width: 40%;">'.$descricao.'</td>
+								<td style="text-align: left; width: 16%;">'.$mov["pessoa"].'</td>
+								<td style="text-align: center; width: 7%;">'.$mov["formaPag"].'</td>
+								<td style="text-align: center; width: 10%;" class="'.$classeValor.'">'.\Zage\App\Util::to_money($valor).'</td>
+								<td style="text-align: center; width: 10%;" class="'.$classeValor.'">'.\Zage\App\Util::to_money($valorLiq).'</td>
+								<td style="text-align: center; width: 10%;" class="'.$classeSaldo.'">'.\Zage\App\Util::to_money($_saldo).'</td>
+							</tr>';
 			}
-			
-			$valHtml		= $_valor . "&nbsp;".$_icone;
-			$table 			.= str_replace("%MES_".$mes."%",$valHtml,$_html);
 		}
-		$table .= '	<td style="text-align: right;">'.\Zage\App\Util::to_money($total).'</td>
-					<td style="text-align: right;">'.\Zage\App\Util::to_money($aPagar).'</td>
-		';
-		$table .='</tr>';
-		
-		#################################################################################
-		## Atualizar os totalizadores
-		#################################################################################
-		$valTotal		+= \Zage\App\Util::to_float($lanc["VALOR"]);
-		$valTotAPag		+= \Zage\App\Util::to_float($lanc["VALOR"] - $lanc["VALOR_APAGAR"]);
-		
-	}
-
-	$table .= '	<tr>
-					<th style="text-align: left;"><strong>'.$numFormandos.' Formandos</strong></th>
-					<th style="text-align: right;" colspan="13"><strong>Totais</strong></th>
-					<th style="text-align: right;"><strong>'.\Zage\App\Util::to_money($valTotal).'</strong></th>
-					<th style="text-align: right;"><strong>'.\Zage\App\Util::to_money($valTotAPag*-1).'</strong></th>
-				</tr>
-				</tbody>
-				</table>';
-	
-}else{
-	$table	= "<center>nenhuma informação encontrada !!!</center>";
+	}	
 }
+
+$classeSaldoFinal	= ($_saldo >= 0) 		? "text-success" : "text-danger";
+$classeSaldoAtual	= ($saldoAtual >= 0) 	? "text-success" : "text-danger";
+$classeValTot		= ($valorTotal >= 0) 	? "text-success" : "text-danger";
+$classeValLiqTot	= ($valorLiqTotal>= 0) 	? "text-success" : "text-danger";
+$table	.= '</tbody><tfoot><tr>
+				<td style="text-align: center; width: 7%;"><strong>'.$dataFim.'</strong></td>
+				<td style="text-align: left; width: 40%;"><strong>Total do período</strong></td>
+				<td colspan="2">&nbsp;</td>
+				<td style="text-align: center; width: 10%;" class="'.$classeValTot.'"><strong>'.\Zage\App\Util::to_money($valorTotal).'</strong></td>
+				<td style="text-align: center; width: 10%;" class="'.$classeValLiqTot.'"><strong>'.\Zage\App\Util::to_money($valorLiqTotal).'</strong></td>
+				<td style="text-align: center; width: 10%;" class="'.$classeSaldoFinal.'"><strong>'.\Zage\App\Util::to_money($_saldo).'</strong></td>
+			</tr>';
+$table	.= '<tr>
+				<td style="text-align: center; width: 7%;"><strong>'.date("d/m/Y").'</strong></td>
+				<td style="text-align: left; width: 40%;"><strong>Saldo atual</strong></td>
+				<td colspan="4">&nbsp;</td>
+				<td style="text-align: center; width: 10%;" class="'.$classeSaldoAtual.'"><strong>'.\Zage\App\Util::to_money($saldoAtual).'</strong></td>
+			</tr>';
+$table	.= '</tfoot></table>';
+
 
 if (isset($todos) && ($todos == 1)) {
 	$checked	= "checked=checked";
@@ -460,18 +446,7 @@ if ($geraPdf == 1) {
 	$html	.= '<h4 align="center">'.$oOrg->getNome()	.'</h4>';
 	$html	.= '<br>';
 }else{
-	$html	= '<table style="width: 100%;" class="table-condensed">
-			<tr><td style="width: 70%;">
-				<h4 align="center"><strong>Extrato Financeiro</strong></h4>
-				</td>
-				<td rowspan="2" align="right" style="width: 30%;">'.$tableTotal.'</td>
-			</tr>
-			<tr><td style="width: 70%; vertical-align:top;" valign="top"><h6 align="center">'.$oOrg->getNome().'</h6></td></tr>
-			</table>
-			';
-	$html	.= '<br>';
-	
-	$html	= '
+	$html	.= '
 <form id="zgFormRelExtratoFinanceiroID" class="form-horizontal" method="GET" target="_blank" action="'.$urlForm.'" >
 <input type="hidden" name="mesRef" 	id="mesRefID" 	value="'.$mesRef.'">
 <input type="hidden" name="geraPdf" id="geraPdfID">
