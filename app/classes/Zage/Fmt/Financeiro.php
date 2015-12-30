@@ -691,33 +691,25 @@ class Financeiro {
 			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
 			$rsm->addFieldResult('P', 'CGC', 'cgc');
 			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
-			$rsm->addScalarResult('outros'				, 'outros');
-			$rsm->addScalarResult('juros'				, 'juros');
-			$rsm->addScalarResult('mora'				, 'mora');
-		
+			$rsm->addScalarResult('outros'						, 'outros');
 			$query 	= $em->createNativeQuery("
 					SELECT	P.CGC,P.CODIGO,
-							SUM(HR.VALOR_RECEBIDO - HR.VALOR_DESCONTO) as outros,
-							SUM(HR.VALOR_JUROS) as juros,
-							SUM(HR.VALOR_MORA) as mora
-					FROM 	ZGFIN_CONTA_RECEBER 	CR,
-							ZGFIN_PESSOA			P,
-							ZGFIN_HISTORICO_REC		HR
-					WHERE   CR.CODIGO 				= HR.COD_CONTA_REC
-					AND		EXISTS	(
-							SELECT	1
-							FROM	ZGFIN_CONTA_RECEBER_RATEIO CRR
-							WHERE	CRR.COD_CONTA_REC			= CR.CODIGO
-							AND		CRR.COD_CATEGORIA			NOT IN (:categoria)
-					)
+							SUM(IF((CRR.COD_CATEGORIA NOT IN (:categorias)),CRR.VALOR,0)) as outros
+					FROM 	ZGFIN_CONTA_RECEBER			CR,
+							ZGFIN_PESSOA				P,
+							ZGFIN_CONTA_RECEBER_RATEIO	CRR
+					WHERE   CR.CODIGO 				= CRR.COD_CONTA_REC
 					AND	    CR.COD_PESSOA			= P.CODIGO
-					AND		CR.COD_STATUS			IN (:status)
 					AND		CR.COD_ORGANIZACAO		= :codOrganizacao
+					AND		CR.COD_STATUS			IN (:status)
+					AND		CRR.COD_CATEGORIA		NOT IN (:categorias)
+					AND		P.COD_TIPO_PESSOA		= :codTipoPessoa
 					GROUP	BY P.CGC,P.CODIGO
 				", $rsm);
 			$query->setParameter('codOrganizacao'	,$codFormatura);
-			$query->setParameter('status'			,$aStatus);
-			$query->setParameter('categoria'		,$aCat);
+			$query->setParameter('status'			,array("L"));
+			$query->setParameter('categorias'		,$aCat);
+			$query->setParameter('codTipoPessoa'	,'O');
 		
 			$outros		= $query->getResult();
 		} catch (\Exception $e) {
@@ -760,7 +752,6 @@ class Financeiro {
 		#################################################################################
 		$result		= array();
 		
-		
 		for ($i = 0; $i < sizeof($mensalidades); $i++) {
 			$cpf							= $mensalidades[$i][0]->getCgc();
 			$result[$cpf]["mensalidade"]	= $mensalidades[$i]["mensalidade"];
@@ -788,11 +779,7 @@ class Financeiro {
 		
 		for ($i = 0; $i < sizeof($outros); $i++) {
 			$cpf							= $outros[$i][0]->getCgc();
-			if (!isset($result[$cpf]["juros"]))	$result[$cpf]["juros"]	= 0;
-			if (!isset($result[$cpf]["mora"]))	$result[$cpf]["mora"]	= 0;
 			$result[$cpf]["outros"]				= $outros[$i]["outros"];
-			$result[$cpf]["juros"]				+= $outros[$i]["juros"];
-			$result[$cpf]["mora"]				+= $outros[$i]["mora"];
 		}
 		
 		for ($i = 0; $i < sizeof($sistemas); $i++) {
@@ -869,4 +856,76 @@ class Financeiro {
 	}
 	
 
+	/**
+	 * Resgata os valores devolvidos por Formando
+	 * @param unknown $codFormatura
+	 */
+	public static function getValorDevolvidoPorFormando($codFormatura) {
+	
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		#################################################################################
+		## Array de status que serão calculados
+		#################################################################################
+		$aStatus					= array ("L");
+	
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatDevMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_MENSALIDADE");
+		$codCatDevSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_SISTEMA");
+		$codCatDevOutras				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_OUTRAS");
+		$aCat							= array($codCatDevMensalidade,$codCatDevSistema,$codCatDevOutras);
+		
+		
+		#################################################################################
+		## Somar os valores dividos por categora
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
+			$rsm->addFieldResult('P', 'CGC', 'cgc');
+			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('mensalidade'					, 'mensalidade');
+			$rsm->addScalarResult('sistema'						, 'sistema');
+			$rsm->addScalarResult('outras'						, 'outras');
+				
+			$query 	= $em->createNativeQuery("
+					SELECT	P.CGC,P.CODIGO,
+							SUM(IF((CPR.COD_CATEGORIA = :catMensalidade),CPR.VALOR,0)) as mensalidade,
+							SUM(IF((CPR.COD_CATEGORIA = :catSistema),CPR.VALOR,0)) as sistema,
+							SUM(IF((CPR.COD_CATEGORIA = :catOutras),CPR.VALOR,0)) as outras
+					FROM 	ZGFIN_CONTA_PAGAR			CP,
+							ZGFIN_PESSOA				P,
+							ZGFIN_CONTA_PAGAR_RATEIO	CPR
+					WHERE   CP.CODIGO 				= CPR.COD_CONTA_PAG
+					AND	    CP.COD_PESSOA			= P.CODIGO
+					AND		CP.COD_ORGANIZACAO		= :codOrganizacao
+					AND		CP.COD_STATUS			IN (:status)
+					AND		CPR.COD_CATEGORIA		IN (:categoria)
+					AND		P.COD_TIPO_PESSOA		= :codTipoPessoa
+					GROUP	BY P.CGC,P.CODIGO
+				", $rsm);
+			$query->setParameter('codOrganizacao'	,$codFormatura);
+			$query->setParameter('status'			,$aStatus);
+			$query->setParameter('catMensalidade'	,$codCatDevMensalidade);
+			$query->setParameter('catSistema'		,$codCatDevSistema);
+			$query->setParameter('catOutras'		,$codCatDevOutras);
+			$query->setParameter('categoria'		,$aCat);
+			$query->setParameter('codTipoPessoa'	,'O');
+		
+			$info		= $query->getResult();
+			return ($info);
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+
+		
+	}
+	
+	
+	
 }
