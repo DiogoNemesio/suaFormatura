@@ -284,6 +284,7 @@ for ($i = 0; $i < sizeof($pag); $i++) {
 for ($i = 0; $i < sizeof($rec); $i++) {
 
 	$valor			= \Zage\App\Util::to_float($rec[$i]->getValorRecebido()) + \Zage\App\Util::to_float($rec[$i]->getValorOutros()) - \Zage\App\Util::to_float($rec[$i]->getValorDesconto());
+	$juros			= \Zage\App\Util::to_float($rec[$i]->getValorJuros()) + \Zage\App\Util::to_float($rec[$i]->getValorMora());
 	$descricao		= $rec[$i]->getCodContaRec()->getDescricao();
 	$documento		= $rec[$i]->getDocumento();
 	$parcela		= $rec[$i]->getCodContaRec()->getParcela() . '/' . $rec[$i]->getCodContaRec()->getNumParcelas();
@@ -330,6 +331,12 @@ for ($i = 0; $i < sizeof($rec); $i++) {
 	#################################################################################
 	$valorLiq			-= $valorNaoLiq;
 	$valorLiq			+= $jurosLiq;
+	
+	#################################################################################
+	## Agrega o valor do Júros ao valor original
+	#################################################################################
+	$valor				+= $juros;
+	
 	
 	$n				= (isset($aMov[$dataIndex]))	? sizeof($aMov[$dataIndex]) : 0;
 
