@@ -284,7 +284,11 @@ for ($i = 0; $i < sizeof($pag); $i++) {
 for ($i = 0; $i < sizeof($rec); $i++) {
 
 	$valor			= \Zage\App\Util::to_float($rec[$i]->getValorRecebido()) + \Zage\App\Util::to_float($rec[$i]->getValorOutros()) - \Zage\App\Util::to_float($rec[$i]->getValorDesconto());
-	$juros			= \Zage\App\Util::to_float($rec[$i]->getValorJuros()) + \Zage\App\Util::to_float($rec[$i]->getValorMora());
+	$_juros			= \Zage\App\Util::to_float($rec[$i]->getValorJuros()) - \Zage\App\Util::to_float($rec[$i]->getValorDescontoJuros()); 
+	$_mora			= \Zage\App\Util::to_float($rec[$i]->getValorMora()) - \Zage\App\Util::to_float($rec[$i]->getValorDescontoMora());
+	if ($_juros < 0)	$_juros = 0;
+	if ($_mora	< 0)	$_mora	= 0;
+	$juros			= $_juros + $_mora;
 	$descricao		= $rec[$i]->getCodContaRec()->getDescricao();
 	$documento		= $rec[$i]->getDocumento();
 	$parcela		= $rec[$i]->getCodContaRec()->getParcela() . '/' . $rec[$i]->getCodContaRec()->getNumParcelas();
@@ -305,8 +309,8 @@ for ($i = 0; $i < sizeof($rec); $i++) {
 	#################################################################################
 	## Valor de júros / multa da formatura
 	#################################################################################
-	$valorJuros			= (\Zage\App\Util::to_float($rec[$i]->getValorJuros())	* $pctJuros	/ 100);
-	$valorMora			= (\Zage\App\Util::to_float($rec[$i]->getValorMora()) 	* $pctMora	/ 100);
+	$valorJuros			= ($_juros	* $pctJuros	/ 100);
+	$valorMora			= ($_mora 	* $pctMora	/ 100);
 	$jurosLiq			= $valorJuros + $valorMora;
 
 	#################################################################################

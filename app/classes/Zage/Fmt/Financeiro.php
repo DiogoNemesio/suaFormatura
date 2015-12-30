@@ -90,7 +90,8 @@ class Financeiro {
 			#################################################################################
 			## Somatório dos recebimentos
 			#################################################################################
-			$qb1->select('SUM(hr.valorRecebido + hr.valorOutros - (hr.valorDesconto) ) as total, sum(hr.valorJuros) as juros, sum(hr.valorMora) as mora')
+			$qb1->select('SUM(hr.valorRecebido + hr.valorOutros - (hr.valorDesconto) ) as total, sum(hr.valorJuros - hr.valorDescontoJuros) as juros, sum(hr.valorMora - hr.valorDescontoMora) as mora')
+			//$qb1->select('SUM(hr.valorRecebido + hr.valorOutros - (hr.valorDesconto) ) as total, sum(hr.valorJuros) as juros, sum(hr.valorMora) as mora')
 			->from('\Entidades\ZgfinHistoricoRec','hr')
 			->leftJoin('\Entidades\ZgfinContaReceber', 'cr', \Doctrine\ORM\Query\Expr\Join::WITH, 'hr.codContaRec = cr.codigo')
 			->where($qb1->expr()->andx(
@@ -980,7 +981,7 @@ class Financeiro {
 			#################################################################################
 			## Somatório dos recebimentos
 			#################################################################################
-			$qb1->select('SUM(hr.valorRecebido + hr.valorOutros - (hr.valorDesconto) ) as total, sum(hr.valorJuros) as juros, sum(hr.valorMora) as mora')
+			$qb1->select('SUM(hr.valorRecebido + hr.valorOutros - (hr.valorDesconto) ) as total, sum(hr.valorJuros - hr.valorDescontoJuros) as juros, sum(hr.valorMora - hr.valorDescontoMora) as mora')
 			->from('\Entidades\ZgfinHistoricoRec','hr')
 			->leftJoin('\Entidades\ZgfinContaReceber', 'cr', \Doctrine\ORM\Query\Expr\Join::WITH, 'hr.codContaRec = cr.codigo')
 			->where($qb1->expr()->andx(
