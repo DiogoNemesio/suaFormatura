@@ -22,6 +22,10 @@ if (isset($_GET['zid'])) {
 		if ($temAcesso) {
 			$_org						= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array ('codigo' => $_codOrganizacao));
 			$_SESSION['_codOrg']		= $_org->getCodigo();
+			
+			/** Gerar o histório de acesso **/
+			\Zage\Adm\Organizacao::geraHistoricoAcesso($_org->getCodigo(),$system->getCodUsuario());
+			
 		}else{
 			$system->desautentica();
 		}

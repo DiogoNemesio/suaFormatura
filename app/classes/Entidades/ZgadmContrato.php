@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmContrato
  *
- * @ORM\Table(name="ZGADM_CONTRATO", indexes={@ORM\Index(name="fk_ZGADM_CONTRATO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGADM_CONTRATO_2_idx", columns={"COD_PLANO"}), @ORM\Index(name="fk_ZGADM_CONTRATO_3_idx", columns={"COD_STATUS"})})
+ * @ORM\Table(name="ZGADM_CONTRATO", indexes={@ORM\Index(name="fk_ZGADM_CONTRATO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGADM_CONTRATO_2_idx", columns={"COD_PLANO"}), @ORM\Index(name="fk_ZGADM_CONTRATO_3_idx", columns={"COD_STATUS"}), @ORM\Index(name="fk_ZGADM_CONTRATO_4_idx", columns={"COD_TIPO_COMISSAO"})})
  * @ORM\Entity
  */
 class ZgadmContrato
@@ -92,6 +92,16 @@ class ZgadmContrato
      * })
      */
     private $codStatus;
+
+    /**
+     * @var \Entidades\ZgadmComissaoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmComissaoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_COMISSAO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoComissao;
 
 
     /**
@@ -309,5 +319,28 @@ class ZgadmContrato
     public function getCodStatus()
     {
         return $this->codStatus;
+    }
+
+    /**
+     * Set codTipoComissao
+     *
+     * @param \Entidades\ZgadmComissaoTipo $codTipoComissao
+     * @return ZgadmContrato
+     */
+    public function setCodTipoComissao(\Entidades\ZgadmComissaoTipo $codTipoComissao = null)
+    {
+        $this->codTipoComissao = $codTipoComissao;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoComissao
+     *
+     * @return \Entidades\ZgadmComissaoTipo 
+     */
+    public function getCodTipoComissao()
+    {
+        return $this->codTipoComissao;
     }
 }

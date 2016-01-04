@@ -86,17 +86,8 @@ if (!$system->estaAutenticado()) {
 				$system->setDataUltAcesso($_user->getDataUltAcesso());
 				$_SESSION['_codOrg']		= $_org->getCodigo();
 				
-				/** Atualiza a hora / data do acesso **/
-				$dateTime	= new \DateTime("now");
-				$_user->setDataUltAcesso($dateTime);
-				$_user->setUltOrgAcesso($_org);
-				$em->persist($_user);
-				$em->flush();
-				$em->detach($_user);
-				
-				/** Resgata novamente os dados do usuário atualizado **/
-				$_user 		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array ('usuario' => $_usuario));
-				
+				/** Gerar o histório de acesso **/
+				\Zage\Adm\Organizacao::geraHistoricoAcesso($_org->getCodigo(),$_user->getCodigo());				
 				
 			} catch (\Exception $e) {
 				\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

@@ -160,4 +160,48 @@ class Organizacao {
 		}
 	}
 	
+	public static function geraHistoricoAcesso($codOrganizacao,$codUsuario) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+		
+		#################################################################################
+		## Verificar se o Usuário e a organização existem
+		#################################################################################
+		$oOrg 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array ('codigo' => $codOrganizacao));
+		$oUsu 		= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array ('codigo' => $codUsuario));
+		
+		/** Atualiza a hora / data do acesso **/
+		$dateTime	= new \DateTime("now");
+		$oUsu->setDataUltAcesso($dateTime);
+		$oUsu->setUltOrgAcesso($oOrg);
+		
+		/** Gerar o histórico de acesso a organização **/
+		$_oHistAcesso	= new \Entidades\ZgappOrganizacaoHistAcesso();
+		$_oHistAcesso->setCodOrganizacao($oOrg);
+		$_oHistAcesso->setCodUsuario($oUsu);
+		$_oHistAcesso->setDataAcesso($dateTime);
+		
+		/** Atualizar o número de acessos a organização **/
+		$_oNumAcesso	= $em->getRepository('Entidades\ZgappOrganizacaoUsuarioAcesso')->findOneBy(array ('codOrganizacao' => $oOrg->getCodigo(),'codUsuario' => $oUsu->getCodigo()));
+		if (!$_oNumAcesso)	{
+			$_oNumAcesso	= new \Entidades\ZgappOrganizacaoUsuarioAcesso();
+			$_oNumAcesso->setCodOrganizacao($oOrg);
+			$_oNumAcesso->setCodUsuario($oUsu);
+			$numAcesso		= 1;
+		}else{
+			$numAcesso		= ((int) $_oNumAcesso->getNumAcessos()) + 1;
+		}
+		$_oNumAcesso->setNumAcessos($numAcesso);
+		
+		
+		$em->persist($_oHistAcesso);
+		$em->persist($_oNumAcesso);
+		$em->persist($oUsu);
+		$em->flush();
+		$em->clear();
+		
+	}
+	
 }
