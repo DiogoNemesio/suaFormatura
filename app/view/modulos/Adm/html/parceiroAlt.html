@@ -16,6 +16,7 @@
 				<input type='hidden' id='valCpfID' value="%VAL_CPF_ID%">
 				<input type='hidden' id='valCnpjID' value="%VAL_CNPJ_ID%">
 				<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
+				<input type="hidden" id="aSegsID" name="aSegs">
 				<div class="tabbable" id="tabID">
 					<ul class="nav nav-tabs padding-16">
 						<li class="active">
@@ -34,6 +35,12 @@
 							<a data-toggle="tab"  href="#parceiro-telefone">
 								<i class="blue fa fa-phone bigger-125"></i>
 								Telefones
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#parceiro-segmento">
+								<i class="purple fa fa-building-o bigger-125"></i>
+								Seg. Mercado
 							</a>
 						</li>
 						<li>
@@ -309,6 +316,40 @@
 								</div>
 							</div>
 						</div>
+						
+						<div id="parceiro-segmento" class="tab-pane">
+							<div class="row">
+						    	<div class="col-sm-6">
+									<div class="widget-box transparent">
+										<div class="widget-header"> 
+											<h6 class="widget-title"><i class="ace-icon fa fa-check-square"></i>Selecionados</h6>
+										</div>
+										<div class="widget-body">
+											<div class="widget-main">
+												<ul id="zgSortableSelID" class="connectedSortable zgSortable">
+													%LISTA_ASS%
+												</ul>
+											</div>
+										</div>
+									</div>
+						    	</div>
+						    	<div class="col-sm-6">
+									<div class="widget-box transparent">
+										<div class="widget-header"> 
+											<h6 class="widget-title"><i class="ace-icon fa fa-minus-square"></i>Disponíveis</h6>
+										</div>
+										<div class="widget-body">
+											<div class="widget-main">
+												<ul id="zgSortableDisID" class="connectedSortable zgSortable">
+													%LISTA_DIS%
+												</ul>
+											</div>
+										</div>
+									</div>
+						    	</div>
+							</div>
+						</div>
+						
 						<div id="parceiro-contrato" class="tab-pane">
 							<h5 class="header blue bolder smaller">Contrato</h5>
 							<div class="vspace-xs"></div>
@@ -419,6 +460,24 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 //Mostrar div de acordo com o tipo de pessoa
 zgMostraDivs();
 
+//Segmentos
+$("#zgSortableDisID" ).sortable({
+	connectWith: ".connectedSortable",
+	placeholder: "ui-state-highlight",
+	cursor: "move",
+	
+	revert: true,
+}).disableSelection();
+
+$("#zgSortableSelID" ).sortable({
+	connectWith: ".connectedSortable",
+	placeholder: "ui-state-highlight",
+	cursor: "move",
+	
+	revert: true,
+}).disableSelection();
+
+//Habilitar desconto
 var vFormaDesc 		= $('#codFormaDescontoID').val();
 if (vFormaDesc == "V") {
 	selecionaFormaDescontoValorParcAlt();
@@ -485,6 +544,14 @@ $('#zgFormID').submit(function() {
 			$(this).prop( "disabled", false );
 		}
 	});
+	
+	/** Resgatar a lista de segmentos associados **/
+	var itens 		= new Array();
+	$("#zgSortableSelID li").each(function(i, el){
+		itens[$(el).index()]	= $(el).attr("zg-data-id");
+	});
+	
+	$("#aSegsID").val(itens);
 	
 	$.ajax({
 		type:	"POST", 
