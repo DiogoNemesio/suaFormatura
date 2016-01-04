@@ -131,7 +131,7 @@ abstract class Tipo {
 	 * Monta as notificações
 	 */
 	protected function finalizaMenuPadrao() {
-		global $system,$_user,$_emp,$tr,$_org;
+		global $system,$_user,$_emp,$tr,$_org,$log;
 	
 		$this->html .= \Zage\App\ZWS::TAB.'<div class="navbar-buttons navbar-header pull-right" role="navigation">'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'<ul class="nav ace-nav">'.\Zage\App\ZWS::NL;
@@ -140,6 +140,12 @@ abstract class Tipo {
 		if (is_object($_org)) {
 			$codOrg				= $_org->getCodigo();
 			$ident				= $_org->getIdentificacao();
+			if ($_org->getCodTipo()->getCodigo() == "FMT") {
+				$icTipo		= "fa-graduation-cap";
+			}else{
+				$icTipo		= "fa-building-o";
+			}
+				
 		}else{
 			$codOrg				= "!";
 			$ident				= "Nenhuma organização";
@@ -150,33 +156,55 @@ abstract class Tipo {
 		
 		$organizacoes	= \Zage\Seg\Usuario::listaOrganizacaoAcesso($system->getCodUsuario());
 		$numOrg			= sizeof($organizacoes);
+		$aOrgs			= array();
 		
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<li class="grey">'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="ace-icon fa fa-building-o"></i>&nbsp;'.$ident.'</a>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<li id="divSelectOrgID" class="grey" onclick="$(\'#inputSearchOrgID\').focus();">'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="ace-icon fa '.$icTipo.'"></i>&nbsp;'.$ident.'</a>'.\Zage\App\ZWS::NL;
 		if ($numOrg > 0) {
-			$this->html .= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
-			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-building-o"></i>Selecione a organização</li>'.\Zage\App\ZWS::NL;
-				
+			
+			
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,4).'<ul id="navBarSelectOrgID" class="list dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-check-circle-o blue"></i>Organização selecionada</li>'.\Zage\App\ZWS::NL;
+			$url 		= ROOT_URL. "/index.php?zid=".\Zage\App\Util::encodeUrl('_codOrganizacao='.$system->getCodOrganizacao());
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li><a href="'.$url.'"><div class="clearfix"><span class="pull-left"><i class="ace-icon fa fa-check-circle green"></i>&nbsp;<span class="buscaOrg"><b>'.$codOrg.' - '.$ident.'</b></span></span><span class="pull-right"><i class="ace-icon fa '.$icTipo.'"></i></span></div></a></li>'.\Zage\App\ZWS::NL;
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-search blue"></i>Busca</li>'.\Zage\App\ZWS::NL;
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown"><a href="#"><div class="clearfix"><span class="pull-left"><i class="ace-icon fa fa-search blue"></i>&nbsp;<input type="text" name="buscaOrg" class="search" id="inputSearchOrgID" /></span></div></a></li>'.\Zage\App\ZWS::NL;
+			$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li class="dropdown-header"><i class="ace-icon fa fa-history blue"></i>Mais acessadas</li>'.\Zage\App\ZWS::NL;
+			
 			if ($numOrg > $numMaxOrg) {
 				$t	= $numMaxOrg;
 			}else{
 				$t	= $numOrg;
 			}
-			for ($i = 0; $i < $t; $i++) {
-				if ($organizacoes[$i]->getCodigo() == $system->getCodOrganizacao()) {
-					$icone		= "ace-icon fa fa-circle";
+			for ($i = 0; $i < $numOrg; $i++) {
+				
+				$url 					= ROOT_URL. "/index.php?zid=".\Zage\App\Util::encodeUrl('_codOrganizacao='.$organizacoes[$i]->getCodigo());
+				
+				$aOrgs[$i]["id"]		= $organizacoes[$i]->getCodigo();
+				$aOrgs[$i]["name"]		= $organizacoes[$i]->getCodigo(). ' - '.$organizacoes[$i]->getIdentificacao();
+				$aOrgs[$i]["url"]		= $url;
+				
+				/*if ($organizacoes[$i]->getCodigo() == $system->getCodOrganizacao()) {
+					$icone		= "ace-icon fa fa-check-circle";
 					$sel 		= '<span class="pull-right"><i class="ace-icon fa fa-check"></i></span>';
 					$nome		= "<b>".$organizacoes[$i]->getCodigo() . ' - '.$organizacoes[$i]->getIdentificacao()."</b>";
 				}else{
 					$icone		= "ace-icon fa fa-circle-o";
 					$sel 		= null;
 					$nome		= $organizacoes[$i]->getCodigo(). ' - '.$organizacoes[$i]->getIdentificacao();
+				}*/
+		
+				
+				if (($organizacoes[$i]->getCodigo() != $system->getCodOrganizacao()) && ($i < $t)) {
+					if ($organizacoes[$i]->getCodTipo()->getCodigo() == "FMT") {
+						$icTipo		= "fa-graduation-cap";
+					}else{
+						$icTipo		= "fa-building-o";
+					}
+					
+					$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li><a href="'.$url.'"><div class="clearfix"><span class="pull-left"><i class="ace-icon fa fa-circle-o"></i>&nbsp;<span class="buscaOrg">'.$organizacoes[$i]->getCodigo(). ' - '.$organizacoes[$i]->getIdentificacao().'</span></span><span class="pull-right"><i class="ace-icon fa '.$icTipo.'"></i></span></div></a></li>'.\Zage\App\ZWS::NL;
 				}
-		
-				$url 	= ROOT_URL. "/index.php?zid=".\Zage\App\Util::encodeUrl('_codOrganizacao='.$organizacoes[$i]->getCodigo());
-		
-		
-				$this->html .= str_repeat(\Zage\App\ZWS::TAB,5).'<li><a href="'.$url.'"><div class="clearfix"><span class="pull-left"><i class="ace-icon '.$icone.'"></i>&nbsp;'.$nome.'</span>'.$sel.'</div></a></li>'.\Zage\App\ZWS::NL;
+				
 			}
 				
 			if ($t < $numOrg) {
@@ -187,7 +215,8 @@ abstract class Tipo {
 		}
 		
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'</li>'.\Zage\App\ZWS::NL;
-	
+		//$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'</div>'.\Zage\App\ZWS::NL;
+		
 		/** Resgata o parâmetro de tempo de Atualização da notificação **/
 		$timeout	= (int) \Zage\Adm\Parametro::getValor('TEMPO_ATUALIZA_NOTIFICACAO');
 		if (!$timeout)	$timeout	= 5000;
@@ -212,6 +241,8 @@ abstract class Tipo {
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" href="#" class="dropdown-toggle"><img class="nav-user-photo" src="'.$avatar.'" alt="'.$nomeUsu.'" /><span class="user-info"><small>'.$msg.',</small>'.$nomeUsu.'</span><i class="ace-icon fa fa-caret-down"></i></a>'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">'.\Zage\App\ZWS::NL;
 		
+		//$log->info("JSON ENCODE: ".json_encode($aOrgs));
+		
 		if ($this->fixedItens) {
 			foreach ($this->fixedItens as $menu) {
 				$id			= $this->geraId($menu->getUrl(),$menu->getCodigo(),$menu->getIcone());
@@ -235,8 +266,33 @@ abstract class Tipo {
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'atualizaMensagens();'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,2).'}, '.$timeout.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).');'.\Zage\App\ZWS::NL;
-		$this->html	.= '</script>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'$(function() {'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'$(\'.dropdown-toggle\').dropdown();'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'$(\'.dropdown input, .dropdown label\').click(function(e) {	e.stopPropagation();	});'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'});'.\Zage\App\ZWS::NL;
 		
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'var $inputSearchOrg = $(\'#inputSearchOrgID\');'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'$inputSearchOrg.typeahead({source: '.json_encode($aOrgs).',
+				autoSelect: true ,minLength: 2,itens: 5,
+				afterSelect: function (item) {
+					//$(\'#navBarSelectOrgID\').collapse(\'show\');
+					$(\'#navBarSelectOrgID\').collapse(\'hide\');
+					//$(\'.dropdown-close\').collapse(\'show\');
+					zgWindowOpen(item.url);
+				}
+				
+		});
+		'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).''.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).''.\Zage\App\ZWS::NL;
+		
+//		var $input = $('.typeahead');
+		//$input.typeahead({source:[{id: "someId1", name: "Display name 1"},
+		//{id: "someId2", name: "Display name 2"}],
+		//autoSelect: true});
+		
+		
+		$this->html	.= '</script>'.\Zage\App\ZWS::NL;
 		$this->html	.= '</div><!-- /.navbar-container -->'.\Zage\App\ZWS::NL;
 		
 	}
