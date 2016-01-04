@@ -21,6 +21,8 @@ if (isset($_POST['tipo']))				$tipo				= \Zage\App\Util::antiInjection($_POST['t
 if (isset($_POST['ident']))				$ident				= \Zage\App\Util::antiInjection($_POST['ident']);
 if (isset($_POST['email']))				$email				= \Zage\App\Util::antiInjection($_POST['email']);
 if (isset($_POST['codPlano']))	 		$codPlano			= \Zage\App\Util::antiInjection($_POST['codPlano']);
+if (isset($_POST['link']))	 			$link				= \Zage\App\Util::antiInjection($_POST['link']);
+if (isset($_POST['aSegs']))				$aSegs				= \Zage\App\Util::antiInjection($_POST['aSegs']);
 
 if ($tipo == 'J'){
 	
@@ -266,14 +268,15 @@ try {
  		$dtNasc		= null;
  	}
  	
- 	$oParceiro->setNome($nome);
- 	$oParceiro->setRazao($razao);
+ 	$oParceiro->setFantasia($nome);
+ 	$oParceiro->setNome($razao);
  	$oParceiro->setRg($rg);
  	$oParceiro->setInscEstadual($inscEstadual);
  	$oParceiro->setInscMunicipal($inscMunicipal);
  	$oParceiro->setEmail($email);
  	$oParceiro->setDataNascimento($dtNasc);
  	$oParceiro->setCodSexo($oSexo);
+ 	$oParceiro->setLink($link);
  	
  	$oParceiro->setCodLogradouro($oCodLogradouro);
  	$oParceiro->setIndEndCorreto($endCorreto);
@@ -327,6 +330,125 @@ try {
  				$em->persist($infoTel);
  			} catch (\Exception $e) {
  				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível cadastrar o telefone: ".$telefone[$i]." Erro: ".$e->getMessage());
+ 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+ 				exit;
+ 			}
+ 		}
+ 	}
+ 	
+ 	/***********************
+ 	 * Salavar cliente
+ 	 ***********************/
+ 	$oFornec = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oParceiro->getCgc() , 'codOrganizacao' => null));
+ 	
+ 	if(!$oFornec){
+ 		$oFornec = new \Entidades\ZgfinPessoa();
+ 		$oFornec->setDataCadastro(new DateTime(now));
+ 		$oFornec->setObservacao('Importado do cadastro de parceiros.');
+ 	}
+ 	
+ 	$oFornecTipoPessoa		= $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => $oParceiro->getCodTipoPessoa()->getCodigo()));
+ 	
+ 	$oFornec->setFantasia($oParceiro->getFantasia());
+ 	$oFornec->setNome($oParceiro->getNome());
+ 	$oFornec->setCgc($oParceiro->getCgc());
+ 	$oFornec->setRg($oParceiro->getRg());
+ 	$oFornec->setInscEstadual($oParceiro->getInscEstadual());
+ 	$oFornec->setInscMunicipal($oParceiro->getInscMunicipal());
+ 	$oFornec->setDataNascimento($oParceiro->getDataNascimento());
+ 	$oFornec->setEmail($oParceiro->getEmail());
+ 	$oFornec->setLink($oParceiro->getLink());
+ 	$oFornec->setCodTipoPessoa($oFornecTipoPessoa); //parceiro
+ 	$oFornec->setIndContribuinte(0);
+ 	$oFornec->setIndCliente(1);
+ 	$oFornec->setIndFornecedor(1);
+ 	$oFornec->setIndTransportadora(0);
+ 	$oFornec->setIndEstrangeiro(0);
+ 	$oFornec->setIndAtivo(1);
+ 	$oFornec->setCodSexo($oParceiro->getCodSexo());
+ 	
+ 	$em->persist($oFornec);
+ 	
+ 	//ENDEREÇO CLIENTE
+ 	if ($codLogradouro){
+ 		$oFornecEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oFornec->getCodigo()));
+ 		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => "F"));
+ 	
+ 		if (!$oFornecEnd){
+ 			$oFornecEnd = new \Entidades\ZgfinPessoaEndereco();
+ 		}
+ 	
+ 		$oFornecEnd->setCodPessoa($oFornec);
+ 		$oFornecEnd->setCodTipoEndereco($oEndTipo);
+ 		$oFornecEnd->setCodLogradouro($oCodLogradouro);
+ 		$oFornecEnd->setCep($oParceiro->getCep());
+ 		$oFornecEnd->setEndereco($oParceiro->getEndereco());
+ 		$oFornecEnd->setBairro($oParceiro->getBairro());
+ 		$oFornecEnd->setNumero($oParceiro->getNumero());
+ 		$oFornecEnd->setComplemento($oParceiro->getComplemento());
+ 		$oFornecEnd->setIndEndCorreto($oParceiro->getIndEndCorreto());
+ 	
+ 		$em->persist($oFornecEnd);
+ 	}
+ 	
+ 	//Telefone
+ 	$oCliTel			= new \Zage\App\Telefone();
+ 	$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
+ 	$oCliTel->_setCodProp($oFornec);
+ 	$oCliTel->_setTelefone($telefone);
+ 	$oCliTel->_setCodTipoTel($codTipoTel);
+ 	$oCliTel->_setCodTelefone($codTelefone);
+ 	
+ 	$retorno	= $oCliTel->salvar();
+ 	
+ 	#################################################################################
+ 	## Segmentos
+ 	#################################################################################
+ 	if (!empty($aSegs)) {
+ 		$arraySeg	= explode(",", $aSegs);
+ 	}else{
+ 		$arraySeg = array();
+ 	}
+ 		
+ 	//Segmentos já associados
+ 	$segAss		= \Zage\Fin\Pessoa::listaSegmentos($oFornec->getCodigo());
+ 	$aSegAss	= array();
+ 		
+ 	//Exclusão
+ 	for ($i = 0; $i < sizeof($segAss); $i++) {
+ 		$aSegAss[]	= $segAss[$i]->getCodSegmento()->getCodigo();
+ 	
+ 		if (!in_array($segAss[$i]->getCodSegmento()->getCodigo(), $arraySeg)) {
+ 			try {
+ 				$em->remove($segAss[$i]);
+ 			} catch (\Exception $e) {
+ 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o segmento: ".$segAss[$i]->getCodSegmento()->getDescricao()." Erro: ".$e->getMessage());
+ 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+ 				exit;
+ 			}
+ 		}
+ 	}
+ 	
+ 	//Inclusão
+ 	for ($i = 0; $i < sizeof($arraySeg); $i++) {
+ 		if (!in_array($arraySeg[$i], $aSegAss)) {
+ 			try {
+ 				$oSeg			= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codigo' => $arraySeg[$i]));
+ 	
+ 				if (!$oSeg){
+ 					$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível encontrar o segmento: ".$arraySeg[$i]);
+ 					echo '1'.\Zage\App\Util::encodeUrl('||');
+ 					exit;
+ 				}
+ 	
+ 				$oPesSegMer		= new \Entidades\ZgfinPessoaSegmento();
+ 				$oPesSegMer->setCodPessoa($oFornec);
+ 				$oPesSegMer->setCodSegmento($oSeg);
+ 	
+ 				$em->persist($oPesSegMer);
+ 					
+ 			} catch (\Exception $e) {
+ 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o segmento: ".$segAss[$i]->getCodSegmento()->getDescricao()." Erro: ".$e->getMessage());
  				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  				exit;
  			}

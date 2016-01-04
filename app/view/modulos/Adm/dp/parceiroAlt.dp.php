@@ -20,9 +20,11 @@ if (isset($_POST['codOrganizacao']))	$codOrganizacao		= \Zage\App\Util::antiInje
 if (isset($_POST['tipo']))				$tipo				= \Zage\App\Util::antiInjection($_POST['tipo']);
 if (isset($_POST['ident']))				$ident				= \Zage\App\Util::antiInjection($_POST['ident']);
 if (isset($_POST['email']))				$email				= \Zage\App\Util::antiInjection($_POST['email']);
+if (isset($_POST['link']))	 			$link				= \Zage\App\Util::antiInjection($_POST['link']);
 if (isset($_POST['codPlano']))	 		$codPlano			= \Zage\App\Util::antiInjection($_POST['codPlano']);
 if (isset($_POST['valorDesconto']))	 	$valorDesconto		= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
 if (isset($_POST['pctDesconto']))	 	$pctDesconto		= \Zage\App\Util::antiInjection($_POST['pctDesconto']);
+if (isset($_POST['aSegs']))				$aSegs				= \Zage\App\Util::antiInjection($_POST['aSegs']);
 
 
 if ($tipo == 'J'){
@@ -61,7 +63,6 @@ if (isset($_POST['codTelefone']))		$codTelefone		= $_POST['codTelefone'];
 if (isset($_POST['telefone']))			$telefone			= $_POST['telefone'];
 
 if (isset($_POST['segmento']))			$codSegmento		= $_POST['segmento'];
-if (isset($_POST['link']))				$link				= $_POST['link'];
 
 if (!isset($codTipoTel))				$codTipoTel			= array();
 if (!isset($codTelefone))				$codTelefone		= array();
@@ -442,6 +443,8 @@ try {
  	$oFornec->setNome($oParceiro->getNome());
  	$oFornec->setCgc($oParceiro->getCgc());
  	$oFornec->setRg($oParceiro->getRg());
+ 	$oFornec->setInscEstadual($oParceiro->getInscEstadual());
+ 	$oFornec->setInscMunicipal($oParceiro->getInscMunicipal());
  	$oFornec->setDataNascimento($oParceiro->getDataNascimento());
  	$oFornec->setEmail($oParceiro->getEmail());
  	$oFornec->setLink($oParceiro->getLink());
@@ -488,6 +491,59 @@ try {
  	
  	$retorno	= $oCliTel->salvar();
  	
+ 	#################################################################################
+ 	## Segmentos
+ 	#################################################################################
+ 	if (!empty($aSegs)) {
+ 		$arraySeg	= explode(",", $aSegs);
+ 	}else{
+ 		$arraySeg = array();
+ 	}
+ 		
+ 	//Segmentos já associados
+ 	$segAss		= \Zage\Fin\Pessoa::listaSegmentos($oFornec->getCodigo());
+ 	$aSegAss	= array();
+ 		
+ 	//Exclusão
+ 	for ($i = 0; $i < sizeof($segAss); $i++) {
+ 		$aSegAss[]	= $segAss[$i]->getCodSegmento()->getCodigo();
+ 	
+ 		if (!in_array($segAss[$i]->getCodSegmento()->getCodigo(), $arraySeg)) {
+ 			try {
+ 				$em->remove($segAss[$i]);
+ 			} catch (\Exception $e) {
+ 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o segmento: ".$segAss[$i]->getCodSegmento()->getDescricao()." Erro: ".$e->getMessage());
+ 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+ 				exit;
+ 			}
+ 		}
+ 	}
+ 	
+ 	//Inclusão
+ 	for ($i = 0; $i < sizeof($arraySeg); $i++) {
+ 		if (!in_array($arraySeg[$i], $aSegAss)) {
+ 			try {
+ 				$oSeg			= $em->getRepository('Entidades\ZgfinSegmentoMercado')->findOneBy(array('codigo' => $arraySeg[$i]));
+ 	
+ 				if (!$oSeg){
+ 					$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível encontrar o segmento: ".$arraySeg[$i]);
+					echo '1'.\Zage\App\Util::encodeUrl('||');
+ 					exit;
+ 				}
+ 	
+ 				$oPesSegMer		= new \Entidades\ZgfinPessoaSegmento();
+ 				$oPesSegMer->setCodPessoa($oFornec);
+ 				$oPesSegMer->setCodSegmento($oSeg);
+ 	
+ 				$em->persist($oPesSegMer);
+ 				
+ 			} catch (\Exception $e) {
+ 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o segmento: ".$segAss[$i]->getCodSegmento()->getDescricao()." Erro: ".$e->getMessage());
+ 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+ 				exit;
+ 			}
+ 		}
+ 	}
  	
  	#################################################################################
  	## SALVAR

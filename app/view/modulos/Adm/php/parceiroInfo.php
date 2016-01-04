@@ -53,15 +53,17 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 	$tipo			= $info->getCodTipoPessoa()->getCodigo();
 	$segmento		= $info->getCodTipo()->getCodigo();
 	$email			= $info->getEmail();
+	$link			= $info->getLink();
 	$ident			= $info->getIdentificacao();
 	$disabled		= 'disabled';
 	$readOnly		= 'readonly';
+	$valID			= '1';
 	
 	if ($tipo == 'J') {
 
-		$nome			= $info->getNome();
+		$nome			= $info->getFantasia();
 		$cnpj			= $info->getCgc();
-		$razao			= $info->getRazao();
+		$razao			= $info->getNome();
 		$inscEstadual	= $info->getInscEstadual();
 		$inscMunicipal	= $info->getInscMunicipal();
 		$datInicio 		= ($info->getDataNascimento() != null) ? $info->getDataNascimento()->format($system->config["data"]["dateFormat"]) : null;	
@@ -69,9 +71,13 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		$rg				= '';
 		$sexo			= '';
 		$dataNascimento = '';
+		$valCnpj		= 1;
+		$valCpf			= '';
 	
 	}elseif($tipo == 'F') {
 		
+		$valCnpj		= '';
+		$valCpf			= 1;
 		$razao			= '';
 		$cnpj			= '';
 		$fantasia		= '';
@@ -246,7 +252,7 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 	$codTipoTel		= ($aTelefones[$i]->getCodTipoTelefone()) ? $aTelefones[$i]->getCodTipoTelefone()->getCodigo() : null;
 	$oTipoInt		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	$codTipoTel, '');
 
-	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
+	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" style="width: 100%;" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
 }
 
 #################################################################################
@@ -258,6 +264,26 @@ try {
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
+
+################################################################################
+## Lista de segmentos de mercado
+#################################################################################
+$pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc(), 'codOrganizacao' => null));
+$segAss		= \Zage\Fin\Pessoa::listaSegmentos($pessoa->getCodigo());
+$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($pessoa->getCodigo());
+
+$liAss			= "";
+$liDis			= "";
+
+for ($i = 0; $i < sizeof($segAss); $i++) {
+	$classe		= "fa fa-building-o";
+	$liAss		.= '<li id="zgId_"'.$segAss[$i]->getCodSegmento()->getCodigo().'" class="ui-state-default" zg-data-id="'.$segAss[$i]->getCodSegmento()->getCodigo().'"><i class="ace-icon bigger-120 green '.$classe.'"></i>&nbsp;'.$segAss[$i]->getCodSegmento()->getDescricao().'</li>';
+}
+for ($i = 0; $i < sizeof($segDis); $i++) {
+	$classe		= "fa fa-building-o";
+	$liDis		.= '<li id="zgDis_"'.$segDis[$i]->getCodigo().'" class="ui-state-default" zg-data-id="'.$segDis[$i]->getCodigo().'"><i class="ace-icon bigger-120 green '.$classe.'"></i>&nbsp;'.$segDis[$i]->getDescricao().'</li>';
+}
+
 
 
 /**
@@ -327,6 +353,11 @@ $tpl->set('COD_PLANO'				,$codPlano);
 $tpl->set('VALOR_DESCONTO'			,$valorDesconto);
 $tpl->set('PCT_DESCONTO'			,$pctDesconto);
 $tpl->set('FORMA_DESCONTO'			,$formaDesc);
+$tpl->set('LISTA_ASS'				,$liAss);
+$tpl->set('LISTA_DIS'				,$liDis);
+$tpl->set('VAL_ID'					,$valID);
+$tpl->set('VAL_CPF_ID'				,$valCpf);
+$tpl->set('VAL_CNPJ_ID'				,$valCnpj);
 
 $tpl->set ( 'COD_LOGRADOURO' , $codLogradouro);
 $tpl->set ( 'CEP' 			 , $cep);

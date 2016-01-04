@@ -268,6 +268,25 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
+#################################################################################
+## Lista de segmentos de mercado
+#################################################################################
+$pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc(), 'codOrganizacao' => null));
+$segAss		= \Zage\Fin\Pessoa::listaSegmentos($pessoa->getCodigo());
+$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($pessoa->getCodigo());
+
+$liAss			= "";
+$liDis			= "";
+
+for ($i = 0; $i < sizeof($segAss); $i++) {
+	$classe		= "fa fa-building-o";
+	$liAss		.= '<li id="zgId_"'.$segAss[$i]->getCodSegmento()->getCodigo().'" class="ui-state-default" zg-data-id="'.$segAss[$i]->getCodSegmento()->getCodigo().'"><i class="ace-icon bigger-120 green '.$classe.'"></i>&nbsp;'.$segAss[$i]->getCodSegmento()->getDescricao().'</li>';
+}
+for ($i = 0; $i < sizeof($segDis); $i++) {
+	$classe		= "fa fa-building-o";
+	$liDis		.= '<li id="zgDis_"'.$segDis[$i]->getCodigo().'" class="ui-state-default" zg-data-id="'.$segDis[$i]->getCodigo().'"><i class="ace-icon bigger-120 green '.$classe.'"></i>&nbsp;'.$segDis[$i]->getDescricao().'</li>';
+}
+
 
 /**
 #################################################################################
@@ -340,6 +359,8 @@ $tpl->set('FORMA_DESCONTO'			,$formaDesc);
 $tpl->set('VAL_ID'					,$valID);
 $tpl->set('VAL_CPF_ID'				,$valCpf);
 $tpl->set('VAL_CNPJ_ID'				,$valCnpj);
+$tpl->set('LISTA_ASS'				,$liAss);
+$tpl->set('LISTA_DIS'				,$liDis);
 
 $tpl->set ( 'COD_LOGRADOURO' , $codLogradouro);
 $tpl->set ( 'CEP' 			 , $cep);
