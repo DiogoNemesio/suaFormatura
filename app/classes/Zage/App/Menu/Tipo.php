@@ -275,9 +275,8 @@ abstract class Tipo {
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).'$inputSearchOrg.typeahead({source: '.json_encode($aOrgs).',
 				autoSelect: true ,minLength: 2,itens: 5,
 				afterSelect: function (item) {
-					//$(\'#navBarSelectOrgID\').collapse(\'show\');
-					$(\'#navBarSelectOrgID\').collapse(\'hide\');
-					//$(\'.dropdown-close\').collapse(\'show\');
+					//$(\'#navBarSelectOrgID\').collapse(\'hide\');
+					$(\'#navBarSelectOrgID\').hide();
 					zgWindowOpen(item.url);
 				}
 				

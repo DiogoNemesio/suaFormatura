@@ -181,16 +181,17 @@ class Usuario extends \Entidades\ZgsegUsuario {
     	
     	$qb->select('o')
     	->from('\Entidades\ZgadmOrganizacao','o')
-    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',	'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 		= uo.codOrganizacao')
-    	->leftJoin('\Entidades\ZgsegPerfil', 				'p', 	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo 		= uo.codPerfil')
-    	->leftJoin('\Entidades\ZgadmOrganizacaoStatusTipo', 'st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codStatus 	= st.codigo')
+    	->leftJoin('\Entidades\ZgsegUsuarioOrganizacao',		'uo',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 				= uo.codOrganizacao')
+    	->leftJoin('\Entidades\ZgsegPerfil', 					'p', 	\Doctrine\ORM\Query\Expr\Join::WITH, 'p.codigo 				= uo.codPerfil')
+    	->leftJoin('\Entidades\ZgadmOrganizacaoStatusTipo', 	'st',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codStatus 			= st.codigo')
+    	->leftJoin('\Entidades\ZgappOrganizacaoUsuarioAcesso', 	'oua',	\Doctrine\ORM\Query\Expr\Join::WITH, 'oua.codUsuario		= uo.codUsuario')
     	->where($qb->expr()->andX(
     		$qb->expr()->eq('uo.codUsuario'			, ':codUsuario'),
    			$qb->expr()->eq('uo.codStatus'			, ':status'),
     		$qb->expr()->eq('p.indAtivo'			, '1'),
     		$qb->expr()->eq('st.indPermiteAcesso'	, '1')
     	))
-    	->orderBy('o.identificacao', 'ASC')
+    	->orderBy('oua.numAcessos', 'DESC')
     	->setParameter('codUsuario', $codUsuario)
     	->setParameter('status', 	"A");
     	 
