@@ -91,6 +91,8 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["TIPO"] 		= $itens[$i]->getCodTipoItem()->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $itens[$i]->getItem();
 	
+	$valorPadrao										= ($itens[$i]->getValorPadrao()) ? \Zage\App\Util::formataDinheiro($itens[$i]->getValorPadrao()) : null;
+	
 	if (isset($aOrcItens[$codigo])) {
 		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= $aOrcItens[$codigo]["QTDE"];
 		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= $aOrcItens[$codigo]["VALOR"];
@@ -98,10 +100,10 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= $aOrcItens[$codigo]["TOTAL"];
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= $aOrcItens[$codigo]["COD_CORT"];
 	}else{
-		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= null;
-		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= ($valorPadrao) ? 1 : null;
+		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= $valorPadrao;
 		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $itens[$i]->getTextoDescritivo();
-		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($valorPadrao) ? $valorPadrao : 0;
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= null;
 	}
 }

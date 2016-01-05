@@ -133,10 +133,12 @@ $tabOrcamento	= "";
 
 for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 	
-	$indAtivo		= ($aOrcItem[$i]->getIndAtivo()	== 1) ? "checked" : null;
+	$indAtivo		= ($aOrcItem[$i]->getIndAtivo()			== 1) ? "checked" : null;
+	$indObrigatorio	= ($aOrcItem[$i]->getIndObrigatorio()	== 1) ? "checked" : null;
 	$codTipoItem	= ($aOrcItem[$i]->getCodTipoItem()) ? $aOrcItem[$i]->getCodTipoItem()->getCodigo() : null;
 	$oTipoItem		= $system->geraHtmlCombo($aTipoItem,	'CODIGO', 'DESCRICAO',	$codTipoItem, '');
 	$codCategoria	= ($aOrcItem[$i]->getCodCategoria()) ? $aOrcItem[$i]->getCodCategoria()->getCodigo() : null;
+	$valorPadrao	= ($aOrcItem[$i]->getValorPadrao()) ? \Zage\App\Util::formataDinheiro($aOrcItem[$i]->getValorPadrao()) : null;
 	//$oCategoria		= $system->geraHtmlCombo($aCategoria,	'CODIGO', 'DESCRICAO',	$codCategoria, '');
 	// Gera combo
 	foreach ($dadosCat["SUB"] as $desc => $aCatItens ){
@@ -158,10 +160,12 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 		$hidDesc		= "hidden";
 	}
 	
-	$tabOrcamento	.= '<tr class="_registroOrc"><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td>
+	$tabOrcamento	.= '<tr class="_registroOrc">
 				<td><input type="text" class="width-100" name="item[]" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td>
 				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oTipoItem.'</select></td>
 				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oCatExiste.'</select></td>
+				<td><input type="text" class="width-100" name="valorPadrao[]" zg-name="valorPadrao" value="'.$valorPadrao.'" placeholder="Valor Padrão" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="verificaAlteracaoOrcAlt($(this));"></td>
+				<td align="center"><label><input name="indObrigatorio[]" id="indObrigatorioID" '.$indObrigatorio.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
 				<td align="center"><label><input name="indAtivo[]" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
 				<td class="center">
 						<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
@@ -173,7 +177,7 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 						<input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'">
 				</td></tr>
 				<tr class="_registroTextoDesc '.$hidDesc.'">
-					<td colspan="6"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();">'.$aOrcItem[$i]->getTextoDescritivo().'</textarea></td>
+					<td colspan="8"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();">'.$aOrcItem[$i]->getTextoDescritivo().'</textarea></td>
 				</tr>
 				';
 }

@@ -23,6 +23,8 @@ if (isset($_POST['item']))					$item				= \Zage\App\Util::antiInjection($_POST['
 if (isset($_POST['codTipoItem']))			$codTipoItem		= \Zage\App\Util::antiInjection($_POST['codTipoItem']);
 if (isset($_POST['codCategoria']))			$codCategoria		= \Zage\App\Util::antiInjection($_POST['codCategoria']);
 if (isset($_POST['indAtivo']))				$indAtivo			= \Zage\App\Util::antiInjection($_POST['indAtivo']);
+if (isset($_POST['indObrigatorio']))		$indObrigatorio		= \Zage\App\Util::antiInjection($_POST['indObrigatorio']);
+if (isset($_POST['valorPadrao']))			$valorPadrao		= \Zage\App\Util::antiInjection($_POST['valorPadrao']);
 if (isset($_POST['aObs']))					$aObs				= \Zage\App\Util::antiInjection($_POST['aObs']);
 if (isset($_POST['versao']))				$versao				= \Zage\App\Util::antiInjection($_POST['versao']);
 if (isset($_POST['indVersao']))				$indVersao			= \Zage\App\Util::antiInjection($_POST['indVersao']);
@@ -34,6 +36,8 @@ if (!isset($item))				$item			= array();
 if (!isset($codTipoItem))		$codTipoItem	= array();
 if (!isset($codCategoria))		$codCategoria	= array();
 if (!isset($indAtivo))			$indAtivo		= array();
+if (!isset($indObrigatorio))	$indObrigatorio	= array();
+if (!isset($valorPadrao))		$valorPadrao	= array();
 
 //$log->info("Array de Itens: ".serialize($item));
 
@@ -135,11 +139,11 @@ try {
 			$oOrcamento->setDataCadastro(new \DateTime("now"));
 		}
 		
-		if (isset($indAtivo [$i])) {
-			$indAtivoLinha = 1;
-		}else{
-			$indAtivoLinha = 0;
-		}
+		$indAtivoLinha			= (isset($indAtivo[$i])) 			? 1 : 0;
+		$indObrigatorioLinha	= (isset($indObrigatorio[$i]))		? 1 : 0;
+		
+		$valorPadraoLinha		= (isset($valorPadrao[$i]) && $valorPadrao[$i] > 0)			? \Zage\App\Util::to_float($valorPadrao[$i]) : null;
+		
 		
 		#################################################################################
 		## Constroi os objetos
@@ -155,6 +159,8 @@ try {
 		$oOrcamento->setItem($item[$i]);
 		$oOrcamento->setOrdem(($i+1));
 		$oOrcamento->setIndAtivo($indAtivoLinha);
+		$oOrcamento->setIndObrigatorio($indObrigatorioLinha);
+		$oOrcamento->setValorPadrao($valorPadraoLinha);
 		$oOrcamento->setTextoDescritivo($aObs[$i]);
 		
 		$em->persist($oOrcamento);

@@ -57,6 +57,20 @@ class ZgfmtPlanoOrcItem
     private $textoDescritivo;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_OBRIGATORIO", type="integer", nullable=true)
+     */
+    private $indObrigatorio;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="VALOR_PADRAO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valorPadrao;
+
+    /**
      * @var \Entidades\ZgfmtPlanoOrcamentario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcamentario")
@@ -220,6 +234,52 @@ class ZgfmtPlanoOrcItem
     public function getTextoDescritivo()
     {
         return $this->textoDescritivo;
+    }
+
+    /**
+     * Set indObrigatorio
+     *
+     * @param integer $indObrigatorio
+     * @return ZgfmtPlanoOrcItem
+     */
+    public function setIndObrigatorio($indObrigatorio)
+    {
+        $this->indObrigatorio = $indObrigatorio;
+
+        return $this;
+    }
+
+    /**
+     * Get indObrigatorio
+     *
+     * @return integer 
+     */
+    public function getIndObrigatorio()
+    {
+        return $this->indObrigatorio;
+    }
+
+    /**
+     * Set valorPadrao
+     *
+     * @param float $valorPadrao
+     * @return ZgfmtPlanoOrcItem
+     */
+    public function setValorPadrao($valorPadrao)
+    {
+        $this->valorPadrao = $valorPadrao;
+
+        return $this;
+    }
+
+    /**
+     * Get valorPadrao
+     *
+     * @return float 
+     */
+    public function getValorPadrao()
+    {
+        return $this->valorPadrao;
     }
 
     /**
