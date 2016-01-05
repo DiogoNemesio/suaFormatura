@@ -269,8 +269,14 @@ try {
 ## Lista de segmentos de mercado
 #################################################################################
 $pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc(), 'codOrganizacao' => null));
-$segAss		= \Zage\Fin\Pessoa::listaSegmentos($pessoa->getCodigo());
-$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($pessoa->getCodigo());
+
+if($pessoa){
+	$segAss		= \Zage\Fin\Pessoa::listaSegmentos($pessoa->getCodigo());
+	$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($pessoa->getCodigo());
+}else{
+	$segAss		= null;
+	$segDis		= null;
+}
 
 $liAss			= "";
 $liDis			= "";
