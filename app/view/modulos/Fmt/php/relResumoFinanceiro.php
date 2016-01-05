@@ -73,7 +73,7 @@ setlocale (LC_ALL, 'ptb');
 #################################################################################
 ## Url desse script
 #################################################################################
-$urlForm			= ROOT_URL . '/Fin/relResumoFinanceiro.php'; 
+$urlForm			= ROOT_URL . '/Fmt/relResumoFinanceiro.php'; 
 
 #################################################################################
 ## Array de valores Provisionados

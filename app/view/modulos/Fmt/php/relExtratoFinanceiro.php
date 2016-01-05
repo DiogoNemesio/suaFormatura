@@ -151,7 +151,7 @@ $texto				= $mesRef . " (".ucfirst(strftime("%B",mktime(0,0,0,$mes,1,null))).")"
 #################################################################################
 ## Url desse script
 #################################################################################
-$urlForm			= ROOT_URL . '/Fin/relExtratoFinanceiro.php'; 
+$urlForm			= ROOT_URL . '/Fmt/relExtratoFinanceiro.php'; 
 
 #################################################################################
 ## Calcular os Percentuais de Júros, Mora e convite extra que ficam para a Formatura

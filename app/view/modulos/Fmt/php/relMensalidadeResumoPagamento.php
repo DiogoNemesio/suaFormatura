@@ -120,7 +120,7 @@ $texto				= $mesRef . " (".ucfirst(strftime("%B",mktime(0,0,0,$mes,1,null))).")"
 #################################################################################
 ## Url desse script
 #################################################################################
-$urlForm			= ROOT_URL . '/Fin/relResumoPagamento.php'; 
+$urlForm			= ROOT_URL . '/Fmt/relResumoPagamento.php'; 
 
 #################################################################################
 ## Resgata a categoria de mensalidades
@@ -142,7 +142,7 @@ try {
 	$rsm->addScalarResult('VALOR_PAGO'				, 'VALOR_PAGO');
 	
 	$query 	= $em->createNativeQuery("
-		SELECT  P.CODIGO AS COD_PESSOA,P.NOME AS NOME_PESSOA,DATE_FORMAT(R.DATA_VENCIMENTO,'%Y%m') AS MES_REF,SUM(IFNULL(R.VALOR,0) + IFNULL(R.VALOR_JUROS,0) + IFNULL(R.VALOR_MORA,0) + IFNULL(R.VALOR_OUTROS,0) - IFNULL(R.VALOR_DESCONTO,0) - IFNULL(R.VALOR_CANCELADO,0)) AS VALOR, SUM(IFNULL(H.VALOR_RECEBIDO,0) + IFNULL(H.VALOR_JUROS,0) + IFNULL(H.VALOR_MORA,0) + IFNULL(H.VALOR_OUTROS,0) - IFNULL(H.VALOR_DESCONTO,0)) VALOR_PAGO
+		SELECT  P.CODIGO AS COD_PESSOA,P.NOME AS NOME_PESSOA,DATE_FORMAT(R.DATA_VENCIMENTO,'%Y%m') AS MES_REF,SUM(IFNULL(R.VALOR,0) + IFNULL(R.VALOR_JUROS,0) - IFNULL(R.VALOR_DESCONTO_JUROS,0) + IFNULL(R.VALOR_MORA,0) - IFNULL(R.VALOR_DESCONTO_MORA,0) + IFNULL(R.VALOR_OUTROS,0) - IFNULL(R.VALOR_DESCONTO,0) - IFNULL(R.VALOR_CANCELADO,0)) AS VALOR, SUM(IFNULL(H.VALOR_RECEBIDO,0) + IFNULL(H.VALOR_JUROS,0) - IFNULL(H.VALOR_DESCONTO_JUROS,0) + IFNULL(H.VALOR_MORA,0) - IFNULL(H.VALOR_DESCONTO_MORA,0) + IFNULL(H.VALOR_OUTROS,0) - IFNULL(H.VALOR_DESCONTO,0)) VALOR_PAGO
 		FROM	ZGFIN_CONTA_RECEBER 		R
 		LEFT OUTER JOIN ZGFIN_HISTORICO_REC	H	ON (R.CODIGO		= H.COD_CONTA_REC)
 		LEFT JOIN ZGFIN_PESSOA 				P	ON (R.COD_PESSOA	= P.CODIGO)
