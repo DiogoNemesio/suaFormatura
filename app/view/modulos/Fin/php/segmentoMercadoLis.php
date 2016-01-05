@@ -72,6 +72,7 @@ for ($i = 0; $i < sizeof($segmentos); $i++) {
 			$htmlCat = $cat->getCodCategoria()->getDescricao();
 		}
 	}elseif (sizeof($oCats) > 1) {
+		$cats = '';
 		foreach ($oCats as $cat) {
 			$cats	.= '<li><a href="#">'.$cat->getCodCategoria()->getDescricao().'</a></li>';
 		}
