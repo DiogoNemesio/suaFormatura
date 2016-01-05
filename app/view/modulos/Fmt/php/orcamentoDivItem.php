@@ -90,6 +90,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["CODIGO"] 		= $itens[$i]->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["TIPO"] 		= $itens[$i]->getCodTipoItem()->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $itens[$i]->getItem();
+	$aItens[$codTipo]["ITENS"][$codigo]["IND_OBR"] 		= $itens[$i]->getIndObrigatorio();
 	
 	$valorPadrao										= ($itens[$i]->getValorPadrao()) ? \Zage\App\Util::formataDinheiro($itens[$i]->getValorPadrao()) : null;
 	
@@ -171,7 +172,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$checked	= 'checked="checked"';
 				
 			}else{
-				$checked	= null;
+				$checked	= ($item["IND_OBR"]) ? 'checked="checked"' : null;
 				$hidObs		= "";
 			}
 			
