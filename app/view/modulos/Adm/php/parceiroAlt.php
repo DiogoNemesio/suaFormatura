@@ -43,6 +43,7 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		
 		$info 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 		$oContrato	= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $codOrganizacao));
+		$pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc(), 'codOrganizacao' => null));
 		
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
@@ -271,9 +272,14 @@ try {
 #################################################################################
 ## Lista de segmentos de mercado
 #################################################################################
-$pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc(), 'codOrganizacao' => null));
-$segAss		= \Zage\Fin\Pessoa::listaSegmentos($pessoa->getCodigo());
-$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($pessoa->getCodigo());
+if ($pessoa){
+	$segAss		= \Zage\Fin\Pessoa::listaSegmentos($pessoa->getCodigo());
+	$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($pessoa->getCodigo());
+}else{
+	$segAss		= null;
+	$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados(null);
+}
+
 
 $liAss			= "";
 $liDis			= "";

@@ -275,7 +275,7 @@ if($pessoa){
 	$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($pessoa->getCodigo());
 }else{
 	$segAss		= null;
-	$segDis		= null;
+	$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados(null);
 }
 
 $liAss			= "";
