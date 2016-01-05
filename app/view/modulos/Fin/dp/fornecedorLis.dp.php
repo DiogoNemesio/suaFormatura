@@ -14,6 +14,11 @@ if (defined('DOC_ROOT')) {
 include_once(BIN_PATH . 'auth.php');
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $system,$em;
+
+#################################################################################
 ## Resgata as variáveis postadas
 #################################################################################
 if (isset($_GET['q']))				$q				= \Zage\App\Util::antiInjection($_GET["q"]);
@@ -22,7 +27,7 @@ if (isset($_GET['codPessoa']))		$codPessoa		= \Zage\App\Util::antiInjection($_GE
 if (isset($codPessoa)) {
 	$pessoas	= $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codigo' => $codPessoa));
 }else{
-	$pessoas	= \Zage\Fin\Pessoa::busca($q,false,true,false);
+	$pessoas	= \Zage\Fin\Pessoa::busca($system->getCodOrganizacao(),$q,false,true,false);
 }
 $array			= array();
 $numItens		= \Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS');

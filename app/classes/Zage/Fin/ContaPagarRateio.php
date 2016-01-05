@@ -211,7 +211,7 @@ class ContaPagarRateio extends \Entidades\ZgfinContaPagarRateio {
 		$centros	= array();
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_centroCustosRateio[$i]) {
-				$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codigo' => $this->_centroCustosRateio[$i]));
+				$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codigo' => $this->_centroCustosRateio[$i]));
 				if (!$oCentro) {
 					return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$i.'" !!!');
 				}else{

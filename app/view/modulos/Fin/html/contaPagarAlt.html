@@ -590,7 +590,7 @@ $('[data-rel="select2Pessoa"]').select2({
 	initSelection : function (element, callback) {
 		var id = $(element).val();
         if (id !== "") {
-            $.ajax("%ROOT_URL%//Fin/fornecedorLis.dp.php", {
+            $.ajax("%ROOT_URL%/Fin/fornecedorLis.dp.php", {
                 data: {codPessoa: id},
     			method: "GET",
                 dataType: "json"

@@ -522,7 +522,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 					if (!empty($this->_centroCustosRateio[$i][$j])) {
 						$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codigo' => $this->_centroCustosRateio[$i][$j]));
 						if (!$oCentro) {
-							return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$j.'" !!!');
+							return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$j.'" código: "'.$this->_centroCustosRateio[$i][$j].'" !!!');
 						}
 					}
 				}
@@ -530,7 +530,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 				if (!empty($this->_centroCustosRateio[$i])) {
 					$oCentro		= $em->getRepository('Entidades\ZgfinCentroCusto')->findOneBy(array('codigo' => $this->_centroCustosRateio[$i]));
 					if (!$oCentro) {
-						return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$i.'" !!!');
+						return $tr->trans('Array de Centro de Custos tem Centro de Custo inexistente na posição "'.$j.'" código: "'.$this->_centroCustosRateio[$i][$j].'" !!!');
 					}
 				}
 			}

@@ -180,9 +180,30 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	 *
 	 * Busca por Pessoas
 	 */
-	public static function busca ($string = null,$indCliente 	= false,$indFornec	= false, $indTransp	= false) {
+	public static function busca ($codOrganizacao,$string = null,$indCliente 	= false,$indFornec	= false, $indTransp	= false) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log;
 	
+		#################################################################################
+		## Resgata as informações da Organização
+		#################################################################################
+		$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+		$codTipoOrg		= $oOrg->getCodTipo()->getCodigo();
+		
+		#################################################################################
+		## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
+		#################################################################################
+		$aOrgs			= array($codOrganizacao);
+		if ($codTipoOrg	== "FMT") {
+			$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+			if ($oFmtAdm)	{
+				$aOrgs[]		= $oFmtAdm->getCodigo();
+			}
+		}
+		
+		
 		$qb 	= $em->createQueryBuilder();
 	
 		
@@ -203,11 +224,11 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 			)
 			->andWhere($qb->expr()->andX(
 				$qb->expr()->eq('p.indAtivo'			,'1'),
-				$qb->expr()->eq('p.codOrganizacao'		,':codOrg')
+				$qb->expr()->in('p.codOrganizacao'		,':aOrg')
 			))
 			->orderBy('p.nome','ASC')
-			->setParameter('codOrg',		$system->getCodOrganizacao())
-			->setParameter('string',		'%'.strtoupper($string).'%');
+			->setParameter('aOrg'			,$aOrgs)
+			->setParameter('string'			,'%'.strtoupper($string).'%');
 			
 			if ($ic	== 1) 	{
 				$qb->andWhere($qb->expr()->andX(

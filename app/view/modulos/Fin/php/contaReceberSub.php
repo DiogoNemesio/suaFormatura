@@ -208,7 +208,7 @@ try {
 ## Select do Centro de Custo
 #################################################################################
 try {
-	$aCentroCusto	= $em->getRepository('Entidades\ZgfinCentroCusto')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(),'indDebito' => 1),array('descricao' => 'ASC'));
+	$aCentroCusto	= \Zage\Fin\CentroCusto::listaCombo($system->getCodOrganizacao(),false,1,true);
 	$oCentroCusto	= $system->geraHtmlCombo($aCentroCusto,	'CODIGO', 'DESCRICAO',	null, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

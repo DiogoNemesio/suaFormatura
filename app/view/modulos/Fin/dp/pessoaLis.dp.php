@@ -18,7 +18,7 @@ include_once(BIN_PATH . 'auth.php');
 #################################################################################
 if (isset($_GET['q']))			$q			= \Zage\App\Util::antiInjection($_GET["q"]);
 
-$pessoas		= \Zage\Fin\Pessoa::busca($q);
+$pessoas		= \Zage\Fin\Pessoa::busca($system->getCodOrganizacao(),$q);
 $array			= array();
 $numItens		= \Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS');
 
