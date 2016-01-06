@@ -422,7 +422,7 @@ function carregaPlanoOrc() {
 
 		$.ajax({
 			url:	vUrl,
-			data:  { id: '%ID%', codPlanoOrc: $codPlanoOrc, codVersao: $codVersao},
+			data:  { id: '%ID%', codPlanoOrc: $codPlanoOrc, codVersao: $codVersao, numFormando: $numFormando, numConvidado: $numConvidado},
 			async: false,
 			method: "GET",
 			dataType: 'html'
@@ -486,7 +486,7 @@ function orcCalculaNumMeses() {
 			success: function(data) {
 				var $meses	= data["MESES"];
 
-				$meses		= parseInt($meses) - 1;
+				$meses		= parseInt($meses);
 				if ($meses < 0) {
 					$meses 	= 0;
 				}
@@ -811,7 +811,7 @@ function orcAtualizaCustoFinal() {
 	/**
 	 * Calcula o valor de uso do sistema e outros custos 
 	 */
-	 var $numMeses			= parseInt($('#numMesesID').val());
+	 var $numMeses			= parseInt($('#numMesesID').val()) - 1;
 	 if (isNaN($numMeses)) {
 		 return;
 	 }
@@ -834,7 +834,7 @@ function orcAtualizaCustoFinal() {
 	$spTotalSistema.html(accounting.formatMoney($valSistema, options) + " por formando");
 	$spTotalFormando.html(accounting.formatMoney($custoFormando, options) + " (total por formando)");
 	$spCustoFinal.html(accounting.formatMoney($valTotal, options));
-	$spMensalidade.html(accounting.formatMoney($valMensalidade, options) + " (sugestão de mensalidade)");
+	$spMensalidade.html($numMeses + " x " + accounting.formatMoney($valMensalidade, options) + " (sugestão de mensalidade)");
 }
 
 function orcAtualizaBotoes() {

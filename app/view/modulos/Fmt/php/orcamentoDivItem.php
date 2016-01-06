@@ -41,6 +41,8 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 if (isset($_GET['codPlanoOrc'])) 		$codPlanoOrc			= \Zage\App\Util::antiInjection($_GET['codPlanoOrc']);
 if (isset($_GET['codVersao'])) 			$codVersao				= \Zage\App\Util::antiInjection($_GET['codVersao']);
+if (isset($_GET['numFormando'])) 		$numFormando			= \Zage\App\Util::antiInjection($_GET['numFormando']);
+if (isset($_GET['numConvidado'])) 		$numConvidado			= \Zage\App\Util::antiInjection($_GET['numConvidado']);
 
 if (!isset($codPlanoOrc)) exit;
 
@@ -104,10 +106,19 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 1;
 		$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= null;
 	}else{
-		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= ($valorPadrao) ? 1 : null;
+
+		
+		if ($aItens[$codTipo]["ITENS"][$codigo]["TIPO"] == "F") {
+			$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= ($numFormando) ? $numFormando : 1;
+		}elseif ($aItens[$codTipo]["ITENS"][$codigo]["TIPO"] == "C") {
+			$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= ($numFormando && $numConvidado) ? ($numFormando * $numConvidado) : 1;
+		}else{
+			$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= ($valorPadrao) ? 1 : null;
+		}
+		
 		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= ($orcSalvo == 0) ? $valorPadrao : null;
 		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $itens[$i]->getTextoDescritivo();
-		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($itens[$i]->getIndPadrao() && $valorPadrao) ? $valorPadrao : 0;
+		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($itens[$i]->getIndPadrao() && $valorPadrao) ? ($aItens[$codTipo]["ITENS"][$codigo]["QTDE"] * $valorPadrao) : 0;
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= null;
 		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 0;
 		$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= $itens[$i]->getIndPadrao();
