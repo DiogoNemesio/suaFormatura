@@ -85,14 +85,16 @@ $aItens		= array();
 for ($i = 0; $i < sizeof($itens); $i++) {
 	$codTipo		= $itens[$i]->getCodGrupoItem()->getCodigo();
 	$codigo			= $itens[$i]->getCodigo();
-
+	$valorPadrao	= ($itens[$i]->getValorPadrao()) ? \Zage\App\Util::formataDinheiro($itens[$i]->getValorPadrao()) : null;
+	
+	
 	$aItens[$codTipo]["DESCRICAO"]						= $itens[$i]->getCodGrupoItem()->getDescricao();
 	$aItens[$codTipo]["ITENS"][$codigo]["CODIGO"] 		= $itens[$i]->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["TIPO"] 		= $itens[$i]->getCodTipoItem()->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $itens[$i]->getItem();
 	$aItens[$codTipo]["ITENS"][$codigo]["IND_OBR"] 		= $itens[$i]->getIndObrigatorio();
+	$aItens[$codTipo]["ITENS"][$codigo]["VALOR_PADRAO"]	= $valorPadrao;
 	
-	$valorPadrao										= ($itens[$i]->getValorPadrao()) ? \Zage\App\Util::formataDinheiro($itens[$i]->getValorPadrao()) : null;
 	
 	if (isset($aOrcItens[$codigo])) {
 		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= $aOrcItens[$codigo]["QTDE"];
@@ -100,12 +102,14 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $aOrcItens[$codigo]["DESCRITIVO"];
 		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= $aOrcItens[$codigo]["TOTAL"];
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= $aOrcItens[$codigo]["COD_CORT"];
+		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 1;
 	}else{
 		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= ($valorPadrao) ? 1 : null;
 		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= $valorPadrao;
 		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $itens[$i]->getTextoDescritivo();
-		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($valorPadrao) ? $valorPadrao : 0;
+		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($itens[$i]->getIndObrigatorio() && $valorPadrao) ? $valorPadrao : 0;
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= null;
+		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 0;
 	}
 }
 
@@ -168,15 +172,16 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$qTab	= null;
 			}
 			
-			if (isset($item["VALOR"]) && $item["VALOR"]) {
+			if (isset($item["VALOR"]) && $item["VALOR"] && $item["SALVO"] == 1) {
 				$checked	= 'checked="checked"';
-				
+			}elseif (isset($item["VALOR"]) && $item["VALOR"] && $item["SALVO"] == 0 && $item["IND_OBR"]) {
+				$checked	= 'checked="checked"';
 			}else{
 				$checked	= ($item["IND_OBR"]) ? 'checked="checked"' : null;
 				$hidObs		= "";
 			}
 			
-			if (isset($item["COD_CORT"]) && $item["COD_CORT"] && ($item["VALOR"] == 0)) {
+			if ((isset($item["COD_CORT"]) && $item["COD_CORT"] && ($item["VALOR"] == 0)) || (($item["VALOR"] == 0) && ($item["IND_OBR"]))) {
 				$hidObs		= "";
 			}else{
 				$hidObs		= "hidden";

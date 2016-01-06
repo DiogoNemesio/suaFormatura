@@ -123,7 +123,7 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
-$log->debug(serialize($dadosCat));
+//$log->debug(serialize($dadosCat));
 
 #################################################################################
 ## Resgatar os dados dos valores
@@ -165,8 +165,8 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oTipoItem.'</select></td>
 				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oCatExiste.'</select></td>
 				<td><input type="text" class="width-100" name="valorPadrao[]" zg-name="valorPadrao" value="'.$valorPadrao.'" placeholder="Valor Padrão" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="verificaAlteracaoOrcAlt($(this));"></td>
-				<td align="center"><label><input name="indObrigatorio[]" id="indObrigatorioID" '.$indObrigatorio.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
-				<td align="center"><label><input name="indAtivo[]" id="indAtivoID" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
+				<td align="center"><label><input zg-name="indObrigatorio" '.$indObrigatorio.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
+				<td align="center"><label><input zg-name="indAtivo" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
 				<td class="center">
 						<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">
 							<span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span>

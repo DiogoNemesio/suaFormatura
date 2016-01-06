@@ -39,7 +39,8 @@ if (!isset($indAtivo))			$indAtivo		= array();
 if (!isset($indObrigatorio))	$indObrigatorio	= array();
 if (!isset($valorPadrao))		$valorPadrao	= array();
 
-//$log->info("Array de Itens: ".serialize($item));
+$log->info("aIndAtivo: ".serialize($indAtivo));
+$log->info("aIndObr: ".serialize($indObrigatorio));
 
 if ($codOrcamento == null){
 	$codOrcamento	= array();
