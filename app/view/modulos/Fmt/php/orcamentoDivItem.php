@@ -66,6 +66,7 @@ $orcItens		= $em->getRepository('Entidades\ZgfmtOrcamentoItem')->findBy(array('c
 ## Monta um array com os itens salvos
 #################################################################################
 $aOrcItens		= array();
+$orcSalvo		= (sizeof($orcItens) > 0) ? 1 : 0;
 for ($i = 0; $i < sizeof($orcItens); $i++) {
 	$item		= $orcItens[$i]->getCodItem();
 	$codTipo	= $item->getCodGrupoItem()->getCodigo();
@@ -92,9 +93,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["CODIGO"] 		= $itens[$i]->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["TIPO"] 		= $itens[$i]->getCodTipoItem()->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $itens[$i]->getItem();
-	$aItens[$codTipo]["ITENS"][$codigo]["IND_OBR"] 		= $itens[$i]->getIndObrigatorio();
 	$aItens[$codTipo]["ITENS"][$codigo]["VALOR_PADRAO"]	= $valorPadrao;
-	
 	
 	if (isset($aOrcItens[$codigo])) {
 		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= $aOrcItens[$codigo]["QTDE"];
@@ -103,13 +102,15 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= $aOrcItens[$codigo]["TOTAL"];
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= $aOrcItens[$codigo]["COD_CORT"];
 		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 1;
+		$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= null;
 	}else{
 		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= ($valorPadrao) ? 1 : null;
-		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= $valorPadrao;
+		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= ($orcSalvo == 0) ? $valorPadrao : null;
 		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $itens[$i]->getTextoDescritivo();
-		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($itens[$i]->getIndObrigatorio() && $valorPadrao) ? $valorPadrao : 0;
+		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($itens[$i]->getIndPadrao() && $valorPadrao) ? $valorPadrao : 0;
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= null;
 		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 0;
+		$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= $itens[$i]->getIndPadrao();
 	}
 }
 
@@ -174,14 +175,14 @@ foreach ($aItens as $codTipo => $aItem)	{
 			
 			if (isset($item["VALOR"]) && $item["VALOR"] && $item["SALVO"] == 1) {
 				$checked	= 'checked="checked"';
-			}elseif (isset($item["VALOR"]) && $item["VALOR"] && $item["SALVO"] == 0 && $item["IND_OBR"]) {
-				$checked	= 'checked="checked"';
+			//}elseif (isset($item["VALOR"]) && $item["VALOR"] && $item["SALVO"] == 0 && $item["PADRAO"]) {
+//				$checked	= 'checked="checked"';
 			}else{
-				$checked	= ($item["IND_OBR"]) ? 'checked="checked"' : null;
+				$checked	= ($item["PADRAO"] && $orcSalvo == 0) ? 'checked="checked"' : null;
 				$hidObs		= "";
 			}
 			
-			if ((isset($item["COD_CORT"]) && $item["COD_CORT"] && ($item["VALOR"] == 0)) || (($item["VALOR"] == 0) && ($item["IND_OBR"]))) {
+			if ((isset($item["COD_CORT"]) && $item["COD_CORT"] && ($item["VALOR"] == 0)) || (($item["VALOR"] == 0) && ($item["PADRAO"]))) {
 				$hidObs		= "";
 			}else{
 				$hidObs		= "hidden";

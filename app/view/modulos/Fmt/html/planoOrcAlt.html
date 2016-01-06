@@ -55,7 +55,7 @@
 										<th class="col-sm-2 center">Calcular</th>
 										<th class="col-sm-2 center">Categoria</th>
 										<th class="col-sm-2 center">Valor Padrão</th>
-										<th class="col-sm-1 center">Obrigatório</th>
+										<th class="col-sm-1 center">Padrão</th>
 										<th class="col-sm-1 center">Ativo</th>
 										<th class="col-sm-2 center"><span style="cursor: pointer;" class="" onclick="addRowOrcamentoOrcAlt();"><i class="fa fa-plus-circle blue bigger-150"></i></span></th>
 									</tr>
@@ -123,7 +123,7 @@ $('#zgFormID').submit(function() {
 	
 	$('[zg-name="item"]').each( function( index, el ) {
 		var $_oIndAtivo	= $('[zg-name="indAtivo"]:eq('+index+')');
-		var $_oIndObr	= $('[zg-name="indObrigatorio"]:eq('+index+')');
+		var $_oIndObr	= $('[zg-name="indPadrao"]:eq('+index+')');
 		var $_ativo		= $_oIndAtivo.is(':checked');
 		var $_obr		= $_oIndObr.is(':checked');
 		if ($_ativo == true) {
@@ -131,7 +131,7 @@ $('#zgFormID').submit(function() {
 		}
 		
 		if ($_obr == true) {
-			$('#zgFormID').append('<input type="hidden" class="removeHidden" name="indObrigatorio['+index+']" value="1" />');
+			$('#zgFormID').append('<input type="hidden" class="removeHidden" name="indPadrao['+index+']" value="1" />');
 		}
 	});
 	
@@ -175,7 +175,7 @@ function addRowOrcamentoOrcAlt() {
 	
 	var $numRows = ($("#layRegTableOrcamentoID > tbody > tr._registroOrc").length);
 	
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroOrc"><td><input type="text" class="width-100" name="item[]" zg-name="item" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_CATEGORIA%</select></td><td><input type="text" class="width-100" name="valorPadrao[]" zg-name="valorPadrao" placeholder="Valor Padrão" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="verificaAlteracaoOrcAlt($(this));"></td><td align="center"><label><input zg-name="indObrigatorio" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td align="center"><label><input zg-name="indAtivo" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i class="fa fa-commenting-o bigger-150"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroOrc"><td><input type="text" class="width-100" name="item[]" zg-name="item" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_CATEGORIA%</select></td><td><input type="text" class="width-100" name="valorPadrao[]" zg-name="valorPadrao" placeholder="Valor Padrão" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="verificaAlteracaoOrcAlt($(this));"></td><td align="center"><label><input zg-name="indPadrao" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td align="center"><label><input zg-name="indAtivo" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i class="fa fa-commenting-o bigger-150"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-name="item"]').each(function( index ) {
 		$( this ).focus();
 	});

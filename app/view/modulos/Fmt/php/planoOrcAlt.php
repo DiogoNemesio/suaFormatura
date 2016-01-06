@@ -134,7 +134,7 @@ $tabOrcamento	= "";
 for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 	
 	$indAtivo		= ($aOrcItem[$i]->getIndAtivo()			== 1) ? "checked" : null;
-	$indObrigatorio	= ($aOrcItem[$i]->getIndObrigatorio()	== 1) ? "checked" : null;
+	$indPadrao		= ($aOrcItem[$i]->getIndPadrao()		== 1) ? "checked" : null;
 	$codTipoItem	= ($aOrcItem[$i]->getCodTipoItem()) ? $aOrcItem[$i]->getCodTipoItem()->getCodigo() : null;
 	$oTipoItem		= $system->geraHtmlCombo($aTipoItem,	'CODIGO', 'DESCRICAO',	$codTipoItem, '');
 	$codCategoria	= ($aOrcItem[$i]->getCodCategoria()) ? $aOrcItem[$i]->getCodCategoria()->getCodigo() : null;
@@ -165,7 +165,7 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oTipoItem.'</select></td>
 				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oCatExiste.'</select></td>
 				<td><input type="text" class="width-100" name="valorPadrao[]" zg-name="valorPadrao" value="'.$valorPadrao.'" placeholder="Valor Padrão" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="verificaAlteracaoOrcAlt($(this));"></td>
-				<td align="center"><label><input zg-name="indObrigatorio" '.$indObrigatorio.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
+				<td align="center"><label><input zg-name="indPadrao" '.$indPadrao.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
 				<td align="center"><label><input zg-name="indAtivo" '.$indAtivo.' class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td>
 				<td class="center">
 						<div data-toggle="buttons" class="btn-group btn-overlap btn-corner">

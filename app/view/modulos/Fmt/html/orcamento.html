@@ -486,8 +486,16 @@ function orcCalculaNumMeses() {
 			success: function(data) {
 				var $meses	= data["MESES"];
 
-				$meses		= parseInt($meses);
-				$('#spOrcInfoNumMesesID').html($meses+" meses previstos");
+				$meses		= parseInt($meses) - 1;
+				if ($meses < 0) {
+					$meses 	= 0;
+				}
+				if ($meses == 1) {
+					$('#spOrcInfoNumMesesID').html($meses+" mês previsto");
+				}else{
+					$('#spOrcInfoNumMesesID').html($meses+" meses previstos");
+				}
+				
 				$('#dataAnteriorID').val($dataConclusao);
 				$('#numMesesID').val($meses);
 		    },
@@ -804,12 +812,17 @@ function orcAtualizaCustoFinal() {
 	 * Calcula o valor de uso do sistema e outros custos 
 	 */
 	 var $numMeses			= parseInt($('#numMesesID').val());
-	 if (isNaN($numMeses) || !$numMeses) {
+	 if (isNaN($numMeses)) {
 		 return;
 	 }
 	 var $valSistema		= ($numMeses * $taxaSistema);
 	 var $valTotal			= ($custoFinal + (($valSistema) * $numFormando));
-	 var $valMensalidade	= (($valTotal / $numFormando) / $numMeses);
+	 if ($numMeses > 0) 	{
+		 var $valMensalidade	= (($valTotal / $numFormando) / $numMeses);
+	 }else{
+		 var $valMensalidade	= (($valTotal / $numFormando));
+	 }
+	 
 	 var $custoFormando		= ($valMensalidade * $numMeses);
 
 	 var $spTotalSistema	= $('#orcCustoSistemaID');
