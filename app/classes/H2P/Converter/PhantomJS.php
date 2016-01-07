@@ -99,7 +99,7 @@ class PhantomJS extends ConverterAbstract
      * 
      * @var string
      */
-    protected $binPath = '/srv/www/htdocs/suaFormatura/app/classes/H2P/bin/';
+    protected $binPath = "";
     
     /**
      * Paths to search PhantomJS binary file
@@ -120,6 +120,7 @@ class PhantomJS extends ConverterAbstract
 
         // Set the right path for the bin directory
         //$this->binPath = realpath(__DIR__ . '/' . $this->binPath);
+        $this->binPath		= CLASS_PATH . "/H2P/bin/";
 
         $options and $this->setOptions($options);
         $this->detectSearchPaths($paths);

@@ -112,17 +112,17 @@ body{
 }
 
 .table-boleto .codbanco {
-    font: bold 20px Arial;
+    font: bold 18px Arial;
     padding: 1px 5px;
     display: inline;
     border-left: 2px solid #000;
     border-right: 2px solid #000;
-    width: 51px;
-    margin-left: 25px;
+    width: 50px;
+    margin-left: 22px;
 }
 
 .table-boleto .linha-digitavel {
-    font: bold 13px Arial;
+    font: bold 11px Arial;
     display: inline-block;
     width: 406px;
     text-align: right;
