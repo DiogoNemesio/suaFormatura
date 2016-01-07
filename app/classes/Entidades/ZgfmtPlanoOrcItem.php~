@@ -59,9 +59,9 @@ class ZgfmtPlanoOrcItem
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_OBRIGATORIO", type="integer", nullable=true)
+     * @ORM\Column(name="IND_PADRAO", type="integer", nullable=true)
      */
-    private $indObrigatorio;
+    private $indPadrao;
 
     /**
      * @var float
@@ -237,26 +237,26 @@ class ZgfmtPlanoOrcItem
     }
 
     /**
-     * Set indObrigatorio
+     * Set indPadrao
      *
-     * @param integer $indObrigatorio
+     * @param integer $indPadrao
      * @return ZgfmtPlanoOrcItem
      */
-    public function setIndObrigatorio($indObrigatorio)
+    public function setIndPadrao($indPadrao)
     {
-        $this->indObrigatorio = $indObrigatorio;
+        $this->indPadrao = $indPadrao;
 
         return $this;
     }
 
     /**
-     * Get indObrigatorio
+     * Get indPadrao
      *
      * @return integer 
      */
-    public function getIndObrigatorio()
+    public function getIndPadrao()
     {
-        return $this->indObrigatorio;
+        return $this->indPadrao;
     }
 
     /**

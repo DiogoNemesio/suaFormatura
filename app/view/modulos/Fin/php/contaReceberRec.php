@@ -76,6 +76,7 @@ $codContaPag		= ($oConta->getCodConta() != null) ? $oConta->getCodConta()->getCo
 $dataRec			= date($system->config["data"]["dateFormat"]);
 $vencimento			= ($oConta->getDataVencimento() != null) 	? $oConta->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
 $documento			= "";
+$valorBoleto		= \Zage\Fmt\Financeiro::getValorBoletoConta($oConta->getCodigo());
 
 
 #################################################################################
@@ -211,6 +212,7 @@ $tpl->set('URL_VOLTAR'			,$urlVoltar);
 $tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('TEMP_JUROS'			,\Zage\App\Util::toMysqlNumber($valorJuros));
 $tpl->set('TEMP_MORA'			,\Zage\App\Util::toMysqlNumber($valorMora));
+$tpl->set('VALOR_BOLETO'		,\Zage\App\Util::toMysqlNumber($valorBoleto));
 
 
 #################################################################################

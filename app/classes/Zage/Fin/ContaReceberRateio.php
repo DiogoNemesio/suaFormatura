@@ -320,6 +320,57 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 		}
 	}
 	
+
+	/**
+	 * Recalcular os percentuais de rateio de uma conta
+	 * @param int $codConta
+	 */
+	public function recalculaPctRateio ($codConta) {
+
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$log;
+	
+		try {
+		
+			#################################################################################
+			## Iremos usar a estratégia mais simples para o recalculo:
+			## Somar o valor total de cada item rateado, depois aplicar para cada item o PCT
+			## correspondente ao valor total.
+			#################################################################################
+			$rateios	= $em->getRepository('Entidades\ZgfinContaReceberRateio')->findBy(array('codContaRec' => $codConta));
+			$valorTotal	= 0;
+			$calcPct	= array();
+			
+			for ($i = 0; $i < sizeof($rateios); $i++) {
+				$valorTotal				+= \Zage\App\Util::to_float($rateios[$i]->getValor());
+				$calcPct[$i]["VALOR"]	= \Zage\App\Util::to_float($rateios[$i]->getValor());
+			}
+			
+			#################################################################################
+			## Aplicar os novos percentuais aos rateios
+			#################################################################################
+			$ultimo		= sizeof($rateios) - 1;
+			$pctAcc		= 0;
+			for ($i = 0; $i < sizeof($rateios); $i++) {
+				if ($i == $ultimo) {
+					$pct	= 100 - $pctAcc; 
+				}else{
+					$pct	= round(\Zage\App\Util::to_float($rateios[$i]->getValor()) * 100 / $valorTotal,2);
+					$pctAcc	+= $pct;
+				}
+				$rateios[$i]->setPctValor($pct);
+				$em->persist($rateios[$i]);
+			}
+		
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+				
+		return null;
+		
+	}
 	
 	public function _setCodigo($codigo) {
 		$this->_codigo	= $codigo;

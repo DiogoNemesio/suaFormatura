@@ -16,17 +16,18 @@ global $em,$log,$system,$tr;
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-if (isset($_POST['codConta']))			$codConta			= \Zage\App\Util::antiInjection($_POST['codConta']);
-if (isset($_POST['codContaCre']))		$codContaCre		= \Zage\App\Util::antiInjection($_POST['codContaCre']);
-if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
-if (isset($_POST['dataRec']))			$dataRec			= \Zage\App\Util::antiInjection($_POST['dataRec']);
-if (isset($_POST['valor']))				$valor				= \Zage\App\Util::antiInjection($_POST['valor']);
-if (isset($_POST['valorJuros']))		$valorJuros			= \Zage\App\Util::antiInjection($_POST['valorJuros']);
-if (isset($_POST['valorMora']))			$valorMora			= \Zage\App\Util::antiInjection($_POST['valorMora']);
-if (isset($_POST['valorDesconto']))		$valorDesconto		= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
-if (isset($_POST['valorOutros']))		$valorOutros		= \Zage\App\Util::antiInjection($_POST['valorOutros']);
-if (isset($_POST['documento']))			$documento			= \Zage\App\Util::antiInjection($_POST['documento']);
-if (isset($_POST['flagPerdoa']))		$flagPerdoa			= \Zage\App\Util::antiInjection($_POST['flagPerdoa']);
+if (isset($_POST['codConta']))				$codConta				= \Zage\App\Util::antiInjection($_POST['codConta']);
+if (isset($_POST['codContaCre']))			$codContaCre			= \Zage\App\Util::antiInjection($_POST['codContaCre']);
+if (isset($_POST['codFormaPag']))			$codFormaPag			= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
+if (isset($_POST['dataRec']))				$dataRec				= \Zage\App\Util::antiInjection($_POST['dataRec']);
+if (isset($_POST['valor']))					$valor					= \Zage\App\Util::antiInjection($_POST['valor']);
+if (isset($_POST['valorJuros']))			$valorJuros				= \Zage\App\Util::antiInjection($_POST['valorJuros']);
+if (isset($_POST['valorMora']))				$valorMora				= \Zage\App\Util::antiInjection($_POST['valorMora']);
+if (isset($_POST['valorDesconto']))			$valorDesconto			= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
+if (isset($_POST['valorOutros']))			$valorOutros			= \Zage\App\Util::antiInjection($_POST['valorOutros']);
+if (isset($_POST['documento']))				$documento				= \Zage\App\Util::antiInjection($_POST['documento']);
+if (isset($_POST['flagPerdoa']))			$flagPerdoa				= \Zage\App\Util::antiInjection($_POST['flagPerdoa']);
+if (isset($_POST['valorDescontoBoleto']))	$valorDescontoBoleto	= \Zage\App\Util::antiInjection($_POST['valorDescontoBoleto']);
 
 $err	= null;
 
@@ -102,23 +103,49 @@ if ($err) {
 #################################################################################
 ## Ajustar os valores
 #################################################################################
-if (empty($valor))			$valor				= 0;
-if (empty($valorDesconto))	$valorDesconto		= 0;
-if (empty($valorJuros))		$valorJuros			= 0;
-if (empty($valorMora))		$valorMora			= 0;
-if (empty($valorOutros))	$valorOutros		= 0;
+if (empty($valor))					$valor					= 0;
+if (empty($valorDesconto))			$valorDesconto			= 0;
+if (empty($valorJuros))				$valorJuros				= 0;
+if (empty($valorMora))				$valorMora				= 0;
+if (empty($valorOutros))			$valorOutros			= 0;
+if (empty($valorDescontoBoleto))	$valorDescontoBoleto	= 0;
 
-$valor				= \Zage\App\Util::to_float($valor);
-$valorDesconto		= \Zage\App\Util::to_float($valorDesconto);
-$valorJuros			= \Zage\App\Util::to_float($valorJuros);
-$valorMora			= \Zage\App\Util::to_float($valorMora);
-$valorOutros		= \Zage\App\Util::to_float($valorOutros);
+$valor					= \Zage\App\Util::to_float($valor);
+$valorDesconto			= \Zage\App\Util::to_float($valorDesconto);
+$valorJuros				= \Zage\App\Util::to_float($valorJuros);
+$valorMora				= \Zage\App\Util::to_float($valorMora);
+$valorOutros			= \Zage\App\Util::to_float($valorOutros);
+$valorDescontoBoleto	= \Zage\App\Util::to_float($valorDescontoBoleto);
+
+
+#################################################################################
+## Dar desconto na conta, caso tenha desconto de boleto
+#################################################################################
+if ($valorDescontoBoleto > 0) {
+	
+	#################################################################################
+	## Resgata o valorOutros da conta, para agregar o desconto do boleto
+	#################################################################################
+	$valorOutrosAtual		= $oConta->getValorOutros();
+	$oConta->setValorOutros($valorOutrosAtual - $valorDescontoBoleto);
+	$em->persist($oConta);
+
+	#################################################################################
+	## Excluir o rateio referente ao boleto, e recalcular os percentuais das outras categorias
+	#################################################################################
+	\Zage\Fmt\Financeiro::excluiRateioBoleto($oConta->getCodigo());
+	
+	#################################################################################
+	## Recalcula os percentuais de rateio
+	#################################################################################
+	\Zage\Fin\ContaReceberRateio::recalculaPctRateio($oConta->getCodigo());
+}
+
 
 #################################################################################
 ## Ajustar valores das checkboxes
 #################################################################################
 $flagPerdoa		= (isset($flagPerdoa)) 		? 1 : 0;
-
 
 #################################################################################
 ## Verificar se a conta está atrasada e calcular o júros e mora caso existam

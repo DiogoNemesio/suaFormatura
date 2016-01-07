@@ -1313,6 +1313,39 @@ class Financeiro {
 	}
 	
 	
+	/**
+	 * Remover o registro de rateio de boleto
+	 * @param int $codConta
+	 */
+	public static function excluiRateioBoleto($codConta) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+		
+		try {
+			
+			#################################################################################
+			## Resgatar a categorias de boleto
+			#################################################################################
+			$codCatBoleto	= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
+			
+			#################################################################################
+			## Localizar o rateio do boleto na conta
+			#################################################################################
+			$ratBoleto		= $em->getRepository('Entidades\ZgfinContaReceberRateio')->findOneBy(array('codContaRec' => $codConta,'codCategoria' => $codCatBoleto)); 
+			
+			if ($ratBoleto)	{
+				$em->remove($ratBoleto);
+			}
+		
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	
+		return null;
+	}
+	
 
 }
 
