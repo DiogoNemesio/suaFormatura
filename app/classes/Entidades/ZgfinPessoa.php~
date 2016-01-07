@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinPessoa
  *
- * @ORM\Table(name="ZGFIN_PESSOA", indexes={@ORM\Index(name="fk_ZGFIN_PESSOA_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFIN_PESSOA_2_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFIN_PESSOA_3_idx", columns={"COD_SEXO"}), @ORM\Index(name="ZGFIN_PESSOA_UK01", columns={"COD_ORGANIZACAO", "CGC"})})
+ * @ORM\Table(name="ZGFIN_PESSOA", indexes={@ORM\Index(name="fk_ZGFIN_PESSOA_1_idx", columns={"COD_TIPO_PESSOA"}), @ORM\Index(name="fk_ZGFIN_PESSOA_2_idx", columns={"COD_PARCEIRO"}), @ORM\Index(name="fk_ZGFIN_PESSOA_3_idx", columns={"COD_SEXO"}), @ORM\Index(name="ZGFIN_PESSOA_UK01", columns={"COD_PARCEIRO", "CGC"}), @ORM\Index(name="fk_ZGFIN_PESSOA_4_idx", columns={"COD_ORGANIZACAO_CADASTRO"})})
  * @ORM\Entity
  */
 class ZgfinPessoa
@@ -141,6 +141,13 @@ class ZgfinPessoa
     private $link;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="COD_ORGANIZACAO_CADASTRO", type="integer", nullable=true)
+     */
+    private $codOrganizacaoCadastro;
+
+    /**
      * @var \Entidades\ZgfinPessoaTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoaTipo")
@@ -155,10 +162,10 @@ class ZgfinPessoa
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_ORGANIZACAO", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_PARCEIRO", referencedColumnName="CODIGO")
      * })
      */
-    private $codOrganizacao;
+    private $codParceiro;
 
     /**
      * @var \Entidades\ZgsegSexoTipo
@@ -573,6 +580,29 @@ class ZgfinPessoa
     }
 
     /**
+     * Set codOrganizacaoCadastro
+     *
+     * @param integer $codOrganizacaoCadastro
+     * @return ZgfinPessoa
+     */
+    public function setCodOrganizacaoCadastro($codOrganizacaoCadastro)
+    {
+        $this->codOrganizacaoCadastro = $codOrganizacaoCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacaoCadastro
+     *
+     * @return integer 
+     */
+    public function getCodOrganizacaoCadastro()
+    {
+        return $this->codOrganizacaoCadastro;
+    }
+
+    /**
      * Set codTipoPessoa
      *
      * @param \Entidades\ZgfinPessoaTipo $codTipoPessoa
@@ -596,26 +626,26 @@ class ZgfinPessoa
     }
 
     /**
-     * Set codOrganizacao
+     * Set codParceiro
      *
-     * @param \Entidades\ZgadmOrganizacao $codOrganizacao
+     * @param \Entidades\ZgadmOrganizacao $codParceiro
      * @return ZgfinPessoa
      */
-    public function setCodOrganizacao(\Entidades\ZgadmOrganizacao $codOrganizacao = null)
+    public function setCodParceiro(\Entidades\ZgadmOrganizacao $codParceiro = null)
     {
-        $this->codOrganizacao = $codOrganizacao;
+        $this->codParceiro = $codParceiro;
 
         return $this;
     }
 
     /**
-     * Get codOrganizacao
+     * Get codParceiro
      *
      * @return \Entidades\ZgadmOrganizacao 
      */
-    public function getCodOrganizacao()
+    public function getCodParceiro()
     {
-        return $this->codOrganizacao;
+        return $this->codParceiro;
     }
 
     /**

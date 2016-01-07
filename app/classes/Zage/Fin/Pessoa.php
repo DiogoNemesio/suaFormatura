@@ -379,8 +379,8 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 			->from('\Entidades\ZgfinPessoa','p')
 			->where($qb->expr()->andX(
 				$qb->expr()->orX(
-					$qb->expr()->in('p.codOrganizacao'	, ':codOrganizacao'),
-					$qb->expr()->isNull('p.codOrganizacao')
+					$qb->expr()->in('p.codParceiro'	, ':codOrganizacao')
+					//$qb->expr()->isNull('p.codOrganizacao')
 				),
 				$qb->expr()->in('p.codTipoPessoa'	, ':codTipoPessoa'),
 				$qb->expr()->eq('p.'.$indTipo		, ':indTipo')

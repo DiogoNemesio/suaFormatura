@@ -105,7 +105,7 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 	if ($tipoOrg == "ADM") {
 		$podeAlt		=  true;
 	}else{
-		$codOrgPessoa	= ($pessoas[$i]->getCodOrganizacao()) ? $pessoas[$i]->getCodOrganizacao()->getCodigo() : false;
+		$codOrgPessoa	= ($pessoas[$i]->getCodParceiro()) ? $pessoas[$i]->getCodParceiro()->getCodigo() : false;
 		$podeAlt		= ($codOrgPessoa && $codOrgPessoa == $system->getCodOrganizacao()) ? true : false;
 	}
 	 

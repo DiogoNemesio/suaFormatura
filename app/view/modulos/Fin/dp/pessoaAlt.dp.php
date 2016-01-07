@@ -217,14 +217,13 @@ if ($err != null) {
 #################################################################################
 ## Salvar no banco
 #################################################################################
+$em->getConnection()->beginTransaction();
 try {
 	if (isset($codPessoa) && (!empty($codPessoa))) {
  		$oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codPessoa));
- 		$oEndereco	= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa));
  			
  		if (!$oPessoa) {
  			$oPessoa	= new \Entidades\ZgfinPessoa();
- 			$oEndereco	= new \Entidades\ZgfinPessoaEndereco();
  			$oPessoa->setDataCadastro(new \DateTime("now"));
  			$oPessoa->setIndCliente(0);
  			$oPessoa->setIndFornecedor(0);
@@ -232,7 +231,6 @@ try {
  		}
  	}else{
  		$oPessoa	= new \Entidades\ZgfinPessoa();
- 		$oEndereco	= new \Entidades\ZgfinPessoaEndereco();
  		$oPessoa->setDataCadastro(new \DateTime("now"));
  		$oPessoa->setIndCliente(0);
  		$oPessoa->setIndFornecedor(0);
@@ -251,18 +249,15 @@ try {
  		$dtNasc		= null;
  	}
  	
- 	
- 	//$log->debug("Tipo Cad Pessoa: ".$tipoCadPessoa);
- 	
  	if ($tipoCadPessoa == "C") {
  		$oPessoa->setIndCliente(1);
  	}elseif ($tipoCadPessoa == "F") {
  		$oPessoa->setIndFornecedor(1);
-	}elseif ($tipoCadPessoa == "T") {
-		$oPessoa->setIndTransportadora(1);
+ 	}elseif ($tipoCadPessoa == "T") {
+ 		$oPessoa->setIndTransportadora(1);
  	}
  	
- 	$oPessoa->setCodOrganizacao($oOrg);
+ 	//$oPessoa->setCodParceiro($oOrg);
  	$oPessoa->setNome($nome);
  	$oPessoa->setFantasia($fantasia);
  	$oPessoa->setCgc($cgc);
@@ -278,7 +273,38 @@ try {
  	$oPessoa->setLink($link);
  	$oPessoa->setIndEstrangeiro($indEstrangeiro);
  	
+ 	$em->persist($oPessoa);
+ 	
+ 	/**** Pessoa - organização ****/
+ 	$oPessoaOrg	= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codigo' => $oPessoa->getCodigo()));
+ 	if (!$oPessoaOrg) {
+ 		$oPessoaOrg	= new \Entidades\ZgfinPessoaOrganizacao();
+ 		//$oPessoaOrg->setDataCadastro(new \DateTime("now"));$oPessoa->setIndCliente(0);
+ 		$oEndereco	= new \Entidades\ZgfinPessoaEnderecoOrganizacao();
+ 		$oPessoaOrg->setIndCliente(0);
+ 		$oPessoaOrg->setIndFornecedor(0);
+ 		$oPessoaOrg->setIndTransportadora(0);
+ 	}else{
+ 		$oEndereco	= $em->getRepository('Entidades\ZgfinPessoaEnderecoOrganizacao')->findOneBy(array('codPessoa' => $codPessoa));
+ 	}
+ 	
+ 	if ($tipoCadPessoa == "C") {
+ 		$oPessoaOrg->setIndCliente(1);
+ 	}elseif ($tipoCadPessoa == "F") {
+ 		$oPessoaOrg->setIndFornecedor(1);
+ 	}elseif ($tipoCadPessoa == "T") {
+ 		$oPessoaOrg->setIndTransportadora(1);
+ 	}
+ 	
+ 	$oPessoaOrg->setCodPessoa($oPessoa);
+ 	$oPessoaOrg->setCodOrganizacao($oOrg);
+ 	$oPessoaOrg->setIndContribuinte(0);
+ 	
+ 	$em->persist($oPessoaOrg);
+ 	
+ 	/**** Pessoa - endereço - organização ****/
  	$oEndereco->setCodPessoa($oPessoa);
+ 	$oEndereco->setCodOrganizacao($oOrg);
  	$oEndereco->setCodTipoEndereco($oTipoEnd);
  	$oEndereco->setCodLogradouro($oCodLogradouro);
  	$oEndereco->setEndereco($descLogradouro);
@@ -289,13 +315,11 @@ try {
  	$oEndereco->setIndEndCorreto($endCorreto == "on" ? 1 : 0);
  	
  	$em->persist($oEndereco);
- 	$em->persist($oPessoa);
- 	$em->flush();
  	
  	#################################################################################
  	## Contato
  	#################################################################################
- 	$telefones		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findBy(array('codProprietario' => $codPessoa));
+ 	$telefones		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $oOrg->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
  	
  	#################################################################################
  	## Exclusão
@@ -304,7 +328,6 @@ try {
  		if (!in_array($telefones[$i]->getCodigo(), $codTelefone)) {
  			try {
  				$em->remove($telefones[$i]);
- 				$em->flush();
  			} catch (\Exception $e) {
  				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
  				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -318,24 +341,23 @@ try {
  	## Criação / Alteração 
  	#################################################################################
  	for ($i = 0; $i < sizeof($codTelefone); $i++) {
- 		$infoTel		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findOneBy(array('codigo' => $codTelefone[$i] , 'codProprietario' => $oPessoa->getCodigo()));
+ 		$infoTel		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findOneBy(array('codigo' => $codTelefone[$i] , 'codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
  	
  		if (!$infoTel) {
- 			$infoTel		= new \Entidades\ZgfinPessoaTelefone();
+ 			$infoTel		= new \Entidades\ZgfinPessoaTelefoneOrganizacao();
  		}
  		
  		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i] || $infoTel->getTelefone() !== $telefone[$i]) {
  			
  			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
  			
- 			$infoTel->setCodProprietario($oPessoa);
+ 			$infoTel->setCodPessoa($oPessoa);
+ 			$infoTel->setCodOrganizacao($oOrg);
  			$infoTel->setCodTipoTelefone($oTipoTel);
  			$infoTel->setTelefone($telefone[$i]);
  		 	
  			try {
  				$em->persist($infoTel);
- 				$em->flush();
- 				$em->detach($infoTel);
  			} catch (\Exception $e) {
  				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível cadastrar o telefone: ".$telefone[$i]." Erro: ".$e->getMessage());
  				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -370,7 +392,6 @@ try {
 		if (!in_array($segAss[$i]->getCodSegmento()->getCodigo(), $arraySeg)) {
 			try {
 				$em->remove($segAss[$i]);
-				$em->flush();
 			} catch (\Exception $e) {
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o segmento: ".$segAss[$i]->getCodSegmento()->getDescricao()." Erro: ".$e->getMessage());
 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -398,8 +419,7 @@ try {
 				$oPesSegMer->setCodSegmento($oSeg);
  	
 				$em->persist($oPesSegMer);
-				$em->flush();
-				$em->detach($oPesSegMer);
+				
 			} catch (\Exception $e) {
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o segmento: ".$segAss[$i]->getCodSegmento()->getDescricao()." Erro: ".$e->getMessage());
 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -411,7 +431,7 @@ try {
 	#################################################################################
 	## Fonte de Recurso
 	#################################################################################
-	$contas		= $em->getRepository('Entidades\ZgfinPessoaConta')->findBy(array('codPessoa' => $codPessoa));
+	$contas		= $em->getRepository('Entidades\ZgfinPessoaContaOrganizacao')->findBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $oOrg->getCodigo()));
 	
 	#################################################################################
 	## Exclusão
@@ -420,7 +440,6 @@ try {
 		if (!in_array($contas[$i]->getCodigo(), $codConta)) {
 			try {
 				$em->remove($contas[$i]);
-				$em->flush();
 			} catch (\Exception $e) {
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir a conta: ".$contas[$i]->getCcorrente()." Erro: ".$e->getMessage());
 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
@@ -433,30 +452,45 @@ try {
 	## Criação / Alteração
 	#################################################################################
 	for ($i = 0; $i < sizeof($codConta); $i++) {
-		$infoConta		= $em->getRepository('Entidades\ZgfinPessoaConta')->findOneBy(array('codigo' => $codConta[$i] , 'codPessoa' => $oPessoa->getCodigo()));
+		$infoConta		= $em->getRepository('Entidades\ZgfinPessoaContaOrganizacao')->findOneBy(array('codigo' => $codConta[$i] , 'codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
 		if (!$infoConta) {
-			$infoConta		= new \Entidades\ZgfinPessoaConta();
+			$infoConta		= new \Entidades\ZgfinPessoaContaOrganizacao();
 		}
 		
 		$oBanco	= $em->getRepository('Entidades\ZgfinBanco')->findOneBy(array('codigo' => $codBanco[$i]));
 	
 		$infoConta->setCodPessoa($oPessoa);
+		$infoConta->setCodOrganizacao($oOrg);
 		$infoConta->setCodBanco($oBanco);
 		$infoConta->setAgencia($agencia[$i]);
 		$infoConta->setCcorrente($ccorrente[$i]);
 				
 		try {
 			$em->persist($infoConta);
-			$em->flush();
-			$em->detach($infoConta);
 		} catch (\Exception $e) {
 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível cadastrar o telefone: ".$telefone[$i]." Erro: ".$e->getMessage());
 			echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  			exit;
 		}
 	}
-	
+	$em->flush();
+	$em->clear();
+	$em->getConnection()->commit();
+	/**
+	#################################################################################
+	## Salvar no banco
+	#################################################################################
+	try {
+		$em->flush();
+		$em->clear();
+		$em->getConnection()->commit();	
+	} catch (\Exception $e) {
+		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+		exit;
+	}
+	**/
 } catch (\Exception $e) {
+	$em->getConnection()->rollback();
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;
