@@ -126,6 +126,10 @@ if ($valorDescontoBoleto > 0) {
 	#################################################################################
 	## Resgata o valorOutros da conta, para agregar o desconto do boleto
 	#################################################################################
+	$em->getConnection()->beginTransaction();
+	$transacaoIniciada			= 1;
+	
+	
 	$valorOutrosAtual		= $oConta->getValorOutros();
 	$oConta->setValorOutros($valorOutrosAtual - $valorDescontoBoleto);
 	$em->persist($oConta);
@@ -139,6 +143,9 @@ if ($valorDescontoBoleto > 0) {
 	## Recalcula os percentuais de rateio
 	#################################################################################
 	\Zage\Fin\ContaReceberRateio::recalculaPctRateio($oConta->getCodigo());
+	
+}else{
+	$transacaoIniciada			= 0;
 }
 
 
@@ -179,11 +186,11 @@ if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRec) == true
 #################################################################################
 ## Salvar no banco
 #################################################################################
-$em->getConnection()->beginTransaction();
+if (!$transacaoIniciada) $em->getConnection()->beginTransaction();
 try {
 
 	$conta		= new \Zage\Fin\ContaReceber();
-	$erro		= $conta->recebe($oConta,$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,"MAN",null);
+	$erro		= $conta->recebe($oConta,$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,"MAN",null,$valorDescontoBoleto);
 	
 	if ($erro != false) {
 		$em->getConnection()->rollback();

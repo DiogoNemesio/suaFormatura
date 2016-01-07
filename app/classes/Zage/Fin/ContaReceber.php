@@ -909,7 +909,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param string $seqRetorno
 	 * @return string|unknown|NULL
 	 */
-	public function recebe (\Entidades\ZgfinContaReceber $oConta,$codContaDeb,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,$codTipoBaixa,$seqRetorno = null) {
+	public function recebe (\Entidades\ZgfinContaReceber $oConta,$codContaDeb,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,$codTipoBaixa,$seqRetorno = null,$valDescontoBoletoConcedido = null) {
 
 		#################################################################################
 		## Variáveis globais
@@ -953,6 +953,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		if ($valorDesconto 	< 0)	return($tr->trans("Campo Desconto não pode ser negativo"));
 		if ($valorDescJuros < 0)	return($tr->trans("Campo Desconto de júros não pode ser negativo"));
 		if ($valorDescMora 	< 0)	return($tr->trans("Campo Desconto de mora não pode ser negativo"));
+		if (($valDescontoBoletoConcedido) && ($valDescontoBoletoConcedido < 0))	return($tr->trans("Campo valDescontoBoletoConcedido não pode ser negativo"));
 		
 		$valData	= new \Zage\App\Validador\DataBR();
 		
@@ -963,13 +964,14 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Ajusta os valores para o Formato do Banco
 		#################################################################################
-		$valor			= \Zage\App\Util::to_float($valor);
-		$valorJuros		= \Zage\App\Util::to_float($valorJuros);
-		$valorMora		= \Zage\App\Util::to_float($valorMora);
-		$valorDesconto	= \Zage\App\Util::to_float($valorDesconto);
-		$valorOutros	= \Zage\App\Util::to_float($valorOutros);
-		$valorDescJuros	= \Zage\App\Util::to_float($valorDescJuros);
-		$valorDescMora	= \Zage\App\Util::to_float($valorDescMora);
+		$valor						= \Zage\App\Util::to_float($valor);
+		$valorJuros					= \Zage\App\Util::to_float($valorJuros);
+		$valorMora					= \Zage\App\Util::to_float($valorMora);
+		$valorDesconto				= \Zage\App\Util::to_float($valorDesconto);
+		$valorOutros				= \Zage\App\Util::to_float($valorOutros);
+		$valorDescJuros				= \Zage\App\Util::to_float($valorDescJuros);
+		$valorDescMora				= \Zage\App\Util::to_float($valorDescMora);
+		$valDescontoBoletoConcedido	= \Zage\App\Util::to_float($valDescontoBoletoConcedido);
 
 		#################################################################################
 		## Calcular o valor total recebido
@@ -1176,6 +1178,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$oHist->setCodGrupoMov($grupoMov);
 		$oHist->setCodTipoBaixa($oBaixa);
 		$oHist->setSeqRetornoBancario($seqRetorno);
+		if ($valDescontoBoletoConcedido) {
+			$oHist->setValDescontoBoletoConcedido($valDescontoBoletoConcedido);
+		}
 		
 		#################################################################################
 		## Atualizar as informações da conta
@@ -2409,7 +2414,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$tr,$log;
+		global $em,$tr,$log,$system;
 		
 		#################################################################################
 		## Valida se os parâmetros são objetos
@@ -2513,11 +2518,31 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 		
 		#################################################################################
-		## Excluir o Histórico 
+		## Cadastrar o Histórico 
 		#################################################################################
-		$aHist	=  $em->getRepository('Entidades\ZgfinContaReceberHistorico')->findBy(array('codConta' => $oConta->getCodigo()));
-		for ($i = 0; $i < sizeof($aHist); $i++) {
-			$em->remove($aHist[$i]);
+		$codTipoHist	= $em->getRepository('Entidades\ZgfinContaHistoricoTipo')->findOneBy(array('codigo' => 'EXB'));
+		$oUsu			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
+		$aHist			= new \Entidades\ZgfinContaReceberHistorico();
+		$aHist->setCodConta($oConta);
+		$aHist->setCodTipoHist($codTipoHist);
+		$aHist->setCodUsuario($oUsu);
+		$aHist->setData(new \DateTime());
+		$aHist->setHistorico("Excluído a baixa de código: ".$oHist->getCodigo());
+		$em->persist($aHist);
+
+
+		#################################################################################
+		## Verificar se abaixa concedeu desconto de boleto, se houve, incluir novamente
+		## o valor do boleto no valorOutros da conta, cadastrar novamente o rateio do boleto,
+		## e recalcular os valores de rateio da conta
+		#################################################################################
+		if ($oHist->getValDescontoBoletoConcedido() > 0) {
+			$valDescBolCon	= \Zage\App\Util::to_float($oHist->getValDescontoBoletoConcedido());
+			$oConta->setValorOutros(\Zage\App\Util::to_float($oConta->getValorOutros()) + $valDescBolCon);
+			$erro	= \Zage\Fmt\Financeiro::criaRateioBoleto($oConta->getCodigo(), $valDescBolCon);
+			if ($erro) return $erro;
+			$erro	= \Zage\Fin\ContaReceberRateio::recalculaPctRateio($oConta->getCodigo());
+			if ($erro) return $erro;
 		}
 		
 		#################################################################################

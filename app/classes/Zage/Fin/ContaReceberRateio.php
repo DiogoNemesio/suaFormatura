@@ -364,6 +364,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 				$em->persist($rateios[$i]);
 			}
 		
+			$em->flush();
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}

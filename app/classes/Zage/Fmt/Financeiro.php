@@ -1339,6 +1339,60 @@ class Financeiro {
 				$em->remove($ratBoleto);
 			}
 		
+			$em->flush();
+			
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	
+		return null;
+	}
+	
+	/**
+	 * Incluir um registro de rateio de boleto
+	 * @param int $codConta
+	 * @param floar $valor
+	 */
+	public static function criaRateioBoleto($codConta,$valor) {
+
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		try {
+				
+			#################################################################################
+			## Resgatar a categorias de boleto
+			#################################################################################
+			$codCatBoleto	= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_BOLETO");
+
+			#################################################################################
+			## Resgatar os objetos do doctrine
+			#################################################################################
+			$oCatBol		= $em->getRepository('Entidades\ZgfinCategoria')->findOneBy(array('codigo' => $codCatBoleto)); 
+			$oConta			= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('codigo' => $codConta));
+				
+			
+			#################################################################################
+			## Verificar se a conta e a categoria existem
+			#################################################################################
+			if (!$oConta)	throw new \Exception("Conta para inclusão de rateio não encontrada em ".__FUNCTION__);	
+			if (!$oCatBol)	throw new \Exception("Categoria de boleto para inclusão de rateio não encontrada em ".__FUNCTION__);
+			
+			#################################################################################
+			## Localizar o rateio do boleto na conta
+			#################################################################################
+			$ratBoleto		= new \Entidades\ZgfinContaReceberRateio();
+			$ratBoleto->setCodCategoria($oCatBol);
+			$ratBoleto->setCodCentroCusto(null);
+			$ratBoleto->setCodContaRec($oConta);
+			$ratBoleto->setValor($valor);
+			$ratBoleto->setPctValor(0);
+			$em->persist($ratBoleto);
+	
+			$em->flush();
+				
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
