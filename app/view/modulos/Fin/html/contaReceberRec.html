@@ -3,7 +3,7 @@
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 	<h4 class=""><i class="fa fa-check red"></i>&nbsp;%TITULO%</h4>
 </div>
-<div class="modal-body" style="overflow-y: scroll; height: 420px;">
+<div class="modal-body" style="overflow-y: scroll; height: 450px;">
 	<input type="hidden" name="codConta" value="%COD_CONTA%" id="codContaID">
 	<input type="hidden" name="id" value="%ID%">
 	<input type="hidden" id="tJurosID" value='%TEMP_JUROS%'>
@@ -55,7 +55,7 @@
 			    	<label class="col-sm-3 control-label" for="valorID">Valor</label>
 	    			<div class="input-group col-sm-8">
 		    			<span tabindex="99004" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Recebimento"><i class="fa fa-question-circle"></i></span>
-		    			<input class="form-control" id="valorID" type="text" name="valor" maxlength="20" value="%VALOR%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+		    			<input class="form-control" id="valorID" type="text" name="valor" maxlength="20" value="%VALOR%" onchange="CRRecRecalculaInformacoes();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
 			    	</div>
 			    </div>
 	    	</div>
@@ -105,7 +105,7 @@
 			    	<label class="col-sm-3 control-label" for="valorOutrosID">Outros Valores</label>
 	    			<div class="input-group col-sm-8">
 		    			<span tabindex="99006" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Outros Valores"><i class="fa fa-question-circle"></i></span>
-		    			<input class="form-control" id="valorOutrosID" type="text" name="valorOutros" maxlength="20" value="%VALOR_OUTROS%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+		    			<input class="form-control" id="valorOutrosID" type="text" name="valorOutros" maxlength="20" value="%VALOR_OUTROS%" autocomplete="off" onchange="CRRecRecalculaInformacoes();" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
 			    	</div>
 			    </div>
 	    	</div>
@@ -116,7 +116,7 @@
 			    	<label class="col-sm-3 control-label" for="valorDescontoID">Desconto</label>
 	    			<div class="input-group col-sm-8">
 		    			<span tabindex="99007" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Desconto"><i class="fa fa-question-circle"></i></span>
-		    			<input class="form-control" id="valorDescontoID" type="text" name="valorDesconto" maxlength="20" value="%VALOR_DESCONTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+		    			<input class="form-control" id="valorDescontoID" type="text" name="valorDesconto" maxlength="20" value="%VALOR_DESCONTO%" autocomplete="off" onchange="CRRecRecalculaInformacoes();" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
 			    	</div>
 			    </div>
 	    	</div>
@@ -134,9 +134,22 @@
 	    </div>
 	</div>
 	<div class="col-sm-4">
+		<div class="widget-box">
+			<div class="widget-header widget-header-flat widget-header-small center">
+				<h5 class="widget-title">Informações</h5>
+			</div>
+			<div class="widget-body">
+				<div class="widget-main small">
+					<div class="row">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total a Receber:</p>
+					    	<p id='lbInfoTotalID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+				</div>
+			</div>
+		</div>	
 	</div>    
-    
-    
 </div>
 <div class="modal-footer">
 	<div id="divMsgCRRecID" class="pull-left"></div>
@@ -193,6 +206,7 @@ $('[zg-data-toggle="mask"]').each(function( index ) {
 $(document).ready(function() {
 	$("#codFormaPagID").select2("destroy").select2({});
 	$("#codContaCreID").select2("destroy").select2({});
+	CRRecRecalculaInformacoes();
 });
 
 $(document).one('ajaxloadstart.page', function(e) {
@@ -330,6 +344,8 @@ function CRRecAtualizaPerdaoJurosMora() {
 	}else{
 		$('#divFlagPerdoaID').addClass("hidden");
 	}
+	
+	CRRecRecalculaInformacoes();
 }
 
 function CRRecAlteraFormaPag() {
@@ -357,6 +373,33 @@ function CRRecAlteraFormaPag() {
 		$oValDescBol.val(0);
 		$_indDescBol.val(0);
 	}
+	
+	CRRecRecalculaInformacoes();
 } 
+
+function CRRecRecalculaInformacoes() {
+
+	var $valor		= zgConverteFloat($('#valorID').val());
+	var $juros		= zgConverteFloat($('#valorJurosID').val());
+	var $mora		= zgConverteFloat($('#valorMoraID').val());
+	var $outros		= zgConverteFloat($('#valorOutrosID').val());
+	var $desconto	= zgConverteFloat($('#valorDescontoID').val());
+	var $total;
+	
+	$total			= $valor + $juros + $mora + $outros - $desconto;
+
+	var opt = {
+		symbol : "R$",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	
+	$('#lbInfoTotalID').html(accounting.formatMoney($total,opt));
+}
+
+
 
 </script>

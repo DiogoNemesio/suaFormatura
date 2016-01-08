@@ -2527,7 +2527,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$aHist->setCodTipoHist($codTipoHist);
 		$aHist->setCodUsuario($oUsu);
 		$aHist->setData(new \DateTime());
-		$aHist->setHistorico("Excluído a baixa de código: ".$oHist->getCodigo());
+		$aHist->setHistorico("Exclusão de baixa, código: ".$oHist->getCodigo());
 		$em->persist($aHist);
 
 

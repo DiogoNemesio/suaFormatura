@@ -1797,7 +1797,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$tr,$log;
+		global $em,$tr,$log,$system;
 	
 		#################################################################################
 		## Valida se os parâmetros são objetos
@@ -1827,7 +1827,12 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		## Calcula o saldo de adiantamento dessa pessoa, para saber se a baixa pode ser
 		## Excluída
 		#################################################################################
-		$saldoAdiant	= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao()->getCodigo(),$oConta->getCodPessoa()->getCodigo());
+		if ($oConta->getCodPessoa()) {
+			$saldoAdiant	= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao()->getCodigo(),$oConta->getCodPessoa()->getCodigo());
+		}else{
+			$saldoAdiant	= 0;
+		}
+		
 	
 		#################################################################################
 		## Verifica se foi cadastrado adiantamento para essa baixa
@@ -1889,13 +1894,18 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		}
 	
 		#################################################################################
-		## Excluir o Histórico
+		## Cadastrar o Histórico
 		#################################################################################
-		$aHist	=  $em->getRepository('Entidades\ZgfinContaPagarHistorico')->findBy(array('codConta' => $oConta->getCodigo()));
-		for ($i = 0; $i < sizeof($aHist); $i++) {
-			$em->remove($aHist[$i]);
-		}
-	
+		$codTipoHist	= $em->getRepository('Entidades\ZgfinContaHistoricoTipo')->findOneBy(array('codigo' => 'EXB'));
+		$oUsu			= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
+		$aHist			= new \Entidades\ZgfinContaPagarHistorico();
+		$aHist->setCodConta($oConta);
+		$aHist->setCodTipoHist($codTipoHist);
+		$aHist->setCodUsuario($oUsu);
+		$aHist->setData(new \DateTime());
+		$aHist->setHistorico("Exclusão de baixa, código: ".$oHist->getCodigo());
+		$em->persist($aHist);
+		
 		#################################################################################
 		## Excluir a Baixa
 		#################################################################################
