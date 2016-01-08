@@ -193,7 +193,8 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		$codTipoOrg		= $oOrg->getCodTipo()->getCodigo();
 		
 		#################################################################################
-		## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
+		## Verifica se a formatura está sendo administrada por um Cerimonial, 
+		## para resgatar as contas do cerimonial tb
 		#################################################################################
 		$aOrgs			= array($codOrganizacao);
 		if ($codTipoOrg	== "FMT") {
@@ -327,12 +328,6 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	}
 	
 	/**
-	 * Lista as pessoas que podem ser vistas por uma determinada organização
-	 * @param int $codOrganizacao
-	 * @param array $codTipoPessoa
-	 * @param string $indTipo
-	 */
-	/**
 	 * 
 	 * @param integer $codOrganizacao
 	 * @param array $codTipoPessoa
@@ -350,7 +345,8 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		global $em,$system;
 		
 		#################################################################################
-		## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar os fornecedores do cerimonial tb
+		## Verifica se a formatura está sendo administrada por um Cerimonial,
+		## para resgatar os fornecedores do cerimonial tb
 		#################################################################################
 		$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($codOrganizacao);
 		$aOrg			= array($codOrganizacao);
@@ -358,7 +354,6 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 			$aOrg[]			= $oFmtAdm->getCodigo();			
 		}
 
-		
 		#################################################################################
 		## Segmento de Mercado, caso seja informado, deve ser um array
 		#################################################################################
@@ -377,55 +372,85 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		try {
 			$qb->select('distinct p')
 			->from('\Entidades\ZgfinPessoa','p')
+			->leftJoin('\Entidades\ZgfinPessoaOrganizacao', 'po', \Doctrine\ORM\Query\Expr\Join::WITH, 'po.codPessoa = p.codigo')
 			->where($qb->expr()->andX(
-				$qb->expr()->orX(
-					$qb->expr()->in('p.codParceiro'	, ':codOrganizacao')
-					//$qb->expr()->isNull('p.codOrganizacao')
-				),
-				$qb->expr()->in('p.codTipoPessoa'	, ':codTipoPessoa'),
-				$qb->expr()->eq('p.'.$indTipo		, ':indTipo')
+				$qb->expr()->in('po.codOrganizacao'	, ':codOrganizacao')
 			))
 
 			->orderBy('p.nome','ASC')
-			->setParameter('codOrganizacao'		,$aOrg)
-			->setParameter('codTipoPessoa'		,$codTipoPessoa);
-			
+			->setParameter('codOrganizacao'		,$aOrg);
+
+			if ($codTipoPessoa) 	{
+				$qb->andWhere($qb->expr()->andX(
+					$qb->expr()->in('p.codTipoPessoa'	, ':codTipoPessoa')
+				));
+				$qb->setParameter('codTipoPessoa'		,$codTipoPessoa);
+			}
 				
+			
 			if ($indTipo) 	{
 				$qb->andWhere($qb->expr()->andX(
-					$qb->expr()->eq('p.'.$indTipo, ':indTipo')
+					$qb->expr()->eq('po.'.$indTipo, ':indTipo')
 				));
 				$qb->setParameter('indTipo'			,1);
 			}
 			
-			
 			if (!empty($aCodSegMerc)) {
 				$qb2 	= $em->createQueryBuilder();
+				$qb3 	= $em->createQueryBuilder();
 				$qb->andWhere(
-					$qb->expr()->exists(
-						$qb2->select('ps1')
-						->from('\Entidades\ZgfinPessoaSegmento','ps1')
-						->where($qb2->expr()->andX(
-							$qb2->expr()->eq('ps1.codPessoa'		, 'p.codigo'),
-							$qb2->expr()->in('ps1.codSegmento'		, $aCodSegMerc)
+					$qb->expr()->orX(
+						$qb->expr()->exists(
+							$qb2->select('ps1')
+							->from('\Entidades\ZgfinPessoaSegmento','ps1')
+							->leftJoin('\Entidades\ZgfinPessoa', 'p11', \Doctrine\ORM\Query\Expr\Join::WITH, 'p11.codigo = ps1.codPessoa')								
+							->where($qb2->expr()->andX(
+								$qb2->expr()->eq('ps1.codPessoa'		, 'p.codigo'),
+								$qb2->expr()->in('ps1.codSegmento'		, $aCodSegMerc),
+								$qb2->expr()->isNotNull('p11.codParceiro')
+							))->getDQL()
+						),
+						$qb->expr()->exists(
+							$qb3->select('pso1')
+							->from('\Entidades\ZgfinPessoaSegmentoOrganizacao','pso1')
+							->leftJoin('\Entidades\ZgfinPessoa', 'p12', \Doctrine\ORM\Query\Expr\Join::WITH, 'p12.codigo = ps1.codPessoa')
+							->where($qb3->expr()->andX(
+								$qb3->expr()->eq('pso1.codPessoa'		, 'p.codigo'),
+								$qb3->expr()->in('pso1.codSegmento'		, $aCodSegMerc),
+								$qb3->expr()->isNull('p12.codParceiro')
+							))->getDQL()
 						)
-						)->getDQL()
 					)
 				);
 			}
 				
 			if (!empty($aCodCat)) {
-				$qb3 	= $em->createQueryBuilder();
+				$qb4 	= $em->createQueryBuilder();
+				$qb5 	= $em->createQueryBuilder();
 				$qb->andWhere(
-					$qb->expr()->exists(
-						$qb3->select('ps2')
-						->from('\Entidades\ZgfinPessoaSegmento','ps2')
-						->leftJoin('\Entidades\ZgfinSegmentoCategoria', 'sc', \Doctrine\ORM\Query\Expr\Join::WITH, 'ps2.codSegmento = sc.codSegmento')
-						->where($qb3->expr()->andX(
-								$qb3->expr()->eq('ps2.codPessoa'		, 'p.codigo'),
-								$qb3->expr()->in('sc.codCategoria'		, $aCodCat)
+					$qb->expr()->orX(
+						$qb->expr()->exists(
+							$qb4->select('ps2')
+							->from('\Entidades\ZgfinPessoaSegmento','ps2')
+							->leftJoin('\Entidades\ZgfinPessoa', 'p21', \Doctrine\ORM\Query\Expr\Join::WITH, 'p21.codigo = ps2.codPessoa')
+							->leftJoin('\Entidades\ZgfinSegmentoCategoria', 'sc1', \Doctrine\ORM\Query\Expr\Join::WITH, 'ps2.codSegmento = sc1.codSegmento')
+							->where($qb4->expr()->andX(
+								$qb4->expr()->eq('ps2.codPessoa'		, 'p.codigo'),
+								$qb4->expr()->in('sc1.codCategoria'		, $aCodCat),
+								$qb4->expr()->isNotNull('p21.codParceiro')
+							))->getDQL()
+						),
+						$qb->expr()->exists(
+							$qb5->select('pso2')
+							->from('\Entidades\ZgfinPessoaSegmentoOrganizacao','pso2')
+							->leftJoin('\Entidades\ZgfinPessoa', 'p22', \Doctrine\ORM\Query\Expr\Join::WITH, 'p22.codigo = pso2.codPessoa')
+							->leftJoin('\Entidades\ZgfinSegmentoCategoria', 'sc2', \Doctrine\ORM\Query\Expr\Join::WITH, 'pso2.codSegmento = sc2.codSegmento')
+							->where($qb5->expr()->andX(
+								$qb5->expr()->eq('pso2.codPessoa'		, 'p.codigo'),
+								$qb5->expr()->in('sc2.codCategoria'		, $aCodCat),
+								$qb5->expr()->isNull('p22.codParceiro')
+							))->getDQL()
 						)
-						)->getDQL()
 					)
 				);
 			}
