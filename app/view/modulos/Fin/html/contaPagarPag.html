@@ -3,112 +3,131 @@
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 	<h4 class=""><i class="fa fa-check red"></i>&nbsp;%TITULO%</h4>
 </div>
-<div class="modal-body" style="overflow-y: scroll; height: 420px;">
+<div class="modal-body" style="overflow-y: scroll; height: 450px;">
 	<input type="hidden" name="codConta" value="%COD_CONTA%">
 	<input type="hidden" name="id" value="%ID%">
-	<div class="row">
-    	<div class="col-sm-12">
-			<div class="form-group">
-				<label class="col-sm-3 control-label" for="codFormaPagID">Forma de Pag.</label>
-    			<div class="input-group col-sm-8">
-    				<span tabindex="99001" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Forma de Pagamento da Conta"><i class="fa fa-question-circle"></i></span>
-					<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
-					%FORMAS_PAG%
-					</select>
+	<div class="col-sm-8">
+		<div class="row">
+	    	<div class="col-sm-12">
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="codFormaPagID">Forma de Pag.</label>
+	    			<div class="input-group col-sm-8">
+	    				<span tabindex="99001" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Selecione a Forma de Pagamento da Conta"><i class="fa fa-question-circle"></i></span>
+						<select class="select2" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
+						%FORMAS_PAG%
+						</select>
+					</div>
+				</div>
+	    	</div>
+	    </div>
+		<div class="row">
+	    	<div class="col-sm-12">
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="codContaDebID">Conta de Débito</label>
+	    			<div class="input-group col-sm-8">
+	    				<span tabindex="99002" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Conta de débito (Origem do recurso)"><i class="fa fa-question-circle"></i></span>
+						<select class="select2" style="width:100%;" id="codContaDebID" name="codContaDeb" data-rel="select2">
+						%CONTAS_DEB%
+						</select>
+					</div>
+				</div>
+	    	</div>
+	    </div>
+		<div class="row">
+	    	<div class="col-sm-12">
+				<div class="form-group">
+			    	<label class="col-sm-3 control-label" for="dataPagID">Data do Pag.</label>
+	    			<div class="input-group col-sm-8">
+		    			<span tabindex="99003" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Data de efetivação do pagamento"><i class="fa fa-question-circle"></i></span>
+		    			<input class="form-control datepicker" id="dataPagID" type="text" name="dataPag" maxlength="10" value="%DATA_PAG%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+			    	</div>
+			    </div>
+	    	</div>
+	    </div>
+	    <div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+			    	<label class="col-sm-3 control-label" for="valorID">Valor</label>
+	    			<div class="input-group col-sm-8">
+		    			<span tabindex="99004" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Pagamento"><i class="fa fa-question-circle"></i></span>
+		    			<input class="form-control" id="valorID" type="text" name="valor" maxlength="20" value="%VALOR%" autocomplete="off" required onchange="CPPagRecalculaInformacoes();" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+			    	</div>
+			    </div>
+	    	</div>
+	    </div>
+	    <div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+			    	<label class="col-sm-3 control-label" for="valorJurosID">Júros</label>
+	    			<div class="input-group col-sm-8">
+		    			<span tabindex="99005" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Júros"><i class="fa fa-question-circle"></i></span>
+		    			<input class="form-control" id="valorJurosID" type="text" name="valorJuros" maxlength="20" value="%VALOR_JUROS%" autocomplete="off" onchange="CPPagRecalculaInformacoes();" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+			    	</div>
+			    </div>
+	    	</div>
+	    </div>
+	    <div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+			    	<label class="col-sm-3 control-label" for="valorMoraID">Mora</label>
+	    			<div class="input-group col-sm-8">
+		    			<span tabindex="99006" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor da Mora"><i class="fa fa-question-circle"></i></span>
+		    			<input class="form-control" id="valorMoraID" type="text" name="valorMora" maxlength="20" value="%VALOR_MORA%" autocomplete="off" onchange="CPPagRecalculaInformacoes();" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+			    	</div>
+			    </div>
+	    	</div>
+	    </div>
+	    <div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+			    	<label class="col-sm-3 control-label" for="valorDescontoID">Desconto</label>
+	    			<div class="input-group col-sm-8">
+		    			<span tabindex="99007" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Desconto"><i class="fa fa-question-circle"></i></span>
+		    			<input class="form-control" id="valorDescontoID" type="text" name="valorDesconto" maxlength="20" value="%VALOR_DESCONTO%" autocomplete="off" onchange="CPPagRecalculaInformacoes();" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+			    	</div>
+			    </div>
+	    	</div>
+	    </div>
+	    <div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+			    	<label class="col-sm-3 control-label" for="valorOutrosID">Outros Valores</label>
+	    			<div class="input-group col-sm-8">
+		    			<span tabindex="99005" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Outros Valores"><i class="fa fa-question-circle"></i></span>
+		    			<input class="form-control" id="valorOutrosID" type="text" name="valorOutros" maxlength="20" value="%VALOR_OUTROS%" autocomplete="off" onchange="CPPagRecalculaInformacoes();" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+			    	</div>
+			    </div>
+	    	</div>
+	    </div>
+		<div class="row">
+	    	<div class="col-sm-12">
+				<div class="form-group">
+			    	<label class="col-sm-3 control-label" for="documentoID">Documento</label>
+	    			<div class="input-group col-sm-8">
+		    			<span tabindex="99008" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Documento (Você pode especificar algum documento relativo ao pagamento)"><i class="fa fa-question-circle"></i></span>
+		    			<input class="form-control" id="documentoID" type="text" name="documento" maxlength="20" value="%DOCUMENTO%" autocomplete="off" >
+			    	</div>
+			    </div>
+	    	</div>
+	    </div>
+	</div>	    
+	<div class="col-sm-4">
+		<div class="widget-box">
+			<div class="widget-header widget-header-flat widget-header-small center">
+				<h5 class="widget-title">Informações</h5>
+			</div>
+			<div class="widget-body">
+				<div class="widget-main small">
+					<div class="row">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total a Pagar:</p>
+					    	<p id='lbInfoTotalID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
 				</div>
 			</div>
-    	</div>
-    </div>
-	<div class="row">
-    	<div class="col-sm-12">
-			<div class="form-group">
-				<label class="col-sm-3 control-label" for="codContaDebID">Conta de Débito</label>
-    			<div class="input-group col-sm-8">
-    				<span tabindex="99002" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Conta de débito (Origem do recurso)"><i class="fa fa-question-circle"></i></span>
-					<select class="select2" style="width:100%;" id="codContaDebID" name="codContaDeb" data-rel="select2">
-					%CONTAS_DEB%
-					</select>
-				</div>
-			</div>
-    	</div>
-    </div>
-	<div class="row">
-    	<div class="col-sm-12">
-			<div class="form-group">
-		    	<label class="col-sm-3 control-label" for="dataPagID">Data do Pag.</label>
-    			<div class="input-group col-sm-8">
-	    			<span tabindex="99003" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Data de efetivação do pagamento"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control datepicker" id="dataPagID" type="text" name="dataPag" maxlength="10" value="%DATA_PAG%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
-		    	</div>
-		    </div>
-    	</div>
-    </div>
-    <div class="row">
-		<div class="col-sm-12">
-			<div class="form-group">
-		    	<label class="col-sm-3 control-label" for="valorID">Valor</label>
-    			<div class="input-group col-sm-8">
-	    			<span tabindex="99004" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Pagamento"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="valorID" type="text" name="valor" maxlength="20" value="%VALOR%" autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
-		    	</div>
-		    </div>
-    	</div>
-    </div>
-    <div class="row">
-		<div class="col-sm-12">
-			<div class="form-group">
-		    	<label class="col-sm-3 control-label" for="valorJurosID">Júros</label>
-    			<div class="input-group col-sm-8">
-	    			<span tabindex="99005" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Júros"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="valorJurosID" type="text" name="valorJuros" maxlength="20" value="%VALOR_JUROS%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
-		    	</div>
-		    </div>
-    	</div>
-    </div>
-    <div class="row">
-		<div class="col-sm-12">
-			<div class="form-group">
-		    	<label class="col-sm-3 control-label" for="valorMoraID">Mora</label>
-    			<div class="input-group col-sm-8">
-	    			<span tabindex="99006" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor da Mora"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="valorMoraID" type="text" name="valorMora" maxlength="20" value="%VALOR_MORA%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
-		    	</div>
-		    </div>
-    	</div>
-    </div>
-    <div class="row">
-		<div class="col-sm-12">
-			<div class="form-group">
-		    	<label class="col-sm-3 control-label" for="valorDescontoID">Desconto</label>
-    			<div class="input-group col-sm-8">
-	    			<span tabindex="99007" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor do Desconto"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="valorDescontoID" type="text" name="valorDesconto" maxlength="20" value="%VALOR_DESCONTO%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
-		    	</div>
-		    </div>
-    	</div>
-    </div>
-    <div class="row">
-		<div class="col-sm-12">
-			<div class="form-group">
-		    	<label class="col-sm-3 control-label" for="valorOutrosID">Outros Valores</label>
-    			<div class="input-group col-sm-8">
-	    			<span tabindex="99005" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Outros Valores"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="valorOutrosID" type="text" name="valorOutros" maxlength="20" value="%VALOR_OUTROS%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
-		    	</div>
-		    </div>
-    	</div>
-    </div>
-	<div class="row">
-    	<div class="col-sm-12">
-			<div class="form-group">
-		    	<label class="col-sm-3 control-label" for="documentoID">Documento</label>
-    			<div class="input-group col-sm-8">
-	    			<span tabindex="99008" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Documento (Você pode especificar algum documento relativo ao pagamento)"><i class="fa fa-question-circle"></i></span>
-	    			<input class="form-control" id="documentoID" type="text" name="documento" maxlength="20" value="%DOCUMENTO%" autocomplete="off" >
-		    	</div>
-		    </div>
-    	</div>
-    </div>
+		</div>	
+	</div>    
 </div>
 <div class="modal-footer">
 	<div id="divMsgCPPagID" class="pull-left"></div>
@@ -119,6 +138,7 @@
 
 
 <script type="text/javascript" charset="%CHARSET%">
+CPPagRecalculaInformacoes();
 $('#zgFormModalID').submit(function() {
 	
 	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
@@ -161,6 +181,29 @@ $('.datepicker').datepicker({"autoclose": true});
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
+
+function CPPagRecalculaInformacoes() {
+
+	var $valor		= zgConverteFloat($('#valorID').val());
+	var $juros		= zgConverteFloat($('#valorJurosID').val());
+	var $mora		= zgConverteFloat($('#valorMoraID').val());
+	var $outros		= zgConverteFloat($('#valorOutrosID').val());
+	var $desconto	= zgConverteFloat($('#valorDescontoID').val());
+	var $total;
+	
+	$total			= $valor + $juros + $mora + $outros - $desconto;
+
+	var opt = {
+		symbol : "R$",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	
+	$('#lbInfoTotalID').html(accounting.formatMoney($total,opt));
+}
 
 
 </script>
