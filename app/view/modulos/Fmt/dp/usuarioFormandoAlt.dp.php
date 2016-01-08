@@ -166,6 +166,7 @@ try {
 	
 	$oCliente->setCodOrganizacao($oOrg);
 	$oCliente->setNome($oUsuario->_getUsuario()->getNome());
+	$oCliente->setFantasia($oUsuario->_getUsuario()->getNome());
 	$oCliente->setCgc($oUsuario->_getUsuario()->getCpf());
 	$oCliente->setRg($oUsuario->_getUsuario()->getRg());
 	$oCliente->setDataNascimento($oUsuario->_getUsuario()->getDataNascimento());

@@ -32,25 +32,32 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) {
-	
+if ((isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc)))) {
 	try {
-		
 		if (isset($loadCgc) && !empty($loadCgc)) {
-			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'cgc' => $loadCgc,));
+			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $loadCgc));
 			if ($info) {
 				$codPessoa	= $info->getCodigo();
 			}else{
 				\Zage\App\Erro::halt('Cgc "'.$loadCgc.'" não encontrado !!!');
 			}
 		}else{
-			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codigo' => $codPessoa));
-			$infoEnd	= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa));
+			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codPessoa));
+			
 			if (!$info) \Zage\App\Erro::halt('Pessoa "'.$codPessoa.'" não encontrada !!!');
 		}
 		
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());
+	}
+	
+	/** Verificar se a pessoa é um parceiro **/
+	if ($info->getCodParceiro()){
+		$indParceiro = true;
+		$infoEnd	= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa));
+	}else{
+		$indParceiro 	= false;
+		$infoEnd		= $em->getRepository('Entidades\ZgfinPessoaEnderecoOrganizacao')->findOneBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
 	}
 	
 	$tipo			= ($info->getCodTipoPessoa()) ? $info->getCodTipoPessoa()->getCodigo() : null;
@@ -104,7 +111,7 @@ if ( (isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc))) ) 
 	}
 	
 	/** Fonte de Recurso (Conta) **/
-	$oConta			= $em->getRepository('Entidades\ZgfinPessoaConta')->findOneBy(array('codPessoa' => $codPessoa));
+	$oConta			= $em->getRepository('Entidades\ZgfinPessoaContaOrganizacao')->findOneBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
 	
 	if ($oConta) {
 		$codBanco	= ($oConta->getCodBanco() != null) ? $oConta->getCodBanco()->getCodigo() : null;
@@ -246,7 +253,12 @@ try {
 #################################################################################
 ## Resgatar os dados de contato
 #################################################################################
-$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findBy(array('codProprietario' => $codPessoa));
+if ($indParceiro ==  true){
+	$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findBy(array('codProprietario' => $codPessoa));
+}else{
+	$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
+}
+
 $tabTel			= "";
 for ($i = 0; $i < sizeof($aTelefones); $i++) {
 
@@ -256,13 +268,18 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 	$codTipoTel		= ($aTelefones[$i]->getCodTipoTelefone()) ? $aTelefones[$i]->getCodTipoTelefone()->getCodigo() : null;
 	$oTipoInt		= $system->geraHtmlCombo($aTipoTel,	'CODIGO', 'DESCRICAO',	$codTipoTel, '');
 
-	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
+	$tabTel			.= '<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td><select class="select2" style="width:100%;" name="codTipoTel[]" data-rel="select2">'.$oTipoInt.'</select></td><td><input type="text" name="telefone[]" style="width: 100%;" value="'.$aTelefones[$i]->getTelefone().'" maxlength="15" autocomplete="off" zg-data-toggle="mask" zg-data-mask="fone" zg-data-mask-retira="1"></td><td class="center"><span class="center" zgdelete onclick="delRowTelefonePessoaAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codTelefone[]" value="'.$aTelefones[$i]->getCodigo().'"></td></tr>';
 }
 
 #################################################################################
 ## Resgatar os dados de conta
 #################################################################################
-$aContas		= $em->getRepository('Entidades\ZgfinPessoaConta')->findBy(array('codPessoa' => $codPessoa));
+if ($indParceiro ==  true){
+	$aContas		= $em->getRepository('Entidades\ZgfinPessoaConta')->findBy(array('codPessoa' => $codPessoa));
+}else{
+	$aContas		= $em->getRepository('Entidades\ZgfinPessoaContaOrganizacao')->findBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
+}
+
 $tabConta		= "";
 for ($i = 0; $i < sizeof($aContas); $i++) {
 
@@ -276,8 +293,13 @@ for ($i = 0; $i < sizeof($aContas); $i++) {
 #################################################################################
 ## Lista de segmentos de mercado
 #################################################################################
-$segAss		= \Zage\Fin\Pessoa::listaSegmentos($codPessoa);
-$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($codPessoa);
+if ($indParceiro == true){
+	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa);
+	$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($codPessoa);
+}else{
+	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa,$system->getCodOrganizacao());
+	$segDis		= \Zage\Fin\Pessoa::listaSegmentosOrganizacaoNaoAssociados($codPessoa,$system->getCodOrganizacao());
+}
 
 $liAss			= "";
 $liDis			= "";
@@ -290,8 +312,6 @@ for ($i = 0; $i < sizeof($segDis); $i++) {
 	$classe		= "fa fa-building-o";
 	$liDis		.= '<li id="zgDis_"'.$segDis[$i]->getCodigo().'" class="ui-state-default" zg-data-id="'.$segDis[$i]->getCodigo().'"><i class="ace-icon bigger-120 green '.$classe.'"></i>&nbsp;'.$segDis[$i]->getDescricao().'</li>';
 }
-
-
 
 #################################################################################
 ## Carregando o template html

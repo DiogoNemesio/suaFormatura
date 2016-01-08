@@ -31,7 +31,7 @@ if (strlen($q) == 18) {
 $array		= array();
 
 if ((int) $cgc != 0) {
-	$cliente		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'cgc' => $cgc));	
+	$cliente		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $cgc));	
 }else{
 	$cliente		= null;
 }

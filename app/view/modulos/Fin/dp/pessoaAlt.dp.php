@@ -221,7 +221,7 @@ $em->getConnection()->beginTransaction();
 try {
 	if (isset($codPessoa) && (!empty($codPessoa))) {
  		$oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codPessoa));
- 			
+ 		
  		if (!$oPessoa) {
  			$oPessoa	= new \Entidades\ZgfinPessoa();
  			$oPessoa->setDataCadastro(new \DateTime("now"));
@@ -230,11 +230,15 @@ try {
  			$oPessoa->setIndTransportadora(0);
  		}
  	}else{
- 		$oPessoa	= new \Entidades\ZgfinPessoa();
- 		$oPessoa->setDataCadastro(new \DateTime("now"));
- 		$oPessoa->setIndCliente(0);
- 		$oPessoa->setIndFornecedor(0);
- 		$oPessoa->setIndTransportadora(0);
+ 		$oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $cgc));
+ 		
+ 		if (!$oPessoa) {
+	 		$oPessoa	= new \Entidades\ZgfinPessoa();
+	 		$oPessoa->setDataCadastro(new \DateTime("now"));
+	 		$oPessoa->setIndCliente(0);
+	 		$oPessoa->setIndFornecedor(0);
+	 		$oPessoa->setIndTransportadora(0);
+ 		}
  	}
  	
  	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
@@ -258,6 +262,7 @@ try {
  	}
  	
  	//$oPessoa->setCodParceiro($oOrg);
+ 	$oPessoa->setCodOrganizacaoCadastro($oOrg);
  	$oPessoa->setNome($nome);
  	$oPessoa->setFantasia($fantasia);
  	$oPessoa->setCgc($cgc);
@@ -276,7 +281,7 @@ try {
  	$em->persist($oPessoa);
  	
  	/**** Pessoa - organização ****/
- 	$oPessoaOrg	= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codigo' => $oPessoa->getCodigo()));
+ 	$oPessoaOrg	= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
  	if (!$oPessoaOrg) {
  		$oPessoaOrg	= new \Entidades\ZgfinPessoaOrganizacao();
  		//$oPessoaOrg->setDataCadastro(new \DateTime("now"));$oPessoa->setIndCliente(0);
@@ -286,6 +291,10 @@ try {
  		$oPessoaOrg->setIndTransportadora(0);
  	}else{
  		$oEndereco	= $em->getRepository('Entidades\ZgfinPessoaEnderecoOrganizacao')->findOneBy(array('codPessoa' => $codPessoa));
+ 		
+ 		if (!$oEndereco){
+ 			$oEndereco	= new \Entidades\ZgfinPessoaEnderecoOrganizacao();
+ 		}
  	}
  	
  	if ($tipoCadPessoa == "C") {
@@ -379,14 +388,13 @@ try {
  	#################################################################################
  	## Lista de segmentos já associados
  	#################################################################################
- 	$segAss		= \Zage\Fin\Pessoa::listaSegmentos($codPessoa);
+ 	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa);
  	$aSegAss	= array();
  		
  	#################################################################################
  	## Exclusão
  	#################################################################################
 	for ($i = 0; $i < sizeof($segAss); $i++) {
- 		//$log->debug("I: $i (Segmento = ".$segAss[$i]->getCodSegmento()->getCodigo().")");
 		$aSegAss[]	= $segAss[$i]->getCodSegmento()->getCodigo();
 		
 		if (!in_array($segAss[$i]->getCodSegmento()->getCodigo(), $arraySeg)) {
@@ -414,7 +422,8 @@ try {
 					exit;
 				}
  	
-				$oPesSegMer		= new \Entidades\ZgfinPessoaSegmento();
+				$oPesSegMer		= new \Entidades\ZgfinPessoaSegmentoOrganizacao();
+				$oPesSegMer->setCodOrganizacao($oOrg);
 				$oPesSegMer->setCodPessoa($oPessoa);
 				$oPesSegMer->setCodSegmento($oSeg);
  	
@@ -473,10 +482,8 @@ try {
  			exit;
 		}
 	}
-	$em->flush();
-	$em->clear();
-	$em->getConnection()->commit();
-	/**
+	
+	
 	#################################################################################
 	## Salvar no banco
 	#################################################################################
@@ -488,7 +495,7 @@ try {
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 		exit;
 	}
-	**/
+	
 } catch (\Exception $e) {
 	$em->getConnection()->rollback();
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());

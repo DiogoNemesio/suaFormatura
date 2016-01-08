@@ -106,9 +106,10 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 		$podeAlt		=  true;
 	}else{
 		$codOrgPessoa	= ($pessoas[$i]->getCodParceiro()) ? $pessoas[$i]->getCodParceiro()->getCodigo() : false;
-		$podeAlt		= ($codOrgPessoa && $codOrgPessoa == $system->getCodOrganizacao()) ? true : false;
+		$codOrgCad		= ($pessoas[$i]->getCodOrganizacaoCadastro()) ? $pessoas[$i]->getCodOrganizacaoCadastro()->getCodigo() : false;
+		$podeAlt		= ($codOrgPessoa && $codOrgCad == $system->getCodOrganizacao()) ? true : false;
 	}
-	 
+	$podeAlt = true;
 	if ($podeAlt) {
 		$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/pessoaAlt.php?id='.$uid);
 		$grid->setUrlCelula($i,6,ROOT_URL.'/Fin/pessoaExc.php?id='.$uid);

@@ -257,7 +257,7 @@ try {
 	
 	$oCliente->setCodOrganizacao($oOrg);
 	$oCliente->setNome($oUsuario->getNome());
-	$oCliente->setFantasia($oUsuario->getApelido());
+	$oCliente->setFantasia($oUsuario->getNome());
 	$oCliente->setCgc($oUsuario->getCpf());
 	$oCliente->setRg($oUsuario->getRg());
 	$oCliente->setDataNascimento($oUsuario->getDataNascimento());

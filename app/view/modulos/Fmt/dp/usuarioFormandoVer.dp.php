@@ -133,6 +133,7 @@ try {
 	
 	$oCliente->setCodOrganizacao($oOrg);
 	$oCliente->setNome($oUsuario->getNome());
+	$oCliente->setFantasia($oUsuario->_getUsuario()->getNome());
 	$oCliente->setCgc($oUsuario->getCpf());
 	$oCliente->setEmail($oUsuario->getUsuario());
 	$oCliente->setCodTipoPessoa($clienteTipo);
