@@ -29,13 +29,14 @@ try {
 	}
 	
 	$oPlano  	= $em->getRepository('Entidades\ZgfmtPlanoOrcamentario')->findOneBy(array('codigo' => $codPlano));
-	$oOrc	 	= $em->getRepository('Entidades\ZgfmtOrcamento')->findBy(array('codPlanoVersao' => $codPlano));
+	$oOrc	 	= $em->getRepository('Entidades\ZgfmtOrcamento')->findBy(array('codPlanoOrc' => $codPlano));
 	
+	// Validações
 	if (!$oPlano) {
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM"))));
 		$err = 1;
-	}elseif ($oPlanoNum){
-		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Não podemos excluir pois já existe um orçamento cadastrado com este modelo."))));
+	}elseif ($oOrc){
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Esta versão já foi utlizada em um orçamento. Caso não deseje utilizar novamente inative no cadastro."))));
 		$err = 1;
 	}
 	
