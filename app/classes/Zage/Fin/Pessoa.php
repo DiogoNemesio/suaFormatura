@@ -246,19 +246,18 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		#################################################################################
 		$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 		$codTipoOrg		= $oOrg->getCodTipo()->getCodigo();
+
+		
 		
 		#################################################################################
-		## Verifica se a formatura está sendo administrada por um Cerimonial, 
-		## para resgatar as contas do cerimonial tb
+		## Verifica se a formatura está sendo administrada por um Cerimonial,
+		## para resgatar os fornecedores do cerimonial tb
 		#################################################################################
-		$aOrgs			= array($codOrganizacao);
-		if ($codTipoOrg	== "FMT") {
-			$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
-			if ($oFmtAdm)	{
-				$aOrgs[]		= $oFmtAdm->getCodigo();
-			}
+		$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($codOrganizacao);
+		$aOrg			= array($codOrganizacao);
+		if ($oFmtAdm && $indCliente != true)	{
+			$aOrg[]			= $oFmtAdm->getCodigo();
 		}
-		
 		
 		$qb 	= $em->createQueryBuilder();
 	
@@ -272,6 +271,7 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		try {
 			$qb->select('p')
 			->from('\Entidades\ZgfinPessoa','p')
+			->leftJoin('\Entidades\ZgfinPessoaOrganizacao', 'po', \Doctrine\ORM\Query\Expr\Join::WITH, 'po.codPessoa = p.codigo')
 			->where(
 				$qb->expr()->orx(
 					$qb->expr()->like($qb->expr()->upper('p.nome'),':string'),
@@ -280,27 +280,27 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 			)
 			->andWhere($qb->expr()->andX(
 				$qb->expr()->eq('p.indAtivo'			,'1'),
-				$qb->expr()->in('p.codOrganizacao'		,':aOrg')
+				$qb->expr()->in('po.codOrganizacao'		,':aOrg')
 			))
 			->orderBy('p.nome','ASC')
-			->setParameter('aOrg'			,$aOrgs)
+			->setParameter('aOrg'			,$aOrg)
 			->setParameter('string'			,'%'.strtoupper($string).'%');
 			
 			if ($ic	== 1) 	{
 				$qb->andWhere($qb->expr()->andX(
-					$qb->expr()->eq('p.indCliente'			,':indCliente')
+					$qb->expr()->eq('po.indCliente'			,':indCliente')
 				));
 				$qb->setParameter('indCliente',	$ic);
 			}
 			if ($if	== 1) 	{
 				$qb->andWhere($qb->expr()->andX(
-					$qb->expr()->eq('p.indFornecedor'		,':indFornec')
+					$qb->expr()->eq('po.indFornecedor'		,':indFornec')
 				));
 				$qb->setParameter('indFornec',	$if);
 			}
 			if ($it	== 1) 	{
 				$qb->andWhere($qb->expr()->andX(
-					$qb->expr()->eq('p.indTransportadora'	,':indTransp')
+					$qb->expr()->eq('po.indTransportadora'	,':indTransp')
 				));
 				$qb->setParameter('indTransp',	$it);
 			}
