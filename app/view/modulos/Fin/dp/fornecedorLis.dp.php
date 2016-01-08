@@ -35,12 +35,15 @@ $numItens		= \Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS');
 for ($i = 0; $i < sizeof($pessoas); $i++) {
 	
 	
-	if ($pessoas[$i]->getCodTipoPessoa()->getCodigo() == "F") {
+	if ($pessoas[$i]->getCodTipoPessoa()->getCodigo() == "F" || $pessoas[$i]->getCodTipoPessoa()->getCodigo() == "O") {
 		$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($pessoas[$i]->getCgc());
 	}else{
-		$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CNPJ)->aplicaMascara($pessoas[$i]->getCgc());
+		if (strlen($pessoas[$i]->getCgc()) > 11) {
+			$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CNPJ)->aplicaMascara($pessoas[$i]->getCgc());
+		}else{
+			$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($pessoas[$i]->getCgc());
+		}
 	}
-	
 	
 	$array[$i]["id"]		= $pessoas[$i]->getCodigo();
 	$array[$i]["text"]		= $pessoas[$i]->getNome() . " (".$infoCgc.")";
