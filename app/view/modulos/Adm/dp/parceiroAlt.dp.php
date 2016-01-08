@@ -429,7 +429,7 @@ try {
  	/***********************
  	 * Salavar cliente
  	 ***********************/
- 	$oFornec = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oParceiro->getCgc() , 'codOrganizacao' => null));
+ 	$oFornec = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oParceiro->getCgc()));
  	
  	if(!$oFornec){
  		$oFornec = new \Entidades\ZgfinPessoa();
@@ -439,6 +439,7 @@ try {
  	
  	$oFornecTipoPessoa		= $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => $tipo));
  	
+ 	$oFornec->setCodParceiro($oParceiro);
  	$oFornec->setFantasia($oParceiro->getFantasia());
  	$oFornec->setNome($oParceiro->getNome());
  	$oFornec->setCgc($oParceiro->getCgc());

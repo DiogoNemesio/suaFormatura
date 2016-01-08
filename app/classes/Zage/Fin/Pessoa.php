@@ -148,6 +148,29 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	}
 	
 	/**
+	 * Lista os segmentos de uma pessoa associado a uma organizacao
+	 */
+	public static function listaSegmentosOrganizacao ($codPessoa,$codOrganizacao) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+			
+		$qb->select('ps')
+		->from('\Entidades\ZgfinPessoaSegmentoOrganizacao','ps')
+		->leftJoin('\Entidades\ZgfinSegmentoMercado', 's', \Doctrine\ORM\Query\Expr\Join::WITH, 'ps.codSegmento = s.codigo')
+		->where($qb->expr()->andX(
+				$qb->expr()->eq('ps.codPessoa'		, ':codPessoa'),
+				$qb->expr()->eq('ps.codOrganizacao'	, ':codOrganizacao')
+		))
+			
+		->addOrderBy('s.descricao', 'ASC')
+		->setParameter('codOrganizacao'	, $codOrganizacao)
+		->setParameter('codPessoa'		, $codPessoa);
+		$query 		= $qb->getQuery();
+		return($query->getResult());
+	}
+	
+	/**
 	 * Lista os segmentos que não estão associados a Pessoa
 	 */
 	public static function listaSegmentosNaoAssociados ($codPessoa) {
@@ -171,6 +194,38 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		->orderBy('s.descricao', 'ASC')
 		->setParameter('codPessoa', $codPessoa);
 		
+		$query 		= $qb->getQuery();
+		return($query->getResult());
+	}
+	
+	/**
+	 * Lista os segmentos que não estão associados a Pessoa
+	 */
+	public static function listaSegmentosOrganizacaoNaoAssociados ($codPessoa,$codOrganizacao) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+		$qb2 	= $em->createQueryBuilder();
+	
+	
+		/** Sub Query para retirar os segmentos já associados **/
+		$qb2->select('s2.codigo')
+		->from('\Entidades\ZgfinPessoaSegmentoOrganizacao','ps')
+		->leftJoin('\Entidades\ZgfinSegmentoMercado', 's2', \Doctrine\ORM\Query\Expr\Join::WITH, 'ps.codSegmento = s2.codigo')
+		->where($qb->expr()->andX(
+				$qb2->expr()->eq('ps.codPessoa',':codPessoa'),
+				$qb2->expr()->eq('ps.codOrganizacao',':codOrganizacao')
+		));
+	
+		$qb->select('s')
+		->from('\Entidades\ZgfinSegmentoMercado','s')
+		->where($qb->expr()->andX(
+				$qb->expr()->notIn('s.codigo', $qb2->getDQL())
+		))
+		->orderBy('s.descricao', 'ASC')
+		->setParameter('codOrganizacao', $codOrganizacao)
+		->setParameter('codPessoa', $codPessoa);
+	
 		$query 		= $qb->getQuery();
 		return($query->getResult());
 	}

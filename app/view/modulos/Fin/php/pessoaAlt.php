@@ -33,6 +33,7 @@ $system->checaPermissao($_codMenu_);
 ## Resgata as informações do banco
 #################################################################################
 if ((isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc)))) {
+	
 	try {
 		if (isset($loadCgc) && !empty($loadCgc)) {
 			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $loadCgc));
@@ -43,7 +44,6 @@ if ((isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc)))) {
 			}
 		}else{
 			$info 		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codPessoa));
-			
 			if (!$info) \Zage\App\Erro::halt('Pessoa "'.$codPessoa.'" não encontrada !!!');
 		}
 		
@@ -57,7 +57,7 @@ if ((isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc)))) {
 		$infoEnd	= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa));
 	}else{
 		$indParceiro 	= false;
-		$infoEnd		= $em->getRepository('Entidades\ZgfinPessoaEnderecoOrganizacao')->findOneBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
+		$infoEnd		= $em->getRepository('Entidades\ZgfinPessoaEnderecoOrganizacao')->findOneBy(array('codPessoa' => $codPessoa));
 	}
 	
 	$tipo			= ($info->getCodTipoPessoa()) ? $info->getCodTipoPessoa()->getCodigo() : null;
@@ -69,6 +69,7 @@ if ((isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc)))) {
 	$readOnly		= 'readonly';
 	
 	/** Endereco **/
+	
 	$codLogradouro   = ($infoEnd->getCodLogradouro()) ? $infoEnd->getCodLogradouro()->getCodigo() : null;
 	$cep 		     = ($infoEnd->getCep()) ? $infoEnd->getCep() : null;
 	$complemento     = ($infoEnd->getComplemento()) ? $infoEnd->getComplemento() : null;
@@ -254,7 +255,7 @@ try {
 ## Resgatar os dados de contato
 #################################################################################
 if ($indParceiro ==  true){
-	$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findBy(array('codProprietario' => $codPessoa));
+	$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findBy(array('codProprietario' => $codPessoa));
 }else{
 	$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
 }
@@ -294,7 +295,7 @@ for ($i = 0; $i < sizeof($aContas); $i++) {
 ## Lista de segmentos de mercado
 #################################################################################
 if ($indParceiro == true){
-	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa);
+	$segAss		= \Zage\Fin\Pessoa::listaSegmentos($codPessoa);
 	$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($codPessoa);
 }else{
 	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa,$system->getCodOrganizacao());
