@@ -141,6 +141,13 @@ class ZgfinPessoa
     private $link;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="COD_ORGANIZACAO_CADASTRO", type="integer", nullable=true)
+     */
+    private $codOrganizacaoCadastro;
+
+    /**
      * @var \Entidades\ZgfinPessoaTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoaTipo")
@@ -169,16 +176,6 @@ class ZgfinPessoa
      * })
      */
     private $codSexo;
-
-    /**
-     * @var \Entidades\ZgadmOrganizacao
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_ORGANIZACAO_CADASTRO", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codOrganizacaoCadastro;
 
 
     /**
@@ -583,6 +580,29 @@ class ZgfinPessoa
     }
 
     /**
+     * Set codOrganizacaoCadastro
+     *
+     * @param integer $codOrganizacaoCadastro
+     * @return ZgfinPessoa
+     */
+    public function setCodOrganizacaoCadastro($codOrganizacaoCadastro)
+    {
+        $this->codOrganizacaoCadastro = $codOrganizacaoCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacaoCadastro
+     *
+     * @return integer 
+     */
+    public function getCodOrganizacaoCadastro()
+    {
+        return $this->codOrganizacaoCadastro;
+    }
+
+    /**
      * Set codTipoPessoa
      *
      * @param \Entidades\ZgfinPessoaTipo $codTipoPessoa
@@ -649,28 +669,5 @@ class ZgfinPessoa
     public function getCodSexo()
     {
         return $this->codSexo;
-    }
-
-    /**
-     * Set codOrganizacaoCadastro
-     *
-     * @param \Entidades\ZgadmOrganizacao $codOrganizacaoCadastro
-     * @return ZgfinPessoa
-     */
-    public function setCodOrganizacaoCadastro(\Entidades\ZgadmOrganizacao $codOrganizacaoCadastro = null)
-    {
-        $this->codOrganizacaoCadastro = $codOrganizacaoCadastro;
-
-        return $this;
-    }
-
-    /**
-     * Get codOrganizacaoCadastro
-     *
-     * @return \Entidades\ZgadmOrganizacao 
-     */
-    public function getCodOrganizacaoCadastro()
-    {
-        return $this->codOrganizacaoCadastro;
     }
 }

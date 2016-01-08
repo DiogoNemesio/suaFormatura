@@ -80,27 +80,6 @@ class ZgfinPessoa
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_CLIENTE", type="integer", nullable=false)
-     */
-    private $indCliente;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="IND_FORNECEDOR", type="integer", nullable=false)
-     */
-    private $indFornecedor;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="IND_TRANSPORTADORA", type="integer", nullable=false)
-     */
-    private $indTransportadora;
-
-    /**
-     * @var integer
-     *
      * @ORM\Column(name="IND_ESTRANGEIRO", type="integer", nullable=false)
      */
     private $indEstrangeiro;
@@ -370,75 +349,6 @@ class ZgfinPessoa
     public function getIndContribuinte()
     {
         return $this->indContribuinte;
-    }
-
-    /**
-     * Set indCliente
-     *
-     * @param integer $indCliente
-     * @return ZgfinPessoa
-     */
-    public function setIndCliente($indCliente)
-    {
-        $this->indCliente = $indCliente;
-
-        return $this;
-    }
-
-    /**
-     * Get indCliente
-     *
-     * @return integer 
-     */
-    public function getIndCliente()
-    {
-        return $this->indCliente;
-    }
-
-    /**
-     * Set indFornecedor
-     *
-     * @param integer $indFornecedor
-     * @return ZgfinPessoa
-     */
-    public function setIndFornecedor($indFornecedor)
-    {
-        $this->indFornecedor = $indFornecedor;
-
-        return $this;
-    }
-
-    /**
-     * Get indFornecedor
-     *
-     * @return integer 
-     */
-    public function getIndFornecedor()
-    {
-        return $this->indFornecedor;
-    }
-
-    /**
-     * Set indTransportadora
-     *
-     * @param integer $indTransportadora
-     * @return ZgfinPessoa
-     */
-    public function setIndTransportadora($indTransportadora)
-    {
-        $this->indTransportadora = $indTransportadora;
-
-        return $this;
-    }
-
-    /**
-     * Get indTransportadora
-     *
-     * @return integer 
-     */
-    public function getIndTransportadora()
-    {
-        return $this->indTransportadora;
     }
 
     /**

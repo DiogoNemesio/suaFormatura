@@ -113,6 +113,13 @@ class ZgfinHistoricoRec
     private $valorDescontoMora;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="VAL_DESCONTO_BOLETO_CONCEDIDO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $valDescontoBoletoConcedido;
+
+    /**
      * @var \Entidades\ZgfinContaReceber
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfinContaReceber")
@@ -470,6 +477,29 @@ class ZgfinHistoricoRec
     public function getValorDescontoMora()
     {
         return $this->valorDescontoMora;
+    }
+
+    /**
+     * Set valDescontoBoletoConcedido
+     *
+     * @param float $valDescontoBoletoConcedido
+     * @return ZgfinHistoricoRec
+     */
+    public function setValDescontoBoletoConcedido($valDescontoBoletoConcedido)
+    {
+        $this->valDescontoBoletoConcedido = $valDescontoBoletoConcedido;
+
+        return $this;
+    }
+
+    /**
+     * Get valDescontoBoletoConcedido
+     *
+     * @return float 
+     */
+    public function getValDescontoBoletoConcedido()
+    {
+        return $this->valDescontoBoletoConcedido;
     }
 
     /**
