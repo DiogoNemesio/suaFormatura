@@ -43,7 +43,7 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		
 		$info 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 		$oContrato	= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $codOrganizacao));
-		$pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc(), 'codOrganizacao' => null));
+		$pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc()));
 		
 	} catch (\Exception $e) {
 		\Zage\App\Erro::halt($e->getMessage());

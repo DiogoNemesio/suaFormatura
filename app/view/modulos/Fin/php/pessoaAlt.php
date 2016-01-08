@@ -254,7 +254,7 @@ try {
 ## Resgatar os dados de contato
 #################################################################################
 if ($indParceiro ==  true){
-	$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findBy(array('codProprietario' => $codPessoa));
+	$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefone')->findBy(array('codProprietario' => $codPessoa));
 }else{
 	$aTelefones		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
 }
@@ -294,7 +294,7 @@ for ($i = 0; $i < sizeof($aContas); $i++) {
 ## Lista de segmentos de mercado
 #################################################################################
 if ($indParceiro == true){
-	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa);
+	$segAss		= \Zage\Fin\Pessoa::listaSegmentos($codPessoa);
 	$segDis		= \Zage\Fin\Pessoa::listaSegmentosNaoAssociados($codPessoa);
 }else{
 	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa,$system->getCodOrganizacao());

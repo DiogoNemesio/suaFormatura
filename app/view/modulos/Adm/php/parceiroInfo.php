@@ -268,7 +268,7 @@ try {
 ################################################################################
 ## Lista de segmentos de mercado
 #################################################################################
-$pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc(), 'codOrganizacao' => null));
+$pessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $info->getCgc()));
 
 if($pessoa){
 	$segAss		= \Zage\Fin\Pessoa::listaSegmentos($pessoa->getCodigo());
