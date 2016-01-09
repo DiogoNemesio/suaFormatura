@@ -235,9 +235,6 @@ try {
  		if (!$oPessoa) {
 	 		$oPessoa	= new \Entidades\ZgfinPessoa();
 	 		$oPessoa->setDataCadastro(new \DateTime("now"));
-	 		$oPessoa->setIndCliente(0);
-	 		$oPessoa->setIndFornecedor(0);
-	 		$oPessoa->setIndTransportadora(0);
  		}
  	}
  	
@@ -251,14 +248,6 @@ try {
  		$dtNasc		= DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataNascimento);
  	}else{
  		$dtNasc		= null;
- 	}
- 	
- 	if ($tipoCadPessoa == "C") {
- 		$oPessoa->setIndCliente(1);
- 	}elseif ($tipoCadPessoa == "F") {
- 		$oPessoa->setIndFornecedor(1);
- 	}elseif ($tipoCadPessoa == "T") {
- 		$oPessoa->setIndTransportadora(1);
  	}
  	
  	//$oPessoa->setCodParceiro($oOrg);
@@ -350,7 +339,7 @@ try {
  	## Criação / Alteração 
  	#################################################################################
  	for ($i = 0; $i < sizeof($codTelefone); $i++) {
- 		$infoTel		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findOneBy(array('codigo' => $codTelefone[$i] , 'codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
+ 		$infoTel		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findOneBy(array('codigo' => $codTelefone[$i] , 'codPessoa' => $oPessoa->getCodigo()));
  	
  		if (!$infoTel) {
  			$infoTel		= new \Entidades\ZgfinPessoaTelefoneOrganizacao();
@@ -388,7 +377,7 @@ try {
  	#################################################################################
  	## Lista de segmentos já associados
  	#################################################################################
- 	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa);
+ 	$segAss		= \Zage\Fin\Pessoa::listaSegmentosOrganizacao($codPessoa,$system->getCodOrganizacao());
  	$aSegAss	= array();
  		
  	#################################################################################
@@ -411,6 +400,9 @@ try {
 	#################################################################################
 	## Inclusão
 	#################################################################################
+	$log->info($arraySeg);
+	$log->info($aSegAss);
+	
 	for ($i = 0; $i < sizeof($arraySeg); $i++) {
 		if (!in_array($arraySeg[$i], $aSegAss)) {
 			try {
