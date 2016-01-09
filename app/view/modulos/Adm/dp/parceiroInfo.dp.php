@@ -361,9 +361,6 @@ try {
  	$oFornec->setLink($oParceiro->getLink());
  	$oFornec->setCodTipoPessoa($oFornecTipoPessoa); //parceiro
  	$oFornec->setIndContribuinte(0);
- 	$oFornec->setIndCliente(1);
- 	$oFornec->setIndFornecedor(1);
- 	$oFornec->setIndTransportadora(0);
  	$oFornec->setIndEstrangeiro(0);
  	$oFornec->setIndAtivo(1);
  	$oFornec->setCodSexo($oParceiro->getCodSexo());

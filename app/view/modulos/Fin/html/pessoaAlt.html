@@ -34,8 +34,8 @@
 								Endereço
 							</a>
 						</li>
-						<li>
-							<a data-toggle="tab" href="#pessoa-segmento">
+						<li id="liSegmentoID">
+							<a id="aSegmentoID" data-toggle="tab" href="#pessoa-segmento">
 								<i class="purple fa fa-building-o bigger-125"></i>
 								Seg. Mercado
 							</a>
@@ -382,8 +382,10 @@ zgMostraDivs();
 $('[data-rel=popover]').popover({html:true});
 
 if ($('#tipoCadPessoaID').val() == 'C' ) {
-	$('#liFonteID').addClass("disabled");
-	$('#aFonteID').addClass("disabled");
+	$('#liFonteID').addClass("hidden");
+	$('#aFonteID').addClass("hidden");
+	$('#liSegmentoID').addClass("hidden");
+	$('#aSegmentoID').addClass("hidden");
 }
 
 $(".nav-tabs a[data-toggle=tab]").on("click", function(e) {

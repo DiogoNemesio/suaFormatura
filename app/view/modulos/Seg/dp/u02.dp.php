@@ -245,7 +245,7 @@ try {
 	#################################################################################
 	## Salvar Cliente se necessário
 	#################################################################################	
-	$oCliente = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf() , 'codOrganizacao' => $codOrganizacao));
+	$oCliente = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf()));
 	
 	if(!$oCliente){
 		$oCliente = new \Entidades\ZgfinPessoa();
@@ -255,7 +255,6 @@ try {
 	
 	$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
 	
-	$oCliente->setCodOrganizacao($oOrg);
 	$oCliente->setNome($oUsuario->getNome());
 	$oCliente->setFantasia($oUsuario->getNome());
 	$oCliente->setCgc($oUsuario->getCpf());
@@ -264,9 +263,6 @@ try {
 	$oCliente->setEmail($oUsuario->getUsuario());
 	$oCliente->setCodTipoPessoa($clienteTipo);
 	$oCliente->setIndContribuinte(0);
-	$oCliente->setIndCliente(1);
-	$oCliente->setIndFornecedor(1);
-	$oCliente->setIndTransportadora(0);
 	$oCliente->setIndEstrangeiro(0);
 	$oCliente->setIndAtivo(1);
 	$oCliente->setCodSexo($oSexo);

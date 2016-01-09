@@ -131,8 +131,8 @@ if (isset($codLogradouro) && (!empty($codLogradouro))){
 	if (isset($endCorreto) && (!empty($endCorreto))) {
 		$endCorreto	= 1;
 	}else{
-		$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
-		if (($oLogradouro->getDescricao() != $descLogradouro) || ($oLogradouro->getCodBairro()->getDescricao() != $bairro)){
+		$oLogradouroradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+		if (($oLogradouroradouro->getDescricao() != $descLogradouro) || ($oLogradouroradouro->getCodBairro()->getDescricao() != $bairro)){
 			$endCorreto	= 0;
 		}else{
 			$endCorreto	= 1;
@@ -177,11 +177,11 @@ try {
 	#################################################################################
 	## Resgatar as chaves estrangeiras
 	#################################################################################
-	$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
-	$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'A'));
-	$oSexo		= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
-	$oLog		= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
-	$oUsuOrgSt	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'A'));
+	$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+	$oStatus		= $em->getRepository('Entidades\ZgsegUsuarioStatusTipo')->findOneBy(array('codigo' => 'A'));
+	$oSexo			= $em->getRepository('Entidades\ZgsegSexoTipo')->findOneBy(array('codigo' => $sexo));
+	$oLogradouro	= $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+	$oUsuOrgSt		= $em->getRepository('Entidades\ZgsegUsuarioOrganizacaoStatus')->findOneBy(array('codigo' => 'A'));
 	
 	#################################################################################
 	## Salvar as informações do usuário
@@ -191,7 +191,7 @@ try {
 	$oUsuario->setRg($rg);
 	$oUsuario->setApelido($apelido);
 	$oUsuario->setDataNascimento($dataFormat);
-	$oUsuario->setCodLogradouro($oLog);
+	$oUsuario->setCodLogradouro($oLogradouro);
 	$oUsuario->setEndereco($descLogradouro);
 	$oUsuario->setBairro($bairro);
 	$oUsuario->setNumero($numero);
@@ -200,7 +200,6 @@ try {
 	$oUsuario->setIndEndCorreto($endCorreto);
 	$oUsuario->setCodStatus($oStatus);
 	$oUsuario->setSexo($oSexo);
-	$log->debug($senha);
 	$senhaCrip	= \Zage\App\Crypt::crypt($oUsuario->getUsuario(), $senha);
 	$oUsuario->setSenha($senhaCrip);
 	
@@ -248,8 +247,7 @@ try {
 	
 	$em->persist($convite);
 	
-	
-	/********** Salvar as informações *********/
+	/********** Salvar as informações ******
 	try {
 		$em->flush();
 	
@@ -257,70 +255,115 @@ try {
 		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
 	}
+		***/
+	
+	#################################################################################
+	## Salvar PESSOA se necessário ou alteração de dados (se for formando)
+	#################################################################################
+	if ($oUsuOrg->getCodPerfil()->getCodTipoUsuario()->getCodigo() == "F"){
+	
+		$oPessoa = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf()));
 		
-	
-	#################################################################################
-	## Salvar Cliente se necessário
-	#################################################################################
-	$oCliente = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf() , 'codOrganizacao' => $codOrganizacao));
-	
-	if(!$oCliente){
-		$oCliente = new \Entidades\ZgfinPessoa();
-		$oCliente->setDataCadastro(new DateTime(now));
-		$oCliente->setObservacao('Importado do cadastro de formando.');
+		if(!$oPessoa){
+			$oPessoa = new \Entidades\ZgfinPessoa();
+			$oPessoa->setDataCadastro(new DateTime(now));
+			$oPessoa->setObservacao('Importado do cadastro de formando.');
+		}
+		
+		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
+		
+		$oPessoa->setNome($oUsuario->getNome());
+		$oPessoa->setFantasia($oUsuario->getNome());
+		$oPessoa->setCgc($oUsuario->getCpf());
+		$oPessoa->setRg($oUsuario->getRg());
+		$oPessoa->setDataNascimento($oUsuario->getDataNascimento());
+		$oPessoa->setEmail($oUsuario->getUsuario());
+		$oPessoa->setCodTipoPessoa($clienteTipo);
+		$oPessoa->setIndContribuinte(0);
+		$oPessoa->setIndEstrangeiro(0);
+		$oPessoa->setIndAtivo(1);
+		$oPessoa->setCodSexo($oSexo);
+		
+		$em->persist($oPessoa);
+		
+		// Associação Pessoa - Organizacao
+		$oPessoaOrg	= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
+		if (!$oPessoaOrg) {
+			$oPessoaOrg	= new \Entidades\ZgfinPessoaOrganizacao();
+			$oPessoaOrg->setCodPessoa($oPessoa);
+			$oPessoaOrg->setCodOrganizacao($oOrg);
+			$oPessoaOrg->setIndCliente(1);
+			$oPessoaOrg->setIndFornecedor(1);
+			$oPessoaOrg->setIndTransportadora(0);
+			$oPessoaOrg->setIndContribuinte(0);
+			
+			$em->persist($oPessoaOrg);
+		}
+		
+		//ENDEREÇO
+		$oPessoaEnd = $em->getRepository('Entidades\ZgfinPessoaEnderecoOrganizacao')->findOneBy(array('codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
+		$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => "F"));
+		
+		if (!$oPessoaEnd){
+			$oPessoaEnd = new \Entidades\ZgfinPessoaEnderecoOrganizacao();
+		}
+		
+		$oPessoaEnd->setCodOrganizacao($oOrg);
+		$oPessoaEnd->setCodPessoa($oPessoa);
+		$oPessoaEnd->setCodTipoEndereco($oEndTipo);
+		$oPessoaEnd->setCodLogradouro($oLogradouro);
+		$oPessoaEnd->setCep($oUsuario->getCep());
+		$oPessoaEnd->setEndereco($oUsuario->getEndereco());
+		$oPessoaEnd->setBairro($oUsuario->getBairro());
+		$oPessoaEnd->setNumero($oUsuario->getNumero());
+		$oPessoaEnd->setComplemento($oUsuario->getComplemento());
+		$oPessoaEnd->setIndEndCorreto($oUsuario->getIndEndCorreto());
+		
+		$em->persist($oPessoaEnd);
+		
+		//TELEFONE
+		$telefones		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findBy(array('codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
+	 	
+	 	// Exclusão
+	 	for ($i = 0; $i < sizeof($telefones); $i++) {
+	 		if (!in_array($telefones[$i]->getTelefone(), $telefone)) {
+	 			try {
+	 				$em->remove($telefones[$i]);
+	 			} catch (\Exception $e) {
+	 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível excluir o telefone: ".$telefones[$i]->getTelefone()." Erro: ".$e->getMessage());
+	 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+	 				exit;
+	 			}
+	 		}
+	 	
+	 	}
+	 	
+	 	// Criação e alteração
+	 	for ($i = 0; $i < sizeof($telefone); $i++) {
+	 		$infoTel		= $em->getRepository('Entidades\ZgfinPessoaTelefoneOrganizacao')->findOneBy(array('codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo() , 'telefone' => $telefone[$i]));
+	 		if (!$infoTel) {
+	 			$infoTel		= new \Entidades\ZgfinPessoaTelefoneOrganizacao();
+	 		}
+	 		
+	 		if ($infoTel->getCodTipoTelefone() !== $codTipoTel[$i]) {
+	 			
+	 			$oTipoTel	= $em->getRepository('Entidades\ZgappTelefoneTipo')->findOneBy(array('codigo' => $codTipoTel[$i]));
+	 			
+	 			$infoTel->setCodPessoa($oPessoa);
+	 			$infoTel->setCodOrganizacao($oOrg);
+	 			$infoTel->setCodTipoTelefone($oTipoTel);
+	 			$infoTel->setTelefone($telefone[$i]);
+	 		 	
+	 			try {
+	 				$em->persist($infoTel);
+	 			} catch (\Exception $e) {
+	 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Não foi possível cadastrar o telefone: ".$telefone[$i]." Erro: ".$e->getMessage());
+	 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+	 				exit;
+	 			}
+	 		}
+	 	}
 	}
-	
-	$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
-	
-	$oCliente->setCodOrganizacao($oOrg);
-	$oCliente->setNome($oUsuario->getNome());
-	$oCliente->setFantasia($oUsuario->getNome());
-	$oCliente->setCgc($oUsuario->getCpf());
-	$oCliente->setRg($oUsuario->getRg());
-	$oCliente->setDataNascimento($oUsuario->getDataNascimento());
-	$oCliente->setEmail($oUsuario->getUsuario());
-	$oCliente->setCodTipoPessoa($clienteTipo);
-	$oCliente->setIndContribuinte(0);
-	$oCliente->setIndCliente(1);
-	$oCliente->setIndFornecedor(1);
-	$oCliente->setIndTransportadora(0);
-	$oCliente->setIndEstrangeiro(0);
-	$oCliente->setIndAtivo(1);
-	$oCliente->setCodSexo($oSexo);
-	
-	$em->persist($oCliente);
-
-	//ENDEREÇO
-	$oClienteEnd = $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $oCliente->getCodigo()));
-	$oEndTipo	 = $em->getRepository('Entidades\ZgfinEnderecoTipo')->findOneBy(array('codigo' => C));
-	
-	if (!$oClienteEnd){
-		$oClienteEnd = new \Entidades\ZgfinPessoaEndereco();
-	}
-	
-	$oClienteEnd->setCodPessoa($oCliente);
-	$oClienteEnd->setCodTipoEndereco($oEndTipo);
-	$oClienteEnd->setCodLogradouro($oLog);
-	$oClienteEnd->setCep($oUsuario->getCep());
-	$oClienteEnd->setEndereco($oUsuario->getEndereco());
-	$oClienteEnd->setBairro($oUsuario->getBairro());
-	$oClienteEnd->setNumero($oUsuario->getNumero());
-	$oClienteEnd->setComplemento($oUsuario->getComplemento());
-	$oClienteEnd->setIndEndCorreto($oUsuario->getIndEndCorreto());
-	
-	$em->persist($oClienteEnd);
-	
-	//Telefone
-	
-	$oCliTel = new \Zage\App\Telefone();
-	$oCliTel->_setEntidadeTel('Entidades\ZgfinPessoaTelefone');
-	$oCliTel->_setCodProp($oCliente);
-	$oCliTel->_setTelefone($telefone);
-	$oCliTel->_setCodTipoTel($codTipoTel);
-	$oCliTel->_setCodTelefone($codTelefone);
-	
-	$retorno	= $oCliTel->salvar();
-	
 	/********** Salvar as informações *******/
 	try {
 		$em->flush();

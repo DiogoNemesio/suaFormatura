@@ -49,7 +49,7 @@ try {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GOrc");
-$grid->adicionaTexto($tr->trans('VERSAO'),	 			20, $grid::CENTER	,'versao');
+$grid->adicionaTexto($tr->trans('VERSÃO'),	 			20, $grid::CENTER	,'versao');
 $grid->adicionaTexto($tr->trans('STATUS'),				20, $grid::CENTER	,'indAtivo');
 $grid->adicionaDataHora($tr->trans('DATA CADASTRO'),		20, $grid::CENTER	,'dataCadastro');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
@@ -63,9 +63,9 @@ for ($i = 0; $i < sizeof($orcamento); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codVersao='.$orcamento[$i]->getCodigo().'&url='.$url);
 	
 	if ($orcamento[$i]->getIndAtivo() == 1) {
-		$grid->setValorCelula($i, 1, "<span class=\"label label-success arrowed\">Ativa</span>");
+		$grid->setValorCelula($i, 1, "<span class=\"label label-success\">Ativo</span>");
 	}else{
-		$grid->setValorCelula($i, 1, "<span class=\"label label-danger arrowed\">Inativa</span>");
+		$grid->setValorCelula($i, 1, "<span class=\"label label-danger\">Inativo</span>");
 	}
 	
 	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/planoOrcAlt.php?id='.$uid);
