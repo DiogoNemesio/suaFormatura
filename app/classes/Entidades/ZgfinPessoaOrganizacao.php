@@ -50,11 +50,32 @@ class ZgfinPessoaOrganizacao
     private $indTransportadora;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_FORMANDO", type="integer", nullable=true)
+     */
+    private $indFormando;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=true)
+     */
+    private $indAtivo;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="OBSERVACAO", type="string", length=400, nullable=true)
      */
     private $observacao;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=true)
+     */
+    private $dataCadastro;
 
     /**
      * @var \Entidades\ZgfinPessoa
@@ -180,6 +201,52 @@ class ZgfinPessoaOrganizacao
     }
 
     /**
+     * Set indFormando
+     *
+     * @param integer $indFormando
+     * @return ZgfinPessoaOrganizacao
+     */
+    public function setIndFormando($indFormando)
+    {
+        $this->indFormando = $indFormando;
+
+        return $this;
+    }
+
+    /**
+     * Get indFormando
+     *
+     * @return integer 
+     */
+    public function getIndFormando()
+    {
+        return $this->indFormando;
+    }
+
+    /**
+     * Set indAtivo
+     *
+     * @param integer $indAtivo
+     * @return ZgfinPessoaOrganizacao
+     */
+    public function setIndAtivo($indAtivo)
+    {
+        $this->indAtivo = $indAtivo;
+
+        return $this;
+    }
+
+    /**
+     * Get indAtivo
+     *
+     * @return integer 
+     */
+    public function getIndAtivo()
+    {
+        return $this->indAtivo;
+    }
+
+    /**
      * Set observacao
      *
      * @param string $observacao
@@ -200,6 +267,29 @@ class ZgfinPessoaOrganizacao
     public function getObservacao()
     {
         return $this->observacao;
+    }
+
+    /**
+     * Set dataCadastro
+     *
+     * @param \DateTime $dataCadastro
+     * @return ZgfinPessoaOrganizacao
+     */
+    public function setDataCadastro($dataCadastro)
+    {
+        $this->dataCadastro = $dataCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get dataCadastro
+     *
+     * @return \DateTime 
+     */
+    public function getDataCadastro()
+    {
+        return $this->dataCadastro;
     }
 
     /**

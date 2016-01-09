@@ -85,13 +85,6 @@ class ZgfinPessoa
     private $indEstrangeiro;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=false)
-     */
-    private $indAtivo;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="OBSERVACAO", type="string", length=400, nullable=true)
@@ -118,13 +111,6 @@ class ZgfinPessoa
      * @ORM\Column(name="LINK", type="string", length=200, nullable=true)
      */
     private $link;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="COD_ORGANIZACAO_CADASTRO", type="integer", nullable=true)
-     */
-    private $codOrganizacaoCadastro;
 
     /**
      * @var \Entidades\ZgfinPessoaTipo
@@ -155,6 +141,16 @@ class ZgfinPessoa
      * })
      */
     private $codSexo;
+
+    /**
+     * @var \Entidades\ZgadmOrganizacao
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORGANIZACAO_CADASTRO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrganizacaoCadastro;
 
 
     /**
@@ -375,29 +371,6 @@ class ZgfinPessoa
     }
 
     /**
-     * Set indAtivo
-     *
-     * @param integer $indAtivo
-     * @return ZgfinPessoa
-     */
-    public function setIndAtivo($indAtivo)
-    {
-        $this->indAtivo = $indAtivo;
-
-        return $this;
-    }
-
-    /**
-     * Get indAtivo
-     *
-     * @return integer 
-     */
-    public function getIndAtivo()
-    {
-        return $this->indAtivo;
-    }
-
-    /**
      * Set observacao
      *
      * @param string $observacao
@@ -490,29 +463,6 @@ class ZgfinPessoa
     }
 
     /**
-     * Set codOrganizacaoCadastro
-     *
-     * @param integer $codOrganizacaoCadastro
-     * @return ZgfinPessoa
-     */
-    public function setCodOrganizacaoCadastro($codOrganizacaoCadastro)
-    {
-        $this->codOrganizacaoCadastro = $codOrganizacaoCadastro;
-
-        return $this;
-    }
-
-    /**
-     * Get codOrganizacaoCadastro
-     *
-     * @return integer 
-     */
-    public function getCodOrganizacaoCadastro()
-    {
-        return $this->codOrganizacaoCadastro;
-    }
-
-    /**
      * Set codTipoPessoa
      *
      * @param \Entidades\ZgfinPessoaTipo $codTipoPessoa
@@ -579,5 +529,28 @@ class ZgfinPessoa
     public function getCodSexo()
     {
         return $this->codSexo;
+    }
+
+    /**
+     * Set codOrganizacaoCadastro
+     *
+     * @param \Entidades\ZgadmOrganizacao $codOrganizacaoCadastro
+     * @return ZgfinPessoa
+     */
+    public function setCodOrganizacaoCadastro(\Entidades\ZgadmOrganizacao $codOrganizacaoCadastro = null)
+    {
+        $this->codOrganizacaoCadastro = $codOrganizacaoCadastro;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrganizacaoCadastro
+     *
+     * @return \Entidades\ZgadmOrganizacao 
+     */
+    public function getCodOrganizacaoCadastro()
+    {
+        return $this->codOrganizacaoCadastro;
     }
 }
