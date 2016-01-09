@@ -88,4 +88,44 @@ class Adiantamento {
 		return $saldo;
 	}
 
+
+
+	/**
+	 * Calcular o saldo de adiantamento por Pessoa de uma organização
+	 * @param integer $codOrganizacao
+	 */
+	public static function listaSaldoPorPessoa($codOrganizacao) {
+
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('Entidades\ZgfinPessoa'	, 'P');
+			$rsm->addScalarResult('COD_PESSOA'				, 'COD_PESSOA');
+			$rsm->addScalarResult('NOME'					, 'NOME');
+			$rsm->addScalarResult('CGC'						, 'CGC');
+			$rsm->addScalarResult('SALDO'					, 'SALDO');
+		
+			$query 	= $em->createNativeQuery("
+			SELECT	P.CODIGO AS COD_PESSOA,P.CGC,P.NOME, SUM(IF(A.COD_TIPO_OPERACAO = 'C',IFNULL(A.VALOR,0),IFNULL(A.VALOR,0)*-1)) SALDO 
+			FROM 	ZGFIN_MOV_ADIANTAMENTO 		A
+			LEFT OUTER JOIN ZGFIN_PESSOA P ON (A.COD_PESSOA = P.CODIGO)
+			WHERE 	A.COD_ORGANIZACAO 		= :codOrg
+			GROUP 	BY P.CODIGO,P.CGC,P.NOME
+			ORDER	BY P.NOME
+			", $rsm);
+			$query->setParameter('codOrg'		, $codOrganizacao);
+
+			return($query->getResult());
+		
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		
+	}
+	
 }
