@@ -270,7 +270,7 @@ try {
 			$oPessoa->setObservacao('Importado do cadastro de formando.');
 		}
 		
-		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
+		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => "F"));
 		
 		$oPessoa->setNome($oUsuario->getNome());
 		$oPessoa->setFantasia($oUsuario->getNome());
@@ -281,7 +281,6 @@ try {
 		$oPessoa->setCodTipoPessoa($clienteTipo);
 		$oPessoa->setIndContribuinte(0);
 		$oPessoa->setIndEstrangeiro(0);
-		$oPessoa->setIndAtivo(1);
 		$oPessoa->setCodSexo($oSexo);
 		
 		$em->persist($oPessoa);
@@ -290,11 +289,14 @@ try {
 		$oPessoaOrg	= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
 		if (!$oPessoaOrg) {
 			$oPessoaOrg	= new \Entidades\ZgfinPessoaOrganizacao();
+			$oPessoaOrg->setDataCadastro(new DateTime(now));
 			$oPessoaOrg->setCodPessoa($oPessoa);
 			$oPessoaOrg->setCodOrganizacao($oOrg);
+			$oPessoaOrg->setIndAtivo(1);
 			$oPessoaOrg->setIndCliente(1);
 			$oPessoaOrg->setIndFornecedor(1);
 			$oPessoaOrg->setIndTransportadora(0);
+			$oPessoaOrg->setIndFormando(1);
 			$oPessoaOrg->setIndContribuinte(0);
 			
 			$em->persist($oPessoaOrg);
@@ -364,6 +366,7 @@ try {
 	 		}
 	 	}
 	}
+	
 	/********** Salvar as informações *******/
 	try {
 		$em->flush();
