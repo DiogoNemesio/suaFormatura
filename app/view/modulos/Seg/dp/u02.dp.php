@@ -182,6 +182,8 @@ if ($err != null) {
 ## Salvar no banco
 #################################################################################
 try {
+	
+	$em->getConnection()->beginTransaction();
 
 	#################################################################################
 	## Resgatar as chaves estrangeiras
@@ -196,7 +198,7 @@ try {
 	## Salvar as informações do usuário
 	#################################################################################
 	$oUsuario->setNome($nome);
-	$oUsuario->setCpf($cpf);
+	//$oUsuario->setCpf($cpf);
 	$oUsuario->setRg($rg);
 	$oUsuario->setApelido($apelido);
 	$oUsuario->setDataNascimento($dataFormat);
@@ -246,28 +248,28 @@ try {
 	## Salvar Cliente se necessário
 	#################################################################################
 	if ($oUsuOrg->getCodPerfil()->getCodTipoUsuario()->getCodigo() == "F"){	
-		$oCliente = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf()));
+		$oPessoa = $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf()));
 		
-		if(!$oCliente){
-			$oCliente = new \Entidades\ZgfinPessoa();
-			$oCliente->setDataCadastro(new DateTime(now));
-			$oCliente->setObservacao('Importado do cadastro de formando.');
+		if(!$oPessoa){
+			$oPessoa = new \Entidades\ZgfinPessoa();
+			$oPessoa->setDataCadastro(new DateTime(now));
+			$oPessoa->setObservacao('Importado do cadastro de formando.');
 		}
 		
-		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => O));
+		$clienteTipo = $em->getRepository('Entidades\ZgfinPessoaTipo')->findOneBy(array('codigo' => "F"));
 		
-		$oCliente->setNome($oUsuario->getNome());
-		$oCliente->setFantasia($oUsuario->getNome());
-		$oCliente->setCgc($oUsuario->getCpf());
-		$oCliente->setRg($oUsuario->getRg());
-		$oCliente->setDataNascimento($oUsuario->getDataNascimento());
-		$oCliente->setEmail($oUsuario->getUsuario());
-		$oCliente->setCodTipoPessoa($clienteTipo);
-		$oCliente->setIndContribuinte(0);
-		$oCliente->setIndEstrangeiro(0);
-		$oCliente->setCodSexo($oSexo);
+		$oPessoa->setNome($oUsuario->getNome());
+		$oPessoa->setFantasia($oUsuario->getNome());
+		$oPessoa->setCgc($oUsuario->getCpf());
+		$oPessoa->setRg($oUsuario->getRg());
+		$oPessoa->setDataNascimento($oUsuario->getDataNascimento());
+		$oPessoa->setEmail($oUsuario->getUsuario());
+		$oPessoa->setCodTipoPessoa($clienteTipo);
+		$oPessoa->setIndContribuinte(0);
+		$oPessoa->setIndEstrangeiro(0);
+		$oPessoa->setCodSexo($oSexo);
 		
-		$em->persist($oCliente);
+		$em->persist($oPessoa);
 		
 		// Associação Pessoa - Organizacao
 		$oPessoaOrg	= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
@@ -297,7 +299,7 @@ try {
 		$oPessoaEnd->setCodOrganizacao($oOrg);
 		$oPessoaEnd->setCodPessoa($oPessoa);
 		$oPessoaEnd->setCodTipoEndereco($oEndTipo);
-		$oPessoaEnd->setCodLogradouro($oLogradouro);
+		$oPessoaEnd->setCodLogradouro($oUsuario->getCodLogradouro());
 		$oPessoaEnd->setCep($oUsuario->getCep());
 		$oPessoaEnd->setEndereco($oUsuario->getEndereco());
 		$oPessoaEnd->setBairro($oUsuario->getBairro());
@@ -350,10 +352,9 @@ try {
 	 		}
 	 	}
 	}
-	
-	}
-	
-	/********** Salvar as informações *******/
+	$em->flush();
+	$em->getConnection()->commit();
+	/********** Salvar as informações ****
 	try {
 		$em->flush();
 		$em->getConnection()->commit();
@@ -361,7 +362,7 @@ try {
 		$log->debug("Erro ao salvar o cliente:". $e->getTraceAsString());
 		throw new \Exception("Ops!! Não conseguimos processar sua solicitação. Por favor, tente novamente em instantes!! Caso o problema persista entre em contato com o nosso suporte especializado.");
 	}
-	
+	***/
 
 } catch (\Exception $e) {
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());

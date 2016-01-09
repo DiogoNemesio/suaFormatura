@@ -183,7 +183,7 @@ $html .=	'<div class="form-group col-sm-12" id="divValorPorFormandoID">
 			<label for="taxaBoletoID" class="col-sm-3 control-label">Taxa boleto</label>
 			<div class="input-group col-sm-7 pull-left">
 			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class=\'ace-icon fa fa-question-circle red\'></i> Ajuda" data-content="Custo do boleto para a conta selecionada."></i></span>
-			<input class="form-control" id="taxaBoletoID" readonly type="text" name="taxaBoleto" maxlength="60" value="" placeholder="Custo do boleto" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
+			<input class="form-control" id="taxaBoletoID" disabled readonly type="text" name="taxaBoleto" maxlength="60" value="" placeholder="Custo do boleto" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro">
 			</div>
 			<div class="col-sm-1 pull-left" id="divHelpTaxaBoletoID"></div>
 			</div>';

@@ -73,7 +73,7 @@ $grid->adicionaTexto($tr->trans('NOME / RAZÃO SOCIAL'),	20, $grid::CENTER	,'nom
 $grid->adicionaTexto($tr->trans('NOME FANTASIA'),		20, $grid::CENTER	,'fantasia');
 $grid->adicionaTexto($tr->trans('CNPJ / CPF'),			10, $grid::CENTER	,'cgc');
 $grid->adicionaTexto($tr->trans('TIPO'), 				10, $grid::CENTER	,'codTipoPessoa:descricao');
-$grid->adicionaStatus($tr->trans('STATUS'),'indAtivo');
+$grid->adicionaStatus($tr->trans('STATUS'),'');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($pessoas);

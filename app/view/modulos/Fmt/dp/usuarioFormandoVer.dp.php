@@ -206,7 +206,6 @@ try {
  				exit;
  			}
  		}
- 	
  	}
  	
  	// Criação e alteração

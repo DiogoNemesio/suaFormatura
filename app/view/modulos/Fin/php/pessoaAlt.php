@@ -51,17 +51,22 @@ if ((isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc)))) {
 		\Zage\App\Erro::halt($e->getMessage());
 	}
 	
+	/** Restagar informações da associação entre o parceiro e a organização **/
+	$infoPessoOrg 		= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
+	$ativo				= ($infoPessoOrg->getIndAtivo()			== 1) ? "checked" : null;
+	
 	/** Verificar se a pessoa é um parceiro **/
 	if ($info->getCodParceiro()){
 		$indParceiro = true;
+		$readOnlyParceiro = 'readonly';
 		$infoEnd	= $em->getRepository('Entidades\ZgfinPessoaEndereco')->findOneBy(array('codPessoa' => $codPessoa));
 	}else{
 		$indParceiro 	= false;
+		$readOnlyParceiro = '';
 		$infoEnd		= $em->getRepository('Entidades\ZgfinPessoaEnderecoOrganizacao')->findOneBy(array('codPessoa' => $codPessoa));
 	}
 	
 	$tipo			= ($info->getCodTipoPessoa()) ? $info->getCodTipoPessoa()->getCodigo() : null;
-	$ativo			= ($info->getIndAtivo()			== 1) ? "checked" : null;
 	$indEst			= ($info->getIndEstrangeiro()	== 1) ? "checked" : null;
 	$email			= $info->getEmail();
 	$link			= $info->getLink();
@@ -276,10 +281,14 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 ## Resgatar os dados de conta
 #################################################################################
 if ($indParceiro ==  true){
+	$log->info('entrei1');
 	$aContas		= $em->getRepository('Entidades\ZgfinPessoaConta')->findBy(array('codPessoa' => $codPessoa));
 }else{
+	$log->info('entrei2');
 	$aContas		= $em->getRepository('Entidades\ZgfinPessoaContaOrganizacao')->findBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
 }
+
+$log->info($aContas);
 
 $tabConta		= "";
 for ($i = 0; $i < sizeof($aContas); $i++) {
@@ -374,6 +383,7 @@ $tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
 $tpl->set ('IND_END_CORRETO'	, $endCorreto);
 $tpl->set ('READONLY_BAIRRO'	, $readOnlyBairro);
 $tpl->set ('READONLY_END' 	 	, $readOnlyEnd);
+$tpl->set ('READONLY_PAR' 	 	, $readOnlyParceiro);
 
 $tpl->set('APP_BS_TA_MINLENGTH'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_MINLENGTH'));
 $tpl->set('APP_BS_TA_ITENS'			,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_ITENS'));

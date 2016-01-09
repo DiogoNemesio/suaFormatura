@@ -528,6 +528,9 @@ SUBMIT FORMULÁRIO
 // Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
 	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	
 	var vOK 	= validaUsuarioAlt();
 	
 	if(vOK == false) 	{
@@ -556,6 +559,10 @@ $('#zgFormID').submit(function(e) {
 		url:	"%DP%",
 		data:	$('#zgFormID').serialize(),
 	}).done(function( data, textStatus, jqXHR) {
+		
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Confirmar ');
+		$('#btnSubmitID').attr("disabled",true);
+		
 		if (checaRetornoOK(data) == true) {
 			$('#codUsuarioID').val(zgGetCodRetorno(data));
 			//Mensagem de confirmação

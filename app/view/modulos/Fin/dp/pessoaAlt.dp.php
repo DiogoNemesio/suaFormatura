@@ -182,8 +182,12 @@ if ($indEstrangeiro == 0) {
 	}
 }
 
-/** Fonte de Recurso (CONTA) **/
-if (  (isset($codBanco) && !empty($codBanco)) || (isset($agencia) && !empty($agencia)) || (isset($ccorrente) && !empty($ccorrente))) {
+/** Fonte de Recurso (CONTA) 
+$log->info('codBando: '.$codBanco);
+$log->info('agencia: '.$agencia);
+$log->info('ccorrente: '.$ccorrente);
+**/
+if ((isset($codBanco) && !empty($codBanco)) || (isset($agencia) && !empty($agencia)) || (isset($ccorrente) && !empty($ccorrente))) {
 	if (empty($codBanco)) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo %s deve ser preenchido",array('%s' => 'BANCO')));
 		$err	= 1;
@@ -198,7 +202,6 @@ if (  (isset($codBanco) && !empty($codBanco)) || (isset($agencia) && !empty($age
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Campo %s deve ser preenchido",array('%s' => 'CONTA CORRENTE')));
 		$err	= 1;
 	}
-	
 	
 	$oBanco		= $em->getRepository('Entidades\ZgfinBanco')->findOneBy(array('codigo' => $codBanco));
 	
@@ -260,7 +263,6 @@ try {
  	$oPessoa->setInscMunicipal($inscMunicipal);
  	$oPessoa->setCodTipoPessoa($oTipo);
  	$oPessoa->setEmail($email);
- 	$oPessoa->setIndAtivo($ativo);
  	$oPessoa->setIndContribuinte(0);
  	$oPessoa->setDataNascimento($dtNasc);
  	$oPessoa->setCodSexo($oSexo);
@@ -273,6 +275,7 @@ try {
  	$oPessoaOrg	= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codPessoa' => $oPessoa->getCodigo() , 'codOrganizacao' => $oOrg->getCodigo()));
  	if (!$oPessoaOrg) {
  		$oPessoaOrg	= new \Entidades\ZgfinPessoaOrganizacao();
+ 		$oPessoaOrg->setDataCadastro(new \DateTime("now"));
  		//$oPessoaOrg->setDataCadastro(new \DateTime("now"));$oPessoa->setIndCliente(0);
  		$oEndereco	= new \Entidades\ZgfinPessoaEnderecoOrganizacao();
  		$oPessoaOrg->setIndCliente(0);
@@ -294,6 +297,7 @@ try {
  		$oPessoaOrg->setIndTransportadora(1);
  	}
  	
+	$oPessoaOrg->setIndAtivo($ativo);
  	$oPessoaOrg->setCodPessoa($oPessoa);
  	$oPessoaOrg->setCodOrganizacao($oOrg);
  	$oPessoaOrg->setIndContribuinte(0);

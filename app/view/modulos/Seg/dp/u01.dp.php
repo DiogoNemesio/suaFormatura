@@ -187,7 +187,7 @@ try {
 	## Salvar as informações do usuário
 	#################################################################################
 	$oUsuario->setNome($nome);
-	$oUsuario->setCpf($cpf);
+	//$oUsuario->setCpf($cpf);
 	$oUsuario->setRg($rg);
 	$oUsuario->setApelido($apelido);
 	$oUsuario->setDataNascimento($dataFormat);
