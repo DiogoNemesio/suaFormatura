@@ -362,7 +362,6 @@ try {
  	$oFornec->setCodTipoPessoa($oFornecTipoPessoa); //parceiro
  	$oFornec->setIndContribuinte(0);
  	$oFornec->setIndEstrangeiro(0);
- 	$oFornec->setIndAtivo(1);
  	$oFornec->setCodSexo($oParceiro->getCodSexo());
  	
  	$em->persist($oFornec);

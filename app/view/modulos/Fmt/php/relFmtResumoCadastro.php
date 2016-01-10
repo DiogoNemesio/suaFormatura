@@ -229,7 +229,7 @@ $table .= '<thead>
 					<tr style="background-color:#4682B4">
 						<th style="text-align: center; width: 30%;"><font color="#FFFFFF"><strong>USUÁRIOS</strong></font></th>
 						<th style="text-align: center; width: 14%;"><font color="#FFFFFF">QTDE CADASTRO</font></th>
-						<th style="text-align: center; width: 14%;"><strong><font color="#FFFFFF">QTDE ATICAÇÃO</font></th>
+						<th style="text-align: center; width: 14%;"><strong><font color="#FFFFFF">QTDE ATIVAÇÃO</font></th>
 						<th style="text-align: center; width: 14%;"><strong><font color="#FFFFFF">QTDE CANCELAMENTO</font></th>
 						<th style="text-align: center; width: 28%;"><strong></strong></th>
 					</tr>
