@@ -46,8 +46,9 @@ $url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$transEnviada	= $em->getRepository('Entidades\ZgfmtConviteExtraTransf')->findBy(array('codFormandoOrigem' => \Zage\Fmt\Convite::getCodigoUsuarioPessoa() ), array('dataCadastro' => 'ASC'));
-	$transRecebida	= $em->getRepository('Entidades\ZgfmtConviteExtraTransf')->findBy(array('codFormandoDestino' => \Zage\Fmt\Convite::getCodigoUsuarioPessoa() ), array('dataCadastro' => 'ASC'));
+	$codPessoa = \Zage\Fmt\Convite::getCodigoUsuarioPessoa($system->getCodUsuario());
+	$transEnviada	= $em->getRepository('Entidades\ZgfmtConviteExtraTransf')->findBy(array('codFormandoOrigem' => $codPessoa), array('dataCadastro' => 'ASC'));
+	$transRecebida	= $em->getRepository('Entidades\ZgfmtConviteExtraTransf')->findBy(array('codFormandoDestino' => $codPessoa), array('dataCadastro' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

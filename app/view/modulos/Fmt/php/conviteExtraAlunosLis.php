@@ -52,7 +52,6 @@ try {
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GConvAlunos");
 $grid->adicionaTexto($tr->trans('ALUNO'),		 		20, $grid::CENTER	,'codFormando:nome');
 $grid->adicionaTexto($tr->trans('NÚMERO DE COMPRAS'), 	20, $grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('STATUS'),		 		20, $grid::CENTER	,'');
 $grid->adicionaMoeda($tr->trans('TOTAL COMPRADO'),		 	20, $grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-info-circle',$tr->trans('Detalhes'));
 $grid->importaDadosDoctrine($convExtra);
@@ -75,13 +74,13 @@ for ($i = 0; $i < sizeof($convExtra); $i++) {
 	
 	$valorTotal = null;
 	for ($ii = 0; $ii < sizeof($convVenda); $ii++) {
-		$valorTotal += $convVenda[$ii]->getValorTotal();
+		$valorTotal += $convVenda[$ii]->getValorTotal() + $convVenda[$ii]->getTaxaConveniencia();
 	}
 	
-	$grid->setValorCelula($i, 1, count($convVenda) );
-	$grid->setValorCelula($i, 2, count($itens) );
-	$grid->setValorCelula($i, 3, $valorTotal );
-	$grid->setUrlCelula($i, 4, ROOT_URL.'/Fmt/conviteExtraVendaLis.php?id='.$uid);
+	$grid->setValorCelula($i, 1, count($convVenda));
+	//$grid->setValorCelula($i, 1, count($itens));
+	$grid->setValorCelula($i, 2, $valorTotal );
+	$grid->setUrlCelula($i, 3, ROOT_URL.'/Fmt/conviteExtraVendaLis.php?id='.$uid);
 }
 
 #################################################################################

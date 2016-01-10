@@ -32,9 +32,9 @@ if (!isset($codFormando) || empty($codFormando)) {
 
 /** FORMANDO ORIGEM **/
 $oUsuario 	= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $system->getCodUsuario()));
-$oPessoa 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'cgc' => $oUsuario->getCpf()));
+$oPessoaOrigem 	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oUsuario->getCpf()));
 
-if ($codFormando == $oPessoa->getCodigo()){
+if ($codFormando == $oPessoaOrigem->getCodigo()){
 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione um formando que não seja você para receber a transferência.");
 	$err	= 1;
 }
@@ -56,7 +56,7 @@ if(isset($codEvento) && !empty($codEvento)) {
 	}else{
 		$quantConv	= (int) $quantConv;
 		//Resgatar a quantidade de convites disponíveis para esse evento
-		$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($oPessoa->getCodigo(), $oEventoConf->getCodEvento());
+		$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($oPessoaOrigem->getCodigo(), $oEventoConf->getCodEvento());
 		if ($qtdeConvDis < $quantConv){
 			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oEventoConf->getcodEvento()->getCodTipoEvento()->getDescricao()." está maior que o disponível.");
 			$err	= 1;
@@ -80,9 +80,7 @@ try {
 	#################################################################################
 	## RESGATAR OBJETOS
 	###################################################s##############################
-	$oOrigem		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => \Zage\Fmt\Convite::getCodigoUsuarioPessoa()));
-	$oFormando		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codFormando));
-	//$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
+	$oPessoaDestino		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codFormando));
 	
  	//Resgatar as configurações do tipo de evento
 	$oEventoConf = $em->getRepository('Entidades\ZgfmtConviteExtraEventoConf')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codEvento' => $codEvento));
@@ -93,8 +91,8 @@ try {
 	$oConviteTrans	= new \Entidades\ZgfmtConviteExtraTransf();
 	
  	$oConviteTrans->setCodEvento($oEventoConf->getCodEvento());
- 	$oConviteTrans->setCodFormandoOrigem($oOrigem);
- 	$oConviteTrans->setCodFormandoDestino($oFormando);
+ 	$oConviteTrans->setCodFormandoOrigem($oPessoaOrigem);
+ 	$oConviteTrans->setCodFormandoDestino($oPessoaDestino);
  	$oConviteTrans->setQuantidade($quantConv);
  	$oConviteTrans->setDataCadastro(new DateTime(now));
  	

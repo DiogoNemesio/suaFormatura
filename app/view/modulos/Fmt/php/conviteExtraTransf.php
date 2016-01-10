@@ -38,7 +38,7 @@ $msg 	  = null;
 $hidden	  = null;
 $disabled = null;
 try {
-	$aFormando = \Zage\Fmt\Formando::ListaPessoaFormandoRetiraSelec($system->getCodUsuario());
+	$aFormando = \Zage\Fmt\Formando::ListaPessoaFormandoRetiraSelec($system->getCodOrganizacao(),$system->getCodUsuario());
 	
 	if(!empty($aFormando) && $aFormando !=0){
 		$oFormando = $system->geraHtmlCombo($aFormando, 'CODIGO', 'NOME', $codFormando, '');
@@ -64,7 +64,7 @@ try {
 
 if ($eventoConfApto){
 
-	$codFormando = \Zage\Fmt\Convite::getCodigoUsuarioPessoa();
+	$codFormando = \Zage\Fmt\Convite::getCodigoUsuarioPessoa($system->getCodUsuario());
 
 	$oEvento      = "<option value=\"\"></option>";
 	for ($i = 0; $i < sizeof($eventoConfApto); $i++) {

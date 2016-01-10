@@ -44,15 +44,15 @@ try {
 }
 
 if ($eventoConfApto){
-	$codFormando = \Zage\Fmt\Convite::getCodigoUsuarioPessoa();
+	$codPessoa = \Zage\Fmt\Convite::getCodigoUsuarioPessoa($system->getCodUsuario());
 
 	for ($i = 0; $i < sizeof($eventoConfApto); $i++) {
 		$codEvento	 	= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodigo() : null;
 		$eventoDesc		= ($eventoConfApto[$i]->getCodEvento()) ? $eventoConfApto[$i]->getCodEvento()->getCodTipoEvento()->getDescricao() : null;
 		$valor			= ($eventoConfApto[$i]->getValor()) ? \Zage\App\Util::formataDinheiro($eventoConfApto[$i]->getValor()) : null;
 		
-		if (isset($codFormando) && !empty($codFormando)) {
-			$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $eventoConfApto[$i]->getCodEvento());
+		if (isset($codPessoa) && !empty($codPessoa)) {
+			$qtdeDisponivel	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codPessoa, $eventoConfApto[$i]->getCodEvento());
 			if(empty($qtdeDisponivel) || $qtdeDisponivel < 0) {
 				$qtdeDisponivel = 0;
 				$readonly = "readonly";
@@ -163,7 +163,7 @@ $tpl->set ( 'URL_FORM'			   , $_SERVER ['SCRIPT_NAME'] );
 $tpl->set ( 'URL_HIST'		 	   , $urlHist );
 $tpl->set ( 'IC'			 	   , $_icone_);
 $tpl->set ( 'ID'				   , $id );
-$tpl->set ( 'COD_FORMANDO'	   	   , \Zage\Fmt\Convite::getCodigoUsuarioPessoa());
+$tpl->set ( 'COD_FORMANDO'	   	   , $codPessoa);
 $tpl->set ( 'TABLE'				   , $html);
 $tpl->set ( 'DISABLED'			   , $disabled);
 $tpl->set ( 'HIDDEN'			   , $hidden);

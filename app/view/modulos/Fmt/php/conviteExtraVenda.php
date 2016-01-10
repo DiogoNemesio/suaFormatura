@@ -50,7 +50,7 @@ if(!$eventoConfApto){
 # Select de Formando
 ################################################################################
 try {
-	$aFormando = $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), 'codTipoPessoa' => 'O','indAtivo' => 1),array('nome' => 'ASC'));
+	$aFormando = \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(), "F", "indFormando");
 	$oFormando = $system->geraHtmlCombo($aFormando, 'CODIGO', 'NOME', $codFormando, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

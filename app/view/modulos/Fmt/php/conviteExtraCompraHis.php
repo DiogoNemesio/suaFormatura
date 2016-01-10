@@ -58,7 +58,7 @@ $hidden = null;
 $msnCom = null;
 
 try {
-	$oCompras	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findBy(array('codFormando' => \Zage\Fmt\Convite::getCodigoUsuarioPessoa(), 'codOrganizacao' => $system->getCodOrganizacao() ), array('dataCadastro' => 'ASC'));
+	$oCompras	= $em->getRepository('Entidades\ZgfmtConviteExtraVenda')->findBy(array('codFormando' => \Zage\Fmt\Convite::getCodigoUsuarioPessoa($system->getCodUsuario()), 'codOrganizacao' => $system->getCodOrganizacao() ), array('dataCadastro' => 'ASC'));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

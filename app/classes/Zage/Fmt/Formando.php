@@ -30,7 +30,7 @@ class Formando {
 	 * @param int $codUsuário (Úsuário do sistema)
 	 * @return array
 	 */
-	public static function ListaPessoaFormandoRetiraSelec($codFormando){
+	public static function ListaPessoaFormandoRetiraSelec($codOrganizacao,$codUsuario){
 		global $em,$system, $log;
 	
 		$qb 	= $em->createQueryBuilder();
@@ -38,21 +38,21 @@ class Formando {
 		try {
 			$qb->select('p')
 			->from('\Entidades\ZgfinPessoa','p')
-			->leftJoin('\Entidades\ZgfinPessoaTipo'		,'t',	\Doctrine\ORM\Query\Expr\Join::WITH, 't.codigo 	= p.codTipoPessoa')
-			->leftJoin('\Entidades\ZgsegUsuario'		,'u',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.cpf = p.cgc')
-			->leftJoin('\Entidades\ZgadmOrganizacao'	,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= p.codOrganizacao')
+			->leftJoin('\Entidades\ZgfinPessoaOrganizacao'	,'po',	\Doctrine\ORM\Query\Expr\Join::WITH, 'po.codPessoa 	= p.codigo')
+			->leftJoin('\Entidades\ZgsegUsuario'			,'u',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.cpf = p.cgc')
+			->leftJoin('\Entidades\ZgadmOrganizacao'		,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= po.codOrganizacao')
 			->where($qb->expr()->andx(
 					$qb->expr()->eq('o.codigo'					, ':codOrganizacao'),
-					$qb->expr()->eq('t.codigo'					, ':codTipoPessoa'),
-					$qb->expr()->eq('p.indAtivo'				, ':indAtivo'),
-					$qb->expr()->neq('p.codigo'					, ':codFormando')
+					$qb->expr()->eq('po.indFormando'			, ':indFormando'),
+					$qb->expr()->eq('po.indAtivo'				, ':indAtivo'),
+					$qb->expr()->neq('u.codigo'					, ':codUsuario')
 				)
 			)
 	
-			->setParameter('codOrganizacao'	, $system->getCodOrganizacao())
-			->setParameter('codTipoPessoa'	, 'O')
-			->setParameter('codFormando'	, $codFormando)
-			->setParameter('indAtivo'		, 1);
+			->setParameter('codOrganizacao'	, $codOrganizacao)
+			->setParameter('indFormando'	, '1')
+			->setParameter('codUsuario'		, $codUsuario)
+			->setParameter('indAtivo'		, '1');
 	
 			$query 		= $qb->getQuery();
 			return($query->getResult());

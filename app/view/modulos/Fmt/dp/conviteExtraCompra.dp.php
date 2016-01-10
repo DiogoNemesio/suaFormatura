@@ -35,7 +35,7 @@ $err	= false;
 ## Fazer validação dos campos
 #################################################################################
 /** RESGATAR O COD_FORMANDO **/
-$codFormando = \Zage\Fmt\Convite::getCodigoUsuarioPessoa();
+$codFormando = \Zage\Fmt\Convite::getCodigoUsuarioPessoa($system->getCodUsuario());
 
 /** FORMA PAGAMENTO **/
 if (!isset($codFormaPag) || empty($codFormaPag)) {
@@ -62,7 +62,6 @@ for ($i = 0; $i < sizeof($codEvento); $i++) {
 			$quantConv[$i]	= (int) $quantConv[$i];
 			//Resgatar a quantidade de convites disponíveis para esse evento
 			$qtdeConvDis	= \Zage\Fmt\Convite::qtdeConviteDispFormando($codFormando, $oEventoConf->getCodEvento());
-			$log->info($qtdeConvDis);
 			if ($qtdeConvDis < $quantConv[$i]){
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"A quantidade para evento ".$oEventoConf->getcodEvento()->getCodTipoEvento()->getDescricao()." está maior que o disponível.");
 				$err	= 1;
@@ -119,7 +118,7 @@ try {
 	#################################################################################
 	## RESGATAR OBJETOS
 	#################################################################################
-	$oFormando		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => \Zage\Fmt\Convite::getCodigoUsuarioPessoa()));
+	$oFormando		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codFormando));
 	$oFormaPag		= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(array('codigo' => $codFormaPag));
 	$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getcodOrganizacao()));
 	$oTipoVenda		= $em->getRepository('Entidades\ZgfmtConviteExtraVendaTipo')->findOneBy(array('codigo' => I));

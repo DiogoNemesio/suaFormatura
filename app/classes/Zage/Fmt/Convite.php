@@ -66,24 +66,20 @@ class Convite {
 	 * @param 
 	 * @return código
 	 */
-	public static function getCodigoUsuarioPessoa() {
-		global $em,$system;
-	
+	public static function getCodigoUsuarioPessoa($codUsuario) {
+		global $em,$system, $log;
+		
 		$qb 	= $em->createQueryBuilder();
 	
 		try {
 			$qb->select('p.codigo')
 			->from('\Entidades\ZgfinPessoa','p')
 			->leftJoin('\Entidades\ZgsegUsuario','u',	\Doctrine\ORM\Query\Expr\Join::WITH, 'u.cpf = p.cgc')
-			->leftJoin('\Entidades\ZgadmOrganizacao'	,'o',	\Doctrine\ORM\Query\Expr\Join::WITH, 'o.codigo 	= p.codOrganizacao')
 			->where($qb->expr()->andx(
-					$qb->expr()->eq('o.codigo' , ':codOrganizacao'),
-					$qb->expr()->eq('u.codigo' , ':codFormando')
+					$qb->expr()->eq('u.codigo' , ':codUsuario')
 				)
 			)
-	
-			->setParameter('codOrganizacao', $system->getCodOrganizacao())
-			->setParameter('codFormando', $system->getCodUsuario());
+			->setParameter('codUsuario', $codUsuario);
 	
 			$query 		= $qb->getQuery();
 			return($query->getSingleScalarResult());
