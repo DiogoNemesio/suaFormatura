@@ -5,12 +5,13 @@
 if (defined('DOC_ROOT')) {
 	include_once(DOC_ROOT . 'include.php');
 }else{
-	include_once('./include.php');
+	include_once('../include.php');
 }
+
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $system,$em,$tr,$log;
+global $em,$system,$tr;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -36,68 +37,66 @@ if (isset($_GET['id'])) {
 $system->checaPermissao($_codMenu_);
 
 #################################################################################
-## Resgata a url desse script
+## Verificar parâmetro obrigatório
 #################################################################################
-$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
+if (!isset($codPessoa)) \Zage\App\Erro::halt('Falta de Parâmetros 2');
 
 #################################################################################
-## Resgata os dados do grid
+## Resgata os dados da Pessoa
 #################################################################################
-try {
-	$adiantamentos		= \Zage\Fin\Adiantamento::listaSaldoPorPessoa($system->getCodOrganizacao());
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
+$oPessoa		= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codigo' => $codPessoa));
+if (!$oPessoa)	\Zage\App\Erro::halt('Pessoa não encontrada');
+
+#################################################################################
+## Resgata o saldo da pessoa em questão
+#################################################################################
+$saldo			= \Zage\Fin\Adiantamento::getSaldo($system->getCodOrganizacao(), $codPessoa);
+
+
+#################################################################################
+## Resgata as movimentações de adiantamento
+#################################################################################
+$aMovAd		= $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codPessoa' => $codPessoa),array('dataTransacao' => 'ASC'));
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GAdiantamentos");
-$grid->adicionaTexto($tr->trans('CPF/CGC'),				20	,$grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('NOME'),				50	,$grid::CENTER	,'NOME');
-$grid->adicionaMoeda($tr->trans('SALDO'),				20	,$grid::CENTER	,'SALDO');
-$grid->adicionaIcone("#", "fa fa-search blue", "Detalhar os adiantamentos");
-$grid->adicionaIcone("#", "fa fa-exchange green", "Usar o saldo");
-$grid->importaDadosArray($adiantamentos);
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GContaHis");
+$grid->setPagingType(\Zage\App\Grid\Tipo::PG_NONE);
+$grid->setFiltro(0);
+$grid->setMostraInfo(0);
+$grid->adicionaTexto($tr->trans('ORIGEM'),				15, $grid::CENTER	,'codOrigem:descricao');
+$grid->adicionaTexto($tr->trans('OPERAÇÃO'),			8, $grid::CENTER	,'codTipoOperacao:descricao');
+$grid->adicionaTexto($tr->trans('CONTA'),				10, $grid::CENTER	,'');
+$grid->adicionaData($tr->trans('DATA ADIANTAMENTO'),	15, $grid::CENTER	,'dataAdiantamento');
+$grid->adicionaData($tr->trans('DATA TRANSACAO'),		15, $grid::CENTER	,'dataTransacao');
+$grid->adicionaMoeda($tr->trans('VALOR'),				10, $grid::CENTER	,'valor');
+//$grid->adicionaIcone("#", "fa fa-trash red", "Excluir o recebimento");
+$grid->importaDadosDoctrine($aMovAd);
 
 #################################################################################
-## Popula os valores dos botões
+## Ajustar algumas informações
 #################################################################################
-for ($i = 0; $i < sizeof($adiantamentos); $i++) {
-	$aid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPessoa='.$adiantamentos[$i]["COD_PESSOA"].'&url='.$url);
+for ($i = 0; $i < sizeof($aMovAd); $i++) {
 	
-
 	#################################################################################
-	## Aplicar a máscara do CPF / CNPJ
+	## Verificar se o adiantamento é oriundo de alguma conta a pagar ou receber
 	#################################################################################
-	if (strlen($adiantamentos[$i]["CGC"]) > 11) {
-		$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CNPJ)->aplicaMascara($adiantamentos[$i]["CGC"]);
+	if ($aMovAd[$i]->getCodTipoOperacao()->getCodigo() == "C" && $aMovAd[$i]->getCodContaRec()) {
+		$conta		= $aMovAd[$i]->getCodContaRec()->getNumero();
+	}elseif ($aMovAd[$i]->getCodTipoOperacao()->getCodigo() == "D" && $aMovAd[$i]->getCodContaPag()) {
+		$conta		= $aMovAd[$i]->getCodContaPag()->getNumero();
 	}else{
-		$infoCgc	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($adiantamentos[$i]["CGC"]);
+		$conta		= null;
 	}
-	$grid->setValorCelula($i, 0, $infoCgc);
-	
-
-	#################################################################################
-	## Ajustar o link dos botões
-	#################################################################################
-	$urlView		= "javascript:zgAbreModal('".ROOT_URL . "/Fin/adiantamentoDet.php?id=".$aid."');";
-	$urlUsu			= ROOT_URL . "/Fin/adiantamentoCadConta.php?id=".$aid;
-	
-	$grid->setUrlCelula($i, 3, $urlView);
-	$grid->setUrlCelula($i, 4, $urlUsu);
-	
+	$grid->setValorCelula($i,2,$conta);
 }
 
-#################################################################################
-## Gerar o código html do grid
-#################################################################################
-try {
-	$htmlGrid	= $grid->getHtmlCode();
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage());
-}
+$gHtml	= $grid->getHtmlCode();
 
+if (!isset($urlVoltar) || (!$urlVoltar)) {
+	$urlVoltar			= ROOT_URL . "/Fin/adiantamentoLis.php?id=".$id;
+}
 
 #################################################################################
 ## Carregando o template html
@@ -108,13 +107,17 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('GRID'			,$htmlGrid);
-$tpl->set('NOME'			,$tr->trans("Adiantamentos"));
-$tpl->set('IC'				,$_icone_);
-$tpl->set('FILTER_URL'		,$url);
-$tpl->set('DIVCENTRAL'		,$system->getDivCentral());
+$tpl->set('ID'					,$id);
+$tpl->set('TITULO'				,$tr->trans('Detalhamento dos adiantamentos de: '.$oPessoa->getNome()));
+$tpl->set('COD_PESSOA'			,$codPessoa);
+$tpl->set('GRID'				,$gHtml);
+$tpl->set('GRID'				,$gHtml);
+$tpl->set('URL_VOLTAR'			,$urlVoltar);
+$tpl->set('SALDO'				,\Zage\App\Util::formataDinheiro($saldo));
+
 
 #################################################################################
 ## Por fim exibir a página HTML
 #################################################################################
 $tpl->show();
+

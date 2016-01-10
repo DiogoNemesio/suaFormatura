@@ -10,6 +10,7 @@
 	<input type="hidden" id="tMoraID" value='%TEMP_MORA%'>
 	<input type="hidden" id="tValBolID" value='%VALOR_BOLETO%'>
 	<input type="hidden" id="_descBolID" name="valorDescontoBoleto">
+	<input type="hidden" id="_saldoAdID" value="%SALDO%">
 	<input type="hidden" id="_indDescBolID" value="0">
 	<div class="col-sm-8">
 		<div class="row">
@@ -142,8 +143,34 @@
 				<div class="widget-main small">
 					<div class="row">
 						<div class="col-sm-12">
-					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total a Receber:</p>
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total:</p>
 					    	<p id='lbInfoTotalID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+				    	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="widget-box %HID_SALDO%">
+			<div class="widget-header widget-header-flat widget-header-small center">
+				<h5 class="widget-title">Saldo de Adiantamento</h5>
+			</div>
+			<div class="widget-body">
+				<div class="widget-main small">
+					<div class="row">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Saldo:</p>
+					    	<p id='lbInfoSaldoID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;">%SALDO_FMT%</p>
+				    	</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Usar:</p>
+					    	<label class="col-sm-8 control-label">
+			    				<input name="usarAdiantamento" id="usarAdiantamentoID" class="ace ace-switch" type="checkbox" onchange="CRRecAlteraUsoAdiantamento();"/>
+			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+		    				</label>
+
 				    	</div>
 					</div>
 				</div>
@@ -152,18 +179,58 @@
 	</div>    
 </div>
 <div class="modal-footer">
-	<div id="divMsgCRRecID" class="pull-left"></div>
-	<button type="submit" class="btn btn-primary" id="btnSubmitID">Efetivar o Recebimento</button>
+	<div id="divMsgCRRecID" class="pull-left" style="width: 100%; text-align: left;"></div>
+	<button type="submit" class="btn btn-primary" id="btnSubmitCRRecID">Efetivar o Recebimento</button>
 	<button type="button" data-dismiss="modal" id="cancel" class="btn">Fechar</button>
 </div>
 </form>
 
 
 <script type="text/javascript" charset="%CHARSET%">
+
+
+$('#btnSubmitCRRecID').on("click", function(e) {
+	var vOk 	= CRRecValidaForm();
+	if(!vOk) 	{
+		e.preventDefault();
+		return false;
+	}else{
+		$('#zgFormModalID').submit();
+	}
+});
+
+function CRRecValidaForm() {
+	var $total		= CRRecGetValorTotal();
+	var $usarAd		= $('#usarAdiantamentoID:checked').length;
+	var $saldoAd	= zgConverteFloat($('#_saldoAdID').val());
+	
+	if ($usarAd		== 1) {
+		if ($saldoAd < $total) {
+			zgMostraErro('divMsgCRRecID','Total a receber maior que o saldo de adiantamento');
+			return false;
+		}
+	}
+	
+	return true;
+	
+}
+
+function CRRecGetValorTotal() {
+	var $valor		= zgConverteFloat($('#valorID').val());
+	var $juros		= zgConverteFloat($('#valorJurosID').val());
+	var $mora		= zgConverteFloat($('#valorMoraID').val());
+	var $outros		= zgConverteFloat($('#valorOutrosID').val());
+	var $desconto	= zgConverteFloat($('#valorDescontoID').val());
+	var $total;
+	
+	$total			= $valor + $juros + $mora + $outros - $desconto;
+	return ($total);
+}
+
 $('#zgFormModalID').submit(function() {
 	
-	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-	$('#btnSubmitID').attr("disabled","disabled");
+	$('#btnSubmitCRRecID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitCRRecID').attr("disabled","disabled");
 	$('#cancel').attr("disabled","disabled");
 		
 	$.ajax({
@@ -178,8 +245,8 @@ $('#zgFormModalID').submit(function() {
 		}
 
 		//Voltar o botão de salvar
-		$('#btnSubmitID').html('Efetivar o Recebimento');
-		$('#btnSubmitID').attr("disabled",false);
+		$('#btnSubmitCRRecID').html('Efetivar o Recebimento');
+		$('#btnSubmitCRRecID').attr("disabled",false);
 		$('#cancel').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
@@ -378,15 +445,7 @@ function CRRecAlteraFormaPag() {
 } 
 
 function CRRecRecalculaInformacoes() {
-
-	var $valor		= zgConverteFloat($('#valorID').val());
-	var $juros		= zgConverteFloat($('#valorJurosID').val());
-	var $mora		= zgConverteFloat($('#valorMoraID').val());
-	var $outros		= zgConverteFloat($('#valorOutrosID').val());
-	var $desconto	= zgConverteFloat($('#valorDescontoID').val());
-	var $total;
-	
-	$total			= $valor + $juros + $mora + $outros - $desconto;
+	var $total	= CRRecGetValorTotal();
 
 	var opt = {
 		symbol : "R$",
@@ -400,6 +459,8 @@ function CRRecRecalculaInformacoes() {
 	$('#lbInfoTotalID').html(accounting.formatMoney($total,opt));
 }
 
-
+function CRRecAlteraUsoAdiantamento() {
+	var $usarAd		= $('#usarAdiantamentoID:checked').length;
+}
 
 </script>

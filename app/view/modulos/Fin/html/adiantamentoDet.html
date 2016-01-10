@@ -1,0 +1,53 @@
+<form id="zgFormModalID" class="form-horizontal">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4 class=""><i class="fa fa-history yellow"></i>&nbsp;%TITULO%</h4>
+</div>
+<div class="modal-body" style="overflow-y: scroll; height: 380px;">
+	<input type="hidden" name="codPessoa" value="%COD_PESSOA%">
+	<input type="hidden" name="id" value="%ID%">
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+		    	<label class="col-sm-4 control-label" for="saldoID">Saldo atual: </label>
+					<div class="input-group col-sm-8">
+						<span tabindex="99009" class="input-group-addon" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Valor total da conta (incluindo juros, Mora e Desconto)"><i class="fa fa-question-circle"></i></span>
+						<input class="form-control" id="saldoID" value="%SALDO%" type="text" name="saldo" maxlength="30" readonly autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0">
+					</div>
+    		</div>
+    	</div>
+	</div>		    
+	<div class="row">
+		<div class="col-sm-12">
+		%GRID%
+		</div>
+	</div>		    
+    <div id="divMsgCRHisID">
+    </div>
+</div>
+<div class="modal-footer">
+	<button type="button" data-dismiss="modal" class="btn">Fechar</button>
+</div>
+</form>
+
+<script type="text/javascript" charset="%CHARSET%">
+$('[data-rel="select2"]').select2();
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+$('[data-toggle="popover"]').popover();
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('.datepicker').datepicker();
+
+</script>

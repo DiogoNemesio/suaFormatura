@@ -125,6 +125,12 @@ $valorJuros			+= $saldoDet["JUROS"];
 $valorMora			+= $saldoDet["MORA"];
 
 #################################################################################
+## Verifica se o cliente tem saldo de adiantamento que pode ser usado para liquidar essa conta
+#################################################################################
+$saldoAd			= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao(), $oConta->getCodPessoa());
+$hidSaldo			= ($saldoAd > 0) ? "" : "hidden";
+
+#################################################################################
 ## Gerenciar as URls
 #################################################################################
 if (!isset($urlVoltar) || (!$urlVoltar)) {
@@ -213,6 +219,9 @@ $tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\
 $tpl->set('TEMP_JUROS'			,\Zage\App\Util::toMysqlNumber($valorJuros));
 $tpl->set('TEMP_MORA'			,\Zage\App\Util::toMysqlNumber($valorMora));
 $tpl->set('VALOR_BOLETO'		,\Zage\App\Util::toMysqlNumber($valorBoleto));
+$tpl->set('SALDO'				,\Zage\App\Util::formataDinheiro($saldoAd));
+$tpl->set('SALDO_FMT'			,\Zage\App\Util::to_money($saldoAd));
+$tpl->set('HID_SALDO'			,$hidSaldo);
 
 
 #################################################################################
