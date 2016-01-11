@@ -14,6 +14,11 @@ namespace Zage\Fin;
 class Boleto {
 	
 	/**
+	 * Código da Moeda (Real)
+	 */
+	const	COD_REAL	= 9;
+	
+	/**
 	 * Código do banco
 	 */
 	private $codBanco;
@@ -310,6 +315,11 @@ class Boleto {
 		if (!$this->getAgencia()) 			throw new \Exception("Agência não informada");
 		if (!$this->getConta()) 			throw new \Exception("Conta corrente não informada");
 		if (!$this->getCarteira()) 			throw new \Exception("Carteira não informada");
+		
+		#################################################################################
+		## Fixar a espécie / Moeda
+		#################################################################################
+		$this->setEspecie(self::COD_REAL);
 		
 		
 		#################################################################################
