@@ -279,7 +279,7 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 				)
 			)
 			->andWhere($qb->expr()->andX(
-				$qb->expr()->eq('p.indAtivo'			,'1'),
+				$qb->expr()->eq('po.indAtivo'			,'1'),
 				$qb->expr()->in('po.codOrganizacao'		,':aOrg')
 			))
 			->orderBy('p.nome','ASC')
@@ -392,7 +392,7 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	 * @throws \Exception
 	 * @return multitype:
 	 */
-	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo,$aCodSegMerc = null,$aCodCat = null,$dataCadIni = null,$dataCadFim = null) {
+	public static function lista($codOrganizacao,$codTipoPessoa,$indTipo,$aCodSegMerc = null,$aCodCat = null,$dataCadIni = null,$dataCadFim = null,$indAtivo = 2) {
 		
 		#################################################################################
 		## Variáveis globais
@@ -449,6 +449,15 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 				));
 				$qb->setParameter('indTipo'			,1);
 			}
+			
+
+			if ($indAtivo !== false || $indAtivo !== 2) 	{
+				$qb->andWhere($qb->expr()->andX(
+					$qb->expr()->eq('po.indAtivo', ':indAtivo')
+				));
+				$qb->setParameter('indAtivo'			,$indAtivo);
+			}
+				
 			
 			if (!empty($aCodSegMerc)) {
 				$qb2 	= $em->createQueryBuilder();
