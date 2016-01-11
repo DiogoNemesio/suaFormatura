@@ -161,7 +161,7 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 	}
 	
 	$tabOrcamento	.= '<tr class="_registroOrc">
-				<td><input type="text" class="width-100" name="item[]" zg-name="item" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td>
+				<td><input type="text" class="width-100" name="item[]" zg-name="item" maxlength="60" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td>
 				<td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oTipoItem.'</select></td>
 				<td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">'.$oCatExiste.'</select></td>
 				<td><input type="text" class="width-100" name="valorPadrao[]" zg-name="valorPadrao" value="'.$valorPadrao.'" placeholder="Valor Padrão" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="verificaAlteracaoOrcAlt($(this));"></td>
@@ -177,7 +177,7 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 						<input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'">
 				</td></tr>
 				<tr class="_registroTextoDesc '.$hidDesc.'">
-					<td colspan="8"><textarea maxlength="800" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();">'.$aOrcItem[$i]->getTextoDescritivo().'</textarea></td>
+					<td colspan="8"><textarea maxlength="1000" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();">'.$aOrcItem[$i]->getTextoDescritivo().'</textarea></td>
 				</tr>
 				';
 }
