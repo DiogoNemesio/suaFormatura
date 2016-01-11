@@ -234,7 +234,8 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$mora					= \Zage\App\Util::to_float($aValorMora[$codConta]);
 	$desconto				= \Zage\App\Util::to_float($aValorDesconto[$codConta]);
 	$outros					= \Zage\App\Util::to_float($saldoDet["OUTROS"]);
-	$especie				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getCodInternacional() : null;
+	//$especie				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getCodInternacional() : null;
+	//$especie				= 9;
 	$especieDoc				= "DM"; # Duplicata Mercantil
 	
 	if (!$juros)			$juros		= 0;
