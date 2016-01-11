@@ -6,50 +6,49 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-
 			<div class="zgBreadcumb">
 				<a href="javascript:zgLoadUrl('%URLVOLTAR%');"><span class="badge badge-primary">1</span>Formandos</a>
 				<a href="javascript:zgLoadUrl('%URLATUALIZAR%');" class="current"><span class="badge badge-primary">2</span>%NOME_FORMANDO%</a>
 			</div>
 			<br>
 		</div>
-		
+		<!--  
 		<div class="col-sm-6">
-			<div class="widget-box transparent" id="dashOrcBoxID">
+			<div class="widget-box widget-color-blue">
 				<div class="widget-header">
-					<h4 class="widget-title lighter smaller">
-						<i class="ace-icon fa fa-dashboard blue"></i>Pagamentos
-					</h4>
-				</div>
-				<div class="widget-body">
-					<div class="col-sm-7">
-						<div class="row">
-							<label class="col-sm-4" style="text-align: left;">Previsão</label>
-							<label class="col-sm-8" style="text-align: right;">%VALOR_ORCADO%&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag grey bigger-130"></i></a></label>
-						</div>
-						<div class="row">
-							<label class="col-sm-4" style="text-align: left;">Pagos</label>
-							<label class="col-sm-8" style="text-align: right;">%VALOR_ARRECADADO%&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag blue bigger-130"></i></a></label>
-						</div>
-						<div class="row">
-							<label class="col-sm-4" style="text-align: left;">Vencidos</label>
-							<label class="col-sm-8" style="text-align: right;">%VALOR_GASTO%&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag red bigger-130"></i></a></label>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="easy-pie-chart percentage col-sm-6" data-percent="%PCT_ARRECADADO%" data-color="#87CEEB">
-							<span class="percent">%PCT_ARRECADADO%</span>%
-						</div>
-						<div class="easy-pie-chart percentage col-sm-6" data-percent="%PCT_GASTO%" data-color="#D15B47">
-							<span class="percent">%PCT_GASTO%</span>%
-						</div>
+					<h5 class="widget-title bigger lighter">Resumo</h5>
+					
+					<div class="widget-toolbar">
+						<a href="#" data-action="collapse">
+							<i class="ace-icon fa fa-chevron-up"></i>
+						</a>
 					</div>
 					
 				</div>
-			
+
+				<div class="widget-body">
+					<div class="widget-main">
+				
+						
+							
+								<div class="row">
+									<label class="col-sm-4" style="text-align: left;">Orçamento</label>
+									<label class="col-sm-8" style="text-align: right;">%VALOR_ORCADO%&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag grey bigger-130"></i></a></label>
+								</div>
+								<div class="row">
+									<label class="col-sm-4" style="text-align: left;">Total pago</label>
+									<label class="col-sm-8" style="text-align: right;">%VALOR_ARRECADADO%&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag blue bigger-130"></i></a></label>
+								</div>
+								<div class="row">
+									<label class="col-sm-4" style="text-align: left;">Total Vencido</label>
+									<label class="col-sm-8" style="text-align: right;">%VALOR_GASTO%&nbsp;<a href="#" tabindex="-1" class="center"><i class="fa fa-flag red bigger-130"></i></a></label>
+								</div>
+					</div>
+				</div>
 			</div>
+					
 		</div>
-		
+		-->	
 		<div class="box-content">
 			%GRID%
 		</div><!--/span-->

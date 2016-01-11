@@ -61,13 +61,14 @@ if (!$dataConclusao)	\Zage\App\Erro::halt("Data de Conclusão não informada");
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
 ## Para calcular o valor pendente a ser gerado
-## Se não existir, emitir um erro
 #################################################################################
 $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
-if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
-$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
-$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
+if ($orcamento){
+	$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+	$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
+	$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
+}
+
 
 #################################################################################
 ## Calcular o valor já provisionado por formando
@@ -93,10 +94,12 @@ for ($i = 0; $i < sizeof($oValorProv); $i++) {
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
 $grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"MensalidadeFormando");
-$grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
+$grid->adicionaTexto($tr->trans('NOME'),				20	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					12	,$grid::CENTER	,'cpf','cpf');
-$grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		12	,$grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('R$ A PROVISIONAR'),	10	,$grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans('R$ GERADO'),			12	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('R$ A GERAR'),			10	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('TOTAL PAGO'),			10	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('EM ATRASO'),			10	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('STATUS'),				12	,$grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-sign-out red'			,$tr->trans('Desistir'));
 $grid->adicionaIcone(null,'fa fa-usd green'				,$tr->trans('Gerar conta'));
@@ -122,9 +125,8 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $formandos[$i]->getCodigo(),'codOrganizacao' => $system->getCodOrganizacao()));
 	$codStatus	= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getCodigo() : null;
 	$status		= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getDescricao() : null;
-	$grid->setValorCelula($i,4,$status);
+	$grid->setValorCelula($i,6,$status);
 	
-
 	#################################################################################
 	## Verificar o status da associação a Formatura, para definir se poderá ou não
 	## Gerar mensalidade para o Formando
@@ -152,42 +154,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	}
 	
 	#################################################################################
-	## Definir a ação do botão de desistência
-	#################################################################################
-	if ($podeDesistir	== true) {
-	
-		#################################################################################
-		## Definir o link do botão de geração de conta
-		#################################################################################
-		$grid->setUrlCelula($i,5,ROOT_URL.'/Fmt/desistenciaCad.php?id='.$id);
-	
-	}else{
-		$grid->desabilitaCelula($i, 5);
-	}
-	
-	#################################################################################
-	## Definir a ação do botão de geração de conta
-	#################################################################################
-	if ($podeGerar	== true) {
-
-		#################################################################################
-		## Definir o link do botão de geração de conta
-		#################################################################################
-		$grid->setUrlCelula($i,6,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$id);
-		
-	}else{
-		$grid->desabilitaCelula($i, 6);
-	}
-	
-
-	#################################################################################
-	## Definir o link do botão de visualização das contas
-	#################################################################################
-	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id);
-	
-	
-	#################################################################################
-	## Definir os valores
+	## Saldo gerado
 	#################################################################################
 	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
 	$saldo						= round($mensalidadeFormando - $valProvisionado,2);
@@ -201,13 +168,47 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		if ($saldo > 0){
 			$grid->setValorCelula($i, 3, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 		}else if ($saldo == 0) {
-			$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+				$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 		}else{
-			$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+			$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money(abs($saldo))."</span>");
 		}
 	}else{
 		$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
 	}
+	
+	#################################################################################
+	## Definir a ação do botão de desistência
+	#################################################################################
+	if ($podeDesistir	== true) {
+	
+		#################################################################################
+		## Definir o link do botão de geração de conta
+		#################################################################################
+		$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/desistenciaCad.php?id='.$id);
+	
+	}else{
+		$grid->desabilitaCelula($i, 7);
+	}
+	
+	#################################################################################
+	## Definir a ação do botão de geração de conta
+	#################################################################################
+	if ($podeGerar	== true) {
+
+		#################################################################################
+		## Definir o link do botão de geração de conta
+		#################################################################################
+		$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$id);
+		
+	}else{
+		$grid->desabilitaCelula($i, 8);
+	}
+	
+
+	#################################################################################
+	## Definir o link do botão de visualização das contas
+	#################################################################################
+	$grid->setUrlCelula($i,9,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id);
 }
 
 #################################################################################

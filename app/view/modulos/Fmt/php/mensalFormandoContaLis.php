@@ -81,8 +81,6 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
-
-
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
@@ -91,7 +89,6 @@ try {
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
@@ -115,11 +112,29 @@ $colForma	= 6;
 $colAcao	= 7;
 
 #################################################################################
+## Resgatar as ações que podem ser feitas por status
+#################################################################################
+$aStatusAcao	= \Zage\Fin\ContaStatus::getArrayStatusAcao();
+
+#################################################################################
+## Resgatar as ações que podem ser feitas por Perfil de conta
+#################################################################################
+$aPerfilAcao	= \Zage\Fin\ContaPerfil::getArrayPerfilAcao();
+
+#################################################################################
+## Gerar a url de adicão
+#################################################################################
+$urlVoltar			= ROOT_URL.'/Fmt/mensalFormandoLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
+$urlAtualizar		= ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$formando->getCodigo());
+$urlVoltarAcao		= ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id.'&codFormando='.$formando->getCodigo();
+
+#################################################################################
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($contas); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$contas[$i]->getCodigo().'&url='.$url);
-
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$contas[$i]->getCodigo().'&url='.$url.'&urlVoltar='.$urlVoltarAcao);
+	$vid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta='.$contas[$i]->getCodigo().'&url='.$url.'&view=1'.'&urlVoltar='.$urlVoltarAcao);
+	
 	#################################################################################
 	## Status
 	#################################################################################
@@ -139,97 +154,6 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	## Parcela / NumParcelas
 	#################################################################################
 	$grid->setValorCelula($i,$colParcela,$contas[$i]->getParcela() . " / ".$contas[$i]->getNumParcelas());
-	
-	#################################################################################
-	## Resgatar o status para controlar as ações
-	#################################################################################
-	$status		= $contas[$i]->getCodStatus()->getCodigo();
-	
-	switch ($status) {
-	
-		case "A":
-			$podeAlt	= true;
-			$podeExc	= true;
-			$podeCan	= true;
-			$podeCon	= true;
-			$podeRls	= false;
-			$podeImp	= true;
-			$podeSub	= true;
-			$podeBol	= true;
-			break;
-		case "C":
-			$podeAlt	= false;
-			$podeExc	= true;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= false;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "L":
-		case "EP":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= true;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "SC":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= true;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "S":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= false;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "SS":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= true;
-			$podeImp	= true;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-		case "P":
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= true;
-			$podeCon	= true;
-			$podeRls	= true;
-			$podeImp	= true;
-			$podeSub	= true;
-			$podeBol	= true;
-			break;
-		default:
-			$podeAlt	= false;
-			$podeExc	= false;
-			$podeCan	= false;
-			$podeCon	= false;
-			$podeRls	= false;
-			$podeImp	= false;
-			$podeSub	= false;
-			$podeBol	= false;
-			break;
-	}
-	
 	
 	#################################################################################
 	## Valor Total
@@ -255,7 +179,29 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 		$grid->setValorCelula($i,$colForma,"<span class='badge tooltip-".$corForma." badge-".$corForma."' data-rel='tooltip' data-placement='top' title='".$contas[$i]->getCodFormaPagamento()->getDescricao()."'>".$formaPag."</span>");
 	}
 	
-	################################################################################
+	#################################################################################
+	## Resgata o perfil da conta
+	#################################################################################
+	$codPerfil	= ($contas[$i]->getCodContaPerfil()) ? $contas[$i]->getCodContaPerfil()->getCodigo() : 0; 
+	
+	#################################################################################
+	## Resgatar o array com as possíveis ações da conta
+	#################################################################################
+	$aAcoes		= \Zage\Fin\ContaAcao::getArrayAcoes($codPerfil, $contas[$i]->getCodStatus()->getCodigo(),$aStatusAcao, $aPerfilAcao);
+
+	#################################################################################
+	## Montar as flags das ações permitidas
+	#################################################################################
+	$podeAlt	= $aAcoes["ALT"];
+	$podeExc	= $aAcoes["EXC"];
+	$podeCan	= $aAcoes["CAN"];
+	$podeCon	= $aAcoes["CON"];
+	$podeHis	= $aAcoes["HIS"];
+	$podeImp	= $aAcoes["IMP"];
+	$podeSub	= $aAcoes["SUB"];
+	$podeBol	= $aAcoes["BOL"];
+	
+	#################################################################################
 	## Ações
 	#################################################################################
 	$htmlTplAcaoIni	= '<div class="inline blue center tooltip-info" style="width: 30px;" onclick="%U%" data-toggle="tooltip" data-placement="top" title="%M%">';
@@ -266,7 +212,7 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	$urlExc			= ($podeExc)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaReceberExc.php?id=".$uid."');" : null;
 	$urlCan			= ($podeCan)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaReceberCan.php?id=".$uid."');" : null;
 	$urlCon			= ($podeCon)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaReceberRec.php?id=".$uid."');" : null;
-	$urlRls			= ($podeRls)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaReceberRecLis.php?id=".$uid."');" : null;
+	$urlRls			= ($podeHis)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaReceberRecLis.php?id=".$uid."');" : null;
 	$urlSub			= ($podeSub)	? "javascript:zgLoadUrl('".ROOT_URL."/Fin/contaReceberSub.php?id=".$uid."&cid=".$cid."');" : null;
 	$urlImp			= ($podeImp)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/contaReceberPri.php?id=".$uid."');" : null;
 	
@@ -274,36 +220,28 @@ for ($i = 0; $i < sizeof($contas); $i++) {
 	## Verificar se a conta está configurada para emitir boleto
 	## Fazer isso verificando se a carteira da conta está preenchida
 	#################################################################################
-	$contaRec	= $contas[$i]->getCodConta();
-	if ( ($contaRec) && ($formaPag == 'BOL') ) {
-	if ($contaRec->getCodTipo()->getCodigo() == 'CC' && ($contaRec->getCodCarteira() != null) ) {
-	$urlBol		= ($podeBol)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/geraBoleto.php?id=".$uid."');" : null;
-	}else{
-	$urlBol		= null;
-	}
-	}else{
-	$urlBol		= null;
-	}
-	
-	if (!$urlBol)	$podeBol	= false;
+	$podeEmitirBoleto	= \Zage\Fin\ContaReceber::podeEmitirBoleto($contas[$i]);
+	$urlBol				= ($podeBol && $podeEmitirBoleto)	? "javascript:zgAbreModal('".ROOT_URL."/Fin/geraBoleto.php?id=".$uid."');" : null;
+	if (!$urlBol)		$podeBol	= false;
 	
 	$htmlVis		= str_replace("%M%","Visualizar"				, str_replace("%U%",$urlVis, $htmlTplAcaoIni)) . '<i class="ace-icon fa fa-search grey bigger-140"></i>' . $htmlTplAcaoFim;
 	$htmlAlt		= str_replace("%M%","Alterar"					, str_replace("%U%",$urlAlt, $htmlTplAcaoIni)) . (($podeAlt)	?  '<i class="ace-icon fa fa-edit blue bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
-				$htmlExc		= str_replace("%M%","Excluir"					, str_replace("%U%",$urlExc, $htmlTplAcaoIni)) . (($podeExc)	?  '<i class="ace-icon fa fa-trash red bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
-						$htmlCan		= str_replace("%M%","Cancelar"					, str_replace("%U%",$urlCan, $htmlTplAcaoIni)) . (($podeCan)	?  '<i class="ace-icon fa fa-ban red bigger-140"></i>' 				: null) . $htmlTplAcaoFim;
-								$htmlCon		= str_replace("%M%","Confirmar"					, str_replace("%U%",$urlCon, $htmlTplAcaoIni)) . (($podeCon)	?  '<i class="ace-icon fa fa-check green bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
-										$htmlRls		= str_replace("%M%","Recebimentos confirmados"	, str_replace("%U%",$urlRls, $htmlTplAcaoIni)) . (($podeRls)	?  '<i class="ace-icon fa fa-usd grey bigger-140"></i>'				: null) . $htmlTplAcaoFim;
-										$htmlImp		= str_replace("%M%","Imprimir"					, str_replace("%U%",$urlImp, $htmlTplAcaoIni)) . (($podeImp)	?  '<i class="ace-icon fa fa-print grey bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
-										$htmlSub		= str_replace("%M%","Substituir"				, str_replace("%U%",$urlSub, $htmlTplAcaoIni)) . (($podeSub)	?  '<i class="ace-icon fa fa-exchange blue bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
-										$htmlBol		= str_replace("%M%","Gerar Boleto"				, str_replace("%U%",$urlBol, $htmlTplAcaoIni)) . (($podeBol)	?  '<i class="ace-icon fa fa-file-pdf-o purple bigger-140"></i>'	: null) . $htmlTplAcaoFim;
+	$htmlExc		= str_replace("%M%","Excluir"					, str_replace("%U%",$urlExc, $htmlTplAcaoIni)) . (($podeExc)	?  '<i class="ace-icon fa fa-trash red bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
+	$htmlCan		= str_replace("%M%","Cancelar"					, str_replace("%U%",$urlCan, $htmlTplAcaoIni)) . (($podeCan)	?  '<i class="ace-icon fa fa-ban red bigger-140"></i>' 				: null) . $htmlTplAcaoFim;
+	$htmlCon		= str_replace("%M%","Confirmar"					, str_replace("%U%",$urlCon, $htmlTplAcaoIni)) . (($podeCon)	?  '<i class="ace-icon fa fa-check green bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
+	$htmlHis		= str_replace("%M%","Recebimentos confirmados"	, str_replace("%U%",$urlRls, $htmlTplAcaoIni)) . (($podeHis)	?  '<i class="ace-icon fa fa-usd grey bigger-140"></i>'				: null) . $htmlTplAcaoFim;
+	$htmlImp		= str_replace("%M%","Imprimir"					, str_replace("%U%",$urlImp, $htmlTplAcaoIni)) . (($podeImp)	?  '<i class="ace-icon fa fa-print grey bigger-140"></i>' 			: null) . $htmlTplAcaoFim;
+	$htmlSub		= str_replace("%M%","Substituir"				, str_replace("%U%",$urlSub, $htmlTplAcaoIni)) . (($podeSub)	?  '<i class="ace-icon fa fa-exchange blue bigger-140"></i>' 		: null) . $htmlTplAcaoFim;
+	$htmlBol		= str_replace("%M%","Gerar Boleto"				, str_replace("%U%",$urlBol, $htmlTplAcaoIni)) . (($podeBol)	?  '<i class="ace-icon fa fa-file-pdf-o purple bigger-140"></i>'	: null) . $htmlTplAcaoFim;
 	
 	$htmlAcao	= '<div class="inline dropdown dropup"><a href="#" data-toggle="dropdown"><i class="ace-icon fa fa-cog icon-on-right bigger-140"></i></a>
 	<ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
 		<li class="active"><a href="#"><div class="center small bolder blue">Ações para: '.$contas[$i]->getDescricao().' ('.$contas[$i]->getParcela() . "/".$contas[$i]->getNumParcelas().')</div></a></li>
-					<li><a href="#">'.$htmlVis.$htmlAlt.$htmlExc.$htmlCan.$htmlCon.$htmlRls.$htmlSub.$htmlImp.$htmlBol.'</a></li>
-					</ul>
-					</div>';
+		<li><a href="#">'.$htmlVis.$htmlAlt.$htmlExc.$htmlCan.$htmlCon.$htmlHis.$htmlSub.$htmlImp.$htmlBol.'</a></li>
+	</ul>
+	</div>';
 	$grid->setValorCelula($i,$colAcao,$htmlAcao);
+	
 	
 }
 
@@ -315,12 +253,6 @@ try {
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
-
-#################################################################################
-## Gerar a url de adicão
-#################################################################################
-$urlVoltar			= ROOT_URL.'/Fmt/mensalFormandoLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
-$urlAtualizar		= ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$formando->getCodigo());
 
 #################################################################################
 ## Carregando o template html
