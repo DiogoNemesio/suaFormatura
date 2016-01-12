@@ -890,7 +890,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		
 	}
 	
-	
 	/**
 	 * Efetivar o recebimento de uma conta
 	 * @param \Entidades\ZgfinContaReceber $oConta
@@ -907,9 +906,12 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	 * @param unknown $documento
 	 * @param unknown $codTipoBaixa
 	 * @param string $seqRetorno
+	 * @param string $valDescontoBoletoConcedido
+	 * @param string $usarAdiantamento
 	 * @return string|unknown|NULL
+	 * @throws \Exception
 	 */
-	public function recebe (\Entidades\ZgfinContaReceber $oConta,$codContaDeb,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,$codTipoBaixa,$seqRetorno = null,$valDescontoBoletoConcedido = null) {
+	public function recebe (\Entidades\ZgfinContaReceber $oConta,$codContaDeb,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,$codTipoBaixa,$seqRetorno = null,$valDescontoBoletoConcedido = null,$usarAdiantamento = null) {
 
 		#################################################################################
 		## Variáveis globais
@@ -977,6 +979,18 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Calcular o valor total recebido
 		#################################################################################
 		$valorTotal			= round(floatval($valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto),2);
+		
+		#################################################################################
+		## Verificar se foi usado o adiantamento para baixar, caso tenha sido
+		## verificar se o saldo de adiantamento do cliente é sulficiente para cobrir
+		## a baixa
+		#################################################################################
+		if ($usarAdiantamento == 1) {
+			$saldoAd			= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao(), $oConta->getCodPessoa());
+			if ($valorTotal	> $saldoAd)	{
+				return($tr->trans('Saldo de adiantamento insuficiente para efetuar a baixa'));
+			}
+		}
 		
 		#################################################################################
 		## Resgatar os objetos das chaves estrangeiras
@@ -1189,22 +1203,38 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$oConta->setDataLiquidacao($dataLiq);
 
 		#################################################################################
-		## Gerar a movimentação bancária
+		## Gerar a movimentação bancária, apenas se não for por adiantamento
 		#################################################################################
-		$oMov	= new \Zage\Fin\MovBancaria();
-		$oMov->setCodOrganizacao($oOrg);
-		$oMov->setCodConta($oContaCre);
-		$oMov->setCodOrigem($oOrigem);
-		$oMov->setCodTipoOperacao($oTipoOper);
-		$oMov->setDataMovimentacao($dataRec);
-		$oMov->setDataOperacao(new \DateTime("now"));
-		$oMov->setValor($valorTotal);
-		$oMov->setCodGrupoMov($grupoMov);
-		
-		$err	= $oMov->salva();
-		
-		if ($err) {
-			return $err;
+		if ($usarAdiantamento !== 1) {
+			$oMov	= new \Zage\Fin\MovBancaria();
+			$oMov->setCodOrganizacao($oOrg);
+			$oMov->setCodConta($oContaCre);
+			$oMov->setCodOrigem($oOrigem);
+			$oMov->setCodTipoOperacao($oTipoOper);
+			$oMov->setDataMovimentacao($dataRec);
+			$oMov->setDataOperacao(new \DateTime("now"));
+			$oMov->setValor($valorTotal);
+			$oMov->setCodGrupoMov($grupoMov);
+			
+			$err	= $oMov->salva();
+			if ($err) return $err;
+		}else{
+			#################################################################################
+			## Cria o adiantamento de débito
+			#################################################################################
+			$oTipoOperDeb	= $em->getRepository('Entidades\ZgfinOperacaoTipo')->findOneBy(array('codigo' => "D"));
+			$oAdiantDeb	= new \Entidades\ZgfinMovAdiantamento();
+			$oAdiantDeb->setCodContaRec($oConta);
+			$oAdiantDeb->setCodOrganizacao($oOrg);
+			$oAdiantDeb->setCodOrigem($oOrigem);
+			$oAdiantDeb->setCodPessoa($oConta->getCodPessoa());
+			$oAdiantDeb->setCodTipoOperacao($oTipoOperDeb);
+			$oAdiantDeb->setDataAdiantamento($dataRec);
+			$oAdiantDeb->setDataTransacao(new \DateTime());
+			$oAdiantDeb->setValor($valorTotal);
+			$oAdiantDeb->setCodGrupoMov($grupoMov);
+			$em->persist($oAdiantDeb);
+				
 		}
 		
 		try {

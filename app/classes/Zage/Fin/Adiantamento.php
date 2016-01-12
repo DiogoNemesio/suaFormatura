@@ -84,7 +84,7 @@ class Adiantamento {
 		#################################################################################
 		## Calcular o saldo
 		#################################################################################
-		$saldo		= round(floatval($creditos),2) + round(floatval($debitos),2);
+		$saldo		= round(floatval($creditos),2) - round(floatval($debitos),2);
 		return $saldo;
 	}
 

@@ -137,14 +137,13 @@
 	<div class="col-sm-4">
 		<div class="widget-box">
 			<div class="widget-header widget-header-flat widget-header-small center">
-				<h5 class="widget-title">Informações</h5>
+				<h5 class="widget-title">Total</h5>
 			</div>
 			<div class="widget-body">
 				<div class="widget-main small">
 					<div class="row">
 						<div class="col-sm-12">
-					    	<p class="col-sm-4 pull-left align-right text-info inline" style="padding: 2px; margin:0;">Total:</p>
-					    	<p id='lbInfoTotalID' class="col-sm-8 pull-right align-left" style="padding: 2px; margin:0;"></p>
+					    	<p id='lbInfoTotalID' class="col-sm-12 center align-center text-info inline" style="padding: 2px; margin:0; font-size: 28px;"></p>
 				    	</div>
 					</div>
 				</div>
@@ -180,7 +179,7 @@
 </div>
 <div class="modal-footer">
 	<div id="divMsgCRRecID" class="pull-left" style="width: 100%; text-align: left;"></div>
-	<button type="submit" class="btn btn-primary" id="btnSubmitCRRecID">Efetivar o Recebimento</button>
+	<button type="button" class="btn btn-primary" id="btnSubmitCRRecID">Efetivar o Recebimento</button>
 	<button type="button" data-dismiss="modal" id="cancel" class="btn">Fechar</button>
 </div>
 </form>
@@ -448,7 +447,7 @@ function CRRecRecalculaInformacoes() {
 	var $total	= CRRecGetValorTotal();
 
 	var opt = {
-		symbol : "R$",
+		symbol : "R$ ",
 		decimal : ",",
 		thousand: ".",
 		precision : 2,

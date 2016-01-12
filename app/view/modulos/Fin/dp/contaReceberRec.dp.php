@@ -28,6 +28,11 @@ if (isset($_POST['valorOutros']))			$valorOutros			= \Zage\App\Util::antiInjecti
 if (isset($_POST['documento']))				$documento				= \Zage\App\Util::antiInjection($_POST['documento']);
 if (isset($_POST['flagPerdoa']))			$flagPerdoa				= \Zage\App\Util::antiInjection($_POST['flagPerdoa']);
 if (isset($_POST['valorDescontoBoleto']))	$valorDescontoBoleto	= \Zage\App\Util::antiInjection($_POST['valorDescontoBoleto']);
+if (isset($_POST['usarAdiantamento']))		$usarAdiantamento		= \Zage\App\Util::antiInjection($_POST['usarAdiantamento']);
+
+
+//$log->info("POST REC:".serialize($_POST));
+//die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Apenas testando"))));
 
 $err	= null;
 
@@ -116,7 +121,25 @@ $valorJuros				= \Zage\App\Util::to_float($valorJuros);
 $valorMora				= \Zage\App\Util::to_float($valorMora);
 $valorOutros			= \Zage\App\Util::to_float($valorOutros);
 $valorDescontoBoleto	= \Zage\App\Util::to_float($valorDescontoBoleto);
+$total					= $valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto;
 
+
+#################################################################################
+## Verificar se foi usado o adiantamento para baixar, caso tenha sido
+## verificar se o saldo de adiantamento do cliente é sulficiente para cobrir
+## a baixa
+#################################################################################
+if (isset($usarAdiantamento) && ($usarAdiantamento)) {
+	$saldoAd			= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao(), $oConta->getCodPessoa());
+	$usarAdiantamento	= 1;
+	$codTipoBaixa		= "ADI";
+	if ($total	> $saldoAd)	{
+		\Zage\App\Erro::halt($tr->trans('Saldo de adiantamento insuficiente para efetuar a baixa'));
+	}
+}else{
+	$usarAdiantamento	= 0;
+	$codTipoBaixa		= "MAN";
+}
 
 #################################################################################
 ## Dar desconto na conta, caso tenha desconto de boleto
@@ -190,7 +213,7 @@ if (!$transacaoIniciada) $em->getConnection()->beginTransaction();
 try {
 
 	$conta		= new \Zage\Fin\ContaReceber();
-	$erro		= $conta->recebe($oConta,$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,"MAN",null,$valorDescontoBoleto);
+	$erro		= $conta->recebe($oConta,$codContaCre,$codFormaPag,$dataRec,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$documento,$codTipoBaixa,null,$valorDescontoBoleto,$usarAdiantamento);
 	
 	if ($erro != false) {
 		$em->getConnection()->rollback();
