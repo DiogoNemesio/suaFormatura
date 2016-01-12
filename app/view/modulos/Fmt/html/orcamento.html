@@ -108,7 +108,7 @@
 	    <div class="row" id="divMsgOrcID"></div>
 	    <div class="row" id="divItem"></div>
 		<div class="clearfix form-actions col-sm-12">
-			<label class="col-sm-6 control-label">&nbsp;</label>
+			<label class="col-sm-5 control-label pull-left">&nbsp;</label>
 			<button type="button" class="btn btn-primary" tabindex="1500" id="btnSubmitID" onclick="orcSalva();">
 				<i class="fa fa-check bigger-110"></i> Salvar
 			</button>
@@ -683,9 +683,11 @@ function orcAlteraCortesia($codigo) {
 
 function orcHabilitaObs($codigo) {
 	var $oTr		= $('#trOrcObs_'+$codigo+'_ID');
+	var $textArea	= $oTr.find('[zg-name="aObs"]');
 	
 	if ($oTr.hasClass( "hidden")) {
 		$oTr.removeClass("hidden");
+		$textArea.focus();
 	}else{
 		$oTr.addClass("hidden");
 	}

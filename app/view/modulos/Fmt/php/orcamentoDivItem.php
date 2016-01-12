@@ -225,7 +225,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 			$htmlForm	.= '<td class="col-sm-2"><span>Total:&nbsp;</span><span zg-total-item="1" id="total_'.$item["CODIGO"].'_ID">'.\Zage\App\Util::to_money($item["TOTAL"]).'</span></td>';
 			$htmlForm	.= '</tr>';
 			$htmlForm	.= '<tr class="hidden" id="trOrcObs_'.$item["CODIGO"].'_ID">';
-			$htmlForm	.= '<td colspan="8"><textarea maxlength="1000" rows="3" class="col-sm-6 pull-right" name="aObs['.$item["CODIGO"].']" onchange="orcAlteraObs(\''.$item["CODIGO"].'\');">'.$item["DESCRITIVO"].'</textarea></td>';
+			$htmlForm	.= '<td colspan="8"><textarea maxlength="1000" rows="3" class="col-sm-6 pull-right" zg-name="aObs" name="aObs['.$item["CODIGO"].']" onchange="orcAlteraObs(\''.$item["CODIGO"].'\');">'.$item["DESCRITIVO"].'</textarea></td>';
 			$htmlForm	.= '</tr>';
 				
 			$tabIndex++;

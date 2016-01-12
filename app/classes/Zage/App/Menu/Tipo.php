@@ -158,8 +158,8 @@ abstract class Tipo {
 		$numOrg			= sizeof($organizacoes);
 		$aOrgs			= array();
 		
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<li id="divSelectOrgID" class="grey" onclick="$(\'#inputSearchOrgID\').focus();">'.\Zage\App\ZWS::NL;
-		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="ace-icon fa '.$icTipo.'"></i>&nbsp;'.$ident.'</a>'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,3).'<li class="grey">'.\Zage\App\ZWS::NL;
+		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,4).'<a data-toggle="dropdown" onclick="navBarFocusSearchOrg();" class="dropdown-toggle" href="#"><i class="ace-icon fa '.$icTipo.'"></i>&nbsp;'.$ident.'</a>'.\Zage\App\ZWS::NL;
 		if ($numOrg > 0) {
 			
 			
@@ -281,6 +281,10 @@ abstract class Tipo {
 				}
 				
 		});
+	
+		function navBarFocusSearchOrg() {
+			setTimeout(function() { $(\'#inputSearchOrgID\').focus(); }, 300);
+		}
 		'.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).''.\Zage\App\ZWS::NL;
 		$this->html	.= str_repeat(\Zage\App\ZWS::TAB,1).''.\Zage\App\ZWS::NL;

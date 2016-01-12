@@ -348,13 +348,15 @@ function alteraTextoDescritivoOrcAlt() {
 }
 
 function habilitaTextoDescritivoOrcAlt(pObj) {
-	var $div	= pObj.parent();
-	var $td		= $div.parent();
-	var $tr		= $td.parent();
-	var $prxTxt	= $tr.next('._registroTextoDesc');
+	var $div		= pObj.parent();
+	var $td			= $div.parent();
+	var $tr			= $td.parent();
+	var $prxTxt		= $tr.next('._registroTextoDesc');
+	var $textArea	= $prxTxt.find('[name*="aObs[]"]');
 
 	if ($prxTxt.hasClass( "hidden")) {
 		$prxTxt.removeClass("hidden");
+		$textArea.focus();
 	}else{
 		$prxTxt.addClass("hidden");
 	}
