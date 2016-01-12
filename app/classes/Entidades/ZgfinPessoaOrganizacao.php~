@@ -57,6 +57,13 @@ class ZgfinPessoaOrganizacao
     private $indFormando;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=true)
+     */
+    private $indAtivo;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="OBSERVACAO", type="string", length=400, nullable=true)
@@ -214,6 +221,29 @@ class ZgfinPessoaOrganizacao
     public function getIndFormando()
     {
         return $this->indFormando;
+    }
+
+    /**
+     * Set indAtivo
+     *
+     * @param integer $indAtivo
+     * @return ZgfinPessoaOrganizacao
+     */
+    public function setIndAtivo($indAtivo)
+    {
+        $this->indAtivo = $indAtivo;
+
+        return $this;
+    }
+
+    /**
+     * Get indAtivo
+     *
+     * @return integer 
+     */
+    public function getIndAtivo()
+    {
+        return $this->indAtivo;
     }
 
     /**

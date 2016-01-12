@@ -36,6 +36,13 @@ class ZgadmPlano
     private $dataCadastro;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_ATIVO", type="integer", nullable=false)
+     */
+    private $indAtivo;
+
+    /**
      * @var \Entidades\ZgadmPlanoLicencaTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmPlanoLicencaTipo")
@@ -100,6 +107,29 @@ class ZgadmPlano
     public function getDataCadastro()
     {
         return $this->dataCadastro;
+    }
+
+    /**
+     * Set indAtivo
+     *
+     * @param integer $indAtivo
+     * @return ZgadmPlano
+     */
+    public function setIndAtivo($indAtivo)
+    {
+        $this->indAtivo = $indAtivo;
+
+        return $this;
+    }
+
+    /**
+     * Get indAtivo
+     *
+     * @return integer 
+     */
+    public function getIndAtivo()
+    {
+        return $this->indAtivo;
     }
 
     /**
