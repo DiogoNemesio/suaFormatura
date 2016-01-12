@@ -199,6 +199,14 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$hidObs		= "hidden";
 			}
 			
+			if ($item["DESCRITIVO"]) {
+				$iconDesc		= "blue";
+				$btnDesc		= "btn-white";
+			}else{
+				$iconDesc		= "grey";
+				$btnDesc		= "btn-light";
+			}
+			
 			
 			#################################################################################
 			## Resgata as informações de Cortesia do Orçamento
@@ -217,7 +225,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" value="'.$item["VALOR"].'" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\',true);"></td>';
 			$htmlForm	.= '<td class="col-sm-2">
 								<div data-toggle="buttons" class="btn-group btn-overlap">
-									<span class="btn btn-sm btn-white btn-info center pull-left" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i class="fa fa-commenting-o bigger-150"></i></span>
+									<span class="btn btn-sm '.$btnDesc.' btn-info center pull-left" id="span-desc-'.$item["CODIGO"].'_ID" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i id="icon-desc-'.$item["CODIGO"].'_ID"  class="fa fa-commenting-o bigger-150 '.$iconDesc.'"></i></span>
 									&nbsp;
 									<select id="selCortesia_'.$item["CODIGO"].'_ID" class="select2 '.$hidObs.'" name="codTipoCortesia['.$item["CODIGO"].']" data-rel="select2" onchange="orcAlteraCortesia($(this));">'.$oCortesia.'</select>
 								</div>

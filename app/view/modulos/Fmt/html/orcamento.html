@@ -656,6 +656,24 @@ function orcAlteraSel($codigo) {
 }
 
 function orcAlteraObs($codigo) {
+	var $oTr		= $('#trOrcObs_'+$codigo+'_ID');
+	var $textArea	= $oTr.find('[zg-name="aObs"]');
+	var $span		= $('#span-desc-'+$codigo+'_ID');
+	var $icon		= $('#icon-desc-'+$codigo+'_ID');
+
+	if ($textArea.val()) {
+		$span.removeClass("btn-light");
+		$icon.removeClass("grey");
+		$span.addClass("btn-white");
+		$icon.addClass("blue");
+	}else{
+		$span.removeClass("btn-white");
+		$icon.removeClass("blue");
+		$span.addClass("btn-light");
+		$icon.addClass("grey");
+		
+	}
+	
 	/**
 	 * Atualiza a flag de salvamento
 	 */
@@ -684,6 +702,8 @@ function orcAlteraCortesia($codigo) {
 function orcHabilitaObs($codigo) {
 	var $oTr		= $('#trOrcObs_'+$codigo+'_ID');
 	var $textArea	= $oTr.find('[zg-name="aObs"]');
+	var $span		= $oTr.find('[zg-name="span-desc"]');
+	var $icon		= $oTr.find('[zg-name="icon-desc"]');
 	
 	if ($oTr.hasClass( "hidden")) {
 		$oTr.removeClass("hidden");
