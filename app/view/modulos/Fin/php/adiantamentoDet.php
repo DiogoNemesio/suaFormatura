@@ -82,9 +82,9 @@ for ($i = 0; $i < sizeof($aMovAd); $i++) {
 	#################################################################################
 	## Verificar se o adiantamento é oriundo de alguma conta a pagar ou receber
 	#################################################################################
-	if ($aMovAd[$i]->getCodTipoOperacao()->getCodigo() == "C" && $aMovAd[$i]->getCodContaRec()) {
+	if ($aMovAd[$i]->getCodContaRec()) {
 		$conta		= $aMovAd[$i]->getCodContaRec()->getNumero();
-	}elseif ($aMovAd[$i]->getCodTipoOperacao()->getCodigo() == "D" && $aMovAd[$i]->getCodContaPag()) {
+	}elseif ($aMovAd[$i]->getCodContaPag()) {
 		$conta		= $aMovAd[$i]->getCodContaPag()->getNumero();
 	}else{
 		$conta		= null;
