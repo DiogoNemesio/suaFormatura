@@ -451,7 +451,7 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 			}
 			
 
-			if ($indAtivo !== false || $indAtivo !== 2) 	{
+			if ($indAtivo !== false && $indAtivo !== 2) 	{
 				$qb->andWhere($qb->expr()->andX(
 					$qb->expr()->eq('po.indAtivo', ':indAtivo')
 				));
