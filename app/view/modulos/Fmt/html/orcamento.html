@@ -38,7 +38,7 @@
 	    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a turma no sistema. Essa identificação será utilizar para compor o link de acesso."></i></span>
 			    		<input class="form-control" id="numFormandoID" type="text" name="numFormando" maxlength="5" value="%NUM_FORMANDOS%" onchange="orcAlteraQtdeFormandos();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 				    </div>
-				    <div class="col-sm-1 pull-left" id="divHelpIdentID"></div>
+				    <div class="col-sm-1 pull-left" id="divHelpNumFormandoID"></div>
 				</div>
 				<div class="form-group col-sm-12" id="divNumConvidadoID">
 			    	<label for="numConvidadoID" class="col-sm-5 control-label">Convites por formando</label>
@@ -46,7 +46,7 @@
 	   					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o nome da turma."></i></span>
 		    			<input class="form-control" id="numConvidadoID" type="text" name="numConvidado" maxlength="5" value="%NUM_CONVIDADOS%" onchange="orcAlteraQtdeConvidados();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 			    	</div>
-			    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
+			    	<div class="col-sm-1 pull-left" id="divHelpNumConvidadoID"></div>
 			    </div>
 			    <div class="form-group col-sm-12" id="divDataConclusaoID">
 			    	<label for="dataConclusaoID" class="col-sm-5 control-label">Data da conclusão</label>
@@ -400,19 +400,19 @@ function carregaPlanoOrc() {
 	
 	if (!$numFormando) {
 		alert("informe o número de formandos !!! ");
-		$('#codPlanoOrcID').val(null).trigger("change");
+		$('#codPlanoOrcID').select2('data', null);
 		return;
 	}
 	
 	if (!$numConvidado) {
 		alert("informe o número de convidados !!! ");
-		$('#codPlanoOrcID').val(null).trigger("change");
+		$('#codPlanoOrcID').select2('data', null);
 		return;
 	}
 
 	if (!$dataConclusao) {
 		alert("informe a data prevista de conclusão !!! ");
-		$('#codPlanoOrcID').val(null).trigger("change");
+		$('#codPlanoOrcID').select2('data', null);
 		return;
 	}
 
@@ -942,24 +942,30 @@ function orcValidaOrcamento() {
 	var $dataConclusao		= $('#dataConclusaoID').val();
 	
 	if (!$numFormando)		{
-		$('#divNumFormandoID').addClass('alert-danger');
+		$('#divNumFormandoID').addClass('has-error');
+		$('#divHelpNumFormandoID').html(zgCriaSpanErro('O Número de formandos deve ser preenchido!'));
 		$ok 	= false;
 	}else{
-		$('#divNumFormandoID').removeClass('alert-danger');
+		$('#divNumFormandoID').removeClass('has-error');
+		$('#divHelpNumFormandoID').html('&nbsp;');
 	}
 	
 	if (!$numConvidado)		{
-		$('#divNumConvidadoID').addClass('alert-danger');
+		$('#divNumConvidadoID').addClass('has-error');
+		$('#divHelpNumConvidadoID').html(zgCriaSpanErro('O Número de convites por formando deve ser preenchido!'));
 		$ok 	= false;
 	}else{
-		$('#divNumConvidadoID').removeClass('alert-danger');
+		$('#divNumConvidadoID').removeClass('has-error');
+		$('#divHelpNumConvidadoID').html('&nbsp;');
 	}
 	
 	if (!$dataConclusao)		{
-		$('#divDataConclusaoID').addClass('alert-danger');
+		$('#divDataConclusaoID').addClass('has-error');
+		$('#divHelpDataConclusaoID').html(zgCriaSpanErro('A data de conclusão deve ser preenchida!'));
 		$ok 	= false;
 	}else{
-		$('#divDataConclusaoID').removeClass('alert-danger');
+		$('#divDataConclusaoID').removeClass('has-error');
+		$('#divHelpDataConclusaoID').html('&nbsp;');
 	}
 
 	/** Fazer loop em todas as tabelas de eventos **/
