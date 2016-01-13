@@ -1,0 +1,260 @@
+<form id="zgFormModalID" class="form-horizontal">
+<input type="hidden" name="codUsuario" value="%COD_USUARIO%">
+<input type="hidden" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+<input type="hidden" name="valParcelaMensalidade" id="valParcelaMensalidadeID">
+<input type="hidden" name="id" value="%ID%">
+<div id="content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h4 class=""><i class="fa fa-file-text-o blue"></i>&nbsp;%TITULO%</h4>
+	</div>
+	<div class="modal-body" style="height: 480px;">
+		<div id='UsuEnvCondivMsgID'>
+		</div>
+		<div id="user-profile-3" class="row">
+			<div class="col-sm-12">
+				<div class="row">
+			    	<div class="col-sm-6">
+						<div class="form-group col-sm-12" id="divNumMesesID">
+					    	<label class="col-sm-4 control-label" for="numMesesID">Parcelas</label>
+			    			<div class="input-group col-sm-8 pull-left">
+		    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe o número de parcelas para o pagamento."></i></span>
+				    			<input class="form-control" id="numMesesID" %READONLY% type="text" name="numMeses" placeholder="Número de parcelas" maxlength="4" value="%NUM_MESES%" autocomplete="off" onchange="calcularParcelas();" zg-data-toggle="mask" zg-data-mask="numero">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpNumMesesID"></div>
+						</div>
+						<div class="form-group col-sm-12" id="divDataVencID">
+						    <label for="identID" class="col-sm-4 control-label">1&ordf; vencimento</label>
+				    		<div class="input-group col-sm-8 pull-left">
+			    				<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data de vencimento da primeira mensalidade, as próximas mensalidades vão ser geradas no mesmo dia do mês subsequente."></i></span>
+			    				<input class="form-control datepicker" id="dataVencID" type="text" name="dataVenc" maxlength="10" value="%DATA_VENC%" onchange="calcularParcelas();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+						    </div>
+						    <div class="col-sm-1 pull-left" id="divHelpDataVencID"></div>
+						</div>
+				    </div>
+				    <div class="col-sm-6">
+						<div class="profile-user-info profile-user-info-striped">
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Mensalidade: </div>
+								<div class="profile-info-value">
+									<span class="editable">%MENSALIDADE_FORMANDO_FMT%</span>
+								</div>
+							</div>
+						
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Máximo de: </div>
+								<div class="profile-info-value">
+									<span class="editable">%NOME%</span>
+								</div>
+							</div>
+						</div>
+			    	</div>
+			    </div>
+			    
+			    <table id="GeraMensalidadeTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+					<thead>
+						<tr class="warning">
+							<th class="col-sm-1 center" id="thInfoHelpTableParcelasGeraMensalidadeID"></th>
+							<th class="col-sm-2 center">Parcela</th>
+							<th class="col-sm-2 center">Valor</th>
+							<th class="col-sm-2 center">Data</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+					<tfoot>
+						<tr class="warning">
+							<th class="col-sm-1 center"></th>
+							<th class="col-sm-2 center" id="thInfoParcelaGeraMensalidadeID"></th>
+							<th class="col-sm-2 center" id="thInfoValorMensalidadeGeraMensalidadeID"></th>
+							<th class="col-sm-2 center"></th>
+						</tr>
+					</tfoot>
+				</table>
+			    
+			    
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-primary" %DISABLED% id="usuParVerSubmitID"><i class="fa fa-check bigger-110"></i>Associar</button>
+		<button type="button" data-dismiss="modal" class="btn" id="usuParVerCancelID" >Fechar</button>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2({allowClear: true});
+$('.datepicker').datepicker({"autoclose": true});
+
+$('#zgFormModalID').submit(function() {
+	
+	//Bloquear botão enquanto estiver salvando
+	$('#usuParVerSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#usuParVerSubmitID').attr("disabled","disabled");
+	$('#usuParVerCancelID').attr("disabled","disabled");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			//zgMostraMsg('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
+			zgMostraMsg('UsuEnvCondivMsgID','Usuário associado com sucesso!');
+		}else{
+			zgMostraErro('UsuEnvCondivMsgID',zgGetMsgRetorno(data));
+			//zgLimpaModalAviso();
+			//zgMostraAviso("Fechar");
+		}
+		
+		//Desbloquear botão quando terminar de salvar
+		$('#usuParVerSubmitID').html('<i class="fa fa-check bigger-110"></i> Associar ');
+		$('#usuParVerSubmitID').attr("disabled",false);
+		$('#usuParVerCancelID').attr("disabled",false);
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			zgLimpaModal();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+function calcularParcelas(){
+	var $numMeses			= $('#numMesesID').val();
+	var $dataVencimento		= $('#dataVencID').val();
+	
+	if ($numMeses && $dataVencimento){
+		var $valParcelaMensalidade;
+		
+		
+		
+		criaTabelaValoresGeraMensalidade();
+	}
+}
+
+
+function criaTabelaValoresGeraMensalidade() {
+	var $table					= $('#GeraMensalidadeTableValorID');
+	var $tipoRecParc			= $('#codTipoRecID').val();
+	var $codPeriodoRec			= 'M';
+	var $intervaloRec			= 1;
+	var $dataVenc				= $('#dataVencID').val();
+	var $numMeses				= parseInt($('#numMesesID').val());
+	var $parcelas;
+	var $nValor,$valor,$valorParcela,$valorTotal,$datas;
+
+	var $valParcelaMensalidade	= $('#valParcelaMensalidadeID').val();
+	var $valParcelaSistema		= $('#valParcelaSistemaID').val();
+	var $valParcelaTaxa			= $('#valParcelaTaxaID').val();
+
+	var $valTotalMensalidade	= $('#valTotalMensalidadeID').val();
+	var $valTotalSistema		= $('#valTotalSistemaID').val();
+	var $valTotalTaxa			= $('#valTotalTaxaID').val();
+	
+	var $valTotalGeral			= $('#totalGeralID').val();
+	var $_parc,$_sis,$_taxa,$_tot;
+
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+		
+	var optTotal = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+
+	$parcelas		= $numMeses;	
+	if ($parcelas <= 1) {
+		$tipoRecParc	= "U";
+	}else{
+		$tipoRecParc	= "P";
+	}
+	
+	/** Resgata as datas de vencimentos **/
+	jQuery.ajax({
+		url: "%ROOT_URL%/Fin/geraDatasVencimentoConta.dp.php",
+		data: { dataVenc: $dataVenc, codPeriodoRec: $codPeriodoRec, intervaloRec: $intervaloRec, numParcelas: $parcelas},
+		success: function(ret) {
+			$datas	= JSON.parse(ret);
+		},
+		method: 'get',
+		cache: false,
+		async:false
+	});
+
+	/** Remove os dados atuais **/
+	$('#GeraMensalidadeTableValorID > tbody').find('tr').remove();
+	
+	for ($i = 0; $i < $parcelas; $i++) {
+		var $descParcela	= ($i+1) + " / " + $parcelas;
+		
+		if ($tipoRecParc == "U") {
+			$_parc	= $valTotalMensalidade;
+			$_sis	= $valTotalSistema;
+			$_taxa	= $valTotalTaxa;
+		}else{
+			if ($i == ($parcelas -1)) {
+				$_parc	= zgConverteFloat($valTotalMensalidade	- ($valParcelaMensalidade	* ($parcelas -1) ));
+				$_sis	= zgConverteFloat($valTotalSistema		- ($valParcelaSistema		* ($parcelas -1) ));
+				$_taxa	= zgConverteFloat($valParcelaTaxa);
+			}else{
+				$_parc 	= $valParcelaMensalidade;
+				$_sis 	= $valParcelaSistema;
+				$_taxa 	= $valParcelaTaxa;
+			}
+		}
+		
+		$_tot			= zgConverteFloat($_parc) + zgConverteFloat($_sis) + zgConverteFloat($_taxa);
+		var $_parcFmt	= accounting.formatMoney($_parc	,options);
+		var	$_sisFmt	= accounting.formatMoney($_sis	,options);
+		var $_taxaFmt	= accounting.formatMoney($_taxa	,options);
+		var $_totFmt	= accounting.formatMoney($_tot	,options);
+
+		
+		$('#GeraMensalidadeTableValorID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 40px;">'+$descParcela+'</td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aValor[]" value="'+$_parcFmt+'" onchange="atualizaEValidaParcelasGeraMensalidade();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm datepicker" name="aData[]" value="'+$datas[$i].dataVenc+'" onchange="atualizaEValidaParcelasGeraMensalidade();" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td></tr>');		
+
+		$('#GeraMensalidadeTableValorID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+		$('#GeraMensalidadeTableValorID > tbody > tr:last .datepicker').each(function( index ) {
+			$(this).datepicker({"autoclose": true});
+		});
+		
+	}
+
+	$('#thInfoValorMensalidadeGeraMensalidadeID').html(accounting.formatMoney($valTotalMensalidade,optTotal));
+	$('#thInfoValorSistemaGeraMensalidadeID').html(accounting.formatMoney($valTotalSistema,optTotal));
+	$('#thInfoValorTaxaGeraMensalidadeID').html(accounting.formatMoney($valTotalTaxa,optTotal));
+	$('#thInfoValorTotalGeraMensalidadeID').html(accounting.formatMoney($valTotalGeral,optTotal));
+	$('#thInfoParcelaGeraMensalidadeID').html($parcelas);
+	atualizaEValidaParcelasGeraMensalidade();
+	paginateTableValoresGeraMensalidade();
+}
+
+</script>
+
