@@ -1,0 +1,315 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="fa fa-money">&nbsp;</i>Configurar Comissão&nbsp;&nbsp;
+		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+	</h1>
+	</div><!-- /.page-header -->
+
+	<div id="user-profile-3" class="user-profile row">
+		<div class="col-sm-12">
+			<form id="zgFormID" class="form-horizontal">
+				<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+				<input type="hidden" id="codPlanoID" name="codPlano" value="%COD_PLANO%">
+				<input type="hidden" id="codVendaPlanoID" name="codVendaPlano" value="%COD_VENDA_PLANO%">
+				<input type="hidden" id="codTipoComissaoID" name="codTipoComissao">
+				
+				<h5 class="header blue bolder smaller">Adicionar nova database</h5>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group col-sm-12" id="divDataEventoID">
+					    	<label class="col-sm-3 control-label" for="date-timepicker">Data base</label>
+								<div class="input-group col-sm-8 pull-left">
+				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data base para iniciar está configuração de comissão."></i></span>
+				    			<input class="form-control datepicker" id="dataBaseID" type="text" name="dataBase" placeholder="Data base" maxlength="16" value="%DATA_BASE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+					    	</div>
+					    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+					    </div>
+					    
+					    <div class="form-group col-sm-12" id="divMoraTipoID">
+							<label class="col-sm-2 control-label"></label>
+							<div class="btn-group btn-corner">
+								<span id='codTipoComissaoValID' style="width: 100px;" class="btn btn-sm" onclick="selecionaComissaoValor();">Valor Fixo</span>
+								<span id='codTipoComissaoPorcID' style="width: 100px;" class="btn btn-sm" onclick="selecionaComissaoPorc();">Porcentagem</span>
+							</div>
+							<div class="help-block col-sm-1 inline" id="divHelpComissaoID"></div>
+						</div>
+					
+						<div id="divPorcID">
+							<div class="form-group col-sm-12" id="divPctComissaoID">
+						    	<label class="col-sm-3 control-label" for="pctComissaoID">% de comissão</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Percentual de comissão"></i></span>
+				   					<input class="form-control" type="text" name="pctComissao" id="pctComissaoID" maxlength="8" placeholder="Porcentagem de mora" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="0"/>
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpPctComissaoD"></div>
+				    		</div>
+					    	
+					    </div>
+						 <div id="divValID">
+							<div class="form-group col-sm-12" id="divValorComissaoID">
+						    	<label class="col-sm-3 control-label" for="valorComissaoID">Valor de comissão</label>
+									<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor fixo de comissão"></i></span>
+				   					<input class="form-control" type="text" name="valorComissao" id="valorComissaoID" placeholder="Valor de comissão" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"/>
+				    			</div>
+						    	<div class="col-sm-1 pull-left" id="divHelpValorComissaoID"></div>
+				    		</div>
+					    </div>
+					</div>
+					
+					<div class="col-sm-6 hidden-480">
+				   		<div class="profile-user-info profile-user-info-striped" id="divInfoID">
+							<div class="profile-info-row">
+								<div class="profile-info-name">Plano:</div>
+								<div class="profile-info-value" id="orcNumConvidadoID">%NOME_PLANO%</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name">Valor:</div>
+								<div class="profile-info-value" id="orcNumMesesID">%VALOR_PLANO%</div>
+							</div>	
+							<div class="profile-info-row">
+								<div class="profile-info-name">Licença:</div>
+								<div class="profile-info-value" id="orcNumMesesID">%LICENCA_PLANO%</div>
+							</div>				
+						</div>
+					</div>
+			
+					<div class="col-sm-12">
+						<h5 class="header blue bolder smaller">Histórico</h5>
+						
+						<div class="box-content col-sm-10 col-sm-offset-1 %HIDDEN%">
+							<table id="tableCompraID" class="table table-condensed table-hover table-striped table-bordered bootstrap-datatable datatable display">
+								<thead>
+									<tr class="warning">
+										<th class="col-sm-2 center">Data base</th>
+										<th class="col-sm-2 center">Pct de comissão</th>
+										<th class="col-sm-2 center">Valor de comissão</th>
+										<th class="col-sm-2 center">Data de cadastro</th>
+										<th class="col-sm-1 center"></th>
+										
+									</tr>
+								</thead>
+								<tbody>
+								%TAB%
+								</tbody>
+							</table>
+						</div><!--/span-->
+						
+						
+					</div>
+				</div>				
+				<div class="clearfix form-actions">
+					<label class="col-sm-5 control-label">&nbsp;</label>
+					<button type="button" class="btn btn-primary" id="btnSubmitID">
+						<i class="fa fa-check bigger-110"></i> Salvar
+					</button>
+					<button type="button" class="btn btn-warning" id="cancel"
+						onclick="javascript:zgLoadUrl('%URLVOLTAR%');">
+						<i class="fa fa-undo bigger-110"></i> Voltar
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+/********************* Popover *********************/
+$('[data-rel=popover]').popover({html:true});
+$('[data-toggle="popover"]').popover();
+
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+
+//SELECT2
+$('.select2').css('width','100%').select2({allowClear:true});
+
+/******************************************************
+MASCARA - Inserir as mascaras no campo
+/******************************************************/
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+naInstituicao();
+function naInstituicao() {
+	var vCodTipo = $('#codTipoID').val();
+	
+	if ((vCodTipo == 5) || (vCodTipo == 9) || (vCodTipo == 10)) {
+		$('#divFornecedorInputID').addClass('hidden');
+		$('#divFornecedorInstituicaoID').removeClass('hidden');
+	}
+}
+
+/************************* Submit Formulário *************************/
+//Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	//var vOk 	= validaEvento();
+	var vOk 	= true;
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+function selecionaComissaoValor() {
+	
+	$('#codTipoComissaoID').val("V");
+	mostraDivComissao();
+}
+
+function selecionaComissaoPorc() {
+	
+	$('#codTipoComissaoID').val("P");
+	mostraDivComissao();
+}
+
+mostraDivComissao();
+
+function mostraDivComissao() {
+	var vTipo 		= $('#codTipoComissaoID').val();
+	
+	if (vTipo 	== 'V') {
+		$('#divPorcID').hide();
+		$('#divValID').show();
+		
+		$('#codTipoComissaoValID').addClass("btn-primary");
+		$('#codTipoComissaoValID').removeClass("btn-light");
+		$('#codTipoComissaoPorcID').addClass("btn-light");
+		$('#codTipoComissaoPorcID').removeClass("btn-primary");
+		
+	}else if (vTipo 	== 'P') {
+		$('#divValID').hide();
+		$('#divPorcID').show();
+		
+		$('#codTipoComissaoPorcID').addClass("btn-primary");
+		$('#codTipoComissaoPorcID').removeClass("btn-light");
+		$('#codTipoComissaoValID').addClass("btn-light");
+		$('#codTipoComissaoValID').removeClass("btn-primary");		
+		
+	}else{
+		$('#divPorcID').show();
+		$('#divValID').hide();
+		
+		$('#codTipoComissaoPorcID').addClass("btn-primary");
+		$('#codTipoComissaoPorcID').removeClass("btn-light");
+		$('#codTipoComissaoValID').addClass("btn-light");
+		$('#codTipoComissaoValID').removeClass("btn-primary");	
+	}
+}
+
+
+$('#zgFormID').submit(function(e) {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+
+	// Retirar a máscara para os campos que estão configurados para tal 
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codVendaPlanoID').val(zgGetCodRetorno(data));
+			var $codVendaPlano = zgGetCodRetorno(data);
+			var $url		= '%URLATUALIZAR%';
+ 	
+			zgMostraAviso("Fechar",'Voltar', '%URLVOLTAR%');
+			zgLoadUrl($url+'&retCodVendaPlano='+$codVendaPlano);
+		}else{
+			zgMostraAviso("Fechar");
+		}
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+});
+
+function validaEvento() {
+	var vData 		= $('#date-timepicker').val();
+	var vFornecedor = $('#fornecedorID').val();
+	var vCodTipo 	= $('#codTipoID').val();
+	var vCodEvento 	= $('#codEventoID').val();
+	
+	var vOK 		= true;
+	
+	var date = new Date();
+	var dataHoje = moment(date).format('YYYYMMDD');
+	
+	if (vData){
+		var dataString = vData.split(" ").shift();
+		var comparaData = parseInt(dataString.split("/")[2].toString() + dataString.split("/")[1].toString() + dataString.split("/")[0].toString());
+	}
+	
+	//DATA DO EVENTO
+	if (!vData){
+		$('#divDataEventoID').addClass('has-error');
+		$('#divHelpDataEventoID').html(zgCriaSpanErro('Informe a data do evento.'));
+		vOK		= false;
+	}else{
+		if (dataHoje >= comparaData && !vCodEvento){
+			$('#divDataEventoID').addClass('has-error');
+			$('#divHelpDataEventoID').html(zgCriaSpanErro('A data do evento deve ser maior que a data de hoje.'));
+			vOK		= false;		
+		}else{
+			$('#divDataEventoID').removeClass('has-error');
+			$('#divHelpDataEventoID').html('&nbsp;');
+		}
+	}
+	
+	//FORNECEDOR
+	if ((vCodTipo != 5) && (vCodTipo != 9) && (vCodTipo != 10)){
+		if (!vFornecedor){
+			$('#divFornecedorID').addClass('has-error');
+			$('#divHelpFornecedorID').html(zgCriaSpanErro('Selecione o local do evento.'));
+			vOK		= false;
+		}else{
+			$('#divFornecedorID').removeClass('has-error');
+			$('#divHelpFornecedorID').html('&nbsp;');
+		}
+	}
+	
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+	
+}
+
+</script>
+

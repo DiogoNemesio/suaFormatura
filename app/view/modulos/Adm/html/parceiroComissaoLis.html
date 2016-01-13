@@ -1,0 +1,41 @@
+<div class="row">
+	<div class="col-sm-12 widget-container-span">
+		<div class="widget-body">
+			<div class="page-header">
+			<h1><i class="%IC%">&nbsp;</i>%NOME%&nbsp;&nbsp;
+				<div class="btn-group">
+					<button data-toggle="dropdown" class="btn btn-white btn-info dropdown-toggle">
+						<span class="ace-icon fa fa-plus icon-on-right"></span>
+						Adicionar
+						<span class="ace-icon fa fa-caret-down icon-on-right"></span>
+					</button>
+				
+					<ul class="dropdown-menu dropdown-default">
+						%HTML_BUTTON%
+					</ul>
+				</div>
+			</h1>
+			</div><!-- /.page-header -->
+			
+			<div class="col-xs-12">
+	
+				<div class="zgBreadcumb">
+					<a href="javascript:zgLoadUrl('%URL_VOLTAR%');"><span class="badge badge-primary">1</span>Parceiros</a>
+					<a href="javascript:zgLoadUrl('%URL_ATUALIZAR%');" class="current"><span class="badge badge-primary">2</span>%NOME_PARCEIRO%</a>
+				</div>
+				<br>
+			</div>
+			
+			<div class="box-content">
+				%GRID%
+			</div><!--/span-->
+		</div>
+	</div>
+</div>
+<script>
+	var vUrl = '%URLADD%';
+	
+	if (vUrl == '') {
+		$('#a01ID').hide();
+	} 
+</script>
