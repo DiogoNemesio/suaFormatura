@@ -26,6 +26,11 @@ if (isset($_GET['id'])) {
 }
 
 #################################################################################
+## Resgata a url desse script
+#################################################################################
+$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
+
+#################################################################################
 ## Descompacta o ID
 #################################################################################
 \Zage\App\Util::descompactaId($id);
@@ -34,11 +39,6 @@ if (isset($_GET['id'])) {
 ## Verifica se o usuário tem permissão no menu
 #################################################################################
 $system->checaPermissao($_codMenu_);
-
-#################################################################################
-## Resgata a url desse script
-#################################################################################
-$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
 ## Resgata os dados do grid
@@ -64,7 +64,7 @@ $grid->importaDadosArray($adiantamentos);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($adiantamentos); $i++) {
-	$aid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPessoa='.$adiantamentos[$i]["COD_PESSOA"].'&url='.$url);
+	$aid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codPessoa='.$adiantamentos[$i]["COD_PESSOA"]);
 	
 
 	#################################################################################
@@ -85,7 +85,13 @@ for ($i = 0; $i < sizeof($adiantamentos); $i++) {
 	$urlUsu			= ROOT_URL . "/Fin/adiantamentoCadConta.php?id=".$aid;
 	
 	$grid->setUrlCelula($i, 3, $urlView);
-	$grid->setUrlCelula($i, 4, $urlUsu);
+	
+	if ($adiantamentos[$i]["SALDO"] > 0) {
+		$grid->setUrlCelula($i, 4, $urlUsu);
+	}else{
+		$grid->desabilitaCelula($i, 4);
+	}
+	
 	
 }
 

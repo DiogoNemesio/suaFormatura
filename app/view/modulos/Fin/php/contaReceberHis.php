@@ -95,7 +95,8 @@ if (!isset($urlVoltar) || (!$urlVoltar)) {
 ## Calculo dos valores
 #################################################################################
 $valorTotal			= \Zage\Fin\ContaReceber::calculaValorTotal($oConta);
-$valorRecebido		= \Zage\App\Util::to_money((new \Zage\Fin\ContaReceber())->getValorJaRecebido($codConta)); 
+$valorRecebido		= (new \Zage\Fin\ContaReceber())->getValorJaRecebido($codConta);
+$saldo				= $valorTotal - $valorRecebido;
 
 #################################################################################
 ## Carregando o template html
@@ -111,8 +112,9 @@ $tpl->set('TITULO'				,$tr->trans('Histórico de Recebimento'));
 $tpl->set('COD_CONTA'			,$codConta);
 $tpl->set('MENSAGEM'			,$mensagem);
 $tpl->set('GRID'				,$gHtml);
-$tpl->set('VALOR_TOTAL'			,$valorTotal);
-$tpl->set('VALOR_RECEBIDO'		,$valorRecebido);
+$tpl->set('VALOR_TOTAL'			,\Zage\App\Util::to_money($valorTotal));
+$tpl->set('VALOR_RECEBIDO'		,\Zage\App\Util::to_money($valorRecebido));
+$tpl->set('SALDO'				,\Zage\App\Util::to_money($saldo));
 $tpl->set('GRID'				,$gHtml);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 

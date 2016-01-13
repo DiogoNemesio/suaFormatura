@@ -101,6 +101,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 	 */
 	private $_pctRateio;
 	
+	/**
+	 * Objeto que vai será salvo
+	 */
+	private $_object;
+	
 	
 	/**
 	 * Código do Grupo de Substituição
@@ -709,6 +714,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			try {
 				
 				$em->persist($object);
+				$this->_object	= $object;
 				
 				if ($p == $parcelaFim) {
 					$this->_setCodConta($object->getCodigo());
@@ -905,19 +911,22 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 	
 	
 	/**
-	 * Efetivar o pagamento de uma conta 
-	 * @param int $codConta
+	 * Efetivar o pagamento de uma conta
+	 * @param object $oConta
+	 * @param int $codContaDeb
 	 * @param int $codFormaPag
 	 * @param date $dataPag
 	 * @param float $valor
 	 * @param float $valorJuros
 	 * @param float $valorMora
 	 * @param float $valorDesconto
+	 * @param float $valorOutros
 	 * @param string $documento
-	 * @param number $codTipoBaixa
-	 * @param number $seqRetorno
+	 * @param int $codTipoBaixa
+	 * @param int $seqRetorno
+	 * @param int $usarAdiantamento
 	 */
-	public function paga (\Entidades\ZgfinContaPagar $oConta,$codContaDeb,$codFormaPag,$dataPag,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$documento,$codTipoBaixa,$seqRetorno = null) {
+	public function paga (\Entidades\ZgfinContaPagar $oConta,$codContaDeb,$codFormaPag,$dataPag,$valor,$valorJuros,$valorMora,$valorDesconto,$valorOutros,$documento,$codTipoBaixa,$seqRetorno = null,$usarAdiantamento = null) {
 		global $em,$system,$tr,$log;
 		
 		#################################################################################
@@ -991,7 +1000,19 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		## Calcular o valor total pago
 		#################################################################################
 		$valorTotal	= $valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto;
-
+		
+		#################################################################################
+		## Verificar se foi usado o adiantamento para baixar, caso tenha sido
+		## verificar se o saldo de adiantamento do cliente é sulficiente para cobrir
+		## a baixa
+		#################################################################################
+		if ($usarAdiantamento == 1 && $oConta->getCodPessoa()) {
+			$saldoAd			= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao(), $oConta->getCodPessoa()->getCodigo());
+			if ($valorTotal	> $saldoAd)	{
+				return($tr->trans('Saldo de adiantamento insuficiente para efetuar a baixa'));
+			}
+		}
+		
 		#################################################################################
 		## Resgatar o saldo da conta
 		#################################################################################
@@ -1021,6 +1042,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Resgatar os objetos das chaves estrangeiras
 		#################################################################################
+		$oOrg		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $oConta->getCodOrganizacao()->getCodigo()));
 		$oMoeda		= $em->getRepository('Entidades\ZgfinMoeda')->findOneBy(array('codigo' => 1));
 		$oFil		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 		$oOrigem	= $em->getRepository('Entidades\ZgadmOrigem')->findOneBy(array('codigo' => 1));
@@ -1089,23 +1111,29 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		$oConta->setCodStatus($oStatus);
 		$oConta->setDataLiquidacao($dataLiq);
 		
-		#################################################################################
-		## Gerar a movimentação bancária
-		#################################################################################
-		$oMov	= new \Zage\Fin\MovBancaria();
-		$oMov->setCodOrganizacao($oFil);
-		$oMov->setCodConta($oContaDeb);
-		$oMov->setCodOrigem($oOrigem);
-		$oMov->setCodTipoOperacao($oTipoOper);
-		$oMov->setDataMovimentacao($dataPag);
-		$oMov->setDataOperacao(new \DateTime("now"));
-		$oMov->setValor($valorTotal);
-		$oMov->setCodGrupoMov($grupoMov);
 		
-		$err	= $oMov->salva();
-		
-		if ($err) {
-			return $err;
+		#################################################################################
+		## Gerar a movimentação bancária, apenas se não for por adiantamento
+		#################################################################################
+		if ($usarAdiantamento !== 1) {
+			$oMov	= new \Zage\Fin\MovBancaria();
+			$oMov->setCodOrganizacao($oFil);
+			$oMov->setCodConta($oContaDeb);
+			$oMov->setCodOrigem($oOrigem);
+			$oMov->setCodTipoOperacao($oTipoOper);
+			$oMov->setDataMovimentacao($dataPag);
+			$oMov->setDataOperacao(new \DateTime("now"));
+			$oMov->setValor($valorTotal);
+			$oMov->setCodGrupoMov($grupoMov);
+			
+			$err	= $oMov->salva();
+			if ($err) return $err;
+		}elseif ($oConta->getCodPessoa() ){
+
+			#################################################################################
+			## Cria o adiantamento de débito
+			#################################################################################
+			\Zage\Fin\Adiantamento::salva($oOrg->getCodigo(),"5","D",$oConta->getCodPessoa()->getCodigo(),null,$oConta,$dataPag->format($system->config["data"]["dateFormat"]),$valorTotal,$grupoMov);
 		}
 		
 		try {
@@ -1223,7 +1251,15 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		for ($i = 0; $i < sizeof($rateios); $i++) {
 			$em->remove($rateios[$i]);
 		}
+
+		#################################################################################
+		## Apagar os históricos
+		#################################################################################
+		$hist	= $em->getRepository('Entidades\ZgfinContaPagarHistorico')->findBy(array('codConta' => $codConta));
 		
+		for ($i = 0; $i < sizeof($hist); $i++) {
+			$em->remove($hist[$i]);
+		}
 		
 		try {
 			$em->remove($oConta);
@@ -1769,6 +1805,10 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		$this->_pctRateio	= $array;
 	}
 	
+	public function _getObject() {
+		return  $this->_object;
+	}
+	
 	/**
 	 *
 	 * @return the int
@@ -1833,7 +1873,6 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			$saldoAdiant	= 0;
 		}
 		
-	
 		#################################################################################
 		## Verifica se foi cadastrado adiantamento para essa baixa
 		#################################################################################
@@ -1851,7 +1890,6 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			throw new \Exception("Baixa com adiantamento já utilizado !!!");
 		}
 			
-	
 		#################################################################################
 		## Verificar se houve cancelamento de saldo, para não deixar remover a baixa,
 		## Antes da exclusão do cancelamento
@@ -1862,12 +1900,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Excluir os adiatamentos
 		#################################################################################
-		if (($valAdiantaExc > 0) && ($saldoAdiant >= $valAdiantaExc)) {
-			for ($i = 0; $i < sizeof($aAdiant); $i++) {
-				$em->remove($aAdiant[$i]);
-			}
+		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaPag' => $oHist->getCodContaPag()->getCodigo(), 'codGrupoMov' => $grupoMov));
+		for ($i = 0; $i < sizeof($aAdiant); $i++) {
+			$em->remove($aAdiant[$i]);
 		}
-	
+		
 		#################################################################################
 		## Verificar se a baixa que foi excluída agregou júros, mora e desconto a conta
 		#################################################################################

@@ -120,7 +120,7 @@ $texto				= $mesRef . " (".ucfirst(strftime("%B",mktime(0,0,0,$mes,1,null))).")"
 #################################################################################
 ## Url desse script
 #################################################################################
-$urlForm			= ROOT_URL . '/Fmt/relResumoPagamento.php'; 
+$urlForm			= ROOT_URL . '/Fmt/relMensalidadeResumoPagamento.php'; 
 
 #################################################################################
 ## Resgata a categoria de mensalidades

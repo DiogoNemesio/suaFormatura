@@ -109,7 +109,7 @@ $texto					= $dataRef;
 #################################################################################
 ## Url desse script
 #################################################################################
-$urlForm				= ROOT_URL . '/Fmt/relInadimplente.php'; 
+$urlForm				= ROOT_URL . '/Fmt/relMensalidadeInadimplente.php'; 
 
 #################################################################################
 ## Resgata a categoria de mensalidades

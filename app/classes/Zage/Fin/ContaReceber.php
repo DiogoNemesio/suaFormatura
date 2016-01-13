@@ -976,6 +976,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$valDescontoBoletoConcedido	= \Zage\App\Util::to_float($valDescontoBoletoConcedido);
 
 		#################################################################################
+		## Resgatar o Códiga da Pessoa
+		#################################################################################
+		$codPessoa		= ($oConta->getCodPessoa()) ? $oConta->getCodPessoa()->getCodigo() : null; 
+		
+		#################################################################################
 		## Calcular o valor total recebido
 		#################################################################################
 		$valorTotal			= round(floatval($valor + $valorJuros + $valorMora + $valorOutros - $valorDesconto),2);
@@ -986,7 +991,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## a baixa
 		#################################################################################
 		if ($usarAdiantamento == 1) {
-			$saldoAd			= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao(), $oConta->getCodPessoa());
+			$saldoAd			= \Zage\Fin\Adiantamento::getSaldo($oConta->getCodOrganizacao(), $oConta->getCodPessoa()->getCodigo());
 			if ($valorTotal	> $saldoAd)	{
 				return($tr->trans('Saldo de adiantamento insuficiente para efetuar a baixa'));
 			}
@@ -1122,17 +1127,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				#################################################################################
 				## Cria o adiantamento
 				#################################################################################
-				$oAdiant	= new \Entidades\ZgfinMovAdiantamento();
-				$oAdiant->setCodContaRec($oConta);
-				$oAdiant->setCodOrganizacao($oOrg);
-				$oAdiant->setCodOrigem($oOrigem);
-				$oAdiant->setCodPessoa($oConta->getCodPessoa());
-				$oAdiant->setCodTipoOperacao($oTipoOper);
-				$oAdiant->setDataAdiantamento(\DateTime::createFromFormat($system->config["data"]["dateFormat"], $dataRec));
-				$oAdiant->setDataTransacao(new \DateTime());
-				$oAdiant->setValor($diferenca);
-				$oAdiant->setCodGrupoMov($grupoMov);
-				$em->persist($oAdiant);
+				\Zage\Fin\Adiantamento::salva($oOrg->getCodigo(),$oOrigem->getCodigo(),$oTipoOper->getCodigo(),$codPessoa,$oConta->getCodigo(),null,$dataRec,$diferenca,$grupoMov);
 			}
 		}
 		
@@ -1222,19 +1217,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			#################################################################################
 			## Cria o adiantamento de débito
 			#################################################################################
-			$oTipoOperDeb	= $em->getRepository('Entidades\ZgfinOperacaoTipo')->findOneBy(array('codigo' => "D"));
-			$oAdiantDeb	= new \Entidades\ZgfinMovAdiantamento();
-			$oAdiantDeb->setCodContaRec($oConta);
-			$oAdiantDeb->setCodOrganizacao($oOrg);
-			$oAdiantDeb->setCodOrigem($oOrigem);
-			$oAdiantDeb->setCodPessoa($oConta->getCodPessoa());
-			$oAdiantDeb->setCodTipoOperacao($oTipoOperDeb);
-			$oAdiantDeb->setDataAdiantamento($dataRec);
-			$oAdiantDeb->setDataTransacao(new \DateTime());
-			$oAdiantDeb->setValor($valorTotal);
-			$oAdiantDeb->setCodGrupoMov($grupoMov);
-			$em->persist($oAdiantDeb);
-				
+			\Zage\Fin\Adiantamento::salva($oOrg->getCodigo(),"4","D",$codPessoa,$oConta->getCodigo(),null,$dataRec->format($system->config["data"]["dateFormat"]),$valorTotal,$grupoMov);
 		}
 		
 		try {
@@ -1406,6 +1389,15 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		
 		for ($i = 0; $i < sizeof($rateios); $i++) {
 			$em->remove($rateios[$i]);
+		}
+		
+		#################################################################################
+		## Apagar os históricos
+		#################################################################################
+		$hist	= $em->getRepository('Entidades\ZgfinContaReceberHistorico')->findBy(array('codConta' => $codConta));
+		
+		for ($i = 0; $i < sizeof($hist); $i++) {
+			$em->remove($hist[$i]);
 		}
 		
 		
@@ -2479,7 +2471,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Verifica se foi cadastrado adiantamento para essa baixa
 		#################################################################################
-		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaRec' => $oHist->getCodContaRec()->getCodigo(), 'codGrupoMov' => $grupoMov));
+		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaRec' => $oHist->getCodContaRec()->getCodigo(), 'codGrupoMov' => $grupoMov,'codTipoOperacao' => "C"));
 		
 		#################################################################################
 		## Soma os valores de adiantamentos pra saber se poderá excluir
@@ -2493,7 +2485,6 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			throw new \Exception("Baixa com adiantamento já utilizado !!!");
 		}
 			
-		
 		#################################################################################
 		## Verificar se houve cancelamento de saldo, para não deixar remover a baixa,
 		## Antes da exclusão do cancelamento
@@ -2504,10 +2495,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		#################################################################################
 		## Excluir os adiatamentos
 		#################################################################################
-		if (($valAdiantaExc > 0) && ($saldoAdiant >= $valAdiantaExc)) {
-			for ($i = 0; $i < sizeof($aAdiant); $i++) {
-				$em->remove($aAdiant[$i]);
-			}
+		$aAdiant	=  $em->getRepository('Entidades\ZgfinMovAdiantamento')->findBy(array('codContaRec' => $oHist->getCodContaRec()->getCodigo(), 'codGrupoMov' => $grupoMov));
+		for ($i = 0; $i < sizeof($aAdiant); $i++) {
+			$em->remove($aAdiant[$i]);
 		}
 
 		#################################################################################

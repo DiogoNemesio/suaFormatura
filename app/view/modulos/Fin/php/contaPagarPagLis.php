@@ -131,8 +131,9 @@ if (!isset($urlVoltar) || (!$urlVoltar)) {
 #################################################################################
 ## Calculo dos valores
 #################################################################################
-$valorTotal			= \Zage\App\Util::to_money($oConta->getValor() + $oConta->getValorJuros() + $oConta->getValorMora() + $oConta->getValorOutros() - ($oConta->getValorCancelado() + $oConta->getValorDesconto()));
-$valorPago			= \Zage\App\Util::to_money((new \Zage\Fin\ContaPagar())->getValorJaPago($codConta)); 
+$valorTotal			= $oConta->getValor() + $oConta->getValorJuros() + $oConta->getValorMora() + $oConta->getValorOutros() - ($oConta->getValorCancelado() + $oConta->getValorDesconto());
+$valorPago			= (new \Zage\Fin\ContaPagar())->getValorJaPago($codConta); 
+$saldo				= $valorTotal - $valorPago;
 
 #################################################################################
 ## Carregando o template html
@@ -148,8 +149,9 @@ $tpl->set('TITULO'				,$tr->trans('Histórico de Pagamento'));
 $tpl->set('COD_CONTA'			,$codConta);
 $tpl->set('MENSAGEM'			,$mensagem);
 $tpl->set('GRID'				,$gHtml);
-$tpl->set('VALOR_TOTAL'			,$valorTotal);
-$tpl->set('VALOR_PAGO'			,$valorPago);
+$tpl->set('VALOR_TOTAL'			,\Zage\App\Util::to_money($valorTotal));
+$tpl->set('VALOR_PAGO'			,\Zage\App\Util::to_money($valorPago));
+$tpl->set('SALDO'				,\Zage\App\Util::to_money($saldo));
 $tpl->set('GRID'				,$gHtml);
 $tpl->set('URL_VOLTAR'			,$urlVoltar);
 

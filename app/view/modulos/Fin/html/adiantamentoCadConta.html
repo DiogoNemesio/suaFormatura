@@ -1,0 +1,270 @@
+<div id="content">
+	<div class="page-header" style="display:inline-block; width:98%;">
+		<h1><i class="fa fa-exchange">&nbsp;</i>%TITULO%
+			<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
+			<span class="pull-right">Saldo disponível: <strong>%SALDO_FMT%</strong></span>
+		</h1>
+	</div><!-- /.page-header -->
+	<div id="user-profile-3" class="user-profile row">
+		<form id="zgFormAdiCadConID" class="form-horizontal">
+		<input type="hidden" name="id" value="%ID%">
+		<input type="hidden" id="saldoID" name="saldo" value="%SALDO%">
+		<div class="col-sm-12">
+			<div id="contaPagar-principal">
+				<div class="row">
+					<div class="form-group col-sm-12" id="divDescricaoID">
+						<label class="col-sm-3 control-label">Descrição</label>
+		    			<div class="input-group col-sm-4 pull-left">
+		    				<span tabindex="99002" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descrição da Conta a Pagar"></i></span>
+			    			<input class="form-control" id="descricaoID" type="text" name="descricao" maxlength="60" value="%DESCRICAO%" autocomplete="off" %TEXT_VIEW%>
+					    </div>
+						<div class="help-block col-sm-5 inline" id="divHelpDescricaoID"></div>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-12" id="divDataVencID">
+						<label class="col-sm-3 control-label">Data de Vencimento</label>
+		    			<div class="input-group col-sm-4 pull-left">
+		    				<span tabindex="99003" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Data de vencimento da conta"></i></span>
+			    			<input class="form-control datepicker" id="dataVencID" type="text" name="dataVenc" maxlength="10" value="%DATA_VENC%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data" %TEXT_VIEW%>
+					    </div>
+						<div class="help-block col-sm-5 inline" id="divHelpDataVencID"></div>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-12" id="divValorID">
+						<label class="col-sm-3 control-label">Valor</label>
+		    			<div class="input-group col-sm-4 pull-left">
+		    				<span tabindex="99007" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Valor da conta"></i></span>
+			    			<input onchange="validaValorAdiCadCon();" class="form-control" id="valorID" type="text" name="valor" maxlength="20" value="%SALDO%" autocomplete="off" required zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0" %TEXT_VIEW%>
+					    </div>
+						<div class="help-block col-sm-5 inline" id="divHelpValorID"></div>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-12" id="divFormaPagID">
+						<label class="col-sm-3 control-label">Forma de Pag.</label>
+		    			<div class="input-group col-sm-4 pull-left">
+		    				<span tabindex="99011" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a Forma de Pagamento da Conta"></i></span>
+							<select class="select2 %SELECT_VIEW%" style="width:100%;" id="codFormaPagID" name="codFormaPag" data-rel="select2">
+							%FORMAS_PAG%
+							</select>
+					    </div>
+					    <div class="help-block col-sm-5 inline" id="divHelpFormaPagID"></div>
+			    	</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-sm-12" id="divContaPagID">
+						<label class="col-sm-3 control-label">Conta de Pagamento</label>
+		    			<div class="input-group col-sm-4 pull-left">
+		    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Pagamento (Conta que será debitado o valor)"></i></span>
+							<select class="select2 %SELECT_VIEW%" style="width:100%;" id="codContaPagID" name="codContaPag" data-rel="select2">
+							%CONTAS%
+							</select>
+					    </div>
+					    <div class="help-block col-sm-5 inline" id="divHelpContaPagID"></div>
+			    	</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-12" id="divObsID">
+						<label class="col-sm-3 control-label">Observações</label>
+		    			<div class="input-group col-sm-4 pull-left">
+		    				<span tabindex="99018" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Observações adicionais"></i></span>
+		    				<textarea class="form-control limited" id="obsID" maxlength="400" name="obs" autocomplete="off">%OBS%</textarea>
+					    </div>
+					    <div class="help-block col-sm-5 inline" id="divHelpObsID"></div>
+			    	</div>
+				</div>
+			</div>
+			<div class="clearfix form-actions">
+				<label class="col-sm-5 control-label" >&nbsp;</label>
+   				<button type="button" class="btn btn-primary" id="btnSubmitAdiCadConID"><i class="fa fa-check bigger-110"></i> Salvar</button>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+<div id="divMsgContaID"></div>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2();
+$('.datepicker').datepicker({"autoclose": true});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
+
+$('textarea[class*=autosize]').autosize({append: "\n"});
+$('textarea.limited').inputlimiter({
+	remText: '%n caracteres restando...',
+	limitText: 'Máximo Permitido : %n.'
+});
+
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('#btnSubmitAdiCadConID').on("click", function(e) {
+	var vOk 	= validaAdiCadCon();
+	if(!vOk) 	{
+		$.gritter.add({
+			title: 'Existe algo de errado',
+			text: 'Corrija os campos marcado em vermelho !!!!',
+			class_name: 'gritter-info gritter-center gritter-error'
+		});
+		e.preventDefault();
+		return false;
+	}else{
+		$('#zgFormAdiCadConID').submit();
+	}
+
+
+});
+
+$('#zgFormAdiCadConID').submit(function() {
+	
+	$('#btnSubmitAdiCadConID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitAdiCadConID').attr("disabled","disabled");
+
+	/** Retirar a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+
+	/** Habilitar os SELECTS que estão desabilitados para poder enviar o valor **/
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", false );
+		}
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormAdiCadConID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+		if (checaRetornoOK(data) == true) {
+			bootbox.dialog({
+				message: "Conta salva com sucesso !!!", 
+				buttons: {
+					"fechar" : {
+						"label" : "<i class='ace-icon fa fa-close'></i>Fechar",
+						"className" : "btn-sm btn-danger",
+						"callback": function() {
+							zgLoadUrl('%URLVOLTAR%');
+						}
+
+					},
+					
+				}
+			});
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitAdiCadConID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitAdiCadConID').attr("disabled",false);
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(jqXHR);
+	});
+	
+	$( "select" ).each(function( index ) {
+		if ($(this).hasClass('readonly')) {
+			$(this).prop( "disabled", true );
+		}
+	});
+
+	return false; 
+});
+
+function validaAdiCadCon() {
+	var $ok				= true;
+	var $dataVenc		= $('#dataVencID').val();
+	var $descricao		= $('#descricaoID').val();
+	var $codFormaPag	= $('#codFormaPagID').val();
+	var $codConta		= $('#codContaPagID').val();
+	
+	/** Valida o valor **/
+	$ok		= validaValorAdiCadCon();
+	
+	/** Valida a data de vencimento **/
+	if (!$dataVenc) {
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Data de vencimento deve ser informada'));
+		$ok				= false;
+	}else{
+		$('#divDataVencID').removeClass('has-error');
+		$('#divHelpDataVencID').html('&nbsp;');
+	}
+	
+	/** Valida a descrição **/
+	if (!$descricao) {
+		$('#divDescricaoID').addClass('has-error');
+		$('#divHelpDescricaoID').html(zgCriaSpanErro('Descrição deve ser informada'));
+		$ok				= false;
+	}else{
+		$('#divDescricaoID').removeClass('has-error');
+		$('#divHelpDescricaoID').html('&nbsp;');
+	}
+	
+	/** Valida a Forma de Pagamento **/
+	if (!$codFormaPag) {
+		$('#divFormaPagID').addClass('has-error');
+		$('#divHelpFormaPagID').html(zgCriaSpanErro('Forma de pagamento deve ser selecionada'));
+		$ok				= false;
+	}else{
+		$('#divFormaPagID').removeClass('has-error');
+		$('#divHelpFormaPagID').html('&nbsp;');
+	}
+
+	/** Valida a Forma de Pagamento **/
+	if (!$codConta) {
+		$('#divContaPagID').addClass('has-error');
+		$('#divHelpContaPagID').html(zgCriaSpanErro('Conta de pagamento deve ser selecionada'));
+		$ok				= false;
+	}else{
+		$('#divContaPagID').removeClass('has-error');
+		$('#divHelpContaPagID').html('&nbsp;');
+	}
+	
+	return $ok;
+
+}
+
+
+function validaValorAdiCadCon() {
+	var $saldo		= zgConverteFloat($('#saldoID').val());
+	var $valor		= zgConverteFloat($('#valorID').val());
+	
+	if ($valor > $saldo) {
+		$('#divValorID').addClass('has-error');
+		$('#divHelpValorID').html(zgCriaSpanErro('Valor não pode ser maior que o saldo disponível'));
+		return false;
+	}else{
+		$('#divValorID').removeClass('has-error');
+		$('#divHelpValorID').html('&nbsp;');
+		return true;
+	}
+}
+</script>
