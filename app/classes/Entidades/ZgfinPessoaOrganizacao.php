@@ -78,16 +78,6 @@ class ZgfinPessoaOrganizacao
     private $dataCadastro;
 
     /**
-     * @var \Entidades\ZgfinPessoa
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPessoa;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -96,6 +86,16 @@ class ZgfinPessoaOrganizacao
      * })
      */
     private $codOrganizacao;
+
+    /**
+     * @var \Entidades\ZgfinPessoa
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPessoa;
 
 
     /**
@@ -293,29 +293,6 @@ class ZgfinPessoaOrganizacao
     }
 
     /**
-     * Set codPessoa
-     *
-     * @param \Entidades\ZgfinPessoa $codPessoa
-     * @return ZgfinPessoaOrganizacao
-     */
-    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
-    {
-        $this->codPessoa = $codPessoa;
-
-        return $this;
-    }
-
-    /**
-     * Get codPessoa
-     *
-     * @return \Entidades\ZgfinPessoa 
-     */
-    public function getCodPessoa()
-    {
-        return $this->codPessoa;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -336,5 +313,28 @@ class ZgfinPessoaOrganizacao
     public function getCodOrganizacao()
     {
         return $this->codOrganizacao;
+    }
+
+    /**
+     * Set codPessoa
+     *
+     * @param \Entidades\ZgfinPessoa $codPessoa
+     * @return ZgfinPessoaOrganizacao
+     */
+    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
+    {
+        $this->codPessoa = $codPessoa;
+
+        return $this;
+    }
+
+    /**
+     * Get codPessoa
+     *
+     * @return \Entidades\ZgfinPessoa 
+     */
+    public function getCodPessoa()
+    {
+        return $this->codPessoa;
     }
 }

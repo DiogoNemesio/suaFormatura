@@ -57,7 +57,7 @@ try {
 		$nomeTipoPessoa	= "Transportadoras";
 	}
 	
-	$pessoas	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),$indTipo);
+	$pessoas	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),$indTipo,null,null,null,null,2);
 	
 //	$pessoas	= $em->getRepository('Entidades\ZgfinPessoa')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(), $indTipo => 1,'codTipoPessoa' => array("F","J")), array('nome' => 'ASC'));
 } catch (\Exception $e) {
@@ -73,9 +73,9 @@ $grid->adicionaTexto($tr->trans('NOME / RAZÃO SOCIAL'),	20, $grid::CENTER	,'nom
 $grid->adicionaTexto($tr->trans('NOME FANTASIA'),		20, $grid::CENTER	,'fantasia');
 $grid->adicionaTexto($tr->trans('CNPJ / CPF'),			10, $grid::CENTER	,'cgc');
 $grid->adicionaTexto($tr->trans('TIPO'), 				10, $grid::CENTER	,'codTipoPessoa:descricao');
-$grid->adicionaStatus($tr->trans('STATUS'),'');
+$grid->adicionaTexto($tr->trans('STATUS'), 				10, $grid::CENTER	,'');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
-$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
+//$grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
 $grid->importaDadosDoctrine($pessoas);
 
 #################################################################################
@@ -100,6 +100,17 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 	}
 	
 	#################################################################################
+	## STATUS
+	#################################################################################
+	$oPessoOrg = $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codPessoa' => $pessoas[$i]->getCodigo()));
+	
+	if ($oPessoOrg->getIndAtivo() == 1){
+		$grid->setValorCelula($i,4,"<span class=\"label label-success\">ATIVO</span>");
+	}else{
+		$grid->setValorCelula($i,4,"<span class=\"label label-danger\">INATIVO</span>");
+	}
+	
+	#################################################################################
 	## Verificar se a Pessoa pode ser alterada
 	#################################################################################
 	if ($tipoOrg == "ADM") {
@@ -112,10 +123,10 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 	$podeAlt = true;
 	if ($podeAlt) {
 		$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/pessoaAlt.php?id='.$uid);
-		$grid->setUrlCelula($i,6,ROOT_URL.'/Fin/pessoaExc.php?id='.$uid);
+		//$grid->setUrlCelula($i,6,ROOT_URL.'/Fin/pessoaExc.php?id='.$uid);
 	}else{
 		$grid->desabilitaCelula($i, 5);
-		$grid->desabilitaCelula($i, 6);
+		//$grid->desabilitaCelula($i, 6);
 	}
 }
 

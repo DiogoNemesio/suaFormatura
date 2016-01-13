@@ -110,7 +110,7 @@ switch ($codTipo) {
 }
 
 try {
-	$aFornecedor	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),"indFornecedor",$arraySeg,$arrayCat);
+	$aFornecedor	= \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(),array("F","J"),"indFornecedor",$arraySeg,$arrayCat,null,null,1);
 	$oFornecedor 	= $system->geraHtmlCombo($aFornecedor, 'CODIGO', 'FANTASIA', $codFornecedor, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);

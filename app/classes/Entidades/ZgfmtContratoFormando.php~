@@ -29,13 +29,6 @@ class ZgfmtContratoFormando
     private $numMeses;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="PCT_DESCONTO", type="float", precision=10, scale=0, nullable=false)
-     */
-    private $pctDesconto;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -87,29 +80,6 @@ class ZgfmtContratoFormando
     public function getNumMeses()
     {
         return $this->numMeses;
-    }
-
-    /**
-     * Set pctDesconto
-     *
-     * @param float $pctDesconto
-     * @return ZgfmtContratoFormando
-     */
-    public function setPctDesconto($pctDesconto)
-    {
-        $this->pctDesconto = $pctDesconto;
-
-        return $this;
-    }
-
-    /**
-     * Get pctDesconto
-     *
-     * @return float 
-     */
-    public function getPctDesconto()
-    {
-        return $this->pctDesconto;
     }
 
     /**

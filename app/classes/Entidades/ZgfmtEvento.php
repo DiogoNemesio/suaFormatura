@@ -43,16 +43,6 @@ class ZgfmtEvento
     private $valorAvulso;
 
     /**
-     * @var \Entidades\ZgfinPessoa
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPessoa;
-
-    /**
      * @var \Entidades\ZgfmtEventoTipo
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEventoTipo")
@@ -71,6 +61,16 @@ class ZgfmtEvento
      * })
      */
     private $codFormatura;
+
+    /**
+     * @var \Entidades\ZgfinPessoa
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPessoa;
 
 
     /**
@@ -153,29 +153,6 @@ class ZgfmtEvento
     }
 
     /**
-     * Set codPessoa
-     *
-     * @param \Entidades\ZgfinPessoa $codPessoa
-     * @return ZgfmtEvento
-     */
-    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
-    {
-        $this->codPessoa = $codPessoa;
-
-        return $this;
-    }
-
-    /**
-     * Get codPessoa
-     *
-     * @return \Entidades\ZgfinPessoa 
-     */
-    public function getCodPessoa()
-    {
-        return $this->codPessoa;
-    }
-
-    /**
      * Set codTipoEvento
      *
      * @param \Entidades\ZgfmtEventoTipo $codTipoEvento
@@ -219,5 +196,28 @@ class ZgfmtEvento
     public function getCodFormatura()
     {
         return $this->codFormatura;
+    }
+
+    /**
+     * Set codPessoa
+     *
+     * @param \Entidades\ZgfinPessoa $codPessoa
+     * @return ZgfmtEvento
+     */
+    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
+    {
+        $this->codPessoa = $codPessoa;
+
+        return $this;
+    }
+
+    /**
+     * Get codPessoa
+     *
+     * @return \Entidades\ZgfinPessoa 
+     */
+    public function getCodPessoa()
+    {
+        return $this->codPessoa;
     }
 }

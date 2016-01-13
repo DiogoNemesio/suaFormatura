@@ -63,9 +63,9 @@ for ($i = 0; $i < sizeof($orcamento); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codVersao='.$orcamento[$i]->getCodigo().'&url='.$url);
 	
 	if ($orcamento[$i]->getIndAtivo() == 1) {
-		$grid->setValorCelula($i, 1, "<span class=\"label label-success\">Ativo</span>");
+		$grid->setValorCelula($i, 1, "<span class=\"label label-success\">ATIVO</span>");
 	}else{
-		$grid->setValorCelula($i, 1, "<span class=\"label label-danger\">Inativo</span>");
+		$grid->setValorCelula($i, 1, "<span class=\"label label-danger\">INATIVO</span>");
 	}
 	
 	$grid->setUrlCelula($i,3,ROOT_URL.'/Fmt/planoOrcAlt.php?id='.$uid);

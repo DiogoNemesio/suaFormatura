@@ -40,7 +40,7 @@ $url		= ROOT_URL . '/Seg/'. basename(__FILE__);
 ## Resgata informações de organização
 #################################################################################
 try {
-	$org	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+	$oOrg	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -129,7 +129,7 @@ $tpl->set('URL_VOLTAR'		,$urlVoltar);
 $tpl->set('URL_ATUALIZAR'	,$urlAtualizar);
 $tpl->set('IC'				,$_icone_);
 
-$tpl->set('NOME_PARCEIRO'	,$org->getNome());
+$tpl->set('NOME_PARCEIRO'	,$oOrg->getFantasia());
 
 #################################################################################
 ## Por fim exibir a página HTML
