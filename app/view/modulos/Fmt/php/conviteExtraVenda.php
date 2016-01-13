@@ -50,7 +50,7 @@ if(!$eventoConfApto){
 # Select de Formando
 ################################################################################
 try {
-	$aFormando = \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(), "F", "indFormando");
+	$aFormando = \Zage\Fin\Pessoa::lista($system->getCodOrganizacao(), "F", "indFormando",null,null,null,null,1);
 	$oFormando = $system->geraHtmlCombo($aFormando, 'CODIGO', 'NOME', $codFormando, '');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
