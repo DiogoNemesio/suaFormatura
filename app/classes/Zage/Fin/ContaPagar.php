@@ -1115,20 +1115,20 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		#################################################################################
 		## Gerar a movimentação bancária, apenas se não for por adiantamento
 		#################################################################################
-		if ($usarAdiantamento !== 1) {
-			$oMov	= new \Zage\Fin\MovBancaria();
-			$oMov->setCodOrganizacao($oFil);
-			$oMov->setCodConta($oContaDeb);
-			$oMov->setCodOrigem($oOrigem);
-			$oMov->setCodTipoOperacao($oTipoOper);
-			$oMov->setDataMovimentacao($dataPag);
-			$oMov->setDataOperacao(new \DateTime("now"));
-			$oMov->setValor($valorTotal);
-			$oMov->setCodGrupoMov($grupoMov);
-			
-			$err	= $oMov->salva();
-			if ($err) return $err;
-		}elseif ($oConta->getCodPessoa() ){
+		$oMov	= new \Zage\Fin\MovBancaria();
+		$oMov->setCodOrganizacao($oFil);
+		$oMov->setCodConta($oContaDeb);
+		$oMov->setCodOrigem($oOrigem);
+		$oMov->setCodTipoOperacao($oTipoOper);
+		$oMov->setDataMovimentacao($dataPag);
+		$oMov->setDataOperacao(new \DateTime("now"));
+		$oMov->setValor($valorTotal);
+		$oMov->setCodGrupoMov($grupoMov);
+		
+		$err	= $oMov->salva();
+		if ($err) return $err;
+
+		if (($usarAdiantamento == 1) && $oConta->getCodPessoa() ){
 
 			#################################################################################
 			## Cria o adiantamento de débito
