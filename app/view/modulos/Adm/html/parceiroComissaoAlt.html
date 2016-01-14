@@ -16,13 +16,13 @@
 				<h5 class="header blue bolder smaller">Adicionar nova database</h5>
 				<div class="row">
 					<div class="col-sm-6">
-						<div class="form-group col-sm-12" id="divDataEventoID">
+						<div class="form-group col-sm-12" id="divDataBaseID">
 					    	<label class="col-sm-3 control-label" for="date-timepicker">Data base</label>
 								<div class="input-group col-sm-8 pull-left">
 				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe a data base para iniciar está configuração de comissão."></i></span>
 				    			<input class="form-control datepicker" id="dataBaseID" type="text" name="dataBase" placeholder="Data base" maxlength="16" value="%DATA_BASE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
 					    	</div>
-					    	<div class="col-sm-1 pull-left" id="divHelpDataEventoID"></div>
+					    	<div class="col-sm-1 pull-left" id="divHelpDataBaseID"></div>
 					    </div>
 					    
 					    <div class="form-group col-sm-12" id="divMoraTipoID">
@@ -145,8 +145,7 @@ function naInstituicao() {
 //Verificar se a validação está OK
 $('#btnSubmitID').on("click", function(e) {
 	
-	//var vOk 	= validaEvento();
-	var vOk 	= true;
+	var vOk 	= validaComissao();
 	
 	if(vOk == false) 	{
 		$.gritter.add({
@@ -260,8 +259,8 @@ $('#zgFormID').submit(function(e) {
 	return false; 
 });
 
-function validaEvento() {
-	var vData 		= $('#date-timepicker').val();
+function validaComissao() {
+	var vData 		= $('#dataBaseID').val();
 	var vFornecedor = $('#fornecedorID').val();
 	var vCodTipo 	= $('#codTipoID').val();
 	var vCodEvento 	= $('#codEventoID').val();
@@ -278,29 +277,17 @@ function validaEvento() {
 	
 	//DATA DO EVENTO
 	if (!vData){
-		$('#divDataEventoID').addClass('has-error');
-		$('#divHelpDataEventoID').html(zgCriaSpanErro('Informe a data do evento.'));
+		$('#divDataBaseID').addClass('has-error');
+		$('#divHelpDataBaseID').html(zgCriaSpanErro('Informe a data base.'));
 		vOK		= false;
 	}else{
-		if (dataHoje >= comparaData && !vCodEvento){
-			$('#divDataEventoID').addClass('has-error');
-			$('#divHelpDataEventoID').html(zgCriaSpanErro('A data do evento deve ser maior que a data de hoje.'));
+		if (dataHoje >= comparaData){
+			$('#divDataBaseID').addClass('has-error');
+			$('#divHelpDataBaseID').html(zgCriaSpanErro('A data base deve ser maior que a data de hoje.'));
 			vOK		= false;		
 		}else{
-			$('#divDataEventoID').removeClass('has-error');
-			$('#divHelpDataEventoID').html('&nbsp;');
-		}
-	}
-	
-	//FORNECEDOR
-	if ((vCodTipo != 5) && (vCodTipo != 9) && (vCodTipo != 10)){
-		if (!vFornecedor){
-			$('#divFornecedorID').addClass('has-error');
-			$('#divHelpFornecedorID').html(zgCriaSpanErro('Selecione o local do evento.'));
-			vOK		= false;
-		}else{
-			$('#divFornecedorID').removeClass('has-error');
-			$('#divHelpFornecedorID').html('&nbsp;');
+			$('#divDataBaseID').removeClass('has-error');
+			$('#divHelpDataBaseID').html('&nbsp;');
 		}
 	}
 	

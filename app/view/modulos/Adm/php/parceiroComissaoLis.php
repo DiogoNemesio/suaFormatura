@@ -67,6 +67,7 @@ $grid->adicionaDataHora($tr->trans('DATA CADASTRO'),	20, $grid::CENTER	,'dataCad
 $grid->adicionaDataHora($tr->trans('ÚLTIMA ALTERAÇÃO'),	20, $grid::CENTER	,'dataUltimaAlteracao');
 $grid->adicionaTexto($tr->trans('STATUS'),				20, $grid::CENTER	,'');
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
+$grid->adicionaIcone(null,'fa fa-ban green',$tr->trans('Habilitar/Desabilitar'));
 $grid->importaDadosDoctrine($vendaPlano);
 
 for ($i = 0; $i < sizeof($vendaPlano); $i++) {
@@ -77,11 +78,14 @@ for ($i = 0; $i < sizeof($vendaPlano); $i++) {
 	#################################################################################
 	if ($vendaPlano[$i]->getIndHabilitado() == 1) {
 		$grid->setValorCelula($i, 3, "<span class=\"label label-success\">HABILITADO</span>");
+		$grid->setIconeCelula($i, 5, "fa fa-ban red");
 	}else{
 		$grid->setValorCelula($i, 3, "<span class=\"label label-danger\">NÃO HABILITADO</span>");
+		$grid->setIconeCelula($i, 5, "fa fa-check green");
 	}
 	
 	$grid->setUrlCelula($i,4,ROOT_URL.'/Adm/parceiroComissaoAlt.php?id='.$uid);
+	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL."/Adm/parceiroComissaoHabilita.php?id=".$uid."');");
 	
 }
 

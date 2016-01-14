@@ -67,16 +67,29 @@ $grid->importaDadosDoctrine($organizacoes);
 for ($i = 0; $i < sizeof($organizacoes); $i++) {
 	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$organizacoes[$i]->getCodigo().'&url='.$url);
 	
+	#################################################################################
+	## Verifica se o cerimonial já está configurado
+	#################################################################################
 	if ($organizacoes[$i]->getCodTipo()->getCodigo() !== "CER") {
 		$grid->desabilitaCelula($i, 6);
 	}else{
-		#################################################################################
-		## Verifica se o cerimonial já está configurado 
-		#################################################################################
 		$ok		= \Zage\Adm\Organizacao::cerimonialEstaConfigurado($organizacoes[$i]->getCodigo());
 		if (!$ok)	{
 			$grid->setIconeCelula($i, 6, "fa fa-graduation-cap red");
 		}
+	}
+	
+	#################################################################################
+	## Verificar se a comissão é do tipo FIXA
+	#################################################################################
+	$oContrato			= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $organizacoes[$i]->getCodigo()));
+	
+	if ($oContrato){
+		if ($oContrato->getCodTipoComissao()->getCodigo() != "F"){
+			$grid->desabilitaCelula($i, 7);
+		}
+	}else{
+		$grid->desabilitaCelula($i, 7);
 	}
 	
 	$grid->setUrlCelula($i,5,ROOT_URL.'/Seg/usuarioAdmParLis.php?id='.$uid);

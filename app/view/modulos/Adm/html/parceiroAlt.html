@@ -392,6 +392,21 @@
 					    			</div>
 						    	</div>
 							</div>
+							<h5 class="header blue bolder smaller">Comissão</h5>
+							<div class="row">
+						    	<div class="col-sm-12">
+									<div class="form-group col-sm-12" id="divCodTipoComissaoID">
+										<label class="col-sm-3 control-label" for="codTipoComissaoID">Forma</label>
+						    			<div class="input-group col-sm-4 pull-left">
+					    					<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione a forma como será caculado a comissão."></i></span>
+											<select class="select2" style="width:100%;" id="codTipoComissaoID" placeholder="Selecione a forma de comissão" name="codTipoComissao" data-rel="select2">
+											%COMISSAO%
+											</select>
+										</div>
+										<div class="col-sm-1 pull-left" id="divHelpCodTipoComissaoID"></div>
+									</div>
+								</div>
+							</div>
 						</div>
 						
 						<!--
@@ -452,6 +467,7 @@ $('#tipoID').css('width','100%').select2({allowClear:true});
 $('#sexoID').css('width','100%').select2({allowClear:true});
 $('#segmentoID').css('width','100%').select2({allowClear:true});
 $('#codPlanoID').css('width','100%').select2({allowClear:true});
+$('#codTipoComissaoID').css('width','100%').select2({allowClear:true});
 //Popover
 $('[data-rel=popover]').popover({html:true});
 //Máscaras

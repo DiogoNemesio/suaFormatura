@@ -24,6 +24,7 @@ if (isset($_POST['link']))	 			$link				= \Zage\App\Util::antiInjection($_POST['
 if (isset($_POST['codPlano']))	 		$codPlano			= \Zage\App\Util::antiInjection($_POST['codPlano']);
 if (isset($_POST['valorDesconto']))	 	$valorDesconto		= \Zage\App\Util::antiInjection($_POST['valorDesconto']);
 if (isset($_POST['pctDesconto']))	 	$pctDesconto		= \Zage\App\Util::antiInjection($_POST['pctDesconto']);
+if (isset($_POST['codTipoComissao']))	$codTipoComissao	= \Zage\App\Util::antiInjection($_POST['codTipoComissao']);
 if (isset($_POST['aSegs']))				$aSegs				= \Zage\App\Util::antiInjection($_POST['aSegs']);
 
 
@@ -364,7 +365,9 @@ try {
  	## Contrato
  	#################################################################################
  	$oContrato		= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $oParceiro->getCodigo()));
- 	if (!$oContrato)	{
+ 	$oTipoComissao	= $em->getRepository('\Entidades\ZgadmComissaoTipo')->findOneBy(array('codigo' => $codTipoComissao));
+ 	
+ 	if (!$oContrato){
  		$oStatusContrato	= $em->getReference('\Entidades\ZgadmContratoStatusTipo','A');
  		$oContrato			= new \Entidades\ZgadmContrato();
  		$oContrato->setDataCadastro(new \DateTime());
@@ -380,7 +383,11 @@ try {
  	$oContrato->setValorDesconto($valorDesconto);
  	$oContrato->setValorPlano($planoValor);
  	
- 	$em->persist($oContrato); 	
+ 	if ($oTipoComissao){
+ 		$oContrato->setCodTipoComissao($oTipoComissao);
+ 	}
+
+ 	$em->persist($oContrato);
  	
  	#################################################################################
  	## Telefones

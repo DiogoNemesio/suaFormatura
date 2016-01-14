@@ -140,11 +140,13 @@ if ((isset($codOrganizacao) && ($codOrganizacao))) {
 		$codPlano			= ($oContrato->getCodPlano()) ? $oContrato->getCodPlano()->getCodigo() : null;
 		$valorDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getValorDesconto());
 		$pctDesconto		= \Zage\App\Util::formataDinheiro($oContrato->getPctDesconto());
+		$codTipoComissao	= ($oContrato->getCodTipoComissao()) ? $oContrato->getCodTipoComissao()->getCodigo() : null;
 	}else{
 		$codPlano			= null;
 		$formaDesc			= "V";
 		$valorDesconto		= 0;
 		$pctDesconto		= 0;
+		$codTipoComissao	= null;
 	}
 	
 }else{
@@ -270,6 +272,16 @@ try {
 }
 
 #################################################################################
+## Select dos tipo de comissão (contrato)
+#################################################################################
+try {
+	$aComissaoTipo		= $em->getRepository('Entidades\ZgadmComissaoTipo')->findBy(array(),array('descricao' => ASC));
+	$oComissaoTipo		= $system->geraHtmlCombo($aComissaoTipo,	'CODIGO', 'DESCRICAO',	$codTipoComissao, '');
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
+#################################################################################
 ## Lista de segmentos de mercado
 #################################################################################
 if ($pessoa){
@@ -358,6 +370,7 @@ $tpl->set('TIPO_TEL'				,$oTipoTel);
 $tpl->set('SEGMENTO'				,$oSegmento);
 $tpl->set('TAB_TELEFONE'			,$tabTel);
 $tpl->set('PLANOS'					,$oPlanos);
+$tpl->set('COMISSAO'				,$oComissaoTipo);
 $tpl->set('COD_PLANO'				,$codPlano);
 $tpl->set('VALOR_DESCONTO'			,$valorDesconto);
 $tpl->set('PCT_DESCONTO'			,$pctDesconto);
