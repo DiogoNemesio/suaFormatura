@@ -52,7 +52,7 @@
 						</div>
 			    	</div>
 			    </div>
-			    <div class="row">
+			    <div class="row hidden" id="divTableUsuFmtCntID">
 				    <table id="UsuFmtCntTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
 						<thead>
 							<tr class="warning">
@@ -161,6 +161,9 @@ function calcularParcelasUsuFmtCnt(){
 		
 	if ($numMeses && $dataVencimento && ($ok == true)){
 		criaTabelaValoresUsuFmtCnt();
+	}else{
+		/** exclui a tabela**/
+		deleteTableUsuFmtCnt();
 	}
 }
 
@@ -219,6 +222,9 @@ function criaTabelaValoresUsuFmtCnt() {
 	/** Remove os dados atuais **/
 	deleteTableUsuFmtCnt();
 	
+	/** Mostra o div da tabela **/
+	$('#divTableUsuFmtCntID').removeClass("hidden");
+	
 	for ($i = 0; $i < $parcelas; $i++) {
 		var $descParcela	= ($i+1) + " / " + $parcelas;
 		
@@ -256,6 +262,7 @@ function deleteTableUsuFmtCnt () {
 	$('#UsuFmtCntTableValorID > tbody').find('tr').remove();
 	$('#thInfoParcelaUsuFmtCntID').html("&nbsp;");
 	$('#thInfoValorTotalUsuFmtCntID').html("&nbsp;");
+	$('#divTableUsuFmtCntID').addClass("hidden");
 }
 
 function paginateTableValoresUsuFmtCnt() {
