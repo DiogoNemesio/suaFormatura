@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -49,7 +54,7 @@ try {
 ## Resgata os dados do grid
 #################################################################################
 try {
-	$usuario	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($system->getCodOrganizacao(), 'F');
+	$usuarios	= \Zage\Seg\Usuario::listaUsuarioOrganizacao($system->getCodOrganizacao(), 'F');
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }
@@ -67,26 +72,39 @@ $grid->adicionaIcone(null,'fa fa-envelope orange',$tr->trans('Reenviar convite')
 $grid->adicionaIcone(null,'fa fa-file-text-o green',$tr->trans('Contrato'));
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_EDIT);
 $grid->adicionaBotao(\Zage\App\Grid\Coluna\Botao::MOD_REMOVE);
-$grid->importaDadosDoctrine($usuario);
+$grid->importaDadosDoctrine($usuarios);
 
 
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
-for ($i = 0; $i < sizeof($usuario); $i++) {
-	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$codOrganizacao.'&codUsuario='.$usuario[$i]->getCodUsuario()->getCodigo().'&url='.$url);
+for ($i = 0; $i < sizeof($usuarios); $i++) {
+	$uid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codOrganizacao='.$system->getCodOrganizacao().'&codUsuario='.$usuarios[$i]->getCodUsuario()->getCodigo().'&url='.$url);
 	
-	if ($usuario[$i]->getCodUsuario()->getCpf() != null){
-		$valor	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($usuario[$i]->getCodUsuario()->getCpf());
+	
+	if ($usuarios[$i]->getCodUsuario()->getCpf() != null){
+		$valor	= \Zage\App\Mascara::tipo(\Zage\App\Mascara\Tipo::TP_CPF)->aplicaMascara($usuarios[$i]->getCodUsuario()->getCpf());
 	}else{
 		$valor = null;
 	}
 	$grid->setValorCelula($i,2,$valor);
+
+	#################################################################################
+	## Verifica se o formando já tem contrato
+	#################################################################################
+	$oContrato = $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codFormando' => $usuarios[$i]->getCodUsuario()->getCodigo()));
+	
+	if ($oContrato) {
+		$grid->setIconeCelula($i, 6, 'fa fa-file-text-o green');
+	}else{
+		$grid->setIconeCelula($i, 6, 'fa fa-file-text-o red');
+	}
 	
 	$grid->setUrlCelula($i,5,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoEnv.php?id=".$uid."');");
 	$grid->setUrlCelula($i,6,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoContrato.php?id=".$uid."');");
 	$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/usuarioFormandoAlt.php?id='.$uid);
 	$grid->setUrlCelula($i,8,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoExc.php?id=".$uid."');");
+	
 }
 
 #################################################################################

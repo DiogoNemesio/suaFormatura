@@ -1400,6 +1400,67 @@ class Financeiro {
 		return null;
 	}
 	
+	
+	
+
+	/**
+	 * Verificar se o formando já tem alguma mensalidade gerada em uma determinada organização
+	 * @param int $codOrganizacao
+	 * @param int $codFormando
+	 */
+	public static function temMensalidadeGerada($codOrganizacao,$codFormando) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+		
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatDevMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$aCat							= array($codCatDevMensalidade);
+		
+		#################################################################################
+		## Criar os objetos do Query builder
+		#################################################################################
+		$qb1 	= $em->createQueryBuilder();
+	
+		try {
+	
+			#################################################################################
+			## Verificar se existe alguma conta a receber com categoria de mensalidades
+			#################################################################################
+			$qb1->select('count(cr.codigo)')
+			->from('\Entidades\ZgfinContaReceber','cr')
+			->leftJoin('\Entidades\ZgfinContaReceberRateio', 'crr', \Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo = crr.codContaRec')
+			->where($qb1->expr()->andx(
+				$qb1->expr()->eq('cr.codOrganizacao'	, ':codOrg'),
+				$qb1->expr()->eq('cr.codPessoa'			, ':codPessoa'),
+				$qb1->expr()->in('crr.codCategoria'		, ':codCategoria')
+			))
+			->setParameter('codOrg'			, $codOrganizacao)
+			->setParameter('codPessoa'		, $codFormando)
+			->setParameter('codCategoria'	, $aCat);
+	
+			$query 				= $qb1->getQuery();
+			$num				= $query->getSingleScalarResult();
+			
+			if ($num > 0 ) {
+				return true;
+			}else{
+				return false;
+			}
+			
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+		
+		
+		
+		
+	}
 
 }
 
