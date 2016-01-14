@@ -49,7 +49,7 @@ if ($codTipoComissao == 'V'){
 	$pctComissao = 0;
 }elseif ($codTipoComissao == 'P'){
 	if ($pctComissao)	{
-		$pctComissao		= \Zage\App\Util::to_float(str_replace("%", "", $pctMora));
+		$pctComissao		= \Zage\App\Util::to_float(str_replace("%", "", $pctComissao));
 	}else{
 		$pctComissao = 0;
 	}
