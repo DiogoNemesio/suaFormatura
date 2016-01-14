@@ -36,6 +36,13 @@ class ZgadmOrganizacaoVendaPlano
     private $dataCadastro;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="DATA_ULTIMA_ALTERACAO", type="datetime", nullable=false)
+     */
+    private $dataUltimaAlteracao;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -110,6 +117,29 @@ class ZgadmOrganizacaoVendaPlano
     public function getDataCadastro()
     {
         return $this->dataCadastro;
+    }
+
+    /**
+     * Set dataUltimaAlteracao
+     *
+     * @param \DateTime $dataUltimaAlteracao
+     * @return ZgadmOrganizacaoVendaPlano
+     */
+    public function setDataUltimaAlteracao($dataUltimaAlteracao)
+    {
+        $this->dataUltimaAlteracao = $dataUltimaAlteracao;
+
+        return $this;
+    }
+
+    /**
+     * Get dataUltimaAlteracao
+     *
+     * @return \DateTime 
+     */
+    public function getDataUltimaAlteracao()
+    {
+        return $this->dataUltimaAlteracao;
     }
 
     /**

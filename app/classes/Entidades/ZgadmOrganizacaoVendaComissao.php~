@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgadmOrganizacaoVendaComissao
  *
- * @ORM\Table(name="ZGADM_ORGANIZACAO_VENDA_COMISSAO", indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_VENDA_COMISSAO_1_idx", columns={"COD_VENDA_PLANO"})})
+ * @ORM\Table(name="ZGADM_ORGANIZACAO_VENDA_COMISSAO", indexes={@ORM\Index(name="fk_ZGADM_ORGANIZACAO_VENDA_COMISSAO_1_idx", columns={"COD_VENDA_PLANO"}), @ORM\Index(name="fk_ZGADM_ORGANIZACAO_VENDA_COMISSAO_2_idx", columns={"COD_USUARIO"})})
  * @ORM\Entity
  */
 class ZgadmOrganizacaoVendaComissao
@@ -50,13 +50,6 @@ class ZgadmOrganizacaoVendaComissao
     private $dataCadastro;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="DATA_ULTIMA_ALTERACAO", type="datetime", nullable=true)
-     */
-    private $dataUltimaAlteracao;
-
-    /**
      * @var \Entidades\ZgadmOrganizacaoVendaPlano
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacaoVendaPlano")
@@ -65,6 +58,16 @@ class ZgadmOrganizacaoVendaComissao
      * })
      */
     private $codVendaPlano;
+
+    /**
+     * @var \Entidades\ZgsegUsuario
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegUsuario")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_USUARIO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codUsuario;
 
 
     /**
@@ -170,29 +173,6 @@ class ZgadmOrganizacaoVendaComissao
     }
 
     /**
-     * Set dataUltimaAlteracao
-     *
-     * @param \DateTime $dataUltimaAlteracao
-     * @return ZgadmOrganizacaoVendaComissao
-     */
-    public function setDataUltimaAlteracao($dataUltimaAlteracao)
-    {
-        $this->dataUltimaAlteracao = $dataUltimaAlteracao;
-
-        return $this;
-    }
-
-    /**
-     * Get dataUltimaAlteracao
-     *
-     * @return \DateTime 
-     */
-    public function getDataUltimaAlteracao()
-    {
-        return $this->dataUltimaAlteracao;
-    }
-
-    /**
      * Set codVendaPlano
      *
      * @param \Entidades\ZgadmOrganizacaoVendaPlano $codVendaPlano
@@ -213,5 +193,28 @@ class ZgadmOrganizacaoVendaComissao
     public function getCodVendaPlano()
     {
         return $this->codVendaPlano;
+    }
+
+    /**
+     * Set codUsuario
+     *
+     * @param \Entidades\ZgsegUsuario $codUsuario
+     * @return ZgadmOrganizacaoVendaComissao
+     */
+    public function setCodUsuario(\Entidades\ZgsegUsuario $codUsuario = null)
+    {
+        $this->codUsuario = $codUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get codUsuario
+     *
+     * @return \Entidades\ZgsegUsuario 
+     */
+    public function getCodUsuario()
+    {
+        return $this->codUsuario;
     }
 }

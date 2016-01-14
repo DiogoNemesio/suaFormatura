@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtContratoFormando
  *
- * @ORM\Table(name="ZGFMT_CONTRATO_FORMANDO", indexes={@ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_2_idx", columns={"COD_FORMANDO"})})
+ * @ORM\Table(name="ZGFMT_CONTRATO_FORMANDO", indexes={@ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_2_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_3_idx", columns={"COD_FORMA_PAGAMENTO"})})
  * @ORM\Entity
  */
 class ZgfmtContratoFormando
@@ -47,6 +47,16 @@ class ZgfmtContratoFormando
      * })
      */
     private $codFormando;
+
+    /**
+     * @var \Entidades\ZgfinFormaPagamento
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinFormaPagamento")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_FORMA_PAGAMENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codFormaPagamento;
 
 
     /**
@@ -126,5 +136,28 @@ class ZgfmtContratoFormando
     public function getCodFormando()
     {
         return $this->codFormando;
+    }
+
+    /**
+     * Set codFormaPagamento
+     *
+     * @param \Entidades\ZgfinFormaPagamento $codFormaPagamento
+     * @return ZgfmtContratoFormando
+     */
+    public function setCodFormaPagamento(\Entidades\ZgfinFormaPagamento $codFormaPagamento = null)
+    {
+        $this->codFormaPagamento = $codFormaPagamento;
+
+        return $this;
+    }
+
+    /**
+     * Get codFormaPagamento
+     *
+     * @return \Entidades\ZgfinFormaPagamento 
+     */
+    public function getCodFormaPagamento()
+    {
+        return $this->codFormaPagamento;
     }
 }
