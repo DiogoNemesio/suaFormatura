@@ -8,6 +8,10 @@ if (defined('DOC_ROOT')) {
 	include_once('../includeNoAuth.php');
 }
 
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $system,$titulo;
 
 #################################################################################
 ## Verificando se mudou de organização
@@ -228,6 +232,7 @@ $tpl->set('URLINICIAL'			,$urlInicial);
 $tpl->set('IND_TROCAR_SENHA'	,$indTrocarSenha);
 $tpl->set('TROCA_SENHA_URL'		,$urlTrocaSenha);
 $tpl->set('MASCARAS'			,$htmlMask);
+$tpl->set('FORMATO_DATA'		,$system->config["data"]["jsDateFormat"]);
 $tpl->set('TITULO'				,$titulo);
 
 #################################################################################

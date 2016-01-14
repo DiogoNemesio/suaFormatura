@@ -98,6 +98,7 @@ try {
  	$oFmt->setValorPrevistoTotal($valorTotal);
  	$oFmt->setQtdePrevistaFormandos($orcamento->getQtdeFormandos());
  	$oFmt->setQtdePrevistaConvidados($orcamento->getQtdeConvidados());
+ 	$oFmt->setDataConclusao($orcamento->getDataConclusao());
  	$em->persist($oFmt);
  	
  	

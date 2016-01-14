@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -51,7 +56,9 @@ if (!isset($codOrganizacao)) 		{
 $oContrato = $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $codOrganizacao , 'codFormando' => $codUsuario));
 
 if ($oContrato){
-	$numMeses = $oContrato->getNumMeses();
+	$numMeses 	= $oContrato->getNumMeses();
+}else{
+	$numMeses	= null;
 }
 
 #################################################################################
@@ -59,11 +66,15 @@ if ($oContrato){
 #################################################################################
 $dataConclusao			= $oOrgFmt->getDataConclusao();
 if (!$dataConclusao)	\Zage\App\Erro::halt("Data de Conclusão não informada");
-$hoje					= new DateTime('now');
-$interval				= $dataConclusao->diff($hoje);
-$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
 $diaVencimento			= ($oOrgFmt->getDiaVencimento()) ? $oOrgFmt->getDiaVencimento() : 5;
 $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('m') + 1, $diaVencimento , date('Y')));
+$oDataVenc				= \DateTime::createFromFormat($system->config["data"]["dateFormat"],$dataVenc);
+$interval				= $dataConclusao->diff($oDataVenc);
+$numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
+$numMesesConc			= ($numMesesConc > 0) ? $numMesesConc : 0;			
+$texto					= ($numMesesConc == 1) ? "$numMesesConc mês" : "$numMesesConc meses";
+$texto					.= " (".$dataConclusao->format($system->config["data"]["dateFormat"]).")";
+
 
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
@@ -74,7 +85,7 @@ $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao(
 if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
 $valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
 $qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
+$valPorFormando			= $valorOrcado / $qtdFormandosBase;
 
 #################################################################################
 ## Urls
@@ -91,23 +102,25 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 #################################################################################
 ## Define os valores das variáveis
 #################################################################################
-$tpl->set('ID'					,$id);
-$tpl->set('TITULO'				,'Contrato');
+$tpl->set('ID'						,$id);
+$tpl->set('TITULO'					,'Contrato');
 
-$tpl->set('COD_ORGANIZACAO'		,$codOrganizacao);
-$tpl->set('COD_USUARIO'			,$codUsuario);
+$tpl->set('COD_ORGANIZACAO'			,$codOrganizacao);
+$tpl->set('COD_USUARIO'				,$codUsuario);
 
 $tpl->set('NUM_MESES'				,$numMeses);
+$tpl->set('MAX_PARCELAS'			,$numMeses);
 $tpl->set('DATA_VENC'				,$dataVenc);
-$tpl->set('MENSALIDADE_FORMANDO'	,\Zage\App\Util::formataDinheiro($mensalidadeFormando));
-$tpl->set('MENSALIDADE_FORMANDO_FMT',\Zage\App\Util::to_money($mensalidadeFormando));
+$tpl->set('DATA_CONCLUSAO'			,$dataConclusao->format($system->config["data"]["dateFormat"]));
+$tpl->set('VAL_POR_FORMANDO'		,\Zage\App\Util::formataDinheiro($valPorFormando));
+$tpl->set('VAL_POR_FORMANDO_FMT'	,\Zage\App\Util::to_money($valPorFormando));
+$tpl->set('FORMATO_DATA'			,$system->config["data"]["jsDateFormat"]);
 
+//$tpl->set('DISABLED'				,$podeEnviar);
+$tpl->set('TEXTO'					,$texto);
 
-$tpl->set('DISABLED'			,$podeEnviar);
-$tpl->set('TEXTO'				,$texto);
-
-$tpl->set('URL_VOLTAR'			,$urlVoltar);
-$tpl->set('DP_MODAL'			,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
+$tpl->set('URL_VOLTAR'				,$urlVoltar);
+$tpl->set('DP_MODAL'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 
 #################################################################################
 ## Por fim exibir a página HTML

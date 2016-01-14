@@ -89,6 +89,9 @@
 	
 	<!-- TypeAhead -->
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/zage/js/bootstrap3-typeahead.min.js"></script>	
+	
+	<!-- Moment -->
+	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/moment.js"></script>
 <script>
 
 	function atualizaNotificacoes() {
@@ -268,6 +271,30 @@
 		
 	}
 	
+	function calculaNumMesesEntreDatas($dataIni,$dataFim) {
+
+		/** Caso a data inicial não seja informada utilizar hoje **/
+		if (!$dataIni || $dataIni == null) {
+			$dataIni	= moment().format("%FORMATO_DATA%");
+		}
+		
+		/**
+		 * Validar os parâmetros
+		 */
+		if ((!$dataFim) || ($dataFim == null) || (isDataBR($dataFim) == false)) {
+			return 0;
+		}else if (isDataBR($dataIni) == false) {
+			return 0;
+		}else{
+			var $oDataIni		= moment($dataIni,"%FORMATO_DATA%");
+			var $oDataFim		= moment($dataFim,"%FORMATO_DATA%");
+			var $numMeses		= $oDataFim.diff($oDataIni, 'months');
+			return $numMeses;
+		}
+	}
+
+
+	
 	</script>
 </head>
 <body class="no-skin">
@@ -301,7 +328,6 @@
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/select2.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/bootstrap-datepicker.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/bootstrap-timepicker.js"></script>
-	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/moment.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/daterangepicker.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/date-time/bootstrap-datetimepicker.js"></script>
 	<script type="text/javascript" charset="UTF-8" src="%PKG_URL%/ace/assets/js/bootstrap-colorpicker.js"></script>

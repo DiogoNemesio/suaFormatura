@@ -24,7 +24,6 @@
 		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
 		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
 		<input type="hidden" id="valID" name="validado">
-		<input type='hidden' id='dataAnteriorID' name="dataAnterior" value="01/01/0001">
 		<input type="hidden" id="numMesesID" name="numMeses">
 		<input type="hidden" id="taxaSistemaID" name="taxaSistema" value="%TAXA_SISTEMA%">
 		<input type="hidden" id="indSalvoID" name="indSalvo" value="1">
@@ -361,7 +360,6 @@ function orcAtualizaInfo() {
 	var $numConvidado 		= $('#numConvidadoID').val();
 	var $codPlanoOrc 		= $('#codPlanoOrcID').val();
 	var $dataConclusao		= $('#dataConclusaoID').val();
-	var $dataAnterior		= $('#dataAnteriorID').val();
 	var $mostraInfo			= 0;
 
 	
@@ -442,17 +440,14 @@ function carregaPlanoOrc() {
 
 function orcAlteraDataConclusao() {
 	var $dataConclusao		= $('#dataConclusaoID').val();
-	var $dataAnterior		= $('#dataAnteriorID').val();
 
-	if ($dataConclusao !== $dataAnterior) {
-		/** Calcula o número de meses **/
-		orcCalculaNumMeses();
+	/** Calcula o número de meses **/
+	orcCalculaNumMeses();
 
-		/**
-		 * Atualiza a flag de salvamento
-		 */
-		orcIndPrecisaSalvar();
-	}
+	/**
+	 * Atualiza a flag de salvamento
+	 */
+	orcIndPrecisaSalvar();
 
 	/** Atualiza as informações da tela **/
 	orcAtualizaInfo();
@@ -471,39 +466,19 @@ function orcAlteraDataConclusao() {
 
 function orcCalculaNumMeses() {
 	var $dataConclusao		= $('#dataConclusaoID').val();
-	var $dataAnterior		= $('#dataAnteriorID').val();
-	
-	if ($dataConclusao !== $dataAnterior) {
-		var $spIcon		= $('#spOrcIcNumMesesID');
+	var $meses	= parseInt(calculaNumMesesEntreDatas(null,$dataConclusao));
 		
-		$spIcon.removeClass("hidden");
-		
-		$.ajax({
-			url: "%ROOT_URL%/Fin/getNumMesesAteData.dp.php",
-			data:  { dataRef: $dataConclusao},
-			async: false,
-			method: "POST",
-			success: function(data) {
-				var $meses	= data["MESES"];
-
-				$meses		= parseInt($meses);
-				if ($meses < 0) {
-					$meses 	= 0;
-				}
-				if ($meses == 1) {
-					$('#spOrcInfoNumMesesID').html($meses+" mês previsto");
-				}else{
-					$('#spOrcInfoNumMesesID').html($meses+" meses previstos");
-				}
-				
-				$('#dataAnteriorID').val($dataConclusao);
-				$('#numMesesID').val($meses);
-		    },
-			dataType: 'json'
-		});
-		
-		$spIcon.addClass("hidden");
+	if ($meses < 0) {
+		$meses 	= 0;
 	}
+	if ($meses == 1) {
+		$('#spOrcInfoNumMesesID').html($meses+" mês previsto");
+	}else{
+		$('#spOrcInfoNumMesesID').html($meses+" meses previstos");
+	}
+
+	$('#numMesesID').val($meses);
+
 }
 
 
