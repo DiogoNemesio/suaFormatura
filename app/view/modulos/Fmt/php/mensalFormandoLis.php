@@ -66,7 +66,11 @@ $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao(
 if ($orcamento){
 	$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
 	$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-	$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
+	$totalPorFormando		= $valorOrcado / $qtdFormandosBase;
+}else{
+	$valorOrcado			= 0;
+	$qtdFormandosBase		= 0;
+	$totalPorFormando		= 0;
 }
 
 
@@ -84,16 +88,15 @@ $aValorProv				= array();
 $aCodigos				= array();
 for ($i = 0; $i < sizeof($oValorProv); $i++) {
 	$total													= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
-	$aCodigos[$oValorProv[$i][0]->getCgc()]["MENSALIDADE"]	= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]);
-	$aCodigos[$oValorProv[$i][0]->getCgc()]["SISTEMA"]		= \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
-	$aCodigos[$oValorProv[$i][0]->getCgc()]["TOTAL"]		= $total;
 	$aValorProv[$oValorProv[$i][0]->getCgc()]				= $total;
 }
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
 #################################################################################
-$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"MensalidadeFormando");
+$grid			= \Zage\App\Grid::criar(\Zage\App\Grid\Tipo::TP_BOOTSTRAP,"GMensalidadeFormando");
+$checkboxName	= "selItemMenForLis";
+$grid->adicionaCheckBox($checkboxName);
 $grid->adicionaTexto($tr->trans('NOME'),				20	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					12	,$grid::CENTER	,'cpf','cpf');
 $grid->adicionaMoeda($tr->trans('R$ GERADO'),			12	,$grid::CENTER	,'');
@@ -110,14 +113,19 @@ $grid->importaDadosDoctrine($formandos);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($formandos); $i++) {
-
-	$id		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$formandos[$i]->getCodigo().'&url='.$url);
+	$fid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$formandos[$i]->getCodigo());
+	
+	
+	#################################################################################
+	## Definir o valor da Checkbox
+	#################################################################################
+	$grid->setValorCelula($i,0,$formandos[$i]->getCodigo());
 	
 	#################################################################################
 	## Link no nome
 	#################################################################################
-	$linkNome = 'javascript:zgLoadUrl(\''.ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id.'\');';
-	$grid->setValorCelula($i,0,'<a href="'.$linkNome.'">'.$formandos[$i]->getNome().'</a>');
+	$linkNome = 'javascript:zgLoadUrl(\''.ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$fid.'\');';
+	$grid->setValorCelula($i,1,'<a href="'.$linkNome.'">'.$formandos[$i]->getNome().'</a>');
 	
 	#################################################################################
 	## Atualizar a coluna status com o status da associação do formando a Organização (Formatura)
@@ -125,7 +133,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$oStatus	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $formandos[$i]->getCodigo(),'codOrganizacao' => $system->getCodOrganizacao()));
 	$codStatus	= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getCodigo() : null;
 	$status		= ($oStatus->getCodStatus()) ? $oStatus->getCodStatus()->getDescricao() : null;
-	$grid->setValorCelula($i,6,$status);
+	$grid->setValorCelula($i,7,$status);
 	
 	#################################################################################
 	## Verificar o status da associação a Formatura, para definir se poderá ou não
@@ -152,40 +160,60 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 			break;
 	
 	}
+
 	
 	#################################################################################
 	## Saldo gerado
 	#################################################################################
 	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
-	$saldo						= round($mensalidadeFormando - $valProvisionado,2);
-	$aCodigos[$formandos[$i]->getCpf()]["SALDO"]	= $saldo;
-	$grid->setValorCelula($i,2,$valProvisionado);
+	$saldo						= round($totalPorFormando - $valProvisionado,2);
+	$grid->setValorCelula($i,3,$valProvisionado);
 	
 	#################################################################################
 	## Déficit de geração
 	#################################################################################
 	if ($podeDesistir	== true) {
 		if ($saldo > 0){
-			$grid->setValorCelula($i, 3, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+			$grid->setValorCelula($i, 4, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 		}else if ($saldo == 0) {
-				$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+				$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 		}else{
-			$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money(abs($saldo))."</span>");
+			$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money(abs($saldo))."</span>");
 		}
 	}else{
-		$grid->setValorCelula($i, 3, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
+		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
 	}
+	
+
+	
+	#################################################################################
+	## Verificar se já foi gerada alguma mensalidade
+	#################################################################################
+	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $formandos[$i]->getCodigo());
+	if ($temMensalidade)		{
+		$aCodigos[$formandos[$i]->getCodigo()]["PODE_GERAR"]	= 0;
+	}else{
+		$aCodigos[$formandos[$i]->getCodigo()]["PODE_GERAR"]	= 1;
+	}
+	
+	#################################################################################
+	## Verificar se pode fazer atualização de valores
+	#################################################################################
+	if ($temMensalidade && $saldo > 0) {
+		$aCodigos[$formandos[$i]->getCodigo()]["PODE_ATUALIZAR"]	= 1;
+	}else{
+		$aCodigos[$formandos[$i]->getCodigo()]["PODE_ATUALIZAR"]	= 0;
+	}
+	
+	
+	
 	
 	#################################################################################
 	## Valor pago
 	#################################################################################
 	$valorPago = \Zage\Fmt\Formando::listaPagamentosRealizados($system->getCodOrganizacao(), $formandos[$i]->getCpf());
-	
-	$grid->setValorCelula($i, 4, ($valorPago));
-	#################################################################################
-	## Valor pago
-	#################################################################################
-	
+	$grid->setValorCelula($i, 5, ($valorPago));
+
 	#################################################################################
 	## Definir a ação do botão de desistência
 	#################################################################################
@@ -194,10 +222,10 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		#################################################################################
 		## Definir o link do botão de geração de conta
 		#################################################################################
-		$grid->setUrlCelula($i,7,ROOT_URL.'/Fmt/desistenciaCad.php?id='.$id);
+		$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/desistenciaCad.php?id='.$fid);
 	
 	}else{
-		$grid->desabilitaCelula($i, 7);
+		$grid->desabilitaCelula($i, 8);
 	}
 	
 	#################################################################################
@@ -208,18 +236,26 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		#################################################################################
 		## Definir o link do botão de geração de conta
 		#################################################################################
-		$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$id);
+		$grid->setUrlCelula($i,9,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$fid);
 		
 	}else{
-		$grid->desabilitaCelula($i, 8);
+		$grid->desabilitaCelula($i, 9);
 	}
 	
 
 	#################################################################################
 	## Definir o link do botão de visualização das contas
 	#################################################################################
-	$grid->setUrlCelula($i,9,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$id);
+	$grid->setUrlCelula($i,10,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$fid);
 }
+
+
+
+#################################################################################
+## Urls de ações em lote
+#################################################################################
+$gerUrl				= ROOT_URL . "/Fmt/mensalGerAuto.php?id=".$id;
+$atuUrl				= ROOT_URL . "/Fmt/mensalAtuAuto.php?id=".$id;
 
 #################################################################################
 ## Gerar o código html do grid
@@ -242,7 +278,11 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 $tpl->set('GRID'					,$htmlGrid);
 $tpl->set('IC'						,$_icone_);
 $tpl->set('ID'						,$id);
+$tpl->set('CHECK_NAME'				,$checkboxName);
 $tpl->set('TITULO'					,'Gerenciar Mensalidades');
+$tpl->set('JSON_CODIGOS'			,json_encode($aCodigos));
+$tpl->set('GER_URL'					,$gerUrl);
+$tpl->set('ATU_URL'					,$atuUrl);
 
 #################################################################################
 ## Por fim exibir a página HTML

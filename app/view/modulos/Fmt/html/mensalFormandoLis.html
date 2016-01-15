@@ -34,5 +34,134 @@
 
 <script>
 
+var $aCodigos	= '%JSON_CODIGOS%';
+var oTable		= $('#GMensalidadeFormandoID').dataTable();
+
+
+
+$( document ).ready(function() {
+	$('#zgGridCustomHeaderID').html('<div class="btn-group btn-corner center center-block text-center pull-center" style="text-align: center !important;"><span id="CRLisFiltroPopoverID" style="width: 200px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >Ações em Lote</span><div class="inline dropdown dropup btn btn-white btn-sm" id="MenForLisFiltroDivAcaoLoteID"><a href="#" data-toggle="dropdown" class="disabled" id="MenForLisFiltroBtnAcaoLoteID"><span class="fa"><i class="fa fa-cogs bigger-120 grey" id="MenForLisFiltroIco1AcaoLoteID"></i><i class="fa fa-ban fa-stack-1x bigger-150 red" id="MenForLisFiltroIco2AcaoLoteID"></i></span></a><ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret"><li class="active"><a href="#"><div class="center small bolder blue">Ações em Lote</div></a></li><li><a href="#"><div class="inline" id="zgDivAcoesGerMenForLisID" style="width: 30px;"></div><div class="inline" id="zgDivAcoesAtuMenForLisID" style="width: 30px;"></div></a></li></ul></div></div>');
+	
+	oTable.on( 'change', 'input[name="%CHECK_NAME%[]"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+
+		if ($count > 100) {
+			zgDesabilitaAcoesMenForLis();
+			$.gritter.add({
+				title: 'Aviso',
+				text: 'Máximo de "100" formandos podem ser selecionados !!!',
+				class_name: 'gritter-info gritter-error',
+				time: '5000',
+			});
+		}else if ($count < 1) {
+			zgDesabilitaAcoesMenForLis();
+		}else{
+			zgHabilitaAcoesMenForLis();
+		}
+	} );
+	
+	oTable.on( 'change', 'input[name="%CHECK_NAME%_all"]', function () {
+		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
+		var $api 		= oTable.api();
+		var $info 		= $api.page.info();
+		
+		if ($count > 100) {
+			zgDesabilitaAcoesMenForLis();
+			$.gritter.add({
+				title: 'Aviso',
+				text: 'Máximo de "100" formandos podem ser selecionados !!!',
+				class_name: 'gritter-info gritter-error',
+				time: '5000',
+			});
+		}else if ($count < 1) {
+			zgDesabilitaAcoesMenForLis();
+		}else{
+			zgHabilitaAcoesMenForLis();
+			
+			if ($info.pages > 1) {
+				$.gritter.add({
+					title: 'Aviso',
+					text: 'Os formandos de todas as páginas, foram selecionados !!!!',
+					class_name: 'gritter-info',
+					time: '5000',
+				});
+			}
+			
+		}
+	} );
+});
+
+
+zgDesabilitaAcoesMenForLis();
+
+function zgHabilitaAcoesMenForLis() {
+	var $jCodigos = jQuery.parseJSON($aCodigos);
+	var $aPodeGer	= [];
+	var	$aPodeAtu	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		var $codigo	= $(this).val();
+		if ($jCodigos[$codigo] != undefined) {
+
+			/** Monta o array de Geração  **/
+			if ( $aPodeGer.indexOf($jCodigos[$codigo]["PODE_GERAR"]) == -1 ) {
+				$aPodeGer[$aPodeGer.length]	= $jCodigos[$codigo]["PODE_GERAR"];
+			}
+
+			/** Monta o array de Atualização **/
+			if ( $aPodeAtu.indexOf($jCodigos[$codigo]["PODE_ATUALIZAR"]) == -1 ) {
+				$aPodeAtu[$aPodeAtu.length]	= $jCodigos[$codigo]["PODE_ATUALIZAR"];
+			}
+		}
+	});
+	
+	
+	/** Calcular as ações em lotes disponíveis  **/
+	if ($aPodeGer.length !== 1) {
+		$('#zgDivAcoesGerMenForLisID').html('&nbsp;');
+	}else if ($aPodeGer[0] == "1")	{
+		$('#zgDivAcoesGerMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoGerSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="gerar as mensalidades dos formandos selecionados"><i class="ace-icon fa fa-cog blue bigger-130"></i></div>');
+	}
+	
+	if ($aPodeAtu.length !== 1) {
+		$('#zgDivAcoesAtuMenForLisID').html('&nbsp;');
+	}else if ($aPodeAtu[0] == "1")	{
+		$('#zgDivAcoesAtuMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoAtuSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="Atualizar os selecionados para o novo orçamento"><i class="ace-icon fa fa-refresh green bigger-130"></i></div>');
+	}
+
+	
+	$('#MenForLisFiltroBtnAcaoLoteID').attr("disabled",false);
+	$('#MenForLisFiltroBtnAcaoLoteID').removeClass("disabled");
+	$("#MenForLisFiltroIco1AcaoLoteID").removeClass("grey");
+	$("#MenForLisFiltroIco1AcaoLoteID").addClass("blue");
+	$("#MenForLisFiltroIco2AcaoLoteID").addClass("hidden");
+}
+
+function zgDesabilitaAcoesMenForLis() {
+	$('#MenForLisFiltroBtnAcaoLoteID').attr("disabled","disabled");
+	$('#MenForLisFiltroBtnAcaoLoteID').addClass("disabled");
+	$("#MenForLisFiltroIco1AcaoLoteID").removeClass("blue");
+	$("#MenForLisFiltroIco1AcaoLoteID").addClass("grey");
+	$("#MenForLisFiltroIco2AcaoLoteID").removeClass("hidden");
+}
+
+
+function zgAcaoGerSelecionadosMenForLis() {
+	var $aSelFormandos	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelFormandos[$aSelFormandos.length]	= $(this).val();
+	});
+	zgAbreModal('%GER_URL%&fid='+zgEncodeUrl('aSelFormandos='+$aSelFormandos));
+}
+
+function zgAcaoAtuSelecionadosMenForLis() {
+	var $aSelFormandos	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelFormandos[$aSelFormandos.length]	= $(this).val();
+	});
+	zgAbreModal('%ATU_URL%&fid='+zgEncodeUrl('aSelFormandos='+$aSelFormandos));
+}
+
+
+
 
 </script>
