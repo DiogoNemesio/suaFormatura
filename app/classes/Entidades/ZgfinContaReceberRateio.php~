@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinContaReceberRateio
  *
- * @ORM\Table(name="ZGFIN_CONTA_RECEBER_RATEIO", indexes={@ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_RATEIO_1_idx", columns={"COD_CONTA_REC"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_RATEIO_2_idx", columns={"COD_CATEGORIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_RATEIO_3_idx", columns={"COD_CENTRO_CUSTO"})})
+ * @ORM\Table(name="ZGFIN_CONTA_RECEBER_RATEIO", indexes={@ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_RATEIO_1_idx", columns={"COD_CONTA_REC"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_RATEIO_2_idx", columns={"COD_CATEGORIA"}), @ORM\Index(name="fk_ZGFIN_CONTA_RECEBER_RATEIO_3_idx", columns={"COD_CENTRO_CUSTO"}), @ORM\Index(name="ZGFIN_CONTA_RECEBER_RATEIO_IX01", columns={"COD_CONTA_REC", "COD_CATEGORIA"})})
  * @ORM\Entity
  */
 class ZgfinContaReceberRateio

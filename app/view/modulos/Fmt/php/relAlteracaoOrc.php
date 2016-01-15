@@ -347,7 +347,7 @@ if ($geraPdf == 1) {
 	$html	= '
 
 	<div class="page-header">
-		<h1><i class="fa fa-binoculars">&nbsp;</i>Resumo por Vendedor&nbsp;&nbsp;
+		<h1><i class="fa fa-line-chart">&nbsp;</i>Alteração de Orçamento&nbsp;&nbsp;
 		</h1>
 	</div><!-- /.page-header -->
 			

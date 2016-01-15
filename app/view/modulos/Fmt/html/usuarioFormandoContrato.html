@@ -8,7 +8,7 @@
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		<h4 class=""><i class="fa fa-file-text-o blue"></i>&nbsp;%TITULO%</h4>
 	</div>
-	<div class="modal-body" style="height: 480px;">
+	<div class="modal-body" style="overflow-y: auto; height: 480px;">
 		<div id="user-profile-3" class="row">
 			<div class="col-sm-12">
 				<div class="row">
@@ -126,6 +126,37 @@ $('[data-rel="select2"]').each(function( index ) {
 });
 
 
+$('#UsuFmtCntSubmitID').on("click", function(e) {
+	
+	//Bloquear botão enquanto estiver salvando
+	$('#UsuFmtCntSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#UsuFmtCntSubmitID').attr("disabled","disabled");
+	$('#UsuFmtCntCancelID').attr("disabled","disabled");
+	
+	var vOK 	= validaUsuarioContrato();
+	
+	if(vOK == false) 	{
+		
+		//Desbloquear botão quando terminar de salvar
+		$('#UsuFmtCntSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#UsuFmtCntSubmitID').attr("disabled",false);
+		$('#UsuFmtCntCancelID').attr("disabled",false);
+		
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{
+		$('#zgFormModalUsuFmtCntID').submit();
+	}
+});
+
+//Submit formulário
 $('#zgFormModalUsuFmtCntID').submit(function() {
 	
 	//Bloquear botão enquanto estiver salvando
@@ -162,6 +193,40 @@ $('#zgFormModalUsuFmtCntID').submit(function() {
 	});
 	return false; 
 });
+
+function validaUsuarioContrato(){
+	var vNumMeses		= $('#numMesesID').val();
+	var vData			= $('#dataVencID').val();
+	var vFormaPag		= $('#codFormaPagID').val();
+	var vOK				= true;
+	
+	/** Número de meses **/
+	if(!vNumMeses){	
+		$('#divNumMesesID').addClass('has-error');
+		$('#divHelpNumMesesID').html(zgCriaSpanErro('Selecione o número de parcelas para o contrato.'));
+		vOK		= false;
+	}else{
+		$('#divNumMesesID').removeClass('has-error');
+		$('#divHelpNumMesesID').html('&nbsp;');		
+	}
+	
+	/** Primeiro vencimento **/
+	if(!vData){	
+		$('#divDataVencID').addClass('has-error');
+		$('#divHelpDataVencID').html(zgCriaSpanErro('Selecione o número de parcelas para o contrato.'));
+		vOK		= false;
+	}else{
+		$('#divDataVencID').removeClass('has-error');
+		$('#divHelpDataVencID').html('&nbsp;');		
+	}
+	
+
+	if (vOK == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
 
 function calcularParcelasUsuFmtCnt(){
 	var $numMeses			= parseInt($('#numMesesID').val());
