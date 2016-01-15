@@ -125,7 +125,7 @@ $texto				= $mesRef . " (".ucfirst(strftime("%B",mktime(0,0,0,$mes,1,null))).")"
 #################################################################################
 ## Url desse script
 #################################################################################
-$urlForm				= ROOT_URL . '/Fmt/relFmtResumoCadastro.php';
+$urlForm				= ROOT_URL . '/Fmt/relAlteracaoOrc.php';
 
 #################################################################################
 ## Resgata a url desse script
@@ -134,43 +134,34 @@ $url		= ROOT_URL . "/Fmt/". basename(__FILE__)."?id=".$id;
 
 try {
 	$rsm 	= new Doctrine\ORM\Query\ResultSetMapping();
-	$rsm->addScalarResult('NOME_FORMATURA'		, 'NOME_FORMATURA');
+	$rsm->addScalarResult('VERSAO'				, 'VERSAO');
+	$rsm->addScalarResult('DATA_ULTIMO_ACEITE'	, 'DATA_ULTIMO_ACEITE');
+	$rsm->addScalarResult('QTDE_FORMANDOS'		, 'QTDE_FORMANDOS');
+	$rsm->addScalarResult('QTDE_CONVIDADOS'		, 'QTDE_CONVIDADOS');
+	$rsm->addScalarResult('VALOR_TOTAL'			, 'VALOR_TOTAL');
+	$rsm->addScalarResult('DATA_ACEITE'			, 'DATA_ACEITE');
 	$rsm->addScalarResult('NOME_USUARIO'		, 'NOME_USUARIO');
-	$rsm->addScalarResult('COD_USUARIO'			, 'COD_USUARIO');
 	$rsm->addScalarResult('COD_FORMATURA'		, 'COD_FORMATURA');
-	$rsm->addScalarResult('DATA_CADASTRO'		, 'DATA_CADASTRO');
-	$rsm->addScalarResult('DATA_ATIVACAO'		, 'DATA_ATIVACAO');
-	$rsm->addScalarResult('DATA_CANCELAMENTO'	, 'DATA_CANCELAMENTO');
-	$rsm->addScalarResult('DESCRICAO_STATUS'	, 'DESCRICAO_STATUS');
-	$rsm->addScalarResult('COD_STATUS'			, 'COD_STATUS');
-	$rsm->addScalarResult('INSTITUICAO_SIGLA'	, 'INSTITUICAO_SIGLA');
-	$rsm->addScalarResult('CURSO'				, 'CURSO');
-	$rsm->addScalarResult('DATA_CONCLUSAO'		, 'DATA_CONCLUSAO');
-	$rsm->addScalarResult('DESC_MOTIVO_CANC'	, 'DESC_MOTIVO_CANC');
-	$rsm->addScalarResult('OBS_CANCELAMENTO'	, 'OBS_CANCELAMENTO');
+	$rsm->addScalarResult('NOME_FORMATURA'		, 'NOME_FORMATURA');
+	$rsm->addScalarResult('COD_ACEITE'			, 'COD_ACEITE');
+	
 	
 	$query 	= $em->createNativeQuery("
-		SELECT U.NOME AS NOME_USUARIO, U.CODIGO AS COD_USUARIO ,O.NOME AS NOME_FORMATURA, O.CODIGO AS COD_FORMATURA,
-			DATE_FORMAT(O.DATA_CADASTRO,'%d/%m/%Y %T') AS DATA_CADASTRO, DATE_FORMAT(O.DATA_ATIVACAO,'%d/%m/%Y %T') AS DATA_ATIVACAO,
-			DATE_FORMAT(O.DATA_CANCELAMENTO,'%d/%m/%Y %T') AS DATA_CANCELAMENTO, ST.DESCRICAO AS DESCRICAO_STATUS,
-			I.NOME AS INSTITUICAO_SIGLA, C.NOME AS CURSO, DATE_FORMAT(OFMT.DATA_CONCLUSAO,'%d/%m/%Y') AS DATA_CONCLUSAO,
-			ST.CODIGO AS COD_STATUS, O.OBSERVACAO_CANCELAMENTO AS OBS_CANCELAMENTO, MC.DESCRICAO AS DESC_MOTIVO_CANC
+		SELECT O.VERSAO AS VERSAO,DATE_FORMAT(O.DATA_ACEITE,'%d/%m/%Y %T') AS DATA_ULTIMO_ACEITE,QTDE_FORMANDOS AS QTDE_FORMANDOS, 
+				QTDE_CONVIDADOS AS QTDE_CONVIDADOS, HA.VALOR_TOTAL AS VALOR_TOTAL, DATE_FORMAT(HA.DATA_CADASTRO,'%d/%m/%Y %T') AS DATA_ACEITE,
+				U.NOME AS NOME_USUARIO, ORG.CODIGO AS COD_FORMATURA, ORG.FANTASIA AS NOME_FORMATURA, HA.CODIGO AS COD_ACEITE
 			
-			FROM `ZGADM_ORGANIZACAO` O
-			LEFT OUTER JOIN `ZGFMT_ORGANIZACAO_FORMATURA` OFMT ON (O.CODIGO = OFMT.COD_ORGANIZACAO) 
-			LEFT OUTER JOIN `ZGADM_ORGANIZACAO_ADM` OA ON (O.CODIGO = OA.COD_ORGANIZACAO) 
-			LEFT OUTER JOIN `ZGSEG_USUARIO` U ON (O.COD_USUARIO_CADASTRO = U.CODIGO)
-			LEFT OUTER JOIN `ZGADM_ORGANIZACAO_STATUS_TIPO` ST ON (O.COD_STATUS = ST.CODIGO) 
-			LEFT OUTER JOIN `ZGFMT_INSTITUICAO` I ON (OFMT.COD_INSTITUICAO = I.CODIGO)
-			LEFT OUTER JOIN `ZGFMT_CURSO` C ON (OFMT.COD_CURSO = C.CODIGO)
-			LEFT OUTER JOIN `ZGADM_ORGANIZACAO_MOTIVO_CANCELAMENTO` MC ON (O.COD_MOTIVO_CANCELAMENTO = MC.CODIGO) 
+			FROM `ZGFMT_ORCAMENTO_HISTORICO_ACEITE` HA
+			LEFT OUTER JOIN `ZGFMT_ORCAMENTO` O ON (O.CODIGO = HA.COD_ORCAMENTO)
+			LEFT OUTER JOIN `ZGADM_ORGANIZACAO` ORG ON (ORG.CODIGO = O.COD_ORGANIZACAO)
+			LEFT OUTER JOIN `ZGADM_ORGANIZACAO_ADM` OA ON (ORG.CODIGO = OA.COD_ORGANIZACAO)
+			LEFT OUTER JOIN `ZGSEG_USUARIO` U ON (HA.COD_USUARIO = U.CODIGO)
 			
 			WHERE 	OA.COD_ORGANIZACAO_PAI = :codOrganizacao 
-			AND  	O.COD_TIPO = :codTipo
-			AND		O.DATA_CADASTRO BETWEEN :dataCadIni 
+			AND		HA.DATA_CADASTRO BETWEEN :dataCadIni 
 			AND 	:dataCadFim
 			
-			ORDER	BY O.NOME
+			ORDER	BY ORG.FANTASIA
 			", $rsm);
 	$query->setParameter('codOrganizacao'		, $system->getCodOrganizacao());
 	$query->setParameter('codTipo'				, "FMT");
@@ -184,82 +175,41 @@ try {
 }
 
 $dadosRes		= array();
-$qtdeCadastro		= 0;
-$qtdeCancelamento	= 0;
-$qtdeAtivacao		= 0;
+
 for ($i = 0; $i < sizeof($resConsulta); $i++) {
 
-	if (!isset($dadosRes[$resConsulta[$i]["COD_USUARIO"]])) {
-		$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"]				= array();
-		$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["NOME_USUARIO"]			= $resConsulta[$i]["NOME_USUARIO"];
-		$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["COD_USUARIO"]			= $resConsulta[$i]["COD_USUARIO"];
+	if (!isset($dadosRes[$resConsulta[$i]["COD_FORMATURA"]])) {
+		$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["ACEITE"]				= array();
+		$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["NOME_FORMATURA"]		= $resConsulta[$i]["NOME_FORMATURA"];
+		$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["COD_FORMATURA"]		= $resConsulta[$i]["COD_FORMATURA"];
+		$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["DATA_ULTIMO_ACEITE"]	= $resConsulta[$i]["DATA_ULTIMO_ACEITE"];
 	}
 
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["NOME"]					= $resConsulta[$i]["NOME_FORMATURA"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["DATA_CADASTRO"]		= $resConsulta[$i]["DATA_CADASTRO"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["DATA_ATIVACAO"]		= $resConsulta[$i]["DATA_ATIVACAO"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["DATA_CANCELAMENTO"]	= $resConsulta[$i]["DATA_CANCELAMENTO"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["DESCRICAO_STATUS"]		= $resConsulta[$i]["DESCRICAO_STATUS"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["COD_STATUS"]			= $resConsulta[$i]["COD_STATUS"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["INSTITUICAO_SIGLA"]	= $resConsulta[$i]["INSTITUICAO_SIGLA"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["CURSO"]				= $resConsulta[$i]["CURSO"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["DATA_CONCLUSAO"]		= $resConsulta[$i]["DATA_CONCLUSAO"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["OBS_CANCELAMENTO"]		= $resConsulta[$i]["OBS_CANCELAMENTO"];
-	$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VENDAS"][$resConsulta[$i]["COD_FORMATURA"]]["DESC_MOTIVO_CANC"]		= $resConsulta[$i]["DESC_MOTIVO_CANC"];
-	//$dadosRes[$resConsulta[$i]["COD_USUARIO"]]["VALOR_APAGAR"]										+= ($resConsulta[$i]["VALOR"] - $resConsulta[$i]["VALOR_PAGO"]);
-	//$valTotal																							+= $resConsulta[$i]["VALOR_TOTAL"];
-
-	if (!empty($resConsulta[$i]["DATA_CANCELAMENTO"])){
-		$totalCancelamento = $qtdeCancelamento + 1;
-	}
-	
-	if (!empty($resConsulta[$i]["DATA_ATIVACAO"])){
-		$totalAtivacao = $qtdeAtivacao + 1;
-	}
-	
-	if (!empty($resConsulta[$i]["DATA_CADASTRO"])){
-		$totalCadastro = $qtdeCadastro + 1;
-	}
-	
+	$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["ACEITE"][$resConsulta[$i]["COD_ACEITE"]]["VERSAO"]			= $resConsulta[$i]["VERSAO"];
+	$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["ACEITE"][$resConsulta[$i]["COD_ACEITE"]]["QTDE_FORMANDOS"]	= $resConsulta[$i]["QTDE_FORMANDOS"];
+	$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["ACEITE"][$resConsulta[$i]["COD_ACEITE"]]["QTDE_CONVIDADOS"]	= $resConsulta[$i]["QTDE_CONVIDADOS"];
+	$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["ACEITE"][$resConsulta[$i]["COD_ACEITE"]]["VALOR_TOTAL"]		= $resConsulta[$i]["VALOR_TOTAL"];
+	$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["ACEITE"][$resConsulta[$i]["COD_ACEITE"]]["DATA_ACEITE"]		= $resConsulta[$i]["DATA_ACEITE"];
+	$dadosRes[$resConsulta[$i]["COD_FORMATURA"]]["ACEITE"][$resConsulta[$i]["COD_ACEITE"]]["NOME_USUARIO"]		= $resConsulta[$i]["NOME_USUARIO"];
 	
 }
 
 $table	= '<table class="table table-striped table-bordered table-hover">';
 $table .= '<thead>
 					<tr style="background-color:#4682B4">
-						<th style="text-align: center; width: 30%;"><font color="#FFFFFF"><strong>USUÁRIOS</strong></font></th>
-						<th style="text-align: center; width: 14%;"><font color="#FFFFFF">QTDE CADASTRO</font></th>
-						<th style="text-align: center; width: 14%;"><strong><font color="#FFFFFF">QTDE ATIVAÇÃO</font></th>
-						<th style="text-align: center; width: 14%;"><strong><font color="#FFFFFF">QTDE CANCELAMENTO</font></th>
-						<th style="text-align: center; width: 28%;"><strong></strong></th>
+						<th style="text-align: center;" colspan="2"><font color="#FFFFFF"><strong>FORMATURA</strong></font></th>
+						<th style="text-align: center;" colspan="2"><font color="#FFFFFF"><strong>ÚLTIMA ALTERAÇÃO</strong></font></th>
+						<th style="text-align: center;" colspan="2"><strong></strong></th>
 					</tr>
 				</thead><tbody>';
 
 if (!empty($dadosRes)){
 	foreach ($dadosRes as $dados) {
 	
-		//Fazer o somatório das quantidades
-		$qtdeAtivacao 		= 0;
-		$qtdeCancelamento 	= 0;
-		$qtdeCadastro 		= 0;
-		foreach ($dados["VENDAS"] as $qtde) {
-			$qtdeCadastro = $qtdeCadastro + 1;
-	
-			if (!empty($qtde['DATA_ATIVACAO'])){
-				$qtdeAtivacao = $qtdeAtivacao + 1;
-			}
-	
-			if (!empty($qtde['DATA_CANCELAMENTO'])){
-				$qtdeCancelamento = $qtdeCancelamento + 1;
-			}
-		}
-	
 		$table .= '<tr style="background-color:#B0C4DE">
-					<td style="text-align: left; width: 30%;">&nbsp;'.$dados["NOME_USUARIO"].'</td>
-					<td style="text-align: center; width: 14%;">'.$qtdeCadastro.'</td>
-					<td style="text-align: center; width: 14%;">'.$qtdeAtivacao.'</td>
-					<td style="text-align: center; width: 14%;">'.$qtdeCancelamento.'</td>
-					<td style="text-align: center; width: 28%;"><a id="detalhe_'.$dados["COD_USUARIO"].'_ID" style="cursor: pointer;" onclick="orcHabilitaDetalhe(\''.$dados["COD_USUARIO"].'\');">Exibir detalhes</a></td>
+					<td style="text-align: left;" colspan="2">&nbsp; '.$dados["NOME_FORMATURA"].'</td>
+					<td style="text-align: center;" colspan="2">&nbsp;'.$dados["DATA_ULTIMO_ACEITE"].'</td>
+					<td style="text-align: center;" colspan="2"><a id="detalhe_'.$dados["COD_FORMATURA"].'_ID" style="cursor: pointer;" onclick="orcHabilitaDetalhe(\''.$dados["COD_FORMATURA"].'\');">Exibir detalhes</a></td>
 			   </tr>';
 	
 		//Tabela de eventos
@@ -267,62 +217,31 @@ if (!empty($dadosRes)){
 		//$table .= '<table class="table table-condensed">';
 		//$table .= '<thead>';
 	
-		$table .= '<tr class="hidden" id="trDetalhe_'.$dados["COD_USUARIO"].'_ID" style="background-color:#E8E8E8">
-					<th style="text-align: center; width: 30%;">FORMATURA</th>
-					<th style="text-align: center; width: 14%;">DATA CADASTRO</th>
-					<th style="text-align: center; width: 14%;">DATA ATIVAÇÃO</th>
-					<th style="text-align: center; width: 14%;">DATA CANCELAMENTO</th>
-					<th style="text-align: center; width: 28%;">STATUS</th>
+		$table .= '<tr class="hidden" id="trDetalhe_'.$dados["COD_FORMATURA"].'_ID" style="background-color:#E8E8E8">
+					
+					<th style="text-align: center;" colspan="1">VERSÃO</th>
+					<th style="text-align: center;" colspan="1">USUÁRIO</th>
+					<th style="text-align: center;" colspan="1">DATA ACEITE</th>
+					<th style="text-align: center;" colspan="1">Nº FORMANDOS</th>
+					<th style="text-align: center;" colspan="1">Nº CONVIDADOS</th>
+					<th style="text-align: center;" colspan="1">VALOR TOTAL</th>
+
 				</tr>';
 		$table .= '';
 	
-		foreach ($dados["VENDAS"] as $info) {
-			
-			//Verificar se existe data de ativação
-			if (!empty($info['DATA_ATIVACAO'])){
-				$dataAtivacao = $info['DATA_ATIVACAO'];
-			}else{
-				$dataAtivacao = '&nbsp;';
-			}
-	
-			//Verificar se existe data de cancelamento
-			if (!empty($info['DATA_CANCELAMENTO'])){
-				$dataCancelamento = $info['DATA_CANCELAMENTO'];
-			}else{
-				$dataCancelamento = '&nbsp;';
-			}
-			
-			//Informações sobre a formatura
-			$infoFmt = '<li><a>Instituição: '.$info["INSTITUICAO_SIGLA"].'</a></li>
-						<li><a>Curso: '.$info["CURSO"].'</a></li>
-						<li><a>Conclusão: '.$info["DATA_CONCLUSAO"].'</a></li>';
-			
-			//Analisar se o status está cancelado
-			if ($info["COD_STATUS"] == "C"){
-				$infoCan = '';
-				$infoCan = '<div class="inline dropdown dropup"><a href="#" data-toggle="dropdown"><i class="fa fa-info-circle red"></i></a>
-								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
-									<li><a>Motivo: '.$info["DESC_MOTIVO_CANC"].'</a></li>
-									<li><a>Obs: '.$info["OBS_CANCELAMENTO"].'</a></li>	
-								</ul>
-							</div>	';						
-			}
+		foreach ($dados["ACEITE"] as $info) {
 		
 			//Criar a tabela
-			$table .= '<tr style="display:none;" class="trDetalheItem_'.$dados["COD_USUARIO"].'_ID">
+			$table .= '<tr style="display:none;" class="trDetalheItem_'.$dados["COD_FORMATURA"].'_ID">
 					
-					<td style="text-align: center; width: 30%;">'.$info["NOME"]. '
-						<div class="inline dropdown dropup"><a href="#" data-toggle="dropdown"><i class="fa fa-info-circle"></i></a>
-							<ul class="dropdown-menu dropdown-menu-top dropdown-navbar dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
-								'.$infoFmt.'
-							</ul>
-						</div>
-					</td>
-					<td style="text-align: center; width: 14%;">'.$info["DATA_CADASTRO"].'</td>
-					<td style="text-align: center; width: 14%;">'.$dataAtivacao.'</td>
-					<td style="text-align: center; width: 14%;">'.$dataCancelamento.'</td>
-					<td style="text-align: center; width: 28%;">'.$infoCan.' '.$info["DESCRICAO_STATUS"].' 
-					</td>
+					<td style="text-align: center;" colspan="1">'.$info["VERSAO"].'</td>
+					<td style="text-align: center;" colspan="1">'.$info["NOME_USUARIO"].'</td>
+					<td style="text-align: center;" colspan="1">'.$info["DATA_ACEITE"].'</td>
+					<td style="text-align: center;" colspan="1">'.$info["QTDE_FORMANDOS"].'</td>
+					<td style="text-align: center;" colspan="1">'.$info["QTDE_CONVIDADOS"].'</td>
+					<td style="text-align: center;" colspan="1">'.\Zage\App\Util::to_money($info["VALOR_TOTAL"]).'</td>
+					
+					
 					</tr>';
 		}
 	
