@@ -1,0 +1,272 @@
+<form id="zgFormModalGerAutoID" class="form-horizontal">
+<input type="hidden" name="fid" value="%FID%">
+<input type="hidden" name="id" value="%ID%">
+<div id="content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h4 class=""><i class="fa fa-file-text-o blue"></i>&nbsp;%TITULO%</h4>
+	</div>
+	<div class="modal-body" style="overflow-y: auto; height: 480px;">
+		<div id="user-profile-3" class="row">
+			<div class="col-sm-12">
+				<div class="row">
+			    	<div class="col-sm-12">
+						<div class="form-group col-sm-12" id="divContaRecID">
+							<label class="col-sm-4 control-label">Conta de Recebebimento</label>
+			    			<div class="input-group col-sm-7 pull-left">
+			    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
+								<select class="select2" style="width:100%;" id="codContaRecID" name="codContaRec" data-rel="select2">
+								%CONTAS%
+								</select>
+						    </div>
+							<div class="help-block col-sm-1 inline" id="divHelpContaRecID"></div>
+				    	</div>
+				    </div>
+					<div class="form-group col-sm-12" >
+	    				<label class="col-sm-4 control-label">
+	    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch" onchange="alteraIndTaxaExtraGeraMensalidade();" value="1" checked type="checkbox" />
+	    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+	    				</label>
+		    			<div class="input-group col-sm-7 pull-left">
+		    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="bottom" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
+		    				<input readonly type="text" class="form-control" placeholder="Adicionar taxas extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+					    </div>
+						<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
+			    	</div>
+			    </div>
+			    <div class="row hidden" id="divTableGerAutoID">
+				    <table id="GerAutoTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+						<thead>
+							<tr class="warning">
+								<th class="col-sm-6">Formando</th>
+								<th class="col-sm-1 center">Parcelas</th>
+								<th class="col-sm-2 center">Forma Pag.</th>
+								<th class="col-sm-2 center">Valor Total</th>
+								<th class="col-sm-1 center"></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+						<tfoot>
+							<tr class="warning">
+								<th class="col-sm-6"></th>
+								<th class="col-sm-1 center"></th>
+								<th class="col-sm-2 center"></th>
+								<th class="col-sm-2 center" id="thInfoValorTotalGerAutoID"></th>
+								<th class="col-sm-1 center"></th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				<div class="row center">
+					<ul class="pagination" id="pagerMensalGerAutoID"></ul>
+				</div>			    
+			    
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<div class="pull-left" style="width: 70%; text-align: left;" id='divMsgMenGerAutoID'></div>
+		<button type="button" class="btn btn-primary" id="GerAutoSubmitID"><i class="fa fa-check bigger-110"></i>Gerar</button>
+		<button type="button" data-dismiss="modal" class="btn" id="GerAutoCancelID" >Fechar</button>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+
+
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+$('[data-rel="select2"]').select2({allowClear: true});
+$('.datepicker').datepicker({"autoclose": true});
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}
+});
+
+
+$('#GerAutoSubmitID').on("click", function(e) {
+	
+	//Bloquear botão enquanto estiver salvando
+	$('#GerAutoSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#GerAutoSubmitID').attr("disabled","disabled");
+	$('#GerAutoCancelID').attr("disabled","disabled");
+	
+	var $ok 	= validaMenGerAuto();
+	
+	if ($ok == false) 	{
+		
+		//Desbloquear botão quando terminar de salvar
+		$('#GerAutoSubmitID').html('<i class="fa fa-check bigger-110"></i> Gerar ');
+		$('#GerAutoSubmitID').attr("disabled",false);
+		$('#GerAutoCancelID').attr("disabled",false);
+		
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{
+		$('#zgFormModalGerAutoID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormModalGerAutoID').submit(function() {
+	
+	//Bloquear botão enquanto estiver salvando
+	$('#GerAutoSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#GerAutoSubmitID').attr("disabled","disabled");
+	$('#GerAutoCancelID').attr("disabled","disabled");
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP_MODAL%",
+		data:	$('#zgFormModalGerAutoID').serialize(),
+		//cache: 	false,
+        //async: 	false
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			var $parcelas	= JSON.parse(zgGetMsgRetorno(data));
+			criaTabelaValoresGerAuto($parcelas);
+			/*$.each($parcelas, function($i,$item) {
+			    alert($item.VALOR_TOTAL);
+			});*/
+			
+			zgMostraMsg('divMsgMenGerAutoID','Mensalidades geradas com sucesso!');
+		}else{
+			zgMostraErro('divMsgMenGerAutoID',zgGetMsgRetorno(data));
+			//zgLimpaModalAviso();
+			//zgMostraAviso("Fechar");
+		}
+		
+		//Desbloquear botão quando terminar de salvar
+		$('#GerAutoSubmitID').html('<i class="fa fa-check bigger-110"></i> Gerar ');
+		$('#GerAutoSubmitID').attr("disabled",false);
+		$('#GerAutoCancelID').attr("disabled",false);
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLoadUrl('%URL_VOLTAR%');
+			zgLimpaModal();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraErro('zgDivModalID',errorThrown);
+	});
+	return false; 
+});
+
+function validaMenGerAuto(){
+	var $codContaRec		= $('#codContaRecID').val();
+	var $ok				= true;
+	
+	/** Conta de Recebimento **/
+	if(!$codContaRec){	
+		$('#divContaRecID').addClass('has-error');
+		$('#divHelpContaRecID').html(zgCriaSpanErro('Selecione a conta de recebimento'));
+		$ok		= false;
+	}else{
+		$('#divContaRecID').removeClass('has-error');
+		$('#divHelpContaRecID').html('&nbsp;');		
+	}
+	
+	if ($ok == true) {
+		return true ;
+	}else{
+		return false;
+	}
+}
+
+function criaTabelaValoresGerAuto($parcelas) {
+	var $table					= $('#GerAutoTableValorID');
+	
+	var options = {
+		symbol : "",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+		
+	var optTotal = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	/** Remove os dados atuais **/
+	deleteTableGerAuto();
+	
+	/** Mostra o div da tabela **/
+	$('#divTableGerAutoID').removeClass("hidden");
+	
+	var $valTotal	= 0;
+	$.each($parcelas, function($i,$item) {
+		var $nome		= $item.NOME;
+		var $numParc	= $item.NUM_PARCELAS;
+		var $formaPag	= $item.FORMA_PAG;
+		var $valor		= zgConverteFloat($item.VALOR_TOTAL);
+		$valTotal		+= $valor;
+		var $_valFmt	= accounting.formatMoney($valor	,options);
+		$('#GerAutoTableValorID > tbody:last').append('<tr><td style="text-align: left;">'+$nome+'</td><td class="center">'+$numParc+'</td><td class="center">'+$formaPag+'</td><td class="center">'+$_valFmt+'</td><td class="center">'+zgCriaSpanOK()+'</td></tr>');		
+		
+	});
+
+	$('#thInfoValorTotalGerAutoID').html(accounting.formatMoney($valTotal,optTotal));
+	paginateTableValoresGerAuto();
+}
+
+function deleteTableGerAuto () {
+	/** Remove os dados atuais **/
+	$('#GerAutoTableValorID > tbody').find('tr').remove();
+	$('#thInfoValorTotalGerAutoID').html("&nbsp;");
+	$('#divTableGerAutoID').addClass("hidden");
+}
+
+function paginateTableValoresGerAuto() {
+	$('#pagerMensalGerAutoID li').remove();
+
+	$('table.paginated').each(function() {
+	    var currentPage = 0;
+	    var numPerPage 	= 5;
+	    var $table = $(this);
+	    $table.bind('repaginate', function() {
+	        $table.find('tbody tr').hide().slice(currentPage * numPerPage, (currentPage + 1) * numPerPage).show();
+	    });
+	    $table.trigger('repaginate');
+	    var numRows = $table.find('tbody tr').length;
+	    var numPages = Math.ceil(numRows / numPerPage);
+	    var $pager = $('#pagerMensalGerAutoID');
+	    for (var page = 0; page < numPages; page++) {
+	    	$('<li><a href="#"><span class="page-number">'+(page + 1)+'</span></a></li>').bind('click', {
+	        //$('<span class="page-number"></span>').text(page + 1).bind('click', {
+	            newPage: page
+	        }, function(event) {
+	            currentPage = event.data['newPage'];
+	            $table.trigger('repaginate');
+	            $(this).addClass('active').siblings().removeClass('active');
+	        }).appendTo($pager).addClass('clickable');
+	    }
+	    $pager.insertBefore($table).find('span.page-number:first').addClass('active');
+	});
+}
+
+</script>
+

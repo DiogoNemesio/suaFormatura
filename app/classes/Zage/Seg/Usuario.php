@@ -858,6 +858,29 @@ class Usuario extends \Entidades\ZgsegUsuario {
 	
 	}
 	
+	/**
+	 * Verificar se um determinado usuário é Formando em uma organização
+	 * @param int $codOrganizacao
+	 * @param int $codUsuario
+	 */
+	public static function ehFormando($codOrganizacao,$codUsuario) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em;
+		
+		#################################################################################
+		## Resgatar o Perfil do usuário na organização, pois o tipo de usuário está
+		## no perfil
+		#################################################################################
+		$oUsuOrg					= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codOrganizacao' => $codOrganizacao,'codUsuario' => $codUsuario));
+		
+		if (!$oUsuOrg)		return null;
+		if (!$oUsuOrg->getCodPerfil()->getCodTipoUsuario())	return null;
+		$return				= ($oUsuOrg->getCodPerfil()->getCodTipoUsuario()->getCodigo() == "F") ? true : false;
+		return $return;
+		
+	}
 	
 	public function _getCodigo() {
 		return $this->_usuario->getCodigo();

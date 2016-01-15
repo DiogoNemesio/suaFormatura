@@ -114,18 +114,21 @@ function zgHabilitaAcoesMenForLis() {
 		}
 	});
 	
-	
 	/** Calcular as ações em lotes disponíveis  **/
 	if ($aPodeGer.length !== 1) {
 		$('#zgDivAcoesGerMenForLisID').html('&nbsp;');
 	}else if ($aPodeGer[0] == "1")	{
 		$('#zgDivAcoesGerMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoGerSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="gerar as mensalidades dos formandos selecionados"><i class="ace-icon fa fa-cog blue bigger-130"></i></div>');
+	}else{
+		$('#zgDivAcoesGerMenForLisID').html('&nbsp;');
 	}
 	
 	if ($aPodeAtu.length !== 1) {
 		$('#zgDivAcoesAtuMenForLisID').html('&nbsp;');
 	}else if ($aPodeAtu[0] == "1")	{
 		$('#zgDivAcoesAtuMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoAtuSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="Atualizar os selecionados para o novo orçamento"><i class="ace-icon fa fa-refresh green bigger-130"></i></div>');
+	}else{
+		$('#zgDivAcoesAtuMenForLisID').html('&nbsp;');
 	}
 
 	

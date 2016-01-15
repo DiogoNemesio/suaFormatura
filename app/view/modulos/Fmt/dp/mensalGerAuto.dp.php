@@ -45,15 +45,15 @@ $url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 #################################################################################
 ## Resgata a variável FID com a lista de formandos selecionados
 #################################################################################
-if (isset($_GET['fid']))	$fid = \Zage\App\Util::antiInjection($_GET["fid"]);
-if (!isset($fid))			\Zage\App\Erro::halt('Falta de Parâmetros 2');
+if (isset($_POST['fid']))	$fid = \Zage\App\Util::antiInjection($_POST["fid"]);
+if (!isset($fid))			die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Falta de parâmetros 2'))));
 
 #################################################################################
 ## Descompacta o FID
 #################################################################################
 \Zage\App\Util::descompactaId($fid);
 
-if (!isset($aSelFormandos))			\Zage\App\Erro::halt('Falta de Parâmetros 3');
+if (!isset($aSelFormandos))			die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Falta de parâmetros 3'))));
 
 #################################################################################
 ## Gera o array de formandos selecionados a partir da string
@@ -69,100 +69,60 @@ try {
 	\Zage\App\Erro::halt($e->getMessage());
 }
 
+
+#################################################################################
+## Montar o array de retorno de parcelas geradas
+#################################################################################
+$aContrato		= array();
 for ($i = 0; $i < sizeof($formandos); $i++) {
 
 	#################################################################################
 	## Verificar se esse usuário é formando na organização atual
 	#################################################################################
 	if (\Zage\Seg\Usuario::ehFormando($system->getCodOrganizacao(), $formandos[$i]->getCodigo()) != true) {
-		\Zage\App\Erro::halt('Violação de acesso, 0x3748FF');
+		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x3748FF')));
 	}
 	
 	#################################################################################
 	## Verificar se já foi gerada alguma mensalidade para algum formando
 	#################################################################################
 	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $formandos[$i]->getCodigo());
-	if ($temMensalidade)		\Zage\App\Erro::halt('Violação de acesso, 0x3748FE');
+	if ($temMensalidade)		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x3748FE')));
+
+	#################################################################################
+	## Resgatar as informações do contrato
+	#################################################################################
+	$aContrato[$i]				= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codFormando' => $formandos[$i]->getCodigo()));
+	if (!$aContrato[$i])		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x3748FD')));
+}
+
+
+#################################################################################
+## Gerar as mensalidades
+#################################################################################
+$aParcGer		= array();
+for ($i = 0; $i < sizeof($formandos); $i++) {
+
+	#################################################################################
+	## Resgatar as parcelas do contrato
+	#################################################################################
+	$valorTotal		= 0;
+	$parcelas		= $em->getRepository('Entidades\ZgfmtContratoFormandoParcela')->findBy(array('codContrato' => $aContrato[$i]->getCodigo()));
+	$numParcelas	= sizeof($parcelas);
+	for ($p = 0; $p < sizeof($parcelas); $p++) {
+		$valorParcela	= \Zage\App\Util::to_float($parcelas[$p]->getValor());
+		$valorTotal		+= $valorParcela; 
+	}
+	
+	
+	#################################################################################
+	## Montar o array JSON de retorno
+	#################################################################################
+	$aParcGer[$formandos[$i]->getCodigo()]["NOME"]			= $formandos[$i]->getNome();
+	$aParcGer[$formandos[$i]->getCodigo()]["NUM_PARCELAS"]	= $numParcelas;
+	$aParcGer[$formandos[$i]->getCodigo()]["VALOR_TOTAL"]	= $valorTotal;
+	$aParcGer[$formandos[$i]->getCodigo()]["FORMA_PAG"]		= $aContrato[$i]->getCodFormaPagamento()->getDescricao();
 	
 }
 
-
-#################################################################################
-## Select da Conta de Crédito
-#################################################################################
-try {
-
-	#################################################################################
-	## Verifica se a formatura está sendo administrada por um Cerimonial,
-	## para resgatar as contas do cerimonial tb
-	#################################################################################
-	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
-
-	if ($oFmtAdm)	{
-		$aCntCer	= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $oFmtAdm->getCodigo()),array('nome' => 'ASC'));
-	}else{
-		$aCntCer	= null;
-	}
-
-	$aConta		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('nome' => 'ASC'));
-
-	if ($aCntCer) {
-		$oConta		= "<optgroup label='Contas do Cerimonial'>";
-		for ($i = 0; $i < sizeof($aCntCer); $i++) {
-			$valBol		= ($aCntCer[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aCntCer[$i]->getCodigo()) : 0;
-			$oConta	.= "<option value='".$aCntCer[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aCntCer[$i]->getNome()."</option>";
-		}
-		$oConta		.= '</optgroup>';
-	}
-
-	if ($aConta) {
-		$oConta		.= ($aCntCer) ? "<optgroup label='Contas da Formatura'>" : '';
-		for ($i = 0; $i < sizeof($aConta); $i++) {
-			$valBol		= ($aConta[$i]->getCodTipo()->getCodigo() == "CC") ? \Zage\Fmt\Financeiro::getValorBoleto($aConta[$i]->getCodigo()) : 0;
-			$oConta	.= "<option value='".$aConta[$i]->getCodigo()."' zg-val-boleto='".$valBol."'>".$aConta[$i]->getNome()."</option>";
-		}
-		$oConta		.= ($aCntCer) ? '</optgroup>' : '';
-	}
-
-
-} catch (\Exception $e) {
-	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
-}
-
- 
-#################################################################################
-## Urls
-#################################################################################
-$urlVoltar			= ROOT_URL . "/Fmt/mensalFormandoLis.php?id=".$id;
-
-
-#################################################################################
-## Carregando o template html
-#################################################################################
-$tpl	= new \Zage\App\Template();
-$tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT_HTML));
-
-#################################################################################
-## Define os valores das variáveis
-#################################################################################
-$tpl->set('IC'						,$_icone_);
-$tpl->set('ID'						,$id);
-$tpl->set('FID'						,$fid);
-$tpl->set('CONTAS'					,$oConta);
-$tpl->set('TITULO'					,"Geração de contas com base no contrato");
-$tpl->set('DP_MODAL'				,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
-$tpl->set('URL_VOLTAR'				,$urlVoltar);
-
-
-//$tpl->set('JSON_CODIGOS'			,json_encode($aCodigos));
-
-#################################################################################
-## Por fim exibir a página HTML
-#################################################################################
-$tpl->show();
-
-
-//$log->info("GET: ".serialize($_GET));
-//$log->info("aSelFormandos: ".serialize($aSelFormandos));
-//var_dump($aSelFormandos);
-
+echo '0'.\Zage\App\Util::encodeUrl('||'.json_encode($aParcGer));

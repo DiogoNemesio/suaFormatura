@@ -104,6 +104,7 @@ $grid->adicionaTexto($tr->trans('R$ A GERAR'),			10	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('TOTAL PAGO'),			10	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('EM ATRASO'),			10	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('STATUS'),				12	,$grid::CENTER	,'');
+$grid->adicionaIcone(null,'fa fa-file-text-o green'		,$tr->trans('Contrato'));
 $grid->adicionaIcone(null,'fa fa-sign-out red'			,$tr->trans('Desistir'));
 $grid->adicionaIcone(null,'fa fa-usd green'				,$tr->trans('Gerar conta'));
 $grid->adicionaIcone(null,'fa fa-search blue'			,$tr->trans('Visualizar contas'));
@@ -114,7 +115,7 @@ $grid->importaDadosDoctrine($formandos);
 #################################################################################
 for ($i = 0; $i < sizeof($formandos); $i++) {
 	$fid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando='.$formandos[$i]->getCodigo());
-	
+	$cid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codUsuario='.$formandos[$i]->getCodigo()."&urlVoltar=".$url);
 	
 	#################################################################################
 	## Definir o valor da Checkbox
@@ -185,12 +186,24 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	}
 	
 
+	#################################################################################
+	## Verifica se o formando já tem contrato
+	#################################################################################
+	$temContrato 		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codFormando' => $formandos[$i]->getCodigo()));
+	if ($temContrato) {
+		$grid->setIconeCelula($i, 8, 'fa fa-file-text-o green');
+	}else{
+		$grid->setIconeCelula($i, 8, 'fa fa-file-text-o red');
+	}
+	
+	$grid->setUrlCelula($i,8,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoContrato.php?id=".$cid."');");
+	
 	
 	#################################################################################
 	## Verificar se já foi gerada alguma mensalidade
 	#################################################################################
 	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $formandos[$i]->getCodigo());
-	if ($temMensalidade)		{
+	if (($temMensalidade) || (!$temContrato))		{
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_GERAR"]	= 0;
 	}else{
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_GERAR"]	= 1;
@@ -199,13 +212,11 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Verificar se pode fazer atualização de valores
 	#################################################################################
-	if ($temMensalidade && $saldo > 0) {
+	if ($temMensalidade && $temContrato && $saldo > 0) {
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_ATUALIZAR"]	= 1;
 	}else{
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_ATUALIZAR"]	= 0;
 	}
-	
-	
 	
 	
 	#################################################################################
@@ -222,10 +233,10 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		#################################################################################
 		## Definir o link do botão de geração de conta
 		#################################################################################
-		$grid->setUrlCelula($i,8,ROOT_URL.'/Fmt/desistenciaCad.php?id='.$fid);
+		$grid->setUrlCelula($i,9,ROOT_URL.'/Fmt/desistenciaCad.php?id='.$fid);
 	
 	}else{
-		$grid->desabilitaCelula($i, 8);
+		$grid->desabilitaCelula($i, 9);
 	}
 	
 	#################################################################################
@@ -236,20 +247,21 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		#################################################################################
 		## Definir o link do botão de geração de conta
 		#################################################################################
-		$grid->setUrlCelula($i,9,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$fid);
+		$grid->setUrlCelula($i,10,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$fid);
 		
 	}else{
-		$grid->desabilitaCelula($i, 9);
+		$grid->desabilitaCelula($i, 10);
 	}
 	
 
 	#################################################################################
 	## Definir o link do botão de visualização das contas
 	#################################################################################
-	$grid->setUrlCelula($i,10,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$fid);
+	$grid->setUrlCelula($i,11,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$fid);
+	
+	
+	
 }
-
-
 
 #################################################################################
 ## Urls de ações em lote
