@@ -101,6 +101,16 @@ try {
  	$oFmt->setDataConclusao($orcamento->getDataConclusao());
  	$em->persist($oFmt);
  	
+ 	#################################################################################
+ 	## Salvar o histórico de aceite
+ 	#################################################################################
+ 	$oHisAceite		= new \Entidades\ZgfmtOrcamentoHistoricoAceite();
+ 	
+ 	$oHisAceite->setCodOrcamento($orcamento);
+ 	$oHisAceite->setCodUsuario($oUser);
+ 	$oHisAceite->setValorTotal($valorTotal);
+ 	$oHisAceite->setDataCadastro(new \DateTime("now"));
+ 	$em->persist($oHisAceite);
  	
 	#################################################################################
  	## Salvar as informações
