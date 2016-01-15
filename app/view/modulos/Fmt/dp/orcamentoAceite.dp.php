@@ -50,7 +50,11 @@ if (!isset($codVersaoOrc)) \Zage\App\Erro::halt('Falta de Parâmetros 1');
 $orcamento			= $em->getRepository('Entidades\ZgfmtOrcamento')->findOneBy(array('codigo' => $codVersaoOrc));
 
 if (!$orcamento) {
-	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Orçamento não encontrado!"))));
+	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Ops! Não encontramos o orçamento. Tente novamente em instantes e caso o problema continue entre contato com o nosso suporte."))));
+}else{
+	if ($orcamento->getIndAceite() == 1){
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Esta é a versão do orçamento que já está com aceite."))));
+	}
 }
 
 #################################################################################
