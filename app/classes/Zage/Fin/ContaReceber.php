@@ -321,7 +321,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$_valorTotal				= round($_valorTotal,2);
 		
 		if (floatval($_valorTotal) != floatval($this->_getValorTotal())) {
-			//$log->debug("Valor informado: ".\Zage\App\Util::toPHPNumber($this->_getValorTotal())." Valor calculado: ".\Zage\App\Util::toPHPNumber($_valorTotal));
+			$log->debug("Valor informado: ".\Zage\App\Util::toPHPNumber($this->_getValorTotal())." Valor calculado: ".\Zage\App\Util::toPHPNumber($_valorTotal));
 			return $tr->trans('Valor total difere da soma de valores do array !!!');
 		}
 		

@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $system,$em,$tr;
+global $system,$em,$tr,$log;
 
 
 #################################################################################
@@ -36,11 +36,6 @@ if (isset($_GET['id'])) {
 ## Verifica se o usuário tem permissão no menu
 #################################################################################
 $system->checaPermissao($_codMenu_);
-
-#################################################################################
-## Resgata a url desse script
-#################################################################################
-$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
 
 #################################################################################
 ## Resgata a variável FID com a lista de formandos selecionados
@@ -109,6 +104,7 @@ $valTotalFormando		= round($valorOrcado / $qtdFormandosBase,2);
 $aContrato		= array();
 $aDataAtivacao	= array();
 $aFormaPag		= array();
+$aPessoa		= array();
 for ($i = 0; $i < sizeof($formandos); $i++) {
 
 	#################################################################################
@@ -133,7 +129,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Resgatar as informações de forma de pagamento do contrato
 	#################################################################################
-	$oFormaPag					= ($aContrato[$i]->getCodFormaPagamaento()) ? $aContrato[$i]->getCodFormaPagamaento() : null;
+	$oFormaPag					= ($aContrato[$i]->getCodFormaPagamento()) ? $aContrato[$i]->getCodFormaPagamento() : null;
 	if (!$oFormaPag)			die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x3748FC')));
 	$aFormaPag[$i]				= $oFormaPag;
 
@@ -149,6 +145,13 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$dataAtivacao		= ($oStatus->getDataCadastro()) ? $oStatus->getDataCadastro() : null;
 	if (!$dataAtivacao)	die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x3748FB, data de ativação inválida')));
 	$aDataAtivacao[$i]	= $dataAtivacao; 
+	
+	#################################################################################
+	## Resgata o registro da Pessoa associada ao Formando
+	#################################################################################
+	$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$formandos[$i]->getCodigo());
+	if (!$oPessoa) 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x871FB, Pessoa não encontrada'))); 
+	$aPessoa[$i]		= $oPessoa;
 	
 }
 
@@ -170,9 +173,17 @@ $codCatOutrasTaxas		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_OUTRAS_T
 ## Calcular valores das taxas
 #################################################################################
 $indRepTaxaSistema		= ($oOrgFmt->getIndRepassaTaxaSistema() !== null) ? $oOrgFmt->getIndRepassaTaxaSistema()	: 1;
-$taxaAdmin				= ($indValorExtra)		? \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao())		: 0;;
+$taxaAdmin				= ($indValorExtra)		? \Zage\App\Util::to_float($oOrgFmt->getTaxaAdministracao())		: 0;
 $taxaUso				= ($indRepTaxaSistema)	? \Zage\App\Util::to_float(\Zage\Adm\Contrato::getValorLicenca($system->getCodOrganizacao())) : 0;
 $taxaBol				= ($indValorExtra)		? \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::getValorBoleto($oConta->getCodigo())) : 0;
+if (!$taxaAdmin)		$taxaAdmin	= 0;
+if (!$taxaUso)			$taxaUso	= 0;
+if (!$taxaBol)			$taxaBol	= 0;
+
+#################################################################################
+## Iniciar a transação no banco
+#################################################################################
+$em->getConnection()->beginTransaction();
 
 #################################################################################
 ## Gerar as mensalidades
@@ -194,7 +205,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	$codFormaPag		= $aFormaPag[$i]->getCodigo();
 	$valParcTaxaAdmin	= $taxaAdmin;
-	$valParcTaxaBol		= ($codFormaPag == "BOL") ? $taxaAdmin : 0;
+	$valParcTaxaBol		= ($codFormaPag == "BOL") ? $taxaBol : 0;
 	
 
 	#################################################################################
@@ -222,9 +233,14 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$ultimaParcela		= ($numParcelas - 1);
 	$valParcSisAcu		= 0;
 	$valParcMenAcu		= 0;
+	$aValor				= array();
+	$aData				= array();
 	$aOutrosValores		= array();
 	for ($p = 0; $p < sizeof($parcelas); $p++) {
-		
+
+		#################################################################################
+		## Resgata o valor líquida da parcela que está configurado no contrato
+		#################################################################################
 		$valLiqParcela			= \Zage\App\Util::to_float($parcelas[$p]->getValor());
 		
 		#################################################################################
@@ -254,6 +270,14 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		#################################################################################
 		$valorOutros			= round(\Zage\App\Util::to_float($valParcSistema + $valParcTaxas),2); 
 		$aOutrosValores[]		=  $valorOutros;
+		
+		/*$log->info("Valor da parcela (".($p+1)."): ".$valorParcela);
+		$log->info("Valor da mensalidade: ".$valParcMensalidade);
+		$log->info("Valor de Sistema: ".$valParcSistema);
+		$log->info("Valor de Taxa admin: ".$valParcTaxaAdmin);
+		$log->info("Valor de Taxa BOL: ".$valParcTaxaBol);
+		$log->info("Valor de Outros: ".$valorOutros);
+		$log->info("Valor Taxas: ".$valParcTaxas);*/		
 
 		$_pctRateio			= array();
 		$_valorRateio		= array();
@@ -296,10 +320,14 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		$codCategoria[$p]		= $_codCategoria;
 		$codCentroCusto[$p]		= $_codCentroCusto;
 		$codRateio[$p]			= $_codRateio;
-		
+
+		#################################################################################
+		## Criar o array de valores e vencimentos
+		#################################################################################
+		$aValor[$p]				= $valParcMensalidade;
+		$aData[$p]				= $parcelas[$p]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
 		
 	}
-	
 	
 	#################################################################################
 	## Ajustar as variáveis Fixas
@@ -320,7 +348,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$flagReceberAuto	= 0;
 	$flagAlterarSeq		= 0;
 	
-	
 	#################################################################################
 	## Montar o array JSON de retorno
 	#################################################################################
@@ -328,19 +355,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$aParcGer[$formandos[$i]->getCodigo()]["NUM_PARCELAS"]	= $numParcelas;
 	$aParcGer[$formandos[$i]->getCodigo()]["VALOR_TOTAL"]	= $valorTotal;
 	$aParcGer[$formandos[$i]->getCodigo()]["FORMA_PAG"]		= $aContrato[$i]->getCodFormaPagamento()->getDescricao();
-	
-	
-	#################################################################################
-	## Resgata o registro da Pessoa associada ao Formando
-	#################################################################################
-	$oPessoa	= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$formandos[$i]->getCodigo());
-	if (!$oPessoa) {
-		$erro	= "Não foi possível encontrar a Pessoa referente ao Formando: ".$formandos[$i]->getCodigo();
-		$log->err($erro);
-		$em->getConnection()->rollback();
-		$em->clear();
-		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x871FF, Pessoa não encontrada')));
-	}
 	
 	#################################################################################
 	## Resgata os objetos (chave estrangeiras)
@@ -369,19 +383,15 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$conta->setCodFormaPagamento($aFormaPag[$i]);
 	$conta->setCodStatus($oStatus);
 	$conta->setCodMoeda($oMoeda);
-	$conta->setCodPessoa($oPessoa);
+	$conta->setCodPessoa($aPessoa[$i]);
 	$conta->setNumero(null);
 	$conta->setDescricao($descricao);
 	$conta->setValor($valorTotal);
 	$conta->setValorJuros($valorJuros);
 	$conta->setValorMora($valorMora);
 	$conta->setValorDesconto($valorDesconto);
-	$conta->setValorOutros($valorOutros);
-	
-	######### parei aqui
-	
-	
-	$conta->setDataVencimento($dataVenc);
+	//$conta->setValorOutros($valorOutros);
+	$conta->setDataVencimento($aData[0]);
 	$conta->setDocumento(null);
 	$conta->setObservacao($obs);
 	$conta->setNumParcelas($numParcelas);
@@ -393,7 +403,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$conta->setCodConta($oContaRec);
 	$conta->setIndReceberAuto($flagReceberAuto);
 	$conta->_setflagRecebida($flagRecebida);
-	$conta->_setIndValorParcela($indValorParcela);
+	$conta->_setIndValorParcela(0);
 	$conta->_setIndAlterarSeq($flagAlterarSeq);
 	$conta->_setValorTotal($valorTotal);
 	
@@ -429,20 +439,22 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 		exit;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+}
+
+#################################################################################
+## Salva efetivamente no banco
+#################################################################################
+try {
+	$em->flush();
+	$em->clear();
+	$em->getConnection()->commit();
+
+} catch (\Exception $e) {
+	$log->err("Erro: ".$e->getMessage());
+	$em->getConnection()->rollback();
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
+	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
+	exit;
 }
 
 echo '0'.\Zage\App\Util::encodeUrl('||'.json_encode($aParcGer));

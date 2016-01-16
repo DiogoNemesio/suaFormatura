@@ -355,13 +355,39 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 	 * @param unknown $cgc
 	 */
 	public static function buscaPorCgc($codOrganizacao,$cgc) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
 		global $em,$system,$log,$tr;
 		
 		#################################################################################
-		## Resgata o objeto doctrine da pessoa
+		## Cria a instância do QueryBuilder
 		#################################################################################
-		$oPessoa			= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('codOrganizacao' => $codOrganizacao,'cgc' => $cgc));
-		return $oPessoa;
+		$qb 	= $em->createQueryBuilder();
+	
+	
+		try {
+			$qb->select('p')
+			->from('\Entidades\ZgfinPessoa','p')
+			->leftJoin('\Entidades\ZgfinPessoaOrganizacao', 'po', \Doctrine\ORM\Query\Expr\Join::WITH, 'po.codPessoa = p.codigo')
+			->where(
+				$qb->expr()->andX(
+					$qb->expr()->eq('po.codOrganizacao'		,':codOrg'),
+					$qb->expr()->eq('p.cgc'					,':cgc')
+				)
+			)
+			->setParameter('codOrg'			,$codOrganizacao)
+			->setParameter('cgc'			,$cgc);
+				
+			$query 		= $qb->getQuery();
+			return($query->getOneOrNullResult());
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+	
+	
+	
 	}
 	
 	/**

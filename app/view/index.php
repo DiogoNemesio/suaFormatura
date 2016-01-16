@@ -11,7 +11,13 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $system,$titulo;
+global $system,$em,$titulo,$db,$_user;
+
+#################################################################################
+## Versões do CSS e JS, para controle de cache
+#################################################################################
+$cssVersion			= "1.0.0";
+$jsVersion			= "1.0.0";
 
 #################################################################################
 ## Verificando se mudou de organização
@@ -234,6 +240,8 @@ $tpl->set('TROCA_SENHA_URL'		,$urlTrocaSenha);
 $tpl->set('MASCARAS'			,$htmlMask);
 $tpl->set('FORMATO_DATA'		,$system->config["data"]["jsDateFormat"]);
 $tpl->set('TITULO'				,$titulo);
+$tpl->set('CSS_VERSION'			,$cssVersion);
+$tpl->set('JS_VERSION'			,$jsVersion);
 
 #################################################################################
 ## Por fim exibir a página HTML

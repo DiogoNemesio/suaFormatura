@@ -1,7 +1,22 @@
 <div id="content">
-	<div class="page-header">
-	<h1>%TITULO%</h1>
+	<div class="suaFormatura-header">
+	<h1>
+		<span class="text-center" style="text-align: center; display: block; margin-left: auto; margin-right: auto;">
+			<span class="pull-left">%TITULO%</span>
+			<span class="text-center" style="text-align: center;">
+				<span class="" data-toggle="buttons">
+					<button class="btn btn-app btn-primary btn-xs disabled" disabled="disabled" id="zgDivAcoesGerMenForLis1ID" onclick="zgAcaoGerSelecionadosMenForLis();"><i class="ace-icon fa fa-cog bigger-160"></i>Gerar</button>
+					<button class="btn btn-app btn-success btn-xs disabled" disabled="disabled" id="zgDivAcoesAtuMenForLis1ID" onclick="zgAcaoAtuSelecionadosMenForLis();"><i class="ace-icon fa fa-refresh bigger-160"></i>Atualizar</button>
+				</span>
+				<span class="btn-group" data-toggle="buttons">
+					<button class="btn btn-primary btn-default btn-round disabled" disabled="disabled" id="zgDivAcoesGerMenForLis2ID" onclick="zgAcaoGerSelecionadosMenForLis();"><i class="ace-icon fa fa-cog"></i>Gerar</button>
+					<button class="btn btn-success btn-default btn-round disabled" disabled="disabled" id="zgDivAcoesAtuMenForLis2ID" onclick="zgAcaoAtuSelecionadosMenForLis();"><i class="ace-icon fa fa-refresh"></i>Atualizar</button>
+				</span>
+			</span>
+		</span>
+	</h1>
 	</div><!-- /.page-header -->
+	<div class="hr hr-dotted hr-16"></div>
 
 	<form id="zgFormGeraMensalidadeID" class="form-horizontal">
 		<input type="hidden" name="id" value="%ID%">
@@ -10,24 +25,8 @@
 		<input type="hidden" name="numMesesMax" id="numMesesMaxID" value="%NUM_MESES_MAX%">
 		<input type="hidden" name="aSelFormandos" id="aSelFormandosID">
 		
-		<div class="row">
-			<div class="col-sm-12">
-				
-				<div class="step-content pos-rel">
-					<div class="step-pane active" data-step="1">
-						<div class="row">
-							<div class="col-sm-12 widget-container-span">
-								<div class="widget-body">
-									<div class="box-content">
-										%GRID%
-									</div><!--/span-->
-								</div>
-							</div>
-						</div>
-					</div>
-		
-				</div>
-			</div>
+		<div class="row col-sm-12">
+			%GRID%
 		</div>
 	</form>	
 </div>
@@ -36,8 +35,6 @@
 
 var $aCodigos	= '%JSON_CODIGOS%';
 var oTable		= $('#GMensalidadeFormandoID').dataTable();
-
-
 
 $( document ).ready(function() {
 	$('#zgGridCustomHeaderID').html('<div class="btn-group btn-corner center center-block text-center pull-center" style="text-align: center !important;"><span id="CRLisFiltroPopoverID" style="width: 200px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >Ações em Lote</span><div class="inline dropdown dropup btn btn-white btn-sm" id="MenForLisFiltroDivAcaoLoteID"><a href="#" data-toggle="dropdown" class="disabled" id="MenForLisFiltroBtnAcaoLoteID"><span class="fa"><i class="fa fa-cogs bigger-120 grey" id="MenForLisFiltroIco1AcaoLoteID"></i><i class="fa fa-ban fa-stack-1x bigger-150 red" id="MenForLisFiltroIco2AcaoLoteID"></i></span></a><ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret"><li class="active"><a href="#"><div class="center small bolder blue">Ações em Lote</div></a></li><li><a href="#"><div class="inline" id="zgDivAcoesGerMenForLisID" style="width: 30px;"></div><div class="inline" id="zgDivAcoesAtuMenForLisID" style="width: 30px;"></div></a></li></ul></div></div>');
@@ -114,21 +111,54 @@ function zgHabilitaAcoesMenForLis() {
 		}
 	});
 	
+	var $_podeGer		= false;
+	var $_podeAtu		= false;
+	
 	/** Calcular as ações em lotes disponíveis  **/
 	if ($aPodeGer.length !== 1) {
+		$_podeGer						= false;
 		$('#zgDivAcoesGerMenForLisID').html('&nbsp;');
 	}else if ($aPodeGer[0] == "1")	{
+		$_podeGer						= true;
 		$('#zgDivAcoesGerMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoGerSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="gerar as mensalidades dos formandos selecionados"><i class="ace-icon fa fa-cog blue bigger-130"></i></div>');
 	}else{
+		$_podeGer						= false;
 		$('#zgDivAcoesGerMenForLisID').html('&nbsp;');
 	}
 	
 	if ($aPodeAtu.length !== 1) {
+		$_podeAtu						= false;
 		$('#zgDivAcoesAtuMenForLisID').html('&nbsp;');
 	}else if ($aPodeAtu[0] == "1")	{
+		$_podeAtu						= true;
 		$('#zgDivAcoesAtuMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoAtuSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="Atualizar os selecionados para o novo orçamento"><i class="ace-icon fa fa-refresh green bigger-130"></i></div>');
 	}else{
+		$_podeAtu						= false;
 		$('#zgDivAcoesAtuMenForLisID').html('&nbsp;');
+	}
+	
+	if ($_podeGer == true) {
+		$('#zgDivAcoesGerMenForLis1ID').attr("disabled",false);
+		$('#zgDivAcoesGerMenForLis1ID').removeClass("disabled");
+		$('#zgDivAcoesGerMenForLis2ID').attr("disabled",false);
+		$('#zgDivAcoesGerMenForLis2ID').removeClass("disabled");
+	}else{
+		$('#zgDivAcoesGerMenForLis1ID').attr("disabled","disabled");
+		$('#zgDivAcoesGerMenForLis1ID').addClass("disabled");
+		$('#zgDivAcoesGerMenForLis2ID').attr("disabled","disabled");
+		$('#zgDivAcoesGerMenForLis2ID').addClass("disabled");
+	}
+
+	if ($_podeAtu == true) {
+		$('#zgDivAcoesAtuMenForLis1ID').attr("disabled",false);
+		$('#zgDivAcoesAtuMenForLis1ID').removeClass("disabled");
+		$('#zgDivAcoesAtuMenForLis2ID').attr("disabled",false);
+		$('#zgDivAcoesAtuMenForLis2ID').removeClass("disabled");
+	}else{
+		$('#zgDivAcoesAtuMenForLis1ID').attr("disabled","disabled");
+		$('#zgDivAcoesAtuMenForLis1ID').addClass("disabled");
+		$('#zgDivAcoesAtuMenForLis2ID').attr("disabled","disabled");
+		$('#zgDivAcoesAtuMenForLis2ID').addClass("disabled");
 	}
 
 	
@@ -145,6 +175,18 @@ function zgDesabilitaAcoesMenForLis() {
 	$("#MenForLisFiltroIco1AcaoLoteID").removeClass("blue");
 	$("#MenForLisFiltroIco1AcaoLoteID").addClass("grey");
 	$("#MenForLisFiltroIco2AcaoLoteID").removeClass("hidden");
+
+	$('#zgDivAcoesGerMenForLis1ID').attr("disabled","disabled");
+	$('#zgDivAcoesGerMenForLis1ID').addClass("disabled");
+	$('#zgDivAcoesGerMenForLis2ID').attr("disabled","disabled");
+	$('#zgDivAcoesGerMenForLis2ID').addClass("disabled");
+
+	$('#zgDivAcoesAtuMenForLis1ID').attr("disabled","disabled");
+	$('#zgDivAcoesAtuMenForLis1ID').addClass("disabled");
+	$('#zgDivAcoesAtuMenForLis2ID').attr("disabled","disabled");
+	$('#zgDivAcoesAtuMenForLis2ID').addClass("disabled");
+
+
 }
 
 
