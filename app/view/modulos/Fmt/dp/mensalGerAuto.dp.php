@@ -80,7 +80,7 @@ try {
 ## Resgatar os dados dos formandos selecionados
 #################################################################################
 try {
-	$formandos				= $em->getRepository('Entidades\ZgsegUsuario')->findBy(array('codigo' => $aSelFormandos));
+	$formandos				= $em->getRepository('Entidades\ZgsegUsuario')->findBy(array('codigo' => $aSelFormandos),array('nome' => 'ASC'));
 	$oOrgFmt				= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
@@ -95,7 +95,7 @@ $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao(
 if (!$orcamento)		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Nenhum orçamento aceito"))));
 $valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
 $qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-$valTotalFormando		= round($valorOrcado / $qtdFormandosBase,2);
+$totalPorFormando		= round($valorOrcado / $qtdFormandosBase,2);
 
 
 #################################################################################
@@ -113,11 +113,18 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	if (\Zage\Seg\Usuario::ehFormando($system->getCodOrganizacao(), $formandos[$i]->getCodigo()) != true) {
 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x3748FF')));
 	}
+
+	#################################################################################
+	## Resgata o registro da Pessoa associada ao Formando
+	#################################################################################
+	$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$formandos[$i]->getCodigo());
+	if (!$oPessoa) 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x871FB, Pessoa não encontrada')));
+	$aPessoa[$i]		= $oPessoa;
 	
 	#################################################################################
 	## Verificar se já foi gerada alguma mensalidade para algum formando
 	#################################################################################
-	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $formandos[$i]->getCodigo());
+	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $oPessoa->getCodigo());
 	if ($temMensalidade)		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x3748FE')));
 
 	#################################################################################
@@ -146,12 +153,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	if (!$dataAtivacao)	die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x3748FB, data de ativação inválida')));
 	$aDataAtivacao[$i]	= $dataAtivacao; 
 	
-	#################################################################################
-	## Resgata o registro da Pessoa associada ao Formando
-	#################################################################################
-	$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$formandos[$i]->getCodigo());
-	if (!$oPessoa) 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x871FB, Pessoa não encontrada'))); 
-	$aPessoa[$i]		= $oPessoa;
 	
 }
 
@@ -211,8 +212,8 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Calcular o valor da mensalidade 
 	#################################################################################
-	$valMensalidade		= $valTotalFormando - $valTotalSistema;
-	$pctLiqSistema		= round(($valTotalSistema * 100) / $valTotalFormando,2);
+	$valMensalidade		= $totalPorFormando - $valTotalSistema;
+	$pctLiqSistema		= round(($valTotalSistema * 100) / $totalPorFormando,2);
 	$pctLiqMensalidade	= 100 - $pctLiqSistema;
 	
 	#################################################################################
@@ -426,7 +427,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 			$log->err("Erro ao salvar: ".$erro);
 			$em->getConnection()->rollback();
 			$em->clear();
-			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$erro);
 			echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($erro));
 			exit;
 		}
@@ -435,7 +435,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	} catch (\Exception $e) {
 		$log->err("Erro: ".$e->getMessage());
 		$em->getConnection()->rollback();
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 		exit;
 	}
@@ -452,7 +451,6 @@ try {
 } catch (\Exception $e) {
 	$log->err("Erro: ".$e->getMessage());
 	$em->getConnection()->rollback();
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
 }

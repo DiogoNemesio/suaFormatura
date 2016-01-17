@@ -1,4 +1,4 @@
-<form id="zgFormModalGerAutoID" class="form-horizontal">
+<form id="zgFormModalAtuAutoID" class="form-horizontal">
 <input type="hidden" name="fid" value="%FID%">
 <input type="hidden" name="id" value="%ID%">
 <div id="content">
@@ -11,19 +11,28 @@
 		
 			<div class="col-sm-12 hidden-480">
 				<div class="well">
-					<h4 class="green smaller lighter"><strong>Entendendo o processo de geração</strong></h4>
+					<h4 class="green smaller lighter"><strong>Entendendo o processo de atualização</strong></h4>
 					<ul class="list-unstyled spaced">
 						<li>
 							<i class="ace-icon fa fa-hand-o-right bigger-110 green"></i>
-							O processo de geração de mensalidades irá criar as contas de cada formando com base no contrato feito por cada um deles.  
+							O processo de atualização irá ajustar as mensalidades que estão em aberto e com vencimento maior que a "data base", de cada formando selecionado, para o valor mais recente do orçamento, caso o orçamento seja maior que o somatório das mensalidades, o saldo será acrescido de forma distribuida nas parcelas que estiverem em aberto. Caso o valor do orçamento atual seja menor, não iremos atualizar as parcelas. 
 						</li>
 					</ul>
 				</div>
 			</div>
-			
 			<div class="col-sm-12">
 				<div class="row">
-			    	<div class="form-group col-sm-8" id="divContaRecID">
+					<div class="form-group col-sm-8" id="divDataBaseID">
+					    <label for="identID" class="col-sm-4 control-label">Data base</label>
+			    		<div class="input-group col-sm-7 pull-left">
+		    				<span tabindex="99002" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="A Data informada será usada como base para atualização das contas, ou seja, só serão atualizadas as contas com vencimento maior que a data informada"></i></span>
+		    				<input class="form-control datepicker" id="dataBaseID" type="text" name="dataBase" maxlength="10" value="%DATA_BASE%" onchange="calcularParcelasUsuFmtCnt();" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data">
+					    </div>
+					    <div class="col-sm-1 pull-left" id="divHelpDataBaseID"></div>
+					</div>
+				</div>
+				<div class="row">
+				   	<div class="form-group col-sm-8" id="divContaRecID">
 						<label class="col-sm-4 control-label">Conta de Recebebimento</label>
 		    			<div class="input-group col-sm-7 pull-left">
 		    				<span tabindex="99012" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Conta de Recebimento (Conta que será creditado o valor)"></i></span>
@@ -35,25 +44,29 @@
 				    </div>
 				</div>
 				<div class="row">
-					<div class="form-group col-sm-8" >
+					<div class="form-group col-sm-8">
 	    				<label class="col-sm-4 control-label">
 	    					<input name="indValorExtra" id="indValorExtraID" class="ace ace-switch" value="1" checked type="checkbox" />
 	    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
 	    				</label>
 		    			<div class="input-group col-sm-7 pull-left">
-		    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="bottom" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade"></i></span>
-		    				<input readonly type="text" class="form-control" placeholder="Adicionar taxas extras (*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
+		    				<span tabindex="99013" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="bottom" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM para adicionar os valores extras (Taxa do Boleto caso a forma de pagamento seja boleto e o valor de administração) no valor da mensalidade, (APENAS PARA AS CONTAS NOVAS)"></i></span>
+		    				<input readonly type="text" class="form-control" placeholder="Adicionar taxas extras as novas contas(*)" aria-describedby="sizing-addon2" style="outline: none;  border-style: none none none solid !important;  -webkit-box-shadow: none !important;  -moz-box-shadow: none !important;  box-shadow: none !important;">
 					    </div>
 						<div class="help-block col-sm-1 inline" id="divHelpIndValorExtraID"></div>
 			    	</div>
 			    </div>
-			    <div class="row hidden" id="divTableGerAutoID">
-				    <table id="GerAutoTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+				
+				
+			
+			    <div class="row hidden" id="divTableAtuAutoID">
+				    <table id="AtuAutoTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
 						<thead>
 							<tr class="warning">
 								<th class="col-sm-6">Formando</th>
-								<th class="col-sm-1 center">Parcelas</th>
-								<th class="col-sm-2 center">Forma Pag.</th>
+								<th class="col-sm-1 center">Parc. ger.</th>
+								<th class="col-sm-1 center">Parc. atu.</th>
+								<th class="col-sm-1 center">Forma Pag.</th>
 								<th class="col-sm-2 center">Valor Total</th>
 								<th class="col-sm-1 center"></th>
 							</tr>
@@ -64,24 +77,25 @@
 							<tr class="warning">
 								<th class="col-sm-6"></th>
 								<th class="col-sm-1 center"></th>
-								<th class="col-sm-2 center"></th>
-								<th class="col-sm-2 center" id="thInfoValorTotalGerAutoID"></th>
+								<th class="col-sm-1 center"></th>
+								<th class="col-sm-1 center"></th>
+								<th class="col-sm-2 center" id="thInfoValorTotalAtuAutoID"></th>
 								<th class="col-sm-1 center"></th>
 							</tr>
 						</tfoot>
 					</table>
 				</div>
 				<div class="row center">
-					<ul class="pagination" id="pagerMensalGerAutoID"></ul>
+					<ul class="pagination" id="pagerMensalAtuAutoID"></ul>
 				</div>			    
 			    
 			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<div class="pull-left" style="width: 70%; text-align: left;" id='divMsgMenGerAutoID'></div>
-		<button type="button" class="btn btn-primary" id="GerAutoSubmitID"><i class="fa fa-cog bigger-110"></i>&nbsp;Gerar</button>
-		<button type="button" data-dismiss="modal" class="btn" id="GerAutoCancelID" >Fechar</button>
+		<div class="pull-left" style="width: 70%; text-align: left;" id='divMsgMenAtuAutoID'></div>
+		<button type="button" class="btn btn-primary" id="AtuAutoSubmitID"><i class="fa fa-refresh bigger-110"></i>&nbsp;Atualizar</button>
+		<button type="button" data-dismiss="modal" class="btn" id="AtuAutoCancelID" >Fechar</button>
 	</div>
 </div>
 </form>
@@ -92,7 +106,6 @@
 $('[zg-data-toggle="mask"]').each(function( index ) {
 	zgMask($( this ), $( this ).attr('zg-data-mask'));
 });
-
 
 
 $('[data-rel=tooltip]').tooltip();
@@ -108,21 +121,21 @@ $('[data-rel="select2"]').each(function( index ) {
 });
 
 
-$('#GerAutoSubmitID').on("click", function(e) {
+$('#AtuAutoSubmitID').on("click", function(e) {
 	
 	//Bloquear botão enquanto estiver salvando
-	$('#GerAutoSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-	$('#GerAutoSubmitID').attr("disabled","disabled");
-	$('#GerAutoCancelID').attr("disabled","disabled");
+	$('#AtuAutoSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#AtuAutoSubmitID').attr("disabled","disabled");
+	$('#AtuAutoCancelID').attr("disabled","disabled");
 	
-	var $ok 	= validaMenGerAuto();
+	var $ok 	= validaMenAtuAuto();
 	
 	if ($ok == false) 	{
 		
 		//Desbloquear botão quando terminar de salvar
-		$('#GerAutoSubmitID').html('<i class="fa fa-cog bigger-110"></i>&nbsp;Gerar ');
-		$('#GerAutoSubmitID').attr("disabled",false);
-		$('#GerAutoCancelID').attr("disabled",false);
+		$('#AtuAutoSubmitID').html('<i class="fa fa-refresh bigger-110"></i>&nbsp;Atualizar ');
+		$('#AtuAutoSubmitID').attr("disabled",false);
+		$('#AtuAutoCancelID').attr("disabled",false);
 		
 		$.gritter.add({
 			title: 'Está faltando alguma coisa !!!',
@@ -134,43 +147,43 @@ $('#GerAutoSubmitID').on("click", function(e) {
 		
 		return false;
 	}else{
-		$('#zgFormModalGerAutoID').submit();
+		$('#zgFormModalAtuAutoID').submit();
 	}
 });
 
 //Submit formulário
-$('#zgFormModalGerAutoID').submit(function() {
+$('#zgFormModalAtuAutoID').submit(function() {
 	
 	//Bloquear botão enquanto estiver salvando
-	$('#GerAutoSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
-	$('#GerAutoSubmitID').attr("disabled","disabled");
-	$('#GerAutoCancelID').attr("disabled","disabled");
+	$('#AtuAutoSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#AtuAutoSubmitID').attr("disabled","disabled");
+	$('#AtuAutoCancelID').attr("disabled","disabled");
 	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP_MODAL%",
-		data:	$('#zgFormModalGerAutoID').serialize(),
+		data:	$('#zgFormModalAtuAutoID').serialize(),
 		//cache: 	false,
         //async: 	false
 	}).done(function( data, textStatus, jqXHR) {
 		if (checaRetornoOK(data) == true) {
 			var $parcelas	= JSON.parse(zgGetMsgRetorno(data));
-			criaTabelaValoresGerAuto($parcelas);
+			criaTabelaValoresAtuAuto($parcelas);
 			/*$.each($parcelas, function($i,$item) {
 			    alert($item.VALOR_TOTAL);
 			});*/
 			
-			zgMostraMsg('divMsgMenGerAutoID','Mensalidades geradas com sucesso!');
+			zgMostraMsg('divMsgMenAtuAutoID','Mensalidades atualizadas com sucesso!');
 		}else{
-			zgMostraErro('divMsgMenGerAutoID',zgGetMsgRetorno(data));
+			zgMostraErro('divMsgMenAtuAutoID',zgGetMsgRetorno(data));
 			//zgLimpaModalAviso();
 			//zgMostraAviso("Fechar");
 		}
 		
 		//Desbloquear botão quando terminar de salvar
-		$('#GerAutoSubmitID').html('<i class="fa fa-cog bigger-110"></i>&nbsp;Gerar ');
-		$('#GerAutoSubmitID').attr("disabled",false);
-		$('#GerAutoCancelID').attr("disabled",false);
+		$('#AtuAutoSubmitID').html('<i class="fa fa-refresh bigger-110"></i>&nbsp;Atualizar ');
+		$('#AtuAutoSubmitID').attr("disabled",false);
+		$('#AtuAutoCancelID').attr("disabled",false);
 		
 		$('#zgDivModalID').on('hidden.bs.modal', function () {
 			zgLoadUrl('%URL_VOLTAR%');
@@ -184,10 +197,25 @@ $('#zgFormModalGerAutoID').submit(function() {
 	return false; 
 });
 
-function validaMenGerAuto(){
-	var $codContaRec		= $('#codContaRecID').val();
-	var $ok					= true;
+function validaMenAtuAuto(){
+	var $dataBase		= $('#dataBaseID').val();
+	var $codContaRec	= $('#codContaRecID').val();
+	var $ok				= true;
 	
+	/** Data Base **/
+	if(!$dataBase){	
+		$('#divDataBaseID').addClass('has-error');
+		$('#divHelpDataBaseID').html(zgCriaSpanErro('Data base deve ser informada'));
+		$ok		= false;
+	}else if (isDataBR($dataBase) == false){
+		$('#divDataBaseID').addClass('has-error');
+		$('#divHelpDataBaseID').html(zgCriaSpanErro('Data base inválida'));
+		$ok		= false;
+	}else{
+		$('#divContaRecID').removeClass('has-error');
+		$('#divHelpContaRecID').html('&nbsp;');		
+	}
+
 	/** Conta de Recebimento **/
 	if(!$codContaRec){	
 		$('#divContaRecID').addClass('has-error');
@@ -197,16 +225,17 @@ function validaMenGerAuto(){
 		$('#divContaRecID').removeClass('has-error');
 		$('#divHelpContaRecID').html('&nbsp;');		
 	}
+
 	
 	if ($ok == true) {
-		return true ;
+		return true;
 	}else{
 		return false;
 	}
 }
 
-function criaTabelaValoresGerAuto($parcelas) {
-	var $table					= $('#GerAutoTableValorID');
+function criaTabelaValoresAtuAuto($parcelas) {
+	var $table					= $('#AtuAutoTableValorID');
 	
 	var options = {
 		symbol : "",
@@ -225,36 +254,37 @@ function criaTabelaValoresGerAuto($parcelas) {
 	};
 
 	/** Remove os dados atuais **/
-	deleteTableGerAuto();
+	deleteTableAtuAuto();
 	
 	/** Mostra o div da tabela **/
-	$('#divTableGerAutoID').removeClass("hidden");
+	$('#divTableAtuAutoID').removeClass("hidden");
 	
 	var $valTotal	= 0;
 	$.each($parcelas, function($i,$item) {
 		var $nome		= $item.NOME;
-		var $numParc	= $item.NUM_PARCELAS;
+		var $numParcGer	= $item.NUM_PARCELAS_GER;
+		var $numParcAtu	= $item.NUM_PARCELAS_ATU;
 		var $formaPag	= $item.FORMA_PAG;
 		var $valor		= zgConverteFloat($item.VALOR_TOTAL);
 		$valTotal		+= $valor;
 		var $_valFmt	= accounting.formatMoney($valor	,options);
-		$('#GerAutoTableValorID > tbody:last').append('<tr><td style="text-align: left;">'+$nome+'</td><td class="center">'+$numParc+'</td><td class="center">'+$formaPag+'</td><td class="center">'+$_valFmt+'</td><td class="center">'+zgCriaSpanOK()+'</td></tr>');		
+		$('#AtuAutoTableValorID > tbody:last').append('<tr><td style="text-align: left;">'+$nome+'</td><td class="center">'+$numParcGer+'</td><td class="center">'+$numParcAtu+'</td><td class="center">'+$formaPag+'</td><td class="center">'+$_valFmt+'</td><td class="center">'+zgCriaSpanOK()+'</td></tr>');		
 		
 	});
 
-	$('#thInfoValorTotalGerAutoID').html(accounting.formatMoney($valTotal,optTotal));
-	paginateTableValoresGerAuto();
+	$('#thInfoValorTotalAtuAutoID').html(accounting.formatMoney($valTotal,optTotal));
+	paginateTableValoresAtuAuto();
 }
 
-function deleteTableGerAuto () {
+function deleteTableAtuAuto () {
 	/** Remove os dados atuais **/
-	$('#GerAutoTableValorID > tbody').find('tr').remove();
-	$('#thInfoValorTotalGerAutoID').html("&nbsp;");
-	$('#divTableGerAutoID').addClass("hidden");
+	$('#AtuAutoTableValorID > tbody').find('tr').remove();
+	$('#thInfoValorTotalAtuAutoID').html("&nbsp;");
+	$('#divTableAtuAutoID').addClass("hidden");
 }
 
-function paginateTableValoresGerAuto() {
-	$('#pagerMensalGerAutoID li').remove();
+function paginateTableValoresAtuAuto() {
+	$('#pagerMensalAtuAutoID li').remove();
 
 	$('table.paginated').each(function() {
 	    var currentPage = 0;
@@ -266,7 +296,7 @@ function paginateTableValoresGerAuto() {
 	    $table.trigger('repaginate');
 	    var numRows = $table.find('tbody tr').length;
 	    var numPages = Math.ceil(numRows / numPerPage);
-	    var $pager = $('#pagerMensalGerAutoID');
+	    var $pager = $('#pagerMensalAtuAutoID');
 	    for (var page = 0; page < numPages; page++) {
 	    	$('<li><a href="#"><span class="page-number">'+(page + 1)+'</span></a></li>').bind('click', {
 	        //$('<span class="page-number"></span>').text(page + 1).bind('click', {

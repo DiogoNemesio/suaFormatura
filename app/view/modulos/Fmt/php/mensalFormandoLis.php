@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $system,$em,$tr;
+global $system,$em,$tr,$log;
 
 
 #################################################################################
@@ -68,9 +68,7 @@ if ($orcamento){
 	$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
 	$totalPorFormando		= $valorOrcado / $qtdFormandosBase;
 }else{
-	$valorOrcado			= 0;
-	$qtdFormandosBase		= 0;
-	$totalPorFormando		= 0;
+	\Zage\App\Erro::halt("Nenhum orçamento aceito!!");
 }
 
 
@@ -87,6 +85,7 @@ $aCodigos				= array();
 for ($i = 0; $i < sizeof($oValorProv); $i++) {
 	$total													= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
 	$aValorProv[$oValorProv[$i][0]->getCgc()]				= $total;
+	$log->info("Saldo provisionado de ".$oValorProv[$i][0]->getCgc().": ".$total);
 }
 
 #################################################################################
@@ -101,7 +100,6 @@ $aValorPago				= array();
 if (sizeof($oValorPago) > 0) {
 	foreach ($oValorPago as $cpf => $info) {
 		$total					= \Zage\App\Util::to_float($info["mensalidade"]) + \Zage\App\Util::to_float($info["sistema"]) + \Zage\App\Util::to_float($info["juros"]) + \Zage\App\Util::to_float($info["mora"]);
-		$log->info("Total: ".$total);
 		$aValorPago[$cpf]		= $total;
 	}
 }
@@ -192,14 +190,19 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	
 	}
 
+	#################################################################################
+	## Resgata o registro da Pessoa associada ao Formando
+	#################################################################################
+	$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$formandos[$i]->getCodigo());
+	if (!$oPessoa) 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x871FB, Pessoa não encontrada')));
 	
 	#################################################################################
-	## Saldo gerado
+	## Saldo a provisionar
 	#################################################################################
 	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
 	$saldo						= round($totalPorFormando - $valProvisionado,2);
 	$grid->setValorCelula($i,3,$valProvisionado);
-	
+		
 	#################################################################################
 	## Déficit de geração
 	#################################################################################
@@ -214,7 +217,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	}else{
 		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
 	}
-	
 
 	#################################################################################
 	## Verifica se o formando já tem contrato
@@ -232,10 +234,11 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Verificar se já foi gerada alguma mensalidade
 	#################################################################################
-	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $formandos[$i]->getCodigo());
+	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $oPessoa->getCodigo());
 	if (($temMensalidade) || (!$temContrato))		{
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_GERAR"]	= 0;
 	}else{
+		$log->info("Formando: (".$formandos[$i]->getCodigo().") CPF: ".$formandos[$i]->getCpf()." pode gerar, temContrato: ".(($temContrato) ? 1 : 0)." temMensalidade: ".var_dump($temMensalidade));
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_GERAR"]	= 1;
 	}
 	
@@ -299,9 +302,9 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	$grid->setUrlCelula($i,11,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$fid);
 	
-	
-	
 }
+
+$log->info("aCodigos: ".serialize($aCodigos));
 
 #################################################################################
 ## Urls de ações em lote

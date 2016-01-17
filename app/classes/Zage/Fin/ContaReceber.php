@@ -308,6 +308,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
+			}elseif (\Zage\App\Util::to_float($this->_valores[$i]) < 0) {
+				return $tr->trans('Array de valores tem registro negativo na posição "'.$i.'" !!!');
 			}else{
 				//$log->debug("Valor: ".\Zage\App\Util::to_float($this->_valores[$i]).", Juros: ".\Zage\App\Util::to_float($this->getValorJuros()).", Mora: ".\Zage\App\Util::to_float($this->getValorMora()).", Outros: ".\Zage\App\Util::to_float($this->getValorOutros()).", Desconto: ".\Zage\App\Util::to_float($this->getValorDesconto()));
 				$_valorOutros		= (isset($this->_outrosValores)) ? $this->_outrosValores[$i] : $this->getValorOutros(); 
@@ -454,14 +456,18 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			if (is_array($this->_valoresRateio[$i])) {
 				for ($j = 0; $j < sizeof($numRateio); $j++) {
 					if ($this->_valoresRateio[$i][$j] == 0) {
-						return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$j.'"');
+						return $tr->trans('Array de valores de rateio tem registro com valor = 0 na posição "'.$j.'"');
+					}elseif (\Zage\App\Util::to_float($this->_valoresRateio[$i][$j]) < 0) {
+							return $tr->trans('Array de valores de rateio tem registro negativo na posição "'.$i.'" !!!');
 					}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i][$j])) {
-						return $tr->trans('Array de valores tem registro inválido na posição "'.$j.'" !!!');
+						return $tr->trans('Array de valores de rateio tem registro inválido na posição "'.$j.'" !!!');
 					}
 				}
 			}else{
 				if ($this->_valoresRateio[$i] == 0) {
 					return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
+				}elseif (\Zage\App\Util::to_float($this->_valoresRateio[$i]) < 0) {
+					return $tr->trans('Array de valores de rateio tem registro negativo na posição "'.$i.'" !!!');
 				}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i])) {
 					return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 				}

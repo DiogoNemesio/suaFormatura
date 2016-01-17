@@ -44,12 +44,17 @@ if (!isset($codUsuario)) 	die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($t
 $oFormando 					= $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
 if (!$oFormando)			die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Formando não encontrado'))));
 
+#################################################################################
+## Resgata o registro da Pessoa associada ao Formando
+#################################################################################
+$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$codUsuario);
+if (!$oPessoa) 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x912FB, Pessoa não encontrada')));
 
 #################################################################################
 ## Verificar se o usuário pode alterar o contrato, só pode altera caso não
 ## tenha mensalidade gerada
 #################################################################################
-$temMensalidade	= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(),$codUsuario);
+$temMensalidade	= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(),$oPessoa->getCodigo());
 $podeAlterar	= ($temMensalidade) ? false : true;
 if ($podeAlterar	== false)			die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Contrato não pode ser alterado, pois já foi gerado mensalidade'))));
 

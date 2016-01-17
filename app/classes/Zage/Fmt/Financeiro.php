@@ -1122,7 +1122,7 @@ class Financeiro {
 	 * Resgatar o valor do boleto de uma determinada conta
 	 * @param integer $codConta
 	 */
-	function getValorBoletoConta($codConta) {
+	public static function getValorBoletoConta($codConta) {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
@@ -1168,7 +1168,7 @@ class Financeiro {
 	 * Resgatar o valor de sistema de uma determinada conta
 	 * @param integer $codConta
 	 */
-	function getValorSistemaConta($codConta) {
+	public static function getValorSistemaConta($codConta) {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
@@ -1208,12 +1208,56 @@ class Financeiro {
 	
 	}
 	
-
 	/**
 	 * Resgatar o valor de sistema de uma determinada conta
 	 * @param integer $codConta
 	 */
-	function getValorTaxaAdmConta($codConta) {
+	public static function getValorMensalidadeConta($codConta) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		#################################################################################
+		## Resgatar a categoria de Sistema
+		#################################################################################
+		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+	
+		#################################################################################
+		## Criar os objetos do Query builde, um para cada consulta
+		#################################################################################
+		$qb1 	= $em->createQueryBuilder();
+	
+		try {
+	
+			#################################################################################
+			## Somatório dos recebimentos
+			#################################################################################
+			$qb1->select('sum(crr.valor)')
+			->from('\Entidades\ZgfinContaReceberRateio','crr')
+			->where($qb1->expr()->andx(
+			$qb1->expr()->eq('crr.codContaRec'		, ':codConta'),
+			$qb1->expr()->eq('crr.codCategoria'		, ':codCategoria')
+			))
+			->setParameter('codConta'		, $codConta)
+			->setParameter('codCategoria'	, $codCatSistema);
+	
+			$query 				= $qb1->getQuery();
+			$valor				= \Zage\App\Util::to_float($query->getSingleScalarResult());
+			return ($valor);
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	
+	}
+	
+	
+	/**
+	 * Resgatar o valor de sistema de uma determinada conta
+	 * @param integer $codConta
+	 */
+	public static function getValorTaxaAdmConta($codConta) {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
@@ -1261,7 +1305,7 @@ class Financeiro {
 	 * 
 	 * @param integer $codConta
 	 */
-	function getValorNaoLiquidoConta($codConta) {
+	public static function getValorNaoLiquidoConta($codConta) {
 
 		#################################################################################
 		## Variáveis globais
@@ -1401,8 +1445,6 @@ class Financeiro {
 	}
 	
 	
-	
-
 	/**
 	 * Verificar se o formando já tem alguma mensalidade gerada em uma determinada organização
 	 * @param int $codOrganizacao
@@ -1444,7 +1486,7 @@ class Financeiro {
 	
 			$query 				= $qb1->getQuery();
 			$num				= $query->getSingleScalarResult();
-			
+		
 			if ($num > 0 ) {
 				return true;
 			}else{
@@ -1455,12 +1497,79 @@ class Financeiro {
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
-		
-		
-		
-		
-		
 	}
 
+	
+	
+	/**
+	 * Resgatar as mensalidades em aberto a apartir de uma data base, de um formando
+	 * @param int $codOrganizacao
+	 * @param int $codFormando
+	 */
+	public static function getMensalidadesEmAberto($codOrganizacao,$codFormando,$dataBase) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatDevMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$aCat							= array($codCatDevMensalidade);
+	
+
+		#################################################################################
+		## Validar a dataBase
+		#################################################################################
+		if (\Zage\App\Util::validaData($dataBase, $system->config["data"]["dateFormat"]) == false) {
+			throw new \Exception("Data base inválida em ".__FUNCTION__);
+		}
+		
+		#################################################################################
+		## Criar o objeto da dataBase
+		#################################################################################
+		$oDataBase					= \DateTime::createFromFormat($system->config["data"]["datetimeFormat"], $dataBase . " 00:00:00");
+
+		#################################################################################
+		## Criar a variável dos status das contas que serão selecionadas
+		#################################################################################
+		$aStatus					= array("A");
+		
+		#################################################################################
+		## Criar os objetos do Query builder
+		#################################################################################
+		$qb1 	= $em->createQueryBuilder();
+	
+		try {
+	
+			#################################################################################
+			## Verificar se existe alguma conta a receber com categoria de mensalidades
+			#################################################################################
+			$qb1->select('cr')
+			->from('\Entidades\ZgfinContaReceber','cr')
+			->leftJoin('\Entidades\ZgfinContaReceberRateio', 'crr', \Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codigo = crr.codContaRec')
+			->where($qb1->expr()->andx(
+				$qb1->expr()->eq('cr.codOrganizacao'	, ':codOrg'),
+				$qb1->expr()->eq('cr.codPessoa'			, ':codPessoa'),
+				$qb1->expr()->in('crr.codCategoria'		, ':codCategoria'),
+				$qb1->expr()->in('cr.codStatus'			, ':codStatus'),
+				$qb1->expr()->gte('cr.dataVencimento'	, ':dataBase')
+			))
+			->setParameter('codOrg'			, $codOrganizacao)
+			->setParameter('codPessoa'		, $codFormando)
+			->setParameter('codCategoria'	, $aCat)
+			->setParameter('codStatus'		, $aStatus)
+			->setParameter('dataBase'		, $oDataBase);
+	
+			$query 		= $qb1->getQuery();
+			return  $query->getResult();
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	
 }
 

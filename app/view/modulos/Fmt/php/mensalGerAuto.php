@@ -79,10 +79,26 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	}
 	
 	#################################################################################
+	## Resgata o registro da Pessoa associada ao Formando
+	#################################################################################
+	$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$formandos[$i]->getCodigo());
+	if (!$oPessoa) 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x871FB, Pessoa não encontrada')));
+	
+	
+	#################################################################################
+	## Verifica se o formando já tem contrato
+	#################################################################################
+	$temContrato 		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codFormando' => $formandos[$i]->getCodigo()));
+	
+	#################################################################################
 	## Verificar se já foi gerada alguma mensalidade para algum formando
 	#################################################################################
-	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $formandos[$i]->getCodigo());
-	if ($temMensalidade)		\Zage\App\Erro::halt('Violação de acesso, 0x3748FE');
+	$temMensalidade				= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(), $oPessoa->getCodigo());
+
+	#################################################################################
+	## Verificar se esse formando está apto a gerar as mensalidades
+	#################################################################################
+	if (($temMensalidade) || (!$temContrato))	\Zage\App\Erro::halt('Violação de acesso, 0x3748FE');
 	
 }
 
