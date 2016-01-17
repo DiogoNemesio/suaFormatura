@@ -13,7 +13,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 global $em,$log,$system,$tr;
 
-$log->info("Post UsuarioFormandoContrato: ".serialize($_POST));
+//$log->info("Post UsuarioFormandoContrato: ".serialize($_POST));
 
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario

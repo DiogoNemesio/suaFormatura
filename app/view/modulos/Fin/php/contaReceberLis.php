@@ -39,11 +39,11 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo filtro
 #################################################################################
-if (isset($_POST['codStatus']))			$codStatus			= $_POST['codStatus'];
-if (isset($_POST['codCategoria']))		$codCategoria		= $_POST['codCategoria'];
-if (isset($_POST['codFormaPag']))		$codFormaPag		= $_POST['codFormaPag'];
-if (isset($_POST['codCentroCusto']))	$codCentroCusto		= $_POST['codCentroCusto'];
-if (isset($_POST['codContaRec']))		$codContaRec		= $_POST['codContaRec'];
+if (isset($_POST['codStatus']))			$codStatus			= \Zage\App\Util::antiInjection($_POST['codStatus']);
+if (isset($_POST['codCategoria']))		$codCategoria		= \Zage\App\Util::antiInjection($_POST['codCategoria']);
+if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
+if (isset($_POST['codCentroCusto']))	$codCentroCusto		= \Zage\App\Util::antiInjection($_POST['codCentroCusto']);
+if (isset($_POST['codContaRec']))		$codContaRec		= \Zage\App\Util::antiInjection($_POST['codContaRec']);
 if (isset($_POST['codTipoFiltro']))		$codTipoFiltro		= \Zage\App\Util::antiInjection($_POST['codTipoFiltro']);
 if (isset($_POST['dataFiltro']))		$dataFiltro			= \Zage\App\Util::antiInjection($_POST['dataFiltro']);
 if (isset($_POST['mesFiltro']))			$mesFiltro			= \Zage\App\Util::antiInjection($_POST['mesFiltro']);
@@ -57,15 +57,16 @@ if (isset($_POST['valorFim']))			$valorFim			= \Zage\App\Util::antiInjection($_P
 if (isset($_POST['descricao']))			$descricao			= \Zage\App\Util::antiInjection($_POST['descricao']);
 if (isset($_POST['cliente']))			$cliente			= \Zage\App\Util::antiInjection($_POST['cliente']);
 
-
 #################################################################################
 ## Ajustar valores dos arrays
 #################################################################################
-$codCategoria	= (isset($codCategoria))	? $codCategoria 	: array();
-$codStatus		= (isset($codStatus)) 		? $codStatus		: array();
-$codCentroCusto	= (isset($codCentroCusto))	? $codCentroCusto	: array();
-$codFormaPag	= (isset($codFormaPag)) 	? $codFormaPag		: array();
-$codContaRec	= (isset($codContaRec)) 	? $codContaRec		: array();
+if (isset($_POST['descricao'])) {
+	$codCategoria	= (isset($codCategoria))	? $codCategoria 	: array();
+	$codStatus		= (isset($codStatus)) 		? $codStatus		: array();
+	$codCentroCusto	= (isset($codCentroCusto))	? $codCentroCusto	: array();
+	$codFormaPag	= (isset($codFormaPag)) 	? $codFormaPag		: array();
+	$codContaRec	= (isset($codContaRec)) 	? $codContaRec		: array();
+}
 
 #################################################################################
 ## Ajustar valores padrão das datas
@@ -92,6 +93,26 @@ if (!isset($_SESSION["_CRLIS_valorIniFiltro"]))				$_SESSION["_CRLIS_valorIniFil
 if (!isset($_SESSION["_CRLIS_valorFimFiltro"]))				$_SESSION["_CRLIS_valorFimFiltro"]			= null;
 if (!isset($_SESSION["_CRLIS_descricaoFiltro"]))			$_SESSION["_CRLIS_descricaoFiltro"]			= null;
 if (!isset($_SESSION["_CRLIS_clienteFiltro"]))				$_SESSION["_CRLIS_clienteFiltro"]			= null;
+
+
+#################################################################################
+## Verificar se tem algum filtro aplicado, para destacar o botão do filtro
+#################################################################################
+if ($_SESSION["_CRLIS_codStatusFiltro"] 		||
+	$_SESSION["_CRLIS_codFormaPagFiltro"]		||
+	$_SESSION["_CRLIS_codCategoriaFiltro"]		||
+	$_SESSION["_CRLIS_codCentroCustoFiltro"]	||
+	$_SESSION["_CRLIS_codContaRecFiltro"]		||
+	$_SESSION["_CRLIS_valorIniFiltro"]			||
+	$_SESSION["_CRLIS_valorFimFiltro"]			||	
+	$_SESSION["_CRLIS_descricaoFiltro"]			||
+	$_SESSION["_CRLIS_clienteFiltro"]
+	) {
+	$temFiltroAplicado		= 1;
+}else{
+	$temFiltroAplicado		= 0;
+}
+
 
 if (isset($dataFiltro)		&& $dataFiltro == "all")		{
 	$_SESSION["_CRLIS_dataFiltro"] 		= null;
@@ -524,7 +545,7 @@ $urlAdd			= ROOT_URL.'/Fin/contaReceberAlt.php?id='.\Zage\App\Util::encodeUrl('_
 #################################################################################
 ## Gerar a url de filtro
 #################################################################################
-$urlFiltroData		= ROOT_URL . "/Fin/contaReceberLisFiltroData.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codTipoFiltro='.$_SESSION["_CRLIS_codTipoFiltro"].'&dataFiltro='.$_SESSION["_CRLIS_dataFiltro"].'&mesFiltro='.$_SESSION["_CRLIS_mesFiltro"].'&dataIniFiltro='.$_SESSION["_CRLIS_dataIniFiltro"].'&dataFimFiltro='.$_SESSION["_CRLIS_dataFimFiltro"]);
+$urlFiltroData		= ROOT_URL . "/Fin/contaReceberLisFiltroData.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codTipoFiltro='.$_SESSION["_CRLIS_codTipoFiltro"].'&dataFiltro='.$_SESSION["_CRLIS_dataFiltro"].'&mesFiltro='.$_SESSION["_CRLIS_mesFiltro"].'&dataIniFiltro='.$_SESSION["_CRLIS_dataIniFiltro"].'&dataFimFiltro='.$_SESSION["_CRLIS_dataFimFiltro"]."&temFiltroAplicado=".$temFiltroAplicado);
 $urlFiltro			= ROOT_URL . "/Fin/contaReceberLisFiltro.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 
 #################################################################################

@@ -123,8 +123,8 @@ $grid->adicionaCheckBox($checkboxName);
 $grid->adicionaTexto($tr->trans('NOME'),				25	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					13	,$grid::CENTER	,'cpf','cpf');
 $grid->adicionaTexto($tr->trans('STATUS'),				17	,$grid::CENTER	,'');
-$grid->adicionaMoeda($tr->trans('R$ PROVISIONADO'),		15	,$grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('R$ PROVISIONAR'),		15	,$grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans('R$ GERADO'),			15	,$grid::CENTER	,'');
+$grid->adicionaTexto($tr->trans('R$ A GERAR'),			15	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('MESES USO'),			10	,$grid::CENTER	,'');
 $grid->importaDadosDoctrine($formandos);
 

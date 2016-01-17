@@ -35,12 +35,12 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
-$codTipoFiltro	= (isset($codTipoFiltro)) 	? $codTipoFiltro		: 'D';
-$dataFiltro		= (isset($dataFiltro)) 		? $dataFiltro			: date($system->config["data"]["dateFormat"]);
-$mesFiltro		= (isset($mesFiltro)) 		? $mesFiltro			: date('m/Y');
-$dataIniFiltro	= (isset($dataIniFiltro)) 	? $dataIniFiltro		: date($system->config["data"]["dateFormat"]);
-$dataFimFiltro	= (isset($dataFimFiltro)) 	? $dataFimFiltro		: date($system->config["data"]["dateFormat"]);
-
+$codTipoFiltro		= (isset($codTipoFiltro)) 		? $codTipoFiltro		: 'D';
+$dataFiltro			= (isset($dataFiltro)) 			? $dataFiltro			: date($system->config["data"]["dateFormat"]);
+$mesFiltro			= (isset($mesFiltro)) 			? $mesFiltro			: date('m/Y');
+$dataIniFiltro		= (isset($dataIniFiltro)) 		? $dataIniFiltro		: date($system->config["data"]["dateFormat"]);
+$dataFimFiltro		= (isset($dataFimFiltro)) 		? $dataFimFiltro		: date($system->config["data"]["dateFormat"]);
+$temFiltroAplicado	= (isset($temFiltroAplicado)) 	? $temFiltroAplicado	: 0;
 
 #################################################################################
 ## Calcula o texto do filtro
@@ -60,6 +60,18 @@ if ($codTipoFiltro == "D")	{
 	}else{
 		$texto			= $tr->trans("Todos os dias");
 	}
+}
+
+
+#################################################################################
+## Aplicar as classes do botão e ícone do filtro
+#################################################################################
+if ($temFiltroAplicado)	{
+	$icFilterClass		= "white";
+	$btnFilterClass		= "btn-warning";
+}else{
+	$icFilterClass		= "grey";
+	$btnFilterClass		= "btn-white";
 }
 
 #################################################################################
@@ -86,6 +98,9 @@ $tpl->set('DATA_FIM_FILTRO'		,$dataFimFiltro);
 $tpl->set('FILTER_URL'			,$urlFiltro);
 $tpl->set('DIVCENTRAL'			,$system->getDivCentral());
 $tpl->set('TEXTO_FILTRO'		,$texto);
+$tpl->set('IC_FILTER_CLASS'		,$icFilterClass);
+$tpl->set('BTN_FILTER_CLASS'	,$btnFilterClass);
+
 
 #################################################################################
 ## Por fim exibir a página HTML

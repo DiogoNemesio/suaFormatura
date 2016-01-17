@@ -318,10 +318,10 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			}
 		}
 		
-		$_valorTotal				= round($_valorTotal,2);
-		
-		if (floatval($_valorTotal) != floatval($this->_getValorTotal())) {
-			$log->debug("Valor informado: ".\Zage\App\Util::toPHPNumber($this->_getValorTotal())." Valor calculado: ".\Zage\App\Util::toPHPNumber($_valorTotal));
+		$_valorTotal				= \Zage\App\Util::to_float(round($_valorTotal,2));
+		$valTotalInformado			= \Zage\App\Util::to_float($this->_getValorTotal());
+		if ($_valorTotal != $valTotalInformado) {
+			$log->debug("Valor informado: ".$valTotalInformado." Valor calculado: ".$_valorTotal);
 			return $tr->trans('Valor total difere da soma de valores do array !!!');
 		}
 		
@@ -1398,6 +1398,16 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		
 		for ($i = 0; $i < sizeof($hist); $i++) {
 			$em->remove($hist[$i]);
+		}
+		
+
+		#################################################################################
+		## Apagar os históricos de geração de boleto
+		#################################################################################
+		$histBol	= $em->getRepository('Entidades\ZgfinBoletoHistorico')->findBy(array('codConta' => $codConta));
+		
+		for ($i = 0; $i < sizeof($histBol); $i++) {
+			$em->remove($histBol[$i]);
 		}
 		
 		

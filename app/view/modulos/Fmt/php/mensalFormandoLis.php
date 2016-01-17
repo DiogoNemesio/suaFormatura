@@ -40,7 +40,7 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata a url desse script
 #################################################################################
-$url		= ROOT_URL . "/Fin/". basename(__FILE__)."?id=".$id;
+$url		= ROOT_URL . "/Fmt/". basename(__FILE__);
 
 #################################################################################
 ## Resgata os dados do grid
@@ -81,8 +81,6 @@ $oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->
 
 #################################################################################
 ## Montar o array para facilitar a impressão no grid dos valores provisionados
-## Montar um array que será enviado ao Html para validar se os formandos
-## selecionados tem os mesmos valores de mensalidade e sistema
 #################################################################################
 $aValorProv				= array();
 $aCodigos				= array();
@@ -90,6 +88,38 @@ for ($i = 0; $i < sizeof($oValorProv); $i++) {
 	$total													= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
 	$aValorProv[$oValorProv[$i][0]->getCgc()]				= $total;
 }
+
+#################################################################################
+## Calcular o valor já pago por formando
+#################################################################################
+$oValorPago				= \Zage\Fmt\Financeiro::getValorPagoPorFormando($system->getCodOrganizacao());
+
+#################################################################################
+## Montar o array para facilitar a impressão no grid dos valores pagos
+#################################################################################
+$aValorPago				= array();
+if (sizeof($oValorPago) > 0) {
+	foreach ($oValorPago as $cpf => $info) {
+		$total					= \Zage\App\Util::to_float($info["mensalidade"]) + \Zage\App\Util::to_float($info["sistema"]) + \Zage\App\Util::to_float($info["juros"]) + \Zage\App\Util::to_float($info["mora"]);
+		$log->info("Total: ".$total);
+		$aValorPago[$cpf]		= $total;
+	}
+}
+
+#################################################################################
+## Calcular o valor em aberto por formando
+#################################################################################
+$oValoresDevidos			= \Zage\Fmt\Financeiro::getValorInadimplenciaPorFormando($system->getCodOrganizacao());
+$aValoresDevidos			= array();
+
+#################################################################################
+## Montar o array para facilitar a impressão no grid dos valores em aberto
+#################################################################################
+for ($i = 0; $i < sizeof($oValoresDevidos); $i++) {
+	$cpf		= $oValoresDevidos[$i][0]->getCgc();
+	$aValoresDevidos[$cpf]	= \Zage\App\Util::to_float($oValoresDevidos[$i]["valor"]) - \Zage\App\Util::to_float($oValoresDevidos[$i]["valor_pago"]);
+}
+
 
 #################################################################################
 ## Cria o objeto do Grid (bootstrap)
@@ -101,7 +131,7 @@ $grid->adicionaTexto($tr->trans('NOME'),				20	,$grid::CENTER	,'nome');
 $grid->adicionaTexto($tr->trans('CPF'),					12	,$grid::CENTER	,'cpf','cpf');
 $grid->adicionaMoeda($tr->trans('R$ GERADO'),			12	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('R$ A GERAR'),			10	,$grid::CENTER	,'');
-$grid->adicionaTexto($tr->trans('TOTAL PAGO'),			10	,$grid::CENTER	,'');
+$grid->adicionaMoeda($tr->trans('TOTAL PAGO'),			10	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('EM ATRASO'),			10	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('STATUS'),				12	,$grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-file-text-o green'		,$tr->trans('Contrato'));
@@ -179,7 +209,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		}else if ($saldo == 0) {
 				$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 		}else{
-			$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money(abs($saldo))."</span>");
+			$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 		}
 	}else{
 		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
@@ -222,9 +252,19 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Valor pago
 	#################################################################################
-	$valorPago = \Zage\Fmt\Formando::listaPagamentosRealizados($system->getCodOrganizacao(), $formandos[$i]->getCpf());
-	$grid->setValorCelula($i, 5, ($valorPago));
+	$valPago				= \Zage\App\Util::to_float($aValorPago[$formandos[$i]->getCpf()]);
+	$grid->setValorCelula($i, 5, $valPago);
 
+	#################################################################################
+	## Valor em aberto
+	#################################################################################
+	$valAberto				= \Zage\App\Util::to_float($aValoresDevidos[$formandos[$i]->getCpf()]);
+	if ($valAberto > 0){
+		$grid->setValorCelula($i, 6, "<span style='color:red'><i class='fa fa-exclamation-circle red'></i> ".\Zage\App\Util::to_money($valAberto)."</span>");
+	}else{
+		$grid->setValorCelula($i, 6, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($valAberto)."</span>");
+	}
+	
 	#################################################################################
 	## Definir a ação do botão de desistência
 	#################################################################################

@@ -74,7 +74,8 @@ class Formatura {
 			))
 			->setParameter('codOrganizacao'	, $codOrganizacao)
 			->setParameter('status'			, array("A"))
-			->setParameter('perfil'			, array(4,5));
+			->setParameter('perfil'			, array(4,5))
+			->orderBy('u.nome', 'ASC');
 	
 			$query 		= $qb->getQuery();
 			return($query->getResult());
@@ -103,7 +104,8 @@ class Formatura {
 					$qb->expr()->in('uo.codPerfil'				, ':perfil')
 			))
 			->setParameter('codOrganizacao'	, $codOrganizacao)
-			->setParameter('perfil'			, array(4,5));
+			->setParameter('perfil'			, array(4,5))
+			->orderBy('u.nome', 'ASC');
 	
 			$query 		= $qb->getQuery();
 			return($query->getResult());

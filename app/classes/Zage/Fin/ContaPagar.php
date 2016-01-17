@@ -321,10 +321,11 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			}
 		}
 		
-		$_valorTotal		= round($_valorTotal,2);
+		$_valorTotal				= \Zage\App\Util::to_float(round($_valorTotal,2));
+		$valTotalInformado			= \Zage\App\Util::to_float($this->_getValorTotal());
 		
-		if (floatval($_valorTotal) != floatval($this->_getValorTotal())) {
-			$log->debug("Valor informado: ".$this->_getValorTotal()." Valor calculado: ".$_valorTotal);
+		if ($_valorTotal != $valTotalInformado) {
+			$log->debug("Valor informado: ".$valTotalInformado." Valor calculado: ".$_valorTotal);
 			return $tr->trans('Valor total difere da soma de valores do array !!!');
 		}
 		

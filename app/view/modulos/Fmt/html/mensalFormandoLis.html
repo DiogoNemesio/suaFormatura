@@ -3,15 +3,18 @@
 	<h1>
 		<span class="text-center" style="text-align: center; display: block; margin-left: auto; margin-right: auto;">
 			<span class="pull-left">%TITULO%</span>
-			<span class="text-center" style="text-align: center;">
-				<span class="" data-toggle="buttons">
-					<button class="btn btn-app btn-primary btn-xs disabled" disabled="disabled" id="zgDivAcoesGerMenForLis1ID" onclick="zgAcaoGerSelecionadosMenForLis();"><i class="ace-icon fa fa-cog bigger-160"></i>Gerar</button>
-					<button class="btn btn-app btn-success btn-xs disabled" disabled="disabled" id="zgDivAcoesAtuMenForLis1ID" onclick="zgAcaoAtuSelecionadosMenForLis();"><i class="ace-icon fa fa-refresh bigger-160"></i>Atualizar</button>
-				</span>
-				<span class="btn-group" data-toggle="buttons">
-					<button class="btn btn-primary btn-default btn-round disabled" disabled="disabled" id="zgDivAcoesGerMenForLis2ID" onclick="zgAcaoGerSelecionadosMenForLis();"><i class="ace-icon fa fa-cog"></i>Gerar</button>
-					<button class="btn btn-success btn-default btn-round disabled" disabled="disabled" id="zgDivAcoesAtuMenForLis2ID" onclick="zgAcaoAtuSelecionadosMenForLis();"><i class="ace-icon fa fa-refresh"></i>Atualizar</button>
-				</span>
+			<span class="text-center" style="text-align: left;">
+				<div class="btn-group">
+					<button data-toggle="dropdown" id="MenForLisFiltroBtnAcaoLoteID" class="btn btn-light btn-sm dropdown-toggle">
+						<i class="ace-icon fa fa-cogs"></i>Ações em lote
+						<span class="ace-icon fa fa-caret-down icon-on-right"></span>
+					</button>
+
+					<ul class="dropdown-menu dropdown-info dropdown-menu-right">
+						<li id="zgDivAcoesGerMenForLis1ID" class="disabled" disabled="disabled"><a href="#"><i id="GerMenForLisIcoAcaoLoteID" class="ace-icon fa fa-cog grey"></i>&nbsp;Gerar</a></li>
+						<li id="zgDivAcoesAtuMenForLis1ID" class="disabled" disabled="disabled"><a href="#"><i id="AtuMenForLisIcoAcaoLoteID" class="ace-icon fa fa-refresh grey"></i>&nbsp;Atualizar</a></li>
+					</ul>
+				</div><!-- /.btn-group -->
 			</span>
 		</span>
 	</h1>
@@ -37,7 +40,7 @@ var $aCodigos	= '%JSON_CODIGOS%';
 var oTable		= $('#GMensalidadeFormandoID').dataTable();
 
 $( document ).ready(function() {
-	$('#zgGridCustomHeaderID').html('<div class="btn-group btn-corner center center-block text-center pull-center" style="text-align: center !important;"><span id="CRLisFiltroPopoverID" style="width: 200px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >Ações em Lote</span><div class="inline dropdown dropup btn btn-white btn-sm" id="MenForLisFiltroDivAcaoLoteID"><a href="#" data-toggle="dropdown" class="disabled" id="MenForLisFiltroBtnAcaoLoteID"><span class="fa"><i class="fa fa-cogs bigger-120 grey" id="MenForLisFiltroIco1AcaoLoteID"></i><i class="fa fa-ban fa-stack-1x bigger-150 red" id="MenForLisFiltroIco2AcaoLoteID"></i></span></a><ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret"><li class="active"><a href="#"><div class="center small bolder blue">Ações em Lote</div></a></li><li><a href="#"><div class="inline" id="zgDivAcoesGerMenForLisID" style="width: 30px;"></div><div class="inline" id="zgDivAcoesAtuMenForLisID" style="width: 30px;"></div></a></li></ul></div></div>');
+	//$('#zgGridCustomHeaderID').html('<div class="btn-group btn-corner center center-block text-center pull-center" style="text-align: center !important;"><span id="CRLisFiltroPopoverID" style="width: 200px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >Ações em Lote</span><div class="inline dropdown dropup btn btn-white btn-sm" id="MenForLisFiltroDivAcaoLoteID"><a href="#" data-toggle="dropdown" class="disabled" id="MenForLisFiltroBtnAcaoLoteID"><span class="fa"><i class="fa fa-cogs bigger-120 grey" id="MenForLisFiltroIco1AcaoLoteID"></i><i class="fa fa-ban fa-stack-1x bigger-150 red" id="MenForLisFiltroIco2AcaoLoteID"></i></span></a><ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret"><li class="active"><a href="#"><div class="center small bolder blue">Ações em Lote</div></a></li><li><a href="#"><div class="inline" id="zgDivAcoesGerMenForLisID" style="width: 30px;"></div><div class="inline" id="zgDivAcoesAtuMenForLisID" style="width: 30px;"></div></a></li></ul></div></div>');
 	
 	oTable.on( 'change', 'input[name="%CHECK_NAME%[]"]', function () {
 		var $count 		= oTable.$('input[name="%CHECK_NAME%[]"]:checked').length;
@@ -95,6 +98,8 @@ function zgHabilitaAcoesMenForLis() {
 	var $jCodigos = jQuery.parseJSON($aCodigos);
 	var $aPodeGer	= [];
 	var	$aPodeAtu	= [];
+	var $urlGer		= 'javascript:zgAcaoGerSelecionadosMenForLis();';
+	var $urlAtu		= 'javascript:zgAcaoAtuSelecionadosMenForLis();';
 	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
 		var $codigo	= $(this).val();
 		if ($jCodigos[$codigo] != undefined) {
@@ -140,51 +145,58 @@ function zgHabilitaAcoesMenForLis() {
 	if ($_podeGer == true) {
 		$('#zgDivAcoesGerMenForLis1ID').attr("disabled",false);
 		$('#zgDivAcoesGerMenForLis1ID').removeClass("disabled");
-		$('#zgDivAcoesGerMenForLis2ID').attr("disabled",false);
-		$('#zgDivAcoesGerMenForLis2ID').removeClass("disabled");
+		$('#zgDivAcoesGerMenForLis1ID a').attr("href",$urlGer);
+		$("#GerMenForLisIcoAcaoLoteID").removeClass("grey");
+		$("#GerMenForLisIcoAcaoLoteID").addClass("blue");
+		
 	}else{
 		$('#zgDivAcoesGerMenForLis1ID').attr("disabled","disabled");
 		$('#zgDivAcoesGerMenForLis1ID').addClass("disabled");
-		$('#zgDivAcoesGerMenForLis2ID').attr("disabled","disabled");
-		$('#zgDivAcoesGerMenForLis2ID').addClass("disabled");
+		$('#zgDivAcoesGerMenForLis1ID a').attr("href","#");
+		$("#GerMenForLisIcoAcaoLoteID").removeClass("blue");
+		$("#GerMenForLisIcoAcaoLoteID").addClass("grey");
 	}
 
 	if ($_podeAtu == true) {
 		$('#zgDivAcoesAtuMenForLis1ID').attr("disabled",false);
 		$('#zgDivAcoesAtuMenForLis1ID').removeClass("disabled");
-		$('#zgDivAcoesAtuMenForLis2ID').attr("disabled",false);
-		$('#zgDivAcoesAtuMenForLis2ID').removeClass("disabled");
+		$('#zgDivAcoesAtuMenForLis1ID a').attr("href",$urlAtu);
+		$("#AtuMenForLisIcoAcaoLoteID").removeClass("grey");
+		$("#AtuMenForLisIcoAcaoLoteID").addClass("green");
 	}else{
 		$('#zgDivAcoesAtuMenForLis1ID').attr("disabled","disabled");
 		$('#zgDivAcoesAtuMenForLis1ID').addClass("disabled");
-		$('#zgDivAcoesAtuMenForLis2ID').attr("disabled","disabled");
-		$('#zgDivAcoesAtuMenForLis2ID').addClass("disabled");
+		$('#zgDivAcoesAtuMenForLis1ID a').attr("href","#");
+		$("#AtuMenForLisIcoAcaoLoteID").removeClass("green");
+		$("#AtuMenForLisIcoAcaoLoteID").addClass("grey");
 	}
 
 	
 	$('#MenForLisFiltroBtnAcaoLoteID').attr("disabled",false);
 	$('#MenForLisFiltroBtnAcaoLoteID').removeClass("disabled");
-	$("#MenForLisFiltroIco1AcaoLoteID").removeClass("grey");
-	$("#MenForLisFiltroIco1AcaoLoteID").addClass("blue");
-	$("#MenForLisFiltroIco2AcaoLoteID").addClass("hidden");
+	$('#MenForLisFiltroBtnAcaoLoteID').removeClass("btn-light");
+	$('#MenForLisFiltroBtnAcaoLoteID').addClass("btn-info");
+	
+	//$("#MenForLisFiltroIco1AcaoLoteID").removeClass("grey");
+	//$("#MenForLisFiltroIco1AcaoLoteID").addClass("blue");
+	//$("#MenForLisFiltroIco2AcaoLoteID").addClass("hidden");
 }
 
 function zgDesabilitaAcoesMenForLis() {
 	$('#MenForLisFiltroBtnAcaoLoteID').attr("disabled","disabled");
 	$('#MenForLisFiltroBtnAcaoLoteID').addClass("disabled");
-	$("#MenForLisFiltroIco1AcaoLoteID").removeClass("blue");
-	$("#MenForLisFiltroIco1AcaoLoteID").addClass("grey");
-	$("#MenForLisFiltroIco2AcaoLoteID").removeClass("hidden");
+	$('#MenForLisFiltroBtnAcaoLoteID').removeClass("btn-info");
+	$('#MenForLisFiltroBtnAcaoLoteID').addClass("btn-light");
+
+	//$("#MenForLisFiltroIco1AcaoLoteID").removeClass("blue");
+	//$("#MenForLisFiltroIco1AcaoLoteID").addClass("grey");
+	//$("#MenForLisFiltroIco2AcaoLoteID").removeClass("hidden");
 
 	$('#zgDivAcoesGerMenForLis1ID').attr("disabled","disabled");
 	$('#zgDivAcoesGerMenForLis1ID').addClass("disabled");
-	$('#zgDivAcoesGerMenForLis2ID').attr("disabled","disabled");
-	$('#zgDivAcoesGerMenForLis2ID').addClass("disabled");
 
 	$('#zgDivAcoesAtuMenForLis1ID').attr("disabled","disabled");
 	$('#zgDivAcoesAtuMenForLis1ID').addClass("disabled");
-	$('#zgDivAcoesAtuMenForLis2ID').attr("disabled","disabled");
-	$('#zgDivAcoesAtuMenForLis2ID').addClass("disabled");
 
 
 }

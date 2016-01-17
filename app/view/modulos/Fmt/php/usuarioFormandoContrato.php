@@ -158,7 +158,12 @@ try {
 ## Urls
 #################################################################################
 $uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
-$urlVoltar			= ROOT_URL . "/Fmt/usuarioFormandoLis.php?id=".$uid;
+if (!isset($urlVoltar) || (!$urlVoltar)) {
+	$urlVoltar			= ROOT_URL . "/Fmt/usuarioFormandoLis.php?id=".$uid;
+}else{
+	$urlVoltar			= $urlVoltar . "?id=".$id;
+}
+
 
 #################################################################################
 ## Carregando o template html

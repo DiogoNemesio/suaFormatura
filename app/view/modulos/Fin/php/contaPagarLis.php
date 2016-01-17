@@ -41,11 +41,11 @@ $system->checaPermissao($_codMenu_);
 #################################################################################
 ## Resgata os parâmetros passados pelo filtro
 #################################################################################
-if (isset($_POST['codStatus']))			$codStatus			= $_POST['codStatus'];
-if (isset($_POST['codCategoria']))		$codCategoria		= $_POST['codCategoria'];
-if (isset($_POST['codFormaPag']))		$codFormaPag		= $_POST['codFormaPag'];
-if (isset($_POST['codCentroCusto']))	$codCentroCusto		= $_POST['codCentroCusto'];
-if (isset($_POST['codContaPag']))		$codContaPag		= $_POST['codContaPag'];
+if (isset($_POST['codStatus']))			$codStatus			= \Zage\App\Util::antiInjection($_POST['codStatus']);
+if (isset($_POST['codCategoria']))		$codCategoria		= \Zage\App\Util::antiInjection($_POST['codCategoria']);
+if (isset($_POST['codFormaPag']))		$codFormaPag		= \Zage\App\Util::antiInjection($_POST['codFormaPag']);
+if (isset($_POST['codCentroCusto']))	$codCentroCusto		= \Zage\App\Util::antiInjection($_POST['codCentroCusto']);
+if (isset($_POST['codContaPag']))		$codContaPag		= \Zage\App\Util::antiInjection($_POST['codContaPag']);
 if (isset($_POST['codTipoFiltro']))		$codTipoFiltro		= \Zage\App\Util::antiInjection($_POST['codTipoFiltro']);
 if (isset($_POST['dataFiltro']))		$dataFiltro			= \Zage\App\Util::antiInjection($_POST['dataFiltro']);
 if (isset($_POST['mesFiltro']))			$mesFiltro			= \Zage\App\Util::antiInjection($_POST['mesFiltro']);
@@ -63,11 +63,13 @@ if (isset($_POST['fornecedor']))		$fornecedor			= \Zage\App\Util::antiInjection(
 #################################################################################
 ## Ajustar valores dos arrays
 #################################################################################
-$codCategoria	= (isset($codCategoria))	? $codCategoria 	: array();
-$codStatus		= (isset($codStatus)) 		? $codStatus		: array();
-$codCentroCusto	= (isset($codCentroCusto))	? $codCentroCusto	: array();
-$codFormaPag	= (isset($codFormaPag)) 	? $codFormaPag		: array();
-$codContaPag	= (isset($codContaPag)) 	? $codContaPag		: array();
+if (isset($_POST['descricao'])) {
+	$codCategoria	= (isset($codCategoria)		&& !$codCategoria)		? $codCategoria 	: array();
+	$codStatus		= (isset($codStatus)		&& !$codStatus) 		? $codStatus		: array();
+	$codCentroCusto	= (isset($codCentroCusto)	&& !$codCentroCusto)	? $codCentroCusto	: array();
+	$codFormaPag	= (isset($codFormaPag)		&& !$codFormaPag) 		? $codFormaPag		: array();
+	$codContaPag	= (isset($codContaPag)		&& !$codContaPag) 		? $codContaPag		: array();
+}
 
 #################################################################################
 ## Ajustar valores padrão das datas
@@ -94,6 +96,24 @@ if (!isset($_SESSION["_CPLIS_valorIniFiltro"]))				$_SESSION["_CPLIS_valorIniFil
 if (!isset($_SESSION["_CPLIS_valorFimFiltro"]))				$_SESSION["_CPLIS_valorFimFiltro"]			= null;
 if (!isset($_SESSION["_CPLIS_descricaoFiltro"]))			$_SESSION["_CPLIS_descricaoFiltro"]			= null;
 if (!isset($_SESSION["_CPLIS_fornecedorFiltro"]))			$_SESSION["_CPLIS_fornecedorFiltro"]		= null;
+
+#################################################################################
+## Verificar se tem algum filtro aplicado, para destacar o botão do filtro
+#################################################################################
+if ($_SESSION["_CPLIS_codStatusFiltro"] 		||
+	$_SESSION["_CPLIS_codFormaPagFiltro"]		||
+	$_SESSION["_CPLIS_codCategoriaFiltro"]		||
+	$_SESSION["_CPLIS_codCentroCustoFiltro"]	||
+	$_SESSION["_CPLIS_codContaPagFiltro"]		||
+	$_SESSION["_CPLIS_valorIniFiltro"]			||
+	$_SESSION["_CPLIS_valorFimFiltro"]			||
+	$_SESSION["_CPLIS_descricaoFiltro"]			||
+	$_SESSION["_CPLIS_fornecedorFiltro"]
+) {
+	$temFiltroAplicado		= 1;
+}else{
+	$temFiltroAplicado		= 0;
+}
 
 
 if (isset($dataFiltro)		&& $dataFiltro == "all")		{
@@ -517,7 +537,7 @@ $urlAdd			= ROOT_URL.'/Fin/contaPagarAlt.php?id='.\Zage\App\Util::encodeUrl('_co
 #################################################################################
 ## Gerar a url de filtro
 #################################################################################
-$urlFiltroData		= ROOT_URL . "/Fin/contaPagarLisFiltroData.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codTipoFiltro='.$_SESSION["_CPLIS_codTipoFiltro"].'&dataFiltro='.$_SESSION["_CPLIS_dataFiltro"].'&mesFiltro='.$_SESSION["_CPLIS_mesFiltro"].'&dataIniFiltro='.$_SESSION["_CPLIS_dataIniFiltro"].'&dataFimFiltro='.$_SESSION["_CPLIS_dataFimFiltro"]);
+$urlFiltroData		= ROOT_URL . "/Fin/contaPagarLisFiltroData.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codTipoFiltro='.$_SESSION["_CPLIS_codTipoFiltro"].'&dataFiltro='.$_SESSION["_CPLIS_dataFiltro"].'&mesFiltro='.$_SESSION["_CPLIS_mesFiltro"].'&dataIniFiltro='.$_SESSION["_CPLIS_dataIniFiltro"].'&dataFimFiltro='.$_SESSION["_CPLIS_dataFimFiltro"]."&temFiltroAplicado=".$temFiltroAplicado);
 $urlFiltro			= ROOT_URL . "/Fin/contaPagarLisFiltro.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
 
 #################################################################################
