@@ -238,7 +238,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	if (($temMensalidade) || (!$temContrato))		{
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_GERAR"]	= 0;
 	}else{
-		$log->info("Formando: (".$formandos[$i]->getCodigo().") CPF: ".$formandos[$i]->getCpf()." pode gerar, temContrato: ".(($temContrato) ? 1 : 0)." temMensalidade: ".var_dump($temMensalidade));
+		//$log->info("Formando: (".$formandos[$i]->getCodigo().") CPF: ".$formandos[$i]->getCpf()." pode gerar, temContrato: ".(($temContrato) ? 1 : 0)." temMensalidade: ".var_dump($temMensalidade));
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_GERAR"]	= 1;
 	}
 	

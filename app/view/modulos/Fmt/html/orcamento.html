@@ -808,19 +808,28 @@ function orcAtualizaCustoFinal() {
 	/**
 	 * Calcula o valor de uso do sistema e outros custos 
 	 */
-	 var $numMeses			= parseInt($('#numMesesID').val()) - 1;
+	 var $numMeses			= parseInt($('#numMesesID').val());
+	 var $numPrestacoes		= ($numMeses - 1);
 	 if (isNaN($numMeses)) {
 		 return;
 	 }
+	 if ($numMeses < 0 ) {
+		 $numMeses	= 0;
+	 }
+	 
+	 if ($numPrestacoes <= 0) {
+		 $numPrestacoes	= 1;
+	 } 
+	 
 	 var $valSistema		= ($numMeses * $taxaSistema);
 	 var $valTotal			= ($custoFinal + (($valSistema) * $numFormando));
 	 if ($numMeses > 0) 	{
-		 var $valMensalidade	= (($valTotal / $numFormando) / $numMeses);
+		 var $valMensalidade	= (($valTotal / $numFormando) / $numPrestacoes);
 	 }else{
 		 var $valMensalidade	= (($valTotal / $numFormando));
 	 }
 	 
-	 var $custoFormando		= ($valMensalidade * $numMeses);
+	 var $custoFormando		= ($valMensalidade * $numPrestacoes);
 
 	 var $spTotalSistema	= $('#orcCustoSistemaID');
 	 var $spTotalFormando	= $('#orcCustoFormandoID');
@@ -831,7 +840,7 @@ function orcAtualizaCustoFinal() {
 	$spTotalSistema.html(accounting.formatMoney($valSistema, options) + " por formando");
 	$spTotalFormando.html(accounting.formatMoney($custoFormando, options) + " (total por formando)");
 	$spCustoFinal.html(accounting.formatMoney($valTotal, options));
-	$spMensalidade.html($numMeses + " x " + accounting.formatMoney($valMensalidade, options) + " (sugestão de mensalidade)");
+	$spMensalidade.html($numPrestacoes + " x " + accounting.formatMoney($valMensalidade, options) + " (sugestão de mensalidade)");
 }
 
 function orcAtualizaBotoes() {
