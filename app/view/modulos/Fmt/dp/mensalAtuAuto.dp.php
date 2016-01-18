@@ -235,12 +235,12 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	## Calcular se falta provisionar algo de sistema, pois o prazo da formatura
 	## pode ter sido extendido
 	#################################################################################
-	$saldoSistema		= $valTotalSistema - $aValorProv[$formandos[$i]->getCpf()]["SISTEMA"];
+	$saldoSistema		= round($valTotalSistema - $aValorProv[$formandos[$i]->getCpf()]["SISTEMA"],2);
 	
 	#################################################################################
 	## Calcular o saldo de mensalidade, será o saldo a provisionar - o saldo de sistema
 	#################################################################################
-	$saldoMensalidade	= $aSaldo[$i]		- $saldoSistema;
+	$saldoMensalidade	= round($aSaldo[$i]		- $saldoSistema,2);
 	
 	if (($saldoMensalidade < 0) || ($saldoSistema < 0))  {
 		$log->err("0x9FF432: ValTotalSistema: $valTotalSistema, SaldoSistema: $saldoSistema, SaldoMensalidade: $saldoMensalidade, Saldo: ".$aSaldo[$i]);
