@@ -423,7 +423,7 @@ class Pessoa extends \Entidades\ZgfinPessoa {
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
-		global $em,$system;
+		global $em,$system,$log;
 		
 		#################################################################################
 		## Verifica se a formatura está sendo administrada por um Cerimonial,

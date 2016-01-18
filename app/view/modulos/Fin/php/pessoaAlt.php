@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$log,$tr;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -281,14 +286,10 @@ for ($i = 0; $i < sizeof($aTelefones); $i++) {
 ## Resgatar os dados de conta
 #################################################################################
 if ($indParceiro ==  true){
-	$log->info('entrei1');
 	$aContas		= $em->getRepository('Entidades\ZgfinPessoaConta')->findBy(array('codPessoa' => $codPessoa));
 }else{
-	$log->info('entrei2');
 	$aContas		= $em->getRepository('Entidades\ZgfinPessoaContaOrganizacao')->findBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
 }
-
-$log->info($aContas);
 
 $tabConta		= "";
 for ($i = 0; $i < sizeof($aContas); $i++) {

@@ -7,7 +7,12 @@ if (defined('DOC_ROOT')) {
 }else{
  	include_once('../include.php');
 }
- 
+
+#################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system,$log,$tr;
+
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario
 #################################################################################
@@ -228,9 +233,6 @@ try {
  		if (!$oPessoa) {
  			$oPessoa	= new \Entidades\ZgfinPessoa();
  			$oPessoa->setDataCadastro(new \DateTime("now"));
- 			$oPessoa->setIndCliente(0);
- 			$oPessoa->setIndFornecedor(0);
- 			$oPessoa->setIndTransportadora(0);
  		}
  	}else{
  		$oPessoa	= $em->getRepository('Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $cgc));
@@ -281,6 +283,8 @@ try {
  		$oPessoaOrg->setIndCliente(0);
  		$oPessoaOrg->setIndFornecedor(0);
  		$oPessoaOrg->setIndTransportadora(0);
+ 		$oPessoaOrg->setIndFormando(0);
+ 	
  	}else{
  		$oEndereco	= $em->getRepository('Entidades\ZgfinPessoaEnderecoOrganizacao')->findOneBy(array('codPessoa' => $codPessoa));
  		

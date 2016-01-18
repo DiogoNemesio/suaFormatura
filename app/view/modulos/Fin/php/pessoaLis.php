@@ -86,6 +86,17 @@ $tipoOrg	= $oOrg->getCodTipo()->getCodigo();
 
 
 #################################################################################
+## Verifica se a organização é uma formatura e se @author cassela
+## administrada por um Cerimonial, para resgatar as pessoas do cerimonial também
+#################################################################################
+if ($tipoOrg == "FMT") {
+	$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+}else{
+	$oFmtAdm		= null;
+}
+
+
+#################################################################################
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($pessoas); $i++) {
@@ -102,9 +113,10 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 	#################################################################################
 	## STATUS
 	#################################################################################
-	$oPessoOrg = $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codPessoa' => $pessoas[$i]->getCodigo()));
+	if ($oFmtAdm) 		$oPessoOrg = $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $oFmtAdm->getCodigo() , 'codPessoa' => $pessoas[$i]->getCodigo()));
+	if (!$oPessoOrg)	$oPessoOrg = $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $oOrg->getCodigo() , 'codPessoa' => $pessoas[$i]->getCodigo()));
 	
-	if ($oPessoOrg->getIndAtivo() == 1){
+	if (is_object($oPessoOrg) && $oPessoOrg->getIndAtivo() == 1){
 		$grid->setValorCelula($i,4,"<span class=\"label label-success\">ATIVO</span>");
 	}else{
 		$grid->setValorCelula($i,4,"<span class=\"label label-danger\">INATIVO</span>");
