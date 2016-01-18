@@ -36,6 +36,27 @@ class ZgfmtOrganizacaoCerimonial
     private $pctDesconto;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_VENDEDOR_ACEITE", type="integer", nullable=true)
+     */
+    private $indVendedorAceite;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_VENDEDOR_DESMARCAR_PADRAO", type="integer", nullable=true)
+     */
+    private $indVendedorDesmarcarPadrao;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_VENDEDOR_DAR_CORTESIA", type="integer", nullable=true)
+     */
+    private $indVendedorDarCortesia;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -110,6 +131,75 @@ class ZgfmtOrganizacaoCerimonial
     public function getPctDesconto()
     {
         return $this->pctDesconto;
+    }
+
+    /**
+     * Set indVendedorAceite
+     *
+     * @param integer $indVendedorAceite
+     * @return ZgfmtOrganizacaoCerimonial
+     */
+    public function setIndVendedorAceite($indVendedorAceite)
+    {
+        $this->indVendedorAceite = $indVendedorAceite;
+
+        return $this;
+    }
+
+    /**
+     * Get indVendedorAceite
+     *
+     * @return integer 
+     */
+    public function getIndVendedorAceite()
+    {
+        return $this->indVendedorAceite;
+    }
+
+    /**
+     * Set indVendedorDesmarcarPadrao
+     *
+     * @param integer $indVendedorDesmarcarPadrao
+     * @return ZgfmtOrganizacaoCerimonial
+     */
+    public function setIndVendedorDesmarcarPadrao($indVendedorDesmarcarPadrao)
+    {
+        $this->indVendedorDesmarcarPadrao = $indVendedorDesmarcarPadrao;
+
+        return $this;
+    }
+
+    /**
+     * Get indVendedorDesmarcarPadrao
+     *
+     * @return integer 
+     */
+    public function getIndVendedorDesmarcarPadrao()
+    {
+        return $this->indVendedorDesmarcarPadrao;
+    }
+
+    /**
+     * Set indVendedorDarCortesia
+     *
+     * @param integer $indVendedorDarCortesia
+     * @return ZgfmtOrganizacaoCerimonial
+     */
+    public function setIndVendedorDarCortesia($indVendedorDarCortesia)
+    {
+        $this->indVendedorDarCortesia = $indVendedorDarCortesia;
+
+        return $this;
+    }
+
+    /**
+     * Get indVendedorDarCortesia
+     *
+     * @return integer 
+     */
+    public function getIndVendedorDarCortesia()
+    {
+        return $this->indVendedorDarCortesia;
     }
 
     /**

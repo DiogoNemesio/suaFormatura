@@ -71,6 +71,13 @@ class ZgfmtPlanoOrcItem
     private $valorPadrao;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_MAX_DESCONTO_VENDEDOR", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctMaxDescontoVendedor;
+
+    /**
      * @var \Entidades\ZgfmtPlanoOrcamentario
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtPlanoOrcamentario")
@@ -280,6 +287,29 @@ class ZgfmtPlanoOrcItem
     public function getValorPadrao()
     {
         return $this->valorPadrao;
+    }
+
+    /**
+     * Set pctMaxDescontoVendedor
+     *
+     * @param float $pctMaxDescontoVendedor
+     * @return ZgfmtPlanoOrcItem
+     */
+    public function setPctMaxDescontoVendedor($pctMaxDescontoVendedor)
+    {
+        $this->pctMaxDescontoVendedor = $pctMaxDescontoVendedor;
+
+        return $this;
+    }
+
+    /**
+     * Get pctMaxDescontoVendedor
+     *
+     * @return float 
+     */
+    public function getPctMaxDescontoVendedor()
+    {
+        return $this->pctMaxDescontoVendedor;
     }
 
     /**

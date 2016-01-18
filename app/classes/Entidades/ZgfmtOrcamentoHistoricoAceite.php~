@@ -29,9 +29,9 @@ class ZgfmtOrcamentoHistoricoAceite
     private $valorTotal;
 
     /**
-     * @var integer
+     * @var \DateTime
      *
-     * @ORM\Column(name="DATA_CADASTRO", type="integer", nullable=false)
+     * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
      */
     private $dataCadastro;
 
@@ -92,7 +92,7 @@ class ZgfmtOrcamentoHistoricoAceite
     /**
      * Set dataCadastro
      *
-     * @param integer $dataCadastro
+     * @param \DateTime $dataCadastro
      * @return ZgfmtOrcamentoHistoricoAceite
      */
     public function setDataCadastro($dataCadastro)
@@ -105,7 +105,7 @@ class ZgfmtOrcamentoHistoricoAceite
     /**
      * Get dataCadastro
      *
-     * @return integer 
+     * @return \DateTime 
      */
     public function getDataCadastro()
     {
