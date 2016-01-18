@@ -42,7 +42,7 @@ class DB {
 	public function __construct() {
 		global $system,$log;
 	
-		$log->debug(__CLASS__.": nova instância");
+		//$log->debug(__CLASS__.": nova instância");
 	}
 	
 	/**
