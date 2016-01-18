@@ -53,16 +53,6 @@ class ZgsegUsuarioOrganizacao
     private $codUsuario;
 
     /**
-     * @var \Entidades\ZgsegPerfil
-     *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegPerfil")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PERFIL", referencedColumnName="CODIGO")
-     * })
-     */
-    private $codPerfil;
-
-    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -81,6 +71,16 @@ class ZgsegUsuarioOrganizacao
      * })
      */
     private $codStatus;
+
+    /**
+     * @var \Entidades\ZgsegPerfil
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgsegPerfil")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_PERFIL", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codPerfil;
 
 
     /**
@@ -186,29 +186,6 @@ class ZgsegUsuarioOrganizacao
     }
 
     /**
-     * Set codPerfil
-     *
-     * @param \Entidades\ZgsegPerfil $codPerfil
-     * @return ZgsegUsuarioOrganizacao
-     */
-    public function setCodPerfil(\Entidades\ZgsegPerfil $codPerfil = null)
-    {
-        $this->codPerfil = $codPerfil;
-
-        return $this;
-    }
-
-    /**
-     * Get codPerfil
-     *
-     * @return \Entidades\ZgsegPerfil 
-     */
-    public function getCodPerfil()
-    {
-        return $this->codPerfil;
-    }
-
-    /**
      * Set codOrganizacao
      *
      * @param \Entidades\ZgadmOrganizacao $codOrganizacao
@@ -252,5 +229,28 @@ class ZgsegUsuarioOrganizacao
     public function getCodStatus()
     {
         return $this->codStatus;
+    }
+
+    /**
+     * Set codPerfil
+     *
+     * @param \Entidades\ZgsegPerfil $codPerfil
+     * @return ZgsegUsuarioOrganizacao
+     */
+    public function setCodPerfil(\Entidades\ZgsegPerfil $codPerfil = null)
+    {
+        $this->codPerfil = $codPerfil;
+
+        return $this;
+    }
+
+    /**
+     * Get codPerfil
+     *
+     * @return \Entidades\ZgsegPerfil 
+     */
+    public function getCodPerfil()
+    {
+        return $this->codPerfil;
     }
 }
