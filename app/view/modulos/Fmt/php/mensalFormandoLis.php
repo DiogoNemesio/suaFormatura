@@ -174,22 +174,31 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		case "B":
 			$podeGerar		= true;
 			$podeDesistir	= true;
+			$podeMarcar		= true;
 			break;
 		case "D":
 			$podeGerar		= true;
 			$podeDesistir	= false;
+			$podeMarcar		= false;
 			break;
 		case "T":
 			$podeGerar		= false;
 			$podeDesistir	= false;
+			$podeMarcar		= false;
 			break;
 		default:
 			$podeGerar		= false;
 			$podeDesistir	= false;
+			$podeMarcar		= false;
 			break;
 	
 	}
 
+	#################################################################################
+	## Desabilitar o checkbox para os formandos desistentes
+	#################################################################################
+	if (!$podeMarcar)	$grid->desabilitaCelula($i, 0);
+	
 	#################################################################################
 	## Resgata o registro da Pessoa associada ao Formando
 	#################################################################################
