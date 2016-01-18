@@ -167,7 +167,8 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 		$valores	= array();
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_valoresRateio[$i] == 0) {
-				return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
+				$log->debug("Código de erro: 0xha71yla91, Problema na posição: $i, array de valores: ".serialize($this->_valoresRateio));
+				return $tr->trans('Código de erro: 0xha71yla91 entre em contato com o suporte !!, informações adicionais: "'.$i.'"');
 			}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{

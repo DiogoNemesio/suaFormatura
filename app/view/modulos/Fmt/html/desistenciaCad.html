@@ -744,7 +744,11 @@ function validaEventosDesCad() {
 		$numEventosSel						+= 1;
 	});
 	
-	if ($numEventos == $numEventosSel)	{
+	if ($numEventos == 0) {
+		return true;
+	}
+	
+	if (($numEventos == $numEventosSel) && ($numEventos != 1) )	{
 		return false;
 	}
 	

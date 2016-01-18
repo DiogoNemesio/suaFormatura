@@ -305,7 +305,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		$_valorTotal	= 0;
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_valores[$i] == 0) {
-				return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
+				$log->debug("Código de erro: 0x91378361, Problema na posição: $i, array de valores: ".serialize($this->_valores));
+				return $tr->trans('Código de erro: 0x91378361 entre em contato com o suporte !!, informações adicionais: "'.$i.'"');
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}elseif (\Zage\App\Util::to_float($this->_valores[$i]) < 0) {
@@ -456,7 +457,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			if (is_array($this->_valoresRateio[$i])) {
 				for ($j = 0; $j < sizeof($numRateio); $j++) {
 					if ($this->_valoresRateio[$i][$j] == 0) {
-						return $tr->trans('Array de valores de rateio tem registro com valor = 0 na posição "'.$j.'"');
+						$log->debug("Código de erro: 0x91378362, Problema na posição: $i, array de valores: ".serialize($this->_valoresRateio));
+						return $tr->trans('Código de erro: 0x91378362 entre em contato com o suporte !!, informações adicionais: "'.$i.'"');
 					}elseif (\Zage\App\Util::to_float($this->_valoresRateio[$i][$j]) < 0) {
 							return $tr->trans('Array de valores de rateio tem registro negativo na posição "'.$i.'" !!!');
 					}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i][$j])) {
@@ -465,7 +467,8 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				}
 			}else{
 				if ($this->_valoresRateio[$i] == 0) {
-					return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
+					$log->debug("Código de erro: 0x91378363, Problema na posição: $i, array de valores: ".serialize($this->_valoresRateio));
+					return $tr->trans('Código de erro: 0x91378363 entre em contato com o suporte !!, informações adicionais: "'.$i.'"');
 				}elseif (\Zage\App\Util::to_float($this->_valoresRateio[$i]) < 0) {
 					return $tr->trans('Array de valores de rateio tem registro negativo na posição "'.$i.'" !!!');
 				}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i])) {

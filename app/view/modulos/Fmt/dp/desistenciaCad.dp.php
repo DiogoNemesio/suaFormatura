@@ -437,7 +437,7 @@ $contasRec	= \Zage\Fmt\Desistencia::listaMensalidadeACancelar($system->getCodOrg
 ## Cancelar as Contas a Receber em aberto
 #################################################################################
 for ($i = 0; $i < sizeof($contasRec); $i++) {
-	$log->debug("Cancelar Conta: ".$contasRec[$i]->getDescricao()." Parcela: ".$contasRec[$i]->getParcela()." Código: ".$contasRec[$i]->getCodigo());
+	//$log->debug("Cancelar Conta: ".$contasRec[$i]->getDescricao()." Parcela: ".$contasRec[$i]->getParcela()." Código: ".$contasRec[$i]->getCodigo());
 
 	#################################################################################
 	## Efetuar o cancelamento
@@ -560,6 +560,7 @@ if ($numContas	> 0) {
 			$taxa				= round(\Zage\App\Util::to_float($aTaxas[$i]),2);
 			$_taxas				= round(\Zage\App\Util::to_float($_taxaAdmin + $_taxaBol),2);
 			if ($_taxas != $taxa) {
+				$log->err("0xp8yh554: taxa: ".$taxa." _taxas: ".$_taxas);
 				$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Calculo de taxas indevido, erro: 0xp8yh554'));
 				echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Calculo de taxas indevido, erro: 0xp8yh554')));
 				exit;
@@ -589,6 +590,8 @@ if ($numContas	> 0) {
 				}else{
 					$_valMen			= 0;
 				}
+				
+				$_valSis			= ($pctSistema		> 0)	? round($saldoSistema 		- $_vTotalSis,2)	: 0;
 			}else{
 				if ($pctMensalidade && $pctSistema)	{
 					$_valMen			= round($_valParcela*$pctMensalidade/100,2);
@@ -607,7 +610,6 @@ if ($numContas	> 0) {
 			$_vTotalMen			+= $_valMen;
 			$_vTotalSis			+= $_valSis;
 				
-			
 			$_pctRateio			= array();
 			$_valorRateio		= array();
 			$_codCategoria		= array();
@@ -650,6 +652,11 @@ if ($numContas	> 0) {
 			$codCentroCusto[$i]	= $_codCentroCusto;
 			$codRateio[$i]		= $_codRateio;
 		}
+		/*$log->info("pctRateio".serialize($pctRateio));
+		$log->info("valorRateio".serialize($valorRateio));
+		$log->info("codCategoria".serialize($codCategoria));
+		$log->info("codCentroCusto".serialize($codCentroCusto));
+		$log->info("codRateio".serialize($codRateio));*/
 
 		#################################################################################
 		## Ajustar os campos do tipo CheckBox
@@ -680,7 +687,8 @@ if ($numContas	> 0) {
 		#################################################################################
 		$descricao		= "Devolução de Mensalidade (Desistência)";
 		
-		//$log->info("Vou cadastrar a devolução de mensalidade, valorOutros: ".$valorOutros);
+		//$log->info("Vou cadastrar a devolução de mensalidade, valorOutros: ".$valorOutros." valorTotal: ".$valorTotal." array de Valores: ".serialize($aValor));
+		
 		
 		#################################################################################
 		## Escrever os valores no objeto

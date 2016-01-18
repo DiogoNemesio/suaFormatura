@@ -309,7 +309,8 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		$_valorTotal	= 0;
 		for ($i = 0; $i < $n; $i++) {
 			if ($this->_valores[$i] == 0) {
-				return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
+				$log->debug("Código de erro: 0x61763131, Problema na posição: $i, array de valores: ".serialize($this->_valores));
+				return $tr->trans('Código de erro: 0x61763131 entre em contato com o suporte !!, informações adicionais: "'.$i.'"');
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}else{
@@ -458,14 +459,16 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 			if (is_array($this->_valoresRateio[$i])) {
 				for ($j = 0; $j < sizeof($numRateio); $j++) {
 					if ($this->_valoresRateio[$i][$j] == 0) {
-						return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$j.'"');
+						$log->debug("Código de erro: 0x61763132, Problema na posição: $i, array de valores: ".serialize($this->_valoresRateio));
+						return $tr->trans('Código de erro: 0x61763132 entre em contato com o suporte !!, informações adicionais: "'.$i.'"');
 					}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i][$j])) {
 						return $tr->trans('Array de valores tem registro inválido na posição "'.$j.'" !!!');
 					}
 				}
 			}else{
 				if ($this->_valoresRateio[$i] == 0) {
-					return $tr->trans('Array de valores tem registro com valor = 0 na posição "'.$i.'"');
+					$log->debug("Código de erro: 0x61763133, Problema na posição: $i, array de valores: ".serialize($this->_valoresRateio));
+					return $tr->trans('Código de erro: 0x61763133 entre em contato com o suporte !!, informações adicionais: "'.$i.'"');
 				}elseif (!\Zage\App\Util::ehNumero($this->_valoresRateio[$i])) {
 					return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 				}
