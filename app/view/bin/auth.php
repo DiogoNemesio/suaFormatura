@@ -70,6 +70,13 @@ if (!$system->estaAutenticado()) {
 			
 			$log->debug('Usuário/Senha incorretos !!! ');
 			
+			#################################################################################
+			## Não chamar a tela de login se a variável $_doNotLogin estiver setada para 1
+			## Será útil quando as telas que rodam em background (notificacao.php e mensagem.php)
+			## forem chamadas e o tempo da sessão estiver expirado
+			#################################################################################
+			if (isset($_doNotLogin) && ($_doNotLogin == 1)) exit;
+			
 			include_once(MOD_PATH . '/Seg/php/login.php');
 			exit;
 		} else {
