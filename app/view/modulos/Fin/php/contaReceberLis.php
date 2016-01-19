@@ -84,11 +84,11 @@ if (isset($valorFim))		$_SESSION["_CRLIS_valorFimFiltro"] 			= $valorFim;
 if (isset($descricao))		$_SESSION["_CRLIS_descricaoFiltro"] 		= $descricao;
 if (isset($cliente))		$_SESSION["_CRLIS_clienteFiltro"] 			= $cliente;
 
-if (!isset($_SESSION["_CRLIS_codStatusFiltro"]))			$_SESSION["_CRLIS_codStatusFiltro"]			= null;
-if (!isset($_SESSION["_CRLIS_codFormaPagFiltro"]))			$_SESSION["_CRLIS_codFormaPagFiltro"]		= null;
-if (!isset($_SESSION["_CRLIS_codCategoriaFiltro"]))			$_SESSION["_CRLIS_codCategoriaFiltro"]		= null;
-if (!isset($_SESSION["_CRLIS_codCentroCustoFiltro"]))		$_SESSION["_CRLIS_codCentroCustoFiltro"]	= null;
-if (!isset($_SESSION["_CRLIS_codContaRecFiltro"]))			$_SESSION["_CRLIS_codContaRecFiltro"]		= null;
+if (!isset($_SESSION["_CRLIS_codStatusFiltro"]))			$_SESSION["_CRLIS_codStatusFiltro"]			= array();
+if (!isset($_SESSION["_CRLIS_codFormaPagFiltro"]))			$_SESSION["_CRLIS_codFormaPagFiltro"]		= array();
+if (!isset($_SESSION["_CRLIS_codCategoriaFiltro"]))			$_SESSION["_CRLIS_codCategoriaFiltro"]		= array();
+if (!isset($_SESSION["_CRLIS_codCentroCustoFiltro"]))		$_SESSION["_CRLIS_codCentroCustoFiltro"]	= array();
+if (!isset($_SESSION["_CRLIS_codContaRecFiltro"]))			$_SESSION["_CRLIS_codContaRecFiltro"]		= array();
 if (!isset($_SESSION["_CRLIS_valorIniFiltro"]))				$_SESSION["_CRLIS_valorIniFiltro"]			= null;
 if (!isset($_SESSION["_CRLIS_valorFimFiltro"]))				$_SESSION["_CRLIS_valorFimFiltro"]			= null;
 if (!isset($_SESSION["_CRLIS_descricaoFiltro"]))			$_SESSION["_CRLIS_descricaoFiltro"]			= null;

@@ -87,11 +87,11 @@ if (isset($valorFim))		$_SESSION["_CPLIS_valorFimFiltro"] 			= $valorFim;
 if (isset($descricao))		$_SESSION["_CPLIS_descricaoFiltro"] 		= $descricao;
 if (isset($fornecedor))		$_SESSION["_CPLIS_fornecedorFiltro"] 		= $fornecedor;
 
-if (!isset($_SESSION["_CPLIS_codStatusFiltro"]))			$_SESSION["_CPLIS_codStatusFiltro"]			= null;
-if (!isset($_SESSION["_CPLIS_codFormaPagFiltro"]))			$_SESSION["_CPLIS_codFormaPagFiltro"]		= null;
-if (!isset($_SESSION["_CPLIS_codCategoriaFiltro"]))			$_SESSION["_CPLIS_codCategoriaFiltro"]		= null;
-if (!isset($_SESSION["_CPLIS_codCentroCustoFiltro"]))		$_SESSION["_CPLIS_codCentroCustoFiltro"]	= null;
-if (!isset($_SESSION["_CPLIS_codContaPagFiltro"]))			$_SESSION["_CPLIS_codContaPagFiltro"]		= null;
+if (!isset($_SESSION["_CPLIS_codStatusFiltro"]))			$_SESSION["_CPLIS_codStatusFiltro"]			= array();
+if (!isset($_SESSION["_CPLIS_codFormaPagFiltro"]))			$_SESSION["_CPLIS_codFormaPagFiltro"]		= array();
+if (!isset($_SESSION["_CPLIS_codCategoriaFiltro"]))			$_SESSION["_CPLIS_codCategoriaFiltro"]		= array();
+if (!isset($_SESSION["_CPLIS_codCentroCustoFiltro"]))		$_SESSION["_CPLIS_codCentroCustoFiltro"]	= array();
+if (!isset($_SESSION["_CPLIS_codContaPagFiltro"]))			$_SESSION["_CPLIS_codContaPagFiltro"]		= array();
 if (!isset($_SESSION["_CPLIS_valorIniFiltro"]))				$_SESSION["_CPLIS_valorIniFiltro"]			= null;
 if (!isset($_SESSION["_CPLIS_valorFimFiltro"]))				$_SESSION["_CPLIS_valorFimFiltro"]			= null;
 if (!isset($_SESSION["_CPLIS_descricaoFiltro"]))			$_SESSION["_CPLIS_descricaoFiltro"]			= null;
