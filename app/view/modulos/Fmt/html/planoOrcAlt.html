@@ -175,7 +175,7 @@ function addRowOrcamentoOrcAlt() {
 	
 	var $numRows = ($("#layRegTableOrcamentoID > tbody > tr._registroOrc").length);
 	
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroOrc"><td><input type="text" class="width-100" name="item[]" zg-name="item" maxlength="60" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_CATEGORIA%</select></td><td><input type="text" class="width-100" name="valorPadrao[]" zg-name="valorPadrao" placeholder="Valor Padrão" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="verificaAlteracaoOrcAlt($(this));"></td><td align="center"><label><input zg-name="indPadrao" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td align="center"><label><input zg-name="indAtivo" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i class="fa fa-commenting-o bigger-150"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroOrc"><td><input type="text" class="width-100" name="item[]" zg-name="item" maxlength="60" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td><td><select class="select2" style="width:100%;" name="codTipoItem[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_ITEM%</select></td><td><select class="select2" style="width:100%;" name="codCategoria[]" data-rel="select2" onchange="verificaAlteracaoOrcAlt($(this));">%COD_CATEGORIA%</select></td><td><input type="text" class="width-100" name="valorPadrao[]" zg-name="valorPadrao" placeholder="Valor Padrão" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="verificaAlteracaoOrcAlt($(this));"></td><td align="center"><label><input zg-name="indPadrao" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td align="center"><label><input zg-name="indAtivo" checked class="ace ace-switch ace-switch-6" type="checkbox" onchange="verificaAlteracaoOrcAlt($(this));" /><span class="lbl"></span></label></td><td class="center"><div data-toggle="buttons" class="btn-group btn-overlap btn-corner"><span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span><span class="btn btn-sm btn-white btn-info center grey" zg-name="span-pctDesc" onclick="habilitaDescontoOrcAlt($(this));"><i zg-name="icon-pctDesc" class="fa fa-usd bigger-150"></i></span><span class="btn btn-sm btn-white btn-info center grey" zg-name="span-txtDesc" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i zg-name="icon-txtDesc" class="fa fa-commenting-o bigger-150"></i></span></div><input type="hidden" name="codOrcamento[]"></td></tr>');
 	$('#layRegTableOrcamentoID > tbody > tr:last [zg-name="item"]').each(function( index ) {
 		$( this ).focus();
 	});
@@ -184,8 +184,11 @@ function addRowOrcamentoOrcAlt() {
 		$( this ).trigger('keyup');
 	});
 	$('#layRegTableOrcamentoID > tbody > tr:last .select2').select2("destroy").select2({allowClear: true});
-	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroTextoDesc hidden"><td colspan="6"><textarea maxlength="1000" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();"></textarea></td></tr>');
-
+	$('#layRegTableOrcamentoID > tbody:last').append('<tr class="_registroTextoDesc hidden"><td colspan="8"><textarea maxlength="1000" rows="3" class="col-sm-6 pull-right hidden" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt($(this));"></textarea><input type="text" class="input-sm pull-right hidden" name="pctMaxDesconto[]" zg-name="pctMaxDesconto" placeholder="Pct Desconto" maxlength="7" value="" autocomplete="off" onchange="alteraDescontoOrcAlt($(this));" zg-data-toggle="mask" zg-data-mask="porcentagem"></td></tr>');
+	$('#layRegTableOrcamentoID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
 }
 
 function delRowOrcamentoOrcAlt(pObj) {
@@ -295,6 +298,7 @@ function zgLoadUrlSeSalvouOrc($url) {
 	var vOk 		= validaOrcamentoOrcAlt();
 	var vCodVersao 	= $('#codVersaoID').val();
 	
+	
 	if(vOk == false) 	{
 		$.gritter.add({
 			title: 'Está faltando alguma coisa !!!',
@@ -308,15 +312,40 @@ function zgLoadUrlSeSalvouOrc($url) {
 		if ($('#_precisaSalvarID').val() == 1) {
 			$('#_alterarEventoID').val(1);
 			
+			/** Retirar a máscara para os campos que estão configurados para tal **/
+			$('[zg-data-mask-retira="1"]').each(function( index ) {
+				$( this ).val($( this ).cleanVal());
+			});
+			
+			$(".removeHidden").remove();
+			
+			$('[zg-name="item"]').each( function( index, el ) {
+				var $_oIndAtivo	= $('[zg-name="indAtivo"]:eq('+index+')');
+				var $_oIndObr	= $('[zg-name="indPadrao"]:eq('+index+')');
+				var $_ativo		= $_oIndAtivo.is(':checked');
+				var $_obr		= $_oIndObr.is(':checked');
+				if ($_ativo == true) {
+					$('#zgFormID').append('<input type="hidden" class="removeHidden" name="indAtivo['+index+']" value="1" />');
+				}
+				
+				if ($_obr == true) {
+					$('#zgFormID').append('<input type="hidden" class="removeHidden" name="indPadrao['+index+']" value="1" />');
+				}
+			});
+			
+			$('#btnSubmitListaOrcID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+			$('#btnSubmitListaOrcID').attr("disabled","disabled");
+
 			$.ajax({
 				type:	"POST", 
 				url:	"%DP%",
 				data:	$('#zgFormID').serialize(),
 			}).done(function( data, textStatus, jqXHR) {
-				
 				$('#_precisaSalvarID').val(0);
 				if (checaRetornoOK(data) == true) {
 					$('#codVersaoID').val(zgGetCodRetorno(data));
+					$('#btnSubmitListaOrcID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+					$('#btnSubmitListaOrcID').attr("disabled",false);
 					
 					$.gritter.add({
 						title: 'Lista atualizada!',
@@ -343,7 +372,44 @@ function zgLoadUrlSeSalvouOrc($url) {
 	}
 }
 
-function alteraTextoDescritivoOrcAlt() {
+function alteraTextoDescritivoOrcAlt(pObj) {
+	var $td			= pObj.parent();
+	var $tr			= $td.parent();
+	var $textArea	= $td.find('[name*="aObs[]"]');
+	var $trOrc		= $tr.prev( "._registroOrc" );
+	var $span		= $trOrc.find('[zg-name="span-txtDesc"]');
+	var $icon		= $trOrc.find('[zg-name="icon-txtDesc"]');
+
+	if ($textArea.val()) {
+		$span.addClass("icon-animated-vertical");
+		$icon.removeClass("grey");
+		$icon.addClass("blue");
+	}else{
+		$span.removeClass("icon-animated-vertical");
+		$icon.removeClass("blue");
+		$icon.addClass("grey");
+	}
+
+	$('#_precisaSalvarID').val(1);
+}
+
+function alteraDescontoOrcAlt(pObj) {
+	var $td			= pObj.parent();
+	var $tr			= $td.parent();
+	var $pctDesc	= $td.find('[zg-name="pctMaxDesconto"]');
+	var $trOrc		= $tr.prev( "._registroOrc" );
+	var $span		= $trOrc.find('[zg-name="span-pctDesc"]');
+	var $icon		= $trOrc.find('[zg-name="icon-pctDesc"]');
+
+	if ($pctDesc.val()) {
+		$span.addClass("icon-animated-bell");
+		$icon.removeClass("grey");
+		$icon.addClass("blue");
+	}else{
+		$span.removeClass("icon-animated-bell");
+		$icon.removeClass("blue");
+		$icon.addClass("grey");
+	}
 	$('#_precisaSalvarID').val(1);
 }
 
@@ -353,11 +419,58 @@ function habilitaTextoDescritivoOrcAlt(pObj) {
 	var $tr			= $td.parent();
 	var $prxTxt		= $tr.next('._registroTextoDesc');
 	var $textArea	= $prxTxt.find('[name*="aObs[]"]');
+	var $pctDesc	= $prxTxt.find('[zg-name="pctMaxDesconto"]');
 
-	if ($prxTxt.hasClass( "hidden")) {
+	var $txtHid		= $textArea.hasClass( "hidden");
+	var $pctHid		= $pctDesc.hasClass( "hidden");
+	var $trHid		= $prxTxt.hasClass( "hidden");
+	
+	//alert("Antes -> TRHid: "+$trHid+" TxtHid: "+$txtHid+" PctHid: "+$pctHid);
+	
+	if ($trHid == true) {
+		$pctDesc.addClass("hidden");
+		$textArea.removeClass("hidden");
 		$prxTxt.removeClass("hidden");
 		$textArea.focus();
+	}else if ($trHid == false && $pctHid == false) {
+		$pctDesc.addClass("hidden");
+		$textArea.removeClass("hidden");
+		$textArea.focus();
 	}else{
+		$pctDesc.addClass("hidden");
+		$textArea.addClass("hidden");
+		$prxTxt.addClass("hidden");
+	}
+	
+	
+}
+
+function habilitaDescontoOrcAlt(pObj) {
+	var $div		= pObj.parent();
+	var $td			= $div.parent();
+	var $tr			= $td.parent();
+	var $prxTxt		= $tr.next('._registroTextoDesc');
+	var $textArea	= $prxTxt.find('[name*="aObs[]"]');
+	var $pctDesc	= $prxTxt.find('[zg-name="pctMaxDesconto"]');
+
+	var $txtHid		= $textArea.hasClass( "hidden");
+	var $pctHid		= $pctDesc.hasClass( "hidden");
+	var $trHid		= $prxTxt.hasClass( "hidden");
+	
+	//alert("TRHid: "+$trHid+" TxtHid: "+$txtHid+" PctHid: "+$pctHid);
+	
+	if ($trHid == true) {
+		$textArea.addClass("hidden");
+		$pctDesc.removeClass("hidden");
+		$prxTxt.removeClass("hidden");
+		$pctDesc.focus();
+	}else if ($trHid == false && $txtHid == false) {
+		$textArea.addClass("hidden");
+		$pctDesc.removeClass("hidden");
+		$pctDesc.focus();
+	}else{
+		$pctDesc.addClass("hidden");
+		$textArea.addClass("hidden");
 		$prxTxt.addClass("hidden");
 	}
 }

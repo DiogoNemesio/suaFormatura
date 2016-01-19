@@ -23,9 +23,10 @@ if (isset($_POST['item']))					$item				= \Zage\App\Util::antiInjection($_POST['
 if (isset($_POST['codTipoItem']))			$codTipoItem		= \Zage\App\Util::antiInjection($_POST['codTipoItem']);
 if (isset($_POST['codCategoria']))			$codCategoria		= \Zage\App\Util::antiInjection($_POST['codCategoria']);
 if (isset($_POST['indAtivo']))				$indAtivo			= \Zage\App\Util::antiInjection($_POST['indAtivo']);
-if (isset($_POST['indPadrao']))		$indPadrao		= \Zage\App\Util::antiInjection($_POST['indPadrao']);
+if (isset($_POST['indPadrao']))				$indPadrao			= \Zage\App\Util::antiInjection($_POST['indPadrao']);
 if (isset($_POST['valorPadrao']))			$valorPadrao		= \Zage\App\Util::antiInjection($_POST['valorPadrao']);
 if (isset($_POST['aObs']))					$aObs				= \Zage\App\Util::antiInjection($_POST['aObs']);
+if (isset($_POST['pctMaxDesconto']))		$pctMaxDesconto		= \Zage\App\Util::antiInjection($_POST['pctMaxDesconto']);
 if (isset($_POST['versao']))				$versao				= \Zage\App\Util::antiInjection($_POST['versao']);
 if (isset($_POST['indVersao']))				$indVersao			= \Zage\App\Util::antiInjection($_POST['indVersao']);
 
@@ -36,7 +37,7 @@ if (!isset($item))				$item			= array();
 if (!isset($codTipoItem))		$codTipoItem	= array();
 if (!isset($codCategoria))		$codCategoria	= array();
 if (!isset($indAtivo))			$indAtivo		= array();
-if (!isset($indPadrao))	$indPadrao	= array();
+if (!isset($indPadrao))			$indPadrao		= array();
 if (!isset($valorPadrao))		$valorPadrao	= array();
 
 //$log->info("aIndAtivo: ".serialize($indAtivo));
@@ -144,7 +145,7 @@ try {
 		$indPadraoLinha			= (isset($indPadrao[$i]))		? 1 : 0;
 		
 		$valorPadraoLinha		= (isset($valorPadrao[$i]) && $valorPadrao[$i] > 0)			? \Zage\App\Util::to_float($valorPadrao[$i]) : null;
-		
+		$_pctMaxDesconto		= \Zage\App\Util::to_float(str_replace("%", "", $pctMaxDesconto[$i]));
 		
 		#################################################################################
 		## Constroi os objetos
@@ -163,6 +164,7 @@ try {
 		$oOrcamento->setIndPadrao($indPadraoLinha);
 		$oOrcamento->setValorPadrao($valorPadraoLinha);
 		$oOrcamento->setTextoDescritivo($aObs[$i]);
+		$oOrcamento->setPctMaxDescontoVendedor($_pctMaxDesconto);
 		
 		$em->persist($oOrcamento);
 	}

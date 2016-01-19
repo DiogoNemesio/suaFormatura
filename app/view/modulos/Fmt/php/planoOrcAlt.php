@@ -155,10 +155,22 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 	}
 	
 	if ($aOrcItem[$i]->getTextoDescritivo()) {
-		$hidDesc		= "";
+		$btnClassTxtDesc		= "icon-animated-vertical";
+		$icClassTxtDesc			= "blue";
 	}else{
-		$hidDesc		= "hidden";
+		$btnClassTxtDesc		= "";
+		$icClassTxtDesc			= "grey";
 	}
+
+	if ($aOrcItem[$i]->getPctMaxDescontoVendedor()) {
+		$btnClassPctDesc		= "icon-animated-bell";
+		$icClassPctDesc			= "blue";
+	}else{
+		$btnClassPctDesc		= "";
+		$icClassPctDesc			= "grey";
+	}
+	
+	$pctMaxDesc			= \Zage\App\Util::to_money($aOrcItem[$i]->getPctMaxDescontoVendedor());
 	
 	$tabOrcamento	.= '<tr class="_registroOrc">
 				<td><input type="text" class="width-100" name="item[]" zg-name="item" maxlength="60" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td>
@@ -172,12 +184,16 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 							<span class="btn btn-sm btn-white btn-info center" onclick="moveUpOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-up bigger-150"></i></span>
 							<span class="btn btn-sm btn-white btn-info center" onclick="moveDownOrcamentoOrcAlt($(this));"><i class="fa fa-arrow-circle-down bigger-150"></i></span>
 							<span class="btn btn-sm btn-white btn-info center zgdelete" onclick="delRowOrcamentoOrcAlt($(this));"><i class="fa fa-trash bigger-150 red"></i></span>
-							<span class="btn btn-sm btn-white btn-info center" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i class="fa fa-commenting-o bigger-150"></i></span>
+							<span class="btn btn-sm btn-white btn-info center '.$btnClassPctDesc.'" zg-name="span-pctDesc" onclick="habilitaDescontoOrcAlt($(this));"><i zg-name="icon-pctDesc" class="fa fa-usd bigger-150 '.$icClassPctDesc.'"></i></span>
+							<span class="btn btn-sm btn-white btn-info center '.$btnClassTxtDesc.'" zg-name="span-txtDesc" onclick="habilitaTextoDescritivoOrcAlt($(this));"><i zg-name="icon-txtDesc" class="fa fa-commenting-o bigger-150 '.$icClassTxtDesc.'"></i></span>
 						</div>
 						<input type="hidden" name="codOrcamento[]" value="'.$aOrcItem[$i]->getCodigo().'">
 				</td></tr>
-				<tr class="_registroTextoDesc '.$hidDesc.'">
-					<td colspan="8"><textarea maxlength="1000" rows="3" class="col-sm-6 pull-right" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt();">'.$aOrcItem[$i]->getTextoDescritivo().'</textarea></td>
+				<tr class="_registroTextoDesc hidden">
+					<td colspan="8">
+						<textarea maxlength="1000" rows="3" class="col-sm-6 pull-right hidden" name="aObs[]" onchange="alteraTextoDescritivoOrcAlt($(this));">'.$aOrcItem[$i]->getTextoDescritivo().'</textarea>
+						<input type="text" class="input-sm pull-right hidden" name="pctMaxDesconto[]" zg-name="pctMaxDesconto" placeholder="Pct Desconto" maxlength="7" value="'.$pctMaxDesc.'" autocomplete="off" onchange="alteraDescontoOrcAlt($(this));" zg-data-toggle="mask" zg-data-mask="porcentagem">
+					</td>
 				</tr>
 				';
 }
