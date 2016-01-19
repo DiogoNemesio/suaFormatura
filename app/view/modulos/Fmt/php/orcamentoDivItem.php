@@ -277,7 +277,6 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$tagDarCor			= "";
 			}
 			
-			$log->info("Padrão: ".$item["PADRAO"]." ValorPadrão: ".$item["VALOR_PADRAO"]." Valor Mínimo: ".$item["VALOR_MINIMO"]." IndVenDarCor: ".$indVenDarCor);
 			if ($item["PADRAO"] && $item["VALOR_PADRAO"] && ($item["VALOR_MINIMO"] == $item["VALOR_PADRAO"]) && $indVenDarCor == 0) {
 				$roValor	= "readonly";
 			}else{
