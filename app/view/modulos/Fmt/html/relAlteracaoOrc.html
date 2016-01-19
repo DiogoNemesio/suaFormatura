@@ -1,0 +1,138 @@
+<div class="page-header">
+		<h1><i class="fa fa-binoculars">&nbsp;</i>Alteração de Orçamento&nbsp;&nbsp;
+		</h1>
+	</div><!-- /.page-header -->
+			
+	<form id="zgFormRelResumoPagamentoID" class="form-horizontal" method="GET" target="_blank" action="'.$urlForm.'" >
+	<input type="hidden" name="mesRef" 	id="mesRefID" 	value="'.$mesRef.'">
+	<input type="hidden" name="geraPdf" id="geraPdfID">
+	<input type="hidden" name="id" value="'.$id.'">
+	<div class="row">
+		<div class="col-sm-12 center">
+			<div class="btn-group btn-corner center">
+				<button type="button" class="btn btn-white btn-sm" title="Voltar" id="btnRelResumoPagamentoVoltarID" onclick="zgRelResumoPagamentoVoltar();">
+					<i class="fa fa-angle-double-left "></i>
+				</button>
+				<span id="relPagamentoPopoverID" style="width: 250px;" class="btn btn-white btn-sm" data-rel="popover" data-placement="bottom" >'.$texto.'</span>					
+				<button type="button" class="btn btn-white btn-sm" title="Avançar" id="btnRelResumoPagamentoAvancarID" onclick="zgRelResumoPagamentoAvancar();">
+					<i class="fa fa-angle-double-right"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	
+	<div id="divPopoverRelPagamentoContentID" class="hide">
+		<div class="col-sm-12" id="divRelPagamentoContentMensalID">
+			<label class="col-sm-3 control-label">Mês:</label>
+			<div class="col-xs-12 col-sm-9">
+	    		<input class="form-control datepicker col-md-12" readonly id="tempMesFiltroID" onchange="copiaValoresFormRelPagamento();" value="'.$mesRef.'" type="text" maxlength="7" autocomplete="off">
+			</div>
+		</div>
+		<div class="form-group col-sm-12 center">
+		&nbsp;
+		</div>
+		<label class="col-sm-3 control-label">&nbsp;</label>
+		<div class="btn-group btn-corner col-sm-9 center">
+			<button type="button" class="btn btn-success btn-sm" onclick="relPagamentoFilter();">OK</button>
+			<button type="button" class="btn btn-danger btn-sm" onclick="fecharPopoverRelPagamento();">Fechar</button>
+		</div>
+	</div>
+						
+	<div id="divPopoverRelPagamentoTitleID" class="hide">
+		<div class="btn-group btn-corner" style="width: 310px;">
+			<p>Selecione o mês de referência</p>
+		</div>
+	</div>
+	</form>
+	<br><br>
+<script>
+   	
+  	function orcHabilitaDetalhe($codigo) {
+		var $oTr		= $("#trDetalhe_"+$codigo+"_ID");
+    				
+		if ($oTr.hasClass("hidden")) {
+			$oTr.removeClass("hidden");
+    		$("#detalhe_"+$codigo+"_ID").html("Ocultar detalhes");
+    		
+    		var elems = document.getElementsByClassName("trDetalheItem_"+$codigo+"_ID");
+    		for (var i=0; i<elems.length; i++) {
+			    elems[i].style.display = "";
+  			}
+		}else{
+			$oTr.addClass("hidden");
+    		$("#detalhe_"+$codigo+"_ID").html("Exibir detalhes");
+    						
+    		var elems = document.getElementsByClassName("trDetalheItem_"+$codigo+"_ID");
+    		for (var i=0; i<elems.length; i++) {
+			    elems[i].style.display = "none";
+  			}
+		}
+	}
+    				
+	function zgRelResumoPagamentoImprimir() {
+    	$("#geraPdfID").val(1);
+		$("#zgFormRelResumoPagamentoID").submit();
+	}
+
+	function zgRelResumoPagamentoAvancar() {
+		var vUrl	= "'.$urlForm.'?id='.$id.'&geraPdf=0&mesRef='.$mesRef.'&avancar=1";
+		zgLoadUrl(vUrl);
+	}
+
+	function zgRelResumoPagamentoVoltar() {
+		var vUrl	= "'.$urlForm.'?id='.$id.'&geraPdf=0&mesRef='.$mesRef.'&voltar=1";
+		zgLoadUrl(vUrl);
+	}
+
+	function mostraMensalCPLisFiltro() {
+		$("#divCPLisFiltroContentMensalID").removeClass("hide");
+	}
+	
+	function copiaValoresFormRelPagamento() {
+		var $mes;
+		$mes		= $("#tempMesFiltroID").val();
+		/** Copiar valores para o outro form **/
+		$("#mesRefID").val( $mes );
+	
+	}
+				
+	function relPagamentoFilter() {
+		copiaValoresFormRelPagamento();
+		var vMes	= $("#mesRefID").val();
+		var vUrl	= "'.$urlForm.'?id='.$id.'&geraPdf=0&mesRef="+vMes;
+		zgLoadUrl(vUrl);
+	}
+
+	function fecharPopoverRelPagamento() {
+		$("#relPagamentoPopoverID").popover("hide");
+	}
+				
+	$( document ).ready(function() {
+	var tmp = $.fn.popover.Constructor.prototype.show;
+	$.fn.popover.Constructor.prototype.show = function () {
+	tmp.call(this);
+		if (this.options.callback) {
+			this.options.callback();
+		}
+	}
+	
+	$("[data-rel=popover]").popover({ 
+		html:true,
+		content: function() {
+			return $("#divPopoverRelPagamentoContentID").html();
+		},
+		title: function() {
+			return $("#divPopoverRelPagamentoTitleID").html();
+		},
+		callback: function() {
+			$("#tempMesFiltroID").datepicker({autoclose: true,format: "mm/yyyy",viewMode: "months", minViewMode: "months"});
+		} 
+	}).on("show.bs.popover", function () {
+		var $tip	= $(this).data("bs.popover").tip();
+		$tip.css("max-width", "600px");
+	});
+	
+});
+				
+				
+	</script>

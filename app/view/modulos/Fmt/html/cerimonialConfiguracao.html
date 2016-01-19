@@ -1,0 +1,149 @@
+<div id="content">
+	<div class="page-header">
+	<h1><i class="fa fa-cog">&nbsp;</i>Configurações</h1>
+	</div><!-- /.page-header -->
+	<br />
+		
+	<form id="zgFormID" class="form-horizontal">
+		<input type="hidden" id="codOrganizacaoID" name="codOrganizacao" value="%COD_ORGANIZACAO%">
+		<input type='hidden' id='codFormaDescontoID' value="%FORMA_DESCONTO%">
+		<input type="hidden" id="valID" name="validado">
+		<div class="tabbable">
+			<ul class="nav nav-tabs padding-16">
+				<li class="active">
+					<a data-toggle="tab" href="#conf-vendedor">
+						<i class="green fa fa-edit bigger-125"></i>
+						Vendedor
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content profile-edit-tab-content">
+				<div id="conf-vendedor" class="tab-pane in active">
+					<h5 class="header blue bolder smaller">O que o vendedor pode fazer?</h5>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="form-group col-sm-8">	
+							<div class="form-group col-sm-12" >
+			    				<label class="col-sm-2 control-label">
+			    					<input name="indAceitarOrc" id="indAceitarOrcID" %ACEITE% class="ace ace-switch " value="1" type="checkbox" />
+			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+			    				</label>
+				    			<div class="input-group col-sm-6 pull-left">
+				    				<label class=" control-label">	
+				    					Aceitar orçamento <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM caso os vendedores possam aceitar um orçamento."></i>
+				    				</label>
+							    </div>
+				    		</div>
+							<div class="form-group col-sm-12" >
+			    				<label class="col-sm-2 control-label">
+			    					<input name="indRetirarItemPadrao" id="indRetirarItemPadraoID" %PADÃO% class="ace ace-switch " value="1" type="checkbox" />
+			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+			    				</label>
+				    			<div class="input-group col-sm-6 pull-left">
+				    				<label class=" control-label">	
+				    					Retirar item marcado como padrão <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM caso os vendedores possam retirar itens marcados como padrão no plano orçamentário."></i>
+				    				</label>
+							    </div>
+				    		</div>
+							<div class="form-group col-sm-12" >
+			    				<label class="col-sm-2 control-label">
+			    					<input name="indDardesconto" id="indDardescontoID" class="ace ace-switch" %CORTESIA% value="1" type="checkbox" />
+			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
+			    				</label>
+				    			<div class="input-group col-sm-6 pull-left">
+				    				<label class=" control-label">	
+				    					Indicar item sobre responsabilidade da turma <i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM caso os vendedores possam retirar o preço de um item e colocar como responsabilidade da turma."></i>
+				    				</label>
+							    </div>
+				    		</div>
+						</div>
+				    </div>
+				</div>
+			</div>
+	    </div>
+	</form>
+
+	<hr />
+	<div class="clearfix form-actions">
+		<label class="col-sm-5 control-label">&nbsp;</label>
+		<button type="button" class="btn btn-primary" id="btnSubmitID">
+			<i class="fa fa-check bigger-110"></i> Salvar
+		</button>
+	</div>
+</div>
+
+<script>
+//Datepicker - Calendário
+$('.datepicker').datepicker({autoclose: true,todayHighlight: true,todayBtn: true});
+//Mascaras
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+//Mensagens
+$('[data-rel=tooltip]').tooltip();
+$('[data-rel=popover]').popover({html:true});
+
+// SELECT2
+$('#codPlanoID').css('width','100%').select2({allowClear:true});
+
+$('#btnSubmitID').on("click", function(e) {
+	
+	var vOK 	= true;
+	
+	if(vOK == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		e.preventDefault();
+		
+		return false;
+	}else{;
+		$('#zgFormID').submit();
+	}
+});
+
+//Submit formulário
+$('#zgFormID').submit(function() {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	$('#cancel').attr("disabled","disabled");
+	
+	/** Retira a máscara para os campos que estão configurados para tal **/
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		$( this ).val($( this ).cleanVal());
+	});
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codOrganizacaoID').val(zgGetCodRetorno(data));
+			zgMostraAviso("Fechar");
+		}else{
+			zgMostraAviso("Fechar");
+		}
+
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		$('#cancel').attr("disabled",false);
+		
+		/** Recolocar a máscara para os campos que estão configurados para tal **/
+		$('[zg-data-mask-retira="1"]').each(function( index ) {
+			zgMask($( this ), $( this ).attr('zg-data-mask'));
+			$( this ).trigger('keyup');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	return false; 
+});
+
+</script>
