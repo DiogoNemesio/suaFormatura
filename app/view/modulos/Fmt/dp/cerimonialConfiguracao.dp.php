@@ -19,6 +19,7 @@ global $em,$system,$tr,$log;
 if (isset($_POST['indAceitarOrc']))				$indAceitarOrc			= \Zage\App\Util::antiInjection($_POST['indAceitarOrc']);
 if (isset($_POST['indRetirarItemPadrao']))		$indRetirarItemPadrao	= \Zage\App\Util::antiInjection($_POST['indRetirarItemPadrao']);
 if (isset($_POST['indDardesconto'])) 			$indDardesconto			= \Zage\App\Util::antiInjection($_POST['indDardesconto']);
+if (isset($_POST['indAlterarObs'])) 			$indAlterarObs			= \Zage\App\Util::antiInjection($_POST['indAlterarObs']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -50,6 +51,13 @@ if (isset($indRetirarItemPadrao) && (!empty($indRetirarItemPadrao))) {
 	$indRetirarItemPadrao	= 0;
 }
 
+/******* OBS *********/
+if (isset($indAlterarObs) && (!empty($indAlterarObs))) {
+	$indAlterarObs	= 1;
+}else{
+	$indAlterarObs	= 0;
+}
+
 /******* DAR DESCONTO *********/
 if (isset($indDardesconto) && (!empty($indDardesconto))) {
 	$indDardesconto	= 1;
@@ -73,6 +81,7 @@ try {
  	$oOrgCer->setIndVendedorAceite($indAceitarOrc);
  	$oOrgCer->setIndVendedorDesmarcarPadrao($indRetirarItemPadrao);
  	$oOrgCer->setIndVendedorDarCortesia($indDardesconto);
+ 	$oOrgCer->setIndVendedorAlterarObs($indAlterarObs); 	
  	
  	$em->persist($oOrgCer);
 

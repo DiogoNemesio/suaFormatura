@@ -54,6 +54,7 @@ if (!$oOrgCer) \Zage\App\Erro::halt('Sua organização ainda não está configur
 $indAceite			= ($oOrgCer->getIndVendedorAceite() === 0) ? null : "checked";
 $indDesmarcarPadrao	= ($oOrgCer->getIndVendedorDesmarcarPadrao() === 0) ? null  : "checked";
 $indDarCortesia		= ($oOrgCer->getIndVendedorDarCortesia() === 0) ? null : "checked";
+$indAlterarObs		= ($oOrgCer->getIndVendedorAlterarObs() === 0) ? null : "checked";
 
 #################################################################################
 ## Carregando o template html
@@ -71,6 +72,7 @@ $tpl->set('ID'						,$id);
 $tpl->set('ACEITE'					,$indAceite);
 $tpl->set('PADÃO'					,$indDesmarcarPadrao);
 $tpl->set('CORTESIA'				,$indDarCortesia);
+$tpl->set('OBS'						,$indAlterarObs);
 
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'						,$_icone_);

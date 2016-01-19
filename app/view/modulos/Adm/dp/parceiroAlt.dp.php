@@ -564,6 +564,7 @@ try {
  		$oOrgCer->setIndVendedorAceite(1);
  		$oOrgCer->setIndVendedorDarCortesia(1);
  		$oOrgCer->setIndVendedorDesmarcarPadrao(1);
+ 		$oOrgCer->setIndVendedorAlterarObs(1);
  		
  		$em->persist($oOrgCer);
  		
