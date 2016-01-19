@@ -127,7 +127,7 @@ class Crypt {
 	 * @param string $senha
 	 */
 	public static function crypt($usuario,$senha) {
-		return md5('ZG'.'|'.$usuario.'|'.$senha);
+		return md5('ZG'.'|'.strtolower($usuario).'|'.$senha);
 	}
 	
 
