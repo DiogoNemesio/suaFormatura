@@ -12,8 +12,8 @@
 				<input type="hidden" name="codOrganizacao" id="codOrganizacaoID" value="%COD_ORGANIZACAO%">
 				<input type="hidden" id="codLogradouroID" name="codLogradouro" value="%COD_LOGRADOURO%">
 				<input type="hidden" id="id" name="id" value="%ID%">
-				<input type='hidden' id='valCpfID'>
-				<input type='hidden' id='valEmailID'>
+				<input type='hidden' id='valCpfID' value="%VAL_CPF%">
+				<input type='hidden' id='valEmailID' value=%VAL_EMAIL%>
 				<div class="tabbable" id="tabID">
 					<ul class="nav nav-tabs padding-16">
 						<li class="active">
@@ -550,15 +550,19 @@ function validaUsuarioAlt() {
 	
 	//---- ABA GERAL----//
 	//USUARIO
-	if (checkEmailUsuarioAlt() == false){
-		vOK		= false;
-		vTab 	= 0;
+	if ($('#valEmailID').val() != 1){
+		if (checkEmailUsuarioAlt() == false){
+			vOK		= false;
+			vTab 	= 0;
+		}
 	}
 	
 	//CPF
-	if (checkCpfUsuarioAlt() == false){
-		vOK		= false;
-		vTab 	= 0;
+	if ($('#valCpfID').val() != 1){
+		if (checkCpfUsuarioAlt() == false){
+			vOK		= false;
+			vTab 	= 0;
+		}
 	}
 	
 	//NOME

@@ -59,6 +59,9 @@ if ($codUsuario) {
 	$perfil			= $oPerfil->getCodPerfil()->getCodigo();
 	$codStatus		= $info->getCodStatus()->getCodigo();
 	$sexo			= ($info->getSexo()) ? $info->getSexo()->getCodigo() : null;
+	
+	$valEmail		= 1;
+	$valCpf			= 1;
 
 	/** Endereco **/
 	$codLogradouro   = ($info->getCodLogradouro()) ? $info->getCodLogradouro()->getCodigo() : null;
@@ -114,6 +117,9 @@ if ($codUsuario) {
 	$perfil			= null;
 	$codStatus		= null;
 	$sexo			= null;
+	
+	$valEmail		= null;
+	$valCpf			= null;
 	
 	$codLogradouro	= null;
 	$cep			= null;
@@ -248,6 +254,9 @@ $tpl->set('DATA_NASC'			,$dataNasc);
 $tpl->set('CPF'					,$cpf);
 $tpl->set('PERFIL'				,$oPerfil);
 $tpl->set('SEXO'				,$oSexo);
+
+$tpl->set('VAL_EMAIL'			,$valEmail);
+$tpl->set('VAL_CPF'				,$valCpf);
 
 $tpl->set('TIPO_TEL'			,$oTipoTel);
 $tpl->set('SEGMENTO'			,$oSegmento);
