@@ -170,7 +170,12 @@ for ($i = 0; $i < sizeof($aOrcItem); $i++) {
 		$icClassPctDesc			= "grey";
 	}
 	
-	$pctMaxDesc			= \Zage\App\Util::to_money($aOrcItem[$i]->getPctMaxDescontoVendedor());
+	if ($aOrcItem[$i]->getPctMaxDescontoVendedor()) {
+		$pctMaxDesc			= \Zage\App\Util::to_money($aOrcItem[$i]->getPctMaxDescontoVendedor());
+	}else{
+		$pctMaxDesc			= null;
+	}
+	
 	
 	$tabOrcamento	.= '<tr class="_registroOrc">
 				<td><input type="text" class="width-100" name="item[]" zg-name="item" maxlength="60" value="'.$aOrcItem[$i]->getItem().'" autocomplete="off" onchange="verificaAlteracaoOrcAlt($(this));"></td>

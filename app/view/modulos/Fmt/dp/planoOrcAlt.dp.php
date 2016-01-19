@@ -145,7 +145,12 @@ try {
 		$indPadraoLinha			= (isset($indPadrao[$i]))		? 1 : 0;
 		
 		$valorPadraoLinha		= (isset($valorPadrao[$i]) && $valorPadrao[$i] > 0)			? \Zage\App\Util::to_float($valorPadrao[$i]) : null;
-		$_pctMaxDesconto		= \Zage\App\Util::to_float(str_replace("%", "", $pctMaxDesconto[$i]));
+		if (!isset($pctMaxDesconto[$i]) || !$pctMaxDesconto[$i]) {
+			$_pctMaxDesconto	= null;
+		}else{
+			$_pctMaxDesconto		= \Zage\App\Util::to_float(str_replace("%", "", $pctMaxDesconto[$i]));
+		}
+		
 		
 		#################################################################################
 		## Constroi os objetos
