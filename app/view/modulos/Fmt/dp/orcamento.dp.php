@@ -116,8 +116,8 @@ try {
  	#################################################################################
  	foreach ($codItemSel as $codItem => $item) {
  		$oItem			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findOneBy(array('codigo' => $codItem));
- 		$oTipoCort		= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findOneBy(array('codigo' => $codTipoCortesia[$codItem]));
  		$valor			= ($aValor[$codItem]) ? \Zage\App\Util::to_float($aValor[$codItem]) : 0; 
+ 		$oTipoCort		= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findOneBy(array('codigo' => $codTipoCortesia[$codItem]));
  		$qtde			= (int) $aQtde[$codItem];
  		$oOrcItem		= new \Entidades\ZgfmtOrcamentoItem();
  		$oOrcItem->setCodItem($oItem);
@@ -126,7 +126,11 @@ try {
  		$oOrcItem->setTextoDescritivo($aObs[$codItem]);
  		$oOrcItem->setQuantidade($qtde);
  		$oOrcItem->setValorUnitario($valor);
- 		$oOrcItem->setCodTipoCortesia($oTipoCort);
+ 		if ($valor == 0) {
+ 			$oOrcItem->setCodTipoCortesia($oTipoCort);
+ 		}else{
+ 			$oOrcItem->setCodTipoCortesia(null);
+ 		}
  		$em->persist($oOrcItem);
  	}
  	

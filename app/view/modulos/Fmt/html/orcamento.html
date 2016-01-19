@@ -423,7 +423,7 @@ function carregaPlanoOrc() {
 		$.ajax({
 			url:	vUrl,
 			data:  { id: '%ID%', codPlanoOrc: $codPlanoOrc, codVersao: $codVersao, numFormando: $numFormando, numConvidado: $numConvidado},
-			async: false,
+			async: 	true,
 			method: "GET",
 			dataType: 'html'
 		}).done(function( data, textStatus, jqXHR) {
@@ -433,10 +433,12 @@ function carregaPlanoOrc() {
 			corrigeQtdeConvidados(false);
 			orcAtualizaCustoFinal();
 			$('#divMsgOrcID').empty();
+			$('#divMsgOrcID').html("&nbsp;");
 			
 		}).fail(function( jqXHR, textStatus, errorThrown) {
 			alert("Falhou: "+errorThrown);
 		});
+		
 	}
 }
 
@@ -596,36 +598,14 @@ function orcAlteraValor($codigo,$indSel) {
 		$_chk.prop('checked', true);
 	}
 	
-	/**
-	 * Verificar se o item tem um valor mínimo definido, para validar se o desconto concedido está dentro
-	 * dos padrões configurados
-	 */
-	var $temValMinimo	= $oValor.attr( "zg-val-minimo");
-	if ($temValMinimo) {
-		//$valMinimo		= $temValMinimo;
-		$valMinimo		= zgConverteFloat($temValMinimo);
-		
-		if (($valor > 0) && ($temValMinimo) && ($valor < $valMinimo) )  {
-			//alert("Valor: "+$valor+" ValorMínimo: "+$valMinimo+" valor menor que o mínimo");
-			$tr.addClass('has-error');
-			$tr.addClass('alert-danger');
-		}
-		
-		
-	}else{
-		$valMinimo		= 0;
-	}
-	
-	
-	
+	validaValorOrc($codigo);
 	
 	/**
 	 * Se o valor for zero e o item estiver marcado , habilitar o select para escolher o tipo de cortesia
 	 */
 	var $selCortesia	= $('#selCortesia_'+$codigo+'_ID');
-	var $oValor			= $('input[zg-name="valor"][zg-codigo="'+$codigo+'"]').val();
 
-	if (!$oValor && $_chk.prop('checked')) {
+	if (!$valor && $_chk.prop('checked')) {
 		$selCortesia.removeClass("hidden");
 	}else{
 		$selCortesia.addClass("hidden");
@@ -646,6 +626,50 @@ function orcAlteraValor($codigo,$indSel) {
 	 */
 	 orcAtualizaBotoes();
 }
+
+function validaValorOrc($codigo) {
+	var $oValor			= $('input[zg-name="valor"][zg-codigo="'+$codigo+'"]');
+	var $tr				= $('#trorc_'+$codigo+'_ID');
+	var $valor			= zgConverteFloat($oValor.val());
+	var $temValMinimo	= $oValor.attr("zg-val-minimo");
+	var $podeCortesia	= $oValor.attr("zg-pode-dar-cortesia");
+	var $selCortesia	= $('#selCortesia_'+$codigo+'_ID');
+	var $valMinimo,$ok;
+	
+	$ok					= true;
+	
+	/**
+	 * Verificar se o item tem um valor mínimo definido, para validar se o desconto concedido está dentro
+	 * dos padrões configurados
+	 */
+	if ($temValMinimo) {
+		$valMinimo		= zgConverteFloat($temValMinimo);
+		
+		if (($valor > 0) && ($temValMinimo) && ($valor < $valMinimo) )  {
+			$tr.addClass('alert-danger');
+			$ok 		= false;
+		}else if (($valor == 0) && ($temValMinimo) ) {
+			if ($podeCortesia === "0") {
+				//alert("valor: "+$valor+" TemValorMínimo, PodeCortesia: "+$podeCortesia);
+				$selCortesia.attr("disabled","disabled");
+				$tr.addClass('alert-danger');
+				$ok		= false;
+			}else if ($podeCortesia === "1") {
+				$selCortesia.addClass("readonly");
+				$selCortesia.select2('val', 'T');
+				$selCortesia.select2("readonly", true);
+			}else{
+				$selCortesia.attr("disabled",false);
+				$tr.removeClass('alert-danger');
+			}
+		}else{
+			$tr.removeClass('alert-danger');
+		}
+	}
+	
+	return $ok;
+	
+} 
 
 function orcAlteraSel($codigo) {
 	
@@ -998,7 +1022,8 @@ function orcValidaOrcamento() {
 			$oQtde		= $(this).find('[zg-name="qtde"]');
 			$oValor		= $(this).find('[zg-name="valor"]');
 			$oChk		= $(this).find('[zg-name="selItem"]');
-
+			$codigo		= $oValor.attr('zg-codigo');
+			
 			$qtde		= parseInt($oQtde.val());
 			$valor		= zgConverteFloat($oValor.val());
 			$chk		= $oChk.is(':checked');
@@ -1006,6 +1031,8 @@ function orcValidaOrcamento() {
 			
 			if ((!$qtde) && ($chk)) {
 				$(this).addClass('alert-danger');
+				$ok 	= false;
+			}else if (validaValorOrc($codigo) == false) {
 				$ok 	= false;
 			}else{
 				$(this).removeClass('alert-danger');
