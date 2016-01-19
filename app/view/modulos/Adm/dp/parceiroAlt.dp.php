@@ -313,11 +313,14 @@ $em->getConnection()->beginTransaction();
 try {
 	if (isset($codOrganizacao) && (!empty($codOrganizacao))){
  		$oParceiro	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $codOrganizacao));
+ 		$novo		= false;
  		if (!$oParceiro) {
+ 			$novo		= true;
  			$oParceiro	= new \Entidades\ZgadmOrganizacao();
  			$oParceiro->setDataCadastro(new \DateTime("now"));
  		}
  	}else{
+ 		$novo		= true;
  		$oParceiro	= new \Entidades\ZgadmOrganizacao();
  		$oParceiro->setDataCadastro(new \DateTime("now"));
  	}
@@ -548,6 +551,24 @@ try {
  			}
  		}
  	}
+ 	
+ 	#################################################################################
+ 	## Configuração para o tipo CERIMONIAL
+ 	#################################################################################
+ 	if ($oParceiro->getCodTipo()->getCodigo() == "CER" && $novo == true){
+ 		$oPlanoFmt	= $em->getRepository('Entidades\ZgadmPlano')->findOneBy(array('codigo' => \Zage\Adm\Parametro::getValorSistema("FMT_COD_PLANO_PADRAO_FORMATURA")));
+ 		$oOrgCer	= new \Entidades\ZgfmtOrganizacaoCerimonial();
+ 		
+ 		$oOrgCer->setCodOrganizacao($oParceiro);
+ 		$oOrgCer->setCodPlanoFormatura($oPlanoFmt);
+ 		$oOrgCer->setIndVendedorAceite(1);
+ 		$oOrgCer->setIndVendedorDarCortesia(1);
+ 		$oOrgCer->setIndVendedorDesmarcarPadrao(1);
+ 		
+ 		$em->persist($oOrgCer);
+ 		
+ 	}
+ 	
  	
  	#################################################################################
  	## SALVAR

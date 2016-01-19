@@ -83,8 +83,8 @@ for ($i = 0; $i < sizeof($organizacoes); $i++) {
 	## Verificar se a comissão é do tipo FIXA
 	#################################################################################
 	$oContrato			= $em->getRepository('\Entidades\ZgadmContrato')->findOneBy(array('codOrganizacao' => $organizacoes[$i]->getCodigo()));
-	
-	if ($oContrato){
+
+	if ($oContrato && $oContrato->getCodTipoComissao()){
 		if ($oContrato->getCodTipoComissao()->getCodigo() != "F"){
 			$grid->desabilitaCelula($i, 7);
 		}

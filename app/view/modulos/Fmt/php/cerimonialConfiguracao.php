@@ -51,9 +51,9 @@ if (!$oOrgCer) \Zage\App\Erro::halt('Sua organização ainda não está configur
 #################################################################################
 ## Resgata as informações do banco
 #################################################################################
-$indAceite			= ($oOrgCer->getIndVendedorAceite() == 1) ? "checked" : null;
-$indDesmarcarPadrao	= ($oOrgCer->getIndVendedorDesmarcarPadrao() == 1) ? "checked" : null;
-$indDarCortesia		= ($oOrgCer->getIndVendedorDarCortesia() == 1) ? "checked" : null;
+$indAceite			= ($oOrgCer->getIndVendedorAceite() === 0) ? null : "checked";
+$indDesmarcarPadrao	= ($oOrgCer->getIndVendedorDesmarcarPadrao() === 0) ? null  : "checked";
+$indDarCortesia		= ($oOrgCer->getIndVendedorDarCortesia() === 0) ? null : "checked";
 
 #################################################################################
 ## Carregando o template html
