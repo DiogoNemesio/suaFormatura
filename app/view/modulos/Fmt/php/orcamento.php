@@ -51,8 +51,6 @@ $oOrg 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('cod
 #################################################################################
 $souVendedor			= \Zage\Seg\Usuario::ehVendedor($system->getCodOrganizacao(), $system->getCodUsuario());
 $indVenAceite			= 1;
-$indVenDesPad			= 1;
-$indVenDarCor			= 1;
 
 if ($oOrg->getCodTipo()->getCodigo() == "FMT") {
 	$oFmtAdm	= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
@@ -61,8 +59,6 @@ if ($oOrg->getCodTipo()->getCodigo() == "FMT") {
 		if (!$orgCer) \Zage\App\Erro::halt('Sua Organização, não está configurada para cadastrar Formaturas, entre em contato com o SuaFormatura.com através do e-mail: '.$system->config["mail"]["admin"]);
 		if ($souVendedor == true) {
 			$indVenAceite		= ($orgCer->getIndVendedorAceite() 			=== 0) ? 0 : 1;
-			$indVenDesPad		= ($orgCer->getIndVendedorDesmarcarPadrao()	=== 0) ? 0 : 1;
-			$indVenDarCor		= ($orgCer->getIndVendedorDarCortesia()		=== 0) ? 0 : 1;
 		}
 	}
 }

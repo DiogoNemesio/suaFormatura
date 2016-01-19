@@ -68,18 +68,18 @@ $oOrg 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('cod
 ## e Verifica o perfil do usuário para fazer as limitações do vendedor
 #################################################################################
 $souVendedor			= \Zage\Seg\Usuario::ehVendedor($system->getCodOrganizacao(), $system->getCodUsuario());
-$indVenAceite			= 1;
 $indVenDesPad			= 1;
 $indVenDarCor			= 1;
+$indVenAltObs			= 1;
 
 if ($oOrg->getCodTipo()->getCodigo() == "FMT") {
 	$oFmtAdm	= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
 	if ($oFmtAdm) {
 		$orgCer				= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $oFmtAdm->getCodigo()));
 		if ($orgCer && $souVendedor == true) {
-			$indVenAceite		= ($orgCer->getIndVendedorAceite() 			=== 0) ? 0 : 1;
 			$indVenDesPad		= ($orgCer->getIndVendedorDesmarcarPadrao()	=== 0) ? 0 : 1;
 			$indVenDarCor		= ($orgCer->getIndVendedorDarCortesia()		=== 0) ? 0 : 1;
+			$indVenAltObs		= ($orgCer->getIndVendedorAlterarObs()		=== 0) ? 0 : 1;
 		}
 	}
 }
@@ -122,6 +122,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["TIPO"] 		= $itens[$i]->getCodTipoItem()->getCodigo();
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $itens[$i]->getItem();
 	$aItens[$codTipo]["ITENS"][$codigo]["VALOR_PADRAO"]	= $valorPadrao;
+	$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= $itens[$i]->getIndPadrao();
 	
 	if (isset($aOrcItens[$codigo])) {
 		$aItens[$codTipo]["ITENS"][$codigo]["QTDE"] 		= $aOrcItens[$codigo]["QTDE"];
@@ -130,7 +131,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"]		= $aOrcItens[$codigo]["TOTAL"];
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= $aOrcItens[$codigo]["COD_CORT"];
 		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 1;
-		$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= null;
+		//$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= null;
 	}else{
 
 		
@@ -147,7 +148,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($itens[$i]->getIndPadrao() && $valorPadrao) ? ($aItens[$codTipo]["ITENS"][$codigo]["QTDE"] * $valorPadrao) : 0;
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= null;
 		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 0;
-		$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= $itens[$i]->getIndPadrao();
+		//$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= $itens[$i]->getIndPadrao();
 	}
 }
 
@@ -234,6 +235,22 @@ foreach ($aItens as $codTipo => $aItem)	{
 			}
 			
 			
+			if ($indVenAltObs 	== 0) {
+				$roObs			= "readonly";
+			}else{
+				$roObs			= "";
+			}
+			
+			$log->info("Item: ".$item["ITEM"]." Valor Padrão: ".$item["VALOR_PADRAO"]);
+			
+			if (($item["PADRAO"] == 1) && ($indVenDesPad	== 0)) {
+				$disChkClass	= "disabled";
+				$disChk			= 'disabled="disabled"';
+			}else{
+				$disChk			= "";
+				$disChkClass	= "";
+			}
+			
 			#################################################################################
 			## Resgata as informações de Cortesia do Orçamento
 			#################################################################################
@@ -244,11 +261,11 @@ foreach ($aItens as $codTipo => $aItem)	{
 			}
 
 			$htmlForm	.= '<tr>';
-			$htmlForm	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codItemSel['.$item["CODIGO"].']" zg-name="selItem" class="ace" value="'.$item["CODIGO"].'" onchange="orcAlteraSel(\''.$item["CODIGO"].'\');" /><span class="lbl"></span></label></td>';
+			$htmlForm	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codItemSel['.$item["CODIGO"].']" zg-name="selItem" class="ace '.$disChkClass.'" '.$disChk.' value="'.$item["CODIGO"].'" onchange="orcAlteraSel(\''.$item["CODIGO"].'\');" /><span class="lbl"></span></label></td>';
 			$htmlForm	.= '<td class="col-sm-2">'.$item["ITEM"].'</td>';
 			$htmlForm	.= '<td class="col-sm-2 right"><span>Qtde:&nbsp;</span> <input class="input-mini" id="qtde_'.$item["CODIGO"].'_ID" name="aQtde['.$item["CODIGO"].']" type="text" '.$ro.' zg-tipo="'.$item["TIPO"].'" zg-evento="'.$codTipo.'" zg-codigo="'.$item["CODIGO"].'" zg-name="qtde" maxlength="5" tabindex="'.$qTab.'" value="'.$qtde.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="orcAlteraQuantidade(\''.$item["CODIGO"].'\');"></td>';
 			$htmlForm	.= '<td class="col-sm-1 center"><i class="fa fa-close"></i></td>';
-			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" value="'.$item["VALOR"].'" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\',true);"></td>';
+			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" value="'.$item["VALOR"].'" zg-valor-padrao="'.$item["VALOR_PADRAO"].'" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\',true);"></td>';
 			$htmlForm	.= '<td class="col-sm-2">
 								<div data-toggle="buttons" class="btn-group btn-overlap">
 									<span class="btn btn-sm '.$btnDesc.' btn-info center pull-left" id="span-desc-'.$item["CODIGO"].'_ID" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i id="icon-desc-'.$item["CODIGO"].'_ID"  class="fa fa-commenting-o bigger-150 '.$iconDesc.'"></i></span>
@@ -259,7 +276,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 			$htmlForm	.= '<td class="col-sm-2"><span>Total:&nbsp;</span><span zg-total-item="1" id="total_'.$item["CODIGO"].'_ID">'.\Zage\App\Util::to_money($item["TOTAL"]).'</span></td>';
 			$htmlForm	.= '</tr>';
 			$htmlForm	.= '<tr class="hidden" id="trOrcObs_'.$item["CODIGO"].'_ID">';
-			$htmlForm	.= '<td colspan="8"><textarea maxlength="1000" rows="3" class="col-sm-6 pull-right" zg-name="aObs" name="aObs['.$item["CODIGO"].']" onchange="orcAlteraObs(\''.$item["CODIGO"].'\');">'.$item["DESCRITIVO"].'</textarea></td>';
+			$htmlForm	.= '<td colspan="8"><textarea maxlength="1000" rows="3" class="col-sm-6 pull-right '.$roObs.'" '.$roObs.' zg-name="aObs" name="aObs['.$item["CODIGO"].']" onchange="orcAlteraObs(\''.$item["CODIGO"].'\');">'.$item["DESCRITIVO"].'</textarea></td>';
 			$htmlForm	.= '</tr>';
 				
 			$tabIndex++;
