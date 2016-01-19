@@ -13,7 +13,7 @@
 			<span class="btn btn-grey tooltip-error" id='btnOrcMailID' zg-disabled="disabled" onclick="orcEnviaEmail();" data-rel="tooltip" data-placement="top">
 				<i class="ace-icon fa fa-envelope bigger-120" id="icOrcMailID"></i>
 			</span>
-			<span class="btn btn-grey tooltip-success" id='btnOrcAceiteID' zg-disabled="disabled" onclick="orcConfirmAceite();" data-rel="tooltip" data-placement="top">
+			<span class="btn btn-grey tooltip-success" id='btnOrcAceiteID' zg-disabled="disabled" zg-ind-ven-aceite="%IND_VENDEDOR_ACEITE%" onclick="orcConfirmAceite();" data-rel="tooltip" data-placement="top">
 				<i class="ace-icon fa fa-check-circle bigger-120" id="icOrcAceiteID"></i>
 			</span>
 		</div>
@@ -197,9 +197,11 @@ function orcEnviaEmail() {
 function orcConfirmAceite() {
 
 	/** Verificar se pode Aceitar o Orçamento **/
-	var $disabled	= $('#btnOrcAceiteID').attr('zg-disabled');
-	if ($disabled == "disabled")	return false;
+	var $disabled		= $('#btnOrcAceiteID').attr('zg-disabled');
+	var $indVenAceite	= $('#btnOrcAceiteID').attr('zg-ind-ven-aceite');
 	
+	if ($disabled 		== "disabled")	return false;
+	if ($indVenAceite 	== "0")			return false;
 	
 	bootbox.dialog({
 		title: "Tem certeza que deseja aceitar o orçamento?",
@@ -850,6 +852,7 @@ function orcAtualizaBotoes() {
 	var $codPlanoOrc 		= $('#codPlanoOrcID').val();
 	var $dataConclusao		= $('#dataConclusaoID').val();
 	var $indHabilita		= false;
+	var $indVenAceite		= $('#btnOrcAceiteID').attr('zg-ind-ven-aceite');
 
 	
 	if ($numFormando && $numConvidado && $dataConclusao && ($indSalvo == 1)) {
@@ -877,13 +880,23 @@ function orcAtualizaBotoes() {
 		$('#btnOrcMailID').attr("title","Enviar orçamento por e-mail").tooltip('fixTitle');
 
 		/** Botão de Aceite **/
-		$('#btnOrcAceiteID').attr("zg-disabled",false);
-		//$('#btnOrcAceiteID').removeClass("disabled");
-		$('#btnOrcAceiteID').removeClass("btn-grey");
-		$('#btnOrcAceiteID').addClass("btn-white");
-		$('#icOrcAceiteID').removeClass("white");
-		$('#icOrcAceiteID').addClass("green");
-		$('#btnOrcAceiteID').attr("title","Dar Aceite no Orçamento").tooltip('fixTitle');
+		if ($indVenAceite == 1) {
+			$('#btnOrcAceiteID').attr("zg-disabled",false);
+			//$('#btnOrcAceiteID').removeClass("disabled");
+			$('#btnOrcAceiteID').removeClass("btn-grey");
+			$('#btnOrcAceiteID').addClass("btn-white");
+			$('#icOrcAceiteID').removeClass("white");
+			$('#icOrcAceiteID').addClass("green");
+			$('#btnOrcAceiteID').attr("title","Dar Aceite no Orçamento").tooltip('fixTitle');
+		}else{
+			$('#btnOrcAceiteID').attr("zg-disabled","disabled");
+			//$('#btnOrcAceiteID').addClass("disabled");
+			$('#btnOrcAceiteID').removeClass("btn-white");
+			$('#btnOrcAceiteID').addClass("btn-grey");
+			$('#icOrcAceiteID').removeClass("green");
+			$('#icOrcAceiteID').addClass("white");
+			$('#btnOrcAceiteID').attr("title","Sem permissão para aceitar o orçamento").tooltip('fixTitle');
+		}
 
 	
 	}else{

@@ -47,10 +47,24 @@ $oOrg 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('cod
 
 #################################################################################
 ## Verifica se as configurações do cerimonial estão OK
+## e Verifica o perfil do usuário para fazer as limitações do vendedor
 #################################################################################
-if ($oOrg->getCodTipo()->getCodigo() == "CER") {
-	$orgCer		= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
-	if (!$orgCer) \Zage\App\Erro::halt('Sua Organização, não está configurada para cadastrar Formaturas, entre em contato com o SuaFormatura.com através do e-mail: '.$system->config["mail"]["admin"]);
+$souVendedor			= \Zage\Seg\Usuario::ehVendedor($system->getCodOrganizacao(), $system->getCodUsuario());
+$indVenAceite			= 1;
+$indVenDesPad			= 1;
+$indVenDarCor			= 1;
+
+if ($oOrg->getCodTipo()->getCodigo() == "FMT") {
+	$oFmtAdm	= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+	if ($oFmtAdm) {
+		$orgCer				= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $oFmtAdm->getCodigo()));
+		if (!$orgCer) \Zage\App\Erro::halt('Sua Organização, não está configurada para cadastrar Formaturas, entre em contato com o SuaFormatura.com através do e-mail: '.$system->config["mail"]["admin"]);
+		if ($souVendedor == true) {
+			$indVenAceite		= ($orgCer->getIndVendedorAceite() 			=== 0) ? 0 : 1;
+			$indVenDesPad		= ($orgCer->getIndVendedorDesmarcarPadrao()	=== 0) ? 0 : 1;
+			$indVenDarCor		= ($orgCer->getIndVendedorDarCortesia()		=== 0) ? 0 : 1;
+		}
+	}
 }
 
 #################################################################################
@@ -133,8 +147,6 @@ try {
 #################################################################################
 $oFmt				= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
 
-$log->info("Valor Previsto: ".round($oFmt->getValorPrevistoTotal(),2));
-
 #################################################################################
 ## Url do script
 #################################################################################
@@ -160,7 +172,6 @@ $tpl->set('DP_ACEITE'				,$urlAceite);
 $tpl->set('ID'						,$id);
 
 $tpl->set('VALOR_PREVISTO'			,round($oFmt->getValorPrevistoTotal(),2));
-
 $tpl->set('COD_ORGANIZACAO'			,$system->getCodOrganizacao());
 $tpl->set('IDENT'					,$ident);
 $tpl->set('NOME'					,$nome);
@@ -172,6 +183,8 @@ $tpl->set('NUM_FORMANDOS'			,$numFormandos);
 $tpl->set('NUM_CONVIDADOS'			,$numConvidados);
 $tpl->set('IND_ACEITE'				,$indAceite);
 $tpl->set('COD_VERSAO'				,$codVersaoOrc);
+$tpl->set('IND_VENDEDOR_ACEITE'		,$indVenAceite);
+
 
 $tpl->set('VERSOES_ORC'				,$oVersoesOrc);
 $tpl->set('PLANO_ORC'				,$oPlanoOrc);
@@ -185,6 +198,7 @@ $tpl->set('APP_BS_TA_TIMEOUT'		,\Zage\Adm\Parametro::getValorSistema('APP_BS_TA_
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'						,$_icone_);
 $tpl->set('COD_MENU'				,$_codMenu_);
+
 
 #################################################################################
 ## Por fim exibir a página HTML

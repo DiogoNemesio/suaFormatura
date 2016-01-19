@@ -58,6 +58,32 @@ if (sizeof($itens) == 0)	{
 	die ("Configure o Plano orçamentário antes de usá-lo");
 }
 
+#################################################################################
+## Resgata as informações da organização
+#################################################################################
+$oOrg 		= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
+
+#################################################################################
+## Verifica se as configurações do cerimonial estão OK
+## e Verifica o perfil do usuário para fazer as limitações do vendedor
+#################################################################################
+$souVendedor			= \Zage\Seg\Usuario::ehVendedor($system->getCodOrganizacao(), $system->getCodUsuario());
+$indVenAceite			= 1;
+$indVenDesPad			= 1;
+$indVenDarCor			= 1;
+
+if ($oOrg->getCodTipo()->getCodigo() == "FMT") {
+	$oFmtAdm	= \Zage\Fmt\Formatura::getCerimonalAdm($system->getCodOrganizacao());
+	if ($oFmtAdm) {
+		$orgCer				= $em->getRepository('Entidades\ZgfmtOrganizacaoCerimonial')->findOneBy(array('codOrganizacao' => $oFmtAdm->getCodigo()));
+		if ($orgCer && $souVendedor == true) {
+			$indVenAceite		= ($orgCer->getIndVendedorAceite() 			=== 0) ? 0 : 1;
+			$indVenDesPad		= ($orgCer->getIndVendedorDesmarcarPadrao()	=== 0) ? 0 : 1;
+			$indVenDarCor		= ($orgCer->getIndVendedorDarCortesia()		=== 0) ? 0 : 1;
+		}
+	}
+}
+
 
 #################################################################################
 ## Carrega o orçamento salvo

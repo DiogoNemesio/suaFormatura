@@ -858,6 +858,31 @@ class Usuario extends \Entidades\ZgsegUsuario {
 	
 	}
 	
+
+	/**
+	 * Verificar se um determinado usuário é Vendedor em uma organização
+	 * @param int $codOrganizacao
+	 * @param int $codUsuario
+	 */
+	public static function getPerfilOrganizacao($codOrganizacao,$codUsuario) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em;
+	
+		#################################################################################
+		## Resgatar o Perfil do usuário na organização
+		#################################################################################
+		$oUsuOrg					= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codOrganizacao' => $codOrganizacao,'codUsuario' => $codUsuario));
+	
+		if (!$oUsuOrg)		return null;
+		if (!$oUsuOrg->getCodPerfil()->getCodTipoUsuario())	return null;
+		$return				= $oUsuOrg->getCodPerfil()->getCodigo();
+		return $return;
+	
+	}
+	
+	
 	/**
 	 * Verificar se um determinado usuário é Formando em uma organização
 	 * @param int $codOrganizacao
@@ -881,6 +906,39 @@ class Usuario extends \Entidades\ZgsegUsuario {
 		return $return;
 		
 	}
+	
+	/**
+	 * Verificar se um determinado usuário é Vendedor em uma organização
+	 * @param int $codOrganizacao
+	 * @param int $codUsuario
+	 */
+	public static function ehVendedor($codOrganizacao,$codUsuario) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em;
+	
+		#################################################################################
+		## Resgatar o Perfil do usuário na organização
+		#################################################################################
+		$codPerfil				= self::getPerfilOrganizacao($codOrganizacao, $codUsuario);
+		if (!$codPerfil)		return false;
+		
+		#################################################################################
+		## Resgatar o parâmetro que indica os perfis de vendedor
+		#################################################################################
+		$aPerVen				= \Zage\Adm\Parametro::getValorSistema("APP_COD_PERFIS_VENDEDOR");
+		$aPerVen				= explode(",",$aPerVen);
+		
+		if (!$aPerVen || !is_array($aPerVen) || sizeof($aPerVen) == 0) return false;
+		
+		if (in_array($codPerfil, $aPerVen)) {
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	
 	public function _getCodigo() {
 		return $this->_usuario->getCodigo();
