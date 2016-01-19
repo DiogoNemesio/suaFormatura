@@ -115,7 +115,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	$codTipo		= $itens[$i]->getCodGrupoItem()->getCodigo();
 	$codigo			= $itens[$i]->getCodigo();
 	$valorPadrao	= ($itens[$i]->getValorPadrao()) ? \Zage\App\Util::formataDinheiro($itens[$i]->getValorPadrao()) 	: null;
-	$pctMaxDesconto	= ($itens[$i]->getPctMaxDescontoVendedor()) ? \Zage\App\Util::to_float(getPctMaxDescontoVendedor()) : null;
+	$pctMaxDesconto	= ($itens[$i]->getPctMaxDescontoVendedor()) ? \Zage\App\Util::to_float($itens[$i]->getPctMaxDescontoVendedor()) : null;
 	
 	
 	$aItens[$codTipo]["DESCRICAO"]						= $itens[$i]->getCodGrupoItem()->getDescricao();
@@ -128,7 +128,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	if ($valorPadrao && $pctMaxDesconto && ($souVendedor == true)) {
 		$pctMin		= (100 - $pctMaxDesconto);
 		if ($pctMin < 0) $pctMin = 0;
-		$aItens[$codTipo]["ITENS"][$codigo]["VALOR_MINIMO"]		= \Zage\App\Util::to_float(round($valorPadrao * $pctMin,2));
+		$aItens[$codTipo]["ITENS"][$codigo]["VALOR_MINIMO"]		= \Zage\App\Util::to_float(round($valorPadrao * $pctMin/100,2));
 	}else{
 		$aItens[$codTipo]["ITENS"][$codigo]["VALOR_MINIMO"]		= null;
 	}
@@ -285,12 +285,12 @@ foreach ($aItens as $codTipo => $aItem)	{
 				\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 			}
 
-			$htmlForm	.= '<tr>';
+			$htmlForm	.= '<tr id="trorc_'.$item["CODIGO"].'_ID">';
 			$htmlForm	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codItemSel['.$item["CODIGO"].']" '.$disChkStyle.' zg-name="selItem" class="ace '.$disChkClass.'" '.$disChk.' value="'.$item["CODIGO"].'" onchange="orcAlteraSel(\''.$item["CODIGO"].'\');" /><span class="lbl"></span></label></td>';
 			$htmlForm	.= '<td class="col-sm-2">'.$item["ITEM"].'</td>';
 			$htmlForm	.= '<td class="col-sm-2 right"><span>Qtde:&nbsp;</span> <input class="input-mini" id="qtde_'.$item["CODIGO"].'_ID" name="aQtde['.$item["CODIGO"].']" type="text" '.$ro.' zg-tipo="'.$item["TIPO"].'" zg-evento="'.$codTipo.'" zg-codigo="'.$item["CODIGO"].'" zg-name="qtde" maxlength="5" tabindex="'.$qTab.'" value="'.$qtde.'" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" onchange="orcAlteraQuantidade(\''.$item["CODIGO"].'\');"></td>';
 			$htmlForm	.= '<td class="col-sm-1 center"><i class="fa fa-close"></i></td>';
-			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" value="'.$item["VALOR"].'" zg-valor-padrao="'.$item["VALOR_PADRAO"].'" zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\',true);"></td>';
+			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" value="'.$item["VALOR"].'" zg-valor-padrao="'.$item["VALOR_PADRAO"].'" '.$tagDarCor.' '.$tagValMin.' zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\',true);"></td>';
 			$htmlForm	.= '<td class="col-sm-2">
 								<div data-toggle="buttons" class="btn-group btn-overlap">
 									<span class="btn btn-sm '.$btnDesc.' btn-info center pull-left" id="span-desc-'.$item["CODIGO"].'_ID" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i id="icon-desc-'.$item["CODIGO"].'_ID"  class="fa fa-commenting-o bigger-150 '.$iconDesc.'"></i></span>

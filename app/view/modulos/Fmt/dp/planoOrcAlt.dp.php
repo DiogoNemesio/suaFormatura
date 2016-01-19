@@ -148,7 +148,7 @@ try {
 		if (!isset($pctMaxDesconto[$i]) || !$pctMaxDesconto[$i]) {
 			$_pctMaxDesconto	= null;
 		}else{
-			$_pctMaxDesconto		= \Zage\App\Util::to_float(str_replace("%", "", $pctMaxDesconto[$i]));
+			$_pctMaxDesconto	= \Zage\App\Util::to_float(str_replace("%", "", $pctMaxDesconto[$i]));
 		}
 		
 		

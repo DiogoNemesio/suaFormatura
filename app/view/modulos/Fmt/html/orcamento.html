@@ -584,6 +584,10 @@ function orcAlteraQuantidade($codigo) {
 
 
 function orcAlteraValor($codigo,$indSel) {
+	var $oValor			= $('input[zg-name="valor"][zg-codigo="'+$codigo+'"]');
+	var $tr				= $('#trorc_'+$codigo+'_ID');
+	var $valor			= zgConverteFloat($oValor.val());
+	var $valMinimo;
 	/**
 	 * Seleciona o registro editado
 	 */
@@ -591,6 +595,28 @@ function orcAlteraValor($codigo,$indSel) {
 	if ($indSel == true) {
 		$_chk.prop('checked', true);
 	}
+	
+	/**
+	 * Verificar se o item tem um valor mínimo definido, para validar se o desconto concedido está dentro
+	 * dos padrões configurados
+	 */
+	var $temValMinimo	= $oValor.attr( "zg-val-minimo");
+	if ($temValMinimo) {
+		//$valMinimo		= $temValMinimo;
+		$valMinimo		= zgConverteFloat($temValMinimo);
+		
+		if (($valor > 0) && ($temValMinimo) && ($valor < $valMinimo) )  {
+			//alert("Valor: "+$valor+" ValorMínimo: "+$valMinimo+" valor menor que o mínimo");
+			$tr.addClass('has-error');
+			$tr.addClass('alert-danger');
+		}
+		
+		
+	}else{
+		$valMinimo		= 0;
+	}
+	
+	
 	
 	
 	/**
