@@ -57,6 +57,13 @@ class ZgfmtOrganizacaoCerimonial
     private $indVendedorDarCortesia;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="IND_VENDEDOR_ALTERAR_OBS", type="integer", nullable=true)
+     */
+    private $indVendedorAlterarObs;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -200,6 +207,29 @@ class ZgfmtOrganizacaoCerimonial
     public function getIndVendedorDarCortesia()
     {
         return $this->indVendedorDarCortesia;
+    }
+
+    /**
+     * Set indVendedorAlterarObs
+     *
+     * @param integer $indVendedorAlterarObs
+     * @return ZgfmtOrganizacaoCerimonial
+     */
+    public function setIndVendedorAlterarObs($indVendedorAlterarObs)
+    {
+        $this->indVendedorAlterarObs = $indVendedorAlterarObs;
+
+        return $this;
+    }
+
+    /**
+     * Get indVendedorAlterarObs
+     *
+     * @return integer 
+     */
+    public function getIndVendedorAlterarObs()
+    {
+        return $this->indVendedorAlterarObs;
     }
 
     /**

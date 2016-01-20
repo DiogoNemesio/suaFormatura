@@ -36,6 +36,7 @@ if (isset($_POST['valorMora'])) 		$valorMora			= \Zage\App\Util::antiInjection($
 if (isset($_POST['pctJuros'])) 			$pctJuros			= \Zage\App\Util::antiInjection($_POST['pctJuros']);
 if (isset($_POST['pctMora'])) 			$pctMora			= \Zage\App\Util::antiInjection($_POST['pctMora']);
 if (isset($_POST['instrucao'])) 		$instrucao			= \Zage\App\Util::antiInjection($_POST['instrucao']);
+if (isset($_POST['codCedente'])) 		$codCedente			= \Zage\App\Util::antiInjection($_POST['codCedente']);
 
 #################################################################################
 ## Limpar a variável de erro
@@ -202,6 +203,7 @@ try {
  	$oConta->setPctJuros($pctJuros);
  	$oConta->setPctMora($pctMora);
  	$oConta->setInstrucao($instrucao);
+ 	$oConta->setCodigoCedente($codCedente);
  	
  	$em->persist($oConta);
  	$em->flush();

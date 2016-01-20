@@ -235,7 +235,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$desconto				= \Zage\App\Util::to_float($aValorDesconto[$codConta]);
 	$outros					= \Zage\App\Util::to_float($saldoDet["OUTROS"]);
 	//$especie				= ($oConta->getCodMoeda()) ? $oConta->getCodMoeda()->getCodInternacional() : null;
-	//$especie				= 9;
+	$especie				= 9;
 	$especieDoc				= "DM"; # Duplicata Mercantil
 	
 	if (!$juros)			$juros		= 0;
@@ -355,6 +355,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$ccorrente			= $codContaRec->getCcorrente();
 	$ccorrenteDV		= $codContaRec->getCcorrenteDv();
 	$carteira			= $codContaRec->getCodCarteira()->getCodCarteira();
+	$codCedente			= ($codContaRec->getCodigoCedente()) ? $codContaRec->getCodigoCedente() : null;
 	
 	#################################################################################
 	## Resgata as informações de acréscimos
@@ -414,6 +415,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$boleto->setCnpj($cedenteCNPJ);
 	$boleto->setConta($ccorrente);
 	$boleto->setContaDigito($ccorrenteDV);
+	$boleto->setCodigoCedente($codCedente);
 	$boleto->setDemonstrativo1($demonstrativo1);
 	$boleto->setDemonstrativo2($demonstrativo2);
 	$boleto->setEndereco($cedenteEndereco);

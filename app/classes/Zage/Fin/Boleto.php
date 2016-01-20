@@ -271,7 +271,7 @@ class Boleto {
 	 * Código do cedente junto a instituição bancária
 	 * @var string
 	 */
-	private $codigoCliente;
+	private $codigoCedente;
 	
 	/**
 	 * Linha digitável
@@ -345,9 +345,9 @@ class Boleto {
 		#################################################################################
 		$agencia				= $this->getAgencia();
 		$agenciaDV				= $this->getAgenciaDigito();
-		$ccorrente				= $this->getConta();
 		$ccorrenteDV			= $this->getContaDigito();
 		$carteira				= $this->getCarteira();
+		$ccorrente				= ($this->getCodigoCedente()) ? $this->getCodigoCedente() : $this->getConta();
 		
 		#################################################################################
 		## Cria o array dos demonstrativos
@@ -410,7 +410,7 @@ class Boleto {
 			'carteira' 					=> $carteira,
 			'conta' 					=> $ccorrente,
 			'contaDv' 					=> $ccorrenteDV,
-			'codigoCliente' 			=> $this->getCodigoCliente(),
+			'codigoCliente' 			=> $this->getCodigoCedente(),
 			'numeroDocumento' 			=> $this->getNumeroDocumento(),
 			'descricaoDemonstrativo' 	=> $aDemo,
 			'instrucoes' 				=> $aInst,
@@ -1175,16 +1175,16 @@ class Boleto {
 	 *
 	 * @return the string
 	 */
-	public function getCodigoCliente() {
-		return $this->codigoCliente;
+	public function getCodigoCedente() {
+		return $this->codigoCedente;
 	}
 	
 	/**
 	 *
-	 * @param string $codigoCliente        	
+	 * @param string $codigoCedente        	
 	 */
-	public function setCodigoCliente($codigoCliente) {
-		$this->codigoCliente = $codigoCliente;
+	public function setCodigoCedente($codigoCedente) {
+		$this->codigoCedente = $codigoCedente;
 		return $this;
 	}
 		

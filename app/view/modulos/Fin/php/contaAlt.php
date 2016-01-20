@@ -9,6 +9,11 @@ if (defined('DOC_ROOT')) {
 }
 
 #################################################################################
+## Variáveis globais
+#################################################################################
+global $em,$system;
+
+#################################################################################
 ## Resgata a variável ID que está criptografada
 #################################################################################
 if (isset($_GET['id'])) {
@@ -62,6 +67,7 @@ if (!empty($codConta)) {
 	$pctMora		= ($info->getPctMora()) ? \Zage\App\Util::formataDinheiro($info->getPctMora()) : null;
 	$instrucao		= $info->getInstrucao();
 	$indCheckAlt	= 1;
+	$codCedente		= $info->getCodigoCedente();
 	
 	// Botão de seleção de tipo do juros
 	if ($valorJuros > 0){
@@ -105,6 +111,7 @@ if (!empty($codConta)) {
 	$pctMora		= null;
 	$instrucao		= null;
 	$indCheckAlt	= null;
+	$codCedente		= null;
 }
 
 
@@ -128,6 +135,7 @@ try {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
 
+$arrayBanco	= array();
 for ($i = 0; $i < sizeof($aAgencia); $i++) {
 	$arrayBanco[$aAgencia[$i]->getCodigo()] = $aAgencia[$i]->getCodBanco()->getCodBanco();
 }
@@ -140,7 +148,7 @@ $urlVoltar			= ROOT_URL."/Fin/contaLis.php?id=".$id;
 #################################################################################
 ## Url Novo
 #################################################################################
-$uid = \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta=');
+$uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codConta=');
 $urlNovo			= ROOT_URL."/Fin/contaAlt.php?id=".$uid;
 
 #################################################################################
@@ -175,6 +183,7 @@ $tpl->set('COD_TIPO_MORA'		,$codTipoMora);
 $tpl->set('PCT_JUROS'			,$pctJuros);
 $tpl->set('PCT_MORA'			,$pctMora);
 $tpl->set('INSTRUCAO'			,$instrucao);
+$tpl->set('COD_CEDENTE'			,$codCedente);
 $tpl->set('ARRAY_BANCO'			,json_encode($arrayBanco));
 $tpl->set('IND_CHECK_ALT'		,$indCheckAlt);
 $tpl->set('DP'					,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));

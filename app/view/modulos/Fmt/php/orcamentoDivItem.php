@@ -250,7 +250,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 				$roObs			= "";
 			}
 			
-			$log->info("Item: ".$item["ITEM"]." Valor Padrão: ".$item["VALOR_PADRAO"]);
+			//$log->info("Item: ".$item["ITEM"]." Valor Padrão: ".$item["VALOR_PADRAO"]);
 			
 			if (($item["PADRAO"] == 1) && ($indVenDesPad	== 0)) {
 				$disChkClass	= "readonly disabled";
