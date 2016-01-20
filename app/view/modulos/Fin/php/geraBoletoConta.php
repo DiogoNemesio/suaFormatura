@@ -237,6 +237,7 @@ $agenciaDV			= $codAgencia->getAgenciaDv();
 $ccorrente			= $codContaRec->getCcorrente();
 $ccorrenteDV		= $codContaRec->getCcorrenteDv();
 $carteira			= $codContaRec->getCodCarteira()->getCodCarteira();
+$codCedente			= ($codContaRec->getCodigoCedente()) ? $codContaRec->getCodigoCedente() : null;
 	
 #################################################################################
 ## Resgata as informações de acréscimos
@@ -296,6 +297,7 @@ $boleto->setCidade($cedenteCidade);
 $boleto->setCnpj($cedenteCNPJ);
 $boleto->setConta($ccorrente);
 $boleto->setContaDigito($ccorrenteDV);
+$boleto->setCodigoCedente($codCedente);
 $boleto->setDemonstrativo1($demonstrativo1);
 $boleto->setDemonstrativo2($demonstrativo2);
 $boleto->setEndereco($cedenteEndereco);
