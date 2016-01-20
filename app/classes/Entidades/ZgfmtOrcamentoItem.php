@@ -50,6 +50,13 @@ class ZgfmtOrcamentoItem
     private $indHabilitado;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="COD_ITEM_CONTRATO", type="bigint", nullable=true)
+     */
+    private $codItemContrato;
+
+    /**
      * @var \Entidades\ZgfmtOrcamento
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrcamento")
@@ -180,6 +187,29 @@ class ZgfmtOrcamentoItem
     public function getIndHabilitado()
     {
         return $this->indHabilitado;
+    }
+
+    /**
+     * Set codItemContrato
+     *
+     * @param integer $codItemContrato
+     * @return ZgfmtOrcamentoItem
+     */
+    public function setCodItemContrato($codItemContrato)
+    {
+        $this->codItemContrato = $codItemContrato;
+
+        return $this;
+    }
+
+    /**
+     * Get codItemContrato
+     *
+     * @return integer 
+     */
+    public function getCodItemContrato()
+    {
+        return $this->codItemContrato;
     }
 
     /**

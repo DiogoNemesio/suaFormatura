@@ -113,6 +113,13 @@ class ZgfinConta
     private $ultimoNossoNumero;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="CODIGO_CEDENTE", type="string", length=6, nullable=true)
+     */
+    private $codigoCedente;
+
+    /**
      * @var \Entidades\ZgadmOrganizacao
      *
      * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
@@ -460,6 +467,29 @@ class ZgfinConta
     public function getUltimoNossoNumero()
     {
         return $this->ultimoNossoNumero;
+    }
+
+    /**
+     * Set codigoCedente
+     *
+     * @param string $codigoCedente
+     * @return ZgfinConta
+     */
+    public function setCodigoCedente($codigoCedente)
+    {
+        $this->codigoCedente = $codigoCedente;
+
+        return $this;
+    }
+
+    /**
+     * Get codigoCedente
+     *
+     * @return string 
+     */
+    public function getCodigoCedente()
+    {
+        return $this->codigoCedente;
     }
 
     /**
