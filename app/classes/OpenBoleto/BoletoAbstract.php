@@ -1555,7 +1555,7 @@ abstract class BoletoAbstract
      * @see Documentação em http://www.febraban.org.br/Acervo1.asp?id_texto=195&id_pagina=173&palavra=
      * @return array Retorna um array com as chaves 'digito' e 'resto'
      */
-    protected static function modulo11($num, $base=9)
+    public static function modulo11($num, $base=9)
     {
         $fator = 2;
 

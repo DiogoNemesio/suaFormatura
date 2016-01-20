@@ -348,6 +348,7 @@ class Boleto {
 		$ccorrenteDV			= $this->getContaDigito();
 		$carteira				= $this->getCarteira();
 		$ccorrente				= ($this->getCodigoCedente()) ? $this->getCodigoCedente() : $this->getConta();
+		$ccorrenteDV			= ($this->getCodigoCedente()) ? \OpenBoleto\BoletoAbstract::modulo11($this->getCodigoCedente())["digito"] : $this->getConta();
 		
 		#################################################################################
 		## Cria o array dos demonstrativos
