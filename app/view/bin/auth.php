@@ -47,7 +47,7 @@ if (!$system->estaAutenticado()) {
 
 		$valUsuario	= new \Zage\Seg\Auth\validaUsuario();
 		$valSenha	= new \Zage\Seg\Auth\validaSenha();
-
+		
 		if (!$valUsuario->isValid($_usuario)) {
     		$r			= \Zend\Authentication\Result::FAILURE_CREDENTIAL_INVALID;
     		$result		= new \Zend\Authentication\Result($r,$_usuario,$valUsuario->getMessages());
@@ -65,10 +65,10 @@ if (!$system->estaAutenticado()) {
 			if (isset($m[0])) {
 				$mensagem	= $m[0];
 			}else{
-				$mensagem	= "Usuário / senha inconsistentes !!!";
+				$mensagem	= "Usuário / senha incorretos !!!";
 			}
 			
-			$log->err('0x00000001: Tentativa de acesso do usuário "'.$_usuario.'" sem sucesso !! ');
+			$log->err('0x00000001: Tentativa de acesso do usuário "'.$_usuario.'" sem sucesso ('.$mensagem.') !! ');
 			
 			#################################################################################
 			## Não chamar a tela de login se a variável $_doNotLogin estiver setada para 1

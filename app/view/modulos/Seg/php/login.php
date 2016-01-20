@@ -3,9 +3,10 @@
 ## Includes
 #################################################################################
 if (defined('DOC_ROOT')) {
-	include_once(DOC_ROOT . 'include.php');
+	include_once(DOC_ROOT . 'includeNoAuth.php');
 }else{
-	include_once('../../../include.php');
+	include_once('../includeNoAuth.php');
+	include_once('../../../includeNoAuth.php');
 }
 
 #################################################################################

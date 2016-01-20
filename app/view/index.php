@@ -45,8 +45,19 @@ if (isset($_GET['zid'])) {
 
 
 if (!isset($_org) && (!isset($_SESSION['_codOrg']))) {
-	
 	if ((isset($_POST['zgUsuario'])) && (isset($_POST['zgSenha']))) {
+	
+		#################################################################################
+		## Verifica se o usuário existe
+		#################################################################################
+		$_userExists = $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array ('usuario' => $_POST['zgUsuario']));
+		if (!$_userExists) {
+			$log->err('0x00000002: Tentativa de acesso do usuário "'.$_POST['zgUsuario'].'" sem sucesso (usuário não existe) !! ');
+			$mensagem		= "Usuário / Senha incorretos";
+			include_once(MOD_PATH . '/Seg/php/login.php');
+			exit;
+		}
+		
 		/** Resgatar a última organização que o usuário acessou **/
 		$_org	= \Zage\Seg\Usuario::getUltimaOrganizacaoAcesso($_POST['zgUsuario']);
 		
