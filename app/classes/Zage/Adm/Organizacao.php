@@ -195,6 +195,7 @@ class Organizacao {
 		}
 		$_oNumAcesso->setNumAcessos($numAcesso);
 		
+		$log->info('1x00000002: Usuário "'.$oUsu->getUsuario().'" acessou com sucesso a organização ['.$oOrg->getCodigo().'] !!! ');
 		
 		$em->persist($_oHistAcesso);
 		$em->persist($_oNumAcesso);

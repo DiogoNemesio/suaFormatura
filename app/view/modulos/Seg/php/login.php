@@ -26,7 +26,8 @@ if (!isset($mensagem) || (!$mensagem) ) {
 ## Verifica a url para onde deve ir, após o login
 #################################################################################
 if (!isset($url) || empty($url)) {
-	$url = 	$_SERVER['REQUEST_URI'];
+	$url 	= $_SERVER['REQUEST_URI'];
+	$url	= str_replace('//','/',$url); 
 }
 
 #################################################################################

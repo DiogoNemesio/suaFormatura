@@ -68,7 +68,7 @@ if (!$system->estaAutenticado()) {
 				$mensagem	= "Usuário / senha inconsistentes !!!";
 			}
 			
-			$log->debug('Usuário/Senha incorretos !!! ');
+			$log->err('0x00000001: Tentativa de acesso do usuário "'.$_usuario.'" sem sucesso !! ');
 			
 			#################################################################################
 			## Não chamar a tela de login se a variável $_doNotLogin estiver setada para 1
@@ -82,7 +82,7 @@ if (!$system->estaAutenticado()) {
 		} else {
 
 			/** Autenticação OK **/
-			$log->debug('Usuário autenticado com sucesso !!! ');
+			$log->info('1x00000001: Usuário "'.$_usuario.'" autenticado com sucesso !!! ');
 			
 			try {
 				
@@ -94,7 +94,7 @@ if (!$system->estaAutenticado()) {
 				$_SESSION['_codOrg']		= $_org->getCodigo();
 				
 				/** Gerar o histório de acesso **/
-				\Zage\Adm\Organizacao::geraHistoricoAcesso($_org->getCodigo(),$_user->getCodigo());				
+				\Zage\Adm\Organizacao::geraHistoricoAcesso($_org->getCodigo(),$_user->getCodigo());
 				
 			} catch (\Exception $e) {
 				\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
