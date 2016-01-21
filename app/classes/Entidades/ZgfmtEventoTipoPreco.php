@@ -24,7 +24,7 @@ class ZgfmtEventoTipoPreco
     /**
      * @var float
      *
-     * @ORM\Column(name="VALOR", type="float", precision=10, scale=0, nullable=false)
+     * @ORM\Column(name="VALOR", type="float", precision=10, scale=0, nullable=true)
      */
     private $valor;
 
@@ -34,6 +34,13 @@ class ZgfmtEventoTipoPreco
      * @ORM\Column(name="DATA_ALTERACAO", type="datetime", nullable=false)
      */
     private $dataAlteracao;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_VALOR_ORCAMENTO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctValorOrcamento;
 
     /**
      * @var \Entidades\ZgadmOrganizacao
@@ -110,6 +117,29 @@ class ZgfmtEventoTipoPreco
     public function getDataAlteracao()
     {
         return $this->dataAlteracao;
+    }
+
+    /**
+     * Set pctValorOrcamento
+     *
+     * @param float $pctValorOrcamento
+     * @return ZgfmtEventoTipoPreco
+     */
+    public function setPctValorOrcamento($pctValorOrcamento)
+    {
+        $this->pctValorOrcamento = $pctValorOrcamento;
+
+        return $this;
+    }
+
+    /**
+     * Get pctValorOrcamento
+     *
+     * @return float 
+     */
+    public function getPctValorOrcamento()
+    {
+        return $this->pctValorOrcamento;
     }
 
     /**
