@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtItemOrcContrato
  *
- * @ORM\Table(name="ZGFMT_ITEM_ORC_CONTRATO", indexes={@ORM\Index(name="fk_ZGFMT_ITEM_ORC_CONTRATO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_ITEM_ORC_CONTRATO_2_idx", columns={"COD_ITEM_ORCAMENTO"})})
+ * @ORM\Table(name="ZGFMT_ITEM_ORC_CONTRATO", indexes={@ORM\Index(name="fk_ZGFMT_ITEM_ORC_CONTRATO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_ITEM_ORC_CONTRATO_2_idx", columns={"COD_ITEM_ORCAMENTO"}), @ORM\Index(name="fk_ZGFMT_ITEM_ORC_CONTRATO_3_idx", columns={"COD_ORCAMENTO"})})
  * @ORM\Entity
  */
 class ZgfmtItemOrcContrato
@@ -61,6 +61,16 @@ class ZgfmtItemOrcContrato
      * })
      */
     private $codItemOrcamento;
+
+    /**
+     * @var \Entidades\ZgfmtOrcamento
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtOrcamento")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_ORCAMENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codOrcamento;
 
 
     /**
@@ -186,5 +196,28 @@ class ZgfmtItemOrcContrato
     public function getCodItemOrcamento()
     {
         return $this->codItemOrcamento;
+    }
+
+    /**
+     * Set codOrcamento
+     *
+     * @param \Entidades\ZgfmtOrcamento $codOrcamento
+     * @return ZgfmtItemOrcContrato
+     */
+    public function setCodOrcamento(\Entidades\ZgfmtOrcamento $codOrcamento = null)
+    {
+        $this->codOrcamento = $codOrcamento;
+
+        return $this;
+    }
+
+    /**
+     * Get codOrcamento
+     *
+     * @return \Entidades\ZgfmtOrcamento 
+     */
+    public function getCodOrcamento()
+    {
+        return $this->codOrcamento;
     }
 }
