@@ -1,12 +1,13 @@
 <div id="content">
 	<div class="page-header">
-		<h1><i class="fa fa-usd black">&nbsp;</i>Tipo de Evento&nbsp;&nbsp;
+		<h1><i class="fa fa-usd black">&nbsp;</i>Valor Individual por Evento&nbsp;&nbsp;
 			<a href="javascript:detalhe();" id="btnDetalhe" class="btn btn-sm btn-yellow">Exibir detalhe <i class="ace-icon fa fa-angle-down"></i></a>
 		</h1>
 	</div><!-- /.page-header -->
 	<div class="row">
 		<form id="zgFormID" class="form-horizontal">
 			<input type="hidden" name="detalhe" id="detalheID" value="0">
+			<input type="hidden" name="valorFormandoCalID" id="valorFormandoCalID" value="%VALOR_FORMANDO_CALC%">
 			<div class="col-sm-12">
 			<div class="row">
 				<div class="col-xs-12 hidden" id="divDetalheID">
@@ -20,31 +21,40 @@
 						<div class="widget-main">
 							<div class="row">
 								<div class="col-sm-6">
-								<ul class="list-unstyled spaced">
-									<li>
-										%ACEITE%
-									</li>
-									
-									<li>
-										<ul class="list-unstyled">
+									<ul class="list-unstyled spaced">
+										<li>
+											%ACEITE%
+										</li>
+										<li>
+											<ul class="list-unstyled">
+												<li>
+													<i class="ace-icon fa fa-caret-right blue"></i>
+													<b>Valor total:</b> %VALOR_ORCAMENTO%
+												</li>
+		
+												<li>
+													<i class="ace-icon fa fa-caret-right blue"></i>
+													<b>Nº de formandos:</b> %NUM_FORMANDOS%
+												</li>
+		
+												<li>
+													<i class="ace-icon fa fa-caret-right blue"></i>
+													<b>Valor por formando:</b> %VALOR_FORMANDO%
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+								<div class="col-sm-6 hidden-480">
+									<div class="well">
+										<h4 class="green smaller lighter"><strong>Mais informações</strong></h4>
+										<ul class="list-unstyled spaced">
 											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>
-												<b>Valor total:</b> %VALOR_ORCAMENTO%
-											</li>
-	
-											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>
-												<b>Nº de formandos:</b> %NUM_FORMANDOS%
-											</li>
-	
-											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>
-												<b>Valor por formando:</b> %VALOR_FORMANDO%
+												<i class="ace-icon fa fa-hand-o-right bigger-110 green"></i>
+												Informar um valor individual para cada evento é essecial para que um formando possa participar apenas de alguns eventos ou possa desistir parcialmente da formatura	.
 											</li>
 										</ul>
-									</li>
-								</ul>
-
+									</div>
 								</div>
 							</div>
 						</div>
@@ -114,9 +124,38 @@ function mudarForma(i){
 	if (vTipoPreco == 'V'){
 		$('#valor_'+i+'_ID').removeClass('hidden');
 		$('#pct_'+i+'_ID').addClass('hidden');
+		calcularValor(i);
 	}else{
 		$('#valor_'+i+'_ID').addClass('hidden');
 		$('#pct_'+i+'_ID').removeClass('hidden');
+		calcularValor(i);
+	}	
+}
+
+function calcularValor(i){
+	var vValor 			= $('#valor_'+i+'_ID').val();
+	var vPct 			= $('#pct_'+i+'_ID').val().replace("%", "");
+	var vTipoPreco 		= $('#tipoPreco_'+i+'_ID').val();
+	var vValorFormando 	= $('#valorFormandoCalID').val();
+	
+	nValor = zgConverteFloat(vValor);
+	nPct   = zgConverteFloat(vPct);
+	nValorFormando = zgConverteFloat(vValorFormando);
+	
+	// CALCULOS
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+	
+	if (vTipoPreco == 'V'){
+		$('#total_'+i+'_ID').html('R$ '+accounting.formatMoney(nValor, options));
+	}else{
+		vTotal = nValorFormando * nPct / 100;
+		$('#total_'+i+'_ID').html('R$ '+accounting.formatMoney(vTotal, options));
 	}	
 }
 

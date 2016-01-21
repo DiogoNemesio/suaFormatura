@@ -112,8 +112,8 @@ for ($i = 0; $i < sizeof($oEvento); $i++) {
 	$tabCompra	.= '<tr>
 		<td style="text-align: left;">'.$oEvento[$i]->getCodTipoEvento()->getDescricao().'</td>
 		<td><select id="tipoPreco_'.$i.'_ID" class="select2" style="width:100%;" name="codTipoPreco[]" onchange="mudarForma('.$i.');" data-rel="select2">'.$oTipoPreco.'</select></td>
-		<td class="center" style="width: 20px;"><input hidden type="text" name="codEvento[]" style="width:100%;" value="'.$oEvento[$i]->getCodigo().'"><input class="'.$hiddenValor.'" type="text" id="valor_'.$i.'_ID" name="valor[]" placeholder="Valor fixo" style="width:100%;" value="'.$preco.'" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="1"><input class="'.$hiddenPct.'" type="text" id="pct_'.$i.'_ID" name="pct[]" placeholder="Porcentagem" style="width:100%;" value="'.$pct.'" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="1"></td>
-		<td style="text-align: center;">'.$total.'</td>
+		<td class="center" style="width: 20px;"><input hidden type="text" name="codEvento[]" style="width:100%;" value="'.$oEvento[$i]->getCodigo().'"><input class="'.$hiddenValor.'" type="text" id="valor_'.$i.'_ID" name="valor[]" onchange="calcularValor('.$i.');" placeholder="Valor fixo" style="width:100%;" value="'.$preco.'" maxlength="12" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="1"><input class="'.$hiddenPct.'" type="text" id="pct_'.$i.'_ID" name="pct[]" onchange="calcularValor('.$i.');" placeholder="Porcentagem" style="width:100%;" value="'.$pct.'" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="porcentagem" zg-data-mask-retira="1"></td>
+		<td style="text-align: center;" id="total_'.$i.'_ID">'.$total.'</td>
 		</tr>';
 }
 
@@ -141,6 +141,7 @@ $tpl->set('ACEITE'			,$aceite);
 $tpl->set('VALOR_ORCAMENTO'	,$valorTotal);
 $tpl->set('NUM_FORMANDOS'	,$numFormandos);
 $tpl->set('VALOR_FORMANDO'	,$valorFormando);
+$tpl->set('VALOR_FORMANDO_CALC'	,$valorFormandoCal);
 
 $tpl->set('DP'						,\Zage\App\Util::getCaminhoCorrespondente(__FILE__,\Zage\App\ZWS::EXT_DP,\Zage\App\ZWS::CAMINHO_RELATIVO));
 $tpl->set('IC'						,$_icone_);
