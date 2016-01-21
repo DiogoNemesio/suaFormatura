@@ -104,6 +104,7 @@ for ($i = 0; $i < sizeof($orcItens); $i++) {
 	$aOrcItens[$codigo]["DESCRITIVO"]	= ($orcItens[$i]->getTextoDescritivo()) ? $orcItens[$i]->getTextoDescritivo() : $item->getTextoDescritivo() ;
 	$aOrcItens[$codigo]["TOTAL"]		= \Zage\App\Util::to_float($orcItens[$i]->getQuantidade() * \Zage\App\Util::to_float($orcItens[$i]->getValorUnitario()));
 	$aOrcItens[$codigo]["COD_CORT"]		= ($orcItens[$i]->getCodTipoCortesia()) ? $orcItens[$i]->getCodTipoCortesia()->getCodigo() : null ;
+	$aOrcItens[$codigo]["COD_CONTRATO"]	= ($orcItens[$i]->getCodItemContrato()) ? $orcItens[$i]->getCodItemContrato() : null ;
 }
 
 
@@ -124,6 +125,7 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 	$aItens[$codTipo]["ITENS"][$codigo]["ITEM"] 		= $itens[$i]->getItem();
 	$aItens[$codTipo]["ITENS"][$codigo]["VALOR_PADRAO"]	= $valorPadrao;
 	$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= $itens[$i]->getIndPadrao();
+	$aItens[$codTipo]["ITENS"][$codigo]["COD_CONTRATO"] = $aOrcItens[$codigo]["COD_CONTRATO"];
 	
 	if ($valorPadrao && ($pctMaxDesconto !== null) && ($souVendedor == true)) {
 		$pctMin		= (100 - $pctMaxDesconto);
@@ -300,6 +302,7 @@ foreach ($aItens as $codTipo => $aItem)	{
 			$htmlForm	.= '<td class="col-sm-1 center"><i class="fa fa-close"></i></td>';
 			$htmlForm	.= '<td class="col-sm-2 left"><span>Valor unitário:&nbsp;</span><input class="input-small" id="valor_'.$item["CODIGO"].'_ID" type="text" name="aValor['.$item["CODIGO"].']" '.$roValor.' value="'.$item["VALOR"].'" zg-valor-padrao="'.$item["VALOR_PADRAO"].'" '.$tagDarCor.' '.$tagValMin.' zg-codigo="'.$item["CODIGO"].'" zg-evento="'.$codTipo.'" zg-name="valor" autocomplete="off" tabindex="'.$tabIndex.'" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="orcAlteraValor(\''.$item["CODIGO"].'\',true);"></td>';
 			$htmlForm	.= '<td class="col-sm-2">
+								<input type="hidden" name="codItemContrato['.$item["CODIGO"].']" value="'.$item["COD_CONTRATO"].'">
 								<div data-toggle="buttons" class="btn-group btn-overlap">
 									<span class="btn btn-sm '.$btnDesc.' btn-info center pull-left" id="span-desc-'.$item["CODIGO"].'_ID" onclick="orcHabilitaObs(\''.$item["CODIGO"].'\');"><i id="icon-desc-'.$item["CODIGO"].'_ID"  class="fa fa-commenting-o bigger-150 '.$iconDesc.'"></i></span>
 									&nbsp;

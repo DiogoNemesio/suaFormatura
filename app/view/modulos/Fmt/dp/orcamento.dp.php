@@ -28,6 +28,7 @@ if (isset($_POST['aQtde'])) 			$aQtde				= \Zage\App\Util::antiInjection($_POST[
 if (isset($_POST['aValor'])) 			$aValor				= \Zage\App\Util::antiInjection($_POST['aValor']);
 if (isset($_POST['aObs'])) 				$aObs				= \Zage\App\Util::antiInjection($_POST['aObs']);
 if (isset($_POST['codTipoCortesia'])) 	$codTipoCortesia	= \Zage\App\Util::antiInjection($_POST['codTipoCortesia']);
+if (isset($_POST['codItemContrato'])) 	$aItemContrato		= \Zage\App\Util::antiInjection($_POST['codItemContrato']);
 
 //$log->info("POST ORC: ".serialize($_POST));
 
@@ -115,10 +116,12 @@ try {
  	## Itens
  	#################################################################################
  	foreach ($codItemSel as $codItem => $item) {
- 		$oItem			= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findOneBy(array('codigo' => $codItem));
- 		$valor			= ($aValor[$codItem]) ? \Zage\App\Util::to_float($aValor[$codItem]) : 0; 
- 		$oTipoCort		= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findOneBy(array('codigo' => $codTipoCortesia[$codItem]));
- 		$qtde			= (int) $aQtde[$codItem];
+ 		$oItem				= $em->getRepository('Entidades\ZgfmtPlanoOrcItem')->findOneBy(array('codigo' => $codItem));
+ 		$valor				= ($aValor[$codItem]) ? \Zage\App\Util::to_float($aValor[$codItem]) : 0; 
+ 		$oTipoCort			= $em->getRepository('Entidades\ZgfmtOrcamentoCortesiaTipo')->findOneBy(array('codigo' => $codTipoCortesia[$codItem]));
+ 		$qtde				= (int) $aQtde[$codItem];
+ 		$codItemContrato	= ($aItemContrato[$codItem]) ? $aItemContrato[$codItem] : null; 
+ 		
  		$oOrcItem		= new \Entidades\ZgfmtOrcamentoItem();
  		$oOrcItem->setCodItem($oItem);
  		$oOrcItem->setCodOrcamento($oOrc);
@@ -126,6 +129,7 @@ try {
  		$oOrcItem->setTextoDescritivo($aObs[$codItem]);
  		$oOrcItem->setQuantidade($qtde);
  		$oOrcItem->setValorUnitario($valor);
+ 		$oOrcItem->setCodItemContrato($codItemContrato);
  		if ($valor == 0) {
  			$oOrcItem->setCodTipoCortesia($oTipoCort);
  		}else{

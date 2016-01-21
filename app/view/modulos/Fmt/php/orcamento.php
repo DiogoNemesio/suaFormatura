@@ -29,6 +29,14 @@ if (isset($_GET['id'])) {
 #################################################################################
 if (isset($_GET['codVersaoOrc'])) 		$codVersaoOrc			= \Zage\App\Util::antiInjection($_GET['codVersaoOrc']);
 
+#################################################################################
+## Verificar se já existe algum orçamento aceite
+#################################################################################
+$orcAceite			= $em->getRepository('Entidades\ZgfmtOrcamento')->findOneBy(array('codOrganizacao' => $system->getCodorganizacao(),'indAceite' => 1));
+if (!isset($codVersaoOrc) && $orcAceite) {
+	$codVersaoOrc	= $orcAceite->getCodigo();
+}
+
 
 #################################################################################
 ## Descompacta o ID
@@ -91,7 +99,14 @@ $taxaUso				= ($indRepTaxaSistema) ? \Zage\App\Util::to_float(\Zage\Adm\Contrato
 #################################################################################
 $aVersoesOrc			= $em->getRepository('Entidades\ZgfmtOrcamento')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()),array('versao' => 'DESC'));
 //$oVersoesOrc			= "";
-$oVersoesOrc			= '<option value="">'.$tr->trans("Novo Orçamento").'</option>';
+if (!$orcAceite)			{
+	$oVersoesOrc			= '<option value="">'.$tr->trans("Novo Orçamento").'</option>';	
+	$roPlano				= "";
+}else{
+	$oVersoesOrc			= "";
+	$roPlano				= "readonly";
+}
+
 for ($i = 0; $i < sizeof($aVersoesOrc); $i++) {
 	
 	if ($aVersoesOrc[$i]->getIndAceite() == 1) {
@@ -181,7 +196,7 @@ $tpl->set('IND_ACEITE'				,$indAceite);
 $tpl->set('COD_VERSAO'				,$codVersaoOrc);
 $tpl->set('IND_VENDEDOR_ACEITE'		,$indVenAceite);
 
-
+$tpl->set('RO_PLANO'				,$roPlano);
 $tpl->set('VERSOES_ORC'				,$oVersoesOrc);
 $tpl->set('PLANO_ORC'				,$oPlanoOrc);
 

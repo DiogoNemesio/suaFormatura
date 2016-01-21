@@ -59,7 +59,7 @@
 					<label for="codPlanoOrcID" class="col-xs-12 col-sm-5 control-label">Versão do orçamento</label>
 					<div class="input-group col-sm-6 pull-left">
 						<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sub-grupo."></i></span>
-						<select id="codPlanoOrcID" name="codPlanoOrc" class="select2" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaPlanoOrc();">
+						<select id="codPlanoOrcID" name="codPlanoOrc" data-rel="select2" class="select2 %RO_PLANO%" data-placeholder="Selecione o sub-grupo" onchange="javascript:carregaPlanoOrc();">
 							%PLANO_ORC%
 						</select>
 					</div>
@@ -144,6 +144,16 @@ $('#codVersaoOrcID').css('width','50%').select2({
 	allowClear:true,
     formatResult: orcFormatCodVersaoSelect
 });
+
+/** Desabilitar os selects para a tela de View **/
+$('[data-rel="select2"]').each(function( index ) {
+	if ($(this).hasClass('readonly')) {
+		$(this).select2("readonly", true);
+	}else{
+		$(this).select2();
+	}
+});
+
 
 orcCalculaNumMeses();
 carregaPlanoOrc();
