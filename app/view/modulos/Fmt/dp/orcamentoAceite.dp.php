@@ -208,16 +208,18 @@ try {
 	#################################################################################
 	## Excluir os contratos dos itens que foram retirados do orçamento
 	#################################################################################
-	$oItensContrato		= $em->getRepository('Entidades\ZgfmtItemOrcContrato')->findBy(array('codOrganizacao' => $orcamento->getCodOrganizacao()->getCodigo(),'codOrcamento' => $orcAceite->getCodigo()));
-	for ($i = 0; $i < sizeof($oItensContrato); $i++) {
-		$em->remove($oItensContrato[$i]);
+	if ($orcAceite)			{
+		$oItensContrato		= $em->getRepository('Entidades\ZgfmtItemOrcContrato')->findBy(array('codOrganizacao' => $orcamento->getCodOrganizacao()->getCodigo(),'codOrcamento' => $orcAceite->getCodigo()));
+		for ($i = 0; $i < sizeof($oItensContrato); $i++) {
+			$em->remove($oItensContrato[$i]);
+		}
+	
+		#################################################################################
+		## Salvar as exclusões
+		#################################################################################
+		$em->flush();
+		$em->clear();
 	}
-
-	#################################################################################
-	## Salvar as exclusões
-	#################################################################################
-	$em->flush();
-	$em->clear();
 	
 	
 } catch (\Exception $e) {
