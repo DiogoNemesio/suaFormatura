@@ -36,18 +36,41 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
+
+#################################################################################
+## Resgata os parâmetros passados
+#################################################################################
+if (isset($_GET['fid']))			$fid				= \Zage\App\Util::antiInjection($_GET['fid']);
+
 #################################################################################
 ## Resgata os parâmetros passados pelo formulario de pesquisa
 #################################################################################
 if (!isset($codUsuario)) 		{
-	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_USUARIO)');
+	
+	if (!isset($fid)) 	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (COD_USUARIO)');
+	
+	#################################################################################
+	## Descompacta o FID
+	#################################################################################
+	\Zage\App\Util::descompactaId($fid);
+	if (!isset($aSelFormandos))	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (A_SEL_FOR)');
+	
+	$aSelFormandos		= explode(",",$aSelFormandos);
+}else{
+	$aSelFormandos		= array($codUsuario);
 }
 
 #################################################################################
-## Resgata as informações do Formando
+## Resgata as informações dos Formandos
 #################################################################################
-$oFormando = $em->getRepository('Entidades\ZgsegUsuario')->findOneBy(array('codigo' => $codUsuario));
-if (!$oFormando)	\Zage\App\Erro::halt($tr->trans('Formando não encontrado'));
+$aFormandos			= $em->getRepository('Entidades\ZgsegUsuario')->findBy(array('codigo' => $aSelFormandos));
+if (!$aFormandos)	\Zage\App\Erro::halt($tr->trans('Formando não encontrado'));
+
+if (sizeof($aFormandos) == 1) {
+	$nome		= $aFormandos[0]->getNome(); 
+}else{
+	$nome		= "Vários formandos selecionados";
+}
 
 
 $codOrganizacao = $system->getCodOrganizacao();
@@ -198,7 +221,7 @@ $tpl->set('TAB_PARCELAS'			,$tabParcelas);
 $tpl->set('TAB_HID'					,$tabHid);
 $tpl->set('TOTAL_PARCELAS_FMT'		,\Zage\App\Util::to_money($totalParcelas));
 
-$tpl->set('NOME'					,$oFormando->getNome());
+$tpl->set('NOME'					,$nome);
 $tpl->set('TEXTO'					,$texto);
 $tpl->set('READONLY'				,$readonly);
 $tpl->set('RO_DATA'					,$roData);

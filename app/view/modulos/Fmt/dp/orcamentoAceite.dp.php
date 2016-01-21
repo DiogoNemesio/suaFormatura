@@ -114,28 +114,30 @@ try {
 	#################################################################################
 	## Transpor o código de contrato do orçamento anterior para o novo
 	#################################################################################
-	$orcItensAnt			= $em->getRepository('Entidades\ZgfmtOrcamentoItem')->findBy(array('codOrcamento' => $orcAceite->getCodigo()));
-	for ($i = 0; $i < sizeof($orcItensAnt); $i++) {
-		$_codItem	= $orcItensAnt[$i]->getCodItemContrato();
-		if ($_codItem) {
-			$aAssocItem[$_codItem]["ANT"]	= $orcItensAnt[$i]; 
-		}
-	}
-	if (sizeof($aAssocItem) > 0) {
-		foreach ($aAssocItem as $_cod => $codigos) {
-			if (isset($codigos["ANT"]) && isset($codigos["ATU"])) {
-			
-				#################################################################################
-				## Buscar o registro do contrato para atualizar
-				#################################################################################
-				$oItemContrato		= $em->getRepository('Entidades\ZgfmtItemOrcContrato')->findOneBy(array('codOrganizacao' => $orcamento->getCodOrganizacao()->getCodigo(),'codItemOrcamento' => $codigos["ANT"]->getCodigo()));
-				if ($oItemContrato) {
-					$oItemContrato->setCodOrcamento($codigos["ATU"]->getCodOrcamento());
-					$oItemContrato->setCodItemOrcamento($codigos["ATU"]);
-					$em->persist($oItemContrato);
-				}
+	if ($orcAceite)			{
+		$orcItensAnt			= $em->getRepository('Entidades\ZgfmtOrcamentoItem')->findBy(array('codOrcamento' => $orcAceite->getCodigo()));
+		for ($i = 0; $i < sizeof($orcItensAnt); $i++) {
+			$_codItem	= $orcItensAnt[$i]->getCodItemContrato();
+			if ($_codItem) {
+				$aAssocItem[$_codItem]["ANT"]	= $orcItensAnt[$i]; 
 			}
-			
+		}
+		if (sizeof($aAssocItem) > 0) {
+			foreach ($aAssocItem as $_cod => $codigos) {
+				if (isset($codigos["ANT"]) && isset($codigos["ATU"])) {
+				
+					#################################################################################
+					## Buscar o registro do contrato para atualizar
+					#################################################################################
+					$oItemContrato		= $em->getRepository('Entidades\ZgfmtItemOrcContrato')->findOneBy(array('codOrganizacao' => $orcamento->getCodOrganizacao()->getCodigo(),'codItemOrcamento' => $codigos["ANT"]->getCodigo()));
+					if ($oItemContrato) {
+						$oItemContrato->setCodOrcamento($codigos["ATU"]->getCodOrcamento());
+						$oItemContrato->setCodItemOrcamento($codigos["ATU"]);
+						$em->persist($oItemContrato);
+					}
+				}
+				
+			}
 		}
 	}
 
