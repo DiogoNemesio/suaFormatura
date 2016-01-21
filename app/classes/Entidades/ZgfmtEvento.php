@@ -24,7 +24,7 @@ class ZgfmtEvento
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DATA", type="datetime", nullable=false)
+     * @ORM\Column(name="DATA", type="datetime", nullable=true)
      */
     private $data;
 
@@ -41,6 +41,13 @@ class ZgfmtEvento
      * @ORM\Column(name="VALOR_AVULSO", type="float", precision=10, scale=0, nullable=true)
      */
     private $valorAvulso;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="PCT_VALOR_ORCAMENTO", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $pctValorOrcamento;
 
     /**
      * @var \Entidades\ZgfinPessoa
@@ -150,6 +157,29 @@ class ZgfmtEvento
     public function getValorAvulso()
     {
         return $this->valorAvulso;
+    }
+
+    /**
+     * Set pctValorOrcamento
+     *
+     * @param float $pctValorOrcamento
+     * @return ZgfmtEvento
+     */
+    public function setPctValorOrcamento($pctValorOrcamento)
+    {
+        $this->pctValorOrcamento = $pctValorOrcamento;
+
+        return $this;
+    }
+
+    /**
+     * Get pctValorOrcamento
+     *
+     * @return float 
+     */
+    public function getPctValorOrcamento()
+    {
+        return $this->pctValorOrcamento;
     }
 
     /**
