@@ -85,7 +85,6 @@ $aCodigos				= array();
 for ($i = 0; $i < sizeof($oValorProv); $i++) {
 	$total													= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
 	$aValorProv[$oValorProv[$i][0]->getCgc()]				= $total;
-	$log->info("Saldo provisionado de ".$oValorProv[$i][0]->getCgc().": ".$total);
 }
 
 #################################################################################
@@ -259,6 +258,15 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	}else{
 		$aCodigos[$formandos[$i]->getCodigo()]["PODE_ATUALIZAR"]	= 0;
 	}
+
+	#################################################################################
+	## Verificar se pode gerar o contrato em massa
+	#################################################################################
+	if ($temMensalidade)	{
+		$aCodigos[$formandos[$i]->getCodigo()]["PODE_CONTRATO"]	= 0;
+	}else{
+		$aCodigos[$formandos[$i]->getCodigo()]["PODE_CONTRATO"]	= 1;
+	}
 	
 	
 	#################################################################################
@@ -313,13 +321,12 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	
 }
 
-$log->info("aCodigos: ".serialize($aCodigos));
-
 #################################################################################
 ## Urls de ações em lote
 #################################################################################
 $gerUrl				= ROOT_URL . "/Fmt/mensalGerAuto.php?id=".$id;
 $atuUrl				= ROOT_URL . "/Fmt/mensalAtuAuto.php?id=".$id;
+$conUrl				= ROOT_URL . "/Fmt/usuarioFormandoContrato.php?id=".$id;
 
 #################################################################################
 ## Gerar o código html do grid
@@ -347,6 +354,7 @@ $tpl->set('TITULO'					,'Gerenciar Mensalidades');
 $tpl->set('JSON_CODIGOS'			,json_encode($aCodigos));
 $tpl->set('GER_URL'					,$gerUrl);
 $tpl->set('ATU_URL'					,$atuUrl);
+$tpl->set('CON_URL'					,$conUrl);
 
 #################################################################################
 ## Por fim exibir a página HTML

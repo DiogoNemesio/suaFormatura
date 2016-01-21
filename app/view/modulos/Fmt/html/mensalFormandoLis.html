@@ -11,8 +11,9 @@
 					</button>
 
 					<ul class="dropdown-menu dropdown-info dropdown-menu-right">
-						<li id="zgDivAcoesGerMenForLis1ID" class="disabled" disabled="disabled"><a href="#"><i id="GerMenForLisIcoAcaoLoteID" class="ace-icon fa fa-cog grey"></i>&nbsp;Gerar</a></li>
-						<li id="zgDivAcoesAtuMenForLis1ID" class="disabled" disabled="disabled"><a href="#"><i id="AtuMenForLisIcoAcaoLoteID" class="ace-icon fa fa-refresh grey"></i>&nbsp;Atualizar</a></li>
+						<li id="zgDivAcoesGerMenForLis1ID" class="disabled" disabled="disabled"><a href="#"><i id="GerMenForLisIcoAcaoLoteID" class="ace-icon fa fa-cog grey"></i>&nbsp;Gerar mensalidades</a></li>
+						<li id="zgDivAcoesAtuMenForLis1ID" class="disabled" disabled="disabled"><a href="#"><i id="AtuMenForLisIcoAcaoLoteID" class="ace-icon fa fa-refresh grey"></i>&nbsp;Atualizar mensalidades</a></li>
+						<li id="zgDivAcoesConMenForLis1ID" class="disabled" disabled="disabled"><a href="#"><i id="ConMenForLisIcoAcaoLoteID" class="ace-icon fa fa-file-text-o grey"></i>&nbsp;Gerar contratos</a></li>
 					</ul>
 				</div><!-- /.btn-group -->
 			</span>
@@ -98,8 +99,10 @@ function zgHabilitaAcoesMenForLis() {
 	var $jCodigos = jQuery.parseJSON($aCodigos);
 	var $aPodeGer	= [];
 	var	$aPodeAtu	= [];
+	var	$aPodeCon	= [];
 	var $urlGer		= 'javascript:zgAcaoGerSelecionadosMenForLis();';
 	var $urlAtu		= 'javascript:zgAcaoAtuSelecionadosMenForLis();';
+	var $urlCon		= 'javascript:zgAcaoConSelecionadosMenForLis();';
 	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
 		var $codigo	= $(this).val();
 		if ($jCodigos[$codigo] != undefined) {
@@ -113,11 +116,17 @@ function zgHabilitaAcoesMenForLis() {
 			if ( $aPodeAtu.indexOf($jCodigos[$codigo]["PODE_ATUALIZAR"]) == -1 ) {
 				$aPodeAtu[$aPodeAtu.length]	= $jCodigos[$codigo]["PODE_ATUALIZAR"];
 			}
+
+			/** Monta o array de Contrato **/
+			if ( $aPodeCon.indexOf($jCodigos[$codigo]["PODE_CONTRATO"]) == -1 ) {
+				$aPodeCon[$aPodeCon.length]	= $jCodigos[$codigo]["PODE_CONTRATO"];
+			}
 		}
 	});
 	
 	var $_podeGer		= false;
 	var $_podeAtu		= false;
+	var $_podeCon		= false;
 	
 	/** Calcular as ações em lotes disponíveis  **/
 	if ($aPodeGer.length !== 1) {
@@ -136,11 +145,24 @@ function zgHabilitaAcoesMenForLis() {
 		$('#zgDivAcoesAtuMenForLisID').html('&nbsp;');
 	}else if ($aPodeAtu[0] == "1")	{
 		$_podeAtu						= true;
-		$('#zgDivAcoesAtuMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoAtuSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="Atualizar os selecionados para o novo orçamento"><i class="ace-icon fa fa-refresh green bigger-130"></i></div>');
+		$('#zgDivAcoesAtuMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoAtuSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="Atualizar os selecionados para o novo orçamento"><i class="ace-icon fa fa-refresh orange bigger-130"></i></div>');
 	}else{
 		$_podeAtu						= false;
 		$('#zgDivAcoesAtuMenForLisID').html('&nbsp;');
 	}
+	
+
+	if ($aPodeCon.length !== 1) {
+		$_podeCon						= false;
+		$('#zgDivAcoesConMenForLisID').html('&nbsp;');
+	}else if ($aPodeCon[0] == "1")	{
+		$_podeCon						= true;
+		$('#zgDivAcoesConMenForLisID').html('<div class="inline blue center tooltip-info" onclick="zgAcaoConSelecionadosMenForLis();" data-toggle="tooltip" data-placement="top" title="Gerar/Atualizar os contratos dos formandos selecionados"><i class="ace-icon fa fa-file-text-o green bigger-130"></i></div>');
+	}else{
+		$_podeCon						= false;
+		$('#zgDivAcoesConMenForLisID').html('&nbsp;');
+	}
+
 	
 	if ($_podeGer == true) {
 		$('#zgDivAcoesGerMenForLis1ID').attr("disabled",false);
@@ -162,13 +184,28 @@ function zgHabilitaAcoesMenForLis() {
 		$('#zgDivAcoesAtuMenForLis1ID').removeClass("disabled");
 		$('#zgDivAcoesAtuMenForLis1ID a').attr("href",$urlAtu);
 		$("#AtuMenForLisIcoAcaoLoteID").removeClass("grey");
-		$("#AtuMenForLisIcoAcaoLoteID").addClass("green");
+		$("#AtuMenForLisIcoAcaoLoteID").addClass("orange");
 	}else{
 		$('#zgDivAcoesAtuMenForLis1ID').attr("disabled","disabled");
 		$('#zgDivAcoesAtuMenForLis1ID').addClass("disabled");
 		$('#zgDivAcoesAtuMenForLis1ID a').attr("href","#");
-		$("#AtuMenForLisIcoAcaoLoteID").removeClass("green");
+		$("#AtuMenForLisIcoAcaoLoteID").removeClass("orange");
 		$("#AtuMenForLisIcoAcaoLoteID").addClass("grey");
+	}
+
+
+	if ($_podeCon == true) {
+		$('#zgDivAcoesConMenForLis1ID').attr("disabled",false);
+		$('#zgDivAcoesConMenForLis1ID').removeClass("disabled");
+		$('#zgDivAcoesConMenForLis1ID a').attr("href",$urlCon);
+		$("#ConMenForLisIcoAcaoLoteID").removeClass("grey");
+		$("#ConMenForLisIcoAcaoLoteID").addClass("green");
+	}else{
+		$('#zgDivAcoesConMenForLis1ID').attr("disabled","disabled");
+		$('#zgDivAcoesConMenForLis1ID').addClass("disabled");
+		$('#zgDivAcoesConMenForLis1ID a').attr("href","#");
+		$("#ConMenForLisIcoAcaoLoteID").removeClass("green");
+		$("#ConMenForLisIcoAcaoLoteID").addClass("grey");
 	}
 
 	
@@ -188,16 +225,14 @@ function zgDesabilitaAcoesMenForLis() {
 	$('#MenForLisFiltroBtnAcaoLoteID').removeClass("btn-info");
 	$('#MenForLisFiltroBtnAcaoLoteID').addClass("btn-light");
 
-	//$("#MenForLisFiltroIco1AcaoLoteID").removeClass("blue");
-	//$("#MenForLisFiltroIco1AcaoLoteID").addClass("grey");
-	//$("#MenForLisFiltroIco2AcaoLoteID").removeClass("hidden");
-
 	$('#zgDivAcoesGerMenForLis1ID').attr("disabled","disabled");
 	$('#zgDivAcoesGerMenForLis1ID').addClass("disabled");
 
 	$('#zgDivAcoesAtuMenForLis1ID').attr("disabled","disabled");
 	$('#zgDivAcoesAtuMenForLis1ID').addClass("disabled");
 
+	$('#zgDivAcoesConMenForLis1ID').attr("disabled","disabled");
+	$('#zgDivAcoesConMenForLis1ID').addClass("disabled");
 
 }
 
@@ -218,6 +253,13 @@ function zgAcaoAtuSelecionadosMenForLis() {
 	zgAbreModal('%ATU_URL%&fid='+zgEncodeUrl('aSelFormandos='+$aSelFormandos));
 }
 
+function zgAcaoConSelecionadosMenForLis() {
+	var $aSelFormandos	= [];
+	oTable.$('input[name="%CHECK_NAME%[]"]:checked').each( function() {
+		$aSelFormandos[$aSelFormandos.length]	= $(this).val();
+	});
+	zgAbreModal('%CON_URL%&fid='+zgEncodeUrl('aSelFormandos='+$aSelFormandos));
+}
 
 
 

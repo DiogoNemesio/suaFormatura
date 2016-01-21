@@ -137,5 +137,43 @@ class Orcamento {
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
-	}	
+	}
+	
+	/**
+	 * Listar os tipos de evento que o orçamento está cobrindo
+	 * @param unknown $codOrcamento
+	 */
+	public static function listaTipoEventos($codOrcamento) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+		
+		$qb 	= $em->createQueryBuilder();
+		
+		try {
+			$qb->select('distinct et')
+			->from('\Entidades\ZgfmtOrcamentoItem','oi')
+			->leftJoin('\Entidades\ZgfmtOrcamento', 'o', \Doctrine\ORM\Query\Expr\Join::WITH, 'oi.codOrcamento = o.codigo')
+			->leftJoin('\Entidades\ZgfmtPlanoOrcItem', 'poi', \Doctrine\ORM\Query\Expr\Join::WITH, 'oi.codItem = poi.codigo')
+			->leftJoin('\Entidades\ZgfmtPlanoOrcGrupoItem', 'pogi', \Doctrine\ORM\Query\Expr\Join::WITH, 'poi.codGrupoItem = pogi.codigo')
+			->leftJoin('\Entidades\ZgfmtEventoTipo', 'et', \Doctrine\ORM\Query\Expr\Join::WITH, 'pogi.codTipoEvento = et.codigo')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('o.codigo'			, ':codOrcamento'),
+				$qb->expr()->eq('o.codOrganizacao'	, ':codOrganizacao')
+			))
+		
+			->orderBy('et.descricao','ASC')
+			->setParameter('codOrcamento', $codOrcamento)
+			->setParameter('codOrganizacao', $system->getCodOrganizacao());
+		
+			$query 		= $qb->getQuery();
+		
+			return($query->getResult());
+		
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+		
+	}
 }
