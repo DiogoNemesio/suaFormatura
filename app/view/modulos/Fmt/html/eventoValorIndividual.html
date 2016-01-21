@@ -1,0 +1,242 @@
+<div id="content">
+	<div class="page-header">
+		<h1><i class="fa fa-usd black">&nbsp;</i>Valor Individual por Evento&nbsp;&nbsp;
+			<a href="javascript:detalhe();" id="btnDetalhe" class="btn btn-sm btn-yellow">Exibir detalhe <i class="ace-icon fa fa-angle-down"></i></a>
+		</h1>
+	</div><!-- /.page-header -->
+	<div class="row">
+		<form id="zgFormID" class="form-horizontal">
+			<input type="hidden" name="detalhe" id="detalheID" value="0">
+			<input type="hidden" name="valorFormandoCalID" id="valorFormandoCalID" value="%VALOR_FORMANDO_CALC%">
+			<div class="col-sm-12">
+			<div class="row">
+				<div class="col-xs-12 hidden" id="divDetalheID">
+					
+					
+					<div class="widget-box" id="widget-box-10">
+						<div class="widget-header widget-header-small">
+							<h5 class="widget-title smaller"><i class="ace-icon fa fa-info-circle bigger-130"></i> Informações</h5>
+						</div>
+
+						<div class="widget-main">
+							<div class="row">
+								<div class="col-sm-6">
+									<ul class="list-unstyled spaced">
+										<li>
+											%ACEITE%
+										</li>
+										<li>
+											<ul class="list-unstyled">
+												<li>
+													<i class="ace-icon fa fa-caret-right blue"></i>
+													<b>Valor total:</b> %VALOR_ORCAMENTO%
+												</li>
+		
+												<li>
+													<i class="ace-icon fa fa-caret-right blue"></i>
+													<b>Nº de formandos:</b> %NUM_FORMANDOS%
+												</li>
+		
+												<li>
+													<i class="ace-icon fa fa-caret-right blue"></i>
+													<b>Valor por formando:</b> %VALOR_FORMANDO%
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+								<div class="col-sm-6 hidden-480">
+									<div class="well">
+										<h4 class="green smaller lighter"><strong>Mais informações</strong></h4>
+										<ul class="list-unstyled spaced">
+											<li>
+												<i class="ace-icon fa fa-hand-o-right bigger-110 green"></i>
+												Informar um valor individual para cada evento é essecial para que um formando possa participar apenas de alguns eventos ou possa desistir parcialmente da formatura	.
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="vspace-xs"></div>
+					<h5 class="header blue bolder smaller"><i class="ace-icon fa fa-cog bigger-130"></i> Configurar</h5>
+					<div class="vspace-xs"></div>
+					<div class="row">
+						<div class="box-content col-sm-10 col-sm-offset-1 %HIDDEN%">
+							<table id="tableCompraID" class="table table-striped table-bordered table-hover">
+								<thead>
+									<tr style="background-color:#4682B4">
+										<th class="col-sm-1 center">Evento</th>
+										<th class="col-sm-1 center">Forma</th>
+										<th class="col-sm-1 center">Valor / Porcentagem</th>
+										<th class="col-sm-1 center">Valor atualizado</th>
+									</tr>
+								</thead>
+								<tbody>
+								%TAB_COMPRA%
+								</tbody>
+							</table>
+						</div><!--/span-->
+					</div>
+				</div>			
+			</div>
+			<div class="clearfix form-actions">
+				<label class="col-sm-5 control-label">&nbsp;</label>
+				<button type="button" class="btn btn-primary" id="btnSubmitID">
+					<i class="fa fa-check bigger-110"></i> Salvar
+				</button>
+			</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript" charset="%CHARSET%">
+
+$('[zg-data-toggle="mask"]').each(function( index ) {
+	zgMask($( this ), $( this ).attr('zg-data-mask'));
+});
+
+$('[data-rel=popover]').popover({html:true});
+
+function detalhe(){
+	var vdetalhe = $('#detalheID').val();
+	
+	if (vdetalhe == 0){
+		$('#detalheID').val(1);
+		$('#btnDetalhe').html('Ocultar detalhes <i class="ace-icon fa fa-angle-up"></i>');
+		$('#divDetalheID').removeClass('hidden');
+	}else{
+		$('#detalheID').val(0);
+		$('#btnDetalhe').html('Exibir detalhes <i class="ace-icon fa fa-angle-down"></i>');
+		$('#divDetalheID').addClass('hidden');
+	}
+}
+
+function mudarForma(i){
+	var vValor 		= $('#valor_'+i+'_ID').val();
+	var vPct 		= $('#pct_'+i+'_ID').val();
+	var vTipoPreco 	= $('#tipoPreco_'+i+'_ID').val();
+	
+	if (vTipoPreco == 'V'){
+		$('#valor_'+i+'_ID').removeClass('hidden');
+		$('#pct_'+i+'_ID').addClass('hidden');
+		calcularValor(i);
+	}else{
+		$('#valor_'+i+'_ID').addClass('hidden');
+		$('#pct_'+i+'_ID').removeClass('hidden');
+		calcularValor(i);
+	}	
+}
+
+function calcularValor(i){
+	var vValor 			= $('#valor_'+i+'_ID').val();
+	var vPct 			= $('#pct_'+i+'_ID').val().replace("%", "");
+	var vTipoPreco 		= $('#tipoPreco_'+i+'_ID').val();
+	var vValorFormando 	= $('#valorFormandoCalID').val();
+	
+	nValor = zgConverteFloat(vValor);
+	nPct   = zgConverteFloat(vPct);
+	nValorFormando = zgConverteFloat(vValorFormando);
+	
+	// CALCULOS
+	var options = {
+			symbol : "",
+			decimal : ",",
+			thousand: ".",
+			precision : 2,
+			format: "%s%v"
+		};
+	
+	if (vTipoPreco == 'V'){
+		$('#total_'+i+'_ID').html('R$ '+accounting.formatMoney(nValor, options));
+	}else{
+		vTotal = nValorFormando * nPct / 100;
+		$('#total_'+i+'_ID').html('R$ '+accounting.formatMoney(vTotal, options));
+	}	
+}
+
+
+/******************************************************
+SUBMIT FORMULÁRIO
+/******************************************************/
+// Verificar se a validação está OK
+$('#btnSubmitID').on("click", function(e) {
+	
+	$('#btnSubmitID').html('Aguarde...  <i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>');
+	$('#btnSubmitID').attr("disabled","disabled");
+	
+	var vOk 	= true;
+	
+	if(vOk == false) 	{
+		$.gritter.add({
+			title: 'Está faltando alguma coisa !!!',
+			text: 'Corrija os campos marcados em vermelho',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+		
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		e.preventDefault();
+		return false;
+	}else{;
+		
+		$('#zgFormID').submit();
+		
+	}
+});
+
+// Submeter o formulário
+$('#zgFormID').submit(function(e) {
+	
+	
+	
+	$.ajax({
+		type:	"POST", 
+		url:	"%DP%",
+		data:	$('#zgFormID').serialize(),
+	}).done(function( data, textStatus, jqXHR) {
+		if (checaRetornoOK(data) == true) {
+			$('#codUsuarioID').val(zgGetCodRetorno(data));
+			zgMostraAviso('Fechar','Novo', '%URLNOVO%');
+			
+			//Tornar os campos readonly
+			$('#emailID').attr("readonly", true);
+			$('#cpfID').attr("readonly", true);
+			
+		}else{
+			zgMostraAviso("Fechar");
+		}
+		
+		//Voltar o botão de salvar
+		$('#btnSubmitID').html('<i class="fa fa-check bigger-110"></i> Salvar ');
+		$('#btnSubmitID').attr("disabled",false);
+		
+		$('#zgDivModalID').on('hidden.bs.modal', function () {
+			zgLimpaModalAviso();
+			$('#zgDivModalID').off('hidden.bs.modal');
+		});
+		
+	}).fail(function( jqXHR, textStatus, errorThrown) {
+		zgMostraAviso(null);
+	});
+	
+	// Recolocar a máscara para os campos que estão configurados para tal
+	$('[zg-data-mask-retira="1"]').each(function( index ) {
+		zgMask($( this ), $( this ).attr('zg-data-mask'));
+		$( this ).trigger('keyup');
+	});
+	
+	return false; 
+	
+	
+});
+
+
+
+
+</script>
