@@ -143,13 +143,12 @@ if ($eventos){
 	for ($i = 0; $i < sizeof($eventos); $i++){
 		$numEventos		+= 1;
 		$checked		= "";
+		$valorEvento	= \Zage\Fmt\Evento::getValor($eventos[$i]->getCodigo());
 		
 		$htmlEventos	.= '<tr>';
 		$htmlEventos	.= '<td class="col-sm-1 center"><label class="position-relative"><input type="checkbox" '.$checked.' name="codEventoSel[]" zg-name="selEvento" class="ace" value="'.$eventos[$i]->getCodigo().'" onchange="calculaValorTotalEventoDesCad();" /><span class="lbl"></span></label></td>';
 		$htmlEventos	.= '<td class="col-sm-1">'.$eventos[$i]->getCodTipoEvento()->getDescricao().'</td>';
-		$htmlEventos	.= '<td class="col-sm-1 left"><span></span><input class="input-small" id="valor_'.$eventos[$i]->getCodigo().'_ID" type="text" name="_aTempValorEvento[]" value="'.\Zage\App\Util::formataDinheiro($eventos[$i]->getValorAvulso()).'" zg-evento="'.$eventos[$i]->getCodigo().'" zg-name="valorEvento" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="calculaValorTotalEventoDesCad();"></td>';
-		
-		
+		$htmlEventos	.= '<td class="col-sm-1 left"><span></span><input class="input-small" id="valor_'.$eventos[$i]->getCodigo().'_ID" type="text" readonly name="_aTempValorEvento[]" value="'.\Zage\App\Util::formataDinheiro($valorEvento).'" zg-evento="'.$eventos[$i]->getCodigo().'" zg-name="valorEvento" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" onchange="calculaValorTotalEventoDesCad();"></td>';
 		
 		/**
 		

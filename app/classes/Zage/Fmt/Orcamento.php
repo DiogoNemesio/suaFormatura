@@ -109,4 +109,33 @@ class Orcamento {
 		}
 	}	
 	
+	/**
+	 * Resgata o valor por formando
+	 * @param unknown $codFormatura
+	 */
+	public static function calculaValorFormando($codOrcamento) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('sum(i.quantidade * i.valorUnitario) as total')
+			->from('\Entidades\ZgfmtOrcamentoItem','i')
+			->where($qb->expr()->andx(
+				$qb->expr()->eq('i.codOrcamento'		, ':codOrcamento')
+			))
+			->setParameter('codOrcamento', $codOrcamento);
+	
+			$query 				= $qb->getQuery();
+			$valorTotal			= \Zage\App\Util::to_float($query->getSingleScalarResult());
+			$orcamento			= $em->getRepository('Entidades\ZgfmtOrcamento')->findOneBy(array('codigo' => $codOrcamento));
+			$qtdeFormandos		= (int) $orcamento->getQtdeFormandos();
+			$valorPorFormando	= \Zage\App\Util::to_float(round($valorTotal / $qtdeFormandos,2));
+				
+			return ($valorPorFormando);
+				
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}	
 }

@@ -145,11 +145,17 @@ for ($i = 0; $i < sizeof($aSelEventos); $i++) {
 	## Resgata os objetos (chave estrangeiras)
 	#################################################################################
 	$oEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $aSelEventos[$i]));
+	
 	if (!$oEvento) {
 		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans('Evento inválido, erro: 0x6y513 !!'));
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Evento inválido, erro: 0x6y513 !!')));
 		exit;
 	}
+	
+	#################################################################################
+	## Atualizar o valor do evento 
+	#################################################################################
+	$aValorEventos[$i]		= \Zage\Fmt\Evento::getValor($oEvento->getCodifo());
 }
 
 #################################################################################
@@ -1588,11 +1594,9 @@ for ($i = 0; $i < sizeof($aSelEventos); $i++) {
 	$eventoPart->setCodFormando($oUsuario);
 	$eventoPart->setCodOrganizacao($oOrg);
 	$eventoPart->setDataCadastro(new \DateTime());
-	$eventoPart->setValor(\Zage\App\Util::to_float($aValorEventos[$i]));
+	//$eventoPart->setValor(\Zage\App\Util::to_float($aValorEventos[$i]));
 	$em->persist($eventoPart);
 }
-
-
 
 #################################################################################
 ## Alterar a associação do usuário na organização
@@ -1600,6 +1604,26 @@ for ($i = 0; $i < sizeof($aSelEventos); $i++) {
 $oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codFormando,'codOrganizacao' => $system->getCodOrganizacao()));
 $oUsuOrg->setCodStatus($oStAs);
 $em->persist($oUsuOrg);
+
+#################################################################################
+## Alterar o contrato dele para parcial caso a desistência tenha sido parcial
+#################################################################################
+if ($codTipoDesistencia	== "P") {
+
+	#################################################################################
+	## Verifica se o formando tem contrato
+	#################################################################################
+	$oContrato		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codFormando' => $codFormando));
+	if ($oContrato)	{
+		$oTipoContrato	= $em->getRepository('Entidades\ZgfmtContratoFormandoTipo')->findOneBy(array('codigo' => "P"));
+		if ($oContrato->getCodTipoContrato()->getCodigo() != "P") {
+			$oContrato->setCodTipoContrato($oTipoContrato);
+			$em->persist($oContrato);
+		}
+		
+	}
+}
+
 
 #################################################################################
 ## Define a variável de sessão da listagem de contas para a data do primeiro vencimento

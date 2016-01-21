@@ -49,12 +49,21 @@ class Evento {
 		#################################################################################
 		$pct				= \Zage\App\Util::to_float($evento->getPctValorOrcamento());
 		if (!$pct)			return 0;
-		$orcAceite			= \Zage\Fmt\Orcamento::getVersaoAceita($evento->getCodFormatura()->getCodigo());
-		if (!$orcAceite)	return 0;
-		$valorOrc			= \Zage\App\Util::to_float(\Zage\Fmt\Orcamento::calculaValorTotal($orcAceite->getCodigo()));
-		if (!$valorOrc)		return 0;
 		
-		return ($valorOrc * $pct / 100);
+		#################################################################################
+		## Resgatar o valor por formando
+		#################################################################################
+		$oOrgFmt	= $em->getRepository('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $evento->getCodFormatura()->getCodigo()));
+		
+		if (!$oOrgFmt) return 0;
+		
+		if ($oOrgFmt->getValorPrevistoTotal() && $oOrgFmt->getQtdePrevistaFormandos()){
+			$valorFormatura = \Zage\App\Util::to_float(round((\Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal())/\Zage\App\Util::to_float($oOrgFmt->getQtdePrevistaFormandos())),2));
+		}else{
+			$valorFormatura	= 0;
+		}
+		
+		return ($valorFormatura * $pct / 100);
 		
 	}
 	
