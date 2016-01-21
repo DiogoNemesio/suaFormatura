@@ -160,7 +160,8 @@ class Orcamento {
 			->leftJoin('\Entidades\ZgfmtEventoTipo', 'et', \Doctrine\ORM\Query\Expr\Join::WITH, 'pogi.codTipoEvento = et.codigo')
 			->where($qb->expr()->andX(
 				$qb->expr()->eq('o.codigo'			, ':codOrcamento'),
-				$qb->expr()->eq('o.codOrganizacao'	, ':codOrganizacao')
+				$qb->expr()->eq('o.codOrganizacao'	, ':codOrganizacao'),
+				$qb->expr()->isNotNull('pogi.codTipoEvento')
 			))
 		
 			->orderBy('et.descricao','ASC')

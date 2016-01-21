@@ -176,6 +176,27 @@ try {
  	$oHisAceite->setDataCadastro(new \DateTime("now"));
  	$em->persist($oHisAceite);
  	
+ 	
+ 	#################################################################################
+ 	## Criar os eventos associados a esse orcamento, somente se não existir
+ 	#################################################################################
+ 	$tipoEventos	= \Zage\Fmt\Orcamento::listaTipoEventos($codVersaoOrc);
+ 	$oOrg			= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $orcamento->getCodOrganizacao()->getCodigo()));
+ 	for ($i = 0; $i < sizeof($tipoEventos); $i++) {
+ 		#################################################################################
+ 		## Verifica se já existe evento com esse tipo
+ 		#################################################################################
+ 		$existeEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codFormatura' => $orcamento->getCodOrganizacao()->getCodigo(),'codTipoEvento' => $tipoEventos[$i]->getCodigo()));
+ 		if (!$existeEvento)	{
+ 			$oEvento	= new \Entidades\ZgfmtEvento();
+ 			$oEvento->setCodFormatura($oOrg);
+ 			$oEvento->setCodTipoEvento($tipoEventos[$i]);
+ 			$em->persist($oEvento);
+ 		}
+ 	}
+ 	
+ 	
+ 	
 	#################################################################################
  	## Salvar as informações
  	#################################################################################
