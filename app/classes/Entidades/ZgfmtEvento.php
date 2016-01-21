@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtEvento
  *
- * @ORM\Table(name="ZGFMT_EVENTO", indexes={@ORM\Index(name="fk_ZGFOR_EVENTO_1_idx", columns={"COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFOR_EVENTO_2_idx", columns={"COD_FORMATURA"}), @ORM\Index(name="ZGFOR_EVENTO_1_UN", columns={"COD_FORMATURA", "COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_1_idx", columns={"COD_PESSOA"})})
+ * @ORM\Table(name="ZGFMT_EVENTO", indexes={@ORM\Index(name="ZGFOR_EVENTO_1_UN", columns={"COD_FORMATURA", "COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_2_idx", columns={"COD_TIPO_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_3_idx", columns={"COD_PESSOA"}), @ORM\Index(name="fk_ZGFMT_EVENTO_4_idx", columns={"COD_TIPO_PRECO"}), @ORM\Index(name="IDX_ECDEE29BFB2E24A9", columns={"COD_FORMATURA"})})
  * @ORM\Entity
  */
 class ZgfmtEvento
@@ -50,14 +50,14 @@ class ZgfmtEvento
     private $pctValorOrcamento;
 
     /**
-     * @var \Entidades\ZgfinPessoa
+     * @var \Entidades\ZgadmOrganizacao
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_FORMATURA", referencedColumnName="CODIGO")
      * })
      */
-    private $codPessoa;
+    private $codFormatura;
 
     /**
      * @var \Entidades\ZgfmtEventoTipo
@@ -70,14 +70,24 @@ class ZgfmtEvento
     private $codTipoEvento;
 
     /**
-     * @var \Entidades\ZgadmOrganizacao
+     * @var \Entidades\ZgfinPessoa
      *
-     * @ORM\ManyToOne(targetEntity="Entidades\ZgadmOrganizacao")
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinPessoa")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="COD_FORMATURA", referencedColumnName="CODIGO")
+     *   @ORM\JoinColumn(name="COD_PESSOA", referencedColumnName="CODIGO")
      * })
      */
-    private $codFormatura;
+    private $codPessoa;
+
+    /**
+     * @var \Entidades\ZgfmtEventoPrecoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtEventoPrecoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_TIPO_PRECO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codTipoPreco;
 
 
     /**
@@ -183,26 +193,26 @@ class ZgfmtEvento
     }
 
     /**
-     * Set codPessoa
+     * Set codFormatura
      *
-     * @param \Entidades\ZgfinPessoa $codPessoa
+     * @param \Entidades\ZgadmOrganizacao $codFormatura
      * @return ZgfmtEvento
      */
-    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
+    public function setCodFormatura(\Entidades\ZgadmOrganizacao $codFormatura = null)
     {
-        $this->codPessoa = $codPessoa;
+        $this->codFormatura = $codFormatura;
 
         return $this;
     }
 
     /**
-     * Get codPessoa
+     * Get codFormatura
      *
-     * @return \Entidades\ZgfinPessoa 
+     * @return \Entidades\ZgadmOrganizacao 
      */
-    public function getCodPessoa()
+    public function getCodFormatura()
     {
-        return $this->codPessoa;
+        return $this->codFormatura;
     }
 
     /**
@@ -229,25 +239,48 @@ class ZgfmtEvento
     }
 
     /**
-     * Set codFormatura
+     * Set codPessoa
      *
-     * @param \Entidades\ZgadmOrganizacao $codFormatura
+     * @param \Entidades\ZgfinPessoa $codPessoa
      * @return ZgfmtEvento
      */
-    public function setCodFormatura(\Entidades\ZgadmOrganizacao $codFormatura = null)
+    public function setCodPessoa(\Entidades\ZgfinPessoa $codPessoa = null)
     {
-        $this->codFormatura = $codFormatura;
+        $this->codPessoa = $codPessoa;
 
         return $this;
     }
 
     /**
-     * Get codFormatura
+     * Get codPessoa
      *
-     * @return \Entidades\ZgadmOrganizacao 
+     * @return \Entidades\ZgfinPessoa 
      */
-    public function getCodFormatura()
+    public function getCodPessoa()
     {
-        return $this->codFormatura;
+        return $this->codPessoa;
+    }
+
+    /**
+     * Set codTipoPreco
+     *
+     * @param \Entidades\ZgfmtEventoPrecoTipo $codTipoPreco
+     * @return ZgfmtEvento
+     */
+    public function setCodTipoPreco(\Entidades\ZgfmtEventoPrecoTipo $codTipoPreco = null)
+    {
+        $this->codTipoPreco = $codTipoPreco;
+
+        return $this;
+    }
+
+    /**
+     * Get codTipoPreco
+     *
+     * @return \Entidades\ZgfmtEventoPrecoTipo 
+     */
+    public function getCodTipoPreco()
+    {
+        return $this->codTipoPreco;
     }
 }

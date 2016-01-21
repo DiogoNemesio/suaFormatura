@@ -1620,7 +1620,6 @@ if ($codTipoDesistencia	== "P") {
 			$oContrato->setCodTipoContrato($oTipoContrato);
 			$em->persist($oContrato);
 		}
-		
 	}
 }
 
