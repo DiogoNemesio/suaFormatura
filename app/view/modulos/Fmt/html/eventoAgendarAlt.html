@@ -42,10 +42,11 @@
 					    	<label class="col-sm-3 control-label" for="qtdeConviteID">Convites</label>
 								<div class="input-group col-sm-8 pull-left">
 				    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade de convites que o formando irá receber, já incluindo o dele próprio. Caso não seja preenchido iremos entender que não existe limite."></i></span>
-				    			<input class="form-control" id="qtdeConviteID" type="text" name="qtdeConvite" placeholder="Número de convites" maxlength="4" value="%QTDE_CONVITE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
+				    			<input class="form-control" id="qtdeConviteID" type="text" %READONLY_CONV% name="qtdeConvite" placeholder="Número de convites" maxlength="4" value="%QTDE_CONVITE%" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero">
 					    	</div>
 					    	<div class="col-sm-1 pull-left" id="divHelpQtdeConviteID"></div>
 					    </div>
+					    <!-- 
 					    <div class="form-group col-sm-12" id="divValorAvulsoID">
 					    	<label class="col-sm-3 control-label" for="valorAvulsoID">Valor avulso</label>
 								<div class="input-group col-sm-8 pull-left">
@@ -54,6 +55,7 @@
 					    	</div>
 					    	<div class="col-sm-1 pull-left" id="divHelpValorAvulsoID"></div>
 					    </div>
+					     -->
 					</div>
 					<div class="col-sm-6 hidden-480">
 						<div class="well">
@@ -65,7 +67,7 @@
 								</li>
 								<li>
 									<i class="ace-icon fa fa-hand-o-right bigger-110 green"></i>
-									É importante também preencher a quantidade de convites disponibilizado para cada formando e o valor para participação avulsa de um formando apenas neste evento.
+									É importante também preencher a quantidade de convites disponibilizado para cada formando.
 								</li>
 							</ul>
 						</div>

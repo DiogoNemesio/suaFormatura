@@ -46,6 +46,11 @@ try {
 		//Resgatar objeto
 		$oEvento = $em->getRepository('Entidades\ZgfmtEvento')->findOneBy(array('codigo' => $codEvento[$i]));
 		
+		if (!$oEvento){
+			$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Ops! Não conseguimos encontrar os eventos. Tente novamente em instantes e caso o problema continue entre em contato com o nosso suporte."));
+			exit;
+		}
+		
 		if ($codTipoPreco[$i] == 'V'){
 			if ($aValor[$i]){
 				$valor	= \Zage\App\Util::to_float($aValor[$i]);

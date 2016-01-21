@@ -49,12 +49,26 @@ if ($codEvento) {
 	$valorAvulso	 = ($info->getValorAvulso()) ? \Zage\App\Util::formataDinheiro($info->getValorAvulso()) : null;
 	
 }else {
-	$info = $em->getRepository ('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipo));
+	$info 		= $em->getRepository ('Entidades\ZgfmtEventoTipo')->findOneBy(array('codigo' => $codTipo));
 	
+	//Resgatar a quantidade de convites do orçamento
+	if ($info->getCodigo() == '8'){
+		$oOrgFmt 	= $em->getRepository ('Entidades\ZgfmtOrganizacaoFormatura')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao()));
+		if ($oOrgFmt->getQtdePrevistaConvidados()){
+			$qtdeConvite	= $oOrgFmt->getQtdePrevistaConvidados();
+			$readOnlyConv	= 'readonly';
+		}else{
+			$qtdeConvite	= null;
+			$readOnlyConv	= '';
+		}
+	}else{
+		$qtdeConvite 	 = null;
+		$readOnlyConv	= '';
+	}
+
 	$tipoEventoDesc	 = $info->getDescricao();
 	$dataEvento		 = null;
 	$codFornecedor	 = null;
-	$qtdeConvite 	 = null;
 	$valorAvulso 	 = null;
 }
 
@@ -150,6 +164,7 @@ $tpl->set ( 'VALOR_AVULSO' 	   	  , $valorAvulso);
 $tpl->set ( 'COD_LOCAL'		   	  , $codLocal);
 $tpl->set ( 'DATA_EVENTO'	   	  , $dataEvento);
 
+$tpl->set ( 'READONLY_CONV'		  , $readOnlyConv);
 $tpl->set ( 'READONLY'			  , $readonly);
 $tpl->set ( 'FORNECEDOR' 		  , $oFornecedor);
 
