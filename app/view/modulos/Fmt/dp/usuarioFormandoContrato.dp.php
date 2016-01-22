@@ -98,6 +98,12 @@ if (!$oContrato)	{
 #################################################################################
 $oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 
+
+#################################################################################
+## Resgata o tipo de contrato
+#################################################################################
+$oTipoContrato				= $em->getRepository('Entidades\ZgfmtContratoFormandoTipo')->findOneBy(array('codigo' => "T"));
+
 #################################################################################
 ## Salvar no banco
 #################################################################################
@@ -107,6 +113,7 @@ try {
 	$oContrato->setCodFormaPagamento($oFormaPag);
 	$oContrato->setCodOrganizacao($oOrg);
 	$oContrato->setNumMeses(sizeof($aData));
+	$oContrato->setCodTipoContrato($oTipoContrato);
 	$em->persist($oContrato);
 
 	#################################################################################
@@ -137,7 +144,7 @@ try {
 	$mensagem	= $tr->trans("Contrato salvo com sucesso");
 	
 } catch (\Exception $e) {
-	$em->getConnection()->rollback();
+	//$em->getConnection()->rollback();
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;
 }
