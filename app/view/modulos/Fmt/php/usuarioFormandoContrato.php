@@ -36,7 +36,6 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-
 #################################################################################
 ## Resgata os parâmetros passados
 #################################################################################
@@ -184,6 +183,26 @@ try {
 }
 
 #################################################################################
+## Resgatar os eventos
+#################################################################################
+$aEventos		= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormatura' => $system->getCodOrganizacao()));
+
+for ($i = 0; $i < sizeof($aEventos); $i++) {
+	
+	$tabEvento	.= '<tr>
+		<td style="text-align: center;"><label class="position-relative"><input type="checkbox" name="codEventoSel[]" class="ace"/><span class="lbl"></span></label></td>
+		<td style="text-align: center;">'.$aEventos[$i]->getCodTipoEvento()->getDescricao().'</td>
+		<td style="text-align: center;">total</td>
+		</tr>';
+	
+	/**
+	$htmlEventos .= '<div class="checkbox"><label>';
+	$htmlEventos .= '<input type="checkbox" name="codEventoSel[]" class="ace"/>';
+	$htmlEventos .= '<span class="lbl"> '.$aEventos[$i]->getCodTipoEvento()->getDescricao().'</span></label></div>';
+	**/
+}
+
+#################################################################################
 ## Urls
 #################################################################################
 $uid 				= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_);
@@ -192,7 +211,6 @@ if (!isset($urlVoltar) || (!$urlVoltar)) {
 }else{
 	$urlVoltar			= $urlVoltar . "?id=".$id;
 }
-
 
 #################################################################################
 ## Carregando o template html
@@ -220,6 +238,7 @@ $tpl->set('FORMAS_PAG'				,$oFormaPag);
 $tpl->set('TAB_PARCELAS'			,$tabParcelas);
 $tpl->set('TAB_HID'					,$tabHid);
 $tpl->set('TOTAL_PARCELAS_FMT'		,\Zage\App\Util::to_money($totalParcelas));
+$tpl->set('TAB_EVENTOS'					,$tabEvento);
 
 $tpl->set('NOME'					,$nome);
 $tpl->set('TEXTO'					,$texto);
