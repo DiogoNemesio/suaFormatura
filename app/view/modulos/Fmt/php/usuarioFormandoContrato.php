@@ -108,8 +108,9 @@ $oContrato 		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(
 $totalParcelas	= 0;
 
 if ($oContrato){
-	$numMeses 		= $oContrato->getNumMeses();
-	$codFormaPag	= ($oContrato->getCodFormaPagamento()) ? $oContrato->getCodFormaPagamento()->getCodigo() : null;
+	$numMeses 			= $oContrato->getNumMeses();
+	$codFormaPag		= ($oContrato->getCodFormaPagamento()) ? $oContrato->getCodFormaPagamento()->getCodigo() : null;
+	$codTipoContrato	= ($oContrato->getCodTipoContrato()) ? $oContrato->getCodTipoContrato()->getCodigo() : null;
 	
 	#################################################################################
 	## Carregar as parcelas
@@ -144,6 +145,7 @@ if ($oContrato){
 	$codFormaPag	= "BOL";
 	$tabParcelas	= null;
 	$tabHid			= "hidden";
+	$codTipoContrato = null;
 }
 
 #################################################################################
@@ -181,6 +183,17 @@ try {
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
 }
+
+#################################################################################
+## Select de Sexo
+#################################################################################
+try {
+	$aContratoTipo	= $em->getRepository('Entidades\ZgfmtContratoFormandoTipo')->findBy(array(),array('descricao' => ASC));
+	$oContratoTipo	= $system->geraHtmlCombo($aContratoTipo, 'CODIGO', 'DESCRICAO',	$codTipoContrato, null);
+} catch (\Exception $e) {
+	\Zage\App\Erro::halt($e->getMessage(),__FILE__,__LINE__);
+}
+
 
 #################################################################################
 ## Resgatar os eventos
@@ -238,7 +251,8 @@ $tpl->set('FORMAS_PAG'				,$oFormaPag);
 $tpl->set('TAB_PARCELAS'			,$tabParcelas);
 $tpl->set('TAB_HID'					,$tabHid);
 $tpl->set('TOTAL_PARCELAS_FMT'		,\Zage\App\Util::to_money($totalParcelas));
-$tpl->set('TAB_EVENTOS'					,$tabEvento);
+$tpl->set('TAB_EVENTOS'				,$tabEvento);
+$tpl->set('TIPO_CONTRATO'			,$oContratoTipo);
 
 $tpl->set('NOME'					,$nome);
 $tpl->set('TEXTO'					,$texto);

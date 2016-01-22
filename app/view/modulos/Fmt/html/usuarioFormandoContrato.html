@@ -120,24 +120,17 @@
 					<div class="vspace-xs"></div>
 					<div class="row">
 						<div class="col-sm-12">
-							<div class="form-group col-sm-8" >
-			    				<label class="col-sm-2 control-label">
-			    					<input name="indPartcipacaoTotal" id="indPartcipacaoTotalID" %ACEITE% class="ace ace-switch" onchange="mudaTipoParticipacao();" type="checkbox" />
-			    					<span class="lbl" data-lbl="SIM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NÃO">&nbsp;&nbsp;</span>
-			    				</label>
-				    			<div class="input-group col-sm-10 pull-left">
-				    				<label class=" control-label">	
-				    					<i class="ace-icon fa fa-question-circle blue" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Marque SIM caso o formando participe de todos os eventos. Caso NÃO, selecione os eventos que o formando irá participar na tabela que será mostrada abaixo."></i> 
-				    					Participação em de todos os eventos?
-				    				</label>
-							    </div>
-				    		</div>
+							<div class="form-group col-sm-8" id="divTipoContratoID">
+								<label class="col-sm-2 control-label" for="tipoContratoID">Tipo</label>
+				    			<div class="input-group col-sm-8 pull-left">
+									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do formando."></i></span>
+									<select class="select2" style="width:100%;" id="tipoContratoID" onchange="mudaTipoContrato();"name="tipoContrato" data-rel="select2">
+										%TIPO_CONTRATO%
+									</select>
+								</div>
+							</div>
 				    		<div class="col-sm-4">
 							    <div class="profile-user-info profile-user-info-striped" id="divInfoID">
-									<div class="profile-info-row">
-										<div class="profile-info-name">Participação:</div>
-										<div class="profile-info-value" id="lblTipoParticipacaoID">Completa</div>
-									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">Total:</div>
 										<div class="profile-info-value">2312,21</div>
@@ -203,15 +196,15 @@ $('[data-rel="select2"]').each(function( index ) {
 	}
 });
 
-function mudaTipoParticipacao(){
-	var vIndParTotal =		$('#indPartcipacaoTotalID').is(':checked');
+mudaTipoContrato();
+
+function mudaTipoContrato(){
+	var vTipoContrato =		$('#tipoContratoID').val();
 	
-	if (vIndParTotal == true){
+	if (vTipoContrato == 'T'){
 		$('#divEventoIndividualID').addClass('hidden');
-		$('#lblTipoParticipacaoID').html('Completa');
 	}else{
 		$('#divEventoIndividualID').removeClass('hidden');
-		$('#lblTipoParticipacaoID').html('Parcial');
 	}
 	
 }
