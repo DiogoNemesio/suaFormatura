@@ -104,7 +104,6 @@ $oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('co
 #################################################################################
 $oTipoContrato				= $em->getRepository('Entidades\ZgfmtContratoFormandoTipo')->findOneBy(array('codigo' => "T"));
 
-$log->info("cheguei aqui 1.0.1");
 #################################################################################
 ## Salvar no banco
 #################################################################################
@@ -117,7 +116,6 @@ try {
 	$oContrato->setCodTipoContrato($oTipoContrato);
 	$em->persist($oContrato);
 
-	$log->info("cheguei aqui 1.0.2");
 	#################################################################################
 	## Excluir as parcelas existentes
 	#################################################################################
@@ -127,8 +125,6 @@ try {
 			$em->remove($oParcelas[$i]);
 		}
 	}
-	
-	$log->info("cheguei aqui 1.0.3");
 	
 	#################################################################################
 	## Salvar as parcelas
@@ -141,7 +137,6 @@ try {
 		$oParcela->setValor(\Zage\App\Util::to_float($aValor[$i]));
 		$em->persist($oParcela);
 	}
-	$log->info("cheguei aqui 1.0.4");
 	
 	$em->flush();
 	$em->clear();
