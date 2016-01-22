@@ -98,6 +98,13 @@ if (!$oContrato)	{
 #################################################################################
 $oOrg				= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
 
+
+#################################################################################
+## Resgata o tipo de contrato
+#################################################################################
+$oTipoContrato				= $em->getRepository('Entidades\ZgfmtContratoFormandoTipo')->findOneBy(array('codigo' => "T"));
+
+$log->info("cheguei aqui 1.0.1");
 #################################################################################
 ## Salvar no banco
 #################################################################################
@@ -107,8 +114,10 @@ try {
 	$oContrato->setCodFormaPagamento($oFormaPag);
 	$oContrato->setCodOrganizacao($oOrg);
 	$oContrato->setNumMeses(sizeof($aData));
+	$oContrato->setCodTipoContrato($oTipoContrato);
 	$em->persist($oContrato);
 
+	$log->info("cheguei aqui 1.0.2");
 	#################################################################################
 	## Excluir as parcelas existentes
 	#################################################################################
@@ -118,6 +127,8 @@ try {
 			$em->remove($oParcelas[$i]);
 		}
 	}
+	
+	$log->info("cheguei aqui 1.0.3");
 	
 	#################################################################################
 	## Salvar as parcelas
@@ -130,6 +141,7 @@ try {
 		$oParcela->setValor(\Zage\App\Util::to_float($aValor[$i]));
 		$em->persist($oParcela);
 	}
+	$log->info("cheguei aqui 1.0.4");
 	
 	$em->flush();
 	$em->clear();
@@ -137,7 +149,7 @@ try {
 	$mensagem	= $tr->trans("Contrato salvo com sucesso");
 	
 } catch (\Exception $e) {
-	$em->getConnection()->rollback();
+	//$em->getConnection()->rollback();
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
  	exit;
 }
