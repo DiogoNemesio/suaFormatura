@@ -60,14 +60,27 @@ if ((!empty($nome)) && (strlen($nome) > 60)) {
 $oNome	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'nome' => $nome ));
 
 if (($oNome != null) && ($oNome->getCodigo() != $codConta)){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("NOME da conta já existe"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe uma identificação cadastrada igual a informada. Por favor, informe outra para facilitar a utilização no sistema!"));
 	$err 	= 1;
 }
 
 /** AGÊNCIA **/
-if ( ($codTipo == "CC") && ( !isset($codAgencia) || empty($codAgencia) )   ) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo AGÊNCIA é obrigatório");
+if (($codTipo == "CC") && ( !isset($codAgencia) || empty($codAgencia))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Selecione uma agência");
 	$err	= 1;
+}
+
+/** CONTA **/
+if ((!isset($ccorrente) || (empty($ccorrente)) && ($codTipo == 'CC'))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Informe atentamente o número da conta bancária.");
+	$err	= 1;
+}else{
+	$oConta	= $em->getRepository('Entidades\ZgfinConta')->findOneBy(array('codOrganizacao' => $system->getcodOrganizacao(), 'ccorrente' => $ccorrente , 'codAgencia' => $codAgencia));
+	
+	if (($oConta != null) && ($oConta->getCodigo() != $codConta && $codTipo == 'CC')){
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Esta conta já está cadastrada"));
+		$err 	= 1;
+	}
 }
 
 /** AJUSTANDO O VALOR DA MORA **/

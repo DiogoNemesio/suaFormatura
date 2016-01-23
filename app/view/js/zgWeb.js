@@ -253,7 +253,7 @@ function contaBancoDigito(codBanco){
 	var valor = new Array();
 	
 	if (codBanco == '001' || codBanco == '104') {
-		valor['CC'] = 8;
+		valor['CC'] = 5;
 	}else if(codBanco == '041' || codBanco == '237' || codBanco == '356'){
 		valor['CC'] = 7;
 	}else if(codBanco == '033' || codBanco == '399'){

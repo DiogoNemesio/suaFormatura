@@ -1,6 +1,6 @@
 <div id="content">
 	<div class="page-header">
-	<h1>Cadastro de Conta 
+	<h1><i class="fa fa-usd"></i> Cadastro de Conta 
 		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
 		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
 	</h1>
@@ -14,7 +14,7 @@
 				<input type="hidden" id="codTipoMoraID" name="codTipoMora" value="%COD_TIPO_MORA%">
 				<input type="hidden" id="indCheckAltID" name="indCheckAlt" value="%IND_CHECK_ALT%">
 				<input type='hidden' id='valID'>
-				<div class="tabbable">
+				<div class="tabbable" id="tabID">
 					<ul class="nav nav-tabs padding-16">
 						<li class="active">
 							<a data-toggle="tab" href="#conta-principal">
@@ -52,10 +52,10 @@
 								    	<div class="col-sm-1 pull-left" id="divHelpTipoID"></div>
 									</div>
 									<div class="form-group col-sm-12" id="divNomeID">
-								    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+								    	<label class="col-sm-3 control-label" for="nomeID">Identificação</label>
 											<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a conta."></i></span>
-						   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="60" placeholder="Identificação da conta" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar essa conta. Fique atento, pois não deve repetir um identificador já cadastrado."></i></span>
+						   					<input class="form-control" id="nomeID" type="text" name="nome" maxlength="60" placeholder="Identificação da conta" value="%NOME%" required autocomplete="off" />
 						    			</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 						    		</div>
@@ -108,9 +108,9 @@
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group col-sm-12" id="divCarteiraID">
-								    	<label class="col-sm-3 control-label" for="nomeID">Carteira</label>
+								    	<label class="col-sm-3 control-label" for="codCarteiraID">Carteira</label>
 											<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Código da Carteira utilizada"></i></span>
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Código da carteira a ser utizada para emitir boletos bancários. Caso não possua essa informação, entre em contato com seu banco. Sem essa informação não será possível emitir boletos bancários."></i></span>
 											<input type="hidden" name="codCarteira" id="codCarteiraID" placeholder="Carteiras" value="%COD_CARTEIRA%" style="width:100%;" class="select2" data-rel="select2">
 						    			</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpCarteiraID"></div>
@@ -125,22 +125,22 @@
 								    </div>
 						    	</div>
 						    	<div class="col-sm-6">
+						    		<div class="form-group col-sm-12" id="divCodCedenteID">
+								    	<label class="col-sm-3 control-label" for="codCedenteID">Cedente</label>
+											<div class="input-group col-sm-8 pull-left">
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Código cedente é um número que serve para podermos fazer emissão de boleto bancário em nome da sua empresa. Caso você não possua este código, entre em contato com seu banco. Obrigatório para os bancos: Caixa Econômica."></i></span>
+							    			<input class="form-control" type="text" name="codCedente" id="codCedenteID" placeholder="Código do cedente" value="%COD_CEDENTE%" maxlength="6" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0"/>
+								    	</div>
+								    	<div class="col-sm-1 pull-left" id="divHelpCodCedenteID"></div>
+								    </div>
 									<div class="form-group col-sm-12" id="divInstrucaoID">
 								    	<label class="col-sm-3 control-label" for="instrucaoID">Instruções Adicionais</label>
 											<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Primeira linha do campo instrução"></i></span>
+											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Primeira linha do campo instrução do boleto bancário."></i></span>
 						   					<input class="form-control" id="instrucaoID" type="text" name="instrucao" maxlength="60" placeholder="instruções adicionais" value="%INSTRUCAO%" required autocomplete="off" />
 						    			</div>
 								    	<div class="col-sm-1 pull-left" id="divHelpInstrucaoID"></div>
 						    		</div>
-						    		<div class="form-group col-sm-12" id="divCodCedenteID">
-								    	<label class="col-sm-3 control-label" for="codCedenteID">Código do cedente</label>
-											<div class="input-group col-sm-8 pull-left">
-											<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Esse campo é usado para identificar o cedente perante ao banco, normalmente é usado a conta corrente, mas alguns bancos fornecem esse código a exemplo da Caixa econômixa"></i></span>
-							    			<input class="form-control" type="text" name="codCedente" id="codCedenteID" placeholder="Custo do boleto" value="%COD_CEDENTE%" maxlength="6" autocomplete="off" zg-data-toggle="mask" zg-data-mask="numero" zg-data-mask-retira="0"/>
-								    	</div>
-								    	<div class="col-sm-1 pull-left" id="divHelpCodCedenteID"></div>
-								    </div>
 						    	</div>
 						    </div>
 						</div>
@@ -266,8 +266,8 @@ function zgMostraDivsContaAlt() {
 		$('#aContaBoletoID').removeClass("disabled");
 		
 		atualizaCarteirasContaAlt();
-		selecionaContaJurosPorc();
-		selecionaContaMoraValor();
+		//selecionaContaJurosPorc();
+		//selecionaContaMoraPorc();
 	}else{
 		$('#divContaAgenciaID').addClass("hidden");
 		$('#liContaBoletoID').addClass("disabled");
@@ -439,8 +439,6 @@ function zgMostraCedenteCntAlt() {
 	
 }
 
-
-
 function validaContaAlt() {
 	var vNome			= $('#nomeID').val();
 	var vAgencia		= $('#codAgenciaID').val();
@@ -448,21 +446,41 @@ function validaContaAlt() {
 	var vCC				= $('#ccorrenteID').val();
 	var vCCDV			= $('#ccorrenteDVID').val();
 	var vTipo			= $('#tipoID').val();
+	var vNome			= $('#nomeID').val();
+	
+	var vCedente		= $('#codCedenteID').val();
+	var vCodCarteira	= $('#codCarteiraID').val();
+	var $agencia		= $('#codAgenciaID').val();
+	var $aBanco			= JSON.parse('%ARRAY_BANCO%');
+	var $codBanco		= $aBanco[$agencia];
 
 	var vOK				= true;
+	var vTab			= null;
 	var vIdent;
 	
-	vOK	= checkNomeAlt();
+	// Verificar a necessidade do cedente
+	if ($codBanco == "104"){
+		if (vCodCarteira && vTipo == 'CC' && !vCedente){
+			$('#divCodCedenteID').addClass('has-error');
+			$('#divHelpCodCedenteID').html(zgCriaSpanErro('Para emitir boleto do banco selecionado é necessário preencher o número do cedente. Preencha o campo atentamente, pois é fundamental para o recebimento dos boletos. Caso não saiba esse número entre em contado com seu banco.'));
+			vOK		= false;
+			vTab	= 2;
+		}else{
+			$('#divCodCedenteID').removeClass('has-error');
+			$('#divHelpCodCedenteID').html('&nbsp;');
+		}
+	}
 
-	// Agencia
+	// Agência
 	if (vTipo == 'CC' && vAgencia.length == 0 || vAgencia.length > 8 ) {
 		$('#divAgenciaID').addClass('has-error');
 		if (vAgencia.length == 0){
 			$('#divHelpCodAgenciaID').html(zgCriaSpanErro('Selecione uma agência! Caso não exista, é necessário cadastrá-la em: Financeiro -> Cadastro -> Bancários -> Conta Concorrente'));
 		}else if (vAgencia.length > 8){
-			$('#divHelpCodAgenciaID').html(zgCriaSpanErro('Agência deve ter no máximo 8 caracteres !!!'));
+			$('#divHelpCodAgenciaID').html(zgCriaSpanErro('A agência deve ter no máximo 8 caracteres!'));
 		}
 		vOK		= false;
+		vTab 	= 0;
 	}else{
 		$('#divAgenciaID').removeClass('has-error');
 		$('#divHelpCodAgenciaID').html('&nbsp;');
@@ -473,20 +491,42 @@ function validaContaAlt() {
 		$('#divCcorrenteID').addClass('has-error');
 		$('#divHelpCcorrenteID').html(zgCriaSpanErro('Informe atentamente o número da conta bancária.'));
 		vOK		= false;
+		vTab 	= 0;
 	}else if (vTipo == 'CC' && !vCCDV ) {
 		$('#divCcorrenteID').addClass('has-error');
 		$('#divHelpCcorrenteID').html(zgCriaSpanErro('Informe atentamente o dígito verificador da conta bancária.'));
 		vOK		= false;
+		vTab 	= 0;
 	}else {
 		$('#divCcorrenteID').removeClass('has-error');
 		$('#divHelpCcorrenteID').html('&nbsp;');
 	}
 	
+	// Identificação
+	if (vNome.length == 0 || vNome.length > 60) {
+		$('#divNomeID').addClass('has-error');
+		vOK		= false;
+		vTab 	= 0;
+		if (vNome.length == 0){
+			$('#divHelpNomeID').html(zgCriaSpanErro('Infome um identificador para esta conta!'));
+			
+		}else if (vNome.length > 60){
+			$('#divHelpNomeID').html(zgCriaSpanErro('A identificação não deve conter mais de 60 caracteres!'));
+		}
+	}else{
+		$('#divNomeID').removeClass('has-error');
+		$('#divHelpNomeID').html('&nbsp;');
+	}
+	
 	if (vOK == true) {
 		return true ;
 	}else{
+		//Abrir aba que tiver campos inválidos
+		$('#tabID li:eq('+ vTab +') a').tab('show');
+		//Rolar pagina para o topo
+		$('html, body').animate({scrollTop:0}, 'slow');
 		return false;
-	}	
+	}
 }
 
 function atualizaCarteirasContaAlt() {

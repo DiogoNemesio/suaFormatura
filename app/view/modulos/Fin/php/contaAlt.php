@@ -61,10 +61,10 @@ if (!empty($codConta)) {
 	$ativa			= ($info->getIndAtiva()	== 1) ? "checked" : null;
 	$codCarteira	= ($info->getcodCarteira() != null) ? $info->getcodCarteira()->getCodigo() : null;
 	$valorBoleto	= ($info->getValorBoleto()) ? \Zage\App\Util::formataDinheiro($info->getValorBoleto()) : null;
-	$valorJuros		= ($info->getValorJuros()) ? \Zage\App\Util::formataDinheiro($info->getValorJuros()) : null;
-	$valorMora		= ($info->getValorMora()) ? \Zage\App\Util::formataDinheiro($info->getValorMora()) : null;
-	$pctJuros		= ($info->getPctJuros()) ? \Zage\App\Util::formataDinheiro($info->getPctJuros()) : null;
-	$pctMora		= ($info->getPctMora()) ? \Zage\App\Util::formataDinheiro($info->getPctMora()) : null;
+	$valorJuros		= ($info->getValorJuros()) ? $info->getValorJuros() : 0;
+	$valorMora		= ($info->getValorMora()) ? $info->getValorMora() : 0;
+	$pctJuros		= ($info->getPctJuros()) ? $info->getPctJuros() : 0;
+	$pctMora		= ($info->getPctMora()) ? $info->getPctMora() : 0;
 	$instrucao		= $info->getInstrucao();
 	$indCheckAlt	= 1;
 	$codCedente		= $info->getCodigoCedente();
@@ -72,19 +72,19 @@ if (!empty($codConta)) {
 	// Botão de seleção de tipo do juros
 	if ($valorJuros > 0){
 		$codTipoJuros = 'V';
-	}elseif ($pctJuros > 0){
+	}elseif ($pctJuros >= 0){
 		$codTipoJuros = 'P';
 	}else{
-		$codTipoJuros = 'V';
+		$codTipoJuros = 'P';
 	}
 	
 	// Botão de seleção de tipo de mora
 	if ($valorMora > 0){
 		$codTipoMora = 'V';
-	}elseif ($pctMora > 0){
+	}elseif ($pctMora >= 0){
 		$codTipoMora = 'P';
 	}else{
-		$codTipoMora = 'V';
+		$codTipoMora = 'P';
 	}
 	
 	// Saldo Inicial
@@ -104,6 +104,8 @@ if (!empty($codConta)) {
 	$ccorrenteDV	= null;
 	$ativa			= "checked";
 	$codCarteira	= null;
+	$codTipoMora	= 'P';
+	$codTipoJuros	= 'P';
 	$valorBoleto	= null;
 	$valorJuros		= null;
 	$valorMora		= null;
@@ -113,7 +115,6 @@ if (!empty($codConta)) {
 	$indCheckAlt	= null;
 	$codCedente		= null;
 }
-
 
 #################################################################################
 ## Select do tipo de Conta
@@ -176,12 +177,12 @@ $tpl->set('CCORRENTE'			,$ccorrente);
 $tpl->set('CCORRENTEDV'			,$ccorrenteDV);
 $tpl->set('COD_CARTEIRA'		,$codCarteira);
 $tpl->set('VALOR_BOLETO'		,$valorBoleto);
-$tpl->set('VALOR_JUROS'			,$valorJuros);
-$tpl->set('VALOR_MORA'			,$valorMora);
+$tpl->set('VALOR_JUROS'			,\Zage\App\Util::formataDinheiro($valorJuros));
+$tpl->set('VALOR_MORA'			,\Zage\App\Util::formataDinheiro($valorMora));
 $tpl->set('COD_TIPO_JUROS'		,$codTipoJuros);
 $tpl->set('COD_TIPO_MORA'		,$codTipoMora);
-$tpl->set('PCT_JUROS'			,$pctJuros);
-$tpl->set('PCT_MORA'			,$pctMora);
+$tpl->set('PCT_JUROS'			,\Zage\App\Util::formataDinheiro($pctJuros));
+$tpl->set('PCT_MORA'			,\Zage\App\Util::formataDinheiro($pctMora));
 $tpl->set('INSTRUCAO'			,$instrucao);
 $tpl->set('COD_CEDENTE'			,$codCedente);
 $tpl->set('ARRAY_BANCO'			,json_encode($arrayBanco));

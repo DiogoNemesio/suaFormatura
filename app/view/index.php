@@ -17,7 +17,7 @@ global $system,$em,$titulo,$db,$_user;
 ## Versões do CSS e JS, para controle de cache
 #################################################################################
 $cssVersion			= "1.0.0";
-$jsVersion			= "1.0.0";
+$jsVersion			= "1.0.1";
 
 #################################################################################
 ## Verificando se mudou de organização

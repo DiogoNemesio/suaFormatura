@@ -1,6 +1,6 @@
 <div id="content">
 	<div class="page-header">
-	<h1>Cadastro de Agência 
+	<h1><i class="fa fa-bank"></i> Cadastro de Agência 
 		<a id='a01ID' class='btn btn-white ' title="Voltar" href="javascript:zgLoadUrl('%URLVOLTAR%');"><i class="fa fa-arrow-left bigger-130"></i></a>
 		<a id='a01ID' class='btn btn-white ' title="Novo índice" href="javascript:zgLoadUrl('%URLNOVO%');"><i class="fa fa-file bigger-130"></i></a>
 	</h1>
@@ -28,10 +28,10 @@
 						    	<div class="col-sm-1 pull-left" id="divHelpBancoID"></div>
 						    </div>
 							<div class="form-group col-sm-12" id="divNomeID">
-						    	<label class="col-sm-3 control-label" for="nomeID">Nome</label>
+						    	<label class="col-sm-3 control-label" for="nomeID">Identificação</label>
 									<div class="input-group col-sm-8 pull-left">
-					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Descreva como quer chamar a agência."></i></span>
-				   					<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Identificação da agência" maxlength="60" value="%NOME%" required autocomplete="off" onblur="checkNomeAlt();" />	
+					    			<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Informe um nome para identificar a agência. Fique atento, pois não deve repetir um identificador já cadastrado."></i></span>
+				   					<input class="form-control" id="nomeID" type="text" name="nome" placeholder="Identificação da agência" maxlength="60" value="%NOME%" required autocomplete="off" />	
 				    			</div>
 						    	<div class="col-sm-1 pull-left" id="divHelpNomeID"></div>
 				    		</div>
@@ -263,7 +263,6 @@ function validaAgenciaAlt() {
 		$('#divHelpAgenciaID').html('&nbsp;');
 	}
 	
-	console.log(vOK);
 	// Banco
 	if (!vBanco) {
 		$('#divBancoID').addClass('has-error');
@@ -275,9 +274,9 @@ function validaAgenciaAlt() {
 	}
 	
 	// Nome
-	if (checkNomeAlt() == false){
-		vOK = false;
-	}
+	//if (checkNomeAlt() == false){
+	//	vOK = false;
+	//}
 	
 	console.log(vOK);
 	if (vOK == true) {
