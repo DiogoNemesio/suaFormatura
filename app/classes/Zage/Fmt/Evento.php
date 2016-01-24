@@ -58,12 +58,12 @@ class Evento {
 		if (!$oOrgFmt) return 0;
 		
 		if ($oOrgFmt->getValorPrevistoTotal() && $oOrgFmt->getQtdePrevistaFormandos()){
-			$valorFormatura = \Zage\App\Util::to_float(round((\Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal())/\Zage\App\Util::to_float($oOrgFmt->getQtdePrevistaFormandos())),2));
+			$valorFormatura = \Zage\App\Util::to_float((\Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal())/\Zage\App\Util::to_float($oOrgFmt->getQtdePrevistaFormandos())));
 		}else{
 			$valorFormatura	= 0;
 		}
 		
-		return ($valorFormatura * $pct / 100);
+		return round($valorFormatura * $pct / 100,2);
 		
 	}
 	

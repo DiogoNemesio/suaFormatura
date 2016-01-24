@@ -27,6 +27,7 @@ if (isset($_GET['id'])) {
 	\Zage\App\Erro::halt('Falta de Parâmetros');
 }
 
+
 #################################################################################
 ## Descompacta o ID
 #################################################################################
@@ -92,7 +93,7 @@ $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao(
 if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
 $valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
 $qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-$mensalidadeFormando	= $valorOrcado / $qtdFormandosBase;
+$mensalidadeFormando	= round($valorOrcado / $qtdFormandosBase,2);
 
 #################################################################################
 ## Calcular o valor já provisionado por formando

@@ -116,6 +116,15 @@ for ($i = 0; $i < sizeof($aSelFormandos); $i++) {
 	}
 
 	#################################################################################
+	## Resgatar o status do usuário na organização
+	#################################################################################
+	$codStatusUsuario	= \Zage\Seg\Usuario::getStatusOrganizacao($aSelFormandos[$i],$system->getCodOrganizacao());
+	if ($codStatusUsuario	== "T") {
+		$log->err('0xlabcçm12: violação de acesso, "Contrato não pode ser alterado, pois o formando '.$oPessoa->getNome().' é desistente", Usuário: '.$system->getCodUsuario().' Organização: '.$system->getCodOrganizacao());
+		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Contrato não pode ser alterado, pois o formando '.$oPessoa->getNome().' é desistente'))));
+	}
+	
+	#################################################################################
 	## Resgata as informações do contrato
 	#################################################################################
 	$oContrato 			= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao() , 'codFormando' => $aSelFormandos[$i]));

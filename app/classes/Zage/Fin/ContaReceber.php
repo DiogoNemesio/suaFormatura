@@ -310,7 +310,9 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 			}elseif (!\Zage\App\Util::ehNumero($this->_valores[$i])) {
 				return $tr->trans('Array de valores tem registro inválido na posição "'.$i.'" !!!');
 			}elseif (\Zage\App\Util::to_float($this->_valores[$i]) < 0) {
-				return $tr->trans('Array de valores tem registro negativo na posição "'.$i.'" !!!');
+				$pessoa			= ($this->getCodPessoa()) ? $this->getCodPessoa()->getNome() : null; 
+				$log->err('Código de erro: 0xlant23ZZ, Array de valores tem registro negativo na posição "'.$i.'", Pessoa: "'.$pessoa.'",  array de valores: '.serialize($this->_valores));
+				return $tr->trans('0xlant23ZZ: Array de valores tem registro negativo na posição "'.$i.'" !!!');
 			}else{
 				//$log->debug("Valor: ".\Zage\App\Util::to_float($this->_valores[$i]).", Juros: ".\Zage\App\Util::to_float($this->getValorJuros()).", Mora: ".\Zage\App\Util::to_float($this->getValorMora()).", Outros: ".\Zage\App\Util::to_float($this->getValorOutros()).", Desconto: ".\Zage\App\Util::to_float($this->getValorDesconto()));
 				$_valorOutros		= (isset($this->_outrosValores)) ? $this->_outrosValores[$i] : $this->getValorOutros(); 

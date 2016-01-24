@@ -938,6 +938,41 @@ class Usuario extends \Entidades\ZgsegUsuario {
 			return false;
 		}
 	}
+
+	/**
+	 * Resgatar o status do usuário na organização
+	 */
+	public function getStatusOrganizacao($codUsuario,$codOrganizacao) {
+		global $em,$system;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('uo')
+			->from('\Entidades\ZgsegUsuarioOrganizacao'	,'uo')
+			->leftJoin('\Entidades\ZgsegUsuario'		,'u'	, \Doctrine\ORM\Query\Expr\Join::WITH, 'u.codigo 		= uo.codUsuario')
+			->where($qb->expr()->andX(
+					$qb->expr()->eq('u.codigo'				, ':usuario'),
+					$qb->expr()->eq('uo.codOrganizacao'		, ':codOrganizacao')
+			))
+			->setParameter('usuario', $codUsuario)
+			->setParameter('codOrganizacao', $codOrganizacao);
+			 
+			$query = $qb->getQuery();
+			$info	= $query->getOneOrNullResult();
+		}catch (\Doctrine\ORM\ORMException $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	
+		if (!$info)	{
+			return false;
+		}elseif(!$info->getCodStatus()) {
+			return false;
+		}else {
+			return $info->getCodStatus()->getCodigo();
+		}
+	}
+	
 	
 	
 	public function _getCodigo() {

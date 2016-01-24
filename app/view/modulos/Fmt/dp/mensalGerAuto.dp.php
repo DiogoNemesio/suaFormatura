@@ -91,11 +91,11 @@ try {
 ## Para calcular o valor pendente a ser gerado
 ## Se não existir, emitir um erro
 #################################################################################
-$orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
-if (!$orcamento)		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Nenhum orçamento aceito"))));
-$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
-$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-$totalPorFormando		= round($valorOrcado / $qtdFormandosBase,2);
+//$orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao());
+//if (!$orcamento)		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Nenhum orçamento aceito"))));
+//$valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
+//$qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
+//$totalPorFormando		= round($valorOrcado / $qtdFormandosBase,2);
 
 
 #################################################################################
@@ -208,12 +208,12 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$valParcTaxaAdmin	= $taxaAdmin;
 	$valParcTaxaBol		= ($codFormaPag == "BOL") ? $taxaBol : 0;
 	
-
 	#################################################################################
 	## Calcular o valor da mensalidade 
 	#################################################################################
-	$valMensalidade		= $totalPorFormando - $valTotalSistema;
-	$pctLiqSistema		= round(($valTotalSistema * 100) / $totalPorFormando,2);
+	$valContrato		= \Zage\Fmt\Contrato::getValor($aContrato[$i]->getCodigo());
+	$valMensalidade		= $valContrato - $valTotalSistema;
+	$pctLiqSistema		= round(($valTotalSistema * 100) / $valContrato,2);
 	$pctLiqMensalidade	= 100 - $pctLiqSistema;
 	
 	#################################################################################

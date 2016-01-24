@@ -1469,11 +1469,14 @@ class Financeiro {
 			->where($qb1->expr()->andx(
 				$qb1->expr()->eq('cr.codOrganizacao'	, ':codOrg'),
 				$qb1->expr()->eq('cr.codPessoa'			, ':codPessoa'),
-				$qb1->expr()->in('crr.codCategoria'		, ':codCategoria')
+				$qb1->expr()->in('crr.codCategoria'		, ':codCategoria'),
+				$qb1->expr()->notIn('cr.codStatus'		, ':codStatus')
 			))
 			->setParameter('codOrg'			, $codOrganizacao)
 			->setParameter('codPessoa'		, $codFormando)
-			->setParameter('codCategoria'	, $aCat);
+			->setParameter('codCategoria'	, $aCat)
+			->setParameter('codStatus'		, array("C"));
+			
 	
 			$query 				= $qb1->getQuery();
 			$num				= $query->getSingleScalarResult();
@@ -1571,34 +1574,359 @@ class Financeiro {
 		#################################################################################
 		## Essa rotina deve calcular o valor total que cada formando deve pagar, as  
 		## seguintes situações devem ser observadas:
-		## 1 - Formando sem contrato: O Valor será o valor do Orçamento
+		## 1 - Formando sem contrato, e sem desistência: O Valor será o valor do Orçamento
 		## 2 - Formando com contrato Ativo com Participação total: O Valor será o valor do Orçamento
-		## 3 - Formando com contrato Ativo com Participação Parcial: O Valor será a soma dos eventos que irá participar
-		## 4 - Formando com contrato cancelado: Valor será 0
-		## 5 - Formando com contrato parcialmente cancelado com Participação total: O Valor do Orçamento + multa de desistência  
+		## 3 - Formando sem contrato mas com desistência total: O Valor será a multa de desistência
+		## 4 - Formando com contrato cancelado e com desistência total: O Valor será a multa de desistência 
+		## 5 - Formando com contrato Ativo com Participação Parcial: O Valor será a soma dos eventos que irá participar 
 		## 6 - Formando com contrato parcialmente cancelado com Participação parcial: O Valor será a soma dos eventos que irá participar + multa de desistência
+		## 7 - Formando sem contrato mas com desistência parcial: O Valor será a soma dos eventos que irá participar + multa de desistência
 		#################################################################################
 		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
 		
+		#################################################################################
+		## Variáveis
+		#################################################################################
+		$codTipoFormando			= "F";
+		$codStatusDesistente		= array("T");
+		$codTipoContratoTotal		= "T";
+		$codTipoContratoParcial		= "P";
+		$codStatusContratoAtivo		= "A";
+		$codStatusContratoParcial	= "P";
+		$codStatusContratoCancelado	= "C";
+		$codTipoDesistenciaTotal	= "T";
+		$codTipoDesistenciaParcial	= "P";
+		
+
+		#################################################################################
+		## Somar os valores dividos por categora
+		#################################################################################
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgsegUsuario'		, 'U');
+			$rsm->addFieldResult('U', 'CODIGO', 'codigo');
+			$rsm->addFieldResult('U', 'CPF', 'cpf');
+			$rsm->addFieldResult('U', 'NOME', 'nome');
+			$rsm->addScalarResult('total'					, 'total');
+			//$rsm->addScalarResult('valor_pago'				, 'valor_pago');
+				
+			$query 	= $em->createNativeQuery("
+					
+				-- CASOS 1 e 2
+				SELECT  U.CODIGO,U.CPF,U.NOME,SUM(OF.VALOR_PREVISTO_TOTAL/OF.QTDE_PREVISTA_FORMANDOS) AS total
+				FROM	ZGSEG_USUARIO 				U,
+						ZGADM_ORGANIZACAO			O,
+						ZGSEG_PERFIL				P,
+						ZGFMT_ORGANIZACAO_FORMATURA	OF,
+						ZGSEG_USUARIO_ORGANIZACAO	UO
+				LEFT OUTER JOIN ZGFMT_CONTRATO_FORMANDO	C	ON (
+					UO.COD_ORGANIZACAO	= C.COD_ORGANIZACAO AND
+					UO.COD_USUARIO		= C.COD_FORMANDO
+				)
+				LEFT OUTER JOIN ZGFMT_DESISTENCIA	D	ON (
+					UO.COD_ORGANIZACAO	= D.COD_ORGANIZACAO AND
+					UO.COD_USUARIO		= D.COD_FORMANDO
+				)
+				WHERE	U.CODIGO					= UO.COD_USUARIO
+				AND		O.CODIGO					= UO.COD_ORGANIZACAO
+				AND		P.CODIGO					= UO.COD_PERFIL
+				AND		OF.COD_ORGANIZACAO			= O.CODIGO
+				AND		P.COD_TIPO_USUARIO			= :codTipoFormando
+				AND		O.CODIGO					= :codOrg
+				AND		UO.COD_STATUS				NOT IN (:codStatusDesistente)
+				AND		(
+						C.CODIGO			IS NULL
+					OR	(
+						C.COD_STATUS		= :codStatusContratoAtivo AND
+						C.COD_TIPO_CONTRATO	= :codTipoContratoTotal
+						)
+				)
+				AND		D.CODIGO				IS NULL
+				GROUP	BY U.CODIGO,U.CPF,U.NOME
+					
+
+				UNION ALL
+					
+				-- CASOS 3 e 4
+				SELECT  U.CODIGO,U.CPF,U.NOME,SUM(IFNULL(D.VALOR_MULTA,0)) AS total
+				FROM	ZGSEG_USUARIO 				U,
+						ZGADM_ORGANIZACAO			O,
+						ZGSEG_PERFIL				P,
+						ZGFMT_DESISTENCIA			D,
+						ZGSEG_USUARIO_ORGANIZACAO	UO
+				LEFT OUTER JOIN ZGFMT_CONTRATO_FORMANDO	C	ON (
+					UO.COD_ORGANIZACAO	= C.COD_ORGANIZACAO AND
+					UO.COD_USUARIO		= C.COD_FORMANDO
+				)
+				WHERE	U.CODIGO					= UO.COD_USUARIO
+				AND		O.CODIGO					= UO.COD_ORGANIZACAO
+				AND		P.CODIGO					= UO.COD_PERFIL
+				AND		D.COD_ORGANIZACAO			= UO.COD_ORGANIZACAO
+				AND		D.COD_FORMANDO				= UO.COD_USUARIO
+				AND		P.COD_TIPO_USUARIO			= :codTipoFormando
+				AND		O.CODIGO					= :codOrg
+				AND		UO.COD_STATUS				IN (:codStatusDesistente)
+				AND		(
+						C.CODIGO			IS NULL	
+						OR
+						C.COD_STATUS		= :codStatusContratoCancelado
+				)
+				 
+				AND		D.COD_TIPO_DESISTENCIA	= :codTipoDesistenciaTotal
+				GROUP	BY U.CODIGO,U.CPF,U.NOME
+					
+				UNION ALL
+					
+				-- CASOS 5, 6 e 7
+				SELECT 	CODIGO,CPF,NOME, total + VALOR_MULTA as total
+				FROM	(
+					SELECT  U.CODIGO,U.CPF,U.NOME,IFNULL(D.VALOR_MULTA,0) VALOR_MULTA,SUM(IF((E.COD_TIPO_PRECO = 'V'),E.VALOR_AVULSO,(OF.VALOR_PREVISTO_TOTAL/OF.QTDE_PREVISTA_FORMANDOS)*E.PCT_VALOR_ORCAMENTO/100)) AS total
+					FROM	ZGSEG_USUARIO 				U,
+							ZGADM_ORGANIZACAO			O,
+							ZGSEG_PERFIL				P,
+							ZGFMT_ORGANIZACAO_FORMATURA	OF,
+							ZGFMT_EVENTO				E,
+							ZGFMT_EVENTO_PARTICIPACAO	EP,
+							ZGSEG_USUARIO_ORGANIZACAO	UO
+					LEFT OUTER JOIN ZGFMT_CONTRATO_FORMANDO	C	ON (
+						UO.COD_ORGANIZACAO	= C.COD_ORGANIZACAO AND
+						UO.COD_USUARIO		= C.COD_FORMANDO
+					)
+					LEFT OUTER JOIN ZGFMT_DESISTENCIA	D	ON (
+						UO.COD_ORGANIZACAO	= D.COD_ORGANIZACAO AND
+						UO.COD_USUARIO		= D.COD_FORMANDO
+					)
+					WHERE	U.CODIGO					= UO.COD_USUARIO
+					AND		O.CODIGO					= UO.COD_ORGANIZACAO
+					AND		P.CODIGO					= UO.COD_PERFIL
+					AND		OF.COD_ORGANIZACAO			= O.CODIGO
+					AND		O.CODIGO					= E.COD_FORMATURA
+					AND		O.CODIGO					= EP.COD_ORGANIZACAO
+					AND		E.CODIGO					= EP.COD_EVENTO
+					AND		U.CODIGO					= EP.COD_FORMANDO
+					AND		P.COD_TIPO_USUARIO			= :codTipoFormando
+					AND		O.CODIGO					= :codOrg
+					AND		UO.COD_STATUS				NOT IN (:codStatusDesistente)
+					AND		(
+							-- CASO 5
+							(
+							C.COD_STATUS		= :codStatusContratoAtivo 	AND
+							C.COD_TIPO_CONTRATO	= :codTipoContratoParcial
+							) OR
+							-- CASO 6
+							(
+							C.COD_STATUS		= :codStatusContratoParcial AND
+							C.COD_TIPO_CONTRATO	= :codTipoContratoParcial
+							) OR
+							-- CASO 7
+							(
+							C.CODIGO				IS NULL 				AND
+							D.COD_TIPO_DESISTENCIA	= :codTipoDesistenciaParcial
+							)
+					)
+					GROUP	BY U.CODIGO,U.CPF,U.NOME,IFNULL(D.VALOR_MULTA,0)
+				) T
+				ORDER	BY 1
+			", $rsm);
+			
+			$query->setParameter('codOrg'						, $codFormatura);
+			$query->setParameter('codTipoFormando'				, $codTipoFormando);
+			$query->setParameter('codStatusDesistente'			, $codStatusDesistente);
+			$query->setParameter('codTipoContratoTotal'			, $codTipoContratoTotal);
+			$query->setParameter('codTipoContratoParcial'		, $codTipoContratoParcial);
+			$query->setParameter('codStatusContratoAtivo'		, $codStatusContratoAtivo);
+			$query->setParameter('codStatusContratoParcial'		, $codStatusContratoParcial);
+			$query->setParameter('codStatusContratoCancelado'	, $codStatusContratoCancelado);
+			$query->setParameter('codTipoDesistenciaTotal'		, $codTipoDesistenciaTotal);
+			$query->setParameter('codTipoDesistenciaParcial'	, $codTipoDesistenciaParcial);
+				
+			$info		= $query->getResult();
+			return ($info);
+		
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+
+	/**
+	 * Calcular o valor total que deve ser provisionado de um único formando
+	 * @param int $codFormatura
+	 */
+	public static function calculaTotalAProvisionarUnicoFormando($codFormatura,$codFormando) {
+	
 		#################################################################################
 		## Variáveis globais
 		#################################################################################
 		global $em,$system,$log;
 	
 		#################################################################################
-		## Array de status que não serão calculados
+		## Variáveis
 		#################################################################################
-		$aStatusCanc	= array ("S","C");
+		$codTipoFormando			= "F";
+		$codStatusDesistente		= array("T");
+		$codTipoContratoTotal		= "T";
+		$codTipoContratoParcial		= "P";
+		$codStatusContratoAtivo		= "A";
+		$codStatusContratoParcial	= "P";
+		$codStatusContratoCancelado	= "C";
+		$codTipoDesistenciaTotal	= "T";
+		$codTipoDesistenciaParcial	= "P";
+	
 	
 		#################################################################################
-		## Array com as categorias que serão usados no calculo
+		## Somar os valores dividos por categora
 		#################################################################################
-		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
-		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
-		$codCatDevMensalidade		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_MENSALIDADE");
-		$codCatDevSistema			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_SISTEMA");
-		$aCat						= array($codCatMensalidade,$codCatSistema,$codCatDevMensalidade,$codCatDevSistema);
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			//$rsm->addEntityResult('\Entidades\ZgsegUsuario'		, 'U');
+			$rsm->addScalarResult('total'					, 'total');
+			//$rsm->addScalarResult('valor_pago'				, 'valor_pago');
+	
+			$query 	= $em->createNativeQuery("
+			
+			SELECT	SUM(total) as total
+			FROM	(
+				
+				-- CASOS 1 e 2
+				SELECT  SUM(OF.VALOR_PREVISTO_TOTAL/OF.QTDE_PREVISTA_FORMANDOS) AS total
+				FROM	ZGSEG_USUARIO 				U,
+						ZGADM_ORGANIZACAO			O,
+						ZGSEG_PERFIL				P,
+						ZGFMT_ORGANIZACAO_FORMATURA	OF,
+						ZGSEG_USUARIO_ORGANIZACAO	UO
+				LEFT OUTER JOIN ZGFMT_CONTRATO_FORMANDO	C	ON (
+					UO.COD_ORGANIZACAO	= C.COD_ORGANIZACAO AND
+					UO.COD_USUARIO		= C.COD_FORMANDO
+				)
+				LEFT OUTER JOIN ZGFMT_DESISTENCIA	D	ON (
+					UO.COD_ORGANIZACAO	= D.COD_ORGANIZACAO AND
+					UO.COD_USUARIO		= D.COD_FORMANDO
+				)
+				WHERE	U.CODIGO					= UO.COD_USUARIO
+				AND		O.CODIGO					= UO.COD_ORGANIZACAO
+				AND		P.CODIGO					= UO.COD_PERFIL
+				AND		OF.COD_ORGANIZACAO			= O.CODIGO
+				AND		P.COD_TIPO_USUARIO			= :codTipoFormando
+				AND		O.CODIGO					= :codOrg
+				AND		U.CODIGO					= :codFormando
+				AND		UO.COD_STATUS				NOT IN (:codStatusDesistente)
+				AND		(
+						C.CODIGO			IS NULL
+					OR	(
+						C.COD_STATUS		= :codStatusContratoAtivo AND
+						C.COD_TIPO_CONTRATO	= :codTipoContratoTotal
+						)
+				)
+				AND		D.CODIGO				IS NULL
+
+				UNION ALL
+			
+				-- CASOS 3 e 4
+				SELECT  SUM(IFNULL(D.VALOR_MULTA,0)) AS total
+				FROM	ZGSEG_USUARIO 				U,
+						ZGADM_ORGANIZACAO			O,
+						ZGSEG_PERFIL				P,
+						ZGFMT_DESISTENCIA			D,
+						ZGSEG_USUARIO_ORGANIZACAO	UO
+				LEFT OUTER JOIN ZGFMT_CONTRATO_FORMANDO	C	ON (
+					UO.COD_ORGANIZACAO	= C.COD_ORGANIZACAO AND
+					UO.COD_USUARIO		= C.COD_FORMANDO
+				)
+				WHERE	U.CODIGO					= UO.COD_USUARIO
+				AND		O.CODIGO					= UO.COD_ORGANIZACAO
+				AND		P.CODIGO					= UO.COD_PERFIL
+				AND		D.COD_ORGANIZACAO			= UO.COD_ORGANIZACAO
+				AND		D.COD_FORMANDO				= UO.COD_USUARIO
+				AND		P.COD_TIPO_USUARIO			= :codTipoFormando
+				AND		O.CODIGO					= :codOrg
+				AND		U.CODIGO					= :codFormando
+				AND		UO.COD_STATUS				IN (:codStatusDesistente)
+				AND		(
+						C.CODIGO			IS NULL
+						OR
+						C.COD_STATUS		= :codStatusContratoCancelado
+				)
+			
+				AND		D.COD_TIPO_DESISTENCIA	= :codTipoDesistenciaTotal
+			
+				UNION ALL
+			
+				-- CASOS 5, 6 e 7
+				SELECT 	total + VALOR_MULTA as total
+				FROM	(
+					SELECT  U.CODIGO,U.CPF,U.NOME,IFNULL(D.VALOR_MULTA,0) VALOR_MULTA,SUM(IF((E.COD_TIPO_PRECO = 'V'),E.VALOR_AVULSO,(OF.VALOR_PREVISTO_TOTAL/OF.QTDE_PREVISTA_FORMANDOS)*E.PCT_VALOR_ORCAMENTO/100)) AS total
+					FROM	ZGSEG_USUARIO 				U,
+							ZGADM_ORGANIZACAO			O,
+							ZGSEG_PERFIL				P,
+							ZGFMT_ORGANIZACAO_FORMATURA	OF,
+							ZGFMT_EVENTO				E,
+							ZGFMT_EVENTO_PARTICIPACAO	EP,
+							ZGSEG_USUARIO_ORGANIZACAO	UO
+					LEFT OUTER JOIN ZGFMT_CONTRATO_FORMANDO	C	ON (
+						UO.COD_ORGANIZACAO	= C.COD_ORGANIZACAO AND
+						UO.COD_USUARIO		= C.COD_FORMANDO
+					)
+					LEFT OUTER JOIN ZGFMT_DESISTENCIA	D	ON (
+						UO.COD_ORGANIZACAO	= D.COD_ORGANIZACAO AND
+						UO.COD_USUARIO		= D.COD_FORMANDO
+					)
+					WHERE	U.CODIGO					= UO.COD_USUARIO
+					AND		O.CODIGO					= UO.COD_ORGANIZACAO
+					AND		P.CODIGO					= UO.COD_PERFIL
+					AND		OF.COD_ORGANIZACAO			= O.CODIGO
+					AND		O.CODIGO					= E.COD_FORMATURA
+					AND		O.CODIGO					= EP.COD_ORGANIZACAO
+					AND		E.CODIGO					= EP.COD_EVENTO
+					AND		U.CODIGO					= EP.COD_FORMANDO
+					AND		U.CODIGO					= :codFormando
+					AND		P.COD_TIPO_USUARIO			= :codTipoFormando
+					AND		O.CODIGO					= :codOrg
+					AND		UO.COD_STATUS				NOT IN (:codStatusDesistente)
+					AND		(
+							-- CASO 5
+							(
+							C.COD_STATUS		= :codStatusContratoAtivo 	AND
+							C.COD_TIPO_CONTRATO	= :codTipoContratoParcial
+							) OR
+							-- CASO 6
+							(
+							C.COD_STATUS		= :codStatusContratoParcial AND
+							C.COD_TIPO_CONTRATO	= :codTipoContratoParcial
+							) OR
+							-- CASO 7
+							(
+							C.CODIGO				IS NULL 				AND
+							D.COD_TIPO_DESISTENCIA	= :codTipoDesistenciaParcial
+							)
+					)
+					GROUP	BY IFNULL(D.VALOR_MULTA,0)
+				) T
+			) F
+			", $rsm);
+				
+			$query->setParameter('codOrg'						, $codFormatura);
+			$query->setParameter('codTipoFormando'				, $codTipoFormando);
+			$query->setParameter('codStatusDesistente'			, $codStatusDesistente);
+			$query->setParameter('codTipoContratoTotal'			, $codTipoContratoTotal);
+			$query->setParameter('codTipoContratoParcial'		, $codTipoContratoParcial);
+			$query->setParameter('codStatusContratoAtivo'		, $codStatusContratoAtivo);
+			$query->setParameter('codStatusContratoParcial'		, $codStatusContratoParcial);
+			$query->setParameter('codStatusContratoCancelado'	, $codStatusContratoCancelado);
+			$query->setParameter('codTipoDesistenciaTotal'		, $codTipoDesistenciaTotal);
+			$query->setParameter('codTipoDesistenciaParcial'	, $codTipoDesistenciaParcial);
+			$query->setParameter('codFormando'					, $codFormando);
+	
+			$valor		= round(\Zage\App\Util::to_float($query->getSingleScalarResult()),2);
+			return ($valor);
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
 	}
-	
 }
 

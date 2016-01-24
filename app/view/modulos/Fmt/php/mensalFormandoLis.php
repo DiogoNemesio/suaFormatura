@@ -75,16 +75,26 @@ if ($orcamento){
 #################################################################################
 ## Calcular o valor já provisionado por formando
 #################################################################################
-$oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
+$oValorAProvionar			= \Zage\Fmt\Financeiro::calculaTotalAProvisionarPorFormando($system->getCodOrganizacao());
+$oValorProvisionado			= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
+
+
+#################################################################################
+## Montar o array para facilitar a impressão no grid dos valores a provisionar
+#################################################################################
+$aValorAProvisionar			= array();
+for ($i = 0; $i < sizeof($oValorAProvionar); $i++) {
+	$aValorAProvisionar[$oValorAProvionar[$i][0]->getCodigo()]		= \Zage\App\Util::to_float(round(\Zage\App\Util::to_float($oValorAProvionar[$i]["total"]),2));
+}
 
 #################################################################################
 ## Montar o array para facilitar a impressão no grid dos valores provisionados
 #################################################################################
 $aValorProv				= array();
 $aCodigos				= array();
-for ($i = 0; $i < sizeof($oValorProv); $i++) {
-	$total													= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
-	$aValorProv[$oValorProv[$i][0]->getCgc()]				= $total;
+for ($i = 0; $i < sizeof($oValorProvisionado); $i++) {
+	$total													= \Zage\App\Util::to_float($oValorProvisionado[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProvisionado[$i]["sistema"]);
+	$aValorProv[$oValorProvisionado[$i][0]->getCgc()]		= $total;
 }
 
 #################################################################################
@@ -208,7 +218,8 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	## Saldo a provisionar
 	#################################################################################
 	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
-	$saldo						= round($totalPorFormando - $valProvisionado,2);
+	$totalAProvisionar			= (isset($aValorAProvisionar[$formandos[$i]->getCodigo()])) ? $aValorAProvisionar[$formandos[$i]->getCodigo()] : 0;
+	$saldo						= round($totalAProvisionar - $valProvisionado,2);
 	$grid->setValorCelula($i,3,$valProvisionado);
 
 	#################################################################################
@@ -289,6 +300,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	## Definir a ação do botão de desistência
 	#################################################################################
 	if ($podeDesistir	== true) {
+		
 		#################################################################################
 		## Definir o link do botão de geração de conta
 		#################################################################################

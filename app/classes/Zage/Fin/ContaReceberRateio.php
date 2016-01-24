@@ -159,8 +159,6 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 		#################################################################################
 		$n		= sizeof($this->_valoresRateio);
 		
-		$log->debug("Array de valores rateio: ".serialize($this->_valoresRateio));
-		
 		#################################################################################
 		## Validações dos valores 
 		#################################################################################
@@ -257,7 +255,7 @@ class ContaReceberRateio extends \Entidades\ZgfinContaReceberRateio {
 			$rateio->setPctValor(\Zage\App\Util::toMysqlNumber($percs[$i]));
 			
 			
-			$log->info("Rateio [".$i."]-> ValorTotal: ".$valorTotal. " ,_getValorTotal(): ".$this->_getValorTotal());
+			//$log->info("Rateio [".$i."]-> ValorTotal: ".$valorTotal. " ,_getValorTotal(): ".$this->_getValorTotal());
 			
 			if ($i == ($n -1)) {
 				if ($valorTotal !== $this->_getValorTotal()) {

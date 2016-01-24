@@ -179,10 +179,15 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$aDataAtivacao[$i]	= $dataAtivacao; 
 	
 	#################################################################################
+	## Calcular o total que deve ser provisionado para o formando
+	#################################################################################
+	$totalAProvisionar			= \Zage\App\Util::to_float(\Zage\Fmt\Financeiro::calculaTotalAProvisionarUnicoFormando($system->getCodOrganizacao(), $formandos[$i]->getCodigo()));
+	
+	#################################################################################
 	## Saldo a gerar
 	#################################################################################
 	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()]["TOTAL"])) ? $aValorProv[$formandos[$i]->getCpf()]["TOTAL"] : 0;
-	$saldo						= round($totalPorFormando - $valProvisionado,2);
+	$saldo						= round($totalAProvisionar - $valProvisionado,2);
 	$aSaldo[$i]					= $saldo;
 }
 

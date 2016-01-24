@@ -150,19 +150,29 @@ $aEventos		= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codForma
 if ($numFormandosSel == 1) {
 	$oContrato 		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $codOrganizacao , 'codFormando' => $codUsuario));
 	$totalParcelas	= 0;
-	$codStatus		= $oContrato->getCodStatus()->getCodigo();
-	if ($codStatus 		== "A") {
-		$iconStatus		= "fa fa-check-circle green";
-	}elseif ($codStatus	== "C") {
-		$iconStatus		= "fa fa-ban red";
-	}else{
-		$iconStatus		= "fa fa-star-half-o orange";
-	}
 	
-	$titulo			= "Contrato <span class='pull-right'>Status: <i class='".$iconStatus."'></i>&nbsp;".$oContrato->getCodStatus()->getDescricao()."</span>";
+	#################################################################################
+	## Resgatar o status do usuário na organização
+	#################################################################################
+	$codStatusUsuario	= \Zage\Seg\Usuario::getStatusOrganizacao($codUsuario,$codOrganizacao);
+	
 	
 	if ($oContrato){
-		if (($podeAlterar == true) && ($codStatus == "A"))	{
+		
+		$codStatus		= $oContrato->getCodStatus()->getCodigo();
+		if ($codStatusUsuario == "T") {
+			$iconStatus		= "fa fa-ban red";
+		}elseif ($codStatus 		== "A") {
+			$iconStatus		= "fa fa-check-circle green";
+		}elseif ($codStatus	== "C") {
+			$iconStatus		= "fa fa-ban red";
+		}else{
+			$iconStatus		= "fa fa-star-half-o orange";
+		}
+		
+		$titulo			= "Contrato <span class='pull-right'>Status: <i class='".$iconStatus."'></i>&nbsp;".$oContrato->getCodStatus()->getDescricao()."</span>";
+		
+		if (($podeAlterar == true) && ($codStatus == "A") && $codStatusUsuario != "T")	{
 			$readonly		= "";
 			$roData			= "datepicker";
 			$hidSubmit		= "";
@@ -235,13 +245,24 @@ if ($numFormandosSel == 1) {
 			$tabHid			= "hidden";
 		}
 	}else{
+		if ($codStatusUsuario	== "T") {
+			$readonly			= "readonly";
+			$roData				= "";
+			$hidSubmit			= "hidden";
+			$titulo				= "Contrato <span class='pull-right'>Status: NÃO PODE GERAR (DESISTENTE)</span>";
+		}else{
+			$readonly			= "";
+			$roData				= "datepicker";
+			$hidSubmit			= "";
+			$titulo				= "Contrato <span class='pull-right'>Status: NOVO</span>";
+		}
 		$numMeses			= null;
 		$codFormaPag		= "BOL";
 		$tabParcelas		= null;
 		$tabHid				= "hidden";
 		$codTipoContrato	= "T";
 		$valPorFormando		= $valOrcPorFormando;
-		$titulo				= "Contrato <span class='pull-right'>Status: NOVO</span>";
+		
 	}
 }else{
 	$numMeses			= null;
