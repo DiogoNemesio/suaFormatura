@@ -99,7 +99,7 @@ $logoUrl		= ($temLogo) ? ROOT_URL . "/Adm/mostraLogoOrganizacao.php?codOrganizac
 #################################################################################
 $nome			= $oOrg->getNome();
 $numMeses		= (int) $orcamento->getNumMeses();
-$numMesesSug	= ($numMeses > 0) ? ($numMeses - 1) : 0;
+$numMesesSug	= ($numMeses > 0) ? ($numMeses) : 0;
 $dataConclusao	= ($oOrgFmt->getDataConclusao() != null) ? $oOrgFmt->getDataConclusao()->format($system->config["data"]["dateFormat"]) : null;
 
 #################################################################################

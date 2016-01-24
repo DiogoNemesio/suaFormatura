@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtContratoFormando
  *
- * @ORM\Table(name="ZGFMT_CONTRATO_FORMANDO", indexes={@ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_2_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_3_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_4_idx", columns={"COD_TIPO_CONTRATO"})})
+ * @ORM\Table(name="ZGFMT_CONTRATO_FORMANDO", indexes={@ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_2_idx", columns={"COD_FORMANDO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_3_idx", columns={"COD_FORMA_PAGAMENTO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_4_idx", columns={"COD_TIPO_CONTRATO"}), @ORM\Index(name="fk_ZGFMT_CONTRATO_FORMANDO_5_idx", columns={"COD_STATUS"})})
  * @ORM\Entity
  */
 class ZgfmtContratoFormando
@@ -67,6 +67,16 @@ class ZgfmtContratoFormando
      * })
      */
     private $codTipoContrato;
+
+    /**
+     * @var \Entidades\ZgfmtContratoStatusTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfmtContratoStatusTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_STATUS", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codStatus;
 
 
     /**
@@ -192,5 +202,28 @@ class ZgfmtContratoFormando
     public function getCodTipoContrato()
     {
         return $this->codTipoContrato;
+    }
+
+    /**
+     * Set codStatus
+     *
+     * @param \Entidades\ZgfmtContratoStatusTipo $codStatus
+     * @return ZgfmtContratoFormando
+     */
+    public function setCodStatus(\Entidades\ZgfmtContratoStatusTipo $codStatus = null)
+    {
+        $this->codStatus = $codStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get codStatus
+     *
+     * @return \Entidades\ZgfmtContratoStatusTipo 
+     */
+    public function getCodStatus()
+    {
+        return $this->codStatus;
     }
 }

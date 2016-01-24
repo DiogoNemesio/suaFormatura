@@ -156,10 +156,12 @@ for ($i = 0; $i < sizeof($itens); $i++) {
 		
 		$aItens[$codTipo]["ITENS"][$codigo]["VALOR"] 		= ($orcSalvo == 0) ? $valorPadrao : null;
 		$aItens[$codTipo]["ITENS"][$codigo]["DESCRITIVO"] 	= $itens[$i]->getTextoDescritivo();
-		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($itens[$i]->getIndPadrao() && $valorPadrao) ? ($aItens[$codTipo]["ITENS"][$codigo]["QTDE"] * $valorPadrao) : 0;
+		$aItens[$codTipo]["ITENS"][$codigo]["TOTAL"] 		= ($itens[$i]->getIndPadrao() && $valorPadrao && $orcSalvo == 0) ? ($aItens[$codTipo]["ITENS"][$codigo]["QTDE"] * $valorPadrao) : 0;
 		$aItens[$codTipo]["ITENS"][$codigo]["COD_CORT"]		= null;
 		$aItens[$codTipo]["ITENS"][$codigo]["SALVO"]		= 0;
 		//$aItens[$codTipo]["ITENS"][$codigo]["PADRAO"] 		= $itens[$i]->getIndPadrao();
+		
+		
 	}
 }
 

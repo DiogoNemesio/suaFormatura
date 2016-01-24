@@ -141,6 +141,7 @@ if (!$codPessoa)	{
 ## Verificar se os eventos existem
 #################################################################################
 for ($i = 0; $i < sizeof($aSelEventos); $i++) {
+
 	#################################################################################
 	## Resgata os objetos (chave estrangeiras)
 	#################################################################################
@@ -155,7 +156,7 @@ for ($i = 0; $i < sizeof($aSelEventos); $i++) {
 	#################################################################################
 	## Atualizar o valor do evento 
 	#################################################################################
-	$aValorEventos[$i]		= \Zage\Fmt\Evento::getValor($oEvento->getCodifo());
+	$aValorEventos[$i]		= \Zage\Fmt\Evento::getValor($oEvento->getCodigo());
 }
 
 #################################################################################
@@ -247,7 +248,23 @@ $numMesesConc		= (($interval3->format('%y') * 12) + $interval3->format('%m'));
 $valDevidoSistema	= round($numMesesUso * $taxaUso,2);
 $valTotalSistema	= round($numMesesTotal * $taxaUso,2);
 
+#################################################################################
+## Calcular o tipo de desistência
+#################################################################################
+$codTipoDesistencia	= (sizeof($aSelEventos) > 0) ? "P" : "T";
 
+#################################################################################
+## Verificar se já existe desistência, e se a desistência 
+#################################################################################
+$desistencia		= $em->getRepository('Entidades\ZgfmtDesistencia')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codFormando' => $codFormando));
+if (!$desistencia)	{
+	$desistencia		= new \Entidades\ZgfmtDesistencia();
+}else{
+	if ($codTipoDesistencia	== "P") {
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("A Desistência para esse formando deve ser total, pois ele já é um desistente parcial !!!"));
+		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("A Desistência para esse formando deve ser total, pois ele já é um desistente parcial !!!"))));
+	}
+}
 
 #################################################################################
 ## Ajustar o campo de porcentagem
@@ -1545,15 +1562,6 @@ echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Somente verific
 exit;*/
 
 
-#################################################################################
-## Gerar a desistência
-#################################################################################
-$desistencia		= new \Entidades\ZgfmtDesistencia();
-
-#################################################################################
-## Calcular o tipo de desistência
-#################################################################################
-$codTipoDesistencia	= (sizeof($aSelEventos) > 0) ? "P" : "T";
 
 #################################################################################
 ## Resgata os objetos (chave estrangeiras)
@@ -1601,27 +1609,37 @@ for ($i = 0; $i < sizeof($aSelEventos); $i++) {
 #################################################################################
 ## Alterar a associação do usuário na organização
 #################################################################################
-$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codFormando,'codOrganizacao' => $system->getCodOrganizacao()));
-$oUsuOrg->setCodStatus($oStAs);
-$em->persist($oUsuOrg);
+if ($codTipoDesistencia == "T") {
+	$oUsuOrg	= $em->getRepository('Entidades\ZgsegUsuarioOrganizacao')->findOneBy(array('codUsuario' => $codFormando,'codOrganizacao' => $system->getCodOrganizacao()));
+	$oUsuOrg->setCodStatus($oStAs);
+	$em->persist($oUsuOrg);
+}
 
 #################################################################################
-## Alterar o contrato dele para parcial caso a desistência tenha sido parcial
+## Alterar o contrato 
 #################################################################################
 if ($codTipoDesistencia	== "P") {
-
-	#################################################################################
-	## Verifica se o formando tem contrato
-	#################################################################################
-	$oContrato		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codFormando' => $codFormando));
-	if ($oContrato)	{
-		$oTipoContrato	= $em->getRepository('Entidades\ZgfmtContratoFormandoTipo')->findOneBy(array('codigo' => "P"));
-		if ($oContrato->getCodTipoContrato()->getCodigo() != "P") {
-			$oContrato->setCodTipoContrato($oTipoContrato);
-			$em->persist($oContrato);
-		}
-	}
+	$codStatusContrato		= "P";
+}else{
+	$codStatusContrato		= "C";
 }
+
+#################################################################################
+## Verifica se o formando tem contrato
+#################################################################################
+$oContrato		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codFormando' => $codFormando));
+if ($oContrato)	{
+	$oTipoContrato		= $em->getRepository('Entidades\ZgfmtContratoFormandoTipo')->findOneBy(array('codigo' => "P"));
+	$oStatusContrato	= $em->getRepository('Entidades\ZgfmtContratoStatusTipo')->findOneBy(array('codigo' => $codStatusContrato));
+	
+	if (($codTipoDesistencia	== "P") && ($oContrato->getCodTipoContrato()->getCodigo() != "P")) {
+		$oContrato->setCodTipoContrato($oTipoContrato);
+	}
+
+	$oContrato->setCodStatus($oStatusContrato);
+	$em->persist($oContrato);
+}
+
 
 
 #################################################################################

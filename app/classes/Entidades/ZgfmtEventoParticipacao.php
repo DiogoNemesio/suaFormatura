@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtEventoParticipacao
  *
- * @ORM\Table(name="ZGFMT_EVENTO_PARTICIPACAO", indexes={@ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_2_idx", columns={"COD_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_3_idx", columns={"COD_FORMANDO"})})
+ * @ORM\Table(name="ZGFMT_EVENTO_PARTICIPACAO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_EVENTO_PARTICIPACAO_uk01", columns={"COD_ORGANIZACAO", "COD_EVENTO", "COD_FORMANDO"})}, indexes={@ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_2_idx", columns={"COD_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_3_idx", columns={"COD_FORMANDO"})})
  * @ORM\Entity
  */
 class ZgfmtEventoParticipacao
@@ -20,13 +20,6 @@ class ZgfmtEventoParticipacao
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $codigo;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="VALOR", type="float", precision=10, scale=0, nullable=false)
-     */
-    private $valor;
 
     /**
      * @var \DateTime
@@ -74,29 +67,6 @@ class ZgfmtEventoParticipacao
     public function getCodigo()
     {
         return $this->codigo;
-    }
-
-    /**
-     * Set valor
-     *
-     * @param float $valor
-     * @return ZgfmtEventoParticipacao
-     */
-    public function setValor($valor)
-    {
-        $this->valor = $valor;
-
-        return $this;
-    }
-
-    /**
-     * Get valor
-     *
-     * @return float 
-     */
-    public function getValor()
-    {
-        return $this->valor;
     }
 
     /**

@@ -284,21 +284,29 @@ class Financeiro {
 		#################################################################################
 		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
 		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
-		$aCat						= array($codCatMensalidade,$codCatSistema);
-
+		$codCatDevMensalidade		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_MENSALIDADE");
+		$codCatDevSistema			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_SISTEMA");
+		$aCat						= array($codCatMensalidade,$codCatSistema,$codCatDevMensalidade,$codCatDevSistema);
+		
 		#################################################################################
 		## Somar os valores dividos por categora
 		#################################################################################
 		try {
 			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
-			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'P');
-			$rsm->addFieldResult('P', 'CGC', 'cgc');
-			$rsm->addFieldResult('P', 'CODIGO', 'codigo');
+			$rsm->addEntityResult('\Entidades\ZgfinPessoa'		, 'T');
+			$rsm->addFieldResult('T', 'CGC', 'cgc');
+			$rsm->addFieldResult('T', 'CODIGO', 'codigo');
 			$rsm->addScalarResult('mensalidade'					, 'mensalidade');
 			$rsm->addScalarResult('sistema'						, 'sistema');
 				
 			$query 	= $em->createNativeQuery("
-					SELECT	P.CGC,P.CODIGO,SUM(IF((CRR.COD_CATEGORIA = :catMensalidade),CRR.VALOR,0)) as mensalidade, SUM(IF((CRR.COD_CATEGORIA = :catSistema),CRR.VALOR,0)) as sistema
+				SELECT 	T.CGC,T.CODIGO,SUM(IFNULL(mensalidade,0) - IFNULL(devMensalidade,0)) as mensalidade,sum(IFNULL(sistema,0) - IFNULL(devSistema,0)) as sistema
+				FROM	(
+					SELECT	P.CGC,P.CODIGO,
+							SUM(IF((CRR.COD_CATEGORIA = :catMensalidade),CRR.VALOR,0)) as mensalidade,
+							SUM(IF((CRR.COD_CATEGORIA = :catSistema),CRR.VALOR,0)) as sistema, 
+							SUM(IF((CRR.COD_CATEGORIA = :catDevMensalidade),CRR.VALOR,0)) as devMensalidade,
+							SUM(IF((CRR.COD_CATEGORIA = :catDevSistema),CRR.VALOR,0)) as devSistema
 					FROM 	ZGFIN_CONTA_RECEBER 		CR,
 							ZGFIN_PESSOA				P,
 							ZGFIN_CONTA_RECEBER_RATEIO	CRR
@@ -308,11 +316,15 @@ class Financeiro {
 					AND		CR.COD_STATUS			NOT IN (:status)
 					AND		CRR.COD_CATEGORIA		IN (:categoria)
 					GROUP	BY P.CGC,P.CODIGO
+				) T
+			GROUP	BY T.CGC,T.CODIGO
 				", $rsm);
 			$query->setParameter('codOrganizacao'	,$codFormatura);
 			$query->setParameter('status'			,$aStatusCanc);
 			$query->setParameter('catMensalidade'	,$codCatMensalidade);
 			$query->setParameter('catSistema'		,$codCatSistema);
+			$query->setParameter('catDevMensalidade',$codCatDevMensalidade);
+			$query->setParameter('catDevSistema'	,$codCatDevSistema);
 			$query->setParameter('categoria'		,$aCat);
 				
 			$info		= $query->getResult();
@@ -321,37 +333,6 @@ class Financeiro {
 		} catch (\Exception $e) {
 			\Zage\App\Erro::halt($e->getMessage());
 		}
-		
-				
-			#################################################################################
-			## SubQuery para filtrar apenas as contas que estão nas categorias configuradas acima
-			#################################################################################
-			/*$qbEx->select('crr')
-			->from('\Entidades\ZgfinContaReceberRateio','crr')
-			->where($qbEx->expr()->andx(
-			$qbEx->expr()->eq('crr.codContaRec'		, 'cr.codigo'),
-			$qbEx->expr()->in('crr.codCategoria'	, ':categoria')
-			));
-				
-			$qb->select('p','SUM(cr.valor + cr.valorOutros - cr.valorDesconto) as total')
-			->from('\Entidades\ZgfinContaReceber','cr')
-			->leftJoin('\Entidades\ZgfinPessoa'	,'p',	\Doctrine\ORM\Query\Expr\Join::WITH, 'cr.codPessoa 	= p.codigo')
-			->where($qb->expr()->andx(
-			$qb->expr()->eq('cr.codOrganizacao'		, ':codOrganizacao'),
-			$qb->expr()->notIn('cr.codStatus'		, ':status'),
-			$qb->expr()->exists($qbEx->getDql())
-			))
-			->groupBy("p.cgc")
-				
-			->setParameter('codOrganizacao'	,$codFormatura)
-			->setParameter('status'			,$aStatusCanc)
-			->setParameter('categoria'		,$aCat);
-				
-
-			$query 		= $qb->getQuery();
-			$info		= $query->getResult();
-
-			return ($info);*/
 	}
 	
 	/**
@@ -375,7 +356,9 @@ class Financeiro {
 		#################################################################################
 		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
 		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
-		$aCat						= array($codCatMensalidade,$codCatSistema);
+		$codCatDevMensalidade		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_MENSALIDADE");
+		$codCatDevSistema			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_SISTEMA");
+		$aCat						= array($codCatMensalidade,$codCatSistema,$codCatDevMensalidade,$codCatDevSistema);
 		
 		#################################################################################
 		## Somar os valores dividos por categora
@@ -386,7 +369,12 @@ class Financeiro {
 			$rsm->addScalarResult('sistema'						, 'sistema');
 				
 			$query 	= $em->createNativeQuery("
-					SELECT	SUM(IF((CRR.COD_CATEGORIA = :catMensalidade),CRR.VALOR,0)) as mensalidade, SUM(IF((CRR.COD_CATEGORIA = :catSistema),CRR.VALOR,0)) as sistema
+				SELECT 	SUM(IFNULL(mensalidade,0) - IFNULL(devMensalidade,0)) as mensalidade,sum(IFNULL(sistema,0) - IFNULL(devSistema,0)) as sistema
+				FROM	(
+					SELECT	SUM(IF((CRR.COD_CATEGORIA = :catMensalidade),CRR.VALOR,0)) as mensalidade,
+							SUM(IF((CRR.COD_CATEGORIA = :catSistema),CRR.VALOR,0)) as sistema, 
+							SUM(IF((CRR.COD_CATEGORIA = :catDevMensalidade),CRR.VALOR,0)) as devMensalidade,
+							SUM(IF((CRR.COD_CATEGORIA = :catDevSistema),CRR.VALOR,0)) as devSistema
 					FROM 	ZGFIN_CONTA_RECEBER 		CR,
 							ZGFIN_PESSOA				P,
 							ZGFIN_CONTA_RECEBER_RATEIO	CRR
@@ -396,11 +384,14 @@ class Financeiro {
 					AND		CR.COD_STATUS			NOT IN (:status)
 					AND		CRR.COD_CATEGORIA		IN (:categoria)
 					AND		P.CGC					= :cpf
-				", $rsm);
+				) T
+			", $rsm);
 			$query->setParameter('codOrganizacao'	,$codFormatura);
 			$query->setParameter('status'			,$aStatusCanc);
 			$query->setParameter('catMensalidade'	,$codCatMensalidade);
 			$query->setParameter('catSistema'		,$codCatSistema);
+			$query->setParameter('catDevMensalidade',$codCatDevMensalidade);
+			$query->setParameter('catDevSistema'	,$codCatDevSistema);
 			$query->setParameter('categoria'		,$aCat);
 			$query->setParameter('cpf'				,$cpf);
 				
@@ -1570,6 +1561,44 @@ class Financeiro {
 		}
 	}
 	
+
+	/**
+	 * Calcular o valor total que deve ser provisionado por formando
+	 * @param int $codFormatura
+	 */
+	public static function calculaTotalAProvisionarPorFormando($codFormatura) {
+		
+		#################################################################################
+		## Essa rotina deve calcular o valor total que cada formando deve pagar, as  
+		## seguintes situações devem ser observadas:
+		## 1 - Formando sem contrato: O Valor será o valor do Orçamento
+		## 2 - Formando com contrato Ativo com Participação total: O Valor será o valor do Orçamento
+		## 3 - Formando com contrato Ativo com Participação Parcial: O Valor será a soma dos eventos que irá participar
+		## 4 - Formando com contrato cancelado: Valor será 0
+		## 5 - Formando com contrato parcialmente cancelado com Participação total: O Valor do Orçamento + multa de desistência  
+		## 6 - Formando com contrato parcialmente cancelado com Participação parcial: O Valor será a soma dos eventos que irá participar + multa de desistência
+		#################################################################################
+		
+		
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		#################################################################################
+		## Array de status que não serão calculados
+		#################################################################################
+		$aStatusCanc	= array ("S","C");
+	
+		#################################################################################
+		## Array com as categorias que serão usados no calculo
+		#################################################################################
+		$codCatMensalidade			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_MENSALIDADE");
+		$codCatSistema				= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_USO_SISTEMA");
+		$codCatDevMensalidade		= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_MENSALIDADE");
+		$codCatDevSistema			= \Zage\Adm\Parametro::getValorSistema("APP_COD_CAT_DEVOLUCAO_SISTEMA");
+		$aCat						= array($codCatMensalidade,$codCatSistema,$codCatDevMensalidade,$codCatDevSistema);
+	}
 	
 }
 

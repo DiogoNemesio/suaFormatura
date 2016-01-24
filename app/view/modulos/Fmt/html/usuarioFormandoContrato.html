@@ -2,6 +2,9 @@
 <input type="hidden" id="valPorFormandoID" value="%VAL_POR_FORMANDO%">
 <input type="hidden" id="dataMaxID" value="%DATA_CONCLUSAO%">
 <input type="hidden" id="maxParcelasID" value="%MAX_PARCELAS%">
+<input type="hidden" id="valOrcPorFormandoID" value="%VAL_ORC_POR_FORMANDO%">
+<input type="hidden" name="aSelFormandos" value="%A_SEL_FORMANDOS%">
+<input type="hidden" name="aSelEventos" id="aSelEventosID">
 <input type="hidden" name="id" value="%ID%">
 <div id="content">
 	<div class="modal-header">
@@ -67,14 +70,12 @@
 												<span class="editable">%NOME%</span>
 											</div>
 										</div>
-			
 										<div class="profile-info-row">
 											<div class="profile-info-name"> Total: </div>
 											<div class="profile-info-value">
-												<span class="editable">%VAL_POR_FORMANDO_FMT%</span>
+												<span class="editable" id="spTotalPorFormandoID"></span>
 											</div>
 										</div>
-									
 										<div class="profile-info-row">
 											<div class="profile-info-name"> Máximo de: </div>
 											<div class="profile-info-value">
@@ -121,10 +122,10 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group col-sm-8" id="divTipoContratoID">
-								<label class="col-sm-2 control-label" for="tipoContratoID">Tipo</label>
+								<label class="col-sm-2 control-label" for="codTipoContratoID">Tipo</label>
 				    			<div class="input-group col-sm-8 pull-left">
 									<span class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Selecione o sexo do formando."></i></span>
-									<select class="select2" style="width:100%;" id="tipoContratoID" onchange="mudaTipoContrato();"name="tipoContrato" data-rel="select2">
+									<select class="select2" style="width:100%;" id="codTipoContratoID" onchange="mudaTipoContratoUsuFmtCnt();" name="codTipoContrato" data-rel="select2">
 										%TIPO_CONTRATO%
 									</select>
 								</div>
@@ -133,7 +134,7 @@
 							    <div class="profile-user-info profile-user-info-striped" id="divInfoID">
 									<div class="profile-info-row">
 										<div class="profile-info-name">Total:</div>
-										<div class="profile-info-value">2312,21</div>
+										<div class="profile-info-value" id="divTotalEventosID"></div>
 									</div>
 								</div>
 							</div>			
@@ -144,7 +145,7 @@
 									</small>
 								</h1>
 
-					    		<div class="box-content col-sm-10 col-sm-offset-1 %HIDDEN%">
+					    		<div class="box-content col-sm-10 col-sm-offset-1">
 									<table id="tableCompraID" class="table table-striped table-bordered table-hover">
 										<thead>
 											<tr style="background-color:#4682B4">
@@ -196,19 +197,63 @@ $('[data-rel="select2"]').each(function( index ) {
 	}
 });
 
-mudaTipoContrato();
-
-function mudaTipoContrato(){
-	var vTipoContrato =		$('#tipoContratoID').val();
+mudaTipoContratoUsuFmtCnt();
+function mudaTipoContratoUsuFmtCnt(){
+	var vTipoContrato = $('#codTipoContratoID').val();
 	
 	if (vTipoContrato == 'T'){
 		$('#divEventoIndividualID').addClass('hidden');
 	}else{
 		$('#divEventoIndividualID').removeClass('hidden');
 	}
-	
+	calculaValorPorFormandoUsuFmtCnt();
 }
 
+function calculaValorPorFormandoUsuFmtCnt() {
+	var vTipoContrato		= $('#codTipoContratoID').val();
+	var $oValPorFormando	= $('#valPorFormandoID');
+	var $valOrcPorFormando	= zgConverteFloat($('#valOrcPorFormandoID').val());
+	var	$valAnterior		= zgConverteFloat($oValPorFormando.val()); 
+
+	var $opt = {
+		symbol : "R$ ",
+		decimal : ",",
+		thousand: ".",
+		precision : 2,
+		format: "%s%v"
+	};
+
+	
+	if (vTipoContrato == 'T') {
+		$oValPorFormando.val($valOrcPorFormando);
+	}else{
+		
+		/** Calcula a soma dos eventos selecionados **/
+		var $aSelEventos			= [];
+		var $totalEventos			= 0;
+		
+		$('input[name="codEventoSel[]"]:checked').each( function() {
+			var $codEvento						= $(this).val();
+			$aSelEventos[$aSelEventos.length]	= $codEvento;
+			$valorEvento						= zgConverteFloat($(this).attr("zg-val-evento"));
+			$totalEventos						+= $valorEvento;
+		});
+		
+		/** Atualiza a variável valTotalEventos **/
+		$oValPorFormando.val($totalEventos);
+	}
+
+	// Atualiza total do contrato	
+	$('#spTotalPorFormandoID').html(accounting.formatMoney($oValPorFormando.val(),$opt));
+	$('#divTotalEventosID').html(accounting.formatMoney($oValPorFormando.val(),$opt));
+	
+	var	$valNovo		= zgConverteFloat($oValPorFormando.val());
+	
+	if ($valAnterior != $valNovo) {
+		criaTabelaValoresUsuFmtCnt();
+	}
+
+}
 
 $('#UsuFmtCntSubmitID').on("click", function(e) {
 	
@@ -248,6 +293,15 @@ $('#zgFormModalUsuFmtCntID').submit(function() {
 	$('#UsuFmtCntSubmitID').attr("disabled","disabled");
 	$('#UsuFmtCntCancelID').attr("disabled","disabled");
 	
+	
+	var $aSelEventos	= [];
+	$('input[name="codEventoSel[]"]:checked').each( function() {
+		var $codEvento						= $(this).val();
+		$aSelEventos[$aSelEventos.length]	= $codEvento;
+	});
+
+	$("#aSelEventosID").val($aSelEventos);
+	
 	$.ajax({
 		type:	"POST", 
 		url:	"%DP_MODAL%",
@@ -282,6 +336,7 @@ function validaUsuarioContrato(){
 	var vNumMeses		= $('#numMesesID').val();
 	var vData			= $('#dataVencID').val();
 	var vFormaPag		= $('#codFormaPagID').val();
+	var vTipoContrato	= $('#codTipoContratoID').val();
 	var vOK				= true;
 	
 	/** Número de meses **/
@@ -304,6 +359,18 @@ function validaUsuarioContrato(){
 		$('#divHelpDataVencID').html('&nbsp;');		
 	}
 	
+	
+	var $numEventosSel			= $('input[name="codEventoSel[]"]:checked').length;
+	
+	if ((vTipoContrato == "P") && ($numEventosSel == 0)) {
+		vOK		= false;
+		$.gritter.add({
+			title: 'Seleção de eventos !!!',
+			text: 'Pelo menos 1 evento deve ser selecionado',
+			class_name: 'gritter-info gritter-error',
+			time: '5000'
+		});
+	}
 
 	if (vOK == true) {
 		return true ;
@@ -355,6 +422,11 @@ function criaTabelaValoresUsuFmtCnt() {
 	var $valPorFormando			= zgConverteFloat($('#valPorFormandoID').val());
 	var $valParcela				= zgConverteFloat(($valPorFormando / $numMeses).toFixed(2));
 	var $_parc;
+
+	if (!$valPorFormando || !$numMeses)		{
+		deleteTableUsuFmtCnt();
+		return;
+	}
 
 	var options = {
 		symbol : "",

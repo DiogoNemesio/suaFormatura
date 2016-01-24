@@ -22,13 +22,6 @@ class ZgfmtEventoParticipacao
     private $codigo;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="VALOR", type="float", precision=10, scale=0, nullable=false)
-     */
-    private $valor;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="DATA_CADASTRO", type="datetime", nullable=false)
@@ -74,29 +67,6 @@ class ZgfmtEventoParticipacao
     public function getCodigo()
     {
         return $this->codigo;
-    }
-
-    /**
-     * Set valor
-     *
-     * @param float $valor
-     * @return ZgfmtEventoParticipacao
-     */
-    public function setValor($valor)
-    {
-        $this->valor = $valor;
-
-        return $this;
-    }
-
-    /**
-     * Get valor
-     *
-     * @return float 
-     */
-    public function getValor()
-    {
-        return $this->valor;
     }
 
     /**

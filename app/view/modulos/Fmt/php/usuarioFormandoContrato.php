@@ -11,7 +11,7 @@ if (defined('DOC_ROOT')) {
 #################################################################################
 ## Variáveis globais
 #################################################################################
-global $em,$system,$tr;
+global $em,$system,$tr,$log;
 
 #################################################################################
 ## Resgata a variável ID que está criptografada
@@ -55,6 +55,7 @@ if (!isset($codUsuario)) 		{
 	if (!isset($aSelFormandos))	\Zage\App\Erro::halt($tr->trans('Falta de Parâmetros').' (A_SEL_FOR)');
 	
 	$aSelFormandos		= explode(",",$aSelFormandos);
+	if (sizeof($aSelFormandos) == 1) $codUsuario = $aSelFormandos[0];
 }else{
 	$aSelFormandos		= array($codUsuario);
 }
@@ -63,9 +64,10 @@ if (!isset($codUsuario)) 		{
 ## Resgata as informações dos Formandos
 #################################################################################
 $aFormandos			= $em->getRepository('Entidades\ZgsegUsuario')->findBy(array('codigo' => $aSelFormandos));
+$numFormandosSel	= sizeof($aFormandos);
 if (!$aFormandos)	\Zage\App\Erro::halt($tr->trans('Formando não encontrado'));
 
-if (sizeof($aFormandos) == 1) {
+if ($numFormandosSel == 1) {
 	$nome		= $aFormandos[0]->getNome(); 
 }else{
 	$nome		= "Vários formandos selecionados";
@@ -80,73 +82,37 @@ if (!isset($codOrganizacao)) 		{
 }
 
 #################################################################################
-## Resgata o registro da Pessoa associada ao Formando
+## Verifica se tem algum formando que não pode ter o contrato alterado, a restrição
+## é caso o formando tenha mensalidade gerada.
 #################################################################################
-$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$codUsuario);
-if (!$oPessoa) 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x912FB, Pessoa não encontrada')));
-
-#################################################################################
-## Verificar se o usuário pode alterar o contrato, só pode altera caso não
-## tenha mensalidade gerada
-#################################################################################
-$temMensalidade	= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(),$oPessoa->getCodigo());
-$podeAlterar	= ($temMensalidade) ? false : true;
-if ($podeAlterar	== true)	{
-	$readonly		= "";
-	$roData			= "datepicker";
-	$hidSubmit		= "";
-}else{
-	$readonly		= "readonly";
-	$roData			= "";
-	$hidSubmit		= "hidden";
-}
-
-#################################################################################
-## Resgata as informações de contrato
-#################################################################################
-$oContrato 		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $codOrganizacao , 'codFormando' => $codUsuario));
-$totalParcelas	= 0;
-
-if ($oContrato){
-	$numMeses 			= $oContrato->getNumMeses();
-	$codFormaPag		= ($oContrato->getCodFormaPagamento()) ? $oContrato->getCodFormaPagamento()->getCodigo() : null;
-	$codTipoContrato	= ($oContrato->getCodTipoContrato()) ? $oContrato->getCodTipoContrato()->getCodigo() : null;
+$podeAlterar	= true;
+for ($i = 0; $i < $numFormandosSel; $i++) {
 	
 	#################################################################################
-	## Carregar as parcelas
+	## Resgata o registro da Pessoa associada ao Formando
 	#################################################################################
-	$tabParcelas		= '';
-	if ($oContrato->getCodigo()) {
-		$parcelas		= $em->getRepository('Entidades\ZgfmtContratoFormandoParcela')->findBy(array('codContrato' => $oContrato->getCodigo()));
-		$numParcelas	= sizeof($parcelas);
-		if ($numParcelas > 0) {
-			$tabHid			= "";
-		}else{
-			$tabHid			= "hidden";
-		}
-		for ($i = 0; $i < sizeof($parcelas); $i++) {
-			$descParcela	= $parcelas[$i]->getParcela() . " / " . $numParcelas;
-			$valParcela		= \Zage\App\Util::formataDinheiro($parcelas[$i]->getValor());
-			$totalParcelas	+= \Zage\App\Util::to_float($parcelas[$i]->getValor());
-			$data			= $parcelas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
-			$onchange		= ($podeAlterar)	? 'onchange="atualizaEValidaParcelasUsuFmtCnt();"' : null;
-			$tabParcelas		.= '<tr>
-				<td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 40px;">'.$descParcela.'</td>
-				<td style="width: 120px;"><input type="text" class="form-control input-sm " '.$readonly.' name="aValor[]" value="'.$valParcela.'" '.$onchange.' maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
-				<td style="width: 120px;"><input type="text" class="form-control input-sm '.$roData.'" '.$readonly.' name="aData[]" value="'.$data.'" '.$onchange.'maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
-				</tr>'; 
-
-		}
-	}else{
-		$tabHid			= "hidden";
-	}
-}else{
-	$numMeses		= null;
-	$codFormaPag	= "BOL";
-	$tabParcelas	= null;
-	$tabHid			= "hidden";
-	$codTipoContrato = null;
+	$oPessoa			= \Zage\Fin\Pessoa::getPessoaUsuario($system->getCodOrganizacao(),$aFormandos[$i]->getCodigo());
+	if (!$oPessoa) 		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities('Violação de acesso, 0x912FB, Pessoa não encontrada')));
+	
+	#################################################################################
+	## Verificar se o usuário pode alterar o contrato, só pode alterar caso não
+	## tenha mensalidade gerada
+	#################################################################################
+	$temMensalidade	= \Zage\Fmt\Financeiro::temMensalidadeGerada($system->getCodOrganizacao(),$oPessoa->getCodigo());
+	if ($temMensalidade)	$podeAlterar	= false;
+	//$podeAlterar	= ($temMensalidade) ? false : true;
 }
+
+
+#################################################################################
+## Caso seja alteração em massa, e tenha algum formando que não possa ter o 
+## contrato alterado, emitir um erro
+#################################################################################
+if (($numFormandosSel > 1) && ($podeAlterar == false))  {
+	$log->err("0x14721549: Erro de violação de acesso, Organização: ".$system->getCodOrganizacao()." Usuário: ".$system->getCodUsuario());
+	\Zage\App\Erro::halt("0x14721549: Erro de violação de acesso !!!");
+}
+
 
 #################################################################################
 ## Variáveis usadas no cálculo das mensalidades
@@ -158,10 +124,9 @@ $dataVenc				= date($system->config["data"]["dateFormat"],mktime(0, 0, 0, date('
 $oDataVenc				= \DateTime::createFromFormat($system->config["data"]["dateFormat"],$dataVenc);
 $interval				= $dataConclusao->diff($oDataVenc);
 $numMesesConc			= (($interval->format('%y') * 12) + $interval->format('%m'));
-$numMesesConc			= ($numMesesConc > 0) ? $numMesesConc : 0;			
+$numMesesConc			= ($numMesesConc > 0) ? $numMesesConc : 0;
 $texto					= ($numMesesConc == 1) ? "$numMesesConc mês" : "$numMesesConc meses";
 $texto					.= " (".$dataConclusao->format($system->config["data"]["dateFormat"]).")";
-
 
 #################################################################################
 ## Buscar o orçamento aceite, caso exista um, pois ele será usado como base
@@ -172,7 +137,126 @@ $orcamento				= \Zage\Fmt\Orcamento::getVersaoAceita($system->getCodOrganizacao(
 if (!$orcamento)		\Zage\App\Erro::halt("Nenhum orçamento aceito");
 $valorOrcado			= \Zage\App\Util::to_float($oOrgFmt->getValorPrevistoTotal());
 $qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
-$valPorFormando			= $valorOrcado / $qtdFormandosBase;
+$valOrcPorFormando		= \Zage\App\Util::to_float(round($valorOrcado / $qtdFormandosBase,2));
+
+#################################################################################
+## Resgatar os eventos da Formatura
+#################################################################################
+$aEventos		= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormatura' => $system->getCodOrganizacao()));
+
+#################################################################################
+## Resgata as informações de contrato
+#################################################################################
+if ($numFormandosSel == 1) {
+	$oContrato 		= $em->getRepository('Entidades\ZgfmtContratoFormando')->findOneBy(array('codOrganizacao' => $codOrganizacao , 'codFormando' => $codUsuario));
+	$totalParcelas	= 0;
+	$codStatus		= $oContrato->getCodStatus()->getCodigo();
+	if ($codStatus 		== "A") {
+		$iconStatus		= "fa fa-check-circle green";
+	}elseif ($codStatus	== "C") {
+		$iconStatus		= "fa fa-ban red";
+	}else{
+		$iconStatus		= "fa fa-star-half-o orange";
+	}
+	
+	$titulo			= "Contrato <span class='pull-right'>Status: <i class='".$iconStatus."'></i>&nbsp;".$oContrato->getCodStatus()->getDescricao()."</span>";
+	
+	if ($oContrato){
+		if (($podeAlterar == true) && ($codStatus == "A"))	{
+			$readonly		= "";
+			$roData			= "datepicker";
+			$hidSubmit		= "";
+		}else{
+			$readonly		= "readonly";
+			$roData			= "";
+			$hidSubmit		= "hidden";
+		}
+		
+		$numMeses 			= $oContrato->getNumMeses();
+		$codFormaPag		= ($oContrato->getCodFormaPagamento())	? $oContrato->getCodFormaPagamento()->getCodigo()	: null;
+		$codTipoContrato	= ($oContrato->getCodTipoContrato())	? $oContrato->getCodTipoContrato()->getCodigo()		: null;
+		
+		#################################################################################
+		## Montar um array com os eventos que já foram selecionados no contrato
+		#################################################################################
+		if ($codTipoContrato	== "P") {
+			$aSelEventos		= array();
+			$totalEventos		= 0;
+			for ($i = 0; $i < sizeof($aEventos); $i++) {
+
+				#################################################################################
+				## Verificar se o evento está marcado e calcular o valor dele
+				#################################################################################
+				$sel		= $em->getRepository('Entidades\ZgfmtEventoParticipacao')->findOneBy(array('codOrganizacao' => $codOrganizacao,'codEvento' => $aEventos[$i]->getCodigo(),'codFormando' => $codUsuario)); 
+				if ($sel)	{
+					$valorEvento										= \Zage\Fmt\Evento::getValor($aEventos[$i]->getCodigo());
+					$aSelEventos[$sel->getCodEvento()->getCodigo()]		= $valorEvento;
+					$totalEventos										+= $valorEvento;
+				}
+			}
+		}
+		
+		#################################################################################
+		## Calcular o valor por formando com base no tipo de contrato
+		#################################################################################
+		if ($codTipoContrato		== "T") {
+			$valPorFormando			= $valOrcPorFormando;
+		}else{
+			$valPorFormando			= $totalEventos;
+		}
+		
+		
+		#################################################################################
+		## Carregar as parcelas
+		#################################################################################
+		$tabParcelas		= '';
+		if ($oContrato->getCodigo()) {
+			$parcelas		= $em->getRepository('Entidades\ZgfmtContratoFormandoParcela')->findBy(array('codContrato' => $oContrato->getCodigo()));
+			$numParcelas	= sizeof($parcelas);
+			if ($numParcelas > 0) {
+				$tabHid			= "";
+			}else{
+				$tabHid			= "hidden";
+			}
+			for ($i = 0; $i < sizeof($parcelas); $i++) {
+				$descParcela	= $parcelas[$i]->getParcela() . " / " . $numParcelas;
+				$valParcela		= \Zage\App\Util::formataDinheiro($parcelas[$i]->getValor());
+				$totalParcelas	+= \Zage\App\Util::to_float($parcelas[$i]->getValor());
+				$data			= $parcelas[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
+				$onchange		= ($podeAlterar)	? 'onchange="atualizaEValidaParcelasUsuFmtCnt();"' : null;
+				$tabParcelas		.= '<tr>
+					<td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 40px;">'.$descParcela.'</td>
+					<td style="width: 120px;"><input type="text" class="form-control input-sm " '.$readonly.' name="aValor[]" value="'.$valParcela.'" '.$onchange.' maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td>
+					<td style="width: 120px;"><input type="text" class="form-control input-sm '.$roData.'" '.$readonly.' name="aData[]" value="'.$data.'" '.$onchange.'maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td>
+					</tr>'; 
+	
+			}
+		}else{
+			$tabHid			= "hidden";
+		}
+	}else{
+		$numMeses			= null;
+		$codFormaPag		= "BOL";
+		$tabParcelas		= null;
+		$tabHid				= "hidden";
+		$codTipoContrato	= "T";
+		$valPorFormando		= $valOrcPorFormando;
+		$titulo				= "Contrato <span class='pull-right'>Status: NOVO</span>";
+	}
+}else{
+	$numMeses			= null;
+	$codFormaPag		= "BOL";
+	$tabParcelas		= null;
+	$tabHid				= "hidden";
+	$codTipoContrato	= "T";
+	$readonly			= "";
+	$roData				= "datepicker";
+	$hidSubmit			= "";
+	$valPorFormando		= $valOrcPorFormando;
+	$titulo				= "Contrato <span class='pull-right'>Status: NOVO (Em massa)</span>";
+}
+
+
 
 #################################################################################
 ## Select da Forma de Pagamento
@@ -196,23 +280,17 @@ try {
 
 
 #################################################################################
-## Resgatar os eventos
+## Tabela de eventos
 #################################################################################
-$aEventos		= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormatura' => $system->getCodOrganizacao()));
-
+$tabEvento		= '';
 for ($i = 0; $i < sizeof($aEventos); $i++) {
-	
+	$valorEvento		= \Zage\Fmt\Evento::getValor($aEventos[$i]->getCodigo());
+	$checked			= (isset($aSelEventos[$aEventos[$i]->getCodigo()])) ? 'checked="checked"' : null;
 	$tabEvento	.= '<tr>
-		<td style="text-align: center;"><label class="position-relative"><input type="checkbox" name="codEventoSel[]" class="ace"/><span class="lbl"></span></label></td>
+		<td style="text-align: center;"><label class="position-relative"><input type="checkbox" '.$checked.' name="codEventoSel[]" onchange="calculaValorPorFormandoUsuFmtCnt();" value="'.$aEventos[$i]->getCodigo().'" zg-val-evento="'.\Zage\App\Util::formataDinheiro($valorEvento).'" class="ace"/><span class="lbl"></span></label></td>
 		<td style="text-align: center;">'.$aEventos[$i]->getCodTipoEvento()->getDescricao().'</td>
-		<td style="text-align: center;">total</td>
+		<td style="text-align: center;">'.\Zage\App\Util::to_money($valorEvento).'</td>
 		</tr>';
-	
-	/**
-	$htmlEventos .= '<div class="checkbox"><label>';
-	$htmlEventos .= '<input type="checkbox" name="codEventoSel[]" class="ace"/>';
-	$htmlEventos .= '<span class="lbl"> '.$aEventos[$i]->getCodTipoEvento()->getDescricao().'</span></label></div>';
-	**/
 }
 
 #################################################################################
@@ -235,15 +313,18 @@ $tpl->load(\Zage\App\Util::getCaminhoCorrespondente(__FILE__, \Zage\App\ZWS::EXT
 ## Define os valores das variáveis
 #################################################################################
 $tpl->set('ID'						,$id);
-$tpl->set('TITULO'					,'Contrato');
+$tpl->set('FID'						,$fid);
+$tpl->set('TITULO'					,$titulo);
 
 $tpl->set('COD_ORGANIZACAO'			,$codOrganizacao);
 $tpl->set('COD_USUARIO'				,$codUsuario);
+$tpl->set('A_SEL_FORMANDOS'			,implode(",", $aSelFormandos));
 
 $tpl->set('NUM_MESES'				,$numMeses);
 $tpl->set('MAX_PARCELAS'			,$numMeses);
 $tpl->set('DATA_VENC'				,$dataVenc);
 $tpl->set('DATA_CONCLUSAO'			,$dataConclusao->format($system->config["data"]["dateFormat"]));
+$tpl->set('VAL_ORC_POR_FORMANDO'	,\Zage\App\Util::formataDinheiro($valOrcPorFormando));
 $tpl->set('VAL_POR_FORMANDO'		,\Zage\App\Util::formataDinheiro($valPorFormando));
 $tpl->set('VAL_POR_FORMANDO_FMT'	,\Zage\App\Util::to_money($valPorFormando));
 $tpl->set('FORMATO_DATA'			,$system->config["data"]["jsDateFormat"]);

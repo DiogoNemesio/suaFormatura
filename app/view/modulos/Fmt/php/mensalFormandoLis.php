@@ -210,21 +210,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
 	$saldo						= round($totalPorFormando - $valProvisionado,2);
 	$grid->setValorCelula($i,3,$valProvisionado);
-		
-	#################################################################################
-	## Déficit de geração
-	#################################################################################
-	if ($podeDesistir	== true) {
-		if ($saldo > 0){
-			$grid->setValorCelula($i, 4, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
-		}else if ($saldo == 0) {
-				$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
-		}else{
-			$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
-		}
-	}else{
-		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
-	}
 
 	#################################################################################
 	## Verifica se o formando já tem contrato
@@ -239,6 +224,21 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	$grid->setUrlCelula($i,8,"javascript:zgAbreModal('".ROOT_URL."/Fmt/usuarioFormandoContrato.php?id=".$cid."');");
 	
 	
+	#################################################################################
+	## Déficit de geração
+	#################################################################################
+	if ($podeDesistir	== true) {
+		if ($saldo > 0){
+			$grid->setValorCelula($i, 4, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		}else if ($saldo == 0) {
+			$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		}else{
+			$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+		}
+	}else{
+		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
+	}
+
 	#################################################################################
 	## Verificar se já foi gerada alguma mensalidade
 	#################################################################################
@@ -289,7 +289,6 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	## Definir a ação do botão de desistência
 	#################################################################################
 	if ($podeDesistir	== true) {
-	
 		#################################################################################
 		## Definir o link do botão de geração de conta
 		#################################################################################
@@ -326,7 +325,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 #################################################################################
 $gerUrl				= ROOT_URL . "/Fmt/mensalGerAuto.php?id=".$id;
 $atuUrl				= ROOT_URL . "/Fmt/mensalAtuAuto.php?id=".$id;
-$conUrl				= ROOT_URL . "/Fmt/usuarioFormandoContrato.php?id=".$id;
+$conUrl				= ROOT_URL . "/Fmt/usuarioFormandoContrato.php?id=".\Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_."&urlVoltar=".$url);
 
 #################################################################################
 ## Gerar o código html do grid
