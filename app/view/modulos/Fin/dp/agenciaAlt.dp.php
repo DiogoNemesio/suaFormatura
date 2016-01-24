@@ -28,36 +28,43 @@ $err	= false;
 #################################################################################
 /** Nome **/
 if (!isset($nome) || (empty($nome))) {
- 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo NOME é obrigatório");
+ 	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Informe um nome para identificar esta agência.");
 	$err	= 1;
 }
 
 if ((!empty($nome)) && (strlen($nome) > 60)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo NOME não deve conter mais de 60 caracteres");
-	$err	= 1;
-}
-
-/** Agência **/
-if (!isset($agencia) || (empty($agencia))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo AGÊNCIA é obrigatório");
-	$err	= 1;
-}
-
-if ((!empty($agencia)) && (strlen($agencia) > 8)) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo AGÊNCIA não deve conter mais de 8 caracteres");
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"O nome para identificar esta agência não deve conter mais de 60 caracteres.");
 	$err	= 1;
 }
 
 $oNome	= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodorganizacao(), 'nome' => $nome ));
 
 if (($oNome != null) && ($oNome->getCodigo() != $codAgencia)){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("NOME da Agência já existe"));
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Já existe uma identificação cadastrada igual a informada. Por favor, informe outra para facilitar a utilização no sistema!"));
+	$err 	= 1;
+}
+
+/** Agência **/
+if (!isset($agencia) || (empty($agencia))) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Informe o número da agência.");
+	$err	= 1;
+}
+
+if ((!empty($agencia)) && (strlen($agencia) > 8)) {
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"O número da agência não deve conter mais de 8 caracteres.");
+	$err	= 1;
+}
+
+$oAgencia	= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodorganizacao(), 'agencia' => $agencia ,'codBanco' =>$codBanco ));
+
+if (($oAgencia != null) && ($oAgencia->getCodigo() != $codAgencia)){
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Esta agência já está cadastrada."));
 	$err 	= 1;
 }
 
 /** Banco **/
 if (!isset($codBanco) || (empty($codBanco))) {
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo BANCO é obrigatório");
+	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Informe o banco da agência.");
 	$err	= 1;
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
 	exit;
@@ -73,22 +80,16 @@ if ($infoBanco == false) {
 	exit;
 }
 
-$oCodAgencia	= $em->getRepository('Entidades\ZgfinAgencia')->findOneBy(array('codOrganizacao' => $system->getCodorganizacao(), 'agencia' => $agencia ));
-
-if (($oCodAgencia != null) && ($oCodAgencia->getCodigo() != $codAgencia)){
-	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$tr->trans("Código da Agência já existe"));
-	$err 	= 1;
-}
-
 /** Dígito Verificador da Agência **/
-if ( in_array($infoBanco->getCodBanco(), array('001', '041', '237'), true) ) {
+if (in_array($infoBanco->getCodBanco(), array('001', '041', '237'), true)) {
 	if(!isset($agenciaDV) || empty($agenciaDV)){
-		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Campo Dígito Verificador da AGÊNCIA é obrigatório");
+		$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,"Informe o dígito verificador da agência.");
 		$err	= 1;
 	}
 }else{
 	$agenciaDV = null;
 }
+
 
 if ($err != null) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($err));
