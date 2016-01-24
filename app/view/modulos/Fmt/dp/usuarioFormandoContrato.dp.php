@@ -53,7 +53,7 @@ $oFormaPag					= $em->getRepository('Entidades\ZgfinFormaPagamento')->findOneBy(
 if (!$oFormaPag)			die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Forma de pagamento não encontrada'))));
 
 #################################################################################
-## Array de valores e datas
+## Array de valores e data
 ## Verificar se o tamanho dos arrays são iguais, e se são realmente arrays
 #################################################################################
 if (!is_array($aValor))		die('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans('Valores inconsistentes'))));
@@ -142,6 +142,7 @@ for ($i = 0; $i < sizeof($aSelFormandos); $i++) {
 	#################################################################################
 	## Salvar no banco
 	#################################################################################
+	$em->getConnection()->beginTransaction();
 	try {
 		$codStatus				= "A";
 		$oStatusContrato		= $em->getRepository('Entidades\ZgfmtContratoStatusTipo')->findOneBy(array('codigo' => $codStatus));
@@ -167,12 +168,26 @@ for ($i = 0; $i < sizeof($aSelFormandos); $i++) {
 		#################################################################################
 		## Excluir as participações nos eventos caso haja
 		#################################################################################
+		$log->info("Vou excluir as participações");
 		if ($oContrato->getCodigo()) {
 			$oEventos		= $em->getRepository('Entidades\ZgfmtEventoParticipacao')->findBy(array('codOrganizacao' => $system->getCodOrganizacao(),'codFormando' => $oFormando->getCodigo()));
 			for ($j = 0; $j < sizeof($oEventos); $j++) {
+				$log->info("Vou excluir a participação $j");
 				$em->remove($oEventos[$j]);
 			}
 		}
+		
+		$em->flush();
+		$em->clear();
+		
+		#################################################################################
+		## Resgatar os objetos novamente
+		#################################################################################
+		$codContrato		= $oContrato->getCodigo();
+		$codFormando		= $oFormando->getCodigo();
+		$oContrato 			= $em->getReference('Entidades\ZgfmtContratoFormando' 	,$codContrato); 
+		$oOrg				= $em->getReference('Entidades\ZgadmOrganizacao' 		,$system->getCodOrganizacao());
+		$oFormando 			= $em->getReference('Entidades\ZgsegUsuario' 			,$codFormando);
 		
 		#################################################################################
 		## Salvar as parcelas
@@ -240,7 +255,7 @@ for ($i = 0; $i < sizeof($aSelFormandos); $i++) {
 		}
 		
 	} catch (\Exception $e) {
-		//$em->getConnection()->rollback();
+		$em->getConnection()->rollback();
 		echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 		exit;
 	}
@@ -253,6 +268,7 @@ try {
 
 	$em->flush();
 	$em->clear();
+	$em->getConnection()->commit();
 } catch (\Exception $e) {
 	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
 	exit;
