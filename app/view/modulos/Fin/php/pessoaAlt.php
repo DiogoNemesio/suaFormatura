@@ -57,6 +57,7 @@ if ((isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc)))) {
 	}
 	
 	/** Restagar informações da associação entre o parceiro e a organização **/
+	
 	$infoPessoOrg 		= $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codPessoa' => $codPessoa , 'codOrganizacao' => $system->getCodOrganizacao()));
 	$ativo				= ($infoPessoOrg->getIndAtivo()			== 1) ? "checked" : null;
 	
@@ -79,46 +80,47 @@ if ((isset($codPessoa) && ($codPessoa)) || ((isset($loadCgc) && ($loadCgc)))) {
 	$readOnly		= 'readonly';
 	
 	/** Endereco **/
-	
-	$codLogradouro   = ($infoEnd->getCodLogradouro()) ? $infoEnd->getCodLogradouro()->getCodigo() : null;
-	$cep 		     = ($infoEnd->getCep()) ? $infoEnd->getCep() : null;
-	$complemento     = ($infoEnd->getComplemento()) ? $infoEnd->getComplemento() : null;
-	$numero		     = ($infoEnd->getNumero()) ? $infoEnd->getNumero() : null;
-	$endCorreto		 = ($infoEnd->getIndEndCorreto() == 1) ? "checked" : null;
-	
-	if($codLogradouro != null){
-	
-		$infoLogradouro = $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
-	
-		if($infoEnd->getIndEndCorreto() == 0){
-			if($infoLogradouro->getDescricao() == $infoEnd->getEndereco()){
-				$logradouro	  = $infoLogradouro->getDescricao();
-				$readOnlyEnd 	  = 'readonly';
+	if ($infoEnd){
+		$codLogradouro   = ($infoEnd->getCodLogradouro()) ? $infoEnd->getCodLogradouro()->getCodigo() : null;
+		$cep 		     = ($infoEnd->getCep()) ? $infoEnd->getCep() : null;
+		$complemento     = ($infoEnd->getComplemento()) ? $infoEnd->getComplemento() : null;
+		$numero		     = ($infoEnd->getNumero()) ? $infoEnd->getNumero() : null;
+		$endCorreto		 = ($infoEnd->getIndEndCorreto() == 1) ? "checked" : null;
+		
+		if($codLogradouro != null){
+		
+			$infoLogradouro = $em->getRepository('Entidades\ZgadmLogradouro')->findOneBy(array('codigo' => $codLogradouro));
+		
+			if($infoEnd->getIndEndCorreto() == 0){
+				if($infoLogradouro->getDescricao() == $infoEnd->getEndereco()){
+					$logradouro	  = $infoLogradouro->getDescricao();
+					$readOnlyEnd 	  = 'readonly';
+				}else{
+					$logradouro	  = $infoEnd->getEndereco();
+					$readOnlyEnd 	  = '';
+				}
+					
+				if($infoLogradouro->getCodBairro()->getDescricao() == $infoEnd->getBairro()){
+					$bairro = $infoLogradouro->getCodBairro()->getDescricao();
+					$readOnlyBairro 	  = 'readonly';
+				}else{
+					$bairro = $infoEnd->getBairro();
+					$readOnlyBairro 	  = '';
+				}
+		
 			}else{
-				$logradouro	  = $infoEnd->getEndereco();
-				$readOnlyEnd 	  = '';
+				$logradouro 	= $infoLogradouro->getDescricao();
+				$bairro 		= $infoLogradouro->getCodBairro()->getDescricao();
+				$readOnlyBairro = 'readonly';
+				$readOnlyEnd 	= 'readonly';
 			}
-				
-			if($infoLogradouro->getCodBairro()->getDescricao() == $infoEnd->getBairro()){
-				$bairro = $infoLogradouro->getCodBairro()->getDescricao();
-				$readOnlyBairro 	  = 'readonly';
-			}else{
-				$bairro = $infoEnd->getBairro();
-				$readOnlyBairro 	  = '';
-			}
-	
+		
+			$cidade	  		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome();
+			$estado    		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUF()->getNome();
 		}else{
-			$logradouro 	= $infoLogradouro->getDescricao();
-			$bairro 		= $infoLogradouro->getCodBairro()->getDescricao();
 			$readOnlyBairro = 'readonly';
 			$readOnlyEnd 	= 'readonly';
 		}
-	
-		$cidade	  		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getNome();
-		$estado    		 = $infoLogradouro->getCodBairro()->getCodLocalidade()->getCodCidade()->getCodUF()->getNome();
-	}else{
-		$readOnlyBairro = 'readonly';
-		$readOnlyEnd 	= 'readonly';
 	}
 	
 	/** Fonte de Recurso (Conta) **/

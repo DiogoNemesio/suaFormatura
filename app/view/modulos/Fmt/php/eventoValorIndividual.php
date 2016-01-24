@@ -76,7 +76,7 @@ try {
 #################################################################################
 ## Buscar o usuário para conseguir o email
 #################################################################################
-$oEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findAll(); 
+$oEvento	= $em->getRepository('Entidades\ZgfmtEvento')->findBy(array('codFormatura' => $system->getCodOrganizacao())); 
 
 for ($i = 0; $i < sizeof($oEvento); $i++) {
 	
