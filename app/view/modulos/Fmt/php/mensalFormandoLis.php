@@ -143,7 +143,6 @@ $grid->adicionaTexto($tr->trans('EM ATRASO'),			10	,$grid::CENTER	,'');
 $grid->adicionaTexto($tr->trans('STATUS'),				12	,$grid::CENTER	,'');
 $grid->adicionaIcone(null,'fa fa-file-text-o green'		,$tr->trans('Contrato'));
 $grid->adicionaIcone(null,'fa fa-sign-out red'			,$tr->trans('Desistir'));
-$grid->adicionaIcone(null,'fa fa-usd green'				,$tr->trans('Gerar conta'));
 $grid->adicionaIcone(null,'fa fa-search blue'			,$tr->trans('Visualizar contas'));
 $grid->importaDadosDoctrine($formandos);
 
@@ -181,22 +180,18 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 		case "A":
 		case "P":
 		case "B":
-			$podeGerar		= true;
 			$podeDesistir	= true;
 			$podeMarcar		= true;
 			break;
 		case "D":
-			$podeGerar		= true;
 			$podeDesistir	= false;
 			$podeMarcar		= false;
 			break;
 		case "T":
-			$podeGerar		= false;
 			$podeDesistir	= false;
 			$podeMarcar		= false;
 			break;
 		default:
-			$podeGerar		= false;
 			$podeDesistir	= false;
 			$podeMarcar		= false;
 			break;
@@ -239,7 +234,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	## Déficit de geração
 	#################################################################################
 //	if ($podeDesistir	== true) {
-	if ($saldo > 0){
+	if ($saldo > 0) {
 		$grid->setValorCelula($i, 4, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 	}else if ($saldo == 0) {
 		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
@@ -311,24 +306,9 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	}
 	
 	#################################################################################
-	## Definir a ação do botão de geração de conta
-	#################################################################################
-	if ($podeGerar	== true) {
-
-		#################################################################################
-		## Definir o link do botão de geração de conta
-		#################################################################################
-		$grid->setUrlCelula($i,10,ROOT_URL.'/Fmt/mensalFormandoGerar.php?id='.$fid);
-		
-	}else{
-		$grid->desabilitaCelula($i, 10);
-	}
-	
-
-	#################################################################################
 	## Definir o link do botão de visualização das contas
 	#################################################################################
-	$grid->setUrlCelula($i,11,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$fid);
+	$grid->setUrlCelula($i,10,ROOT_URL.'/Fmt/mensalFormandoContaLis.php?id='.$fid);
 	
 }
 
