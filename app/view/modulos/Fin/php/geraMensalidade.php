@@ -96,23 +96,32 @@ $qtdFormandosBase		= (int) $oOrgFmt->getQtdePrevistaFormandos();
 $mensalidadeFormando	= round($valorOrcado / $qtdFormandosBase,2);
 
 #################################################################################
-## Calcular o valor já provisionado por formando
+## Calcular o valor já provisionado e a provisionar por formando
 #################################################################################
-$oValorProv				= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
+$oValorAProvionar			= \Zage\Fmt\Financeiro::calculaTotalAProvisionarPorFormando($system->getCodOrganizacao());
+$oValorProvisionado			= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
+
+#################################################################################
+## Montar o array para facilitar a impressão no grid dos valores a provisionar
+#################################################################################
+$aValorAProvisionar			= array();
+for ($i = 0; $i < sizeof($oValorAProvionar); $i++) {
+	$aValorAProvisionar[$oValorAProvionar[$i][0]->getCodigo()]		= \Zage\App\Util::to_float(round(\Zage\App\Util::to_float($oValorAProvionar[$i]["total"]),2));
+}
 
 #################################################################################
 ## Montar o array para facilitar a impressão no grid dos valores provisionados
 ## Montar um array que será enviado ao Html para validar se os formandos
 ## selecionados tem os mesmos valores de mensalidade e sistema
 #################################################################################
-$aValorProv				= array();
+$aValorProvisionado				= array();
 $aCodigos				= array();
-for ($i = 0; $i < sizeof($oValorProv); $i++) {
-	$total													= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
-	$aCodigos[$oValorProv[$i][0]->getCgc()]["MENSALIDADE"]	= \Zage\App\Util::to_float($oValorProv[$i]["mensalidade"]);
-	$aCodigos[$oValorProv[$i][0]->getCgc()]["SISTEMA"]		= \Zage\App\Util::to_float($oValorProv[$i]["sistema"]);
-	$aCodigos[$oValorProv[$i][0]->getCgc()]["TOTAL"]		= $total;
-	$aValorProv[$oValorProv[$i][0]->getCgc()]				= $total;
+for ($i = 0; $i < sizeof($oValorProvisionado); $i++) {
+	$total															= \Zage\App\Util::to_float($oValorProvisionado[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProvisionado[$i]["sistema"]);
+	$aCodigos[$oValorProvisionado[$i][0]->getCgc()]["MENSALIDADE"]	= \Zage\App\Util::to_float($oValorProvisionado[$i]["mensalidade"]);
+	$aCodigos[$oValorProvisionado[$i][0]->getCgc()]["SISTEMA"]		= \Zage\App\Util::to_float($oValorProvisionado[$i]["sistema"]);
+	$aCodigos[$oValorProvisionado[$i][0]->getCgc()]["TOTAL"]		= $total;
+	$aValorProvisionado[$oValorProvisionado[$i][0]->getCgc()]				= $total;
 }
 
 #################################################################################
@@ -177,8 +186,9 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Definir os valores totais
 	#################################################################################
-	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
-	$saldo						= round($mensalidadeFormando - $valProvisionado,2);
+	$valProvisionado			= (isset($aValorProvisionado[$formandos[$i]->getCpf()])) 	? $aValorProvisionado[$formandos[$i]->getCpf()] 	: 0;
+	$valAProvisionar			= (isset($aValorAProvisionar[$formandos[$i]->getCodigo()])) ? $aValorAProvisionar[$formandos[$i]->getCodigo()] 	: 0;
+	$saldo						= round($valAProvisionar - $valProvisionado,2);
 	$aCodigos[$formandos[$i]->getCpf()]["SALDO"]	= $saldo;
 	$grid->setValorCelula($i,4,$valProvisionado);
 	
