@@ -73,7 +73,7 @@ if ($orcamento){
 
 
 #################################################################################
-## Calcular o valor já provisionado por formando
+## Calcular o valor já provisionado e a provisionar por formando
 #################################################################################
 $oValorAProvionar			= \Zage\Fmt\Financeiro::calculaTotalAProvisionarPorFormando($system->getCodOrganizacao());
 $oValorProvisionado			= \Zage\Fmt\Financeiro::getValorProvisionadoPorFormando($system->getCodOrganizacao());
@@ -90,22 +90,22 @@ for ($i = 0; $i < sizeof($oValorAProvionar); $i++) {
 #################################################################################
 ## Montar o array para facilitar a impressão no grid dos valores provisionados
 #################################################################################
-$aValorProv				= array();
-$aCodigos				= array();
+$aValorProvisionado			= array();
+$aCodigos					= array();
 for ($i = 0; $i < sizeof($oValorProvisionado); $i++) {
 	$total													= \Zage\App\Util::to_float($oValorProvisionado[$i]["mensalidade"]) + \Zage\App\Util::to_float($oValorProvisionado[$i]["sistema"]);
-	$aValorProv[$oValorProvisionado[$i][0]->getCgc()]		= $total;
+	$aValorProvisionado[$oValorProvisionado[$i][0]->getCgc()]		= $total;
 }
 
 #################################################################################
 ## Calcular o valor já pago por formando
 #################################################################################
-$oValorPago				= \Zage\Fmt\Financeiro::getValorPagoPorFormando($system->getCodOrganizacao());
+$oValorPago					= \Zage\Fmt\Financeiro::getValorPagoPorFormando($system->getCodOrganizacao());
 
 #################################################################################
 ## Montar o array para facilitar a impressão no grid dos valores pagos
 #################################################################################
-$aValorPago				= array();
+$aValorPago					= array();
 if (sizeof($oValorPago) > 0) {
 	foreach ($oValorPago as $cpf => $info) {
 		$total					= \Zage\App\Util::to_float($info["mensalidade"]) + \Zage\App\Util::to_float($info["sistema"]) + \Zage\App\Util::to_float($info["juros"]) + \Zage\App\Util::to_float($info["mora"]);
@@ -217,7 +217,7 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Saldo a provisionar
 	#################################################################################
-	$valProvisionado			= (isset($aValorProv[$formandos[$i]->getCpf()])) ? $aValorProv[$formandos[$i]->getCpf()] : 0;
+	$valProvisionado			= (isset($aValorProvisionado[$formandos[$i]->getCpf()])) ? $aValorProvisionado[$formandos[$i]->getCpf()] : 0;
 	$totalAProvisionar			= (isset($aValorAProvisionar[$formandos[$i]->getCodigo()])) ? $aValorAProvisionar[$formandos[$i]->getCodigo()] : 0;
 	$saldo						= round($totalAProvisionar - $valProvisionado,2);
 	$grid->setValorCelula($i,3,$valProvisionado);
@@ -238,17 +238,17 @@ for ($i = 0; $i < sizeof($formandos); $i++) {
 	#################################################################################
 	## Déficit de geração
 	#################################################################################
-	if ($podeDesistir	== true) {
-		if ($saldo > 0){
-			$grid->setValorCelula($i, 4, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
-		}else if ($saldo == 0) {
-			$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
-		}else{
-			$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
-		}
+//	if ($podeDesistir	== true) {
+	if ($saldo > 0){
+		$grid->setValorCelula($i, 4, "<span style='color:red'><i class='fa fa-arrow-down red'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
+	}else if ($saldo == 0) {
+		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 	}else{
-		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
+		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-arrow-up green'></i> ".\Zage\App\Util::to_money($saldo)."</span>");
 	}
+/*	}else{
+		$grid->setValorCelula($i, 4, "<span style='color:green'><i class='fa fa-check-circle green'></i>".\Zage\App\Util::to_money(0)."</span>");
+	}*/
 
 	#################################################################################
 	## Verificar se já foi gerada alguma mensalidade
