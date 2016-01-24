@@ -95,7 +95,6 @@ if ($tipoOrg == "FMT") {
 	$oFmtAdm		= null;
 }
 
-
 #################################################################################
 ## Popula os valores dos botões
 #################################################################################
@@ -113,8 +112,15 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 	#################################################################################
 	## STATUS
 	#################################################################################
-	if ($oFmtAdm) 		$oPessoOrg = $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $oFmtAdm->getCodigo() , 'codPessoa' => $pessoas[$i]->getCodigo()));
-	if (!$oPessoOrg)	$oPessoOrg = $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $oOrg->getCodigo() , 'codPessoa' => $pessoas[$i]->getCodigo()));
+	if ($oFmtAdm){
+		$oPessoOrg = $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $oFmtAdm->getCodigo() , 'codPessoa' => $pessoas[$i]->getCodigo()));
+		$indPessoaCerimonial = true;
+	}
+	
+	if (!$oPessoOrg){
+		$oPessoOrg = $em->getRepository('Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $oOrg->getCodigo() , 'codPessoa' => $pessoas[$i]->getCodigo()));
+		$indPessoaCerimonial = false;
+	}
 	
 	if (is_object($oPessoOrg) && $oPessoOrg->getIndAtivo() == 1){
 		$grid->setValorCelula($i,4,"<span class=\"label label-success\">ATIVO</span>");
@@ -125,14 +131,16 @@ for ($i = 0; $i < sizeof($pessoas); $i++) {
 	#################################################################################
 	## Verificar se a Pessoa pode ser alterada
 	#################################################################################
-	if ($tipoOrg == "ADM") {
-		$podeAlt		=  true;
+	if ($pessoas[$i]->getCodParceiro()){
+		$podeAlt = false;
 	}else{
-		$codOrgPessoa	= ($pessoas[$i]->getCodParceiro()) ? $pessoas[$i]->getCodParceiro()->getCodigo() : false;
-		$codOrgCad		= ($pessoas[$i]->getCodOrganizacaoCadastro()) ? $pessoas[$i]->getCodOrganizacaoCadastro()->getCodigo() : false;
-		$podeAlt		= ($codOrgPessoa && $codOrgCad == $system->getCodOrganizacao()) ? true : false;
+		if ($indPessoaCerimonial == true){
+			$podeAlt = false;
+		}else{
+			$podeAlt = true;
+		}
 	}
-	$podeAlt = true;
+	
 	if ($podeAlt) {
 		$grid->setUrlCelula($i,5,ROOT_URL.'/Fin/pessoaAlt.php?id='.$uid);
 		//$grid->setUrlCelula($i,6,ROOT_URL.'/Fin/pessoaExc.php?id='.$uid);

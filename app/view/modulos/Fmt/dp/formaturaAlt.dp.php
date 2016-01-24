@@ -167,12 +167,11 @@ try {
  	#################################################################################
  	## ORGANIZACAO - ADM
  	#################################################################################
- 	$oOrgAdm		= $em->getRepository('Entidades\ZgadmOrganizacaoAdm')->findOneBy(array('codOrganizacao' => $oOrganizacao->getCodigo(), 'codOrganizacaoPai' => $system->getCodOrganizacao()));
+ 	$oOrgAdm	= $em->getRepository('Entidades\ZgadmOrganizacaoAdm')->findOneBy(array('codOrganizacao' => $oOrganizacao->getCodigo(), 'codOrganizacaoPai' => $system->getCodOrganizacao()));
+ 	$oOrg 	 	= $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
  	
  	if (!$codOrganizacao){
  		$oOrgAdm = new \Entidades\ZgadmOrganizacaoAdm();
- 		
- 		$oOrg 	 = $em->getRepository('Entidades\ZgadmOrganizacao')->findOneBy(array('codigo' => $system->getCodOrganizacao()));
  		
  		$oOrgAdm->setCodOrganizacao($oOrganizacao);
  		$oOrgAdm->setCodOrganizacaoPai($oOrg);
@@ -241,21 +240,42 @@ try {
 	$oContrato->setValorDesconto($valorDesconto);
 	
 	$em->persist($oContrato);
-	$em->flush();
-	$em->clear();
+	
+	#################################################################################
+	## Salvar o organização administradora como fornecedor da formatura
+	#################################################################################
+	$oPessoaOrg = $em->getRepository('\Entidades\ZgfinPessoaOrganizacao')->findOneBy(array('codOrganizacao' => $oOrganizacao->getCodigo()));
+	
+	if (!$oPessoaOrg){
+		
+		$oPessoaAdm		= $em->getRepository('\Entidades\ZgfinPessoa')->findOneBy(array('cgc' => $oOrg->getCgc()));
+		$oPessoaOrg		= new \Entidades\ZgfinPessoaOrganizacao();
+		
+		$oPessoaOrg->setCodPessoa($oPessoaAdm);
+		$oPessoaOrg->setCodOrganizacao($oOrganizacao);
+		$oPessoaOrg->setIndContribuinte(1);
+		$oPessoaOrg->setIndCliente(0);
+		$oPessoaOrg->setIndFornecedor(1);
+		$oPessoaOrg->setIndFormando(0);
+		$oPessoaOrg->setIndTransportadora(0);
+		$oPessoaOrg->setIndAtivo(1);
+		$oPessoaOrg->setObservacao('Importado do cadastro de formatura');
+		$oPessoaOrg->setDataCadastro(new \DateTime());
+		
+		$em->persist($oPessoaOrg);
+	}
+	
 	#################################################################################
  	## Salvar as informações
  	#################################################################################
- 	/**
  	try {
  		$em->flush();
  		$em->clear();
  	} catch (Exception $e) {
  		$log->debug("Erro ao salvar o Organização:". $e->getTraceAsString());
- 		throw new \Exception("Erro ao salvar a Organização. Uma mensagem de depuração foi salva em log, entre em contato com os administradores do sistema !!!");
+ 		throw new \Exception("Ops!! Não conseguimos realizar a operação. Tente novamente em instantes e caso não consiga entre em contato com o nosso suporte.");
  	}
- 	**/
- 	
+  	
 } catch (\Exception $e) {
  	$system->criaAviso(\Zage\App\Aviso\Tipo::ERRO,$e->getMessage());
  	echo '1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getMessage()));
