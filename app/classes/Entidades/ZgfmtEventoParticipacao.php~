@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfmtEventoParticipacao
  *
- * @ORM\Table(name="ZGFMT_EVENTO_PARTICIPACAO", indexes={@ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_2_idx", columns={"COD_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_3_idx", columns={"COD_FORMANDO"})})
+ * @ORM\Table(name="ZGFMT_EVENTO_PARTICIPACAO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFMT_EVENTO_PARTICIPACAO_uk01", columns={"COD_ORGANIZACAO", "COD_EVENTO", "COD_FORMANDO"})}, indexes={@ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_1_idx", columns={"COD_ORGANIZACAO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_2_idx", columns={"COD_EVENTO"}), @ORM\Index(name="fk_ZGFMT_EVENTO_PARTICIPACAO_3_idx", columns={"COD_FORMANDO"})})
  * @ORM\Entity
  */
 class ZgfmtEventoParticipacao
