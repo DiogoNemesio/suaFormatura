@@ -1,8 +1,8 @@
 <?php
-namespace Zage\Fin\Arquivos\Layout\BOL_T40;
+namespace Zage\Fin\Arquivos\Layout\BOL_T400;
 
 /**
- * @package: \Zage\Fin\Arquivos\Layout\BOL_T40\TipoRegistro
+ * @package: \Zage\Fin\Arquivos\Layout\BOL_T400\TipoRegistro
  * @created: 30/06/2015
  * @Author: Daniel Henrique Cassela
  * @version: 1.0

@@ -10,7 +10,7 @@ namespace Zage\Fin\Arquivos\Layout;
  * Gerenciar os arquivos do Layout BOL_T40
  */
 
-class BOL_T40 extends \Zage\Fin\Arquivos\Layout {
+class BOL_T400 extends \Zage\Fin\Arquivos\Layout {
 	
 	/**
 	 * Array com os campos do header

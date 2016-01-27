@@ -1,15 +1,15 @@
 <?php
-namespace Zage\Fin\Arquivos\Layout\BOL_T40\TipoRegistro;
+namespace Zage\Fin\Arquivos\Layout\BOL_T400\TipoRegistro;
 
 /**
- * @package: Zage\Fin\Arquivos\Layout\BOL_T40\TipoRegistro\R0
+ * @package: Zage\Fin\Arquivos\Layout\BOL_T400\TipoRegistro\R1
  * @Author: Daniel Henrique Cassela
  * @version: 1.0.1
  * 
- * Gerenciar o Tipo de Registro 0
+ * Gerenciar o Tipo de Registro 1
  */
 
-class R0 extends \Zage\Fin\Arquivos\Layout\BOL_T40\TipoRegistro {
+class R1 extends \Zage\Fin\Arquivos\Layout\BOL_T400\TipoRegistro {
 	
 	#################################################################################
 	## Construtor
@@ -25,8 +25,8 @@ class R0 extends \Zage\Fin\Arquivos\Layout\BOL_T40\TipoRegistro {
 		## Define o tipo do registro e o tamanho
 		#################################################################################
 		$this->setTipoArquivo("C400");
-		$this->setCodLayout("BOL_T40");
-		$this->setTipoRegistro("0");
+		$this->setCodLayout("BOL_T400");
+		$this->setTipoRegistro("1");
 		$this->setConfigFromDB();
 		
 		#################################################################################
