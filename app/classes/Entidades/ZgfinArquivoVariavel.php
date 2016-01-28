@@ -24,7 +24,7 @@ class ZgfinArquivoVariavel
     /**
      * @var string
      *
-     * @ORM\Column(name="VARIAVEL", type="string", length=20, nullable=true)
+     * @ORM\Column(name="VARIAVEL", type="string", length=30, nullable=true)
      */
     private $variavel;
 

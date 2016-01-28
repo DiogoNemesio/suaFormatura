@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ZgfinArquivoRegistroTipo
  *
- * @ORM\Table(name="ZGFIN_ARQUIVO_REGISTRO_TIPO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_ARQUIVO_REGISTRO_TIPO_uk01", columns={"COD_TIPO_REGISTRO", "COD_TIPO_ARQUIVO"})}, indexes={@ORM\Index(name="fk_ZGFIN_ARQUIVO_REGISTRO_TIPO_1_idx", columns={"COD_TIPO_ARQUIVO"})})
+ * @ORM\Table(name="ZGFIN_ARQUIVO_REGISTRO_TIPO", uniqueConstraints={@ORM\UniqueConstraint(name="ZGFIN_ARQUIVO_REGISTRO_TIPO_uk01", columns={"COD_TIPO_REGISTRO", "COD_TIPO_ARQUIVO", "COD_SEGMENTO"})}, indexes={@ORM\Index(name="fk_ZGFIN_ARQUIVO_REGISTRO_TIPO_1_idx", columns={"COD_TIPO_ARQUIVO"}), @ORM\Index(name="fk_ZGFIN_ARQUIVO_REGISTRO_TIPO_2_idx", columns={"COD_SEGMENTO"})})
  * @ORM\Entity
  */
 class ZgfinArquivoRegistroTipo
@@ -51,6 +51,16 @@ class ZgfinArquivoRegistroTipo
      * })
      */
     private $codTipoArquivo;
+
+    /**
+     * @var \Entidades\ZgfinArquivoRegistroSegmentoTipo
+     *
+     * @ORM\ManyToOne(targetEntity="Entidades\ZgfinArquivoRegistroSegmentoTipo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="COD_SEGMENTO", referencedColumnName="CODIGO")
+     * })
+     */
+    private $codSegmento;
 
 
     /**
@@ -153,5 +163,28 @@ class ZgfinArquivoRegistroTipo
     public function getCodTipoArquivo()
     {
         return $this->codTipoArquivo;
+    }
+
+    /**
+     * Set codSegmento
+     *
+     * @param \Entidades\ZgfinArquivoRegistroSegmentoTipo $codSegmento
+     * @return ZgfinArquivoRegistroTipo
+     */
+    public function setCodSegmento(\Entidades\ZgfinArquivoRegistroSegmentoTipo $codSegmento = null)
+    {
+        $this->codSegmento = $codSegmento;
+
+        return $this;
+    }
+
+    /**
+     * Get codSegmento
+     *
+     * @return \Entidades\ZgfinArquivoRegistroSegmentoTipo 
+     */
+    public function getCodSegmento()
+    {
+        return $this->codSegmento;
     }
 }
