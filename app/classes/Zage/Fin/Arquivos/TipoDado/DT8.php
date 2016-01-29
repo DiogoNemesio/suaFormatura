@@ -2,15 +2,15 @@
 namespace Zage\Fin\Arquivos\TipoDado;
 
 /**
- * @package: Zage\Fin\Arquivos\TipoDado\DT6
+ * @package: Zage\Fin\Arquivos\TipoDado\DT8
  * @created: 30/06/2015
  * @Author: Daniel Henrique Cassela
  * @version: 1.0
  * 
- * Gerenciar os tipos de dado do tipo DT6
+ * Gerenciar os tipos de dado do tipo DT8
  */
 
-class DT6 extends \Zage\Fin\Arquivos\TipoDado {
+class DT8 extends \Zage\Fin\Arquivos\TipoDado {
 
 	#################################################################################
 	## Construtor
@@ -20,11 +20,11 @@ class DT6 extends \Zage\Fin\Arquivos\TipoDado {
 		#################################################################################
 		## Inicializa os atributos
 		#################################################################################
-		$this->setNome("Data 6 posições (DDMMYY)");
+		$this->setNome("Data 8 posições (DDMMYYYY)");
 		$this->setAlinhamento("D");
 		$this->setCharPreenchimento("0");
 		$this->setNumCasasDecimais(null);
-		$this->setTamanho(6);
+		$this->setTamanho(8);
 		$this->setValor(null);
 		$this->setMensagemInvalido("Campo deve ser numérico de 0 a 9");
 	}
@@ -56,7 +56,7 @@ class DT6 extends \Zage\Fin\Arquivos\TipoDado {
 		## Verifica se é uma data válida
 		#################################################################################
 		try {
-			if ($this->getValor()) 	$data		= \DateTime::createFromFormat("dmy", $this->getValor());
+			if ($this->getValor()) 	$data		= \DateTime::createFromFormat("dmY", $this->getValor());
 		} catch (\Exception $e) {
 			return false;
 		}
@@ -68,7 +68,7 @@ class DT6 extends \Zage\Fin\Arquivos\TipoDado {
 	## Função de retornar o valor limpo de formatação
 	#################################################################################
 	public function getCleanVal() {
-		$data	= \DateTime::createFromFormat("dmy",$this->getValor());
+		$data	= \DateTime::createFromFormat("dmY",$this->getValor());
 		return ($data);
 	}
 	

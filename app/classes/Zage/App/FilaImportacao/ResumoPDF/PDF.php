@@ -275,10 +275,10 @@ class PDF extends \ZendPdf\PdfDocument {
 		);
 		
 		/** Colocar a Logo da Empresa **/
-		$image = \ZendPdf\Image::imageWithPath(IMG_PATH . '/zage_100x24.png');
+		$image = \ZendPdf\Image::imageWithPath(IMG_PATH . '/logo_suaformatura_100x25.png');
 		$this->pages[$pageIndex]->drawImage($image,
 			($this->pageMargin + 25),
-			($this->h - ($this->pageMargin + 29)),
+			($this->h - ($this->pageMargin + 30)),
 			($this->pageMargin + 125),
 			($this->h - ($this->pageMargin + 5))
 		);

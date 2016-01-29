@@ -2,15 +2,15 @@
 namespace Zage\Fin\Arquivos\Layout;
 
 /**
- * @package: \Zage\Fin\Arquivos\Layout\BOL_T400
+ * @package: \Zage\Fin\Arquivos\Layout\BOL_T240
  * @created: 30/06/2015
  * @Author: Daniel Henrique Cassela
  * @version: 1.0
  * 
- * Gerenciar os arquivos do Layout BOL_T400
+ * Gerenciar os arquivos do Layout BOL_T240
  */
 
-class BOL_T400 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
+class BOL_T240 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 	
 	/**
 	 * Array com os campos do header
@@ -25,10 +25,17 @@ class BOL_T400 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 	protected $trailler;
 	
 	/**
-	 * Array com os detalhes
+	 * Array com os detalhes do segmento T
 	 * @var array
 	 */
-	protected $detalhes;
+	protected $detalhesSegT;
+	
+	/**
+	 * Array com os detalhes do segmento U
+	 * @var array
+	 */
+	protected $detalhesSegU;
+	
 	
 	#################################################################################
 	## Construtor
@@ -44,7 +51,7 @@ class BOL_T400 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 		#################################################################################
 		## Define o tipo do Arquivo
 		#################################################################################
-		$this->setCodTipoLayout("BOL_T400");
+		$this->setCodTipoLayout("BOL_T240");
 		
 		#################################################################################
 		## Descobre o Tipo de arquivo através do Layout
@@ -62,7 +69,9 @@ class BOL_T400 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 		#################################################################################
 		$tipos		= $em->getRepository('\Entidades\ZgfinArquivoRegistroTipo')->findBy(array('codTipoArquivo' => $this->getCodTipoArquivo()),array('codTipoRegistro' => "ASC"));
 		for ($i = 0; $i < sizeof($tipos); $i++) {
-			$this->_tiposRegistro["R".$tipos[$i]->getCodTipoRegistro()] = $tipos[$i]->getNome();
+			$codSegmento		= ($tipos[$i]->getCodSegmento()) ? $tipos[$i]->getCodSegmento() : "";
+			$tipoRegistro		= "R".$tipos[$i]->getCodTipoRegistro().$codSegmento;
+			$this->_tiposRegistro[$tipoRegistro] = $tipos[$i]->getNome();
 		}
 
 		#################################################################################
@@ -137,24 +146,41 @@ class BOL_T400 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 				break;
 				
 				#################################################################################
-				## Detalhes
+				## Detalhes do Segmento T
 				#################################################################################
-				case '1':
+				case '3T':
 					$numDetalhes++;
 					
 					#################################################################################
 					## Salva os detalhes com as variáveis
 					#################################################################################
-					$i	= sizeof($this->detalhes);
+					$i	= sizeof($this->detalhesSegT);
 					foreach ($reg->campos as $campo) {
 						$var	= $campo->getVariavel();
 						if ($var) {
-							$this->detalhes[$i][$var]	= $campo->getCleanVal();
+							$this->detalhesSegT[$i][$var]	= $campo->getCleanVal();
 						}
 					}
 					
 				break;
-
+				
+				#################################################################################
+				## Detalhes do Segmento U
+				#################################################################################
+				case '3U':
+					#################################################################################
+					## Salva os detalhes com as variáveis
+					#################################################################################
+					$i	= sizeof($this->detalhesSegU);
+					foreach ($reg->campos as $campo) {
+						$var	= $campo->getVariavel();
+						if ($var) {
+							$this->detalhesSegU[$i][$var]	= $campo->getCleanVal();
+						}
+					}
+						
+				break;
+				
 				#################################################################################
 				## Trailler
 				#################################################################################
@@ -183,7 +209,7 @@ class BOL_T400 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 		#################################################################################
 		## Verifica a quantidade de registros
 		#################################################################################
-		if (sizeof($this->detalhes)	== 0)	$this->adicionaErro(0, 0, "1", 'As informações dos registros de detalhes não foram encontradas');
+		if (sizeof($this->detalhesSegT)	== 0)	$this->adicionaErro(0, 0, "1", 'As informações dos registros de detalhes não foram encontradas');
 		
 		#################################################################################
 		## Verifica as variáveis obrigatórias
@@ -226,20 +252,20 @@ class BOL_T400 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 		#################################################################################
 		## Salvar as informações dos detalhes
 		#################################################################################
-		for ($i = 0; $i < sizeof($this->detalhes); $i++) {
+		for ($i = 0; $i < sizeof($this->detalhesSegT); $i++) {
 			
-			$nossoNumero			= (isset($this->detalhes[$i]["NOSSO_NUMERO"])) 			? $this->detalhes[$i]["NOSSO_NUMERO"] 			: null;
-			$sequencial				= (isset($this->detalhes[$i]["SEQUENCIAL_REGISTRO"]))	? $this->detalhes[$i]["SEQUENCIAL_REGISTRO"]	: null;
-			$codLiquidacao			= (isset($this->detalhes[$i]["CODIGO_LIQUIDACAO"]))		? $this->detalhes[$i]["CODIGO_LIQUIDACAO"]		: null;
-			$dataLiquidacao			= (isset($this->detalhes[$i]["DATA_OCORRENCIA"]))		? $this->detalhes[$i]["DATA_OCORRENCIA"]		: null;
-			$valorPago				= (isset($this->detalhes[$i]["VALOR"]))					? $this->detalhes[$i]["VALOR"]					: null;
-			$valorIOF				= (isset($this->detalhes[$i]["VALOR_IOF"]))				? $this->detalhes[$i]["VALOR_IOF"]				: null;
-			$valorBoleto			= (isset($this->detalhes[$i]["VALOR_PRINCIPAL"]))		? $this->detalhes[$i]["VALOR_PRINCIPAL"]		: null;
-			$valorDesconto			= (isset($this->detalhes[$i]["VALOR_DESCONTO"]))		? $this->detalhes[$i]["VALOR_DESCONTO"]			: null;
-			$valorJuros				= (isset($this->detalhes[$i]["VALOR_JUROS"]))			? $this->detalhes[$i]["VALOR_JUROS"]			: null;
-			$valorLiquido			= (isset($this->detalhes[$i]["VALOR_LIQUIDO"]))			? $this->detalhes[$i]["VALOR_LIQUIDO"]			: null;
-			$valorOutrosCreditos	= (isset($this->detalhes[$i]["VALOR_OUTROS_CREDITOS"]))	? $this->detalhes[$i]["VALOR_OUTROS_CREDITOS"]	: null;
-			$valorOutrasDespesas	= (isset($this->detalhes[$i]["VALOR_OUTRAS_DESPESAS"]))	? $this->detalhes[$i]["VALOR_OUTRAS_DESPESAS"]	: null;
+			$nossoNumero			= (isset($this->detalhesSegT[$i]["NOSSO_NUMERO"])) 			? $this->detalhesSegT[$i]["NOSSO_NUMERO"] 			: null;
+			$sequencial				= (isset($this->detalhesSegU[$i]["SEQUENCIAL_REGISTRO"]))	? $this->detalhesSegU[$i]["SEQUENCIAL_REGISTRO"]	: null;
+			$codLiquidacao			= (isset($this->detalhesSegU[$i]["CODIGO_LIQUIDACAO"]))		? $this->detalhesSegU[$i]["CODIGO_LIQUIDACAO"]		: null;
+			$dataLiquidacao			= (isset($this->detalhesSegU[$i]["DATA_OCORRENCIA"]))		? $this->detalhesSegU[$i]["DATA_OCORRENCIA"]		: null;
+			$valorPago				= (isset($this->detalhesSegU[$i]["VALOR"]))					? $this->detalhesSegU[$i]["VALOR"]					: null;
+			$valorIOF				= (isset($this->detalhesSegU[$i]["VALOR_IOF"]))				? $this->detalhesSegU[$i]["VALOR_IOF"]				: null;
+			$valorBoleto			= (isset($this->detalhesSegT[$i]["VALOR_PRINCIPAL"]))		? $this->detalhesSegT[$i]["VALOR_PRINCIPAL"]		: null;
+			$valorDesconto			= (isset($this->detalhesSegU[$i]["VALOR_DESCONTO"]))		? $this->detalhesSegU[$i]["VALOR_DESCONTO"]			: null;
+			$valorJuros				= (isset($this->detalhesSegU[$i]["VALOR_JUROS"]))			? $this->detalhesSegU[$i]["VALOR_JUROS"]			: null;
+			$valorLiquido			= (isset($this->detalhesSegU[$i]["VALOR_LIQUIDO"]))			? $this->detalhesSegU[$i]["VALOR_LIQUIDO"]			: null;
+			$valorOutrosCreditos	= (isset($this->detalhesSegU[$i]["VALOR_OUTROS_CREDITOS"]))	? $this->detalhesSegU[$i]["VALOR_OUTROS_CREDITOS"]	: null;
+			$valorOutrasDespesas	= (isset($this->detalhesSegU[$i]["VALOR_OUTRAS_DESPESAS"]))	? $this->detalhesSegU[$i]["VALOR_OUTRAS_DESPESAS"]	: null;
 				
 			#################################################################################
 			## Criar a liquidação

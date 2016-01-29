@@ -65,10 +65,10 @@ if (isset($acao) && isset($codigo)) {
 #################################################################################
 ## Resgata os dados do grid
 #################################################################################
-$codAtividade	= \Zage\Utl\Atividade::buscaPorIdentificacao("IMP_RET_BANCARIO");
+//$codAtividade	= \Zage\Utl\Atividade::buscaPorIdentificacao("IMP_RET_BANCARIO_BOLETO");
 
 try {
-	$fila	= $em->getRepository('Entidades\ZgappFilaImportacao')->findBy(array('codAtividade' => $codAtividade), array('dataImportacao' => 'ASC')); 
+	$fila	= $em->getRepository('Entidades\ZgappFilaImportacao')->findBy(array('codOrganizacao' => $system->getCodOrganizacao()), array('dataImportacao' => 'ASC')); 
 } catch (\Exception $e) {
 	\Zage\App\Erro::halt($e->getMessage());
 }

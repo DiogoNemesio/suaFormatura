@@ -780,4 +780,17 @@ class Util {
 		return $ipaddress;
 	}
 	
+	
+   /**
+    * Checks if a folder exist and return canonicalized absolute pathname (sort version)
+	* @param string $folder the path being checked.
+	* @return mixed returns the canonicalized absolute pathname on success otherwise FALSE is returned
+	*/
+	public static function existeDiretorio($folder) {
+		// Get canonicalized absolute pathname
+		$path = realpath($folder);
+
+		// If it exist, check if it's a directory
+		return ($path !== false AND is_dir($path)) ? $path : false;
+	}
 }

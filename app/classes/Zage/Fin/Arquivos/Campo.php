@@ -21,8 +21,9 @@ class Campo extends \Zage\Fin\Arquivos\TipoDado {
 	const T_A		= 'ALFA';
 	const T_D		= 'DIN';
 	const T_DT6		= 'DT6';
+	const T_DT8		= 'DT8';
 	
-	private $_tipoValidos	= array(self::T_N,self::T_A,self::T_D,self::T_DT6);
+	private $_tipoValidos	= array(self::T_N,self::T_A,self::T_D,self::T_DT6,self::T_DT8);
 	
 	/**
 	 * Ordem 

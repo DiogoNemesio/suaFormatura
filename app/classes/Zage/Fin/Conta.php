@@ -366,7 +366,7 @@ class Conta extends \Entidades\ZgfinConta {
     
     
     /**
-     * Busca o código da conta através da agencia e conta corrente
+     * Busca a conta através da agencia e conta corrente
      */
     public static function busca ($codOrganizacao,$agencia,$contaCorrente) {
     	global $em,$system;
@@ -392,5 +392,31 @@ class Conta extends \Entidades\ZgfinConta {
     	}
     }
     
+    /**
+     * Busca a conta através da agencia e código do cedente
+     */
+    public static function buscaPorCedente ($codOrganizacao,$agencia,$codCedente) {
+    	global $em,$system;
+    
+    	$qb 	= $em->createQueryBuilder();
+    
+    	try {
+    		$qb->select('c')
+    		->from('\Entidades\ZgfinConta','c')
+    		->leftJoin('\Entidades\ZgfinAgencia', 'a', \Doctrine\ORM\Query\Expr\Join::WITH, 'c.codAgencia = a.codigo')
+    		->where($qb->expr()->andX(
+    			$qb->expr()->eq('c.codOrganizacao'	, ':codOrganizacao'),
+    			$qb->expr()->eq('a.agencia'			, ':agencia'),
+    			$qb->expr()->eq('c.codigoCedente'	, ':codCedente')
+    		))
+    		->setParameter('codOrganizacao'	, $codOrganizacao)
+    		->setParameter('agencia'		, $agencia)
+    		->setParameter('codCedente'		, $codCedente);
+    		$query 		= $qb->getQuery();
+    		return($query->getOneOrNullResult());
+    	} catch (\Exception $e) {
+    		\Zage\App\Erro::halt($e->getMessage());
+    	}
+    }
     
 }

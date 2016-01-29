@@ -2,9 +2,14 @@
 	<div class="page-content">
 		<form>
 			<div class="page-header">
-				<h1>Arquivos Financeiros<small><i class="fa fa-angle-double-right"></i>Selecione o Tipo de Arquivo: </small>
-					<select class="width-30 chosen-select" id="tempCodTipoArquivoLayoutID" name="tempCodTipoArquivoLayout" >
+				<h1>Arquivos Financeiros<small><i class="fa fa-angle-double-right"></i>Selecione a conta no qual o arquivo pertence: </small>
+					<!-- <select class="width-30 chosen-select" id="tempCodTipoArquivoLayoutID" name="tempCodTipoArquivoLayout">
 					%LAYOUTS%
+					</select>
+					-->
+					&nbsp;
+					<select class="width-30 chosen-select" id="tempCodContaID" name="tempCodConta" data-rel="select2">
+					%CONTAS%
 					</select>
 				</h1>
 			</div><!-- /.page-header -->
@@ -15,6 +20,7 @@
 				<div id="dropzone">
 					<form action="%DP%" class="dropzone" id='dropzoneID'>
 						<input type="hidden" name="codTipoArquivoLayout" id="codTipoArquivoLayoutID">
+						<input type="hidden" name="codConta" id="codContaID">
 						<div class="fallback">
 							<input name="file" type="file" multiple="" />
 						</div>
@@ -49,11 +55,12 @@ jQuery(function($){
 			dictCancelUpload: "Cancelar",
 		  });
 		dz.on("addedfile", function(file) {
-			if (!$("#tempCodTipoArquivoLayoutID").val()) {
-				alert("Selecione uma versão !!!");
+			if (!$("#tempCodContaID").val()) {
+				alert("Selecione uma conta !!!");
 				return false;
 			}
 			$("#codTipoArquivoLayoutID").val($("#tempCodTipoArquivoLayoutID").val());
+			$("#codContaID").val($("#tempCodContaID").val());
 		});
 
 		dz.on("success", function(file,pMensagem) {
