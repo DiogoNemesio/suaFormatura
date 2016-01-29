@@ -189,7 +189,7 @@ class BOL_T400 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 		## Verifica as variáveis obrigatórias
 		#################################################################################
 		if (!isset($this->header["AGENCIA"]) 		|| empty($this->header["AGENCIA"]))			$this->adicionaErro(0, 0, "0", 'Variável "Agência" não encontrada no Header');
-		if (!isset($this->header["CONTA_CORRENTE"]) || empty($this->header["CONTA_CORRENTE"]))	$this->adicionaErro(0, 0, "0", 'Variável "CONTA_CORRENTE" não encontrada no Header');
+		//if (!isset($this->header["CONTA_CORRENTE"]) || empty($this->header["CONTA_CORRENTE"]))	$this->adicionaErro(0, 0, "0", 'Variável "CONTA_CORRENTE" não encontrada no Header');
 	
 	}
 	

@@ -221,6 +221,7 @@ abstract class TipoRegistro {
 			$campo->tipo->completar();
 			if ($campo->tipo->validar() == false) {
 				$erro	= new \Zage\App\FilaImportacao\ResumoPDF\Item\Erro();
+				$erro->setLinha($this->getLinha());
 				$erro->setPosicao($campo->getOrdem());
 				$erro->setTipoRegistro($this->getTipoRegistro());
 				$erro->setMensagem($campo->tipo->getMensagemInvalido());
@@ -228,13 +229,13 @@ abstract class TipoRegistro {
 			}else{
 				$registro .= $campo->getValor();
 			}
-			
 		}
 		
 		if ($this->getTamanho() != "V") {
 			if (mb_strlen($registro,$system->config["database"]["charset"]) !== $this->getTamanho()) {
 				$erro	= new \Zage\App\FilaImportacao\ResumoPDF\Item\Erro();
 				$erro->setPosicao(0);
+				$erro->setLinha($this->getLinha());
 				$erro->setTipoRegistro($this->getTipoRegistro());
 				$erro->setMensagem("Tamanho do registro (".mb_strlen($registro,$system->config["database"]["charset"]).") inválido, deveria ser (".$this->getTamanho().")" );
 				return $erro;

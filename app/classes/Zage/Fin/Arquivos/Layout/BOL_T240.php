@@ -69,7 +69,7 @@ class BOL_T240 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 		#################################################################################
 		$tipos		= $em->getRepository('\Entidades\ZgfinArquivoRegistroTipo')->findBy(array('codTipoArquivo' => $this->getCodTipoArquivo()),array('codTipoRegistro' => "ASC"));
 		for ($i = 0; $i < sizeof($tipos); $i++) {
-			$codSegmento		= ($tipos[$i]->getCodSegmento()) ? $tipos[$i]->getCodSegmento() : "";
+			$codSegmento		= ($tipos[$i]->getCodSegmento()) ? $tipos[$i]->getCodSegmento()->getCodigo() : "";
 			$tipoRegistro		= "R".$tipos[$i]->getCodTipoRegistro().$codSegmento;
 			$this->_tiposRegistro[$tipoRegistro] = $tipos[$i]->getNome();
 		}
@@ -103,7 +103,14 @@ class BOL_T240 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 			#################################################################################
 			## Descobre o tipo de Registro
 			#################################################################################
-			$tipoReg	= $reg->getTipoRegistro();
+			
+			$codTipoReg		= $reg->getTipoRegistro();
+			if ($codTipoReg == 3) {
+				$codSegmento	= $reg->getCodSegmento();
+			}else{
+				$codSegmento	= "";
+			}
+			$tipoReg		= $codTipoReg . $codSegmento;
 			$linha++;
 			
 			#################################################################################
@@ -215,7 +222,7 @@ class BOL_T240 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 		## Verifica as variáveis obrigatórias
 		#################################################################################
 		if (!isset($this->header["AGENCIA"]) 		|| empty($this->header["AGENCIA"]))			$this->adicionaErro(0, 0, "0", 'Variável "Agência" não encontrada no Header');
-		if (!isset($this->header["CONTA_CORRENTE"]) || empty($this->header["CONTA_CORRENTE"]))	$this->adicionaErro(0, 0, "0", 'Variável "CONTA_CORRENTE" não encontrada no Header');
+		//if (!isset($this->header["CONTA_CORRENTE"]) || empty($this->header["CONTA_CORRENTE"]))	$this->adicionaErro(0, 0, "0", 'Variável "CONTA_CORRENTE" não encontrada no Header');
 	
 	}
 	
@@ -285,6 +292,10 @@ class BOL_T240 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 	 * Carregar um arquivo PTU
 	 */
 	public function loadFile ($arquivo) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $log;
 		
 		#################################################################################
 		## Verifica se o arquivo existe
@@ -319,18 +330,28 @@ class BOL_T240 extends \Zage\Fin\Arquivos\Layout\RetornoBancarioBoleto {
 		## Percorre as linhas do arquivo
 		#################################################################################
 		for ($i = 0; $i < sizeof($lines); $i++) {
-
-			$tipoReg	= "R".substr($lines[$i],0 ,1);
-			$linha		= str_replace(array("\n", "\r"), '', $lines[$i]); 
-			$reg		= $this->adicionaRegistro($tipoReg);
+			$codTipoReg		= substr($lines[$i],7 ,1);
+			//$log->info("Tipo de registro encontrado: $codTipoReg");
+			if ($codTipoReg == 3) {
+				$codSegmento	= substr($lines[$i],13 ,1);
+			}else{
+				$codSegmento	= "";
+			}
+			$tipoReg		= "R".$codTipoReg.$codSegmento;
+			$linha			= str_replace(array("\n", "\r"), '', $lines[$i]); 
+			$reg			= $this->adicionaRegistro($tipoReg);
 			if ($reg === null) {
-				$this->adicionaErro(0, $i+1, null, "Linha fora do padrão definido");
-				return;
+				continue;
+		//		$this->adicionaErro(0, $i+1, null, "Linha fora do padrão definido");
+		//		return;
 			}else{
 				$ok			= $this->registros[$reg]->carregaLinha($linha);
 			}
 			
-			if ($ok !== true) 	$this->adicionaErro(0, $this->registros[$reg]->getLinha(), $this->registros[$reg]->getTipoRegistro(), $ok);
+			if ($ok !== true) 	{
+				$log->err("Erro no tipo de registro: $codTipoReg, CodSegmento: $codSegmento, mensagem: $ok");
+				$this->adicionaErro(0, $this->registros[$reg]->getLinha(), $this->registros[$reg]->getTipoRegistro(), $ok);
+			}
 		}
 
 	}

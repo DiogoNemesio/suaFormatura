@@ -136,7 +136,10 @@ if (($type == "application/octet-stream") || ($type == "text/plain") || ($type =
 	
 	
 	try {
-		\Zage\App\Fila::cadastrar($codModulo, $target_path, $codTipoArq, $codAtividade,$codTipoArquivoLayout);
+		
+		$variavel 	= $codTipoArquivoLayout . "|". $codConta;
+		
+		\Zage\App\Fila::cadastrar($codModulo, $target_path, $codTipoArq, $codAtividade,$variavel);
 		$em->flush();
 		$em->clear();
 	} catch (\Exception $e) {

@@ -131,6 +131,8 @@ abstract class Layout {
 		}else{
 			$this->_resumo->adicionaErro(0, 0, null, "Classe não existe ($classe)");
 			throw new \Exception("Classe não existe ($classe)");
+		//}else{
+		//	return null;
 		}
 
 		return ($i);
@@ -214,7 +216,6 @@ abstract class Layout {
 		return ($this->conteudo);
 	}
 	
-	
 	/**
 	 * Calcula o número de linhas do PTU
 	 */
@@ -224,12 +225,12 @@ abstract class Layout {
 
 	/**
 	 * Adicionar um registro de erro
-	 * @param string||\Zage\Fin\Arquivos\Erro $erro
-	 * @param integer $linha
-	 * @param string $tipoReg
-	 * @param integer $posicao
+	 * @param unknown $posicao
+	 * @param unknown $linha
+	 * @param unknown $tipoReg
+	 * @param unknown $erro
 	 */
-	public function adicionaErro ($erro,$linha,$tipoReg,$posicao) {
+	public function adicionaErro ($posicao,$linha,$tipoReg,$erro) {
 		#################################################################################
 		## Número máximo de erros
 		#################################################################################
@@ -250,7 +251,7 @@ abstract class Layout {
 		}
 		
 		if ($erro instanceof \Zage\App\FilaImportacao\ResumoPDF\Item\Erro) {
-			$this->_resumo->adicionaErro($erro->getPosicao(), $erro->getLinha, $erro->getTipoRegistro(), $erro->getMensagem());
+			$this->_resumo->adicionaErro($erro->getPosicao(), $erro->getLinha(), $erro->getTipoRegistro(), $erro->getMensagem());
 		}else{
 			$this->_resumo->adicionaErro($posicao, $linha, $tipoReg, $erro);
 		}
@@ -258,14 +259,6 @@ abstract class Layout {
 
 
 	/**
-	 * Adicionar um registro de erro
-	 * @param string||\Zage\Fin\Arquivos\Erro $erro
-	 * @param integer $linha
-	 * @param string $tipoReg
-	 * @param integer $posicao
-	 */
-	
-	
 	/**
 	 * Adicionar uma mensagem de aviso
 	 * @param unknown $posicao

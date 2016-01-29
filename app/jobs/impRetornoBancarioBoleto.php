@@ -45,11 +45,36 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 	#################################################################################
 	\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'IN');
 	
+	
+	#################################################################################
+	## Resgatar o Tipo de Layout de arquivo e a conta corrente da variável
+	#################################################################################
+	$aVar						= explode("|",$fila[$i]->getVariavel());
+	$codTipoArquivoLayout		= $aVar[0];
+	$codConta					= $aVar[1];
+
+	#################################################################################
+	## Verificar se o Layout e a conta existem
+	#################################################################################
+	$oTipoArquivoLayout			= $em->getRepository('\Entidades\ZgfinArquivoLayoutTipo')->findOneBy(array('codigo' => $codTipoArquivoLayout)); 
+	$oContaFila					= $em->getRepository('\Entidades\ZgfinConta')->findOneBy(array('codigo' => $codConta));
+	
+	if (!$oTipoArquivoLayout)	{
+		$log->err("0xUU8*iasd: Importação cancelada por não encontrar o Layout informado (".$codTipoArquivoLayout."), código da fila: ".$fila[$i]->getCodigo());
+		\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'C');
+	}
+	
+	if (!$oContaFila)	{
+		$log->err("0xUU8*iase: Importação cancelada por não encontrar a conta corrente informada (".$codConta."), código da fila: ".$fila[$i]->getCodigo());
+		\Zage\App\Fila::alteraStatus($fila[$i]->getCodigo(), 'C');
+	}
+	
+	
 	#################################################################################
 	## Descobrindo a classe que irá gerenciar o arquivo
 	#################################################################################
-	$classe	= "\\Zage\\Fin\\Arquivos\\Layout\\".$fila[$i]->getVariavel();
-	$file	= CLASS_PATH . "/Zage/Fin/Arquivos/Layout/".$fila[$i]->getVariavel().'.php';
+	$classe	= "\\Zage\\Fin\\Arquivos\\Layout\\".$oTipoArquivoLayout->getCodigo();
+	$file	= CLASS_PATH . "/Zage/Fin/Arquivos/Layout/".$oTipoArquivoLayout->getCodigo().'.php';
 	
 	if (!file_exists($file)) {
 		#################################################################################
@@ -92,9 +117,39 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 				}else{
 					$contaCorrente			= \Zage\Fin\Conta::busca($fila[$i]->getCodOrganizacao()->getCodigo(), $retorno->getAgencia(), $retorno->getContaCorrente());
 				}
-				if (!$contaCorrente)		$retorno->adicionaErro('Conta "'.$retorno->getContaCorrente().'" da agência "'.$retorno->getAgencia().'" não localizada no sistema !!!', 0, "0", 0);
+				if (!$contaCorrente)		$retorno->adicionaErro(0,1,0,'Conta "'.$retorno->getContaCorrente().'" da agência "'.$retorno->getAgencia().'" não localizada no sistema !!!');
 				
-				if ($contaCorrente)			$log->info("Conta Corrente encontrada");
+				if ($contaCorrente)			{
+					#################################################################################
+					## Verificar se a conta encontrada é a mesma no qual o arquivo foi importado
+					#################################################################################
+					if ($contaCorrente->getCodigo() != $oContaFila->getCodigo()) {
+						$retorno->adicionaErro(0,1,0,'Arquivo de retorno não pertence a conta corrente selecionada na importação');
+						$log->err('0xKlll*%2s: Arquivo de retorno não pertence a conta corrente selecionada na importação, código da fila: '.$fila[$i]->getCodigo(). ' Conta da fila: '.$oContaFila->getCodigo().' Conta do arquivo: '.$contaCorrente->getCodigo(). " Usuário que importou o arquivo: ".$fila[$i]->getCodUsuario()->getUsuario());
+					}
+
+					
+					#################################################################################
+					## Verifica se a formatura está sendo administrada por um Cerimonial, para resgatar as contas do cerimonial tb
+					#################################################################################
+					$oFmtAdm		= \Zage\Fmt\Formatura::getCerimonalAdm($fila[$i]->getCodOrganizacao()->getCodigo());
+						
+					#################################################################################
+					## Verificar se a conta encontrada é de uma organização gerenciada pela organização
+					## que importou o arquivo
+					#################################################################################
+					$aOrg			= array($fila[$i]->getCodOrganizacao()->getCodigo());
+					if ($oFmtAdm)	$aOrg[]		= $oFmtAdm->getCodigo();
+					$oContas		= $em->getRepository('Entidades\ZgfinConta')->findBy(array('codOrganizacao' => $aOrg));
+					$aContas			= array();
+					for ($j = 0; $j < sizeof($oContas); $j++) {
+						$aContas[$oContas[$j]->getCodigo()]		= $oContas[$j]->getCodigo();
+					}
+					if (array_key_exists($contaCorrente->getCodigo(), $aContas) == false) {
+						$retorno->adicionaErro(0,1,0,'Conta corrente do arquivo não pertence a organização');
+						$log->err('0x09Kilasd: Conta corrente do arquivo não pertence a organização, código da fila: '.$fila[$i]->getCodigo(). ' Conta do arquivo: '.$contaCorrente->getCodigo(). " Usuário que importou o arquivo: ".$fila[$i]->getCodUsuario()->getUsuario());
+					}
+				}
 				
 			}else{
 				$log->debug("Arquivo inválido");
@@ -108,7 +163,8 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 				## Faz o loop nas liquidacoes para fazer a baixa
 				#################################################################################
 				for ($l = 0; $l < $retorno->getNumLiquidacoes(); $l++) {
-					$log->info("Liquidação [".$l."]: ".serialize($retorno->liquidacoes[$l]));
+					//$log->info("Liquidação [".$l."]: ".serialize($retorno->liquidacoes[$l]));
+					
 
 					#################################################################################
 					## Resgatar as variáveis
@@ -117,30 +173,34 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 					$oDataLiq				= $retorno->liquidacoes[$l]->getDataLiquidacao();
 					$sequencial				= $retorno->liquidacoes[$l]->getSequencial();
 					$codLiquidacao			= $retorno->liquidacoes[$l]->getCodLiquidacao();
-					$valorPago				= $retorno->liquidacoes[$l]->getValorPago();
-					$valorDesconto			= $retorno->liquidacoes[$l]->getValorDesconto();
-					$valorBoleto			= $retorno->liquidacoes[$l]->getValorBoleto();
-					$valorIOF				= $retorno->liquidacoes[$l]->getValorIOF();
-					$valorJuros				= $retorno->liquidacoes[$l]->getValorJuros();
-					$valorLiquido			= $retorno->liquidacoes[$l]->getValorLiquido();
-					$valorOutrosCreditos	= $retorno->liquidacoes[$l]->getValorOutrosCreditos();
-					$valorOutrasDespesas	= $retorno->liquidacoes[$l]->getValorOutrasDespesas();
+					$valorPago				= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorPago());
+					$valorDesconto			= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorDesconto());
+					$valorBoleto			= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorBoleto());
+					$valorIOF				= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorIOF());
+					$valorJuros				= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorJuros());
+					$valorLiquido			= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorLiquido());
+					$valorOutrosCreditos	= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorOutrosCreditos());
+					$valorOutrasDespesas	= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorOutrasDespesas());
+					
+					$log->debug("Liquidação [".$l."]: NossoNumero: ".$nossoNumero." ValorPago: ".$valorPago." ValorJuros: ".$valorJuros." Desconto: ".$valorDesconto." ValorLíquido: ".$valorLiquido." ValorBoleto: ".$valorBoleto);
+					
+					$valorBaixa				= ($valorPago - $valorJuros);
 					
 					#################################################################################
 					## Validações
 					#################################################################################
 					if (!$nossoNumero) {
-						$retorno->adicionaErro('Nosso Número não informado no arquivo !!!', $sequencial, "1", 0);
+						$retorno->adicionaErro(0,$sequencial,0,'Nosso Número não informado no arquivo !!!');
 						continue;
 					}
 					
 					if (!$oDataLiq) {
-						$retorno->adicionaErro('Data de liquidação não informada no arquivo !!!', $sequencial, "1", 0);
+						$retorno->adicionaErro(0,$sequencial,0,'Data de liquidação não informada no arquivo !!!');
 						continue;
 					}
 
 					if (!$valorPago) {
-						$retorno->adicionaErro('Valor da liquidação não informado no arquivo !!!', $sequencial, "1", 0);
+						$retorno->adicionaErro(0,$sequencial,0,'Valor da liquidação não informado no arquivo !!!');
 						continue;
 					}
 					
@@ -150,7 +210,7 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 					$oConta		= \Zage\Fin\ContaReceber::buscaPorNossoNumero($contaCorrente->getCodigo(),$nossoNumero);
 					
 					if (!$oConta)	{
-						$retorno->adicionaErro('Nosso Número não localizado "'.$nossoNumero.'" !!!', $sequencial, "1", 0);
+						$retorno->adicionaErro(0,$sequencial,0,'Nosso Número não localizado "'.$nossoNumero.'" !!!');
 						continue;
 					}elseif (empty($codLiquidacao)) {
 						$retorno->adicionaAviso("",$sequencial,"1",'Conta: "'.$oConta->getDescricao().'" Parcela: ('.$oConta->getParcela()."/".$oConta->getNumParcelas().') ainda não foi liquidada pelo cliente !!!');
@@ -190,18 +250,18 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 						#################################################################################
 						$em->getConnection()->beginTransaction();
 						try {
-							$erro		= $conta->recebe($oConta,$contaCorrente->getCodigo(),$codFormaPag,$dataRec,$valorPago,$valorJuros,0,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$fila[$i]->getNome(),$codTipoBaixa,$sequencial,null,null);
+							$erro		= $conta->recebe($oConta,$contaCorrente->getCodigo(),$codFormaPag,$dataRec,$valorBaixa,$valorJuros,0,$valorDesconto,$valorOutros,$valorDescJuros,$valorDescMora,$fila[$i]->getNome(),$codTipoBaixa,$sequencial,null,null);
 								
 							$em->flush();
 							$em->clear();
 							$em->getConnection()->commit();
 						} catch (\Exception $e) {
 							$em->getConnection()->rollback();
-							$retorno->adicionaErro($e->getMessage(), $sequencial, "1", 0);
+							$retorno->adicionaErro(0,$sequencial,0,$e->getMessage());
 						}
 					
 						if ($erro) {
-							$retorno->adicionaErro($erro, $sequencial, "1", 0);
+							$retorno->adicionaErro(0,$sequencial,0,$erro);
 						}else{
 							$retorno->adicionaMensagem("",$sequencial,"1",'Conta: "'.$oConta->getDescricao().'" Parcela: ('.$oConta->getParcela()."/".$oConta->getNumParcelas().') baixa no valor de '.\Zage\App\Util::to_money($valorPago).' efetuada com sucesso !!!');
 						}
