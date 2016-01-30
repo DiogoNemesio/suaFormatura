@@ -455,7 +455,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$linhaDigitavel		= $boleto->getLinhaDigitavel();
 	$nossoNumero		= $boleto->getNossoNumero();
 	$nossoNumeroLimpo	= str_replace(array('.', '/', ' ', '-'), '', $nossoNumero);
-
+	
 	#################################################################################
 	## Atualiza o nosso número
 	#################################################################################

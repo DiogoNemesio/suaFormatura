@@ -148,6 +148,8 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 					if (array_key_exists($contaCorrente->getCodigo(), $aContas) == false) {
 						$retorno->adicionaErro(0,1,0,'Conta corrente do arquivo não pertence a organização');
 						$log->err('0x09Kilasd: Conta corrente do arquivo não pertence a organização, código da fila: '.$fila[$i]->getCodigo(). ' Conta do arquivo: '.$contaCorrente->getCodigo(). " Usuário que importou o arquivo: ".$fila[$i]->getCodUsuario()->getUsuario());
+					}else{
+						$codBanco	= $contaCorrente->getCodAgencia()->getCodBanco()->getCodBanco();
 					}
 				}
 				
@@ -182,6 +184,13 @@ for ($i = 0; $i < sizeof($fila); $i++) {
 					$valorOutrosCreditos	= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorOutrosCreditos());
 					$valorOutrasDespesas	= \Zage\App\Util::to_float($retorno->liquidacoes[$l]->getValorOutrasDespesas());
 					
+					#################################################################################
+					## Ajuste do nosso número por banco
+					#################################################################################
+					if ($codBanco == "104") {
+						$nossoNumero	.= \OpenBoleto\BoletoAbstract::modulo11($nossoNumero)["digito"];
+					}
+								
 					$log->debug("Liquidação [".$l."]: NossoNumero: ".$nossoNumero." ValorPago: ".$valorPago." ValorJuros: ".$valorJuros." Desconto: ".$valorDesconto." ValorLíquido: ".$valorLiquido." ValorBoleto: ".$valorBoleto);
 					
 					$valorBaixa				= ($valorPago - $valorJuros);
