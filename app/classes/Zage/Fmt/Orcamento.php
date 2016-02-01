@@ -177,4 +177,148 @@ class Orcamento {
 		}
 		
 	}
+
+
+	/**
+	 * Listar as informações de contrato de cada tipo de evento do Orçamento
+	 * @param unknown $codOrcamento
+	 */
+	public static function listaInfoContratoGrupoItemOrc($codFormatura) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfmtPlanoOrcGrupoItem'		, 'POGI');
+			$rsm->addFieldResult('POGI', 'CODIGO', 'codigo');
+			$rsm->addFieldResult('POGI', 'DESCRICAO', 'descricao');
+			$rsm->addScalarResult('valor'		, 'valor');
+			$rsm->addScalarResult('qtde'		, 'qtde');
+
+			$query 	= $em->createNativeQuery("
+				SELECT 	T.*
+				FROM	(
+					SELECT	POGI.CODIGO,POGI.DESCRICAO,SUM(OI.QUANTIDADE) AS qtde, SUM(OI.QUANTIDADE*OI.VALOR_UNITARIO) AS valor
+					FROM 	ZGFMT_ORCAMENTO_ITEM			OI,
+							ZGFMT_ORCAMENTO					O,
+							ZGFMT_PLANO_ORC_ITEM			POI,
+							ZGFMT_PLANO_ORC_GRUPO_ITEM		POGI
+					WHERE   OI.COD_ORCAMENTO				= O.CODIGO
+					AND	    OI.COD_ITEM						= POI.CODIGO
+					AND		POI.COD_GRUPO_ITEM				= POGI.CODIGO
+					AND		O.COD_ORGANIZACAO				= :codOrg
+					AND		O.IND_ACEITE					= 1
+					GROUP	BY POGI.CODIGO,POGI.DESCRICAO
+				) T
+				", $rsm);
+			$query->setParameter('codOrg'			,$codFormatura);
+		
+			$info		= $query->getResult();
+			return ($info);
+				
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+
+	/**
+	 * Calcula a quantidade contratada por grupo de item de orçamento de uma formatura
+	 * @param unknown $codOrcamento
+	 */
+	public static function calculaQtdeGrupoItemOrc($codFormatura) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfmtPlanoOrcGrupoItem'		, 'POGI');
+			$rsm->addFieldResult('POGI', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('qtde'		, 'qtde');
+	
+			$query 	= $em->createNativeQuery("
+				SELECT 	T.*
+				FROM	(
+					SELECT	POGI.CODIGO,SUM(IOCF.QUANTIDADE) AS qtde
+					FROM 	ZGFMT_ORCAMENTO_ITEM			OI,
+							ZGFMT_ORCAMENTO					O,
+							ZGFMT_PLANO_ORC_ITEM			POI,
+							ZGFMT_PLANO_ORC_GRUPO_ITEM		POGI,
+							ZGFMT_ITEM_ORC_CONTRATO			IOC,
+							ZGFMT_ITEM_ORC_CONTRATO_FORNEC	IOCF
+					WHERE   OI.COD_ORCAMENTO				= O.CODIGO
+					AND	    OI.COD_ITEM						= POI.CODIGO
+					AND		POI.COD_GRUPO_ITEM				= POGI.CODIGO
+					AND		OI.CODIGO						= IOC.COD_ITEM_ORCAMENTO
+					AND		O.CODIGO						= IOC.COD_ORCAMENTO
+					AND		IOC.CODIGO						= IOCF.COD_ITEM_CONTRATO
+					AND		O.COD_ORGANIZACAO				= :codOrg
+					AND		O.IND_ACEITE					= 1
+					GROUP	BY POGI.CODIGO
+				) T
+				", $rsm);
+			$query->setParameter('codOrg'			,$codFormatura);
+	
+			$info		= $query->getResult();
+			return ($info);
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
+	/**
+	 * Calcula o valor pago por grupo de item de orçamento de uma formatura
+	 * @param unknown $codOrcamento
+	 */
+	public static function calculaValorPagoGrupoItemOrc($codFormatura) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		try {
+			$rsm 	= new \Doctrine\ORM\Query\ResultSetMapping();
+			$rsm->addEntityResult('\Entidades\ZgfmtPlanoOrcGrupoItem'		, 'POGI');
+			$rsm->addFieldResult('POGI', 'CODIGO', 'codigo');
+			$rsm->addScalarResult('valor'		, 'valor');
+	
+			$query 	= $em->createNativeQuery("
+				SELECT 	T.*
+				FROM	(
+					SELECT	POGI.CODIGO,SUM(HP.VALOR_PAGO) AS valor
+					FROM 	ZGFMT_ORCAMENTO_ITEM			OI,
+							ZGFMT_ORCAMENTO					O,
+							ZGFMT_PLANO_ORC_ITEM			POI,
+							ZGFMT_PLANO_ORC_GRUPO_ITEM		POGI,
+							ZGFMT_ITEM_ORC_CONTRATO			IOC,
+							ZGFIN_CONTA_PAGAR				CP,
+							ZGFIN_HISTORICO_PAG				HP
+					WHERE   OI.COD_ORCAMENTO				= O.CODIGO
+					AND	    OI.COD_ITEM						= POI.CODIGO
+					AND		POI.COD_GRUPO_ITEM				= POGI.CODIGO
+					AND		OI.CODIGO						= IOC.COD_ITEM_ORCAMENTO
+					AND		O.CODIGO						= IOC.COD_ORCAMENTO
+					AND		CP.COD_ORGANIZACAO				= O.COD_ORGANIZACAO
+					AND		CP.COD_TRANSACAO				= IOC.COD_TRANSACAO
+					AND		CP.CODIGO						= HP.COD_CONTA_PAG
+					AND		O.COD_ORGANIZACAO				= :codOrg
+					AND		O.IND_ACEITE					= 1
+					GROUP	BY POGI.CODIGO
+				) T
+				", $rsm);
+			$query->setParameter('codOrg'			,$codFormatura);
+	
+			$info		= $query->getResult();
+			return ($info);
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	}
+	
 }

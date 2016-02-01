@@ -31,13 +31,6 @@ class ZgfmtItemOrcContrato
     /**
      * @var integer
      *
-     * @ORM\Column(name="IND_CONTRATADO", type="integer", nullable=true)
-     */
-    private $indContratado;
-
-    /**
-     * @var integer
-     *
      * @ORM\Column(name="COD_TRANSACAO", type="integer", nullable=true)
      */
     private $codTransacao;
@@ -104,29 +97,6 @@ class ZgfmtItemOrcContrato
     public function getDataEvento()
     {
         return $this->dataEvento;
-    }
-
-    /**
-     * Set indContratado
-     *
-     * @param integer $indContratado
-     * @return ZgfmtItemOrcContrato
-     */
-    public function setIndContratado($indContratado)
-    {
-        $this->indContratado = $indContratado;
-
-        return $this;
-    }
-
-    /**
-     * Get indContratado
-     *
-     * @return integer 
-     */
-    public function getIndContratado()
-    {
-        return $this->indContratado;
     }
 
     /**
