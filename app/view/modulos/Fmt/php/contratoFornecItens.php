@@ -75,7 +75,7 @@ $grid->importaDadosDoctrine($oItens);
 ## Popula os valores dos botões
 #################################################################################
 for ($i = 0; $i < sizeof($oItens); $i++) {
-	$fid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codFormando=');
+	$cid		= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codItem='.$oItens[$i]->getCodigo());
 
 	#################################################################################
 	## Calcula o valor total do item
@@ -108,6 +108,13 @@ for ($i = 0; $i < sizeof($oItens); $i++) {
 	
 	$grid->setValorCelula($i,3,'<span class="badge '.$classeCon.'" data-rel="tooltip" title="'.$pctCon.'% contratado">'.$pctCon.' %</span>');
 	$grid->setValorCelula($i,4,'<span class="badge '.$classePag.'" data-rel="tooltip" title="'.$pctPag.'% contratado">'.$pctPag.' %</span>');
+	
+	#################################################################################
+	## Define os endereços dos botões
+	#################################################################################
+	$urlCon			= ROOT_URL . "/Fmt/contratoFornecCad.php?id=".$cid;
+	
+	
 }
 
 #################################################################################
