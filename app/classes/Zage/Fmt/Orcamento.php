@@ -178,7 +178,47 @@ class Orcamento {
 		
 	}
 
-
+	/**
+	 * Listar os itens de orçamento de um grupo de item de orçamento de uma determinada formatura
+	 * Irá listar do orçamento aceito
+	 * @param unknown $codOrcamento
+	 */
+	public static function listaItensGrupoItemOrc($codFormatura,$codGrupoItem) {
+		#################################################################################
+		## Variáveis globais
+		#################################################################################
+		global $em,$system,$log;
+	
+		$qb 	= $em->createQueryBuilder();
+	
+		try {
+			$qb->select('oi')
+			->from('\Entidades\ZgfmtOrcamentoItem','oi')
+			->leftJoin('\Entidades\ZgfmtOrcamento', 'o', \Doctrine\ORM\Query\Expr\Join::WITH, 'oi.codOrcamento = o.codigo')
+			->leftJoin('\Entidades\ZgfmtPlanoOrcItem', 'poi', \Doctrine\ORM\Query\Expr\Join::WITH, 'oi.codItem = poi.codigo')
+			->where($qb->expr()->andX(
+				$qb->expr()->eq('poi.codGrupoItem'	, ':codGrupoItem'),
+				$qb->expr()->eq('o.codOrganizacao'	, ':codOrganizacao'),
+				$qb->expr()->eq('o.indAceite'		, ':indAceite')
+			))
+	
+			->orderBy('poi.ordem','ASC')
+			->setParameter('indAceite'			,'1')
+			->setParameter('codGrupoItem'		,$codGrupoItem)
+			->setParameter('codOrganizacao'		,$codFormatura);
+	
+			$query 		= $qb->getQuery();
+	
+			return($query->getResult());
+	
+		} catch (\Exception $e) {
+			\Zage\App\Erro::halt($e->getMessage());
+		}
+	
+	}
+	
+	
+	
 	/**
 	 * Listar as informações de contrato de cada tipo de evento do Orçamento
 	 * @param unknown $codOrcamento

@@ -34,7 +34,6 @@ if (isset($_GET['id'])) {
 #################################################################################
 $system->checaPermissao($_codMenu_);
 
-
 #################################################################################
 ## Resgata as informações dos tipos de eventos
 #################################################################################
@@ -69,7 +68,8 @@ $pctPagAcu			= 0;
 $numTipoEventos		= sizeof($tipoEventos);
 
 for ($i = 0; $i < $numTipoEventos; $i++) {
-	$linkUrl		= "#";
+	$eid			= \Zage\App\Util::encodeUrl('_codMenu_='.$_codMenu_.'&_icone_='.$_icone_.'&codGrupoItem='.$tipoEventos[$i][0]->getCodigo());
+	$linkItens		= "javascript:zgLoadUrl('".ROOT_URL . "/Fmt/contratoFornecItens.php?id=".$eid."');";
 	
 	$qtdeCon		= (int) $aQtdeContratada[$tipoEventos[$i][0]->getCodigo()];
 	$valorPago		= (isset($aValorPago[$tipoEventos[$i][0]->getCodigo()])) ? $aValorPago[$tipoEventos[$i][0]->getCodigo()] : 0;
@@ -102,7 +102,7 @@ for ($i = 0; $i < $numTipoEventos; $i++) {
 	$teHtml		.= '
 		<div class="widget-box" style="width: 240px; display: inline-block; margin-left: 12px;">
 			<div class="widget-header widget-header-small">
-				<a href="'.$linkUrl.'">
+				<a href="'.$linkItens.'">
 					<h5 class="widget-title">'.$tipoEventos[$i][0]->getDescricao().'</h5>
 				</a>
 			</div>
@@ -124,7 +124,7 @@ for ($i = 0; $i < $numTipoEventos; $i++) {
 					</table>
 				</div>
 				<div>
-					<a href="'.$linkUrl.'" class="btn btn-block btn-light">
+					<a href="'.$linkItens.'" class="btn btn-block btn-light">
 						<i class="ace-icon fa fa-arrow-circle-right bigger-110"></i>
 						<span>Visualizar os itens</span>
 					</a>
@@ -147,8 +147,6 @@ if ($pctConTot < 50) {
 }else{
 	$corConTot		= $corEmAndamento;
 }
-
-
 
 #################################################################################
 ## Carregando o template html
