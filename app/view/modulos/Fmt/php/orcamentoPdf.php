@@ -321,7 +321,7 @@ if ($via == "PDF") {
 	## Criar notificação
 	#################################################################################
 	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
-	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ENVIO_ORCAMENTO_FMT'));
+	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ENVIO_ORC_FMT'));
 	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
 	$notificacao->setAssunto($oFmtAdm->getFantasia().' - Orçamento '.$orcamento->getVersao());
 	$notificacao->setCodRemetente($oRemetente);
