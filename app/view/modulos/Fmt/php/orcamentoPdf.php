@@ -315,7 +315,7 @@ if ($via == "PDF") {
 	#################################################################################
 	## Corpo do email
 	#################################################################################
-	$texto = 'Será um prazer tornar o sonho em realidade. Segue em anexo nosso orçamento.';
+	$texto = 'Será um prazer tornar seu sonho realidade. Segue em anexo nosso orçamento.';
 	
 	#################################################################################
 	## Criar notificação
