@@ -306,6 +306,60 @@ $rel->WriteHTML($html);
 if ($via == "PDF") {
 	$rel->Output("Orçamento_Versao_".$orcamento->getVersao().".pdf",'D');
 }else{
+	#################################################################################
+	## Anexo
+	#################################################################################
+	$fileContent 	= $rel->Output("Orçamento_Versao_".$orcamento->getVersao()."_".$system->getCodOrganizacao().".pdf",'S');
+	$fileName		= "Orcamento_versao_".$orcamento->getVersao().".pdf";
+	
+	#################################################################################
+	## Corpo do email
+	#################################################################################
+	$texto = 'Será um prazer tornar o sonho em realidade. Segue em anexo nosso orçamento.';
+	
+	#################################################################################
+	## Criar notificação
+	#################################################################################
+	$oRemetente		= $em->getReference('\Entidades\ZgsegUsuario',$system->getCodUsuario());
+	$template		= $em->getRepository('\Entidades\ZgappNotificacaoTemplate')->findOneBy(array('template' => 'ENVIO_ORCAMENTO_FMT'));
+	$notificacao	= new \Zage\App\Notificacao(\Zage\App\Notificacao::TIPO_MENSAGEM_TEMPLATE, \Zage\App\Notificacao::TIPO_DEST_ANONIMO);
+	$notificacao->setAssunto($oFmtAdm->getFantasia().' - Orçamento '.$orcamento->getVersao());
+	$notificacao->setCodRemetente($oRemetente);
+	
+	$notificacao->setEmail($email);
+	
+	$notificacao->enviaEmail();
+	//$notificacao->enviaSistema();
+	//$notificacao->setEmail("daniel.cassela@usinacaete.com"); # Se quiser mandar com cópia
+	$notificacao->setCodTemplate($template);
+	$notificacao->anexarArquivo($fileName, $fileContent);
+	
+	$notificacao->adicionaVariavel("ASSUNTO", $assunto);
+	$notificacao->adicionaVariavel("TEXTO", $texto);
+	$notificacao->adicionaVariavel("NOME_TURMA", $oOrg->getFantasia());
+	$notificacao->adicionaVariavel("NOME_EMPRESA", $oFmtAdm->getFantasia());
+	
+	
+	$notificacao->salva();
+	
+	#################################################################################
+	## Salvar notificação
+	#################################################################################
+	try {
+		$em->flush();
+		$em->clear();
+	} catch (Exception $e) {
+		$log->debug("Erro ao salvar o usuário:". $e->getTraceAsString());
+	throw new \Exception("Ops!! Não conseguimos realizar a operação. Caso o problema continue entre em contato com o suporte do portal SUAFORMATURA.COM");
+	}
+
+	
+	
+	
+	
+	/**
+	
+	
 	
 	
 	#################################################################################
@@ -370,9 +424,9 @@ if ($via == "PDF") {
 		//throw new \Exception("Erro ao enviar o email, a mensagem foi para o log dos administradores, entre em contato para mais detalhes !!!");
 		die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($e->getTraceAsString())));
 	}
+	
+	**/
 
 	echo '0'.\Zage\App\Util::encodeUrl('||');
 	//$system->criaAviso(\Zage\App\Aviso\Tipo::INFO,$tr->trans("Email enviado com sucesso !!!"));
 }
-
-
