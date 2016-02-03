@@ -80,8 +80,8 @@ class Financeiro {
 		try {
 			
 			#################################################################################
-			## O Valor Arrecadado, consiste no valor recebido sem o júros / mora +
-			## o Percentual de júros / mora configurado para ficar com a formatura -
+			## O Valor Arrecadado, consiste no valor recebido sem o juros / mora +
+			## o Percentual de juros / mora configurado para ficar com a formatura -
 			## o Percentual dos convites extras configurado para ficar com  o cerimonial -
 			## o valor do boleto -
 			## o valor de taxa de administração
@@ -106,7 +106,7 @@ class Financeiro {
 			$valorPrincipal		= \Zage\App\Util::to_float($rec["total"]);
 			
 			#################################################################################
-			## Valor de júros / multa da formatura
+			## Valor de juros / multa da formatura
 			#################################################################################
 			$valorJuros			= (\Zage\App\Util::to_float($rec["juros"])	* $pctJuros	/ 100);
 			$valorMora			= (\Zage\App\Util::to_float($rec["mora"]) 	* $pctMora	/ 100);
@@ -960,8 +960,8 @@ class Financeiro {
 			#################################################################################
 			## O Saldo da formatura, consiste em (Valor Arrecadado até a dataBase) - 
 			## (Valor Gasto até a dataBase) o Valor arrecadado até a dataBae consisten em:
-			## o valor recebido sem o júros / mora +
-			## o Percentual de júros / mora configurado para ficar com a formatura -
+			## o valor recebido sem o juros / mora +
+			## o Percentual de juros / mora configurado para ficar com a formatura -
 			## o Percentual dos convites extras configurado para ficar com  o cerimonial -
 			## o valor do boleto -
 			## o valor de taxa de administração 
@@ -989,7 +989,7 @@ class Financeiro {
 			$valorPrincipal		= \Zage\App\Util::to_float($rec["total"]);
 				
 			#################################################################################
-			## Valor de júros / multa da formatura
+			## Valor de juros / multa da formatura
 			#################################################################################
 			$valorJuros			= (\Zage\App\Util::to_float($rec["juros"])	* $pctJuros	/ 100);
 			$valorMora			= (\Zage\App\Util::to_float($rec["mora"]) 	* $pctMora	/ 100);

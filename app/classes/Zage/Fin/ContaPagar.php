@@ -1910,7 +1910,7 @@ class ContaPagar extends \Entidades\ZgfinContaPagar {
 		}
 		
 		#################################################################################
-		## Verificar se a baixa que foi excluída agregou júros, mora e desconto a conta
+		## Verificar se a baixa que foi excluída agregou juros, mora e desconto a conta
 		#################################################################################
 		$valJurosBaixa		= round(floatval($oHist->getValorJuros())			,2);
 		$valMoraBaixa		= round(floatval($oHist->getValorMora()) 			,2);

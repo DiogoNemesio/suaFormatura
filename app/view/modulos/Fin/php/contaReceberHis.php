@@ -76,7 +76,7 @@ $grid->importaDadosDoctrine($oHist);
 
 for ($i = 0; $i < sizeof($oHist); $i++) {
 	#################################################################################
-	## Calcula o valor de Júros e mora
+	## Calcula o valor de Jurose mora
 	#################################################################################
 	$grid->setValorCelula($i,3,\Zage\App\Util::to_money(floatval($oHist[$i]->getValorJuros()) - floatval($oHist[$i]->getValorDescJuros()) ));
 	$grid->setValorCelula($i,4,\Zage\App\Util::to_money(floatval($oHist[$i]->getValorMora()) - floatval($oHist[$i]->getValorDescMora()) ));

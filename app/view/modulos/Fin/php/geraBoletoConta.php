@@ -157,7 +157,7 @@ if ($oConta->getCodPessoa()) {
 $vencimento				= ($oConta->getDataVencimento() != null) 		? $oConta->getDataVencimento()->format($system->config["data"]["dateFormat"]) : null;
 	
 #################################################################################
-## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+## Verificar se a conta está atrasada e calcular o juros e mora caso existam
 #################################################################################
 $saldoDet			= $contaRec->getSaldoAReceberDetalhado($oConta->getCodigo());
 if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $hoje) == true) {
@@ -171,7 +171,7 @@ if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $hoje) == true) {
 }else{
 
 	#################################################################################
-	## Resgata o valor de júros da conta
+	## Resgata o valor de juros da conta
 	#################################################################################
 	$valorJuros		= \Zage\App\Util::to_float($oConta->getValorJuros());
 	$valorMora		= \Zage\App\Util::to_float($oConta->getValorMora());
@@ -279,7 +279,7 @@ if ($valMora)	{
 	$textoMora		= $pctMora."%";
 }
 	
-$instrucao1			= "Após o dia ".$vencimento." cobrar ".$textoMora." de Mora e ".$textoJuros." de júros ao dia";
+$instrucao1			= "Após o dia ".$vencimento." cobrar ".$textoMora." de Mora e ".$textoJuros." de juros ao dia";
 $instrucao2			= $codContaRec->getInstrucao();
 $instrucao3			= $instrucao;
 $instrucao4			= null;

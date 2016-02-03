@@ -113,7 +113,7 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 	}
 	
 	#################################################################################
-	## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+	## Verificar se a conta está atrasada e calcular o juros e mora caso existam
 	#################################################################################
 	$saldoDet			= $contaRec->getSaldoAReceberDetalhado($contas[$i]->getCodigo());
 	if (\Zage\Fin\ContaReceber::estaAtrasada($contas[$i]->getCodigo(), $hoje) == true) {
@@ -134,7 +134,7 @@ for ($i = 0 ;$i < sizeof($contas); $i++) {
 		$roJuros		= null;
 	}else{
 		#################################################################################
-		## Resgata o valor de júros da conta
+		## Resgata o valor de juros da conta
 		#################################################################################
 		$valorJuros		= \Zage\App\Util::toPHPNumber($contas[$i]->getValorJuros());
 		$valorMora		= \Zage\App\Util::toPHPNumber($contas[$i]->getValorMora());

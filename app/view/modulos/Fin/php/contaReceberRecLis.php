@@ -114,7 +114,7 @@ for ($i = 0; $i < sizeof($oHist); $i++) {
 	
 	
 	#################################################################################
-	## Calcula o valor de Júros e mora
+	## Calcula o valor de Jurose mora
 	#################################################################################
 	$grid->setValorCelula($i,3,floatval($oHist[$i]->getValorJuros()) - floatval($oHist[$i]->getValorDescontoJuros()));
 	$grid->setValorCelula($i,4,floatval($oHist[$i]->getValorMora()) - floatval($oHist[$i]->getValorDescontoMora()));

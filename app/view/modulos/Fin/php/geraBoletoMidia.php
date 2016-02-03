@@ -192,7 +192,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	$vencimento				= $aVenc[$codConta];
 	
 	#################################################################################
-	## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+	## Verificar se a conta está atrasada e calcular o juros e mora caso existam
 	#################################################################################
 	$saldoDet			= $contaRec->getSaldoAReceberDetalhado($codConta);
 	if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $hoje) == true) {
@@ -206,7 +206,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	}else{
 	
 		#################################################################################
-		## Resgata o valor de júros da conta
+		## Resgata o valor de juros da conta
 		#################################################################################
 		$valorJuros		= \Zage\App\Util::to_float($oConta->getValorJuros());
 		$valorMora		= \Zage\App\Util::to_float($oConta->getValorMora());
@@ -259,7 +259,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 	}
 	
 	#################################################################################
-	## Verifica se foi alterado o valor do júros
+	## Verifica se foi alterado o valor do juros
 	#################################################################################
 	if ($juros != $valorJuros) {
 		if ($juros > $valorJuros) {
@@ -271,7 +271,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 			$_difJuros	= \Zage\App\Util::to_float($juros - $valorJuros);
 					
 			#################################################################################
-			## Adicionar o valor cobrado a mais de júros na conta
+			## Adicionar o valor cobrado a mais de juros na conta
 			#################################################################################
 			$oConta->setValorJuros(\Zage\App\Util::to_float($oConta->getValorJuros()) + $_difJuros);
 
@@ -287,7 +287,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 			$_difJuros	= \Zage\App\Util::to_float($valorJuros - $juros);
 				
 			#################################################################################
-			## Salvar o valor de desconto de júros
+			## Salvar o valor de desconto de juros
 			#################################################################################
 			$oConta->setValorDescontoJuros(\Zage\App\Util::to_float($oConta->getValorDescontoJuros()) + $_difJuros);
 			
@@ -397,7 +397,7 @@ for ($i = 0; $i < sizeof($codContaSel); $i++) {
 		$textoMora		= $pctMora."%";
 	}
 	
-	$instrucao1			= "Após o dia ".$vencimento." cobrar ".$textoMora." de Mora e ".$textoJuros." de júros ao dia";
+	$instrucao1			= "Após o dia ".$vencimento." cobrar ".$textoMora." de Mora e ".$textoJuros." de juros ao dia";
 	$instrucao2			= $codContaRec->getInstrucao();
 	$instrucao3			= $instrucao;
 	$instrucao4			= null;

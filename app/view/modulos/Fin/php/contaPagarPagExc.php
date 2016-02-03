@@ -99,7 +99,7 @@ $grid->importaDadosDoctrine($aHist);
 for ($i = 0; $i < sizeof($aHist); $i++) {
 	
 	#################################################################################
-	## Calcula o valor de Júros e mora
+	## Calcula o valor de Jurose mora
 	#################################################################################
 	$grid->setValorCelula($i,3,floatval($aHist[$i]->getValorJuros()) );
 	$grid->setValorCelula($i,4,floatval($aHist[$i]->getValorMora())  );

@@ -48,7 +48,7 @@ class Liquidacao {
 	private $valorIOF;
 	
 	/**
-	 * Valor de Júros / Mora
+	 * Valor de Juros/ Mora
 	 *
 	 * @var float
 	 */

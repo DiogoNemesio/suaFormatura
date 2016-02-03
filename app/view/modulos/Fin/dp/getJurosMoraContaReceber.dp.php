@@ -54,7 +54,7 @@ $oConta		= $em->getRepository('Entidades\ZgfinContaReceber')->findOneBy(array('c
 if (!$oConta) _getJurosMoraContaReceberReturn();
 
 #################################################################################
-## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+## Verificar se a conta está atrasada e calcular o juros e mora caso existam
 #################################################################################
 if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRef) == true) {
 
@@ -70,7 +70,7 @@ if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRef) == true
 }
 
 #################################################################################
-## Verificar se existe pendência de pagamento de júros / mora
+## Verificar se existe pendência de pagamento de juros / mora
 #################################################################################
 $saldoDet			= \Zage\Fin\ContaReceber::getSaldoAReceberDetalhado($oConta->getCodigo());
 
@@ -81,7 +81,7 @@ $valorJuros			+= $saldoDet["JUROS"];
 $valorMora			+= $saldoDet["MORA"];
 
 #################################################################################
-## Atribui os valores de júros e mora ao array que será retornado 
+## Atribui os valores de juros e mora ao array que será retornado 
 #################################################################################
 $array["valorJuros"]	= \Zage\App\Util::to_float(round($valorJuros,2));
 $array["valorMora"]		= \Zage\App\Util::to_float(round($valorMora,2));

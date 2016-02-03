@@ -56,7 +56,7 @@ if ( (!isset($valor) || empty($valor)) && (!isset($valorJuros) || empty($valorJu
 ## Validação dos valores, não pode receber valores negativos
 #################################################################################
 if ($valor 			< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo valor não pode ser negativo"))));
-if ($valorJuros 	< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo valor de júros não pode ser negativo"))));
+if ($valorJuros 	< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo valor de juros não pode ser negativo"))));
 if ($valorMora 		< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo valor de mora não pode ser negativo"))));
 if ($valorOutros 	< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo Outros valores não pode ser negativo"))));
 if ($valorDesconto 	< 0)	die ('1'.\Zage\App\Util::encodeUrl('||'.htmlentities($tr->trans("Campo Desconto não pode ser negativo"))));
@@ -178,7 +178,7 @@ if ($valorDescontoBoleto > 0) {
 $flagPerdoa		= (isset($flagPerdoa)) 		? 1 : 0;
 
 #################################################################################
-## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+## Verificar se a conta está atrasada e calcular o juros e mora caso existam
 #################################################################################
 if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRec) == true) {
 
@@ -195,7 +195,7 @@ if (\Zage\Fin\ContaReceber::estaAtrasada($oConta->getCodigo(), $dataRec) == true
 	$valorDescMora		= ($_valMora > $valorMora) 		? ($_valMora	- $valorMora)	: 0;
 	
 	#################################################################################
-	## Verificar se foi perdoado o júros / mora
+	## Verificar se foi perdoado o juros / mora
 	#################################################################################
 	$valorDescJuros		= ($flagPerdoa == 0)		? 0 : $valorDescJuros;
 	$valorDescMora		= ($flagPerdoa == 0)		? 0 : $valorDescMora;

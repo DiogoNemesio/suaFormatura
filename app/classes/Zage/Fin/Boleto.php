@@ -36,7 +36,7 @@ class Boleto {
 	private $valor;
 	
 	/**
-	 * Valor do júros
+	 * Valor do juros
 	 * @var float
 	 */
 	private $juros;

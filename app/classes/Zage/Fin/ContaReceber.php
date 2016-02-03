@@ -960,11 +960,11 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		## Validação dos valores, não pode receber valores negativos
 		#################################################################################
 		if ($valor 			< 0)	return($tr->trans("Campo valor não pode ser negativo"));
-		if ($valorJuros 	< 0)	return($tr->trans("Campo valor de júros não pode ser negativo"));
+		if ($valorJuros 	< 0)	return($tr->trans("Campo valor de juros não pode ser negativo"));
 		if ($valorMora 		< 0)	return($tr->trans("Campo valor de mora não pode ser negativo"));
 		if ($valorOutros 	< 0)	return($tr->trans("Campo Outros valores não pode ser negativo"));
 		if ($valorDesconto 	< 0)	return($tr->trans("Campo Desconto não pode ser negativo"));
-		if ($valorDescJuros < 0)	return($tr->trans("Campo Desconto de júros não pode ser negativo"));
+		if ($valorDescJuros < 0)	return($tr->trans("Campo Desconto de juros não pode ser negativo"));
 		if ($valorDescMora 	< 0)	return($tr->trans("Campo Desconto de mora não pode ser negativo"));
 		if (($valDescontoBoletoConcedido) && ($valDescontoBoletoConcedido < 0))	return($tr->trans("Campo valDescontoBoletoConcedido não pode ser negativo"));
 		
@@ -1029,7 +1029,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 		
 		#################################################################################
-		## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+		## Verificar se a conta está atrasada e calcular o juros e mora caso existam
 		#################################################################################
 		if ($this->estaAtrasada($oConta->getCodigo(), $dataRec) == true) {
 
@@ -1103,7 +1103,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 				
 				#################################################################################
 				## O Valor não deve ir para o histórico de recebimento, então deve ser retirado
-				## o valor a maior da origem, ou seja, verificar se veio de júros, mora, ou do 
+				## o valor a maior da origem, ou seja, verificar se veio de juros, mora, ou do 
 				## valor principal
 				#################################################################################
 				$saldoDet			= self::getSaldoAReceberDetalhado($oConta->getCodigo());
@@ -1277,7 +1277,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	
 
 	/**
-	 * Calcular o saldo a receber detalhado por valorPrincipal, júros e mora
+	 * Calcular o saldo a receber detalhado por valorPrincipal, juros e mora
 	 * @param int $codConta
 	 */
 	public static function getSaldoAReceberDetalhado($codConta) {
@@ -1794,7 +1794,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 	
 	
 	/**
-	 * Calcular o júros caso a conta esteja atrasada, senão retorna 0
+	 * Calcular o juros caso a conta esteja atrasada, senão retorna 0
 	 * @param integer $codConta
 	 * @param date $dataReferencia
 	 */
@@ -2522,7 +2522,7 @@ class ContaReceber extends \Entidades\ZgfinContaReceber {
 		}
 
 		#################################################################################
-		## Verificar se a baixa que foi excluída agregou júros, mora e desconto a conta
+		## Verificar se a baixa que foi excluída agregou juros, mora e desconto a conta
 		#################################################################################
 		$valJurosBaixa		= round(floatval($oHist->getValorJuros())			,2); 
 		$valMoraBaixa		= round(floatval($oHist->getValorMora()) 			,2);

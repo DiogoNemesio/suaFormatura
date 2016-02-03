@@ -307,7 +307,7 @@ for ($i = 0; $i < sizeof($rec); $i++) {
 	#################################################################################
 	
 	#################################################################################
-	## Valor de júros / multa da formatura
+	## Valor de juros / multa da formatura
 	#################################################################################
 	$valorJuros			= ($_juros	* $pctJuros	/ 100);
 	$valorMora			= ($_mora 	* $pctMora	/ 100);
@@ -331,13 +331,13 @@ for ($i = 0; $i < sizeof($rec); $i++) {
 	
 	#################################################################################
 	## Calcular o valor líquido do Recebimento
-	## Valor Liquido é igual ao valor - o valor não líquido + o júros líquido
+	## Valor Liquido é igual ao valor - o valor não líquido + o juros líquido
 	#################################################################################
 	$valorLiq			-= $valorNaoLiq;
 	$valorLiq			+= $jurosLiq;
 	
 	#################################################################################
-	## Agrega o valor do Júros ao valor original
+	## Agrega o valor do Jurosao valor original
 	#################################################################################
 	$valor				+= $juros;
 	

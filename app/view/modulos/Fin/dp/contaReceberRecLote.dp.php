@@ -153,7 +153,7 @@ try {
 		}
 		
 		#################################################################################
-		## Verificar se a conta está atrasada e calcular o júros e mora caso existam
+		## Verificar se a conta está atrasada e calcular o juros e mora caso existam
 		#################################################################################
 		if (\Zage\Fin\ContaReceber::estaAtrasada($contas[$i]->getCodigo(), $dataRec) == true) {
 		
