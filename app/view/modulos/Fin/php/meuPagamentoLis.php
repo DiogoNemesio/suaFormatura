@@ -75,7 +75,7 @@ if (sizeof($pagamentosAtr) == 0) {
 #################################################################################
 if (sizeof($pagamentosFut) == 0) {
 	$tabFut		= '<tr>
-						<td style="text-align: center;" colspan="6"> Nenhum registro encontrado </td>
+						<td style="text-align: center;" colspan="6"> Nenhuma conta disponível </td>
 					</tr>
 				';
 }else{
@@ -198,7 +198,7 @@ $tabAtr .= ' <script>
 ## Popula a tabela de pagamentos futuros
 #################################################################################
 $numFut		= sizeof($pagamentosFut);
-if ($numFut > 5) $numFut = 5;
+if ($numFut > 1) $numFut = 1;
 for ($i = 0; $i < $numFut; $i++) {
 
 	################################################################################
@@ -227,12 +227,15 @@ for ($i = 0; $i < $numFut; $i++) {
 	#################################################################################
 	$parcela			= $pagamentosFut[$i]->getParcela() . " de ".$pagamentosFut[$i]->getNumParcelas();
 	$juros				= 0;
+	$vencimento			= $pagamentosFut[$i]->getDataVencimento()->format($system->config["data"]["dateFormat"]);
+	$valor				= $pagamentosFut[$i]->getValor();
+	
 	$tabFut	.= '<tr>
 			<td>'.$pagamentosFut[$i]->getDescricao().'</td>
 			<td class="hidden-480" style="text-align: center;">'.$parcela.'</td>
 			<td style="text-align: center;">'.$vencimento.'</td>
 			<td style="text-align: center;">'.\Zage\App\Util::to_money($valor).'</td>
-			<td class="hidden-480"style="text-align: center;">'.\Zage\App\Util::to_money($juros).'</td>
+			
 			<td style="text-align: center;">'.$htmlBol.'</td>
 			</tr>
 	';
