@@ -73,8 +73,10 @@ for ($i = 0; $i < $numTipoEventos; $i++) {
 	
 	$qtdeCon		= (int) $aQtdeContratada[$tipoEventos[$i][0]->getCodigo()];
 	$valorPago		= (isset($aValorPago[$tipoEventos[$i][0]->getCodigo()])) ? $aValorPago[$tipoEventos[$i][0]->getCodigo()] : 0;
-	$pctCon			= round($qtdeCon * 100 / $tipoEventos[$i]["qtde"]);
-	$pctPag			= round($valorPago * 100 / $tipoEventos[$i]["valor"]);
+	$qtde			= ($tipoEventos[$i]["qtde"])	? $tipoEventos[$i]["qtde"] : 0;
+	$valor			= ($tipoEventos[$i]["valor"])	? $tipoEventos[$i]["valor"] : 0;
+	$pctCon			= ($qtde	> 0) ? round($qtdeCon * 100 / $tipoEventos[$i]["qtde"])		: 0;
+	$pctPag			= ($valor	> 0) ? round($valorPago * 100 / $tipoEventos[$i]["valor"])	: 0;
 	
 	$pctConAcu		+= $pctCon;
 	$pctPagAcu		+= $pctPag;

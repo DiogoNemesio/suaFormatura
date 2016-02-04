@@ -112,7 +112,11 @@ for ($i = 0; $i < sizeof($oItens); $i++) {
 	#################################################################################
 	## Define os endereços dos botões
 	#################################################################################
-	$urlCon			= ROOT_URL . "/Fmt/contratoFornecCad.php?id=".$cid;
+	$urlContrato	= "javascript:zgAbreModal('".ROOT_URL . "/Fmt/contratoFornecCad.php?id=".$cid."');";
+	$urlConta		= "javascript:zgAbreModal('".ROOT_URL . "/Fmt/contratoFornecGeraConta.php?id=".$cid."');";
+	
+	$grid->setUrlCelula($i, 5, $urlContrato);
+	$grid->setUrlCelula($i, 6, $urlConta);
 	
 	
 }
