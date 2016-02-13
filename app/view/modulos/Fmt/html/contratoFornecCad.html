@@ -14,13 +14,13 @@
 			<div class="col-sm-12">
 				<div class="row">
 			    	<div class="col-sm-8">
-						<div class="form-group col-sm-12" id="divQtdeD">
+						<div class="form-group col-sm-12" id="divQtdeID">
 					    	<label class="col-sm-4 control-label" for="qtdeID">Qtde a contratar</label>
 			    			<div class="input-group col-sm-7 pull-left">
 		    					<span tabindex="99001" class="input-group-addon"><i class="ace-icon fa fa-question-circle" data-rel="popover" data-placement="top" data-trigger="hover" data-original-title="<i class='ace-icon fa fa-question-circle red'></i> Ajuda" data-content="Quantidade que será contratada do fornecedor"></i></span>
-				    			<input class="form-control" id="qtdeID" type="text" name="qtde" placeholder="Quantidade a contratar" maxlength="6" autocomplete="off" onchange="calcularParcelasConForCad();" zg-data-toggle="mask" zg-data-mask="numero">
+				    			<input class="form-control" id="qtdeID" type="text" name="qtde" placeholder="Quantidade a contratar" maxlength="6" autocomplete="off" onchange="validaQuantidadeConForCad();" zg-data-toggle="mask" zg-data-mask="numero">
 					    	</div>
-					    	<div class="col-sm-1 pull-left" id="divHelpQtdeD"></div>
+					    	<div class="col-sm-1 pull-left" id="divHelpQtdeID"></div>
 						</div>
 						<div class="form-group col-sm-12" id="divFornecedorID">
 							<label class="col-sm-4 control-label">Fornecedor</label>
@@ -32,26 +32,37 @@
 						    </div>
 							<div class="help-block col-sm-1 inline" id="divHelpFornecedorID"></div>
 				    	</div>
+						<div class="form-group col-sm-12" id="divButtonID">
+							<label class="col-sm-4 control-label">
+								<span class="" onclick="addRowConForCad();"><i class="fa fa-plus-circle blue bigger-150"></i></span>
+							</label>
+				    	</div>
 				    </div>
 				    <div class="col-sm-4">
 						<div class="profile-user-info profile-user-info-striped">
 							<div class="profile-info-row">
-								<div class="profile-info-name"> Qtde do evento: </div>
+								<div class="profile-info-name">Qtde do evento: </div>
 								<div class="profile-info-value">
 									<span class="editable">%QTDE_EVENTO%</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name">Falta: </div>
+								<div class="profile-info-value">
+									<span class="editable" id="spQtdeFaltaID">%QTDE_FALTA%</span>
 								</div>
 							</div>
 						</div>
 			    	</div>
 			    </div>
 			    <div class="row %TAB_HID%" id="divTableConForCadID">
-				    <table id="ConForCadTableValorID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
+				    <table id="ConForCadTableContratosID" class="paginated table table-condensed table-hover table-bordered bootstrap-datatable datatable display">
 						<thead>
 							<tr class="warning">
-								<th class="col-sm-1 center" id="thInfoHelpTableParcelasConForCadID"></th>
 								<th class="col-sm-2 center">Quantidade</th>
 								<th class="col-sm-2 center">Fornecedor</th>
 								<th class="col-sm-2 center">Data do contrato</th>
+								<th class="col-sm-1 center"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -59,10 +70,10 @@
 						</tbody>
 						<tfoot>
 							<tr class="warning">
+								<th class="col-sm-2 center" id="thInfoQtdeConForCadID">%QTDE_CONTRATADA%</th>
+								<th class="col-sm-2 center"></th>
+								<th class="col-sm-2 center"></th>
 								<th class="col-sm-1 center"></th>
-								<th class="col-sm-2 center" id="thInfoParcelaConForCadID">%QTDE_CONTRATADA%</th>
-								<th class="col-sm-2 center"></th>
-								<th class="col-sm-2 center"></th>
 							</tr>
 						</tfoot>
 					</table>
@@ -101,64 +112,6 @@ $('[data-rel="select2"]').each(function( index ) {
 		$(this).select2("readonly", true);
 	}
 });
-
-mudaTipoContratoConForCad();
-function mudaTipoContratoConForCad(){
-	var vTipoContrato = $('#codTipoContratoID').val();
-	
-	if (vTipoContrato == 'T'){
-		$('#divEventoIndividualID').addClass('hidden');
-	}else{
-		$('#divEventoIndividualID').removeClass('hidden');
-	}
-	calculaValorPorFormandoConForCad();
-}
-
-function calculaValorPorFormandoConForCad() {
-	var vTipoContrato		= $('#codTipoContratoID').val();
-	var $oValPorFormando	= $('#valPorFormandoID');
-	var $valOrcPorFormando	= zgConverteFloat($('#valOrcPorFormandoID').val());
-	var	$valAnterior		= zgConverteFloat($oValPorFormando.val()); 
-
-	var $opt = {
-		symbol : "R$ ",
-		decimal : ",",
-		thousand: ".",
-		precision : 2,
-		format: "%s%v"
-	};
-
-	
-	if (vTipoContrato == 'T') {
-		$oValPorFormando.val($valOrcPorFormando);
-	}else{
-		
-		/** Calcula a soma dos eventos selecionados **/
-		var $aSelEventos			= [];
-		var $totalEventos			= 0;
-		
-		$('input[name="codEventoSel[]"]:checked').each( function() {
-			var $codEvento						= $(this).val();
-			$aSelEventos[$aSelEventos.length]	= $codEvento;
-			$valorEvento						= zgConverteFloat($(this).attr("zg-val-evento"));
-			$totalEventos						+= $valorEvento;
-		});
-		
-		/** Atualiza a variável valTotalEventos **/
-		$oValPorFormando.val($totalEventos);
-	}
-
-	// Atualiza total do contrato	
-	$('#spTotalPorFormandoID').html(accounting.formatMoney($oValPorFormando.val(),$opt));
-	$('#divTotalEventosID').html(accounting.formatMoney($oValPorFormando.val(),$opt));
-	
-	var	$valNovo		= zgConverteFloat($oValPorFormando.val());
-	
-	if ($valAnterior != $valNovo) {
-		criaTabelaValoresConForCad();
-	}
-
-}
 
 $('#ConForCadSubmitID').on("click", function(e) {
 	
@@ -237,181 +190,144 @@ $('#zgFormModalConForCadID').submit(function() {
 	return false; 
 });
 
-function validaUsuarioContrato(){
-	var vNumMeses		= $('#qtdeID').val();
-	var vData			= $('#dataVencID').val();
-	var vFornecedor		= $('#codFornecedorID').val();
-	var vTipoContrato	= $('#codTipoContratoID').val();
-	var vOK				= true;
+function validaConForCad(){
+	var $ok;
+
+	$ok		= validaQuantidadeConForCad();
+	if (!$ok)	return false;
+
+	$ok		= validaFornecedorConForCad();
+	return $ok;
+}
+
+function calculaQuantidadeAtualConForCad() {
+	var $oQtdeAtual				= $('#qtdeContratadaAtualID');
+	var $qtdeMax				= parseInt($('#qtdeMaxID').val());
+	var $qtdeAtual				= 0;
 	
-	/** Número de meses **/
-	if(!vNumMeses){	
-		$('#divQtdeD').addClass('has-error');
-		$('#divHelpQtdeD').html(zgCriaSpanErro('Selecione o número de parcelas para o contrato.'));
-		vOK		= false;
-	}else{
-		$('#divQtdeD').removeClass('has-error');
-		$('#divHelpQtdeD').html('&nbsp;');		
-	}
-	
-	/** Primeiro vencimento **/
-	if(!vData){	
-		$('#divDataVencID').addClass('has-error');
-		$('#divHelpDataVencID').html(zgCriaSpanErro('Selecione o número de parcelas para o contrato.'));
-		vOK		= false;
-	}else{
-		$('#divDataVencID').removeClass('has-error');
-		$('#divHelpDataVencID').html('&nbsp;');		
-	}
-	
-	
-	var $numEventosSel			= $('input[name="codEventoSel[]"]:checked').length;
-	
-	if ((vTipoContrato == "P") && ($numEventosSel == 0)) {
-		vOK		= false;
-		$.gritter.add({
-			title: 'Seleção de eventos !!!',
-			text: 'Pelo menos 1 evento deve ser selecionado',
-			class_name: 'gritter-info gritter-error',
-			time: '5000'
+	/** Calcula a soma dos valores, para verificar se bate com o total **/
+	$('#ConForCadTableContratosID > tbody > tr').each(function( index ) {
+		var $_qtde;
+		$(this).find('[name*="aQtde[]"]').each(function( index2 ) {
+			$_qtde			 	= zgConverteFloat($(this).val());
+			$qtdeAtual			+= $_qtde;
 		});
-	}
-
-	if (vOK == true) {
-		return true ;
-	}else{
-		return false;
-	}
-}
-
-function calcularParcelasConForCad(){
-	var $qtde			= parseInt($('#qtdeID').val());
-	var $dataVencimento		= $('#dataVencID').val();
-	
-	/** Calcular o número de meses máximo até a conclusão **/
-	calculaNumMesesConForCad();
-	
-	var	$maxParcelas		= parseInt($('#maxParcelasID').val());
-	var $ok					= true;
-	
-	if ($qtde > $maxParcelas) {
-		$('#divQtdeD').addClass('has-error');
-		$('#divHelpQtdeD').html(zgCriaSpanErro('Número de meses dever ser inferior a '+$maxParcelas));
-		$ok				= false;
-		deleteTableConForCad();
-	}else{
-		$('#divQtdeD').removeClass('has-error');
-		$('#divHelpQtdeD').html('&nbsp;');
-	}		
-		
-	if ($qtde && $dataVencimento && ($ok == true)){
-		criaTabelaValoresConForCad();
-	}else{
-		/** exclui a tabela**/
-		deleteTableConForCad();
-	}
-}
-
-
-function criaTabelaValoresConForCad() {
-	var $table					= $('#ConForCadTableValorID');
-	var $tipoRecParc			= $('#codTipoRecID').val();
-	var $codPeriodoRec			= 'M';
-	var $intervaloRec			= 1;
-	var $dataVenc				= $('#dataVencID').val();
-	var $qtde				= parseInt($('#qtdeID').val());
-	var $parcelas;
-	var $datas;
-
-	
-	var $valPorFormando			= zgConverteFloat($('#valPorFormandoID').val());
-	var $valParcela				= zgConverteFloat(($valPorFormando / $qtde).toFixed(2));
-	var $_parc;
-
-	if (!$valPorFormando || !$qtde)		{
-		deleteTableConForCad();
-		return;
-	}
-
-	var options = {
-		symbol : "",
-		decimal : ",",
-		thousand: ".",
-		precision : 2,
-		format: "%s%v"
-	};
-		
-	var optTotal = {
-		symbol : "R$ ",
-		decimal : ",",
-		thousand: ".",
-		precision : 2,
-		format: "%s%v"
-	};
-
-
-	$parcelas		= $qtde;	
-	if ($parcelas <= 1) {
-		$tipoRecParc	= "U";
-	}else{
-		$tipoRecParc	= "P";
-	}
-	
-	/** Resgata as datas de vencimentos **/
-	jQuery.ajax({
-		url: "%ROOT_URL%/Fin/geraDatasVencimentoConta.dp.php",
-		data: { dataVenc: $dataVenc, codPeriodoRec: $codPeriodoRec, intervaloRec: $intervaloRec, numParcelas: $parcelas},
-		success: function(ret) {
-			$datas	= JSON.parse(ret);
-		},
-		method: 'get',
-		cache: false,
-		async:false
 	});
 
-	/** Remove os dados atuais **/
-	deleteTableConForCad();
+	/** Ajusta os valores totais **/
+	$qtdeAtual					= zgConverteFloat($qtdeAtual);
+	$oQtdeAtual.val($qtdeAtual);
 	
+	/** Atualiza a quantidade faltante **/
+	var $falta			= $qtdeMax - $qtdeAtual;
+	$('#spQtdeFaltaID').html($falta);
+	
+}
+
+function validaQuantidadeConForCad(){
+
+	/** Calcular a quantidade atual **/
+	calculaQuantidadeAtualConForCad();
+
+	var $qtde				= parseInt($('#qtdeID').val());
+	var $qtdeMax			= parseInt($('#qtdeMaxID').val());
+	var $qtdeAtual			= parseInt($('#qtdeContratadaAtualID').val());
+	var $qtdeDisp			= ($qtdeMax - $qtdeAtual);
+	var $textoDisp;
+	
+	if ($qtdeDisp > 1)	{
+		$textoDisp	= "existem apenas "+$qtdeDisp+" disponíveis";
+	}else{
+		$textoDisp	= "existe apenas "+$qtdeDisp+" disponível";
+	}
+	var $ok					= true;
+	
+	if ($qtde > $qtdeDisp) {
+		$('#divQtdeID').addClass('has-error');
+		$('#divHelpQtdeID').html(zgCriaSpanErro('Quantidade indisponível para contratação, '+$textoDisp,"bottom"));
+		$ok				= false;
+	}else{
+		$('#divQtdeID').removeClass('has-error');
+		$('#divHelpQtdeID').html('&nbsp;');
+	}
+	
+	return $ok;
+	
+}
+
+
+function validaFornecedorConForCad(){
+	var $fornecedor		= $('#codFornecedorID').val();
+	var $ok				= true;
+
+	if (!$fornecedor) {
+		$('#divFornecedorID').addClass('has-error');
+		$('#divHelpFornecedorID').html(zgCriaSpanErro('Fornecedor deve ser selecionado',"bottom"));
+		$ok				= false;
+	}else{
+		$('#divFornecedorID').removeClass('has-error');
+		$('#divHelpFornecedorID').html('&nbsp;');
+	}
+	
+	return $ok;
+}
+
+
+function addRowConForCad() {
+	
+	var $table				= $('#ConForCadTableContratosID');
+	var $qtde				= parseInt($('#qtdeID').val());
+	var $codFornecedor		= $('#codFornecedorID').val();
+	var $fornecedor			= $("#codFornecedorID option:selected").text();
+	var $hoje				= moment().format("%FORMATO_DATA%");;
+	
+	if (!validaConForCad()) {
+		return false;
+	}
+
 	/** Mostra o div da tabela **/
 	$('#divTableConForCadID').removeClass("hidden");
 	
-	for ($i = 0; $i < $parcelas; $i++) {
-		var $descParcela	= ($i+1) + " / " + $parcelas;
-		
-		if ($tipoRecParc == "U") {
-			$_parc	= $valPorFormando;
-		}else{
-			if ($i == ($parcelas -1)) {
-				$_parc	= zgConverteFloat($valPorFormando	- ($valParcela	* ($parcelas -1) ));
-			}else{
-				$_parc 	= $valParcela;
-			}
-		}
-		
-		var $_parcFmt	= accounting.formatMoney($_parc	,options);
-		$('#ConForCadTableValorID > tbody:last').append('<tr><td class="center" style="width: 20px;"><div class="inline" zg-type="zg-div-msg"></div></td><td class="center" style="width: 40px;">'+$descParcela+'</td><td style="width: 120px;"><input type="text" class="form-control input-sm" name="aValor[]" value="'+$_parcFmt+'" onchange="atualizaEValidaParcelasConForCad();" maxlength="20" autocomplete="off" zg-data-toggle="mask" zg-data-mask="dinheiro" zg-data-mask-retira="0"></td><td style="width: 120px;"><input type="text" class="form-control input-sm datepicker" name="aData[]" value="'+$datas[$i].dataVenc+'" onchange="atualizaEValidaParcelasConForCad();" maxlength="10" autocomplete="off" zg-data-toggle="mask" zg-data-mask="data"></td></tr>');		
-		$('#ConForCadTableValorID > tbody > tr:last [zg-data-toggle="mask"]').each(function( index ) {
-			zgMask($( this ), $( this ).attr('zg-data-mask'));
-			$( this ).trigger('keyup');
-		});
-		
-		$('#ConForCadTableValorID > tbody > tr:last .datepicker').each(function( index ) {
-			$(this).datepicker({"autoclose": true});
-		});
-		
-	}
-
-	$('#thInfoValorTotalConForCadID').html(accounting.formatMoney($valPorFormando,optTotal));
-	$('#thInfoParcelaConForCadID').html($parcelas);
-	atualizaEValidaParcelasConForCad();
+	$('#ConForCadTableContratosID > tbody:last').append('<tr><td class="center">'+$qtde+'<input type="hidden" name="aQtde[]" value="'+$qtde+'"></td><td class="">'+$fornecedor+'<input type="hidden" name="aCodPessoa[]" value="'+$codFornecedor+'"></td><td class="center">'+$hoje+'<input type="hidden" name="aData[]" value="'+$hoje+'"></td><td class="center"><span class="center" zgdelete onclick="delRowConForCad($(this));"><i class="fa fa-trash bigger-150 red"></i></span><input type="hidden" name="codItem[]"></td></tr>');
+	
+	/** Recalcula a quantidade total **/
+	calculaQuantidadeAtualConForCad();
+	var $qtdeAtual			= parseInt($('#qtdeContratadaAtualID').val());
+	
+	$('#thInfoQtdeConForCadID').html($qtdeAtual);
 	paginateTableValoresConForCad();
+	
+	/** Atualiza o campo da quantidade para o saldo restante **/
+	var $qtdeAtual			= parseInt($('#qtdeContratadaAtualID').val());
+	var $qtdeMax			= parseInt($('#qtdeMaxID').val());
+	var $falta				= $qtdeMax - $qtdeAtual;
+	$('#qtdeID').val($falta);
+	
 }
+
+function delRowConForCad(pObj) {
+	var $td		= pObj.parent();
+	var $tr		= $td.parent();
+	$tr.addClass("danger");
+	$tr.fadeOut(800, function(){
+		$tr.remove();
+
+		/** Recalcula a quantidade total **/
+		calculaQuantidadeAtualConForCad();
+		var $qtdeAtual			= parseInt($('#qtdeContratadaAtualID').val());
+		
+		$('#thInfoQtdeConForCadID').html($qtdeAtual);
+		paginateTableValoresConForCad();
+	});
+	
+
+}
+
 
 function deleteTableConForCad () {
 	/** Remove os dados atuais **/
-	$('#ConForCadTableValorID > tbody').find('tr').remove();
-	$('#thInfoParcelaConForCadID').html("&nbsp;");
-	$('#thInfoValorTotalConForCadID').html("&nbsp;");
+	$('#ConForCadTableContratosID > tbody').find('tr').remove();
+	$('#thInfoQtdeConForCadID').html("&nbsp;");
 	$('#divTableConForCadID').addClass("hidden");
 }
 
@@ -442,135 +358,6 @@ function paginateTableValoresConForCad() {
 	    $pager.insertBefore($table).find('span.page-number:first').addClass('active');
 	});
 }
-
 	
-function atualizaEValidaParcelasConForCad() {
-	var $tValor					= parseFloat(0);
-	var $htmlOK					= zgCriaSpanOK();
-	var $htmlError1				= false;
-	var $htmlError2				= false;
-	var $vOK					= true;
-	var $menorData;
-	var $tipoRecParc;
-	var $qtde				= parseInt($('#qtdeID').val());
-	var $parcelas;
-	var $valPorFormando			= zgConverteFloat($('#valPorFormandoID').val());
-	var $valParcela				= zgConverteFloat(($valPorFormando / $qtde).toFixed(2));
-
-	var opt = {
-		symbol : "",
-		decimal : ",",
-		thousand: ".",
-		precision : 2,
-		format: "%s%v"
-	};
-
-	var opt1 = {
-		symbol : "R$ ",
-		decimal : ",",
-		thousand: ".",
-		precision : 2,
-		format: "%s%v"
-	};
-
-	/** Calcula a soma dos valores, para verificar se bate com o total **/
-	$('#ConForCadTableValorID > tbody > tr').each(function( index ) {
-		var $_valor;
-		$(this).find('[name*="aValor[]"]').each(function( index2 ) {
-			$_valor			 	= zgConverteFloat($(this).val());
-			$tValor				+= $_valor;
-		});
-	});
-
-	/** Ajusta os valores totais **/
-	$tValor					= zgConverteFloat($tValor.toFixed(2));
-
-	/** Calcula o tipo de recorrência através do número de parcelas **/
-	if ($qtde <= 1) {
-		$tipoRecParc	= "U";
-	}else{
-		$tipoRecParc	= "P";
-	}
-
-	/** Valida os valores **/
-	if ($valPorFormando != $tValor) {
-		var $texto;
-		var	$diff	= ($valPorFormando - $tValor);
-		
-		if ($diff > 0) {
-			$texto		= "Falta ainda: "+accounting.formatMoney($diff, opt1);
-		}else{
-			$texto		= "Valor está a maior: "+accounting.formatMoney(($diff*-1), opt1);
-		}
-		
-		$htmlError1	= zgCriaSpanErro($texto);
-		$vOK		= false;
-	}
-	
-	if ($htmlError1) {
-		$('#thInfoValorTotalConForCadID').html($htmlError1);
-	}else{
-		$('#thInfoValorTotalConForCadID').html($htmlOK + "&nbsp;"+ accounting.formatMoney($valPorFormando, opt1));
-	}
-	
-	/** Valida Data **/
-	$('#ConForCadTableValorID > tbody > tr [name*="aData[]"]').each(function( index ) {
-		var $td		= $(this).parent();
-		var $tr		= $td.parent();
-
-		if (index == 0) {
-			$menorData = moment($(this).val(), "%FORMATO_DATA%");
-			$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
-		}else{
-			var $data	= moment($(this).val(), "%FORMATO_DATA%");
-			var $dif	= $data - $menorData; 
-			
-			if ($dif < 0) {
-				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanErro("Data deve ser maior do que a parcela anterior"));
-				$tr.addClass("alert-danger");
-				$vOK		= false;
-				$htmlError2	= zgCriaSpanErro("Verifique as datas dos registros marcados");
-			}else{
-				$tr.find('[zg-type="zg-div-msg"]').html(zgCriaSpanOK());
-				$tr.removeClass("alert-danger");
-			}
-			$menorData = moment($(this).val(), "%FORMATO_DATA%");
-		}
-	});
-
-	
-	if ($htmlError2) {
-		$('#thInfoHelpTableParcelasConForCadID').html($htmlError2);
-	}else{
-		$('#thInfoHelpTableParcelasConForCadID').html(zgCriaSpanOK());
-	}
-
-	return $vOK;
-	
-}
-
-
-function calculaNumMesesConForCad() {
-	var $dataMax			= $('#dataMaxID').val();
-	var $dataVencimento		= $('#dataVencID').val();
-	var $meses				= parseInt(calculaNumMesesEntreDatas($dataVencimento,$dataMax));
-	var $texto;
-	
-	if ($meses < 0) {
-		$meses 	= 0;
-	}
-	if ($meses == 1) {
-		$texto			= $meses+" mês";
-	}else{
-		$texto			= $meses+" meses";
-	}
-	
-	$texto			+= " ("+$dataMax+")";
-
-	$('#spTextoQtdeD').html($texto);
-	$('#maxParcelasID').val($meses);
-
-}
-
 </script>
 
